@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\ItemType\Form;
 
-use CommonDBTM;
 use Glpi\Controller\GenericFormController;
 use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
@@ -51,32 +50,20 @@ class PlugFormController extends GenericFormController
         if (
             $request->request->has('add_several')
         ) {
-            $mainitemtype = $request->request->get('mainitemtype');
-
-            if (!is_a($mainitemtype, CommonDBTM::class, true)) {
-                throw new \LogicException(sprintf(
-                    __('Invalid main item type: %s'),
-                    $mainitemtype
-                ));
-            }
-
-            if (empty($request->request->get('name'))) {
-                throw new \LogicException(__('Plug name is required'));
-            }
-
+            $mainitemtype = $request->request->get('itemtype_main');
             $mainitem = new $mainitemtype();
-            $mainitem->getFromDB($request->request->get('mainitems_id'));
+            $mainitem->getFromDB($request->request->get('items_id_main'));
 
             $plug = new Plug();
             $plug->checkGlobal(CREATE);
 
             for ($i = 0; $i < $request->request->get('number'); $i++) {
                 $input = [
-                    'mainitemtype'  => $request->request->get('mainitemtype'),
-                    'mainitems_id'  => $request->request->get('mainitems_id'),
-                    'name'          => $request->request->get('name') . " - " . ($i + 1),
-                    'entities_id'   => $mainitem->fields['entities_id'] ?? 0,
-                    'is_recursive'  => $mainitem->fields['is_recursive'] ?? 1,
+                    'itemtype_main'     => $request->request->get('itemtype_main'),
+                    'items_id_main'     => $request->request->get('items_id_main'),
+                    'name'              => $request->request->get('name') . " - " . ($i + 1),
+                    'entities_id'       => $mainitem->getEntityID(),
+                    'is_recursive'      => $mainitem->mayBeRecursive() ? ($mainitem->fields['is_recursive'] ?? 0) : 0,
                 ];
                 $plug->add($input);
             }

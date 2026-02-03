@@ -37,18 +37,30 @@
 use Glpi\Application\View\TemplateRenderer;
 
 /// Class Plug
-class Plug extends CommonDBChild
+class Plug extends CommonDBRelation
 {
-    public static $itemtype       = 'itemtype';
-    public static $items_id       = 'items_id';
-    public static $rightname      = 'datacenter';
-    public $dohistory             = true;
+    public static ?string $itemtype_1 = 'itemtype_main';
+    public static ?string $items_id_1 = 'items_id_main';
+    public static bool $mustBeAttached_1       = false;
 
-    public $can_be_translated = false;
+    public static ?string $itemtype_2       = 'itemtype_asset';
+    public static ?string $items_id_2       = 'items_id_asset';
+    public static bool $mustBeAttached_2       = false;
 
-    public static $mustBeAttached     = false;
+    public static string $rightname      = 'datacenter';
 
-    public $auto_message_on_action = true;
+    public bool $no_form_page                = false;
+
+
+    public static function canCreate(): bool
+    {
+        return Session::haveRight(static::$rightname, UPDATE);
+    }
+
+    public function canCreateItem(): bool
+    {
+        return Session::haveRight(static::$rightname, UPDATE);
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -58,6 +70,14 @@ class Plug extends CommonDBChild
     public static function getIcon()
     {
         return "ti ti-plug";
+    }
+
+    public function post_getEmpty()
+    {
+        $this->fields['itemtype_main'] = PDU::class;
+        $this->fields['items_id_main'] = 0;
+        $this->fields['itemtype_asset'] = Computer::class;
+        $this->fields['items_id_asset'] = 0;
     }
 
     public static function getSectorizedDetails(): array
@@ -95,8 +115,8 @@ class Plug extends CommonDBChild
                     if ($plug->getFromDB($id)) {
                         if ($plug->update(
                             [
-                                'mainitemtype'  => '',
-                                'mainitems_id'  => 0,
+                                'itemtype_main'  => '',
+                                'items_id_main'  => 0,
                                 'id'            => $id,
                             ]
                         )
@@ -113,6 +133,49 @@ class Plug extends CommonDBChild
     }
 
 
+    /**
+     * Prepare input data for adding the item. If false, add is canceled.
+     *
+     * @param array<string, mixed> $input datas used to add the item
+     *
+     * @return false|array<string, mixed> the modified $input array
+     **/
+    public static function handleInput($input)
+    {
+        if (isset($input['name']) && empty($input['name'])) {
+            Session::addMessageAfterRedirect(
+                __s('Plug name is required'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if (isset($input['itemtype_main']) &&  !is_a($input['itemtype_main'], CommonDBTM::class, true)) {
+            trigger_error(
+                sprintf('Invalid itemtype_main value: %s', $input['itemtype_main'] ?? 'NULL'),
+                E_USER_WARNING
+            );
+            return false;
+        }
+
+        return $input;
+
+    }
+
+
+    public function prepareInputForAdd($input)
+    {
+        return self::handleInput($input);
+    }
+
+
+    public function prepareInputForUpdate($input)
+    {
+        return self::handleInput($input);
+    }
+
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
@@ -121,8 +184,8 @@ class Plug extends CommonDBChild
             $nb = countElementsInTable(
                 self::getTable(),
                 [
-                    'mainitemtype' => $item::class,
-                    'mainitems_id' => $item->getID(),
+                    'itemtype_main' => $item::class,
+                    'items_id_main' => $item->getID(),
                 ]
             );
         }
@@ -140,9 +203,10 @@ class Plug extends CommonDBChild
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
-        TemplateRenderer::getInstance()->display('pages/assets/pdu.html.twig', [
-            'item'      => $this,
-            'params'    => $options,
+        TemplateRenderer::getInstance()->display('pages/assets/plug.html.twig', [
+            'item'              => $this,
+            'params'            => $options,
+            'entity_restrict'   => $this->isRecursive() ? getSonsOf('glpi_entities', $this->getEntityID()) : $this->getEntityID(),
         ]);
         return true;
     }
@@ -173,8 +237,8 @@ class Plug extends CommonDBChild
             'SELECT' => ['*'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'mainitemtype' => $item::class,
-                'mainitems_id' => $ID,
+                'itemtype_main' => $item::class,
+                'items_id_main' => $ID,
             ],
         ]);
 
@@ -182,8 +246,8 @@ class Plug extends CommonDBChild
             $rand = mt_rand();
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='mainitems_id' value='$ID'>\n";
-            echo "\t<input type='hidden' name='mainitemtype' value='" . $item::class . "'>\n";
+            echo "\t<input type='hidden' name='items_id_main' value='$ID'>\n";
+            echo "\t<input type='hidden' name='itemtype_main' value='" . $item::class . "'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label> <span class='form-help' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-html='true'
                      data-bs-title='" . __s('Name will by suffixed by number') . "'>?</span></td>";
@@ -218,10 +282,10 @@ class Plug extends CommonDBChild
             $plug->getFromDB($row['id']);
 
             $itemtype_linked = "";
-            if ($plug->fields['itemtype'] && $plug->fields['items_id']) {
-                if (is_a($plug->fields['itemtype'], CommonDBTM::class, true)) {
-                    $linked_item = new $plug->fields['itemtype']();
-                    if ($linked_item->getFromDB($plug->fields['items_id'])) {
+            if ($plug->fields['itemtype_asset'] && $plug->fields['items_id_asset']) {
+                if (is_a($plug->fields['itemtype_asset'], CommonDBTM::class, true)) {
+                    $linked_item = new $plug->fields['itemtype_asset']();
+                    if ($linked_item->getFromDB($plug->fields['items_id_asset'])) {
                         $itemtype_linked = $linked_item->getLink();
                     }
                 }
@@ -261,4 +325,89 @@ class Plug extends CommonDBChild
 
         return true;
     }
+
+    public function rawSearchOptions()
+    {
+        $tab[] = [
+            'id'                 => 'common',
+            'name'               => __('Characteristics'),
+        ];
+
+        $tab[] = [
+            'id'            => 1,
+            'table'         => static::getTable(),
+            'field'         => 'name',
+            'name'          => __('Name'),
+            'datatype'      => 'itemlink',
+            'massiveaction' => false,
+        ];
+
+        $tab[] = [
+            'id'       => 86,
+            'table'      => static::getTable(),
+            'field'      => 'is_recursive',
+            'name'       => __('Child entities'),
+            'datatype'   => 'bool',
+            'searchtype' => 'equals',
+        ];
+
+        $tab[] = [
+            'id'                 => 2,
+            'table'              => $this->getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
+            'id'                 => 3,
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype_main',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Support type')),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'plug_types',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+        ];
+
+
+        $tab[] = [
+            'id'                 => 4,
+            'table'              => $this->getTable(),
+            'field'              => 'items_id_main',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Support type')),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'additionalfields'   => ['itemtype_main'],
+        ];
+
+
+        $tab[] = [
+            'id'                 => 5,
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype_asset',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Associated asset')),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'inventory_types',
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+        ];
+
+
+        $tab[] = [
+            'id'                 => '8',
+            'table'              => $this->getTable(),
+            'field'              => 'items_id_asset',
+            'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Associated asset')),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'additionalfields'   => ['itemtype_asset'],
+        ];
+
+        return $tab;
+    }
+
 }

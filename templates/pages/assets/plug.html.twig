@@ -61,7 +61,9 @@
                         'name',
                         item.fields['name'],
                         __('Name'),
-                        field_options
+                        field_options|merge({
+                            required: true,
+                        })
                     ) }}
 
                     {{ fields.textField(
@@ -72,30 +74,33 @@
                     ) }}
 
                     {{ fields.dropdownItemsFromItemtypes(
-                        'mainitemtype',
+                        'itemtype_main',
                         __('Support type'),
                         {
-                            items_id_name   : 'mainitems_id',
-                            itemtype_name   : 'mainitemtype',
-                            itemtypes       : config('plug_types'),
-                            entity_restrict : session('glpiactive_entity'),
-                            checkright      : false,
-                            display_emptychoice    : false,
-                            default_itemtype : item.fields['mainitemtype']|default(''),
-                            default_items_id : item.fields['mainitems_id']|default(0),
+                            items_id_name           : 'items_id_main',
+                            itemtype_name           : 'itemtype_main',
+                            itemtypes               : config('plug_types'),
+                            entity_restrict         : entity_restrict,
+                            checkright              : false,
+                            display_emptychoice     : false,
+                            required                : true,
+                            default_itemtype        : item.fields['itemtype_main']|default(''),
+                            default_items_id        : item.fields['items_id_main']|default(0),
                         }
                     ) }}
 
                     {{ fields.dropdownItemsFromItemtypes(
-                        'itemtype',
+                        'itemtype_asset',
                          __('Associated asset'),
                         {
-                            itemtypes       : config('inventory_types'),
-                            entity_restrict : session('glpiactive_entity'),
-                            checkright      : false,
-                            display_emptychoice    : false,
-                            default_itemtype : item.fields['itemtype']|default(''),
-                            default_items_id : item.fields['items_id']|default(0),
+                            items_id_name           : 'items_id_asset',
+                            itemtype_name           : 'itemtype_asset',
+                            itemtypes               : config('inventory_types'),
+                            entity_restrict         : entity_restrict,
+                            checkright              : false,
+                            display_emptychoice     : false,
+                            default_itemtype        : item.fields['itemtype_asset']|default(''),
+                            default_items_id        : item.fields['items_id_asset']|default(0),
                         }
                     ) }}
 

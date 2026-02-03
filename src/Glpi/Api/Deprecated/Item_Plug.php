@@ -53,16 +53,16 @@ class Item_Plug implements DeprecatedInterface
 
     public function mapDeprecatedToCurrentFields(object $fields): object
     {
-        $this->renameField($fields, 'items_id', 'mainitems_id');
-        $this->renameField($fields, 'itemtype', 'mainitemtype');
+        $this->renameField($fields, 'items_id', 'items_id_main');
+        $this->renameField($fields, 'itemtype', 'itemtype_main');
 
         return $fields;
     }
 
     public function mapCurrentToDeprecatedFields(array $fields): array
     {
-        $this->renameField($fields, 'items_id', 'mainitems_id');
-        $this->renameField($fields, 'itemtype', 'mainitemtype');
+        $this->renameField($fields, 'items_id_main', 'items_id');
+        $this->renameField($fields, 'itemtype_main', 'itemtype');
 
         return $fields;
     }

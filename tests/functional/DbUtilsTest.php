@@ -1295,7 +1295,7 @@ class DbUtilsTest extends DbTestCase
                     if (is_array($target_field)) {
                         // Polymorphic relation
                         $this->assertCount(2, $target_field); // has only `itemtype*` and `items_id*` fields
-                        if ($target_table === 'glpi_ipaddresses' || $target_table === 'glpi_plugs') {
+                        if ($target_table === 'glpi_ipaddresses') {
                             $this->assertContains('mainitemtype', $target_field);
                             $this->assertContains('mainitems_id', $target_field);
                         } else {

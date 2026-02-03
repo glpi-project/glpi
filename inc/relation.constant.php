@@ -1835,12 +1835,12 @@ foreach ($CFG_GLPI['networkport_types'] as $source_itemtype) {
 }
 
 // Plug specific case
-// mainitems_id/mainitemtype are mainly a copy of item related to source PDU
+// items_id_main/itemtype_main are mainly a copy of item related to source PDU
 foreach ($CFG_GLPI['plug_types'] as $source_itemtype) {
     $target_table_key = Plug::getTable();
     $source_table     = $source_itemtype::getTable();
 
-    $add_mapping_entry($source_table, $target_table_key, ['mainitems_id', 'mainitemtype']);
+    $add_mapping_entry($source_table, $target_table_key, ['items_id_main', 'itemtype_main']);
 }
 
 

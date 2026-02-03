@@ -146,6 +146,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/webhook.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Variable \\$result might not be defined\\.$#',
+	'identifier' => 'variable.undefined',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_11.0.x_to_12.0.0/plugs.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var for variable \\$CFG_GLPI has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -8876,6 +8882,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedFields\\(\\) should return array but returns array\\|object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedHateoas\\(\\) has parameter \\$hateoas with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -8912,6 +8924,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapDeprecatedToCurrentFields\\(\\) should return object but returns array\\|object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:renameField\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -8939,6 +8957,12 @@ $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:updateSearchOptionsUids\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
 ];
 $ignoreErrors[] = [
@@ -11682,6 +11706,12 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Helpdesk/Translation/UpdateHelpdeskTranslationController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instantiating an object from an unrestricted dynamic string is forbidden \\(see https\\://github\\.com/glpi\\-project/phpstan\\-glpi\\?tab\\=readme\\-ov\\-file\\#forbiddynamicinstantiationrule\\)\\.$#',
+	'identifier' => 'glpi.forbidDynamicInstantiation',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/PlugFormController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Controller\\\\Translation\\\\AbstractTranslationController\\:\\:createTranslation\\(\\) has parameter \\$translation_input with no value type specified in iterable type array\\.$#',
@@ -24868,12 +24898,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Plug\\:\\:processMassiveActionsForOneItemtype\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Plug\\:\\:\\$can_be_translated has no type specified\\.$#',
-	'identifier' => 'missingType.property',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Plug.php',
 ];

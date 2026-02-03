@@ -54,16 +54,16 @@ class Pdu_Plug implements DeprecatedInterface
 
     public function mapDeprecatedToCurrentFields(object $fields): object
     {
-        $this->renameField($fields, 'pdus_id', 'mainitems_id');
-        $this->addField($fields, 'mainitemtype', PDU::class);
+        $this->renameField($fields, 'pdus_id', 'items_id_main');
+        $this->addField($fields, 'itemtype_main', PDU::class);
 
         return $fields;
     }
 
     public function mapCurrentToDeprecatedFields(array $fields): array
     {
-        $this->renameField($fields, 'items_id', 'mainitems_id');
-        $this->deleteField($fields, 'mainitemtype');
+        $this->renameField($fields, 'items_id', 'items_id_main');
+        $this->deleteField($fields, 'itemtype_main');
 
         return $fields;
     }

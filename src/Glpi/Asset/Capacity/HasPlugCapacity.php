@@ -66,15 +66,36 @@ class HasPlugCapacity extends AbstractCapacity
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeerItem($classname, Plug::class) > 0;
+            && $this->countAssetsLinkedToPlugs($classname, Plug::class) > 0;
+    }
+
+    private function countAssetsLinkedToPlugs(string $asset_classname, string $relation_classname): int
+    {
+        return countDistinctElementsInTable(
+            $relation_classname::getTable(),
+            'items_id_main',
+            [
+                'itemtype_main' => $asset_classname,
+            ]
+        );
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
             __('%1$s plugs attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Plug::class),
-            $this->countAssetsLinkedToPeerItem($classname, Plug::class)
+            $this->countPlugItemsUsage($classname, Plug::class),
+            $this->countAssetsLinkedToPlugs($classname, Plug::class)
+        );
+    }
+
+    private function countPlugItemsUsage(string $asset_classname, string $relation_classname): int
+    {
+        return countElementsInTable(
+            $relation_classname::getTable(),
+            [
+                'itemtype_main'      => $asset_classname,
+            ]
         );
     }
 
@@ -92,7 +113,7 @@ class HasPlugCapacity extends AbstractCapacity
 
         //Delete related items
         $plug = new Plug();
-        $plug->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
+        $plug->deleteByCriteria(['itemtype_main' => $classname], force: true, history: false);
 
         // Clean history related items
         $this->deleteRelationLogs($classname, Plug::class);
