@@ -76,6 +76,19 @@ export async function waitForSlashMenuHidden(page: Page): Promise<void> {
     await expect(slashMenu).toBeHidden({ timeout: EDITOR_TIMEOUTS.MENU_APPEAR });
 }
 
+export async function waitForBubbleMenuVisible(page: Page): Promise<Locator> {
+    // eslint-disable-next-line playwright/no-raw-locators
+    const bubbleMenu = page.locator('.bubble-menu');
+    await expect(bubbleMenu).toBeVisible({ timeout: EDITOR_TIMEOUTS.MENU_APPEAR });
+    return bubbleMenu;
+}
+
+export async function waitForBubbleMenuHidden(page: Page): Promise<void> {
+    // eslint-disable-next-line playwright/no-raw-locators
+    const bubbleMenu = page.locator('.bubble-menu');
+    await expect(bubbleMenu).toBeHidden({ timeout: EDITOR_TIMEOUTS.MENU_APPEAR });
+}
+
 export async function waitForFullEditorInit(
     page: Page,
     contentContainer: Locator,

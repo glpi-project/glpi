@@ -136,4 +136,38 @@ export class TipTapEditorHelper {
     async assertContainsText(text: string): Promise<void> {
         await expect(this.contentContainer).toContainText(text);
     }
+
+    async assertHasBold(text: string): Promise<void> {
+        await expect(
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.contentContainer.locator('strong').filter({ hasText: text })
+        ).toBeVisible();
+    }
+
+    async assertHasItalic(text: string): Promise<void> {
+        await expect(
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.contentContainer.locator('em').filter({ hasText: text })
+        ).toBeVisible();
+    }
+
+    async assertHasStrikethrough(text: string): Promise<void> {
+        await expect(
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.contentContainer.locator('s').filter({ hasText: text })
+        ).toBeVisible();
+    }
+
+    async assertHasCode(text: string): Promise<void> {
+        await expect(
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.contentContainer.locator('code').filter({ hasText: text })
+        ).toBeVisible();
+    }
+
+    async assertHasLink(text: string, href: string): Promise<void> {
+        await expect(
+            this.contentContainer.getByRole('link', { name: text })
+        ).toHaveAttribute('href', href);
+    }
 }

@@ -34,11 +34,13 @@ import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
 import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
+import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
     private _editorHelper: TipTapEditorHelper | null = null;
     private _slashMenuHelper: SlashMenuHelper | null = null;
+    private _bubbleMenuHelper: BubbleMenuHelper | null = null;
 
     public constructor(page: Page)
     {
@@ -59,6 +61,14 @@ export class KnowbaseItemPage extends GlpiPage
             this._slashMenuHelper = new SlashMenuHelper(this.page, this.editor);
         }
         return this._slashMenuHelper;
+    }
+
+    public get bubbleMenu(): BubbleMenuHelper
+    {
+        if (!this._bubbleMenuHelper) {
+            this._bubbleMenuHelper = new BubbleMenuHelper(this.page, this.editor);
+        }
+        return this._bubbleMenuHelper;
     }
 
     public async goto(id: number): Promise<void>
