@@ -71,36 +71,35 @@ class CommonDBTM extends CommonGLPI
      *
      * @var array<string,mixed>
      */
-    public $fields = [];
+    public array $fields = [];
 
     /**
      * Add/Update fields input. Filled during add/update process.
      *
      * @var false|array<string,mixed>
      */
-    public $input = [];
+    public false|array $input = [];
 
     /**
      * Updated fields keys. Filled during update process.
      *
      * @var list<string>
      */
-    public $updates = [];
+    public array $updates = [];
 
     /**
      * Previous values of updated fields. Filled during update process.
      *
      * @var array<string,mixed>
      */
-    public $oldvalues = [];
+    public array $oldvalues = [];
 
 
     /**
      * Flag to determine whether changes must be logged into history.
      *
-     * @var bool
      */
-    public $dohistory = false;
+    public bool $dohistory = false;
 
     /**
      * List of fields that must not be taken into account when logging history or computing last
@@ -108,37 +107,34 @@ class CommonDBTM extends CommonGLPI
      *
      * @var string[]
      */
-    public $history_blacklist = [];
+    public array $history_blacklist = [];
 
     /**
      * Flag to determine whether automatic messages must be generated on actions.
      *
-     * @var bool
      */
-    public $auto_message_on_action = true;
+    public bool $auto_message_on_action = true;
 
     /**
      * Flag to determine whether a link to item form can be automatically generated via
      * self::getLink() method.
      *
-     * @var bool
      */
-    public $no_form_page = false;
+    public bool $no_form_page = false;
 
     /**
      * Flag to determine whether or not table name of item can be automatically generated via
      * self::getTable() method.
      *
-     * @var bool
      */
-    protected static $notable = false;
+    protected static bool $notable = false;
 
     /**
      * List of fields that must not be taken into account for dictionary processing.
      *
      * @var string[]
      */
-    public $additional_fields_for_dictionnary = [];
+    public array $additional_fields_for_dictionnary = [];
 
     /**
      * List of linked item types on which entities information should be forwarded on update.
@@ -147,62 +143,58 @@ class CommonDBTM extends CommonGLPI
      * It happens if the current item is linked to an entity using relation (foreign key or itemtype/items_id)
      * and other conditions (@see \CommonDBTM::forwardEntityInformations() and \CommonDBTM::forwardEntityInformations() call for more details).
      *
-     * @var string[]
+     * @var class-string<CommonDBTM>[]
      */
-    protected static $forward_entity_to = [];
+    protected static array $forward_entity_to = [];
 
     /**
      * Search option of item. Initialized on first call to self::getOptions() and used as cache.
      *
-     * @var array|false
      *
      * @TODO Should be removed and replaced by real cache usage.
      */
-    protected $searchopt = false;
+    protected array|false $searchopt = false;
 
-    public $taborientation = 'vertical';
+    public string $taborientation = self::TAB_VERTICAL;
 
-    public $get_item_to_display_tab = true;
+    public bool $get_item_to_display_tab = true;
 
     /**
      * List of linked item types from plugins on which entities information should be forwarded on update.
      *
-     * @var array
      */
-    protected static $plugins_forward_entity = [];
+    protected static array $plugins_forward_entity = [];
 
     /**
      * Flag to determine whether table name of item has a notepad.
      *
-     * @var bool
      */
-    protected $usenotepad = false;
+    protected bool $usenotepad = false;
 
     /**
      * Computed/forced values of classes tables.
      * @var string[]
      */
-    protected static $tables_of = [];
+    protected static array $tables_of = [];
 
     /**
      * Computed values of classes foreign keys.
      * @var string[]
      */
-    protected static $foreign_key_fields_of = [];
+    protected static array $foreign_key_fields_of = [];
 
 
     /**
      * Fields to remove when querying data with api
      * @var string[]
      */
-    public static $undisclosedFields = [];
+    public static array $undisclosedFields = [];
 
     /**
      * Current right that can be evaluated in "item_can" hook.
      * Variable is set prior to hook call then unset.
-     * @var ?int
      */
-    public $right;
+    public ?int $right = null;
 
     /** @var array<class-string, array<string,mixed>> */
     private static array $search_options_cache = [];

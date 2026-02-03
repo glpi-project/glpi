@@ -99,16 +99,14 @@ class CacheManager
     /**
      * Configuration directory.
      *
-     * @var string
      */
-    private $config_dir;
+    private string $config_dir;
 
     /**
      * Cache directory.
      *
-     * @var string
      */
-    private $cache_dir;
+    private string $cache_dir;
 
     public function __construct(string $config_dir = GLPI_CONFIG_DIR, ?string $cache_dir = null)
     {

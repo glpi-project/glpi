@@ -44,39 +44,36 @@ use Glpi\Plugin\Hooks;
 class NotificationTarget extends CommonDBChild
 {
     /** @var string unused variable */
-    public $prefix                      = '';
+    public string $prefix                      = '';
     // From CommonDBChild
-    public static $itemtype = Notification::class;
-    public static $items_id             = 'notifications_id';
-    /**
-     * @var string
-     */
-    public $table                       = 'glpi_notificationtargets';
+    public static string $itemtype = Notification::class;
+    public static string $items_id             = 'notifications_id';
+    public string $table                       = 'glpi_notificationtargets';
 
     /**
      * @var array<string, string>
      *      key is a formated <Notification::*_TYPE>_<value-of<Notification::TARGETS>>
      *      value is formated <Notification::*_TYPE>_<string(label)>
      */
-    public $notification_targets        = [];
+    public array $notification_targets        = [];
 
     /**
      * @var array<Notification::*_TYPE, array<int, string>>
      */
-    public $notification_targets_labels = [];
+    public array $notification_targets_labels = [];
 
     /**
      * @var array<string, string|array<string>> Data from the objet which can be used by the template
      */
-    public $data                        = [];
+    public array $data                        = [];
 
     /**
      * @var array<string, string|array<string|array>>
      */
-    public $tag_descriptions = [];
+    public array $tag_descriptions = [];
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * @var array<string, array{
@@ -85,12 +82,9 @@ class NotificationTarget extends CommonDBChild
      *                      username: string,
      *     }> store emails by notification
      */
-    public $target                      = [];
+    public array $target                      = [];
 
-    /**
-     * @var int
-     */
-    public $entity;
+    public int $entity;
 
     /**
      * @var T|null Object which raises the notification event
@@ -100,12 +94,12 @@ class NotificationTarget extends CommonDBChild
     /**
      * @var array<CommonGLPI> Object which is associated with the event
      */
-    public $target_object               = [];
+    public array $target_object               = [];
 
     /**
      * @var array<string, string>
      */
-    public $events = [];
+    public array $events = [];
 
     /**
      * @var array{
@@ -117,17 +111,16 @@ class NotificationTarget extends CommonDBChild
      *     },
      *     sendprivate?: bool}
      */
-    public $options = [];
+    public array $options = [];
 
-    /** @var string */
-    public $raiseevent  = '';
+    public string $raiseevent  = '';
 
     /**
      * Recipient related to called "add_recipient_to_target" hook.
      * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
      * @var array{itemtype?: class-string<CommonDBTM>, items_id?: int}
      */
-    public $recipient_data              = [];
+    public array $recipient_data              = [];
 
     private bool $allow_response        = true;
 
@@ -494,7 +487,7 @@ class NotificationTarget extends CommonDBChild
                 Notification::GROUP_TYPE,
             ];
             $all_exclusion_targets = [];
-            foreach ($this->notification_targets as $key => $val) {
+            foreach (array_keys($this->notification_targets) as $key) {
                 [$type, $id] = explode('_', $key);
                 $label = $this->notification_targets_labels[$type][$id];
                 if (in_array((int) $type, $allowed_exclusion_types, true)) {

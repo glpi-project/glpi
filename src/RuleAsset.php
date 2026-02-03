@@ -36,7 +36,7 @@
 class RuleAsset extends Rule
 {
     // From Rule
-    public static $rightname = 'rule_asset';
+    public static string $rightname = 'rule_asset';
 
     public const ONADD    = 1;
     public const ONUPDATE = 2;

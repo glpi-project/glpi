@@ -42,8 +42,8 @@ use function Safe\strtotime;
 
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
-    public $dohistory         = true;
-    public $history_blacklist = ['date_answered'];
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_answered'];
 
     /**
      * Survey is done internally

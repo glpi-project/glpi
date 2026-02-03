@@ -43,8 +43,8 @@ use Glpi\Application\View\TemplateRenderer;
 class RuleRight extends Rule
 {
     // From Rule
-    public static $rightname           = 'rule_ldap';
-    public $specific_parameters = true;
+    public static string $rightname           = 'rule_ldap';
+    public bool $specific_parameters = true;
 
     public function executeActions($output, $params, array $input = [])
     {

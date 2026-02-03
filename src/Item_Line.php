@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Line extends CommonDBRelation
 {
-    public static $itemtype_1 = Line::class;
-    public static $items_id_1 = 'lines_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_1 = Line::class;
+    public static ?string $items_id_1 = 'lines_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {

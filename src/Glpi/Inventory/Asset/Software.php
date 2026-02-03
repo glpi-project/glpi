@@ -72,7 +72,7 @@ class Software extends InventoryAsset
     /** @var array<int, mixed> */
     private array $deleted_versions = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         OperatingSystem::class => null,
     ];
 

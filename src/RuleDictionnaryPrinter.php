@@ -41,7 +41,7 @@
  **/
 class RuleDictionnaryPrinter extends Rule
 {
-    public static $rightname = 'rule_dictionnary_printer';
+    public static string $rightname = 'rule_dictionnary_printer';
 
 
     public function getTitle()

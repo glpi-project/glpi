@@ -55,15 +55,14 @@ use Session;
 class Socket extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public static int $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public static $rightname          = 'cable_management';
-    /** @var bool */
-    public $can_be_translated  = false;
+    public bool $dohistory          = true;
+    public static string $rightname          = 'cable_management';
+    public bool $can_be_translated  = false;
 
     public const REAR    = 1;
     public const FRONT   = 2;

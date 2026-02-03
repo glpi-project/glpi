@@ -43,11 +43,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithMandatoryFkeyRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = Computer::class;
-            public static $items_id = 'computers_id';
-            public static $mustBeAttached = true;
+            public static string $itemtype = Computer::class;
+            public static string $items_id = 'computers_id';
+            public static bool $mustBeAttached = true;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertFalse($instance->prepareInputForAdd(['foo' => 'bar']));
@@ -66,11 +66,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithOptionalFkeyRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = Computer::class;
-            public static $items_id = 'computers_id';
-            public static $mustBeAttached = false;
+            public static string $itemtype = Computer::class;
+            public static string $items_id = 'computers_id';
+            public static bool $mustBeAttached = false;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertEquals(
@@ -92,11 +92,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithMandatoryPolymorphicRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = 'itemtype';
-            public static $items_id = 'items_id';
-            public static $mustBeAttached = true;
+            public static string $itemtype = 'itemtype';
+            public static string $items_id = 'items_id';
+            public static bool $mustBeAttached = true;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertFalse($instance->prepareInputForAdd(['foo' => 'bar']));
@@ -121,11 +121,11 @@ class CommonDBChildTest extends DbTestCase
     public function testPrepareInputForAddWithOptionalPolymorphicRelation(): void
     {
         $instance = new class extends CommonDBChild {
-            public static $itemtype = 'itemtype';
-            public static $items_id = 'items_id';
-            public static $mustBeAttached = false;
+            public static string $itemtype = 'itemtype';
+            public static string $items_id = 'items_id';
+            public static bool $mustBeAttached = false;
 
-            public static $disableAutoEntityForwarding = true; // prevent DB accesses
+            public static bool $disableAutoEntityForwarding = true; // prevent DB accesses
         };
 
         $this->assertEquals(

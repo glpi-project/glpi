@@ -41,11 +41,11 @@ use Glpi\Application\View\TemplateRenderer;
 class FieldUnicity extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
 
-    public $can_be_translated  = false;
+    public bool $can_be_translated  = false;
 
-    public static $rightname          = 'config';
+    public static string $rightname          = 'config';
 
 
     public static function getTypeName($nb = 0)

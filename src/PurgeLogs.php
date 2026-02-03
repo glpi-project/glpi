@@ -37,7 +37,7 @@ use Glpi\DBAL\QueryFunction;
 
 class PurgeLogs extends CommonDBTM
 {
-    protected static $notable = true;
+    protected static bool $notable = true;
 
     public static function getTypeName($nb = 0)
     {

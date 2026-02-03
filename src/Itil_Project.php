@@ -44,10 +44,10 @@ use Glpi\DBAL\QueryUnion;
  **/
 class Itil_Project extends CommonDBRelation
 {
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = Project::class;
-    public static $items_id_2 = 'projects_id';
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
+    public static ?string $itemtype_2 = Project::class;
+    public static ?string $items_id_2 = 'projects_id';
 
     public static function getTypeName($nb = 0)
     {

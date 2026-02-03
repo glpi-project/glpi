@@ -39,10 +39,10 @@
 class TicketValidation extends CommonITILValidation
 {
     // From CommonDBChild
-    public static $itemtype = Ticket::class;
-    public static $items_id           = 'tickets_id';
+    public static string $itemtype = Ticket::class;
+    public static string $items_id           = 'tickets_id';
 
-    public static $rightname                 = 'ticketvalidation';
+    public static string $rightname                 = 'ticketvalidation';
 
     public const CREATEREQUEST               = 1024;
     public const CREATEINCIDENT              = 2048;

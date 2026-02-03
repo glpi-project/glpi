@@ -49,18 +49,15 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         post_updateItem as post_updateItemAssignableItem;
     }
 
-    public static $rightname = 'domain';
-    protected static $forward_entity_to = ['DomainRecord'];
+    public static string $rightname = 'domain';
+    protected static array $forward_entity_to = ['DomainRecord'];
 
-    /** @var bool */
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
-    public $dohistory        = true;
-    /** @var bool */
-    protected $usenotepadrights = true;
-    protected $usenotepad       = true;
-    /** @var string */
-    public static $tags             = '[DOMAIN_NAME]';
+    public bool $dohistory        = true;
+    protected bool $usenotepadrights = true;
+    protected bool $usenotepad       = true;
+    public static string $tags             = '[DOMAIN_NAME]';
 
     public function getCloneRelations(): array
     {

@@ -41,13 +41,13 @@ use Glpi\Application\View\TemplateRenderer;
 class Database extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = true;
-    public static $rightname       = 'database';
-    public static $mustBeAttached  = false;
+    public bool $auto_message_on_action = true;
+    public static string $rightname       = 'database';
+    public static bool $mustBeAttached  = false;
 
     // From CommonDBChild
-    public static $itemtype = DatabaseInstance::class;
-    public static $items_id = 'databaseinstances_id';
+    public static string $itemtype = DatabaseInstance::class;
+    public static string $items_id = 'databaseinstances_id';
 
     public static function getTypeName($nb = 0)
     {

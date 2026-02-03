@@ -62,7 +62,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Helpdesk fields of helpdesk profiles
      * @var string[]
      */
-    public static $helpdesk_rights = [
+    public static array $helpdesk_rights = [
         'create_ticket_on_login',
         'changetemplates_id',
         'followup',
@@ -90,15 +90,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Common fields used for all profiles type
      * @var string[]
      */
-    public static $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
+    public static array $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
 
-    public $dohistory             = true;
+    public bool $dohistory             = true;
 
-    public static $rightname             = 'profile';
+    public static string $rightname             = 'profile';
 
     /**
      * Profile rights to update after profile update.
-     * @var array
      */
     private array $profileRight = [];
 
@@ -613,7 +612,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function cleanProfile()
     {
         if (isset($this->fields['interface']) && $this->fields["interface"] === "helpdesk") {
-            foreach ($this->fields as $key => $val) {
+            foreach (array_keys($this->fields) as $key) {
                 if (
                     !in_array($key, self::$common_fields, true)
                     && !in_array($key, self::$helpdesk_rights, true)

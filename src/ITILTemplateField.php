@@ -48,9 +48,9 @@ abstract class ITILTemplateField extends CommonDBChild
     /**
      * @var class-string<ITILTemplate>
      */
-    public static $itemtype; //to be filled in subclass
+    public static string $itemtype; //to be filled in subclass
 
-    public static $items_id; //to be filled in subclass
+    public static string $items_id; //to be filled in subclass
 
     /**
      * @var class-string<CommonITILObject>
@@ -60,7 +60,7 @@ abstract class ITILTemplateField extends CommonDBChild
     private array $all_fields;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static function getMultiplePredefinedValues(): array
     {

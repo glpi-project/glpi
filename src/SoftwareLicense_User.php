@@ -42,15 +42,15 @@ use Glpi\Application\View\TemplateRenderer;
 class SoftwareLicense_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = User::class;
-    public static $items_id_1 = 'users_id';
+    public static ?string $itemtype_1 = User::class;
+    public static ?string $items_id_1 = 'users_id';
 
-    public static $itemtype_2 = SoftwareLicense::class;
-    public static $items_id_2 = 'softwarelicenses_id';
+    public static ?string $itemtype_2 = SoftwareLicense::class;
+    public static ?string $items_id_2 = 'softwarelicenses_id';
 
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
     public function prepareInputForAdd($input)
     {

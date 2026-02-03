@@ -49,10 +49,10 @@ class Contact extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
-    public static $rightname           = 'contact_enterprise';
-    protected $usenotepad       = true;
+    public static string $rightname           = 'contact_enterprise';
+    protected bool $usenotepad       = true;
 
 
 

@@ -44,11 +44,11 @@ class SolutionTemplate extends AbstractITILChildTemplate
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'solutiontemplate';
+    public static string $rightname = 'solutiontemplate';
 
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
 
     public static function getTypeName($nb = 0)

@@ -42,8 +42,8 @@ use Glpi\Inventory\Inventory;
 class SNMPCredential extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    public static $rightname = 'snmpcredential';
+    public bool $dohistory                   = true;
+    public static string $rightname = 'snmpcredential';
 
     public static function getTypeName($nb = 0)
     {

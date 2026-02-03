@@ -57,8 +57,7 @@ use function Safe\preg_match;
  **/
 class Widget
 {
-    /** @var int */
-    public static $animation_duration = 1000; // in millseconds
+    public static int $animation_duration = 1000; // in millseconds
 
 
     /**

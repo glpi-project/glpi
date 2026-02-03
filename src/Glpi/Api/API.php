@@ -96,35 +96,20 @@ use function Safe\session_write_close;
 abstract class API
 {
     // permit writing to $_SESSION
-    /** @var bool  */
-    protected $session_write = false;
-    /** @var string  */
-
-    public static $api_url = "";
-    /** @var string  */
-    public static $content_type = "application/json";
-    /** @var string  */
-    protected $format          = "json";
-    /** @var string  */
-    protected $iptxt           = "";
-    /** @var string  */
-    protected $ipnum           = "";
-    /** @var array  */
-    protected $app_tokens      = [];
-    /** @var int  */
-    protected $apiclients_id   = 0;
-    /** @var ?DeprecatedInterface  */
-    protected $deprecated_item = null;
-    /** @var string */
-    protected $request_uri;
-    /** @var array */
-    protected $url_elements;
-    /** @var string */
-    protected $verb;
-    /** @var array */
-    protected $parameters;
-    /** @var bool */
-    protected $debug = false;
+    protected bool $session_write = false;
+    public static string $api_url = "";
+    public static string $content_type = "application/json";
+    protected string $format          = "json";
+    protected string $iptxt           = "";
+    protected string $ipnum           = "";
+    protected array $app_tokens      = [];
+    protected int $apiclients_id   = 0;
+    protected ?DeprecatedInterface $deprecated_item = null;
+    protected string $request_uri;
+    protected array $url_elements;
+    protected string $verb;
+    protected array $parameters;
+    protected bool $debug = false;
 
     /**
      * @param int $nb Unused value

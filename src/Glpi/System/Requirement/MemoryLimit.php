@@ -45,9 +45,8 @@ class MemoryLimit extends AbstractRequirement
     /**
      * Minimal allocated memory size.
      *
-     * @var int
      */
-    private $min;
+    private int $min;
 
     /**
      * @param int $min  Minimal allocated memory.

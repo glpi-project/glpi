@@ -38,7 +38,7 @@ use function Safe\preg_match;
 abstract class RuleCommonITILObjectCollection extends RuleCollection
 {
     // From RuleCollection
-    public $use_output_rule_process_as_next_input   = true;
+    public bool $use_output_rule_process_as_next_input   = true;
 
     /**
      * @param int $entity (default 0)

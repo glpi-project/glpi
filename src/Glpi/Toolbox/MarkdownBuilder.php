@@ -45,9 +45,8 @@ class MarkdownBuilder
     /**
      * Generated markdown content
      *
-     * @var string
      */
-    protected $content = "";
+    protected string $content = "";
 
     /**
      * Get the generated markdown content

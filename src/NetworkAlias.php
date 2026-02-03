@@ -44,11 +44,11 @@ use Glpi\Application\View\TemplateRenderer;
 class NetworkAlias extends FQDNLabel
 {
     // From CommonDBChild
-    public static $itemtype = NetworkName::class;
-    public static $items_id           = 'networknames_id';
-    public $dohistory                 = true;
+    public static string $itemtype = NetworkName::class;
+    public static string $items_id           = 'networknames_id';
+    public bool $dohistory                 = true;
 
-    public static $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
 
     public static function getTypeName($nb = 0)

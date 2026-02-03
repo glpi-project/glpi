@@ -44,12 +44,12 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
 {
     use AssignableItem;
 
-    public static $itemtype_2 = DeviceSimcard::class;
-    public static $items_id_2 = 'devicesimcards_id';
+    public static ?string $itemtype_2 = DeviceSimcard::class;
+    public static ?string $items_id_2 = 'devicesimcards_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
-    public static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
+    public static array $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
 
     public function getCloneRelations(): array
     {

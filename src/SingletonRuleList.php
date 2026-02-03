@@ -36,12 +36,11 @@
 class SingletonRuleList
 {
     /** @var Rule[] */
-    public $list = [];
+    public array $list = [];
     /**
      * Items loaded?
-     * @var int
      */
-    public $load = 0;
+    public int $load = 0;
 
 
     /**

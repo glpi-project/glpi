@@ -52,12 +52,9 @@ use function Safe\strtotime;
  **/
 class Stat extends CommonGLPI
 {
-    public static $rightname = 'statistic';
+    public static string $rightname = 'statistic';
 
-    /**
-     * @var array
-     */
-    public static $cache = [];
+    public static array $cache = [];
 
     public static function getTypeName($nb = 0)
     {

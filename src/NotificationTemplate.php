@@ -50,19 +50,19 @@ class NotificationTemplate extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     /**
      * @var string Signature to add to the template
      */
-    public $signature = '';
+    public string $signature = '';
 
     /**
      * @var array<string, array{subject: string, content_html:string, content_text:string}> Store templates for each language
      */
-    public $templates_by_languages = [];
+    public array $templates_by_languages = [];
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     #[Override]
     public function getCloneRelations(): array

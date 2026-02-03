@@ -95,16 +95,12 @@ class Application extends BaseApplication
 
     /**
      * Pointer to $CFG_GLPI.
-     * @var array
      */
-    private $config;
+    private array $config;
 
     private ?DBmysql $db = null;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public function __construct(private Kernel $kernel)
     {
@@ -399,8 +395,7 @@ class Application extends BaseApplication
      */
     private function isLanguageValid($language)
     {
-        return is_array($this->config)
-         && array_key_exists('languages', $this->config)
+        return array_key_exists('languages', $this->config)
          && array_key_exists($language, $this->config['languages']);
     }
 

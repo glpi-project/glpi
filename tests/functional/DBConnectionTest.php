@@ -200,11 +200,11 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public $slave = true;
    public $dbhost = 'slave.db.domain.org';
    public $dbuser = 'glpi';
    public $dbpassword = 'secret';
    public $dbdefault = 'glpi_db';
+   public $slave = true;
 }
 
 PHP,
@@ -222,7 +222,6 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public $slave = true;
    public $dbhost = array (
   0 => 'slave1.db.domain.org',
   1 => 'slave2.db.domain.org',
@@ -231,6 +230,7 @@ class DBSlave extends DBmysql {
    public $dbuser = 'root';
    public $dbpassword = '';
    public $dbdefault = 'db';
+   public $slave = true;
    public $use_timezones = true;
    public $use_utf8mb4 = true;
    public $allow_datetime = false;
@@ -252,11 +252,11 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public $slave = true;
    public $dbhost = '127.0.0.1';
    public $dbuser = 'root';
    public $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
    public $dbdefault = 'db';
+   public $slave = true;
    public $log_deprecation_warnings = true;
 }
 

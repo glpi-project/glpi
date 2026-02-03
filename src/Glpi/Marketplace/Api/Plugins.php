@@ -51,10 +51,9 @@ use function Safe\session_write_close;
 
 class Plugins
 {
-    /** @var ?Client */
-    protected $httpClient  = null;
+    protected ?Client $httpClient  = null;
     /** @var ?array  */
-    protected $last_error  = null;
+    protected ?array $last_error  = null;
 
     public const COL_PAGE    = 200;
 
@@ -68,12 +67,11 @@ class Plugins
     /**
      * Flag that indicates that plugin list is truncated (due to an errored response from marketplace API).
      *
-     * @var bool
      */
-    protected $is_list_truncated = false;
+    protected bool $is_list_truncated = false;
 
     /** @var ?array */
-    public static $plugins = null;
+    public static ?array $plugins = null;
 
     public function __construct()
     {

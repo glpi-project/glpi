@@ -44,12 +44,12 @@ use Glpi\RichText\RichText;
  **/
 class KnowbaseItemTranslation extends CommonDBChild
 {
-    public static $itemtype = KnowbaseItem::class;
-    public static $items_id = 'knowbaseitems_id';
-    public $dohistory       = true;
-    public static $logs_for_parent = false;
+    public static string $itemtype = KnowbaseItem::class;
+    public static string $items_id = 'knowbaseitems_id';
+    public bool $dohistory       = true;
+    public static bool $logs_for_parent = false;
 
-    public static $rightname       = 'knowbase';
+    public static string $rightname       = 'knowbase';
 
 
     public static function getTypeName($nb = 0)

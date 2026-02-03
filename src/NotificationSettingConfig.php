@@ -40,12 +40,9 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class NotificationSettingConfig extends CommonDBTM
 {
-    /**
-     * @var string
-     */
-    public $table           = 'glpi_configs';
-    protected $displaylist  = false;
-    public static $rightname       = 'config';
+    public string $table           = 'glpi_configs';
+    protected bool $displaylist  = false;
+    public static string $rightname       = 'config';
 
     #[Override]
     public function update(array $input, $history = true, $options = [])

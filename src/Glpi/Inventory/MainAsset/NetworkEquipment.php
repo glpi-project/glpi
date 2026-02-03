@@ -53,7 +53,7 @@ class NetworkEquipment extends MainAsset
     /** @var array<string, object> */
     private array $management_ports = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
         NetworkPort::class       => null,

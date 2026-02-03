@@ -41,9 +41,9 @@ use Glpi\Application\View\TemplateRenderer;
 class Item_Process extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = true;
 
 
     public static function getTypeName($nb = 0)

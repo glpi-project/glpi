@@ -43,13 +43,12 @@ use Glpi\Search\SearchOption;
  **/
 class Lockedfield extends CommonDBTM
 {
-    /** @var CommonDBTM */
-    private $item;
+    private CommonDBTM $item;
 
     // From CommonDBTM
-    public $dohistory                   = false;
+    public bool $dohistory                   = false;
 
-    public static $rightname                   = 'locked_field';
+    public static string $rightname                   = 'locked_field';
 
     public static function getTypeName($nb = 0)
     {

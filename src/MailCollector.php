@@ -79,59 +79,50 @@ class MailCollector extends CommonDBTM
     private ?AbstractStorage $storage = null;
     /**
      * UID of the current message
-     * @var int
      */
-    public $uid             = -1;
+    public int $uid             = -1;
     /**
      * structure used to store files attached to a mail
      * @var ?array
      */
-    public $files;
+    public ?array $files = null;
     /**
      * structure used to store alt files attached to a mail
-     * @var array
      */
-    public $altfiles;
+    public array $altfiles;
     /**
      * Tag used to recognize embedded images of a mail
-     * @var array
      */
-    public $tags;
+    public array $tags;
     /**
      * Message to add to body to build ticket
-     * @var string
      */
-    public $addtobody;
+    public string $addtobody;
     /**
      * Number of fetched emails
-     * @var int
      */
-    public $fetch_emails    = 0;
+    public int $fetch_emails    = 0;
     /**
      * Maximum number of emails to fetch : default to 10
-     * @var int
      */
-    public $maxfetch_emails = 10;
+    public int $maxfetch_emails = 10;
     /**
      * array of indexes -> uid for messages
-     * @var array
      */
-    public $messages_uid    = [];
+    public array $messages_uid    = [];
     /**
      * Max size for attached files
-     * @var int
      */
-    public $filesize_max    = 0;
+    public int $filesize_max    = 0;
 
     /**
      * Flag that tells whether the body is in HTML format or not.
-     * @var bool
      */
-    private $body_is_html   = false;
+    private bool $body_is_html   = false;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
-    public static $rightname       = 'config';
+    public static string $rightname       = 'config';
 
     // Destination folder
     public const REFUSED_FOLDER  = 'refused';
@@ -141,11 +132,11 @@ class MailCollector extends CommonDBTM
     public const REQUESTER_FIELD_FROM = 0;
     public const REQUESTER_FIELD_REPLY_TO = 1;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'passwd',
     ];
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'errors',
         'last_collect_date',
     ];

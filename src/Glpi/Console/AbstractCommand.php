@@ -56,41 +56,29 @@ use function Safe\preg_replace;
 
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
-    /**
-     * @var DBmysql|null
-     */
-    protected $db;
+    protected ?DBmysql $db = null;
 
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    protected InputInterface $input;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * Flag to indicate if command requires a DB connection.
      *
-     * @var bool
      */
-    protected $requires_db = true;
+    protected bool $requires_db = true;
 
     /**
      * Flag to indicate if command requires an up-to-date DB.
      *
-     * @var bool
      */
-    protected $requires_db_up_to_date = true;
+    protected bool $requires_db_up_to_date = true;
 
     /**
      * Current progress bar.
      *
-     * @var ?ProgressBar
      */
-    protected $progress_bar;
+    protected ?ProgressBar $progress_bar = null;
 
     #[Override]
     public function getSpecificMandatoryRequirements(): array

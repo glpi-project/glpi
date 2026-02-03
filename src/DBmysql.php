@@ -82,9 +82,8 @@ class DBmysql
 
     /**
      * The database handler
-     * @var mysqli
      */
-    protected $dbh;
+    protected mysqli $dbh;
 
     /**
      * Slave management
@@ -103,24 +102,24 @@ class DBmysql
     /**
      * The path name to the key file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslkey           = null;
 
     /**
      * The path name to the certificate file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslcert          = null;
 
     /**
      * The path name to the certificate authority file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslca            = null;
 
@@ -128,16 +127,16 @@ class DBmysql
      * The pathname to a directory that contains trusted SSL CA certificates in PEM format
      * (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslcapath        = null;
 
     /**
      * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslcacipher      = null;
 
@@ -188,14 +187,12 @@ class DBmysql
      *
      * @var bool
      */
-    public $first_connection   = true;
+    public bool $first_connection   = true;
     // Is connected to the DB ?
-    /** @var bool */
-    public $connected          = false;
+    public bool $connected          = false;
 
     //to calculate execution time
-    /** @var bool|float */
-    public $execution_time          = false;
+    public bool|float $execution_time          = false;
 
     private bool $cache_disabled = false;
 
@@ -206,18 +203,16 @@ class DBmysql
     /**
      * Cached list fo tables.
      *
-     * @var array
      * @see self::tableExists()
      */
-    private $table_cache = [];
+    private array $table_cache = [];
 
     /**
      * Cached list of fields.
      *
-     * @var array
      * @see self::listFields()
      */
-    private $field_cache = [];
+    private array $field_cache = [];
 
     private int $transaction_level = 0;
 
@@ -964,7 +959,7 @@ class DBmysql
      */
     public function close()
     {
-        if ($this->connected && $this->dbh) {
+        if ($this->connected && isset($this->dbh)) {
             return $this->dbh->close();
         }
         return false;

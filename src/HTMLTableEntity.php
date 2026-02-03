@@ -42,14 +42,13 @@
  **/
 abstract class HTMLTableEntity
 {
-    /** @var string */
-    private $html_id    = '';
+    private string $html_id    = '';
     /** @var string[] */
-    private $html_style = [];
+    private array $html_style = [];
     /** @var string[] */
-    private $html_class = [];
+    private array $html_class = [];
     /** @var string|string[] */
-    private $content;
+    private string|array $content;
 
     /**
      * Constructor of an entity

@@ -46,16 +46,16 @@ use Glpi\Search\DefaultSearchRequestInterface;
 class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory = true;
-    protected static $forward_entity_to = ['ProblemCost'];
+    public bool $dohistory = true;
+    protected static array $forward_entity_to = ['ProblemCost'];
 
     // From CommonITIL
-    public $userlinkclass        = 'Problem_User';
-    public $grouplinkclass       = 'Group_Problem';
-    public $supplierlinkclass    = 'Problem_Supplier';
+    public string $userlinkclass        = 'Problem_User';
+    public string $grouplinkclass       = 'Group_Problem';
+    public string $supplierlinkclass    = 'Problem_Supplier';
 
-    public static $rightname            = 'problem';
-    protected $usenotepad        = true;
+    public static string $rightname            = 'problem';
+    protected bool $usenotepad        = true;
 
 
     public const MATRIX_FIELD         = 'priority_matrix';

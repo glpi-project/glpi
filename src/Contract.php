@@ -51,11 +51,11 @@ class Contract extends CommonDBTM implements StateInterface
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ContractCost'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ContractCost'];
 
-    public static $rightname                   = 'contract';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'contract';
+    protected bool $usenotepad               = true;
 
     public const RENEWAL_NEVER = 0;
     public const RENEWAL_TACIT = 1;

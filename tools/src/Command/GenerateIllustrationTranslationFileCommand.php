@@ -41,7 +41,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class GenerateIllustrationTranslationFileCommand extends Command
 {
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     #[Override]
     protected function configure()

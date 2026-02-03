@@ -60,11 +60,10 @@ class Reminder extends CommonDBVisible implements
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    /** @var bool */
-    public $can_be_translated           = true;
+    public bool $dohistory                   = true;
+    public bool $can_be_translated           = true;
 
-    public static $rightname    = 'reminder_public';
+    public static string $rightname    = 'reminder_public';
 
     public const PERSONAL = 128;
 

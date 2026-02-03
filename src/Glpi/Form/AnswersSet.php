@@ -50,8 +50,8 @@ use function Safe\json_decode;
  */
 final class AnswersSet extends CommonDBChild
 {
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     public array $files = [];
 

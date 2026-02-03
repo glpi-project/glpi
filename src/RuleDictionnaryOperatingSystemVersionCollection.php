@@ -35,8 +35,8 @@
 
 class RuleDictionnaryOperatingSystemVersionCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_operatingsystemversions";
-    public $menu_option = "os_version";
+    public string $item_table  = "glpi_operatingsystemversions";
+    public string $menu_option = "os_version";
 
     public function getTitle()
     {

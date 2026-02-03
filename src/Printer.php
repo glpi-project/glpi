@@ -59,14 +59,14 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'printer';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'printer';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {

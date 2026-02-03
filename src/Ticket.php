@@ -59,20 +59,17 @@ use function Safe\strtotime;
 class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = [TicketValidation::class, TicketCost::class];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = [TicketValidation::class, TicketCost::class];
 
     // From CommonITIL
-    public $userlinkclass               = Ticket_User::class;
-    public $grouplinkclass              = Group_Ticket::class;
-    public $supplierlinkclass           = Supplier_Ticket::class;
+    public string $userlinkclass               = Ticket_User::class;
+    public string $grouplinkclass              = Group_Ticket::class;
+    public string $supplierlinkclass           = Supplier_Ticket::class;
 
-    public static $rightname                   = 'ticket';
+    public static string $rightname                   = 'ticket';
 
-    /**
-     * @var bool
-     */
-    protected $userentity_oncreate      = true;
+    protected bool $userentity_oncreate      = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
     public const URGENCY_MASK_FIELD            = 'urgency_mask';
@@ -82,14 +79,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     // Specific ones
     /**
      * Hardware datas used by getFromDBwithData
-     * @var array
      */
-    public $hardwaredatas = [];
+    public array $hardwaredatas = [];
     /**
      * Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
-     * @var int
      */
-    public $computerfound = 0;
+    public int $computerfound = 0;
 
     // Request type
     public const INCIDENT_TYPE = 1;
@@ -4545,7 +4540,7 @@ JAVASCRIPT;
                         $row['values'][] = implode('<br>', $requesters);
 
                         $associated_elements = [];
-                        if (!empty($job->hardwaredatas)) {
+                        if ($job->hardwaredatas !== []) {
                             foreach ($job->hardwaredatas as $hardwaredatas) {
                                 if ($hardwaredatas->canView()) {
                                     $associated_elements[] = htmlescape($hardwaredatas->getTypeName()) . " - " . "<span class='b'>" . $hardwaredatas->getLink() . "</span>";
@@ -4943,7 +4938,7 @@ JAVASCRIPT;
             echo "</td>";
 
             echo "<td>";
-            if (!empty($job->hardwaredatas)) {
+            if ($job->hardwaredatas !== []) {
                 foreach ($job->hardwaredatas as $hardwaredatas) {
                     if ($hardwaredatas->canView()) {
                         echo htmlescape($hardwaredatas->getTypeName()) . " - ";

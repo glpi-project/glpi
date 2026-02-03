@@ -57,9 +57,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     use ITILSubItemRights;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
-    public static $rightname = 'task';
+    public static string $rightname = 'task';
 
     /** @return class-string<CommonITILObject> */
     public static function getItilObjectItemType()
@@ -1540,7 +1540,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $interv[$key]["device"] = [];
                         if (
                             $parentitem instanceof Ticket
-                            && !empty($parentitem->hardwaredatas)
+                            && $parentitem->hardwaredatas !== []
                         ) {
                             foreach ($parentitem->hardwaredatas as $hardwaredata) {
                                 $interv[$key]["device"][$hardwaredata->fields['id']] = htmlescape($hardwaredata ? $hardwaredata->getName() : '');

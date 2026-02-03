@@ -39,18 +39,13 @@
  */
 abstract class HTMLTableHeader extends HTMLTableEntity
 {
-    /** @var string */
-    private $name;
-    /** @var ?HTMLTableHeader */
-    private $father;
+    private string $name;
+    private ?HTMLTableHeader $father = null;
     /** @var array<class-string<CommonDBTM>, string> */
-    private $itemtypes   = [];
-    /** @var int */
-    private $colSpan     = 1;
-    /** @var int */
-    private $numberCells = 0;
-    /** @var int */
-    public $numberOfSubHeaders;
+    private array $itemtypes   = [];
+    private int $colSpan     = 1;
+    private int $numberCells = 0;
+    public int $numberOfSubHeaders;
 
     /**
      * get the table of the header (for a subheader, it is the table of its super header)

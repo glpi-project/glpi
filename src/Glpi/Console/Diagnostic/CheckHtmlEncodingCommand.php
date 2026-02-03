@@ -84,21 +84,18 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Items with invalid HTML.
      *
-     * @var array
      */
     private array $invalid_items = [];
 
     /**
      * Count of items with invalid HTML that have NOT been fixed.
      *
-     * @var int
      */
     private int $failed_items_count = 0;
 
     /**
      * Columns which contains rich text, populated by analyzing search options.
      *
-     * @var array
      */
     private array $text_fields = [];
 

@@ -57,18 +57,14 @@ class RuleImportAsset extends Rule
     public const LINK_RESULT_CREATE            = 1;
     public const LINK_RESULT_LINK              = 2;
 
-    public $restrict_matching = Rule::AND_MATCHING;
+    public string|int|bool $restrict_matching = Rule::AND_MATCHING;
 
-    public static $rightname         = 'rule_import';
+    public static string $rightname         = 'rule_import';
 
-    /** @var int */
-    private $found_criteria = 0;
-    /** @var array */
-    private $complex_criteria = [];
-    /** @var bool */
-    private $only_these_criteria = false;
-    /** @var bool */
-    private $link_criteria_port = false;
+    private int $found_criteria = 0;
+    private array $complex_criteria = [];
+    private bool $only_these_criteria = false;
+    private bool $link_criteria_port = false;
 
     public function getTitle()
     {
@@ -463,12 +459,12 @@ class RuleImportAsset extends Rule
         }
 
         // No complex criteria
-        if (empty($this->complex_criteria) || $this->found_criteria === 0) {
+        if ($this->complex_criteria === [] || $this->found_criteria === 0) { //@phpstan-ignore booleanOr.alwaysTrue,identical.alwaysTrue (variables are set in preComputeCriteria())
             return true;
         }
 
         // Get all equipment type
-        $itemtypeselected = [];
+        $itemtypeselected = []; //@phpstan-ignore deadCode.unreachable (see above phpstan-ignore comment)
         if (
             isset($input['itemtype'])
             && (is_array($input['itemtype']))
@@ -940,7 +936,7 @@ class RuleImportAsset extends Rule
             $inputrulelog['method'] = 'inventory'; //$class->getMethod();
         }
 
-        if (count($this->actions)) {
+        if ($this->actions !== null && count($this->actions)) {
             foreach ($this->actions as $action) {
                 if ($action->fields["value"] == self::RULE_ACTION_DENIED) {
                     $output['action'] = self::LINK_RESULT_DENIED;

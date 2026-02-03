@@ -50,10 +50,10 @@ use function Safe\preg_match;
 
 final class CustomFieldDefinition extends CommonDBChild
 {
-    public static $itemtype = AssetDefinition::class;
-    public static $items_id = 'assets_assetdefinitions_id';
+    public static string $itemtype = AssetDefinition::class;
+    public static string $items_id = 'assets_assetdefinitions_id';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function getTypeName($nb = 0)
     {

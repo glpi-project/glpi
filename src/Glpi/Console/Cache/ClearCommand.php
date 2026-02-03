@@ -45,14 +45,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ClearCommand extends Command
 {
     /**
-     * Error code returned when failed to clear chache.
+     * Error code returned when failed to clear cache.
      *
      * @var int
      */
     public const ERROR_CACHE_CLEAR_FAILURE = 1;
 
-    /** @var bool */
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {

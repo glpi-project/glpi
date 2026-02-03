@@ -38,12 +38,12 @@ use Glpi\Application\View\TemplateRenderer;
 class NetworkPort_Vlan extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = NetworkPort::class;
-    public static $items_id_1          = 'networkports_id';
+    public static ?string $itemtype_1 = NetworkPort::class;
+    public static ?string $items_id_1          = 'networkports_id';
 
-    public static $itemtype_2 = Vlan::class;
-    public static $items_id_2          = 'vlans_id';
-    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static ?string $itemtype_2 = Vlan::class;
+    public static ?string $items_id_2          = 'vlans_id';
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public function getForbiddenStandardMassiveAction()
     {

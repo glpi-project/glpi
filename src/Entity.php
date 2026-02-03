@@ -58,11 +58,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     use Clonable;
     use MapGeolocation;
 
-    public $must_be_replace             = true;
-    public $dohistory                   = true;
+    public bool $must_be_replace             = true;
+    public bool $dohistory                   = true;
 
-    public static $rightname            = 'entity';
-    protected $usenotepad               = true;
+    public static string $rightname            = 'entity';
+    protected bool $usenotepad               = true;
 
     public const READHELPDESK       = 1024;
     public const UPDATEHELPDESK     = 2048;

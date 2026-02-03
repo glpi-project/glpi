@@ -35,8 +35,8 @@
 
 class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_computertypes";
-    public $menu_option = "type.computer";
+    public string $item_table  = "glpi_computertypes";
+    public string $menu_option = "type.computer";
 
 
     public function getTitle()

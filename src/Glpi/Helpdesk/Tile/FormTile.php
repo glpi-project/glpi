@@ -45,9 +45,9 @@ use Ticket;
 
 final class FormTile extends CommonDBChild implements TileInterface
 {
-    public static $rightname = 'config';
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $rightname = 'config';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     private Form $form;
 

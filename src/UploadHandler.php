@@ -77,16 +77,14 @@ use function Safe\unlink;
 
 class UploadHandler
 {
-    /** @var array */
-    protected $options;
+    protected array $options;
 
     /**
      * PHP File Upload error message codes:
      * https://php.net/manual/en/features.file-upload.errors.php
      *
-     * @var array
      */
-    protected $error_messages = [
+    protected array $error_messages = [
         1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
         3 => 'The uploaded file was only partially uploaded',
@@ -112,10 +110,8 @@ class UploadHandler
     public const IMAGETYPE_JPEG = 'image/jpeg';
     public const IMAGETYPE_PNG = 'image/png';
 
-    /** @var array */
-    protected $image_objects = [];
-    /** @var array */
-    protected $response = [];
+    protected array $image_objects = [];
+    protected array $response = [];
 
     /**
      * @param ?array $options

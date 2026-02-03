@@ -64,8 +64,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public const TRANSLATION_KEY_NAME = 'section_name';
     public const TRANSLATION_KEY_DESCRIPTION = 'section_description';
 
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     /**
      * Lazy loaded array of questions

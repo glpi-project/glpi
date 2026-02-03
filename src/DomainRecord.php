@@ -46,12 +46,12 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public const DEFAULT_TTL = 3600;
 
-    public static $rightname              = 'domain';
+    public static string $rightname              = 'domain';
     // From CommonDBChild
-    public static $itemtype = Domain::class;
-    public static $items_id        = 'domains_id';
-    public $dohistory              = true;
-    public static $mustBeAttached  = false;
+    public static string $itemtype = Domain::class;
+    public static string $items_id        = 'domains_id';
+    public bool $dohistory              = true;
+    public static bool $mustBeAttached  = false;
 
     public static function getTypeName($nb = 0)
     {

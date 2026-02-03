@@ -416,7 +416,7 @@ use Glpi\\Asset\\Asset;
 
 final class {$definition->getAssetClassName(false)} extends Asset {
     protected static string \$definition_system_name = '{$definition->fields['system_name']}';
-    public static \$rightname = '{$rightname}';
+    public static string \$rightname = '{$rightname}';
 }
 PHP
         );

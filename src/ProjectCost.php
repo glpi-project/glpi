@@ -40,9 +40,9 @@ use Glpi\Application\View\TemplateRenderer;
 class ProjectCost extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = Project::class;
-    public static $items_id = 'projects_id';
-    public $dohistory       = true;
+    public static string $itemtype = Project::class;
+    public static string $items_id = 'projects_id';
+    public bool $dohistory       = true;
 
 
     public static function getTypeName($nb = 0)

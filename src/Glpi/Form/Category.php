@@ -44,9 +44,9 @@ use Override;
 
 class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
 {
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
     /** @var ServiceCatalogItemInterface[] $children */
     private array $children = [];

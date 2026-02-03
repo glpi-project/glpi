@@ -44,7 +44,7 @@ use Override;
 
 final class ExternalPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const TRANSLATION_KEY_TITLE = 'title';
     public const TRANSLATION_KEY_DESCRIPTION = 'description';

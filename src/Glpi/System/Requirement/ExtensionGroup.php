@@ -45,7 +45,7 @@ class ExtensionGroup extends AbstractRequirement
      *
      * @var string[]
      */
-    protected $extensions;
+    protected array $extensions;
 
     /**
      * @param string      $title        Extension group title.
