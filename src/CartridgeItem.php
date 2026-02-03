@@ -202,7 +202,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
             ];
             $result = $DB->insert('glpi_cartridgeitems_printermodels', $params);
 
-            if ($result && ($DB->affectedRows() > 0)) {
+            if ($result && ($DB->getAffectedRows() > 0)) {
                 return true;
             }
         }

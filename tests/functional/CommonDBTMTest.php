@@ -151,7 +151,7 @@ class CommonDBTMTest extends DbTestCase
         $instance = new Computer();
 
         $this->expectExceptionMessage(
-            '`Computer::getFromDBByRequest()` expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".'
+            '`Computer::getFromDBByRequest()` expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = ?".'
         );
         $instance->getFromDbByRequest([
             'WHERE' => ['contact' => 'johndoe'],
