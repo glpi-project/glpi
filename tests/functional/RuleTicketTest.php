@@ -661,15 +661,15 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // create users
         $user = new \User();
-        $manager_id = $user->add([
+        $manager_id = $this->createItem(\User::class, [
             'name' => 'test manager',
-        ]);
-        $this->assertGreaterThan(0, $manager_id);
-        $user_id = $user->add([
+            '_profiles_id' => getItemByTypeName('Profile', 'Observer', true),
+            '_entities_id' => 0,
+        ])->getID();
+        $user_id = $this->createItem(\User::class, [
             'name' => 'test user',
             'users_id_supervisor' => $manager_id,
-        ]);
-        $this->assertGreaterThan(0, $user_id);
+        ])->getID();
 
         // check manager
         $user->getFromDB($user_id);
