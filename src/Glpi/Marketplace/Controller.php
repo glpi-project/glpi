@@ -391,6 +391,9 @@ class Controller extends CommonGLPI
         $api_version   = $api_plugin['version'] ?? "";
         $local_version = $local_plugin['version'] ?? "";
 
+        if ($plugin_inst === null) {
+            $plugin_inst = new Plugin();
+        }
         $plugin_inst->update([
             'id'                        => $local_plugin['id'],
             'highest_available_version' => $api_version,
