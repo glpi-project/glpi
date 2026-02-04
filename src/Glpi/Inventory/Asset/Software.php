@@ -653,17 +653,15 @@ class Software extends InventoryAsset
                 'manufacturers_id' => $this->known_links[$mkey] ?? 0,
             ];
 
-            $DB->bindStatementParams(
+            $DB->executeStatement(
                 $stmt,
                 [
                     $this->entities_id,
                     $this->is_recursive,
                     $input['name'],
                     $input['manufacturers_id'],
-                ],
-                'ssss'
+                ]
             );
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             while ($row = $results->fetch_object()) {
@@ -948,7 +946,7 @@ class Software extends InventoryAsset
             ];
 
             $itemtype = $this->item->getType();
-            $DB->bindStatementParams(
+            $DB->executeStatement(
                 $stmt,
                 [
                     $itemtype,
@@ -957,10 +955,8 @@ class Software extends InventoryAsset
                     $input['is_dynamic'],
                     $input['entities_id'],
                     $input['date_install'],
-                ],
-                'ssssss'
+                ]
             );
-            $DB->executeStatement($stmt);
 
             //store link
             $this->items_versions[$this->item->fields['id'] . '-' . $versions_id] = true;

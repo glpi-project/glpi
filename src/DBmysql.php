@@ -2117,11 +2117,11 @@ class DBmysql
      *
      * @param mysqli_stmt $stmt   Statement to bind parameters to
      * @param array<int|string, mixed> $params Parameters to bind
-     * @param string|null $types  Types string (e.g. 'issd'), or null to auto-detect types
+     * @param string|string[]|null $types  Types string (e.g. 'issd'), or null for all types as string
      *
      * @return void
      */
-    public function bindStatementParams(mysqli_stmt $stmt, array $params, ?string $types = null): void
+    public function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
         if (count($params) === 0) {
             return;
@@ -2129,23 +2129,13 @@ class DBmysql
         $params = array_values($params); //no need for the keys
 
         if ($types === null) {
-            //try to guess param types
-            $types = '';
-            foreach ($params as $param) {
-                if (is_int($param)) {
-                    $types .= 'i';
-                } elseif (is_float($param)) {
-                    $types .= 'd';
-                } elseif (is_null($param)) {
-                    $types .= 's'; // No null type in mysqli, use string and pass null value
-                } else {
-                    $types .= 's';
-                }
-            }
+            //no types specified, assume all strings
+            $types = str_pad('', count($params), 's');
+        } elseif (is_array($types)) {
+            $types = implode('', $types);
         }
 
-        $res = $stmt->bind_param($types, ...$params);
-        if (false === $res) {
+        if (false === $stmt->bind_param($types, ...$params)) {
             throw new StatementException(
                 sprintf(
                     'Error binding params in SQL query "%s": %s (%d).',
@@ -2162,13 +2152,14 @@ class DBmysql
      *
      * @param mysqli_stmt $stmt Statement to execute
      * @param ?array<int|string, mixed> $params Parameters to bind
+     * @param string|string[]|null $types Types string (e.g. 'issd'), or null for all types as string
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt, ?array $params = null): void
+    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, string|array|null $types = null): void
     {
         if ($params !== null) {
-            $this->bindStatementParams($stmt, $params);
+            $this->bindStatementParams($stmt, $params, $types);
         }
         if (!$stmt->execute()) {
             throw new StatementException(
