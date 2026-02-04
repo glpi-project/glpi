@@ -348,16 +348,17 @@ class CommonDBTMTest extends DbTestCase
         global $DB;
 
         //insert case
-        $res = (int) $DB->updateOrInsert(
-            Computer::getTable(),
-            [
-                'serial' => 'serial-one',
-            ],
-            [
-                'name'   => 'serial-to-change',
-            ]
+        $this->assertTrue(
+            $DB->updateOrInsert(
+                Computer::getTable(),
+                [
+                    'serial' => 'serial-one',
+                ],
+                [
+                    'name'   => 'serial-to-change',
+                ]
+            )
         );
-        $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
             'FROM'   => Computer::getTable(),

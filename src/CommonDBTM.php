@@ -734,14 +734,11 @@ class CommonDBTM extends CommonGLPI
         if (count($tobeupdated) === 0) {
             return false;
         }
-        $result = $DB->update(
+        $DB->update(
             static::getTable(),
             $tobeupdated,
             ['id' => $this->fields['id']]
         );
-        if ($result === false) {
-            return false;
-        }
         $affected_rows = $DB->affectedRows();
 
         if (count($oldvalues) && $affected_rows > 0) {
@@ -862,7 +859,7 @@ class CommonDBTM extends CommonGLPI
                 $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
             }
 
-            $result = $DB->update(
+            $DB->update(
                 static::getTable(),
                 [
                     'is_deleted' => 1,
@@ -872,10 +869,7 @@ class CommonDBTM extends CommonGLPI
                 ]
             );
             $this->cleanDBonMarkDeleted();
-
-            if ($result) {
-                return true;
-            }
+            return true;
         }
 
         return false;

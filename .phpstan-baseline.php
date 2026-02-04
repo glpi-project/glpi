@@ -3758,12 +3758,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:updateActionTime\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'status\' might not exist on array\\{\\}\\|array\\{status\\: non\\-empty\\-array\\<array\\{id\\: \\(int\\|string\\), name\\: string, color_class\\: non\\-falsy\\-string, header_color\\: \'var\\(\\-\\-status\\-color\\)\', drop_only\\: bool\\}\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -6006,18 +6000,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:migrateConfigsInDb\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:migrateFieldsInDb\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of method GLPIKey\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#',
@@ -16166,12 +16148,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_SoftwareVersion\\:\\:updateDatasForItem\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -16731,18 +16707,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Lockedfield\\:\\:canPurge\\(\\) should return bool but returns bool\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lockedfield.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Lockedfield\\:\\:itemDeleted\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lockedfield.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Lockedfield\\:\\:setLastValue\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Lockedfield.php',
@@ -19094,12 +19058,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method PlanningRecall\\:\\:managePlanningUpdates\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningRecall.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'field\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -20504,12 +20462,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleCollection\\:\\:deleteRuleOrder\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method RuleCollection\\:\\:getRuleClassName\\(\\) should return class\\-string\\<Rule\\> but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -20961,24 +20913,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method SavedSearch\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:setDoCount\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:setEntityRecur\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:unmarkDefaults\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',
