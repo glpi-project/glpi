@@ -1,14 +1,14 @@
 name: 'Lock closed threads'
 
-on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
-
 permissions:
   issues: write
   pull-requests: write
   discussions: write
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: lock-threads

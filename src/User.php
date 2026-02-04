@@ -6835,6 +6835,25 @@ HTML;
         return false;
     }
 
+    /**
+     * User has at least one of the rights for given module.
+     *
+     * @param string  $module Module to check
+     * @param int[]   $rights Rights to check
+     * @param int $entities_id Entity to check
+     *
+     * @return bool
+     */
+    public function hasRightsOr($module, $rights, $entities_id)
+    {
+        foreach ($rights as $right) {
+            if ($this->hasRight($module, $right, $entities_id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function showSecurityForm(int $ID): void
     {
         $canedit = self::canUpdate();

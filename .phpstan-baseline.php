@@ -3590,12 +3590,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access static property \\$rightname on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
-	'identifier' => 'staticProperty.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on ITIL_ValidationStep\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -3662,25 +3656,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method canView\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getType\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getType\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
