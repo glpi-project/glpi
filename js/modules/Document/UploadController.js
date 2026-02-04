@@ -409,6 +409,11 @@ export class GlpiDocumentUploadController
         const count = this.#files.length;
 
         if (this.#modal) {
+            // Move focus away from modal before hiding to prevent aria-hidden warning
+            if (document.activeElement && this.#modal.contains(document.activeElement)) {
+                document.activeElement.blur();
+            }
+
             const modalInstance = bootstrap.Modal.getInstance(this.#modal);
             if (modalInstance) {
                 modalInstance.hide();
