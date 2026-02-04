@@ -115,3 +115,22 @@
         background-color: transparent !important;
     }
 }
+
+// KB link item modal form
+.kb-link-item-form {
+    .form-control-plaintext {
+        br {
+            display: none;
+        }
+
+        > .select2-container,
+        > span[id^="show_items_id"] {
+            display: block;
+            margin-top: 0.75rem;
+        }
+
+        > span[id^="show_items_id"]:first-of-type {
+            margin-top: 0;
+        }
+    }
+}
