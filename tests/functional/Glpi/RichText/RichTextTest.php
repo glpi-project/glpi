@@ -732,10 +732,11 @@ HTML,
 
         $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
 
+        ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
+
         $this->assertEquals(
             $expected_result,
             $result,
         );
-        ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
     }
 }
