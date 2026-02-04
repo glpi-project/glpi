@@ -76,8 +76,7 @@ class ResetPasswordCommand extends AbstractUserCommand
         $user_input['password'] = $password;
         $user_input['password2'] = $password;
 
-
-        if ($user->update($user_input)) {
+        if (\Session::callAsSystem(fn() => $user->update($user_input))) {
             $output->writeln('<info>' . __('Reset password successful.') . '</info>');
             return 0;
         } else {
