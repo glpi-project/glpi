@@ -272,15 +272,15 @@ $(function() {
      */
     $('.toggle-all-notes').on('click', function(e) {
         e.preventDefault();
-        
+
         var $toggle = $(this);
         var $accordion = $toggle.closest('.tab-pane').find('.accordion');
-        
+
         if (!$accordion.length) {
             console.warn('Accordion container not found');
             return;
         }
-        
+
         var $text = $toggle.find('span');
         var $icon = $toggle.find('i');
         var expand_text = $toggle.data('expand-text');
@@ -288,17 +288,17 @@ $(function() {
         var expand_title = $toggle.data('expand-title');
         var collapse_title = $toggle.data('collapse-title');
         var is_expanding = $text.text().includes(expand_text);
-        
+
         $accordion.find('.accordion-collapse').each(function() {
             var collapse = bootstrap.Collapse.getOrCreateInstance(this, { toggle: false });
-            
+
             if (is_expanding) {
                 collapse.show();
             } else {
                 collapse.hide();
             }
         });
-        
+
         if (is_expanding) {
             $text.text(collapse_text);
             $toggle.attr('title', collapse_title);
