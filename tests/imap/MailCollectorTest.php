@@ -889,6 +889,7 @@ class MailCollectorTest extends DbTestCase
                     '44 - Hebrew encoding issue',
                     '47 - Missing charset parameter',
                     '49 - Message with invalid CC email address',
+                    '52 - Missing charset parameter cyrillic',
                 ],
             ],
             // Mails having "normal" user as observer
@@ -916,6 +917,8 @@ Best regards,
 PLAINTEXT,
             // Email without charset parameter (47-missing-charset.eml) - tests ISO-8859-1 to UTF-8 fallback
             '47 - Missing charset parameter' => 'ATTENTION: Ne cliquez pas sur les liens ou n\'ouvrez pas les pièces jointes si vous n\'êtes pas sûr du contenu.',
+            // Email without charset parameter (cyrillic) (52-missing-charset-cyrillic.eml) - tests that cyrillic is decoded right
+            '52 - Missing charset parameter cyrillic' => 'ВНИМАНИЕ: Не переходите по ссылкам и не открывайте вложения pi=E8, если вы не просматриваете контент.',
             // HTML on multi-part email
             'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
 <p>This message have reply to header, requester should be get from this header.</p>
