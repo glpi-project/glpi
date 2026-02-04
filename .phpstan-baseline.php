@@ -12272,12 +12272,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$types of method mysqli_stmt\\:\\:bind_param\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$val of method Glpi\\\\Inventory\\\\Asset\\\\Software\\:\\:getFullCompareKey\\(\\) expects stdClass, object given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,

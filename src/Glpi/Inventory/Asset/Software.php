@@ -653,14 +653,15 @@ class Software extends InventoryAsset
                 'manufacturers_id' => $this->known_links[$mkey] ?? 0,
             ];
 
-            $stmt->bind_param(
-                'ssss',
-                $this->entities_id,
-                $this->is_recursive,
-                $input['name'],
-                $input['manufacturers_id']
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $this->entities_id,
+                    $this->is_recursive,
+                    $input['name'],
+                    $input['manufacturers_id'],
+                ]
             );
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             while ($row = $results->fetch_object()) {
@@ -730,15 +731,16 @@ class Software extends InventoryAsset
                 'osid'         => $this->getOsForKey($val),
             ];
 
-            $stmt->bind_param(
-                'sssss',
-                $this->entities_id,
-                $input['version'],
-                $input['arch'],
-                $input['softwares_id'],
-                $input['osid']
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $this->entities_id,
+                    $input['version'],
+                    $input['arch'],
+                    $input['softwares_id'],
+                    $input['osid'],
+                ]
             );
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             while ($row = $results->fetch_object()) {
@@ -774,7 +776,6 @@ class Software extends InventoryAsset
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
 
                 if ($stmt === null) {
-                    $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),
                         new QueryParam()
@@ -786,9 +787,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns);
-                $stmt->bind_param($stmt_types, ...$stmt_values);
-                $DB->executeStatement($stmt);
+                $DB->executeStatement($stmt, $stmt_columns);
                 $softwares_id = $DB->insertId();
                 Log::history(
                     $softwares_id,
@@ -841,7 +840,6 @@ class Software extends InventoryAsset
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 if ($stmt === null) {
-                    $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),
                         new QueryParam()
@@ -853,9 +851,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns); //@phpstan-ignore argument.templateType (I have no idea how to solve this one.)
-                $stmt->bind_param($stmt_types, ...$stmt_values);
-                $DB->executeStatement($stmt);
+                $DB->executeStatement($stmt, $stmt_columns);
                 $versions_id = $DB->insertId();
                 Log::history(
                     $softwares_id,
@@ -950,16 +946,17 @@ class Software extends InventoryAsset
             ];
 
             $itemtype = $this->item->getType();
-            $stmt->bind_param(
-                'ssssss',
-                $itemtype,
-                $this->item->fields['id'],
-                $input['softwareversions_id'],
-                $input['is_dynamic'],
-                $input['entities_id'],
-                $input['date_install']
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $itemtype,
+                    $this->item->fields['id'],
+                    $input['softwareversions_id'],
+                    $input['is_dynamic'],
+                    $input['entities_id'],
+                    $input['date_install'],
+                ]
             );
-            $DB->executeStatement($stmt);
 
             //store link
             $this->items_versions[$this->item->fields['id'] . '-' . $versions_id] = true;

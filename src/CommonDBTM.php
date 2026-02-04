@@ -39,6 +39,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\TooManyResultsException;
@@ -1903,11 +1904,11 @@ class CommonDBTM extends CommonGLPI
                 )
             );
             foreach ($fields as $field) {
-                $stmt->bind_param('s', $field);
-                $res = $stmt->execute();
-                if ($res === false) {
-                    if ($DB->errno() != 1062) {
-                        trigger_error('Unable to add locked field!', E_USER_WARNING);
+                try {
+                    $DB->executeStatement($stmt, [$field]);
+                } catch (StatementException $e) {
+                    if ($e->getCode() != 1062) {
+                        throw new RuntimeException('Unable to add locked field!', code: $e->getCode(), previous: $e);
                     }
                 }
             }

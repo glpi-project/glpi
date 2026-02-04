@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
+use Glpi\Exception\Database\StatementException;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\Toolbox\SanitizedStringsDecoder;
 use Safe\DateTime;
@@ -2112,22 +2113,64 @@ class DBmysql
     }
 
     /**
-     * Executes a prepared statement
+     * Binds parameters to a prepared statement
      *
-     * @param mysqli_stmt $stmt Statement to execute
+     * @param mysqli_stmt $stmt   Statement to bind parameters to
+     * @param array<int|string, mixed> $params Parameters to bind
+     * @param list<'i'|'d'|'s'>|null $types  Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt): void
+    private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
+        if (count($params) === 0) {
+            return;
+        }
+        $params = array_values($params); //no need for the keys
+
+        if ($types === null) {
+            //no types specified, assume all strings
+            $types = str_pad('', count($params), 's');
+        } elseif (is_array($types)) {
+            $types = implode('', $types);
+        }
+
+        if (false === $stmt->bind_param($types, ...$params)) {
+            throw new StatementException(
+                sprintf(
+                    'Error binding params in SQL query "%s": %s (%d).',
+                    $this->current_query,
+                    $stmt->error,
+                    $stmt->errno
+                ),
+                $stmt->errno
+            );
+        }
+    }
+
+    /**
+     * Executes a prepared statement
+     *
+     * @param mysqli_stmt $stmt Statement to execute
+     * @param ?array<int|string, mixed> $params Parameters to bind
+     * @param list<'i'|'d'|'s'>|null $types Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
+     *
+     * @return void
+     */
+    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
+    {
+        if ($params !== null) {
+            $this->bindStatementParams($stmt, $params, $types);
+        }
         if (!$stmt->execute()) {
-            throw new RuntimeException(
+            throw new StatementException(
                 sprintf(
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,
                     $stmt->errno,
                     $this->current_query
-                )
+                ),
+                $stmt->errno
             );
         }
     }
