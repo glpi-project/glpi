@@ -677,5 +677,4 @@ class NotificationTargetTest extends DbTestCase
             $this->assertSame($has_admin_target, array_key_exists('1_1', $notification_target->notification_targets));
         }
     }
-
 }
