@@ -172,8 +172,8 @@ final class StatusChecker
                 ],
             ];
             // Check replica SQL server connection
-            if (DBConnection::isDBSlaveActive()) {
-                $DBslave = DBConnection::getDBSlaveConf();
+            if (DBConnection::isDBReplicaActive()) {
+                $DBslave = DBConnection::getDBReplicaConf();
                 if (is_array($DBslave->dbhost)) {
                     $hosts = $DBslave->dbhost;
                 } else {

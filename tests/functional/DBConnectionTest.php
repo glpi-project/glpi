@@ -184,11 +184,11 @@ PHP,
         $this->assertEquals($expected, file_get_contents($path));
     }
 
-    public static function slaveConfigPropertiesProvider()
+    public static function replicaConfigPropertiesProvider()
     {
         return [
             [
-                'host'                     => 'slave.db.domain.org',
+                'host'                     => 'replica.db.domain.org',
                 'user'                     => 'glpi',
                 'password'                 => 'secret',
                 'name'                     => 'glpi_db',
@@ -200,7 +200,7 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public $dbhost = 'slave.db.domain.org';
+   public $dbhost = 'replica.db.domain.org';
    public $dbuser = 'glpi';
    public $dbpassword = 'secret';
    public $dbdefault = 'glpi_db';
@@ -210,7 +210,7 @@ class DBSlave extends DBmysql {
 PHP,
             ],
             [
-                'host'                     => 'slave1.db.domain.org slave2.db.domain.org slave3.db.domain.org ',
+                'host'                     => 'replica1.db.domain.org replica2.db.domain.org replica3.db.domain.org ',
                 'user'                     => 'root',
                 'password'                 => '',
                 'name'                     => 'db',
@@ -223,9 +223,9 @@ PHP,
 <?php
 class DBSlave extends DBmysql {
    public $dbhost = array (
-  0 => 'slave1.db.domain.org',
-  1 => 'slave2.db.domain.org',
-  2 => 'slave3.db.domain.org',
+  0 => 'replica1.db.domain.org',
+  1 => 'replica2.db.domain.org',
+  2 => 'replica3.db.domain.org',
 );
    public $dbuser = 'root';
    public $dbpassword = '';
@@ -265,8 +265,8 @@ PHP,
         ];
     }
 
-    #[DataProvider('slaveConfigPropertiesProvider')]
-    public function testCreateSlaveConnectionFile(
+    #[DataProvider('replicaConfigPropertiesProvider')]
+    public function testCreateReplicaConnectionFile(
         string $host,
         string $user,
         string $password,
@@ -280,7 +280,7 @@ PHP,
     ): void {
         vfsStream::setup('config-dir', null, []);
 
-        $result = \DBConnection::createSlaveConnectionFile(
+        $result = \DBConnection::createReplicaConnectionFile(
             $host,
             $user,
             $password,
@@ -353,7 +353,7 @@ PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
@@ -385,7 +385,7 @@ PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'barfoo';
@@ -413,7 +413,7 @@ PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
@@ -438,7 +438,7 @@ PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';

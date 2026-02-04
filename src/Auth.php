@@ -1043,7 +1043,7 @@ class Auth extends CommonGLPI
                 $this->user->fields["_extauth"] = 1;
             }
 
-            if ($DB->isSlave()) {
+            if ($DB->isReplica()) {
                 if (!$this->user_present) { // Can't add in slave mode
                     $this->addToError(__('User not authorized to connect in GLPI'));
                     $this->auth_succeded = false;
@@ -1106,7 +1106,7 @@ class Auth extends CommonGLPI
         }
 
         // Log Event (if possible)
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?: getenv("REMOTE_ADDR");
 
