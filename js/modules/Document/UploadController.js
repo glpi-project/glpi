@@ -396,13 +396,16 @@ export class GlpiDocumentUploadController
             }
 
             formData.append('add', '1');
-            formData.append('_glpi_csrf_token', getAjaxCsrfToken());
 
             const response = await fetch(
                 `${CFG_GLPI.root_doc}/front/document.form.php`,
                 {
                     method: 'POST',
                     body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    },
                 }
             );
 
