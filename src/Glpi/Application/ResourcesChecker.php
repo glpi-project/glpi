@@ -61,9 +61,9 @@ final class ResourcesChecker
             echo 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
             exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
-        if (!$this->areLocalesUpToDate()) {
+        if ($this->shouldLocalesBeChecked() && !$this->areLocalesUpToDate()) {
             echo 'Application locales have to be compiled.' . PHP_EOL;
-            echo 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
+            echo 'Run "php bin/console tools:locales:compile" in the glpi tree to fix this.' . PHP_EOL;
             exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
     }
@@ -94,22 +94,28 @@ final class ResourcesChecker
         // Check composer dependencies
         $autoload = $this->root_dir . '/vendor/autoload.php';
         if (!file_exists($autoload)) {
+            echo 'Missing composer autoload file.' . PHP_EOL;
             return false;
         } elseif (file_exists($this->root_dir . '/composer.lock')) {
             if (!file_exists($this->root_dir . '/.composer.hash')) {
+                echo 'Missing .composer.hash file.' . PHP_EOL;
                 return false;
             } elseif (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) { // @phpstan-ignore theCodingMachineSafe.function, theCodingMachineSafe.function (Safe not installed at this point)
+                echo 'Composer hash not matching.' . PHP_EOL;
                 return false;
             }
         }
 
         // Check node dependencies
         if (!file_exists($this->root_dir . '/public/lib')) {
+            echo 'Missing node /public/lib folder.' . PHP_EOL;
             return false;
         } elseif (file_exists($this->root_dir . '/package-lock.json')) {
             if (!file_exists($this->root_dir . '/.package.hash')) {
+                echo 'Missing .package.hash file.' . PHP_EOL;
                 return false;
             } elseif (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) { // @phpstan-ignore theCodingMachineSafe.function, theCodingMachineSafe.function (Safe not installed at this point)
+                echo 'Node package hash not matching.' . PHP_EOL;
                 return false;
             }
         }
@@ -139,6 +145,14 @@ final class ResourcesChecker
         }
 
         return true;
+    }
+
+    /**
+     * Avoid checker blocking itself when running `tools:locales:compile` command.
+     */
+    private function shouldLocalesBeChecked(): bool
+    {
+        return (PHP_SAPI === 'cli' && \str_starts_with($_SERVER['argv'][1] ?? '', 'tools:')) === false;
     }
 
     /**
