@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
 use Notepad;
-use Profile;
 use ProjectState;
 use ProjectTask;
 use ProjectTeam;
@@ -748,7 +747,7 @@ PLAINTEXT;
 
         $this->assertTrue($project->getFromDB($project->getID()));
         $this->assertTrue($project->canViewItem());
-        
+
         $notepad_test = new Notepad();
         $notepad_test->fields['itemtype'] = 'Project';
         $notepad_test->fields['items_id'] = $project->getID();
@@ -761,7 +760,7 @@ PLAINTEXT;
 
         $html = TemplateRenderer::getInstance()->render('components/notepad/form.html.twig', [
             'rand' => 12345,
-            'url' => \Notepad::getFormURL(),
+            'url' => Notepad::getFormURL(),
             'itemtype' => 'Project',
             'items_id' => $project->getID(),
             'notes' => $notes,
@@ -817,7 +816,7 @@ PLAINTEXT;
 
         $html = TemplateRenderer::getInstance()->render('components/notepad/form.html.twig', [
             'rand' => 12345,
-            'url' => \Notepad::getFormURL(),
+            'url' => Notepad::getFormURL(),
             'itemtype' => 'Project',
             'items_id' => $project->getID(),
             'notes' => $notes,
@@ -832,4 +831,3 @@ PLAINTEXT;
         $this->assertStringContainsString('class="btn btn-sm btn-ghost-secondary edit-note"', $html);
     }
 }
-
