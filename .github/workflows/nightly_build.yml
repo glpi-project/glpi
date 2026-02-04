@@ -1,7 +1,7 @@
 name: "GLPI nightly build"
 
 permissions:
-  contents: read
+  contents: "read"
 
 on:
   # Runs test suite every night

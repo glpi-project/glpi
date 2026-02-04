@@ -1,7 +1,7 @@
 name: "Bump version after release"
 
 permissions:
-  contents: read
+  contents: "read"
 
 on:
   release:

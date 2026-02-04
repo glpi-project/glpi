@@ -1,7 +1,7 @@
 name: "GLPI CI"
 
 permissions:
-  contents: read
+  contents: "read"
 
 on:
   # Runs test suite when a new commit is pushed on "main" and "*/bugfixes" branches

@@ -1,7 +1,7 @@
 name: 'Close stale issues'
 
 permissions:
-  contents: read
+  contents: "read"
 
 on:
   schedule:

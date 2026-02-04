@@ -1,7 +1,7 @@
 name: "Label commenter"
 
 permissions:
-  contents: read
+  contents: "read"
 
 on:
   issues:
