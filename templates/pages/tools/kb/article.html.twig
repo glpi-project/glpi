@@ -210,14 +210,62 @@
                                 <div class="modal-body p-4">
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="kb-modal-upload-pane" role="tabpanel" aria-labelledby="kb-modal-upload-tab">
-                                            <div class="text-center text-muted py-4">
-                                                <i class="ti ti-cloud-upload fs-1 mb-3 d-inline-block"></i>
-                                                <p>{{ __('Document upload coming soon...') }}</p>
-                                                <a href="{{ 'KnowbaseItem'|itemtype_form_path }}?id={{ item_id }}&amp;forcetab=Document_Item$1"
-                                                   class="btn btn-primary">
-                                                    {{ __('Use existing interface') }}
-                                                </a>
-                                            </div>
+                                            <form id="kb-document-upload-form" method="post">
+                                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                                <input type="hidden" name="itemtype" value="KnowbaseItem">
+                                                <input type="hidden" name="items_id" value="{{ item_id }}">
+
+                                                {# Drop Zone #}
+                                                <label class="kb-dropzone" for="kb-document-input">
+                                                    <input type="file"
+                                                           id="kb-document-input"
+                                                           name="files[]"
+                                                           multiple
+                                                           class="d-none">
+                                                    <div class="kb-dropzone-content">
+                                                        <i class="ti ti-cloud-upload kb-dropzone-icon"></i>
+                                                        <p class="kb-dropzone-title">
+                                                            {{ __('Drop files here or click to browse') }}
+                                                        </p>
+                                                        <p class="kb-dropzone-hint text-muted">
+                                                            {{ __('PDF, Word, Excel, images and archives are supported') }}
+                                                        </p>
+                                                        <span class="btn btn-outline-primary btn-sm mt-2">
+                                                            <i class="ti ti-folder-open me-1"></i>
+                                                            {{ __('Browse Files') }}
+                                                        </span>
+                                                    </div>
+                                                </label>
+
+                                                {# File Preview List #}
+                                                <div id="kb-file-preview" class="kb-file-preview mt-3 d-none">
+                                                    <div class="kb-file-list"></div>
+                                                </div>
+
+                                                {# Description #}
+                                                <div class="mb-3 mt-3">
+                                                    <label for="kb-document-description" class="form-label">
+                                                        {{ __('Description') }}
+                                                        <span class="text-muted">({{ __('optional') }})</span>
+                                                    </label>
+                                                    <textarea class="form-control"
+                                                              id="kb-document-description"
+                                                              name="comment"
+                                                              rows="2"
+                                                              placeholder="{{ __('Add a description for these documents...') }}"></textarea>
+                                                </div>
+
+                                                {# Actions #}
+                                                <div class="d-flex justify-content-end gap-2 mt-4">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                        {{ __('Cancel') }}
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary" id="kb-upload-btn" disabled>
+                                                        <i class="ti ti-upload me-1"></i>
+                                                        {{ __('Upload Documents') }}
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </div>
                                         <div class="tab-pane fade" id="kb-modal-link-pane" role="tabpanel" aria-labelledby="kb-modal-link-tab">
                                             <div class="text-center text-muted py-4">
@@ -256,5 +304,20 @@
             document.querySelector('[data-glpi-knowbase-article]'),
             document.querySelector('[data-glpi-knowbase-side-panel]'),
         );
+
+        // Initialize document upload controller when modal opens
+        const uploadModal = document.getElementById('kb-add-document-modal');
+        if (uploadModal) {
+            uploadModal.addEventListener('shown.bs.modal', async () => {
+                const uploadPane = uploadModal.querySelector('#kb-modal-upload-pane');
+                if (uploadPane && !uploadPane.dataset.initialized) {
+                    const uploadModule = await import(
+                        "{{ js_path('js/modules/Document/UploadController.js') }}"
+                    );
+                    new uploadModule.GlpiDocumentUploadController(uploadPane, uploadModal);
+                    uploadPane.dataset.initialized = 'true';
+                }
+            }, { once: true });
+        }
     })();
 </script>
