@@ -247,8 +247,7 @@ class ProfileRight extends CommonDBChild
         );
         $stmt = $DB->prepare($query);
         foreach ($iterator as $right) {
-            $stmt->bind_param('ss', $profiles_id, $right['NAME']);
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, [$profiles_id, $right['NAME']]);
         }
     }
 

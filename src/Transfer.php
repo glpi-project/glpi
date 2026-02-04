@@ -1731,8 +1731,15 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $stmt->bind_param('sii', $itemtype, $ID, $newversID);
-                    $stmt->execute();
+                    $DB->executeStatement(
+                        $stmt,
+                        [
+                            $itemtype,
+                            $ID,
+                            $newversID,
+                        ],
+                        ['s', 'i', 'i']
+                    );
                     $result = $stmt->get_result();
                     $row = $result->fetch_assoc();
 

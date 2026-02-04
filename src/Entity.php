@@ -47,6 +47,7 @@ use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\realpath;
 
 /**
@@ -3196,9 +3197,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         ];
     }
 
-    public static function getEntitySelectorTree(): array
+    /**
+     * @param int $rand
+     * @return array
+     */
+    public static function getEntitySelectorTree($rand = 0): array
     {
-        $token = Session::getNewCSRFToken();
         $twig = TemplateRenderer::getInstance();
 
         $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
@@ -3209,7 +3213,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $default_entity_id = $default_entity['id'];
             $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
-            $adapt_tree = static function (&$entities) use (&$adapt_tree, $token, $twig) {
+            $adapt_tree = static function (&$entities) use (&$adapt_tree, $twig, $rand) {
                 foreach ($entities as $entities_id => &$entity) {
                     $entity['key']   = $entities_id;
 
@@ -3223,15 +3227,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                         $is_recursive = false;
                     }
 
-                    $entity['title'] = $twig->render('layout/parts/profile_selector_form.html.twig', [
+                    $title = $twig->render('layout/parts/profile_selector_form.html.twig', [
                         'id' => $entities_id,
                         'name' => $entity['name'],
                         'is_recursive' => $is_recursive,
-                        // To avoid generating one token per entity (which may
-                        // make us reach our token limit too fast), we reuse a
-                        // common one.
-                        'csrf_token' => $token,
+                        'rand' => $rand,
                     ]);
+                    $title = preg_replace('/\s+/', ' ', $title); // compact spaces to reduce output size
+                    $entity['title'] = $title;
                 }
 
                 unset($entity);

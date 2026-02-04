@@ -197,21 +197,26 @@ class GLPITestCase extends TestCase
             throw new RuntimeException('Invalid picture dir: ' . $dir);
         }
         // Delete nested folders and files in dir
-        $fn_delete = function ($dir, $parent) use (&$fn_delete) {
-            $files = glob($dir . '/*') ?? [];
-            foreach ($files as $file) {
-                if (is_dir($file)) {
-                    $fn_delete($file, $parent);
-                } else {
-                    unlink($file);
-                }
+        $this->removeDirectory($dir);
+        // We recreate the directory to ensure it's empty and present, as test rely on it being present.
+        mkdir($dir);
+    }
+
+    protected function removeDirectory(string $dir, bool $delete_self = false): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+        $files = array_diff(scandir($dir), ['.', '..']);
+        foreach ($files as $file) {
+            if (is_dir("$dir/$file")) {
+                $this->removeDirectory("$dir/$file", true);
+            } else {
+                unlink("$dir/$file");
             }
-            if ($dir !== $parent) {
-                rmdir($dir);
-            }
-        };
-        if (file_exists($dir) && is_dir($dir)) {
-            $fn_delete($dir, $dir);
+        }
+        if ($delete_self) {
+            rmdir($dir);
         }
     }
 

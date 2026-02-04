@@ -3524,12 +3524,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access static property \\$rightname on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
-	'identifier' => 'staticProperty.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on ITIL_ValidationStep\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -3596,25 +3590,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method canView\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getType\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getType\\(\\) on class\\-string\\<CommonITILTask\\>\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -12143,12 +12119,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of function mb_strtolower expects string, string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$types of method mysqli_stmt\\:\\:bind_param\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [

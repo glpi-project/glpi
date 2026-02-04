@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-vendor/bin/licence-headers-check --ansi --no-interaction
+bin/console tools:licence_headers_check
 
-vendor/bin/extract-locales 2>&1 | tee extract.log
+bin/console tools:locales:extract 2>&1 | tee extract.log
 if [[ -n $(grep "warning" extract.log) ]]; then exit 1; fi

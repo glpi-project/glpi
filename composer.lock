@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a24473c9bc5d619bd6a6af08c5a98229",
+    "content-hash": "a3bd4cbd639c8e2766fa8cffb087b65c",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -6766,23 +6766,23 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v7.4.5",
+            "version": "v6.4.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "ad4daa7c38668dcb031e63bc99ea9bd42196a2cb"
+                "reference": "24965ca011dac87431729640feef8bcf7b5523e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/ad4daa7c38668dcb031e63bc99ea9bd42196a2cb",
-                "reference": "ad4daa7c38668dcb031e63bc99ea9bd42196a2cb",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/24965ca011dac87431729640feef8bcf7b5523e0",
+                "reference": "24965ca011dac87431729640feef8bcf7b5523e0",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.2"
+                "php": ">=8.1"
             },
             "require-dev": {
-                "symfony/filesystem": "^6.4|^7.0|^8.0"
+                "symfony/filesystem": "^6.0|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -6810,7 +6810,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v7.4.5"
+                "source": "https://github.com/symfony/finder/tree/v6.4.33"
             },
             "funding": [
                 {
@@ -6830,7 +6830,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-26T15:07:59+00:00"
+            "time": "2026-01-26T13:03:48+00:00"
         },
         {
             "name": "symfony/framework-bundle",
@@ -11140,62 +11140,6 @@
             "time": "2025-08-11T13:48:13+00:00"
         },
         {
-            "name": "glpi-project/tools",
-            "version": "0.8.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/glpi-project/tools.git",
-                "reference": "8ea2a7d4702a858f4b0360ba7d4f1841a5e77026"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/8ea2a7d4702a858f4b0360ba7d4f1841a5e77026",
-                "reference": "8ea2a7d4702a858f4b0360ba7d4f1841a5e77026",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/console": "^5.4 || ^6.0",
-                "twig/twig": "^3.3"
-            },
-            "require-dev": {
-                "nikic/php-parser": "^4.13",
-                "phpstan/phpstan-src": "^1.10"
-            },
-            "bin": [
-                "bin/extract-locales",
-                "bin/licence-headers-check",
-                "tools/plugin-release"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "GlpiProject\\Tools\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Teclib'",
-                    "email": "glpi@teclib.com",
-                    "homepage": "http://teclib-group.com"
-                }
-            ],
-            "description": "Various tools for GLPI and its plugins",
-            "keywords": [
-                "glpi",
-                "plugins",
-                "tools"
-            ],
-            "support": {
-                "issues": "https://github.com/glpi-project/tools/issues",
-                "source": "https://github.com/glpi-project/tools"
-            },
-            "time": "2025-10-14T10:26:06+00:00"
-        },
-        {
             "name": "jean85/pretty-package-versions",
             "version": "2.1.1",
             "source": {
@@ -14419,20 +14363,20 @@
         },
         {
             "name": "symfony/process",
-            "version": "v7.4.5",
+            "version": "v6.4.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "608476f4604102976d687c483ac63a79ba18cc97"
+                "reference": "c46e854e79b52d07666e43924a20cb6dc546644e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/608476f4604102976d687c483ac63a79ba18cc97",
-                "reference": "608476f4604102976d687c483ac63a79ba18cc97",
+                "url": "https://api.github.com/repos/symfony/process/zipball/c46e854e79b52d07666e43924a20cb6dc546644e",
+                "reference": "c46e854e79b52d07666e43924a20cb6dc546644e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.2"
+                "php": ">=8.1"
             },
             "type": "library",
             "autoload": {
@@ -14460,7 +14404,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v7.4.5"
+                "source": "https://github.com/symfony/process/tree/v6.4.33"
             },
             "funding": [
                 {
@@ -14480,7 +14424,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-26T15:07:59+00:00"
+            "time": "2026-01-23T16:02:12+00:00"
         },
         {
             "name": "symfony/stopwatch",
@@ -15096,5 +15040,5 @@
     "platform-overrides": {
         "php": "8.2.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,12 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-use function Safe\json_encode;
+namespace Glpi\Exception\Database;
 
-global $CFG_GLPI, $GLPI_CACHE;
+use Exception;
 
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
-
-echo json_encode(Entity::getEntitySelectorTree((int) ($_GET['rand'] ?? 0)));
-return;
+final class StatementException extends Exception {}

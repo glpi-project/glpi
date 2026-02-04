@@ -1077,8 +1077,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                         if ($data = $self->execute(true)) {
                             $execution_time = $data['data']['execution_time'];
 
-                            $stmt->bind_param('sss', $execution_time, $now, $row['id']);
-                            $DB->executeStatement($stmt);
+                            $DB->executeStatement(
+                                $stmt,
+                                [
+                                    $execution_time,
+                                    $now,
+                                    $row['id'],
+                                ]
+                            );
                         }
                     } catch (Throwable $e) {
                         ErrorHandler::logCaughtException($e);

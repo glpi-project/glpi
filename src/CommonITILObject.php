@@ -8601,6 +8601,21 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $user_id = $user ? $user->getID() : Session::getLoginUserID();
 
+        $can_view_itilobject = [
+            Ticket::class => [
+                Ticket::READALL, Ticket::READMY, UPDATE,
+                Ticket::READASSIGN, Ticket::READGROUP, Ticket::OWN, READ,
+            ],
+            Change::class => [
+                Change::READALL, Change::READMY,
+            ],
+            Problem::class => [
+                Problem::READALL, Problem::READMY,
+            ],
+        ];
+
+        $task_class = static::getTaskClass();
+
         $or_crits = [
             // documents associated to ITIL item directly
             [
@@ -8610,8 +8625,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ];
 
         // documents associated to followups
-        $can_view_followups = $user === null ? ITILFollowup::canView() : true;
-        if ($bypass_rights || $can_view_followups) {
+        if (
+            $bypass_rights
+            || ITILFollowup::canView()
+            || (
+                $user !== null
+                && $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+                && $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC, $this->fields['entities_id'])
+            )
+        ) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
@@ -8644,8 +8666,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // documents associated to solutions
-        $can_view_solutions = $user === null ? ITILSolution::canView() : true;
-        if ($bypass_rights || $can_view_solutions) {
+        if (
+            $bypass_rights
+            || ITILSolution::canView()
+            || (
+                $user !== null
+                && $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+            )
+        ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
@@ -8666,8 +8694,26 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // documents associated to ticketvalidation
         $validation_class = static::getType() . 'Validation';
-        $can_view_validations = $user === null ? class_exists($validation_class) && $validation_class::canView() : true;
-        if (class_exists($validation_class) && ($bypass_rights ||  $can_view_validations)) {
+        if (
+            class_exists($validation_class)
+            && (
+                $bypass_rights
+                || $validation_class::canView()
+                || (
+                    $user !== null
+                    && $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+                    && $user->hasRightsOr(
+                        $validation_class::$rightname,
+                        array_merge(
+                            $validation_class::getCreateRights(),
+                            $validation_class::getValidateRights(),
+                            $validation_class::getPurgeRights()
+                        ),
+                        $this->fields['entities_id']
+                    )
+                )
+            )
+        ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
@@ -8686,9 +8732,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // documents associated to tasks
-        $task_class = static::getTaskClass();
-        $can_view_tasks = $user === null ? $task_class::canView() : true;
-        if ($bypass_rights || $can_view_tasks) {
+        if (
+            $task_class !== null
+            && (
+                $bypass_rights
+                || $task_class::canView()
+                || (
+                    $user !== null
+                    && $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+                    && $user->hasRight($task_class::$rightname, $task_class::SEEPUBLIC, $this->fields['entities_id'])
+                )
+            )
+        ) {
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
@@ -8702,8 +8757,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (!$can_seeprivate) {
                     $private_task_crit = [
                         'is_private' => 0,
-                        'users_id' => Session::getLoginUserID(),
-                        'users_id_tech' => Session::getLoginUserID(),
+                        'users_id' => $user_id,
+                        'users_id_tech' => $user_id,
                     ];
                 }
                 if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {

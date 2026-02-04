@@ -1456,11 +1456,7 @@ class Log extends CommonDBTM
         $stmt = $DB->prepare($update);
 
         foreach (static::$queue as $input) {
-            $stmt->bind_param(
-                str_pad('', count($input), 's'),
-                ...array_values($input)
-            );
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, array_values($input));
         }
         $stmt->close();
         static::resetQueue();

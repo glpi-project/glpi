@@ -817,8 +817,7 @@ class Group_User extends CommonDBRelation
 
             // save the planning completed to db
             $json_plannings = exportArrayToDB($plannings);
-            $stmt->bind_param('si', $json_plannings, $users_id);
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, [$json_plannings, $users_id], ['s', 'i']);
         }
 
         $DB->commit();
@@ -893,8 +892,7 @@ class Group_User extends CommonDBRelation
 
             // save the planning completed to db
             $json_plannings = exportArrayToDB($plannings);
-            $stmt->bind_param('si', $json_plannings, $users_id);
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, [$json_plannings, $users_id], ['s', 'i']);
         }
 
         $DB->commit();

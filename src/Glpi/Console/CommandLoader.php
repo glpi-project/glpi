@@ -288,7 +288,7 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Find all "tools" commands.
      *
-     * return void
+     * @return void
      */
     private function findToolsCommands(): void
     {

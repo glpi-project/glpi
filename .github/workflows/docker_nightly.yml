@@ -1,5 +1,8 @@
 name: "Docker nightly images"
 
+permissions:
+  contents: "read"
+
 on:
   # Build Docker nightly images every day
   schedule:
