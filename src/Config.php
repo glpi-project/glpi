@@ -220,19 +220,19 @@ class Config extends CommonDBTM
             $input['proxy_passwd'] = '';
         }
 
-        // Manage DB Slave process
+        // Manage DB replica process
         if (isset($input['_dbslave_status'])) {
-            $already_active = DBConnection::isDBSlaveActive();
+            $already_active = DBConnection::isDBReplicaActive();
 
             if ($input['_dbslave_status']) {
                 DBConnection::changeCronTaskStatus(true);
 
                 if (!$already_active) {
-                    // Activate Slave from the "system" tab
-                    DBConnection::createDBSlaveConfig();
+                    // Activate replica from the "system" tab
+                    DBConnection::createDBReplicaConfig();
                 } elseif (isset($input["_dbreplicate_dbhost"])) {
                     // Change parameter from the "replicate" tab
-                    DBConnection::saveDBSlaveConf(
+                    DBConnection::saveDBReplicaConf(
                         $input["_dbreplicate_dbhost"],
                         $input["_dbreplicate_dbuser"],
                         $input["_dbreplicate_dbpassword"],
@@ -242,7 +242,7 @@ class Config extends CommonDBTM
             }
 
             if (!$input['_dbslave_status'] && $already_active) {
-                DBConnection::deleteDBSlaveConfig();
+                DBConnection::deleteDBReplicaConfig();
                 DBConnection::changeCronTaskStatus(false);
             }
         }
@@ -540,11 +540,11 @@ class Config extends CommonDBTM
 
 
     /**
-     * Print the config form for slave DB
+     * Print the config form for replica DB
      *
      * @return void
-     **/
-    public function showFormDBSlave()
+     */
+    public function showFormDBReplica(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -552,15 +552,15 @@ class Config extends CommonDBTM
             return;
         }
 
-        $DBslave = DBConnection::getDBSlaveConf();
+        $DBReplica = DBConnection::getDBReplicaConf();
         $replica_config = [
-            'host' => is_array($DBslave->dbhost) ? implode(' ', $DBslave->dbhost) : $DBslave->dbhost,
-            'default' => $DBslave->dbdefault,
-            'user' => $DBslave->dbuser,
-            'password' => rawurldecode($DBslave->dbpassword),
+            'host' => is_array($DBReplica->dbhost) ? implode(' ', $DBReplica->dbhost) : $DBReplica->dbhost,
+            'default' => $DBReplica->dbdefault,
+            'user' => $DBReplica->dbuser,
+            'password' => rawurldecode($DBReplica->dbpassword),
         ];
 
-        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $hosts = is_array($DBReplica->dbhost) ? $DBReplica->dbhost : [$DBReplica->dbhost];
         $replication_delay = [];
         foreach (array_keys($hosts) as $host_num) {
             $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
@@ -576,6 +576,16 @@ class Config extends CommonDBTM
             'replication_status' => $replication_status,
             'replication_delay'  => $replication_delay,
         ]);
+    }
+
+    /**
+     * @return void
+     * @deprecated 12
+     */
+    public function showFormDBSlave()
+    {
+        Toolbox::deprecated('Use showFormDBReplica()');
+        $this->showFormDBReplica();
     }
 
     /**
@@ -1030,10 +1040,10 @@ class Config extends CommonDBTM
                 }
 
                 if (
-                    DBConnection::isDBSlaveActive()
+                    DBConnection::isDBReplicaActive()
                     && Config::canUpdate()
                 ) {
-                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-database');  // Slave
+                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-database');  // replica
                 }
                 return $tabs;
 
@@ -1085,7 +1095,7 @@ class Config extends CommonDBTM
                     break;
 
                 case 6:
-                    $item->showFormDBSlave();
+                    $item->showFormDBReplica();
                     break;
 
                 case 7:

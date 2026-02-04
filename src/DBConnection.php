@@ -77,7 +77,7 @@ class DBConnection extends CommonGLPI
     /**
      * For replica connection.
      */
-    public const PROPERTY_REPLICA = 'slave';
+    public const PROPERTY_REPLICA = 'slave'; //FIXME: change property name. Need a migration script (the one which change file name probably).
 
     public const DBCONF_FILE = 'config_db.php';
     public const DBREPLICA_FILE = 'config_db_slave.php'; //FIXME: change file name. Need a migration script.
@@ -97,7 +97,7 @@ class DBConnection extends CommonGLPI
         string $user,
         string $password,
         string $dbname,
-        bool $slave = false,
+        bool $replica = false,
         bool $use_timezones = false,
         bool $log_deprecation_warnings = false,
         bool $use_utf8mb4 = false,
@@ -204,16 +204,16 @@ class DBConnection extends CommonGLPI
      *
      * @param string $name
      * @param string|bool $value
-     * @param bool   $update_slave
+     * @param bool   $update_replica
      * @param string $config_dir
      *
      * @return bool
      *
      * @since 10.0.0
      */
-    public static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
+    public static function updateConfigProperty($name, $value, $update_replica = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
-        return self::updateConfigProperties([$name => $value], $update_slave, $config_dir);
+        return self::updateConfigProperties([$name => $value], $update_replica, $config_dir);
     }
 
 
@@ -221,14 +221,14 @@ class DBConnection extends CommonGLPI
      * Change variables value in config(s) file.
      *
      * @param array  $properties
-     * @param bool   $update_slave
+     * @param bool   $update_replica
      * @param string $config_dir
      *
      * @return bool
      *
      * @since 10.0.0
      */
-    public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
+    public static function updateConfigProperties(array $properties, $update_replica = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
         $main_config_file = self::DBCONF_FILE;
         $replica_config_file = self::DBREPLICA_FILE;
@@ -238,8 +238,8 @@ class DBConnection extends CommonGLPI
         }
 
         $files = [$main_config_file];
-        if ($update_slave && file_exists($config_dir . '/' . $slave_config_file)) {
-            $files[] = $slave_config_file;
+        if ($update_replica && file_exists($config_dir . '/' . $replica_config_file)) {
+            $files[] = $replica_config_file;
         }
 
         foreach ($files as $file) {
@@ -280,12 +280,12 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     * Create slave DB configuration file
+     * Create replicated DB configuration file
      *
-     * @param string  $host                      The DB host
-     * @param string  $user                      The DB user
-     * @param string  $password                  The DB password
-     * @param string  $dbname                    The name of the DB
+     * @param string  $host                   The DB host
+     * @param string  $user                   The DB user
+     * @param string  $password               The DB password
+     * @param string  $dbname                 The name of the DB
      * @param bool $use_timezones             Flag that indicates if timezones usage should be activated
      * @param bool $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
      * @param bool $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
@@ -295,7 +295,7 @@ class DBConnection extends CommonGLPI
      *
      * @return bool for success
      **/
-    public static function createSlaveConnectionFile(
+    public static function createReplicaConnectionFile(
         string $host,
         string $user,
         string $password,
@@ -308,13 +308,13 @@ class DBConnection extends CommonGLPI
         string $config_dir = GLPI_CONFIG_DIR
     ): bool {
         return self::createConfigFile(
-            classname: 'DBSlave',
+            classname: 'DBSlave', //FIXME: change class name.
             filename: self::DBREPLICA_FILE,
             host: $host,
             user: $user,
             password: $password,
             dbname: $dbname,
-            slave: true,
+            replica: true,
             use_timezones: $use_timezones,
             log_deprecation_warnings: $log_deprecation_warnings,
             use_utf8mb4: $use_utf8mb4,
@@ -324,44 +324,109 @@ class DBConnection extends CommonGLPI
         );
     }
 
+    /**
+     * Create replicated DB configuration file
+     *
+     * @param string  $host                      The DB host
+     * @param string  $user                      The DB user
+     * @param string  $password                  The DB password
+     * @param string  $dbname                    The name of the DB
+     * @param bool $use_timezones             Flag that indicates if timezones usage should be activated
+     * @param bool $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+     * @param bool $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+     * @param bool $allow_datetime            Flag that indicates if datetime fields usage should be allowed
+     * @param bool $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param string  $config_dir
+     *
+     * @return bool
+     * @deprecated 12
+     */
+    public static function createSlaveConnectionFile(
+        string $host,
+        string $user,
+        string $password,
+        string $dbname,
+        bool $use_timezones = false,
+        bool $log_deprecation_warnings = false,
+        bool $use_utf8mb4 = false,
+        bool $allow_datetime = true,
+        bool $allow_signed_keys = true,
+        string $config_dir = GLPI_CONFIG_DIR
+    ): bool {
+        Toolbox::deprecated('Use createReplicaConnectionFile()');
+        return self::createReplicaConnectionFile(
+            $host,
+            $user,
+            $password,
+            $dbname,
+            $use_timezones,
+            $log_deprecation_warnings,
+            $use_utf8mb4,
+            $allow_datetime,
+            $allow_signed_keys,
+            $config_dir
+        );
+    }
 
     /**
-     * Indicates is the DB replicate is active or not
-     *
-     * @return bool true if active / false if not active
-     **/
-    public static function isDBSlaveActive()
+     * Indicates is the DB replica is active or not
+     */
+    public static function isDBReplicaActive(): bool
     {
         return file_exists(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
     }
 
+    /**
+     * @return bool
+     * @deprecated 12
+     */
+    public static function isDBSlaveActive()
+    {
+        Toolbox::deprecated('Use isDBReplicaActive()');
+        return self::isDBReplicaActive();
+    }
 
     /**
-     * Read slave DB configuration file
+     * Read replica DB configuration file
      *
-     * @param int $choice  Host number (default NULL)
+     * @param ?int $choice  Host number (default NULL)
      *
      * @return DBmysql|void object
      **/
-    public static function getDBSlaveConf($choice = null)
+    public static function getDBReplicaConf(?int $choice = null)
     {
-
-        if (self::isDBSlaveActive()) {
+        if (self::isDBReplicaActive()) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             return new DBSlave($choice);
         }
     }
 
+    /**
+     * Read replica DB configuration file
+     *
+     * @param ?int $choice  Host number (default NULL)
+     *
+     * @return DBmysql|void object
+     * @deprecated 12
+     **/
+    public static function getDBSlaveConf(?int $choice = null)
+    {
+        Toolbox::deprecated('Use getDBReplicaConf()');
+        if (self::isDBReplicaActive()) {
+            include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
+            return new DBSlave($choice);
+        }
+    }
 
     /**
-     * Create a default slave DB configuration file
+     * Create a default replica DB configuration file
      *
      * @return void
-     **/
-    public static function createDBSlaveConfig()
+     */
+    public static function createDBReplicaConfig(): void
     {
         global $DB;
-        self::createSlaveConnectionFile(
+        self::createReplicaConnectionFile(
             "localhost",
             "glpi",
             "glpi",
@@ -374,21 +439,25 @@ class DBConnection extends CommonGLPI
         );
     }
 
-
     /**
-     * Save changes to the slave DB configuration file
-     *
-     * @param string $host
-     * @param string $user
-     * @param string $password
-     * @param string $DBname
+     * Create a default replica DB configuration file
      *
      * @return void
+     * @deprecated 12
      */
-    public static function saveDBSlaveConf($host, $user, $password, $DBname)
+    public static function createDBSlaveConfig()
+    {
+        Toolbox::deprecated('Use createDBReplicaConfig()');
+        self::createDBReplicaConfig();
+    }
+
+    /**
+     * Save changes to the replica DB configuration file
+     */
+    public static function saveDBReplicaConf(array|string $host, string $user, string $password, string $DBname): void
     {
         global $DB;
-        self::createSlaveConnectionFile(
+        self::createReplicaConnectionFile(
             $host,
             $user,
             $password,
@@ -401,28 +470,60 @@ class DBConnection extends CommonGLPI
         );
     }
 
+    /**
+     * Save changes to the replica DB configuration file
+     *
+     * @param string|array $host
+     * @param string $user
+     * @param string $password
+     * @param string $DBname
+     *
+     * @return void
+     * @deprecated 12
+     */
+    public static function saveDBSlaveConf($host, $user, $password, $DBname)
+    {
+        Toolbox::deprecated('Use saveDBReplicaConf()');
+        self::saveDBReplicaConf(
+            $host,
+            $user,
+            $password,
+            $DBname
+        );
+    }
 
     /**
-     * Delete slave DB configuration file
+     * Delete replica DB configuration file
+     *
+     * @return void
+     */
+    public static function deleteDBReplicaConfig(): void
+    {
+        unlink(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
+    }
+
+    /**
+     * Delete replica DB configuration file
      *
      * @return void
      */
     public static function deleteDBSlaveConfig()
     {
-        unlink(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
+        Toolbox::deprecated('Use deleteDBReplicaConfig()');
+        self::deleteDBReplicaConfig();
     }
 
 
     /**
-     * Switch database connection to slave
+     * Switch database connection to replica
      *
      * @return bool
      */
-    public static function switchToSlave()
+    public static function switchToReplica(): bool
     {
         global $DB;
 
-        if (self::isDBSlaveActive()) {
+        if (self::isDBReplicaActive()) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             $DB = new DBSlave();
             return $DB->connected;
@@ -430,13 +531,22 @@ class DBConnection extends CommonGLPI
         return false;
     }
 
-
     /**
-     * Switch database connection to master
+     * Switch database connection to replica
      *
      * @return bool
+     * @deprecated 12
      */
-    public static function switchToMaster()
+    public static function switchToSlave()
+    {
+        Toolbox::deprecated('Use switchToReplica()');
+        return self::switchToReplica();
+    }
+
+    /**
+     * Switch database connection to main
+     */
+    public static function switchToMain(): bool
     {
         global $DB;
 
@@ -444,9 +554,19 @@ class DBConnection extends CommonGLPI
         return $DB->connected;
     }
 
+    /**
+     * @return bool
+     * @deprecated 12
+     */
+    public static function switchToMaster()
+    {
+        Toolbox::deprecated('Use switchToMain()');
+        return self::switchToMain();
+    }
+
 
     /**
-     * Get Connection to slave, if exists,
+     * Get Connection to replica, if exists,
      * and if configured to be used for read only request
      *
      * @return DBmysql object
@@ -456,9 +576,9 @@ class DBConnection extends CommonGLPI
         global $CFG_GLPI, $DB;
 
         if (
-            $CFG_GLPI['use_slave_for_search']
-            && !$DB->isSlave()
-            && self::isDBSlaveActive()
+            $CFG_GLPI['use_slave_for_search'] //TODO: rename this one. Needs a migration script.
+            && !$DB->isReplica()
+            && self::isDBReplicaActive()
         ) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             $DBread = new DBSlave();
@@ -474,17 +594,15 @@ class DBConnection extends CommonGLPI
                         if (Session::isReadOnlyAccount()) {
                             return $DBread;
                         }
-                        // nobreak;
-
                         // no break
                     case 1: // If synced (all changes)
-                        $slave  = $DBread->request($sql)->current();
+                        $replica  = $DBread->request($sql)->current();
                         $master = $DB->request($sql)->current();
                         if (
-                            isset($slave['maxid']) && isset($master['maxid'])
-                            && ($slave['maxid'] == $master['maxid'])
+                            isset($replica['maxid']) && isset($master['maxid'])
+                            && ($replica['maxid'] == $master['maxid'])
                         ) {
-                            // Latest Master change available on Slave
+                            // Latest Master change available on replica
                             return $DBread;
                         }
                         break;
@@ -494,12 +612,12 @@ class DBConnection extends CommonGLPI
                             // No change yet
                             return $DBread;
                         }
-                        $slave  = $DBread->request($sql)->current();
+                        $replica  = $DBread->request($sql)->current();
                         if (
-                            isset($slave['maxid'])
-                            && ($slave['maxid'] >= $_SESSION['glpi_maxhistory'])
+                            isset($replica['maxid'])
+                            && ($replica['maxid'] >= $_SESSION['glpi_maxhistory'])
                         ) {
-                            // Latest current user change avaiable on Slave
+                            // Latest current user change available on replica
                             return $DBread;
                         }
                         break;
@@ -514,50 +632,50 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     *  Establish a connection to a mysql server (main or replicate)
+     *  Establish a connection to a mysql server (main or replica)
      *
-     * @param bool $use_slave try to connect to slave server first not to main server
+     * @param bool $use_replica try to connect to replica server first not to main server
      * @param bool $required  connection to the specified server is required
      *                           (if connection failed, do not try to connect to the other server)
      *
-     * @return bool True if successfull, false otherwise
+     * @return bool
      *
      * @since 11.0.0 The `$display` parameter has been removed.
      */
-    public static function establishDBConnection($use_slave, $required)
+    public static function establishDBConnection($use_replica, $required)
     {
         global $DB;
 
         $DB  = null;
         $res = false;
 
-        // First standard config : no use slave : try to connect to master
-        if (!$use_slave) {
-            $res = self::switchToMaster();
+        // First standard config : no use replica : try to connect to master
+        if (!$use_replica) {
+            $res = self::switchToMain();
         }
 
         // If not already connected to master due to config or error
         if (!$res) {
-            // No DB slave : first connection to master give error
-            if (!self::isDBSlaveActive()) {
-                // Slave wanted but not defined -> use master
-                // Ignore $required when no slave configured
-                if ($use_slave) {
-                    $res = self::switchToMaster();
+            // No DB replica : first connection to master give error
+            if (!self::isDBReplicaActive()) {
+                // replica wanted but not defined -> use master
+                // Ignore $required when no replica configured
+                if ($use_replica) {
+                    $res = self::switchToMain();
                 }
-            } else { // Slave DB configured
-                // Try to connect to slave if wanted
-                if ($use_slave) {
-                    $res = self::switchToSlave();
+            } else { // replica DB configured
+                // Try to connect to replica if wanted
+                if ($use_replica) {
+                    $res = self::switchToReplica();
                 }
 
                 // No connection to 'mandatory' server
                 if (!$res && !$required) {
                     //Try to establish the connection to the other mysql server
-                    if ($use_slave) {
-                        $res = self::switchToMaster();
+                    if ($use_replica) {
+                        $res = self::switchToMain();
                     } else {
-                        $res = self::switchToSlave();
+                        $res = self::switchToReplica();
                     }
                     if ($res) {
                         $DB->first_connection = false; // @phpstan-ignore property.nonObject (DB is a global var, phpstan doesnt see that it is an object here)
@@ -571,7 +689,7 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     * Get delay between slave and master
+     * Get delay between replica and main
      *
      * @param int $choice  Host number (default NULL)
      *
@@ -694,7 +812,7 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     * Cron process to check DB replicate state
+     * Cron process to check DB replica state
      *
      * @param CronTask $task to log and get param
      *
@@ -704,15 +822,15 @@ class DBConnection extends CommonGLPI
     {
         global $DB;
 
-        //Lauch cron only is :
-        // 1 the master database is avalaible
-        // 2 the slave database is configurated
-        if (!$DB->isSlave() && self::isDBSlaveActive()) {
-            $DBslave = self::getDBSlaveConf();
-            if (is_array($DBslave->dbhost)) {
-                $hosts = $DBslave->dbhost;
+        //Launch cron only if:
+        // 1 the main database is available
+        // 2 the replica database is configured
+        if (!$DB->isReplica() && self::isDBReplicaActive()) {
+            $DBreplica = self::getDBReplicaConf();
+            if (is_array($DBreplica->dbhost)) {
+                $hosts = $DBreplica->dbhost;
             } else {
-                $hosts = [$DBslave->dbhost];
+                $hosts = [$DBreplica->dbhost];
             }
 
             foreach ($hosts as $num => $name) {
@@ -720,7 +838,7 @@ class DBConnection extends CommonGLPI
 
                 // Quite strange, but allow simple stat
                 $task->addVolume($diff);
-                if ($diff > 1000000000) { // very large means slave is disconnect
+                if ($diff > 1000000000) { // very large means replica is disconnect
                     $task->log(sprintf(__s("SQL server: %s can't connect to the database"), $name));
                 } else {
                     //TRANS: %1$s is the server name, %2$s is the time
@@ -732,7 +850,7 @@ class DBConnection extends CommonGLPI
                 }
 
                 if ($diff > ($task->fields['param'] * 60)) {
-                    //Raise event if replicate is not synchronized
+                    //Raise event if replica is not synchronized
                     $options = ['diff'        => $diff,
                         'name'        => $name,
                         'entities_id' => 0,
@@ -747,15 +865,15 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     * Display in HTML, delay between master and slave
-     * 1 line per slave is multiple
+     * Display in HTML, delay between master and replica
+     * 1 line per replica is multiple
      * @param bool $no_display if true, the function returns the HTML string to display
      * @return ($no_display is true ? string : null)
      **/
     public static function showAllReplicateDelay($no_display = false)
     {
-        $DBslave = self::getDBSlaveConf();
-        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $DBreplica = self::getDBReplicaConf();
+        $hosts = is_array($DBreplica->dbhost) ? $DBreplica->dbhost : [$DBreplica->dbhost];
         $output = '';
 
         foreach ($hosts as $num => $name) {
@@ -795,7 +913,7 @@ class DBConnection extends CommonGLPI
     {
         // No need to translate, this part always display in english (for copy/paste to forum)
         $content = '';
-        if (self::isDBSlaveActive()) {
+        if (self::isDBReplicaActive()) {
             $content .= "Active\n";
             $content .= self::showAllReplicateDelay(true);
         } else {

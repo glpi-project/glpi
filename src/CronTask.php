@@ -239,7 +239,7 @@ class CronTask extends CommonDBTM
     {
         global $DB;
 
-        if (!isset($this->fields['id']) || ($DB->isSlave())) {
+        if (!isset($this->fields['id']) || ($DB->isReplica())) {
             return false;
         }
 

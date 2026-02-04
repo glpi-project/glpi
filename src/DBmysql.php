@@ -87,11 +87,17 @@ class DBmysql
     protected mysqli $dbh;
 
     /**
-     * Slave management
+     * @var bool
+     * @deprecated 12
+     */
+    public $slave              = false;
+
+    /**
+     * Replica management
      *
      * @var bool
      */
-    public $slave              = false;
+    public $replica            = false;
 
     /**
      * Defines if connection must use SSL.
@@ -969,12 +975,27 @@ class DBmysql
     }
 
     /**
-     * is a slave database ?
+     * is a replica database?
      *
      * @return bool
      */
+    public function isReplica(): bool
+    {
+        if (!isset($this->replica)) {
+            return $this->isSlave();
+        }
+        return $this->replica;
+    }
+
+    /**
+     * is a slave database ?
+     *
+     * @return bool
+     * @deprecated 12 Use $this->isReplica instead.
+     */
     public function isSlave()
     {
+        Toolbox::deprecated('Use isReplica()');
         return $this->slave;
     }
 
