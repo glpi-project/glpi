@@ -694,13 +694,31 @@ HTML,
         ];
 
         yield [
-            'content'                => '<p>Multiple images: <img src="/img1.jpg" /><img src="/img2.jpg" /></p>',
-            'expected_result'        => '<p>Multiple images: <img src="/img1.jpg" loading="lazy"><img src="/img2.jpg" loading="lazy"></p>',
+            'content'                => '<p>Multiple images: <img src="/path/to/img1.jpg" /><img src="/path/to/img2.jpg" /></p>',
+            'expected_result'        => '<p>Multiple images: <img src="/path/to/img1.jpg" loading="lazy"><img src="/path/to/img2.jpg" loading="lazy"></p>',
         ];
 
         yield [
-            'content'                => '<p>Image with VML tags:<!-- [if gte vml 1]><v:shape id="Image_x0020_4" o:spid="_x0000_i1027" type="#_x0000_t75" alt="Logo" style="width:71.5pt;height:71.5pt"><v:imagedata src="/img3.jpg" o:href="cid:image003.jpg@01DC8574.422C43D0"/></v:shape><![endif]--><!-- [if !vml]--><img src="/img4.jpg" o:title="an image" /><!-- [endif]--></p>',
-            'expected_result'        => '<p>Image with VML tags:<img src="/img4.jpg" loading="lazy"></p>',
+            'content'                => '<p>Image with VML tags:<!-- [if gte vml 1]><v:shape id="Image_x0020_4" o:spid="_x0000_i1027" type="#_x0000_t75" alt="Logo" style="width:71.5pt;height:71.5pt"><v:imagedata src="/path/to/img3.jpg" o:href="cid:image003.jpg@01DC8574.422C43D0"/></v:shape><![endif]--><!-- [if !vml]--><img src="/path/to/img4.jpg" o:title="an image" /><!-- [endif]--></p>',
+            'expected_result'        => '<p>Image with VML tags:<img src="/path/to/img4.jpg" loading="lazy"></p>',
+        ];
+
+        yield [
+            'content' => str_repeat('<p>Complex case to stress the regex engine:'
+                . '<img src="/path/to/image1.jpg" alt="an image" />'
+                . '<img src="/path/to/image2.jpg" alt="an image" />'
+                . '<img src="/path/to/image3.jpg" alt="an image" />'
+                . '<!--[if !vml]>'
+                  . '<img src="/path/to/image4.jpg" alt="an image" />'
+                  . '<img src="/path/to/image5.jpg" alt="an image" />'
+                  . '<img src="/path/to/image6.jpg" alt="an image" />'
+                . '<![endif]-->'
+                . '</p>', 1000),
+            'expected_result' => str_repeat('<p>Complex case to stress the regex engine:'
+                . '<img src="/path/to/image1.jpg" alt="an image" loading="lazy">'
+                . '<img src="/path/to/image2.jpg" alt="an image" loading="lazy">'
+                . '<img src="/path/to/image3.jpg" alt="an image" loading="lazy">'
+                . '</p>', 1000),
         ];
     }
 
@@ -709,11 +727,15 @@ HTML,
     {
         $richtext = new RichText();
 
-        $result = $richtext->getEnhancedHtml($content);
+        $save_pcre_backtrack_limit = ini_get('pcre.backtrack_limit');
+        ini_set('pcre.backtrack_limit', 100); // Lower limit to ensure the effectiveness of regex
+
+        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
 
         $this->assertEquals(
             $expected_result,
             $result,
         );
+        ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
     }
 }
