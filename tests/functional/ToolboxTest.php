@@ -451,7 +451,7 @@ class ToolboxTest extends DbTestCase
     public function testSaveAndDeletePicture()
     {
         // Save an image twice
-        $test_file = __DIR__ . '/../../tests/files/test.png';
+        $test_file = GLPI_VAR_DIR . '/test.png';
         copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
         $first_pict = \Toolbox::savePicture($test_file);
         $this->assertMatchesRegularExpression('#[^/]+/.+\.png#', $first_pict); // generated random name inside subdir

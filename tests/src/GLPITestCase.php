@@ -51,6 +51,7 @@ use DomainRecord;
 use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Cache\CacheManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
@@ -72,7 +73,6 @@ use Psr\Log\LogLevel;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use RuntimeException;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use Session;
 use Software;
@@ -120,6 +120,12 @@ class GLPITestCase extends TestCase
         // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
+
+        // Some tests might change the current language, thus storing some
+        // translations in the cache
+        $manager = new CacheManager();
+        $cache = $manager->getTranslationsCacheInstance();
+        $cache->clear();
 
         // Init log handler
         global $PHPLOGGER;
@@ -196,9 +202,7 @@ class GLPITestCase extends TestCase
     {
         // Delete contents of test files/_pictures
         $dir = GLPI_PICTURE_DIR;
-        if (!str_contains($dir, '/tests/files/_pictures')) {
-            throw new RuntimeException('Invalid picture dir: ' . $dir);
-        }
+
         // Delete nested folders and files in dir
         $this->removeDirectory($dir);
         // We recreate the directory to ensure it's empty and present, as test rely on it being present.

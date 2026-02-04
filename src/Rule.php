@@ -2070,6 +2070,13 @@ TWIG, $twig_params);
      */
     private function handleRankChange($new_rule = false)
     {
+        // Some classes like SlaLevels and OlaLevels extends this class but do
+        // not share the same glpi_rules tables which is used by the `moveRule`
+        // method.
+        if (static::getTable() !== "glpi_rules") {
+            return;
+        }
+
         if (isset($this->input['_ranking'])) {
             if (isset($this->fields['ranking']) && (int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
                 // No change in ranking, nothing to do.
