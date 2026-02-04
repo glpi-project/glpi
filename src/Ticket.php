@@ -5371,7 +5371,28 @@ JAVASCRIPT;
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
                     if (preg_match("/" . preg_quote($data, '/') . "/i", $src_attr)) {
-                        $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . htmlescape(Document::getImageTag($tags[$filename])) . "</p>", $html);
+                        $html = preg_replace_callback(
+                            "/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s",
+                            function ($img_matches) use ($tags, $filename) {
+                                $img_tag = $img_matches[0];
+
+                                // Extract width attribute if present
+                                $width_attr = '';
+                                if (preg_match('/\bwidth\s*=\s*["\']?(\d+)["\']?/i', $img_tag, $w_matches)) {
+                                    $width_attr = ' width="' . (int) $w_matches[1] . '"';
+                                }
+
+                                // Extract height attribute if present
+                                $height_attr = '';
+                                if (preg_match('/\bheight\s*=\s*["\']?(\d+)["\']?/i', $img_tag, $h_matches)) {
+                                    $height_attr = ' height="' . (int) $h_matches[1] . '"';
+                                }
+
+                                // Return an img tag with the tag as id, preserving width/height
+                                return '<img id="' . htmlescape($tags[$filename]) . '"' . $width_attr . $height_attr . '>';
+                            },
+                            $html
+                        );
                     }
                 }
             }

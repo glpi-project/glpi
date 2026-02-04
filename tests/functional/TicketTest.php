@@ -5021,11 +5021,11 @@ HTML,
                 ],
                 'expected' => <<<HTML
 Here is the screenshot:
-<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+<img id="9faff0a6-f37490bd-60e2af9721f420.96500246">
 blabla
 HTML,
             ];
-            // `img` of embedded image that has multiple attributes.
+            // `img` of embedded image that has multiple attributes including width/height.
             yield [
                 'content'  => <<<HTML
 Here is the screenshot:
@@ -5040,7 +5040,7 @@ HTML,
                 ],
                 'expected' => <<<HTML
 Here is the screenshot:
-<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+<img id="9faff0a6-f37490bd-60e2af9721f420.96500246" width="100" height="150">
 blabla
 HTML,
             ];
@@ -5062,7 +5062,7 @@ HTML,
                 'expected' => <<<HTML
 <img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
 Here is the screenshot:
-<p>#3eaff0a6-f37490bd-60e2a59721f420.96500246#</p>
+<img id="3eaff0a6-f37490bd-60e2a59721f420.96500246">
 blabla
 HTML,
             ];

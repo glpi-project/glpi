@@ -2505,18 +2505,34 @@ class Toolbox
      */
     public static function getDocumentsFromTag(string $content_text): array
     {
+        $all_tags = [];
+
         preg_match_all(
             '/' . Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)') . '/',
             $content_text,
             $matches,
             PREG_PATTERN_ORDER
         );
-        if (!isset($matches[1]) || count($matches[1]) == 0) {
+        if (isset($matches[1]) && count($matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $matches[1]);
+        }
+
+        preg_match_all(
+            '/<img[^>]+id=["\']([a-z0-9\.\-]+)["\'][^>]*>/i',
+            $content_text,
+            $img_matches,
+            PREG_PATTERN_ORDER
+        );
+        if (isset($img_matches[1]) && count($img_matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $img_matches[1]);
+        }
+
+        if (count($all_tags) === 0) {
             return [];
         }
 
         $document = new Document();
-        return $document->find(['tag' => array_unique($matches[1])]);
+        return $document->find(['tag' => array_unique($all_tags)]);
     }
 
     /**
