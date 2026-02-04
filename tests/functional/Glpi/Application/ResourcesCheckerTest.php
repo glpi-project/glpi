@@ -255,6 +255,8 @@ class ResourcesCheckerTest extends GLPITestCase
         $this->assertEquals($expected, $result);
         if ($expected_output !== '') {
             $this->assertEquals($expected_output, trim($output));
+        } else {
+            $this->assertEmpty(trim($output));
         }
     }
 }
