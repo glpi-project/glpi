@@ -112,8 +112,16 @@ export class GlpiDocumentUploadController
             }
         });
 
-        // Reset state when modal is hidden
+        // Modal events
         if (this.#modal) {
+            // Move focus away before modal hides to prevent aria-hidden warning
+            this.#modal.addEventListener('hide.bs.modal', () => {
+                if (document.activeElement && this.#modal.contains(document.activeElement)) {
+                    document.activeElement.blur();
+                }
+            });
+
+            // Reset state when modal is hidden
             this.#modal.addEventListener('hidden.bs.modal', () => this.#reset());
         }
     }
@@ -409,11 +417,6 @@ export class GlpiDocumentUploadController
         const count = this.#files.length;
 
         if (this.#modal) {
-            // Move focus away from modal before hiding to prevent aria-hidden warning
-            if (document.activeElement && this.#modal.contains(document.activeElement)) {
-                document.activeElement.blur();
-            }
-
             const modalInstance = bootstrap.Modal.getInstance(this.#modal);
             if (modalInstance) {
                 modalInstance.hide();
