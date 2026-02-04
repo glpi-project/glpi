@@ -2142,7 +2142,8 @@ class DBmysql
                     $this->current_query,
                     $stmt->error,
                     $stmt->errno
-                )
+                ),
+                $stmt->errno
             );
         }
     }
