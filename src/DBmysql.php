@@ -2121,7 +2121,7 @@ class DBmysql
      *
      * @return void
      */
-    public function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
+    private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
         if (count($params) === 0) {
             return;
