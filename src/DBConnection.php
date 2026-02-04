@@ -74,6 +74,8 @@ class DBConnection extends CommonGLPI
      */
     public const PROPERTY_ALLOW_SIGNED_KEYS = 'allow_signed_keys';
 
+    public const DBCONF_FILE = 'config_db.php';
+    public const DBREPLICA_FILE = 'config_db_slave.php'; //FIXME: change file name. Need a migration script.
     /**
      * For slave connection.
      */
@@ -181,7 +183,7 @@ class DBConnection extends CommonGLPI
     ): bool {
         return self::createConfigFile(
             classname: 'DB',
-            filename: 'config_db.php',
+            filename: self::DBCONF_FILE,
             host: $host,
             user: $user,
             password: $password,
@@ -227,8 +229,8 @@ class DBConnection extends CommonGLPI
      */
     public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
-        $main_config_file = 'config_db.php';
-        $slave_config_file = 'config_db_slave.php';
+        $main_config_file = self::DBCONF_FILE;
+        $replica_config_file = self::DBREPLICA_FILE;
 
         if (!file_exists($config_dir . '/' . $main_config_file)) {
             return false;
@@ -306,7 +308,7 @@ class DBConnection extends CommonGLPI
     ): bool {
         return self::createConfigFile(
             classname: 'DBSlave',
-            filename: 'config_db_slave.php',
+            filename: self::DBREPLICA_FILE,
             host: $host,
             user: $user,
             password: $password,
@@ -329,7 +331,7 @@ class DBConnection extends CommonGLPI
      **/
     public static function isDBSlaveActive()
     {
-        return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        return file_exists(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
     }
 
 
@@ -344,7 +346,7 @@ class DBConnection extends CommonGLPI
     {
 
         if (self::isDBSlaveActive()) {
-            include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             return new DBSlave($choice);
         }
     }
@@ -406,7 +408,7 @@ class DBConnection extends CommonGLPI
      */
     public static function deleteDBSlaveConfig()
     {
-        unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        unlink(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
     }
 
 
@@ -420,7 +422,7 @@ class DBConnection extends CommonGLPI
         global $DB;
 
         if (self::isDBSlaveActive()) {
-            include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             $DB = new DBSlave();
             return $DB->connected;
         }
@@ -457,7 +459,7 @@ class DBConnection extends CommonGLPI
             && !$DB->isSlave()
             && self::isDBSlaveActive()
         ) {
-            include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+            include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             $DBread = new DBSlave();
 
             if ($DBread->connected) {
@@ -577,7 +579,7 @@ class DBConnection extends CommonGLPI
     public static function getReplicateDelay($choice = null)
     {
 
-        include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
         return (int) (self::getHistoryMaxDate(new DB())
                     - self::getHistoryMaxDate(new DBSlave($choice)));
     }
@@ -593,7 +595,7 @@ class DBConnection extends CommonGLPI
         $data = [];
 
         // Get source status
-        include_once(GLPI_CONFIG_DIR . "/config_db.php");
+        include_once(GLPI_CONFIG_DIR . "/" . self::DBCONF_FILE);
         $db_main = new DB();
         if ($db_main->connected) {
             $global_vars = $db_main->getGlobalVariables([
@@ -619,7 +621,7 @@ class DBConnection extends CommonGLPI
         }
 
         // Get replica status
-        include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
+        include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
         $db_replica_config = new DBSlave();
 
         $hosts = is_array($db_replica_config->dbhost) ? $db_replica_config->dbhost : [$db_replica_config->dbhost];
