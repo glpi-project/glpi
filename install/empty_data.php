@@ -4607,11 +4607,6 @@ $empty_data_builder = new class {
                 'type'             => '1',
                 'notifications_id' => '70',
             ], [
-                'id'               => '187',
-                'items_id'         => '1',
-                'type'             => '1',
-                'notifications_id' => '71',
-            ], [
                 'id'               => '188',
                 'items_id'         => '1',
                 'type'             => '1',
