@@ -104,6 +104,14 @@
 
     .nav-link:hover,
     .nav-link:focus {
-        background-color: transparent;
+        background-color: transparent !important;
+    }
+}
+
+// KB documents footer tabs navigation
+#kb-documents {
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent !important;
     }
 }
