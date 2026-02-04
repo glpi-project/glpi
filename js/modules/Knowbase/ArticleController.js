@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_confirm_danger, glpi_ajax_dialog, CFG_GLPI */
+/* global glpi_toast_error, glpi_confirm_danger, glpi_ajax_dialog */
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
