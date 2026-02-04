@@ -2117,7 +2117,7 @@ class DBmysql
      *
      * @param mysqli_stmt $stmt   Statement to bind parameters to
      * @param array<int|string, mixed> $params Parameters to bind
-     * @param string|string[]|null $types  Types string (e.g. 'issd'), or null for all types as string
+     * @param list<'i'|'d'|'s'>|null $types  Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
@@ -2152,11 +2152,11 @@ class DBmysql
      *
      * @param mysqli_stmt $stmt Statement to execute
      * @param ?array<int|string, mixed> $params Parameters to bind
-     * @param string|string[]|null $types Types string (e.g. 'issd'), or null for all types as string
+     * @param list<'i'|'d'|'s'>|null $types Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, string|array|null $types = null): void
+    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
     {
         if ($params !== null) {
             $this->bindStatementParams($stmt, $params, $types);

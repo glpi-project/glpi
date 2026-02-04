@@ -1908,7 +1908,7 @@ class CommonDBTM extends CommonGLPI
                     $DB->executeStatement($stmt, [$field]);
                 } catch (StatementException $e) {
                     if ($e->getCode() != 1062) {
-                        throw new \RuntimeException('Unable to add locked field!', code: $e->getCode(), previous: $e);
+                        throw new RuntimeException('Unable to add locked field!', code: $e->getCode(), previous: $e);
                     }
                 }
             }
