@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3bd4cbd639c8e2766fa8cffb087b65c",
+    "content-hash": "d4c539079b386f2a732965f1002b3c12",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -11138,6 +11138,45 @@
                 "source": "https://github.com/glpi-project/phpstan-glpi/tree/1.1.1"
             },
             "time": "2025-08-11T13:48:13+00:00"
+        },
+        {
+            "name": "glpi-project/rector-glpi",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/glpi-project/rector-glpi.git",
+                "reference": "c62f7192a0bd4b30c7900f9b69429bc5dc74c991"
+            },
+            "require": {
+                "php": ">=8.2",
+                "rector/rector": "^2.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.93",
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^11.5"
+            },
+            "type": "rector-extension",
+            "autoload": {
+                "psr-4": {
+                    "RectorGlpi\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "classmap": [
+                    "tests/"
+                ],
+                "psr-4": {
+                    "RectorGlpi\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Rector rules for GLPI.",
+            "time": "2026-02-05T13:10:30+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
