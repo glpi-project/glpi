@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
+use Glpi\Exception\Database\StatementException;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\Toolbox\SanitizedStringsDecoder;
 use Safe\DateTime;
@@ -2145,7 +2146,7 @@ class DBmysql
 
         $res = $stmt->bind_param($types, ...$params);
         if (false === $res) {
-            throw new RuntimeException(
+            throw new StatementException(
                 sprintf(
                     'Error binding params in SQL query "%s": %s (%d).',
                     $this->current_query,
@@ -2170,13 +2171,14 @@ class DBmysql
             $this->bindStatementParams($stmt, $params);
         }
         if (!$stmt->execute()) {
-            throw new RuntimeException(
+            throw new StatementException(
                 sprintf(
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,
                     $stmt->errno,
                     $this->current_query
-                )
+                ),
+                $stmt->errno
             );
         }
     }

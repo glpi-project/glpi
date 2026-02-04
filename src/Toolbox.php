@@ -38,6 +38,7 @@ use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\EmptyCurlContentException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -2255,7 +2256,7 @@ class Toolbox
                 foreach ($data as $row) {
                     try {
                         $database->bindStatementParams($stmt, $row);
-                    } catch (RuntimeException $e) {
+                    } catch (StatementException $e) {
                         $msg = "Error binding params in table $table\n";
                         $msg .= json_encode($row);
                         throw new RuntimeException($msg, 0, $e);
@@ -2263,7 +2264,7 @@ class Toolbox
 
                     try {
                         $database->executeStatement($stmt);
-                    } catch (RuntimeException $e) {
+                    } catch (StatementException $e) {
                         $msg = $stmt->error;
                         $msg .= "\nError execution statement in table $table\n";
                         $msg .= json_encode($row);
