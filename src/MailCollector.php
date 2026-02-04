@@ -2435,7 +2435,7 @@ class MailCollector extends CommonDBTM
 
         // If charset is not specified, and not in $encodingsToCheck array, force fallback default encoding
         if ($charset === null) {
-            $encodingsToCheck = ['UTF-8', 'Windows-1251'];
+            $encodingsToCheck = ['UTF-8', 'ISO-8859-1', 'Windows-1251'];
             $charset = 'ISO-8859-1'; // set fallback encoding
 
             foreach ($encodingsToCheck as $encoding) {
