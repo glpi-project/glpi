@@ -2255,15 +2255,7 @@ class Toolbox
 
                 foreach ($data as $row) {
                     try {
-                        $database->bindStatementParams($stmt, $row);
-                    } catch (StatementException $e) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= json_encode($row);
-                        throw new RuntimeException($msg, 0, $e);
-                    }
-
-                    try {
-                        $database->executeStatement($stmt);
+                        $database->executeStatement($stmt, $row);
                     } catch (StatementException $e) {
                         $msg = $stmt->error;
                         $msg .= "\nError execution statement in table $table\n";
