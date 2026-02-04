@@ -258,4 +258,104 @@ class Group_UserTest extends DbTestCase
         $user = getItemByTypeName('User', 'tech');
         $this->assertEquals(0, $user->fields['groups_id']);
     }
+
+    /**
+     * Test getManagedGroupsIdsForUsers returns only groups with managers where user is member.
+     * Tests both int and array parameter types return same result.
+     *
+     * User in 3 groups: 2 with managers, 1 without. Should return only the 2 managed groups.
+     */
+    public function testGetManagedGroupsIdsForUsers()
+    {
+        // --- Arrange - user in 3 groups, 2 with managers, 1 without
+        $group_managed1 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $group_managed2 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $group_unmanaged = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        $manager1 = getItemByTypeName(\User::class, 'tech');
+        $manager2 = getItemByTypeName(\User::class, 'glpi');
+        $user = getItemByTypeName(\User::class, 'normal');
+
+        $this->createItems(\Group_User::class, [
+            // Group 1 with manager
+            ['groups_id' => $group_managed1->getID(), 'users_id' => $manager1->getID(), 'is_manager' => 1],
+            ['groups_id' => $group_managed1->getID(), 'users_id' => $user->getID(), 'is_manager' => 0],
+            // Group 2 with manager
+            ['groups_id' => $group_managed2->getID(), 'users_id' => $manager2->getID(), 'is_manager' => 1],
+            ['groups_id' => $group_managed2->getID(), 'users_id' => $user->getID(), 'is_manager' => 0],
+            // Group 3 without manager
+            ['groups_id' => $group_unmanaged->getID(), 'users_id' => $user->getID(), 'is_manager' => 0],
+            ['groups_id' => $group_unmanaged->getID(), 'users_id' => $manager2->getID(), 'is_manager' => 0],
+        ]);
+
+        // --- Act
+        // test with int parameter
+        $managed_groups_int = \Group_User::getManagedGroupsIdsForUsers($user->getID());
+        $managed_groups_array = \Group_User::getManagedGroupsIdsForUsers([$user->getID()]);
+
+        // --- Assert - both return the 2 managed groups
+        $expected = [$group_managed1->getID(), $group_managed2->getID()];
+        $this->assertEqualsCanonicalizing($expected, $managed_groups_int);
+        $this->assertEqualsCanonicalizing($expected, $managed_groups_array);
+    }
+
+    /**
+     * Test getManagedGroupsIdsForUsers with array of user IDs parameter.
+     *
+     * Multiple users in different managed groups. Should return union of all managed groups.
+     */
+    public function testGetManagedGroupsIdsForUsersWithArrayParameter()
+    {
+        // --- Arrange - user1 in groupA, user2 in groupB, both groups have managers
+        $groupA = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $groupB = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        $user1 = getItemByTypeName(\User::class, 'normal');
+        $user2 = getItemByTypeName(\User::class, 'tech');
+        $managerA = getItemByTypeName(\User::class, 'glpi');
+        $managerB = getItemByTypeName(\User::class, 'post-only');
+
+        $this->createItems(\Group_User::class, [
+            ['groups_id' => $groupA->getID(), 'users_id' => $managerA->getID(), 'is_manager' => 1],
+            ['groups_id' => $groupA->getID(), 'users_id' => $user1->getID(), 'is_manager' => 0],
+            ['groups_id' => $groupB->getID(), 'users_id' => $managerB->getID(), 'is_manager' => 1],
+            ['groups_id' => $groupB->getID(), 'users_id' => $user2->getID(), 'is_manager' => 0],
+        ]);
+
+        // --- Act
+        $managed_groups = \Group_User::getManagedGroupsIdsForUsers([$user1->getID(), $user2->getID()]);
+
+        // --- Assert
+        $this->assertEqualsCanonicalizing(
+            [$groupA->getID(), $groupB->getID()],
+            $managed_groups
+        );
+    }
+
+    /**
+     * Test getManagedGroupsIdsForUsers with multiple managers in same group.
+     */
+    public function testGetManagedGroupsIdsForUsersWithMultipleManagersInSameGroup()
+    {
+        // --- Arrange - group with 3 managers
+        $group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        $manager1 = getItemByTypeName(\User::class, 'tech');
+        $manager2 = getItemByTypeName(\User::class, 'glpi');
+        $manager3 = getItemByTypeName(\User::class, 'post-only');
+        $user = getItemByTypeName(\User::class, 'normal');
+
+        $this->createItems(\Group_User::class, [
+            ['groups_id' => $group->getID(), 'users_id' => $manager1->getID(), 'is_manager' => 1],
+            ['groups_id' => $group->getID(), 'users_id' => $manager2->getID(), 'is_manager' => 1],
+            ['groups_id' => $group->getID(), 'users_id' => $manager3->getID(), 'is_manager' => 1],
+            ['groups_id' => $group->getID(), 'users_id' => $user->getID(), 'is_manager' => 0],
+        ]);
+
+        // --- Act
+        $managed_groups = \Group_User::getManagedGroupsIdsForUsers($user->getID());
+
+        // --- Assert
+        $this->assertEqualsCanonicalizing([$group->getID()], $managed_groups);
+    }
 }

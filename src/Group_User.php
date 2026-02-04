@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 
 /**
@@ -150,6 +151,36 @@ class Group_User extends CommonDBRelation
         ]);
 
         return array_values(iterator_to_array($iterator));
+    }
+
+    /**
+     * Get IDs of groups that have at least one manager and where the given users are members.
+     *
+     * @param  array<int>|int $users_ids
+     * @return array<int>
+     */
+    public static function getManagedGroupsIdsForUsers(array|int $users_ids): array
+    {
+        global $DB;
+
+        $managers_rows = iterator_to_array(
+            $DB->request([
+                'SELECT'   => 'groups_id',
+                'DISTINCT' => true,
+                'FROM'   => 'glpi_groups_users',
+                'WHERE'  => [
+                    'groups_id' => new QuerySubQuery([
+                        'SELECT'   => 'groups_id',
+                        'DISTINCT' => true,
+                        'FROM'     => 'glpi_groups_users',
+                        'WHERE'    => ['users_id' => $users_ids],
+                    ]),
+                    'is_manager' => 1,
+                ],
+            ])
+        );
+
+        return array_column($managers_rows, 'groups_id');
     }
 
     /**
