@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,12 +30,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase;
+import { expect, test } from "../../fixtures/glpi_fixture";
+import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
+import { Profiles } from "../../utils/Profiles";
+import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
-enum EditorActionType: string
-{
-    case LOAD_SIDE_PANEL = 'LOAD_SIDE_PANEL';
-    case TOGGLE_VALUE = 'TOGGLE_VALUE';
-    case DELETE_ARTICLE = 'DELETE_ARTICLE';
-    case LOAD_MODAL = 'LOAD_MODAL';
-}
+test('Can view permissions modal', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for permissions test',
+        entities_id: entity_id,
+        answer: "Test content",
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await expect(page.getByText('Test content')).toBeVisible();
+
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(modal.getByRole('cell', { name: 'Entity', exact: true })).toBeVisible();
+});
