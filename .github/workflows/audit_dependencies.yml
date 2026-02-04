@@ -1,5 +1,8 @@
 name: "Audit dependencies"
 
+permissions:
+  contents: read
+
 on:
   # Runs audit every monday
   schedule:

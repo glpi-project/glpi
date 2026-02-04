@@ -1,4 +1,8 @@
 name: 'Close stale issues'
+
+permissions:
+  contents: read
+
 on:
   schedule:
     - cron: '0 8 * * *'

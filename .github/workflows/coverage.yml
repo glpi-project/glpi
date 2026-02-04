@@ -1,5 +1,8 @@
 name: "GLPI test code coverage"
 
+permissions:
+  contents: read
+
 on:
   # Enable execution from the "Code coverage schedule" workflow
   workflow_call:
@@ -17,8 +20,6 @@ on:
 
 jobs:
   coverage:
-    permissions:
-      contents: "read"
     name: "Code coverage"
     runs-on: "ubuntu-latest"
     strategy:
