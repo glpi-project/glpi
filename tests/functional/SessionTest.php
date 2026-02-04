@@ -40,6 +40,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Profile;
 use Profile_User;
 use ProfileRight;
@@ -216,10 +217,12 @@ class SessionTest extends DbTestCase
         }
     }
 
+    #[Group('single-thread')] // Changing locale files
     public function testLocalI18n()
     {
         $manager = new CacheManager();
         $cache = $manager->getTranslationsCacheInstance();
+        $cache->clear();
 
         //load locales
         \Session::loadLanguage('en_GB');

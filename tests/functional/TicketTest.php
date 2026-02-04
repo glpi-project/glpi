@@ -9006,7 +9006,6 @@ HTML,
     }
 
     #[DataProvider('canAddDocumentProvider')]
-    #[\PHPUnit\Framework\Attributes\Group('single-thread')]
     public function testCanAddDocument(array $profilerights, bool $expected): void
     {
         global $DB;

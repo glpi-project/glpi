@@ -22,6 +22,9 @@ phpunit.xml
 /tests/cypress/downloads/
 /tests/cypress/videos/
 /tests/files/
+/tests/files-2/
+/tests/files-3/
+/tests/files-4/
 /tests/.env
 /nbproject
 .composer.hash

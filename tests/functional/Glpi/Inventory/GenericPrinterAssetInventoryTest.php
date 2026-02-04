@@ -42,9 +42,7 @@ use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Inventory\Request;
 use Glpi\Tests\InventoryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class GenericPrinterAssetInventoryTest extends InventoryTestCase
 {
     /**

@@ -46,10 +46,8 @@ use NetworkPort_NetworkPort;
 use NetworkPort_Vlan;
 use NetworkPortAggregate;
 use NetworkPortType;
-use PHPUnit\Framework\Attributes\Group;
 use Unmanaged;
 
-#[Group('single-thread')]
 class NetworkEquipmentUpdateTest extends InventoryTestCase
 {
     public function testAddNetworkEquipment()

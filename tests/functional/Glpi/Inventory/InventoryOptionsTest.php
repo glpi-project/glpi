@@ -37,9 +37,7 @@ namespace tests\units\Glpi\Inventory;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Tests\InventoryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class InventoryOptionsTest extends InventoryTestCase
 {
     private string $json_computer = <<<JSON
