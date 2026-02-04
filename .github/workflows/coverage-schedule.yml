@@ -1,13 +1,14 @@
 name: "Code coverage schedule"
 
+permissions:
+  contents: "read"
+
 on:
   schedule:
     - cron:  '0 0 * * *'
 
 jobs:
   run-coverage-workflow:
-    permissions:
-      contents: "read"
     name: "Run coverage workflow"
     uses: "glpi-project/glpi/.github/workflows/coverage.yml@main"
     with:

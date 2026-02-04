@@ -1,5 +1,8 @@
 name: "GLPI branch build"
 
+permissions:
+  contents: "read"
+
 on:
   workflow_dispatch:
     inputs:
@@ -10,8 +13,6 @@ on:
 
 jobs:
   build:
-    permissions:
-      contents: "read"
     name: "Build GLPI"
     runs-on: "ubuntu-latest"
     services:
