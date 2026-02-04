@@ -2433,9 +2433,17 @@ class MailCollector extends CommonDBTM
 
         $charset = $content_type->getParameter('charset');
 
-        // If charset is not specified, and not UTF-8, force fallback default encoding
+        // If charset is not specified, and not in $encodingsToCheck array, force fallback default encoding
         if ($charset === null) {
-            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+            $encodingsToCheck = ['UTF-8', 'Windows-1251'];
+            $charset = 'ISO-8859-1'; // set fallback encoding
+
+            foreach ($encodingsToCheck as $encoding) {
+                if (mb_check_encoding($contents, $encoding)) {
+                    $charset = $encoding;
+                    break;
+                }
+            }
         }
 
         if (strtoupper($charset) != 'UTF-8') {
