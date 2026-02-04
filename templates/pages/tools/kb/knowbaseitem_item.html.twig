@@ -33,7 +33,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-<form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}">
+<form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}" class="kb-link-item-form d-flex flex-column h-100">
     {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
     {% if get_class(item) == 'KnowbaseItem' %}
         {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
@@ -41,8 +41,8 @@
         {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
-    <div class="d-flex">
-        <div class="col-auto">
+
+    <div class="flex-grow-1 d-flex justify-content-center align-items-center">
         {% if get_class(item) == 'KnowbaseItem' %}
             {# TODO pass used array to restrict visible items in list #}
             {% set dropdown %}
@@ -56,9 +56,9 @@
                 'condition': visibility_condition
             }) }}
         {% endif %}
-        </div>
-        <div class="col-auto">
-            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link'}) }}
-        </div>
+    </div>
+
+    <div class="d-flex justify-content-end pt-3 border-top">
+        {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
     </div>
 </form>
