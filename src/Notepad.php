@@ -329,13 +329,9 @@ class Notepad extends CommonDBChild
         }
         $notes     = static::getAllForItem($item);
         $rand      = mt_rand();
-        $canread   = Session::haveRight($item::$rightname, READNOTE);
         $canedit   = Session::haveRight($item::$rightname, UPDATENOTE);
 
-        if (
-            $canread
-            && !(!empty($withtemplate) && ($withtemplate == 2))
-        ) {
+        if (!(!empty($withtemplate) && ($withtemplate == 2))) {
             TemplateRenderer::getInstance()->display('components/notepad/form.html.twig', [
                 'rand'      => $rand,
                 'url'       => Toolbox::getItemTypeFormURL('Notepad'),
