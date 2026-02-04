@@ -36,6 +36,7 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\Crud\CloneException;
 
 /**
  * Profile class
@@ -61,7 +62,7 @@ class ProfileRight extends CommonDBChild
         global $DB;
 
         if ($DB->isSlave()) {
-            return false;
+            throw new CloneException('Cannot clone item on a DB slave.');
         }
         $new_item = new static();
         $input = $this->fields;
