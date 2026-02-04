@@ -98,8 +98,9 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         }
 
         // Resolve relative paths based on plugin directory
-        if (!str_starts_with($dest, '/')) {
-            $dest = $plugin_dir . '/' . $dest;
+        $fs = new Filesystem();
+        if (!$fs->isAbsolutePath($dest)) {
+            $dest = \getcwd() . '/' . $dest;
         }
 
         // Ensure parent directory exists

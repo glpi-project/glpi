@@ -86,7 +86,7 @@ locales-compile: ## Compile locales
 .PHONY: locales-compile
 
 plugin-release: ## Build and create plugin release based on HEAD ref, example: make plugin-release
-	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR) --dest=dist/glpi-$(PLUGIN_DIR)-$(shell date +%Y%m%d).tar.bz2
+	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR) --dest=/var/www/glpi/plugins/$(PLUGIN_DIR)/dist/glpi-$(PLUGIN_DIR)-$(shell date +%Y%m%d).tar.bz2
 .PHONY: plugin-release
 
 
