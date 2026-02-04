@@ -2931,6 +2931,18 @@ TWIG, $twig_params);
             }
         }
 
+        if (!empty($tls_version)) {
+            $cipher_suite = 'NORMAL';
+            foreach (self::TLS_VERSIONS as $tls_version_value) {
+                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
+            }
+            try {
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
+            } catch (LdapException $e) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
+            }
+        }
+
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -2975,17 +2987,7 @@ TWIG, $twig_params);
             }
         }
 
-        if (!empty($tls_version)) {
-            $cipher_suite = 'NORMAL';
-            foreach (self::TLS_VERSIONS as $tls_version_value) {
-                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
-            }
-            try {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
-            } catch (LdapException $e) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
-            }
-        }
+
 
         // Only use STARTTLS if TLS is requested and the connection is not already using LDAPS
         // LDAPS (ldaps://) is already encrypted, so ldap_start_tls() should not be called
