@@ -74,12 +74,13 @@ class DBConnection extends CommonGLPI
      */
     public const PROPERTY_ALLOW_SIGNED_KEYS = 'allow_signed_keys';
 
+    /**
+     * For replica connection.
+     */
+    public const PROPERTY_REPLICA = 'slave';
+
     public const DBCONF_FILE = 'config_db.php';
     public const DBREPLICA_FILE = 'config_db_slave.php'; //FIXME: change file name. Need a migration script.
-    /**
-     * For slave connection.
-     */
-    public const PROPERTY_SLAVE = 'slave';
 
     protected static bool $notable = true;
 
@@ -116,8 +117,8 @@ class DBConnection extends CommonGLPI
             'dbpassword' => rawurlencode($password),
             'dbdefault'  => $dbname,
         ];
-        if ($slave) {
-            $properties[self::PROPERTY_SLAVE] = true;
+        if ($replica) {
+            $properties[self::PROPERTY_REPLICA] = true;
         }
         if ($use_timezones) {
             $properties[self::PROPERTY_USE_TIMEZONES] = true;
