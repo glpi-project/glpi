@@ -221,10 +221,10 @@ class Config extends CommonDBTM
         }
 
         // Manage DB replica process
-        if (isset($input['_dbslave_status'])) {
+        if (isset($input['_dbreplica_status'])) {
             $already_active = DBConnection::isDBReplicaActive();
 
-            if ($input['_dbslave_status']) {
+            if ($input['_dbreplica_status']) {
                 DBConnection::changeCronTaskStatus(true);
 
                 if (!$already_active) {
@@ -241,7 +241,7 @@ class Config extends CommonDBTM
                 }
             }
 
-            if (!$input['_dbslave_status'] && $already_active) {
+            if (!$input['_dbreplica_status'] && $already_active) {
                 DBConnection::deleteDBReplicaConfig();
                 DBConnection::changeCronTaskStatus(false);
             }
@@ -371,7 +371,7 @@ class Config extends CommonDBTM
 
         // Prevent some input values to be saved in DB
         $values_to_filter = [
-            '_dbslave_status',
+            '_dbreplica_status',
             '_dbreplicate_dbhost',
             '_dbreplicate_dbuser',
             '_dbreplicate_dbpassword',
