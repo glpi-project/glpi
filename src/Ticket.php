@@ -50,6 +50,7 @@ use Safe\DateTime;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;
+use function Safe\preg_replace_callback;
 use function Safe\strtotime;
 
 /**

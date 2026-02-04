@@ -2523,7 +2523,7 @@ class Toolbox
             $img_matches,
             PREG_PATTERN_ORDER
         );
-        if (isset($img_matches[1]) && count($img_matches[1]) > 0) {
+        if (count($img_matches[1]) > 0) {
             $all_tags = array_merge($all_tags, $img_matches[1]);
         }
 
