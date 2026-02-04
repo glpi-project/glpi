@@ -47,7 +47,7 @@
       max: 30
    }) }}
    {{ fields.sliderField('use_log_in_files', config['use_log_in_files'], __('Logs in files (SQL, email, automatic action...)')) }}
-   {{ fields.sliderField('_dbslave_status', call('DBConnection::isDBSlaveActive'), _n('SQL replica', 'SQL replicas', 1)) }}
+   {{ fields.sliderField('_dbreplica_status', call('DBConnection::isDBReplicaActive'), _n('SQL replica', 'SQL replicas', 1)) }}
 
    {{ fields.smallTitle(__('Maintenance mode')) }}
    {{ fields.sliderField('maintenance_mode', config['maintenance_mode'], __('Maintenance mode')) }}

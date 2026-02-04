@@ -58,7 +58,7 @@
     } %}
     {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
 
-    {{ inputs.hidden('_dbslave_status', 1) }}
+    {{ inputs.hidden('_dbreplica_status', 1) }}
 </div>
 
 <div class="hr-text">
