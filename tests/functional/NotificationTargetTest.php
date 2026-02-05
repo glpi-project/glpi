@@ -677,4 +677,31 @@ class NotificationTargetTest extends DbTestCase
             $this->assertSame($has_admin_target, array_key_exists('1_1', $notification_target->notification_targets));
         }
     }
+
+    public function testExclusionFieldDoesNotAddRecipient()
+    {
+        $this->login();
+
+        $notification_target = new NotificationTarget();
+
+        // Ensure the notification context is set so getTargets can find exclusions
+        $notification_target->data = [
+            'notifications_id' => 1,
+        ];
+
+        // Add exclusion for "Profil: Technician"
+        $notification_target->add([
+            'notifications_id' => 1, // Assuming notification ID 1 for testing
+            'type'             => Notification::PROFILE_TYPE,
+            'items_id'         => getItemByTypeName('Profile', 'Technician', true),
+            'is_exclusion'     => 1,
+        ]);
+
+        // Ensure the profile is excluded and not added as a recipient
+        $targets = $notification_target->getTargets();
+        foreach ($targets as $target) {
+            $this->assertNotEquals(Notification::PROFILE_TYPE, $target['type']);
+            $this->assertNotEquals(getItemByTypeName('Profile', 'Technician', true), $target['items_id']);
+        }
+    }
 }
