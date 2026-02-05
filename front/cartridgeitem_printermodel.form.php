@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 /**
  * @since 0.84
@@ -44,7 +45,12 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 $cipm = new CartridgeItem_PrinterModel();
 if (isset($_POST["add"])) {
-    $cipm->check(-1, CREATE, $_POST);
+    try {
+        $cipm->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
+        Html::back();
+    }
+
     if ($cipm->add($_POST)) {
         Event::log(
             $_POST["cartridgeitems_id"],
