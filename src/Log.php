@@ -179,31 +179,50 @@ class Log extends CommonDBTM
                     // Linkfield or standard field not massive action enable
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
+                    // Only consider link/dropdown handling when the search option
+                    // effectively targets the parent item table or the current item table.
+                    $parent_table = getTableForItemType($real_type);
+                    if (($val2['table'] !== $parent_table) && ($val2['table'] !== $item->getTable())) {
+                        // If the option is actually a plain text/string field, keep it as text
+                        if (isset($val2['datatype']) && in_array($val2['datatype'], ['text', 'string'], true)) {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                        }
+                        continue;
+                    }
+
                     if ($val2['table'] == $item->getTable()) {
                         $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
-                        // other cases; link field -> get data from dropdown
-                        $changes = [$id_search_option,
-                            sprintf(
-                                __('%1$s (%2$s)'),
-                                Dropdown::getDropdownName(
-                                    $val2["table"],
+                        if (isset($val2['datatype']) && in_array($val2['datatype'], ['text', 'string'], true)) {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                            break;
+                        }
+
+                        if (!is_numeric($oldval) || !is_numeric($values[$key] ?? null)) {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                        } else {
+                            // Both numeric — safe to use dropdown/id representation
+                            $changes = [$id_search_option,
+                                sprintf(
+                                    __('%1$s (%2$s)'),
+                                    Dropdown::getDropdownName(
+                                        $val2["table"],
+                                        $oldval
+                                    ),
                                     $oldval
                                 ),
-                                $oldval
-                            ),
-                            sprintf(
-                                __('%1$s (%2$s)'),
-                                Dropdown::getDropdownName(
-                                    $val2["table"],
+                                sprintf(
+                                    __('%1$s (%2$s)'),
+                                    Dropdown::getDropdownName(
+                                        $val2["table"],
+                                        $values[$key]
+                                    ),
                                     $values[$key]
                                 ),
-                                $values[$key]
-                            ),
-                            $oldval,
-                            (int) $values[$key],
-                        ];
-                    }
+                                $oldval,
+                                (int)$values[$key],
+                            ];
+                        }
                     break;
                 }
             }
