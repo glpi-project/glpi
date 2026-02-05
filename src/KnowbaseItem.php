@@ -959,6 +959,39 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             }
         }
 
+        // Fetch related items for the KB article
+        $related_items = [];
+        $linked_items_data = KnowbaseItem_Item::getItems($this);
+
+        foreach ($linked_items_data as $data) {
+            $linked_itemtype = $data['itemtype'];
+            $linked_items_id = $data['items_id'];
+
+            if (!is_a($linked_itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+            /** @var class-string<CommonDBTM> $linked_itemtype */
+
+            $linked_item = new $linked_itemtype();
+            if (!$linked_item->getFromDB($linked_items_id) || !$linked_item->canView()) {
+                continue;
+            }
+
+            $icon_and_color = self::getRelatedItemIconAndColor($linked_itemtype);
+
+            $related_items[] = [
+                'id' => $data['id'],
+                'items_id' => $linked_items_id,
+                'itemtype' => $linked_itemtype,
+                'name' => $linked_item->getName(),
+                'link_url' => $linked_item->getLinkURL(),
+                'type_name' => $linked_itemtype::getTypeName(1),
+                'icon_class' => $icon_and_color['icon_class'],
+                'color_class' => $icon_and_color['color_class'],
+                'sector' => $icon_and_color['sector'],
+            ];
+        }
+
         $writer_link = '';
         if ($this->fields["users_id"]) {
             $writer_link = getUserLink($this->fields["users_id"]);
@@ -1039,6 +1072,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'documents' => $documents,
             'documents_count' => count($documents),
             'can_add_documents' => $this->canUpdateItem(),
+            'related_items' => $related_items,
+            'related_items_count' => count($related_items),
+            'can_link_items' => $this->canUpdateItem(),
             'item_id' => $this->fields['id'],
             'edit_mode' => $options['edit_mode'],
             'actions' => $actions,
@@ -1109,6 +1145,33 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'color_class' => 'text-secondary',
             ],
         };
+    }
+
+    /**
+     * Get icon class and color class for a related item based on its menu sector.
+     *
+     * @param class-string<CommonDBTM> $itemtype The itemtype class name
+     * @return array{icon_class: string, color_class: string, sector: string}
+     */
+    private static function getRelatedItemIconAndColor(string $itemtype): array
+    {
+        $sector = Html::getMenuSectorForItemtype($itemtype);
+
+        $color_mapping = [
+            'assets'     => 'text-azure',   // Blue
+            'helpdesk'   => 'text-yellow',  // Yellow
+            'tools'      => 'text-teal',    // Dark green
+            'management' => 'text-purple',  // Purple
+            'admin'      => 'text-orange',  // Orange
+        ];
+
+        $color_class = $color_mapping[$sector] ?? 'text-secondary';
+
+        return [
+            'icon_class' => $itemtype::getIcon(),
+            'color_class' => $color_class,
+            'sector' => $sector ?? 'unknown',
+        ];
     }
 
     /**
