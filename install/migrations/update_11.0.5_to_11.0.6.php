@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,34 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Marketplace\View;
+use function Safe\preg_match;
+use function Safe\scandir;
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+/**
+ * Update from 11.0.5 to 11.0.6
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update1105to1106()
+{
+    /**
+     * @var DBmysql $DB
+     * @var Migration $migration
+     */
+    global $DB, $migration;
 
-Session::checkRight("config", UPDATE);
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_11.0.5_to_11.0.6/';
 
-// This has to be called before search process is called, in order to add
-// "new" plugins in DB to be able to display them.
-$plugin = new Plugin();
-$plugin->checkStates(true);
+    $migration->setVersion('11.0.6');
 
-Html::header(__('Setup'), '', "config", "plugin");
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
+    }
 
-View::showFeatureSwitchDialog();
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
-echo $plugin->getPluginsUpdatableAlert();
-echo $plugin->getPluginsListSuspendBanner();
+    $migration->executeMigration();
 
-Search::show('Plugin');
-
-echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-    <div class="text-center my-2">
-        <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
-            <i class="ti ti-eye"></i>
-            <span>{{ label }}</span>
-        </a>
-    </div>
-TWIG, ['label' => __('See the catalog of plugins')]);
-
-Html::footer();
+    return $updateresult;
+}

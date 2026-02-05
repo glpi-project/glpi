@@ -3366,6 +3366,17 @@ class Plugin extends CommonDBTM
         );
     }
 
+    final public function getPluginsUpdatableAlert(): string
+    {
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/plugins/updatable_alert.html.twig',
+            [
+                'count' => MarketplaceController::countUpdatablePlugins(),
+            ]
+        );
+    }
+
     /**
      * Indicates whether the plugins execution is suspended.
      */
