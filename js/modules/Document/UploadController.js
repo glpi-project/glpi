@@ -207,7 +207,7 @@ export class GlpiDocumentUploadController
 
         this.#previewContainer.classList.remove('d-none');
         listContainer.innerHTML = this.#files.map((file, index) => `
-            <div class="kb-file-item d-flex align-items-center p-2 border rounded mb-2" data-file-index="${index}">
+            <div class="kb-file-item d-flex align-items-center p-2 border rounded mb-2" role="listitem" data-file-index="${index}">
                 <i class="ti ${this.#getFileIcon(file.name)} me-2 text-muted"></i>
                 <div class="flex-grow-1 min-width-0">
                     <div class="fw-medium text-truncate">${this.#escapeHtml(file.name)}</div>
