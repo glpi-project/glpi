@@ -69,6 +69,7 @@ class Schema implements ArrayAccess
 
     // Not defined directly in OpenAPI schema but exist within the format registry (https://spec.openapis.org/registry/format/)
     public const FORMAT_STRING_HTML = 'html';
+    public const FORMAT_STRING_TIME = 'time';
 
     public const PATTERN_UUIDV4 = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
     public const PATTERN_COLOR_HEX = '/^#([A-Fa-f0-9]{6})$/';

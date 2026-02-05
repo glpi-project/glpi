@@ -963,6 +963,47 @@ final class AssetController extends AbstractController
                 'type' => self::getDropdownTypeSchema(class: CertificateType::class, full_schema: 'CertificateType'),
                 'group' => $fn_get_group_property(Certificate::class),
                 'group_tech' => $fn_get_group_tech_property(Certificate::class),
+                'template_name' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                ],
+                'is_template' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'x-version-introduced' => '2.3.0',
+                ],
+                'dns_name' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                ],
+                'dns_suffix' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                ],
+                'is_selfsign' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'is_autosign'
+                ],
+                'date_expiration' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-version-introduced' => '2.3.0',
+                ],
+                'command' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                    'description' => 'Certificate generation command used',
+                ],
+                'certificate_request' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                    'description' => 'Certificate request (CSR)',
+                ],
+                'certificate_item' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                    'description' => 'Issued certificate',
+                ],
             ],
         ];
 

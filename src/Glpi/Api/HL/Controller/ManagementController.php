@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Alert;
 use AutoUpdateSystem;
 use Budget;
 use BudgetType;
@@ -55,6 +56,7 @@ use DatabaseInstanceType;
 use Datacenter;
 use Document;
 use Document_Item;
+use DocumentCategory;
 use Domain;
 use Domain_Item;
 use DomainRecord;
@@ -371,6 +373,140 @@ final class ManagementController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: ContractType::class, full_schema: 'ContractType'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location') + ['x-version-introduced' => '2.3.0'],
+                    'date_begin' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE,
+                        'x-field' => 'begin_date',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'duration' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                        'description' => 'Duration in months',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'notice_period' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                        'description' => 'Notice period in months',
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'notice',
+                    ],
+                    'renewal_period' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                        'description' => 'Renewal period in months',
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'periodicity',
+                    ],
+                    'invoice_period' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                        'description' => 'Invoice period in months',
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'billing',
+                    ],
+                    'accounting_number' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'week_begin_hour' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::FORMAT_STRING_TIME,
+                        'description' => 'Week begin hour in HH:MM:SS format (RFC3339 partial-time)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'week_end_hour' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::FORMAT_STRING_TIME,
+                        'description' => 'Week end hour in HH:MM:SS format (RFC3339 partial-time)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'saturday_begin_hour' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::FORMAT_STRING_TIME,
+                        'description' => 'Saturday begin hour in HH:MM:SS format (RFC3339 partial-time)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'saturday_end_hour' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::FORMAT_STRING_TIME,
+                        'description' => 'Saturday end hour in HH:MM:SS format (RFC3339 partial-time)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'sunday_begin_hour' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::FORMAT_STRING_TIME,
+                        'description' => 'Sunday begin hour in HH:MM:SS format (RFC3339 partial-time)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'sunday_end_hour' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::FORMAT_STRING_TIME,
+                        'description' => 'Sunday end hour in HH:MM:SS format (RFC3339 partial-time)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'use_saturday' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                        'default' => false,
+                    ],
+                    'use_sunday' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                        'default' => false,
+                    ],
+                    'max_links_allowed' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                        'description' => 'Maximum number of items that can be linked to this contract (0 = unlimited)',
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'alert' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                        'x-version-introduced' => '2.3.0',
+                        'enum' => [
+                            0,
+                            2 ** Alert::END,
+                            2 ** Alert::NOTICE,
+                            (2 ** Alert::END) + (2 ** Alert::NOTICE),
+                            2 ** Alert::PERIODICITY,
+                            (2 ** Alert::PERIODICITY) + (2 ** Alert::NOTICE)
+                        ],
+                        'description' => <<<EOT
+                        The alert type for this contract
+                        - 0: No alert
+                        - 4: Alert on end date
+                        - 8: Alert on notice date
+                        - 12: Alert on end date and notice date
+                        - 16: Periodic alert
+                        - 24: Periodic alert and alert on notice date
+EOT,
+                    ],
+                    'renewal_type' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-field' => 'renewal',
+                        'x-version-introduced' => '2.3.0',
+                        'enum' => [0, 1, 2],
+                        'description' => <<<EOT
+                        The renewal type for this contract
+                        - 0: No renewal
+                        - 1: Tacit renewal (automatic)
+                        - 2: Explicit renewal (manual)
+EOT,
+                    ],
+                    'template_name' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'is_template' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                    ],
                 ],
             ],
             'Database' => [
@@ -496,6 +632,24 @@ final class ManagementController extends AbstractController
                     ],
                     'mime' => ['type' => Doc\Schema::TYPE_STRING],
                     'sha1sum' => ['type' => Doc\Schema::TYPE_STRING],
+                    'category' => self::getDropdownTypeSchema(class: DocumentCategory::class, full_schema: 'DocumentCategory') + ['x-version-introduced' => '2.3.0'],
+                    'link' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.3.0'],
+                    'checksum_sha1' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 40,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'is_import_denied' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_blacklisted',
+                    ],
+                    'tag' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'x-version-introduced' => '2.3.0',
+                    ],
                 ],
             ],
             'Domain' => [
@@ -522,6 +676,33 @@ final class ManagementController extends AbstractController
                     'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                     'group' => $fn_get_group_property(Domain::class),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'date_domain_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE,
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'date_domaincreation',
+                    ],
+                    'date_expiration' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'template_name' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'is_template' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'is_active' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'is_recursive' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'x-version-introduced' => '2.3.0',
+                    ],
                 ],
             ],
             'License' => [
@@ -652,6 +833,7 @@ final class ManagementController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
+                'document' => self::getDropdownTypeSchema(class: Document::class, full_schema: 'Document'),
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
