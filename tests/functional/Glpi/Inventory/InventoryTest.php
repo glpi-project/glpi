@@ -172,6 +172,10 @@ class InventoryTest extends InventoryTestCase
         $this->assertIsArray($mmodel);
         $models_id = $mmodel['id'];
 
+        $mupdate = $DB->request(['FROM' => \AutoUpdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
+        $this->assertIsArray($mupdate);
+        $autoupdatesystems_id = $mupdate['id'];
+
         $expected = [
             'id' => $monitor_fields['id'],
             'entities_id' => 0,
@@ -203,7 +207,7 @@ class InventoryTest extends InventoryTestCase
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 1,
-            'autoupdatesystems_id' => 0,
+            'autoupdatesystems_id' => $autoupdatesystems_id,
             'uuid' => null,
             'is_recursive' => 0,
             'groups_id' => [],
