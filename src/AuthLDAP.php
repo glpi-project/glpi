@@ -2196,10 +2196,9 @@ class AuthLDAP extends CommonDBTM
                         ];
                     }
                 } elseif (
-                    ($values['mode'] == self::ACTION_ALL)
+                    in_array($values['mode'], [self::ACTION_ALL, self::ACTION_SYNCHRONIZE])
                         && !$limitexceeded
                 ) {
-                    // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
                     if ($user['auths_id'] == $options['authldaps_id']) {
                         if (!$userfound && $user['is_deleted_ldap'] == 0) {
