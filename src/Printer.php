@@ -213,7 +213,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
                         'SELECT' => 'id',
                         'FROM'   => 'glpi_networkports',
                         'WHERE'  => [
-                            'itemtype'  => $this->getType(),
+                            'itemtype'  => static::class,
                             'items_id'  => $ID,
                         ],
                     ]),
@@ -341,7 +341,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_peripheral' => $this->getType(),
+                'itemtype_peripheral' => static::class,
                 'items_id_peripheral' => $this->fields['id'],
             ],
         ]);

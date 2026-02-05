@@ -602,7 +602,7 @@ class RuleImportAsset extends Rule
         $is_ip          = false;
         $is_networkport = false;
         $itemtable      = $item->getTable();
-        $itemtype       = $item->getType();
+        $itemtype       = $item::class;
 
         foreach ($this->complex_criteria as $criteria) {
             if ($criteria->fields['criteria'] == 'ip') {
@@ -661,7 +661,7 @@ class RuleImportAsset extends Rule
     public function handleOneJoinPerCriteria(CommonDBTM $item, array &$it_criteria)
     {
         $itemtable      = $item->getTable();
-        $itemtype       = $item->getType();
+        $itemtype       = $item::class;
 
         foreach ($this->complex_criteria as $criterion) {
             if ($criterion->fields['criteria'] == 'ip') {
@@ -716,7 +716,7 @@ class RuleImportAsset extends Rule
     public function handleFieldsCriteria(CommonDBTM $item, &$it_criteria, $input)
     {
         $itemtable      = $item->getTable();
-        $itemtype       = $item->getType();
+        $itemtype       = $item::class;
 
         foreach ($this->complex_criteria as $criterion) {
             switch ($criterion->fields['criteria']) {

@@ -108,7 +108,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
             case 'plan':
                 Planning::showAddEventClassicForm([
                     'duration'       => $this->fields['duration'],
-                    'itemtype'       => self::getType(),
+                    'itemtype'       => static::class,
                     'items_id'       => $this->fields['id'],
                     '_display_dates' => false,
                 ]);

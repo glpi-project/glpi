@@ -459,7 +459,7 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = __('Form properties');
         $handlers = [];
         $handlers[$key][] = new TranslationHandler(

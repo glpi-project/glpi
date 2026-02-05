@@ -50,12 +50,12 @@ if (!$itemDevice->canView()) {
     throw new AccessDeniedHttpException();
 }
 
-if (in_array($itemDevice->getType(), $CFG_GLPI['devices_in_menu'])) {
-    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "assets", strtolower($itemDevice->getType()));
+if (in_array($itemDevice::class, $CFG_GLPI['devices_in_menu'])) {
+    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "assets", strtolower($itemDevice::class));
 } else {
-    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $itemDevice->getType());
+    Html::header($itemDevice->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", $itemDevice::class);
 }
 
-Search::show($itemDevice->getType());
+Search::show($itemDevice::class);
 
 Html::footer();

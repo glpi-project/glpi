@@ -197,18 +197,18 @@ class Item_SoftwareVersion extends CommonDBRelation
                                                   => $input['softwareversions_id'],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
 
@@ -221,22 +221,22 @@ class Item_SoftwareVersion extends CommonDBRelation
                             if (
                                 $itemtoadd->add([
                                     'items_id'              => $id,
-                                    'itemtype'              => $item::getType(),
+                                    'itemtype'              => $item::class,
                                     'softwareversions_id'   => $_POST['peer_softwareversions_id'],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($itemtoadd->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($itemtoadd->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
         }
@@ -936,7 +936,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             ],
             'WHERE'     => [
                 "{$selftable}.items_id" => $item->getField('id'),
-                "{$selftable}.itemtype" => $item->getType(),
+                "{$selftable}.itemtype" => $item::class,
             ] + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
             'ORDER'     => ['softname', 'version'],
         ];
@@ -1654,7 +1654,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         unset($params['SELECT'], $params['ORDER']);
         $params['WHERE'] = [
             $table . '.items_id'   => $item->getID(),
-            $table . '.itemtype'   => $item::getType(),
+            $table . '.itemtype'   => $item::class,
             $table . '.is_deleted' => 0,
         ];
         if ($noent === false) {

@@ -111,11 +111,11 @@ class Consumable extends CommonDBChild
     public function post_addItem()
     {
         // inherit infocom
-        $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::getType(), $this->fields[ConsumableItem::getForeignKeyField()]);
+        $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::class, $this->fields[ConsumableItem::getForeignKeyField()]);
         if (count($infocoms)) {
             $infocom = reset($infocoms);
             $infocom->clone([
-                'itemtype'  => self::getType(),
+                'itemtype'  => static::class,
                 'items_id'  => $this->getID(),
             ]);
         }
@@ -207,7 +207,7 @@ class Consumable extends CommonDBChild
             return;
         }
 
-        $action_prefix = self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $action_prefix = static::class . MassiveAction::CLASS_ACTION_SEPARATOR;
         $actions[$action_prefix . 'backtostock'] = __s('Back to stock');
         $actions[$action_prefix . 'give'] = _sx('button', 'Give');
     }
@@ -220,7 +220,7 @@ class Consumable extends CommonDBChild
         switch ($ma->getAction()) {
             case 'give':
                 // Retrieve entity restrict from consumable item
-                $consumable_id = current($input['items'][self::getType()]);
+                $consumable_id = current($input['items'][static::class]);
                 $consumable = new self();
                 if (
                     $consumable_id === false
@@ -641,7 +641,7 @@ class Consumable extends CommonDBChild
 
         $envs = [];
         foreach ($filtered_data as $env) {
-            $env['itemtype'] = self::getType();
+            $env['itemtype'] = static::class;
             $envs[$env['id']] = $env;
         }
 

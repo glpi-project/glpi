@@ -2434,7 +2434,7 @@ TWIG, ['msg' => __('Your planning')]);
     public static function getActorTypeFromPlanningKey($key)
     {
         if (preg_match('/group_\d+_users/', $key)) {
-            return Group_User::getType();
+            return Group_User::class;
         }
         $itemtype = ucfirst(preg_replace('/^([a-z]+)_\d+$/', '$1', $key));
         return class_exists($itemtype) ? $itemtype : null;

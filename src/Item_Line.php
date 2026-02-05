@@ -58,12 +58,12 @@ class Item_Line extends CommonDBRelation
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForMainItem($item) + self::countSimcardItemsForLine($item);
             }
-            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
         } else {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item) + self::countSimcardLinesForItem($item);
             }
-            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
     }
 
@@ -135,7 +135,7 @@ class Item_Line extends CommonDBRelation
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
             'items_id' => $item->getID(),
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'NOT'   => [
                 'lines_id' => 0,
             ],
@@ -306,7 +306,7 @@ class Item_Line extends CommonDBRelation
     {
         global $DB;
 
-        $itemtype = $item::getType();
+        $itemtype = $item::class;
         $ID = $item->fields['id'];
 
         if (

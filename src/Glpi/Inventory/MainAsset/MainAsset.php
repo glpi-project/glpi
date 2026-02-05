@@ -513,7 +513,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (isset($this->item)) {
-            $input['itemtype'] = $this->item->getType();
+            $input['itemtype'] = $this->item::class;
         }
 
         if (property_exists($val, 'comment')) {
@@ -621,7 +621,7 @@ abstract class MainAsset extends InventoryAsset
 
             if (isset($datarules['_no_rule_matches']) && $datarules['_no_rule_matches'] == '1') {
                 //no rule matched, this is a new one
-                $this->rulepassed(0, $this->item->getType(), null);
+                $this->rulepassed(0, $this->item::class, null);
             } elseif (!isset($datarules['found_inventories'])) {
                 if ($this->isAccessPoint($data)) {
                     //Only main item is stored as refused, not all APs
@@ -886,7 +886,7 @@ abstract class MainAsset extends InventoryAsset
         //check for any old agent to remove
         $agent = new Agent();
         $agent->deleteByCriteria([
-            'itemtype' => $this->item->getType(),
+            'itemtype' => $this->item::class,
             'items_id' => $items_id,
             'NOT' => [
                 'id' => $this->agent->fields['id'],

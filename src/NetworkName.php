@@ -843,7 +843,7 @@ TWIG, $twig_params);
             case NetworkPort::class:
                 return countElementsInTable(
                     'glpi_networknames',
-                    ['itemtype'   => $item->getType(),
+                    ['itemtype'   => $item::class,
                         'items_id'   => $item->getID(),
                         'is_deleted' => 0,
                     ]
@@ -866,7 +866,7 @@ TWIG, $twig_params);
                         ],
                     ],
                     'WHERE'           => [
-                        'glpi_networkports.itemtype'     => $item->getType(),
+                        'glpi_networkports.itemtype'     => $item::class,
                         'glpi_networkports.items_id'     => $item->getID(),
                         'glpi_networkports.is_deleted'   => 0,
                         'glpi_networknames.is_deleted'   => 0,

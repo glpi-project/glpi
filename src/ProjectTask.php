@@ -255,12 +255,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $users = [];
             foreach ($team as $type => $actors) {
                 switch ($type) {
-                    case User::getType():
+                    case User::class:
                         foreach ($actors as $actor) {
                             $users[$actor['items_id']] = $actor['items_id'];
                         }
                         break;
-                    case Group::getType():
+                    case Group::class:
                         foreach ($actors as $actor) {
                             $group_iterator = $DB->request([
                                 'SELECT' => 'users_id',
@@ -272,8 +272,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                             }
                         }
                         break;
-                    case Supplier::getType():
-                    case Contact::getType():
+                    case Supplier::class:
+                    case Contact::class:
                         //only Users can be checked for planning conflicts
                         break;
                     default:

@@ -1090,7 +1090,7 @@ TWIG);
             && $item->isDynamic()
             && $item->can($item->fields['id'], UPDATE)
         ) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
         return '';
     }
@@ -1392,7 +1392,7 @@ TWIG);
             case 'unlock_fields':
                 $input = $ma->getInput();
                 if (isset($input['attached_fields'])) {
-                    $base_itemtype = $baseitem->getType();
+                    $base_itemtype = $baseitem::class;
                     foreach ($ids as $id) {
                         $lock_fields_name = [];
                         foreach ($input['attached_fields'] as $fields) {
@@ -1424,7 +1424,7 @@ TWIG);
                     }
                     $links = [];
                     foreach ($attached_items as $attached_item) {
-                        $infos = self::getLocksQueryInfosByItemType($attached_item, $baseitem->getType());
+                        $infos = self::getLocksQueryInfosByItemType($attached_item, $baseitem::class);
                         if ($item = getItemForItemtype($infos['type'])) {
                             $infos['item'] = $item;
                             $links[$attached_item] = $infos;
@@ -1446,7 +1446,7 @@ TWIG);
                             }
                         }
 
-                        $baseItemType = $baseitem->getType();
+                        $baseItemType = $baseitem::class;
                         if ($action_valid) {
                             $ma->itemDone($baseItemType, $id, MassiveAction::ACTION_OK);
                         } else {

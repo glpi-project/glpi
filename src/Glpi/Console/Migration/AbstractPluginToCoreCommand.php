@@ -380,7 +380,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
 
         $exists = $infocom->getFromDBByCrit(
             [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
             ]
         );
@@ -391,7 +391,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             $success = $infocom->update($infocom_input);
         } else {
             $infocom_input += [
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->getID(),
                 'entities_id'  => $item->fields['entities_id'] ?? 0,
                 'is_recursive' => $item->fields['is_recursive'] ?? 0,
@@ -403,7 +403,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             $this->handleImportError(
                 sprintf(
                     __('Unable to financial and administrative information for %s "%s" (%d).'),
-                    $item->getType(),
+                    $item::class,
                     $item->getName(),
                     $item->getID()
                 ),

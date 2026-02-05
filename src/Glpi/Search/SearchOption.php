@@ -202,7 +202,7 @@ final class SearchOption implements ArrayAccess
                 $fn_append_options(NetworkPort::getSearchOptionsToAdd('networkport_types'));
                 break;
 
-            case AllAssets::getType():
+            case AllAssets::class:
                 $search[$itemtype]['common']            = __('Characteristics');
 
                 $search[$itemtype][1]['table']          = 'asset_types';
@@ -312,42 +312,42 @@ final class SearchOption implements ArrayAccess
 
         if (
             in_array($itemtype, $CFG_GLPI["networkport_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(NetworkPort::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["contract_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Contract::getSearchOptionsToAdd());
         }
 
         if (
             Document::canApplyOn($itemtype)
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Document::getSearchOptionsToAdd());
         }
 
         if (
             Infocom::canApplyOn($itemtype)
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Infocom::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["domain_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Domain::getSearchOptionsToAdd($itemtype));
         }
 
         if (
             in_array($itemtype, $CFG_GLPI["appliance_types"])
-            || ($itemtype == AllAssets::getType())
+            || ($itemtype == AllAssets::class)
         ) {
             $fn_append_options(Appliance::getSearchOptionsToAdd($itemtype));
         }
@@ -730,7 +730,7 @@ final class SearchOption implements ArrayAccess
         $item   = null;
         $entity_check = true;
 
-        if ($itemtype !== AllAssets::getType()) {
+        if ($itemtype !== AllAssets::class) {
             $item = getItemForItemtype($itemtype);
             $entity_check = $item->isEntityAssign();
 
@@ -766,7 +766,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if (isset($params['as_map']) && (int) $params['as_map'] === 1) {
-            if ($itemtype !== AllAssets::getType()) {
+            if ($itemtype !== AllAssets::class) {
                 // Add location name when map mode
                 $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
                 if ($loc_opt > 0) {
@@ -785,7 +785,7 @@ final class SearchOption implements ArrayAccess
                 || ($item && $item->maybeRecursive())
                 || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
         ) {
-            if ($itemtype !== AllAssets::getType()) {
+            if ($itemtype !== AllAssets::class) {
                 $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
                 if ($entity_opt > 0) {
                     $toview[] = $entity_opt;

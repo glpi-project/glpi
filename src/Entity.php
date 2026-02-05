@@ -2278,13 +2278,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     public static function generateLinkSatisfaction($item)
     {
-        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::getType()));
+        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
         $url = self::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_URL' . $config_suffix);
 
-        $tag_prefix = strtoupper($item::getType());
+        $tag_prefix = strtoupper($item::class);
 
         if (strstr($url, "[ITEMTYPE]")) {
-            $url = str_replace("[ITEMTYPE]", $item::getType(), $url);
+            $url = str_replace("[ITEMTYPE]", $item::class, $url);
         }
         if (strstr($url, "[ITEMTYPE_NAME]")) {
             $url = str_replace("[ITEMTYPE_NAME]", $item::getTypeName(1), $url);
@@ -3442,7 +3442,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', static::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if ($this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT) {
             $handlers[$key][] = new TranslationHandler(

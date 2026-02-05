@@ -1285,7 +1285,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $item_input = [
-                    'itemtype' => $item->getType(),
+                    'itemtype' => $item::class,
                     'items_id' => $item->fields['id'],
                 ];
 
@@ -1305,7 +1305,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $required_units = 1;
-                $modeltype = $item->getType() . 'Model';
+                $modeltype = $item::class . 'Model';
                 if (class_exists($modeltype)) {
                     $model_fkey = getForeignKeyFieldForTable($modeltype::getTable());
                     if (

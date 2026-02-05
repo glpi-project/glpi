@@ -54,7 +54,7 @@ trait FilterableTrait
         }
 
         // The ID is not always search option 2
-        $opts = SearchOption::getOptionsForItemtype($item::getType());
+        $opts = SearchOption::getOptionsForItemtype($item::class);
         $item_table = $item::getTable();
         $id_field = $item::getIndexName();
         $id_opt_num = null;
@@ -88,7 +88,7 @@ trait FilterableTrait
         ];
 
         // Execute search
-        $data = SearchEngine::getData($item::getType(), [
+        $data = SearchEngine::getData($item::class, [
             'criteria' => $criteria,
         ]);
 

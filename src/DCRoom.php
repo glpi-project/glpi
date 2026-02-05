@@ -318,7 +318,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
                 return self::createTabEntry(
                     self::getTypeName(Session::getPluralNumber()),
                     $nb,
-                    $item::getType()
+                    $item::class
                 );
         }
 

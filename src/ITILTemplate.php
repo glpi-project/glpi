@@ -467,7 +467,7 @@ abstract class ITILTemplate extends CommonDropdown
     {
 
         if (Session::haveRight(static::$rightname, READ)) {
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'TicketTemplate':
                 case 'ChangeTemplate':
                 case 'ProblemTemplate':
@@ -641,9 +641,9 @@ abstract class ITILTemplate extends CommonDropdown
                                     'is_recursive' => 1,
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
@@ -653,14 +653,14 @@ abstract class ITILTemplate extends CommonDropdown
                             $input2['is_recursive'] = 1;
 
                             if (!$item->import($input2)) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -740,12 +740,12 @@ abstract class ITILTemplate extends CommonDropdown
         global $DB;
 
         $to_merge = [];
-        switch (static::getType()) {
-            case Ticket::getType():
+        switch (static::class) {
+            case Ticket::class:
                 $to_merge = ['tickettemplates_id_incident', 'tickettemplates_id_demand'];
                 break;
             default:
-                $to_merge = [strtolower($this->getType() . 'templates_id')];
+                $to_merge = [strtolower(static::class . 'templates_id')];
                 break;
         }
 
@@ -951,6 +951,6 @@ abstract class ITILTemplate extends CommonDropdown
      */
     public static function getITILObjectClass(): string
     {
-        return preg_replace("/Template$/i", "", static::getType());
+        return preg_replace("/Template$/i", "", static::class);
     }
 }

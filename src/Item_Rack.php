@@ -103,22 +103,22 @@ class Item_Rack extends CommonDBRelation
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE, $input)) {
                         $relation_criteria = [
-                            'itemtype' => $item->getType(),
+                            'itemtype' => $item::class,
                             'items_id' => $item->getID(),
                         ];
                         if (countElementsInTable(Item_Rack::getTable(), $relation_criteria) > 0) {
                             if ($item_rack->deleteByCriteria($relation_criteria)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             // Item is not linked to a rack, not an error
-                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                            $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -397,7 +397,7 @@ class Item_Rack extends CommonDBRelation
 
         if ($canedit) {
             Session::initNavigateListItems(
-                self::getType(),
+                static::class,
                 //TRANS : %1$s is the itemtype name,
                 //        %2$s is the name of the item (used for headings of a list)
                 sprintf(

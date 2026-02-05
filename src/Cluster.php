@@ -225,7 +225,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
         $cluster = new self();
         $item_cluster = new Item_Cluster();
         if (
-            $item_cluster->getFromDBByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $item_cluster->getFromDBByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
             && $item_cluster->fields['clusters_id'] != 0
             && $cluster->getFromDB($item_cluster->fields['clusters_id'])
         ) {

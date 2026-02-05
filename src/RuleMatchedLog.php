@@ -72,7 +72,7 @@ class RuleMatchedLog extends CommonDBTM
         return countElementsInTable(
             self::getTable(),
             [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->getField('id'),
             ]
         );

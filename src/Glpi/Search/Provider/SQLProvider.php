@@ -157,7 +157,7 @@ final class SQLProvider implements SearchProviderInterface
         $itemtable = SearchEngine::getOrigTableName($itemtype);
         $item      = null;
         $mayberecursive = false;
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype != AllAssets::class) {
             $item           = getItemForItemtype($itemtype);
             $mayberecursive = $item->maybeRecursive();
         }
@@ -1046,15 +1046,15 @@ final class SQLProvider implements SearchProviderInterface
                 $criteria = [
                     'glpi_itilfollowups.is_private' => $allowed_is_private,
                     'OR' => [
-                        new QueryExpression(ITILFollowup::buildParentCondition(Ticket::getType())),
+                        new QueryExpression(ITILFollowup::buildParentCondition(Ticket::class)),
                         new QueryExpression(ITILFollowup::buildParentCondition(
-                            Change::getType(),
+                            Change::class,
                             'changes_id',
                             "glpi_changes_users",
                             "glpi_changes_groups"
                         )),
                         new QueryExpression(ITILFollowup::buildParentCondition(
-                            Problem::getType(),
+                            Problem::class,
                             'problems_id',
                             "glpi_problems_users",
                             "glpi_groups_problems"
@@ -2293,7 +2293,7 @@ final class SQLProvider implements SearchProviderInterface
             if (
                 (!isset($opt['searchequalsonfield'])
                     || !$opt['searchequalsonfield'])
-                && ($itemtype == AllAssets::getType()
+                && ($itemtype == AllAssets::class
                     || $table != $itemtype::getTable())
             ) {
                 $append_criterion_with_search($criteria['OR'], "$table.id");
@@ -4502,7 +4502,7 @@ final class SQLProvider implements SearchProviderInterface
                         && $citem->canView()
                     ) {
                         // State case
-                        if ($data['itemtype'] == AllAssets::getType()) {
+                        if ($data['itemtype'] == AllAssets::class) {
                             $query_num  = str_replace(
                                 $CFG_GLPI["union_search_type"][$data['itemtype']],
                                 $ctable,
@@ -4617,7 +4617,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $tmpquery = "";
                     // AllAssets case
-                    if ($data['itemtype'] == AllAssets::getType()) {
+                    if ($data['itemtype'] == AllAssets::class) {
                         $tmpquery = $SELECT . ", '{$DB->escape($ctype)}' AS TYPE "
                             . $FROM
                             . $WHERE;
@@ -4651,7 +4651,7 @@ final class SQLProvider implements SearchProviderInterface
                         // Replace 'AllAssets' by itemtype
                         // Use quoted value to prevent replacement of AllAssets in column identifiers
                         $tmpquery = str_replace(
-                            $DB->quoteValue(AllAssets::getType()),
+                            $DB->quoteValue(AllAssets::class),
                             $DB->quoteValue($ctype),
                             $tmpquery
                         );

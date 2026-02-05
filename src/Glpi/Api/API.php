@@ -654,12 +654,12 @@ abstract class API
             && in_array($itemtype, Item_Devices::getConcernedItems())
         ) {
             $all_devices = [];
-            foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
+            foreach (Item_Devices::getItemAffinities($item::class) as $device_type) {
                 $found_devices = getAllDataFromTable(
                     $device_type::getTable(),
                     [
                         'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
+                        'itemtype'     => $item::class,
                         'is_deleted'   => 0,
                     ],
                     true
@@ -1018,7 +1018,7 @@ abstract class API
                     "glpi_logs",
                     [
                         'items_id'  => $item->getID(),
-                        'itemtype'  => $item->getType(),
+                        'itemtype'  => $item::class,
                     ]
                 );
             }
@@ -1265,7 +1265,7 @@ abstract class API
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!$DB->fieldExists($table, $filter_field)) {
                     $this->returnError(
-                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType()),
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item::class),
                         400,
                         "ERROR_FIELD_NOT_FOUND"
                     );
@@ -1796,7 +1796,7 @@ abstract class API
             }
 
             // if all asset, provide type in returned data
-            if ($itemtype == AllAssets::getType()) {
+            if ($itemtype == AllAssets::class) {
                 $current_line['id']       = $raw['id'];
                 $current_line['itemtype'] = $raw['TYPE'];
             }
@@ -3279,7 +3279,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     {
         // Return massive actions for a given item
         $actions = MassiveAction::getAllMassiveActions(
-            $item::getType(),
+            $item::class,
             $item->isDeleted(),
             $item,
             $item->getID()

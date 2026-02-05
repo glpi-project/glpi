@@ -492,7 +492,7 @@ TWIG, $twig_params);
     {
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'SLM':
                     /** @var SLM $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -501,7 +501,7 @@ TWIG, $twig_params);
                             ['slms_id' => $item->getField('id')]
                         );
                     }
-                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());
+                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::class);
             }
         }
         return '';

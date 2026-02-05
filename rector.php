@@ -38,8 +38,12 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
+use RectorGlpi\Set\GlpiSetList;
 
 return RectorConfig::configure()
+    ->withSets([
+        GlpiSetList::GLPI_DEFAULT_SET,
+    ])
     ->withPaths([
         __DIR__ . '/ajax',
         __DIR__ . '/dependency_injection',
