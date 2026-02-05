@@ -8585,6 +8585,11 @@ CREATE TABLE `glpi_pdus` (
   `pdumodels_id` int unsigned DEFAULT NULL,
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `sysdescr` text,
+  `last_inventory_update` timestamp NULL DEFAULT NULL,
+  `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
+  `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -8608,36 +8613,35 @@ CREATE TABLE `glpi_pdus` (
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `pdutypes_id` (`pdutypes_id`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `snmpcredentials_id` (`snmpcredentials_id`),
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_plugs`;
 CREATE TABLE `glpi_plugs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
+  `custom_name` varchar(255) DEFAULT NULL,
+  `itemtype_main` varchar(255) DEFAULT NULL,
+  `items_id_main` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_asset` varchar(100) NOT NULL DEFAULT '',
+  `items_id_asset` int unsigned NOT NULL DEFAULT '0',
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
+  KEY `item` (`itemtype_asset`, `items_id_asset`),
+  KEY `mainitem` (`itemtype_main`, `items_id_main`),
+  KEY `items_id_main` (`items_id_main`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `glpi_items_plugs`;
-CREATE TABLE `glpi_items_plugs` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `plugs_id` int unsigned NOT NULL DEFAULT '0',
-  `itemtype` varchar(255) NOT NULL,
-  `items_id` int unsigned NOT NULL DEFAULT '0',
-  `number_plugs` int DEFAULT '0',
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `plugs_id` (`plugs_id`),
-  KEY `item` (`itemtype`,`items_id`),
-  KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_pdus_racks`;

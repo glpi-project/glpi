@@ -1,0 +1,129 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
+{% set bg = '' %}
+{% if item.isDeleted() %}
+   {% set bg = 'asset-deleted' %}
+{% endif %}
+
+<div class="asset {{ bg }}">
+   {{ include('components/form/header.html.twig', {'in_twig': true}) }}
+
+   {% set rand = random() %}
+   {% set params  = params ?? [] %}
+   {% set target       = params['target'] ?? item.getFormURL() %}
+   {% set withtemplate = params['withtemplate'] ?? '' %}
+   {% set item_type = item.getType() %}
+   {% set field_options = {
+       'locked_fields': item.getLockedFields(),
+       'rand': rand,
+   } %}
+
+   <div class="card-body d-flex flex-wrap">
+      <div class="col-12 flex-column">
+         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+            <div class="row flex-row align-items-start flex-grow-1">
+               <div class="row flex-row">
+
+                    {{ fields.textField(
+                        'name',
+                        item.fields['name'],
+                        __('Name'),
+                        field_options|merge({
+                            required: true,
+                        })
+                    ) }}
+
+                    {{ fields.textField(
+                        'custom_name',
+                        item.fields['custom_name'],
+                        __('Custom name'),
+                        field_options
+                    ) }}
+
+                    {{ fields.dropdownItemsFromItemtypes(
+                        'itemtype_main',
+                        __('Support type'),
+                        {
+                            items_id_name           : 'items_id_main',
+                            itemtype_name           : 'itemtype_main',
+                            itemtypes               : config('plug_types'),
+                            entity_restrict         : entity_restrict,
+                            checkright              : false,
+                            display_emptychoice     : false,
+                            required                : true,
+                            default_itemtype        : item.fields['itemtype_main']|default(''),
+                            default_items_id        : item.fields['items_id_main']|default(0),
+                        }
+                    ) }}
+
+                    {{ fields.dropdownItemsFromItemtypes(
+                        'itemtype_asset',
+                         __('Associated asset'),
+                        {
+                            items_id_name           : 'items_id_asset',
+                            itemtype_name           : 'itemtype_asset',
+                            itemtypes               : config('inventory_types'),
+                            entity_restrict         : entity_restrict,
+                            checkright              : false,
+                            display_emptychoice     : false,
+                            default_itemtype        : item.fields['itemtype_asset']|default(''),
+                            default_items_id        : item.fields['items_id_asset']|default(0),
+                        }
+                    ) }}
+
+                    {{ fields.textareaField(
+                        'comment',
+                        item.fields['comment'],
+                        _n('Comment', 'Comments', get_plural_number()),
+                        field_options
+                    ) }}
+
+                </div> {# .row #}
+            </div> {# .row #}
+         </div> {# .flex-row #}
+      </div>
+   </div> {# .card-body #}
+
+   {% if no_form_buttons is not defined or no_form_buttons == false %}
+      {{ include('components/form/buttons.html.twig') }}
+   {% endif %}
+
+   {% if params['formfooter'] ?? true %}
+      <div class="card-footer mx-n2 mb-n2 mt-4">
+         {{ include('components/form/dates.html.twig') }}
+      </div>
+   {% endif %}
+</div>
