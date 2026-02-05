@@ -30,7 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
+import path from 'path';
 import { GlpiPage } from "./GlpiPage";
 
 export class KnowbaseItemPage extends GlpiPage
@@ -62,5 +63,37 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByText(content).filter({
             'visible': true,
         });
+    }
+
+    public async doSelectFilesForKbUpload(files: string[], modal: Locator): Promise<void>
+    {
+        const filePaths = files.map(file => path.join(__dirname, `../../fixtures/${file}`));
+
+        // Use filechooser event - click the label to trigger the hidden file input
+        const fileChooserPromise = this.page.waitForEvent('filechooser');
+        await modal.getByText('Drop files here or click to browse').click();
+        const fileChooser = await fileChooserPromise;
+        await fileChooser.setFiles(filePaths);
+
+        // Wait for files to be processed and appear in preview
+        await expect(modal.getByRole('listitem')).toHaveCount(files.length);
+    }
+
+    public async doAddFileToKbUploadArea(file: string, modal: Locator): Promise<void>
+    {
+        await this.doSelectFilesForKbUpload([file], modal);
+        await modal.getByRole('button', { name: 'Upload Documents' }).click();
+        await expect(modal).toBeHidden();
+        // Wait for page reload after upload
+        await this.page.waitForLoadState('load');
+    }
+
+    public async doAddFilesToKbUploadArea(files: string[], modal: Locator): Promise<void>
+    {
+        await this.doSelectFilesForKbUpload(files, modal);
+        await modal.getByRole('button', { name: 'Upload Documents' }).click();
+        await expect(modal).toBeHidden();
+        // Wait for page reload after upload
+        await this.page.waitForLoadState('load');
     }
 }
