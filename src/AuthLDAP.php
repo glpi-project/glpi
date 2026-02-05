@@ -3108,6 +3108,26 @@ class AuthLDAP extends CommonDBTM
         bool $silent_bind_errors = false
     ) {
         $ldapuri = self::buildUri($host, (int) $port);
+
+        if (!empty($tls_certfile)) {
+            if (!Filesystem::isFilepathSafe($tls_certfile)) {
+                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_certfile)) {
+                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+            }
+        }
+        if (!empty($tls_keyfile)) {
+            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
+                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_keyfile)) {
+                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+            }
+        }
+
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -3147,25 +3167,6 @@ class AuthLDAP extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
-            }
-        }
-
-        if (!empty($tls_certfile)) {
-            if (!Filesystem::isFilepathSafe($tls_certfile)) {
-                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_certfile)) {
-                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
-            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
-            }
-        }
-        if (!empty($tls_keyfile)) {
-            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
-                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_keyfile)) {
-                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
-            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
             }
         }
 
