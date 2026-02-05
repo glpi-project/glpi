@@ -324,7 +324,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
                 foreach ($ids as $id) {
                     $itemtype = $_POST['itemtype'];
                     $new_asset_id = $unmanaged->convert($id, $itemtype);
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     if ($ma->isFromSingleItem()) {
                         $ma->setRedirect($itemtype::getFormURLWithID($new_asset_id));
                     } else {
@@ -354,7 +354,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'SELECT' => ['id'],
             'FROM' => NetworkPort::getTable(),
             'WHERE' => [
-                'itemtype' => self::getType(),
+                'itemtype' => static::class,
                 'items_id' => $items_id,
             ],
         ]);
@@ -363,7 +363,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'SELECT' => ['id'],
             'FROM' => RuleMatchedLog::getTable(),
             'WHERE' => [
-                'itemtype' => self::getType(),
+                'itemtype' => static::class,
                 'items_id' => $items_id,
             ],
         ]);
@@ -372,7 +372,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'SELECT' => ['id'],
             'FROM' => Lockedfield::getTable(),
             'WHERE' => [
-                'itemtype' => self::getType(),
+                'itemtype' => static::class,
                 'items_id' => $items_id,
             ],
         ]);

@@ -679,7 +679,7 @@ trait InventoryNetworkPort
                 $networkport->deleteByCriteria([
                     "itemtype"           => $this->port_itemtype,
                     "items_id"           => $this->port_items_id,
-                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "instantiation_type" => NetworkPortAggregate::class,
                     "name"               => "Management",
                 ], true);
             }

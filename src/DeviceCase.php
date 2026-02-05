@@ -116,7 +116,7 @@ class DeviceCase extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;

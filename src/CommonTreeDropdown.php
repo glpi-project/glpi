@@ -106,7 +106,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     [$this->getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -276,8 +276,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [$this->getForeignKeyField() => $ID],
             ];
-            if (Session::haveTranslations($this->getType(), 'completename')) {
-                DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
+            if (Session::haveTranslations(static::class, 'completename')) {
+                DropdownTranslation::regenerateAllCompletenameTranslationsFor(static::class, $ID);
             }
 
             foreach ($DB->request($query) as $data) {
@@ -306,8 +306,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ['id' => $data['id']]
                 );
                 // Translations :
-                if (Session::haveTranslations($this->getType(), 'completename')) {
-                    DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
+                if (Session::haveTranslations(static::class, 'completename')) {
+                    DropdownTranslation::regenerateAllCompletenameTranslationsFor(static::class, $data['id']);
                 }
 
                 $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
@@ -391,9 +391,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ];
             Log::history(
                 $parent,
-                $this->getType(),
+                static::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_ADD_SUBITEM
             );
         }
@@ -425,9 +425,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ];
                     Log::history(
                         $oldParentID,
-                        $this->getType(),
+                        static::class,
                         $changes,
-                        $this->getType(),
+                        static::class,
                         Log::HISTORY_DELETE_SUBITEM
                     );
                 }
@@ -444,9 +444,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ];
                     Log::history(
                         $newParentID,
-                        $this->getType(),
+                        static::class,
                         $changes,
-                        $this->getType(),
+                        static::class,
                         Log::HISTORY_ADD_SUBITEM
                     );
                 }
@@ -460,16 +460,16 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 ];
                 Log::history(
                     $ID,
-                    $this->getType(),
+                    static::class,
                     $changes,
-                    $this->getType(),
+                    static::class,
                     Log::HISTORY_UPDATE_SUBITEM
                 );
             }
 
             // Force DB cache refresh
-            getAncestorsOf(getTableForItemType($this->getType()), $ID);
-            getSonsOf(getTableForItemType($this->getType()), $ID);
+            getAncestorsOf(getTableForItemType(static::class), $ID);
+            getSonsOf(getTableForItemType(static::class), $ID);
         }
     }
 
@@ -486,9 +486,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ];
             Log::history(
                 $parent,
-                $this->getType(),
+                static::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_DELETE_SUBITEM
             );
         }
@@ -725,7 +725,7 @@ TWIG, $twig_params);
                     $fk     = $item->getForeignKeyField();
                     $parent = clone $item;
                     if (!$parent->getFromDB($input['parent'])) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                         $ma->addMessage($parent->getErrorMessage(ERROR_NOT_FOUND));
                         return;
                     }
@@ -743,22 +743,22 @@ TWIG, $twig_params);
                                         $fk  => $parent->getID(),
                                     ])
                                 ) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                 }
                 return;

@@ -96,7 +96,7 @@ abstract class NotificationSetting extends CommonDBTM
     #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case static::class:
                 $tabs[1] = self::createTabEntry(__('Setup'));
                 return $tabs;

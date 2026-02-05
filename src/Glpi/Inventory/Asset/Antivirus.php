@@ -45,8 +45,8 @@ class Antivirus extends InventoryAsset
     {
         global $CFG_GLPI;
 
-        if (!in_array($this->item->getType(), $CFG_GLPI['itemantivirus_types'])) {
-            throw new RuntimeException('Antivirus are not handled for ' . $this->item->getType());
+        if (!in_array($this->item::class, $CFG_GLPI['itemantivirus_types'])) {
+            throw new RuntimeException('Antivirus are not handled for ' . $this->item::class);
         }
         $mapping = [
             'company'      => 'manufacturers_id',
@@ -99,7 +99,7 @@ class Antivirus extends InventoryAsset
             'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
             'FROM'   => ItemAntivirus::getTable(),
             'WHERE'  => [
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
                 'items_id' => $this->item->fields['id'],
             ],
         ]);
@@ -149,7 +149,7 @@ class Antivirus extends InventoryAsset
 
         if (count($value) != 0) {
             foreach ($value as $val) {
-                $val->itemtype = $this->item->getType();
+                $val->itemtype = $this->item::class;
                 $val->items_id = $this->item->fields['id'];
                 $val->is_dynamic = 1;
                 $input = $this->handleInput($val, $itemAntivirus);

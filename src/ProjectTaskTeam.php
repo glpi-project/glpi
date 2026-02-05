@@ -98,7 +98,7 @@ class ProjectTaskTeam extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
-                    return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(1), $nb, $item::class);
             }
         }
         return '';
@@ -203,14 +203,14 @@ class ProjectTaskTeam extends CommonDBRelation
         $task = new ProjectTask();
         $task->getFromDB($input['projecttasks_id']);
         switch ($input['itemtype']) {
-            case User::getType():
+            case User::class:
                 Planning::checkAlreadyPlanned(
                     $input['items_id'],
                     $task->fields['plan_start_date'],
                     $task->fields['plan_end_date']
                 );
                 break;
-            case Group::getType():
+            case Group::class:
                 $group_iterator = $DB->request([
                     'SELECT' => 'users_id',
                     'FROM'   => Group_User::getTable(),
@@ -224,8 +224,8 @@ class ProjectTaskTeam extends CommonDBRelation
                     );
                 }
                 break;
-            case Supplier::getType():
-            case Contact::getType():
+            case Supplier::class:
+            case Contact::class:
                 //only Users can be checked for planning conflicts
                 break;
             default:

@@ -105,7 +105,7 @@ class NotImportedEmail extends CommonDBTM
             case 'delete_email':
             case 'import_email':
                 if (!$item->canUpdate()) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                 } else {
                     $input = $ma->getInput();
                     if (count($ids)) {
@@ -116,7 +116,7 @@ class NotImportedEmail extends CommonDBTM
                             $mailcollector->deleteOrImportSeveralEmails($ids, 1, $input['entities_id']);
                         }
                     }
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
                 }
                 return;
         }

@@ -64,7 +64,7 @@ class ITILFollowup extends CommonDBChild
      */
     public function getItilObjectItemType()
     {
-        return str_replace('Followup', '', $this->getType());
+        return str_replace('Followup', '', static::class);
     }
 
 
@@ -298,7 +298,7 @@ class ITILFollowup extends CommonDBChild
             $this->getField('items_id'),
             get_class($parentitem),
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_ADD_SUBITEM
         );
 
@@ -363,7 +363,7 @@ class ITILFollowup extends CommonDBChild
             $this->getField(self::$items_id),
             $this->fields['itemtype'],
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_DELETE_SUBITEM
         );
 
@@ -485,7 +485,7 @@ class ITILFollowup extends CommonDBChild
 
         // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
-            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
+            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], static::class, $input["users_id"]);
         }
 
         if (!isset($input['date'])) {
@@ -589,7 +589,7 @@ class ITILFollowup extends CommonDBChild
             $this->getField('items_id'),
             $this->fields['itemtype'],
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_UPDATE_SUBITEM
         );
 
@@ -999,30 +999,30 @@ class ITILFollowup extends CommonDBChild
                         && $item->getFromDB($id)
                     ) {
                         if (in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         } else {
                             $input2 = [
                                 'items_id'        => $id,
-                                'itemtype'        => $item->getType(),
+                                'itemtype'        => $item::class,
                                 'is_private'      => $input['is_private'],
                                 'requesttypes_id' => $input['requesttypes_id'],
                                 'content'         => $input['content'],
                             ];
                             if ($fup->can(-1, CREATE, $input2)) {
                                 if ($fup->add($input2)) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }

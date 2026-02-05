@@ -86,7 +86,7 @@ class AssetParameters extends AbstractParameters
         $values = [
             'id'       => $fields['id'],
             'name'     => $fields['name'],
-            'itemtype' => $asset->getType(),
+            'itemtype' => $asset::class,
             'serial'   => $fields['serial'],
             'model'    => '',
             'type'     => '',

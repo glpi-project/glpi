@@ -48,11 +48,11 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['it
     $itemtype = $_POST['itemtype'];
     $items_id = $_POST['items_id'];
 
-    if ($itemtype != Location::getType()) {
+    if ($itemtype != Location::class) {
         $item = getItemForItemtype($itemtype);
         $found = $item->getFromDB($items_id);
         if ($found && isset($item->fields['locations_id']) && (int) $item->fields['locations_id'] > 0) {
-            $itemtype = Location::getType();
+            $itemtype = Location::class;
             $items_id = $item->fields['locations_id'];
         } else {
             $result = [

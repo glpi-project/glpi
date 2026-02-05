@@ -856,7 +856,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 38,
-                'itemtype' => CleanSoftwareCron::getType(),
+                'itemtype' => CleanSoftwareCron::class,
                 'name' => CleanSoftwareCron::TASK_NAME,
                 'frequency' => MONTH_TIMESTAMP,
                 'param' => 1000,
@@ -904,7 +904,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 42,
-                'itemtype' => PendingReasonCron::getType(),
+                'itemtype' => PendingReasonCron::class,
                 'name' => PendingReasonCron::TASK_NAME,
                 'frequency' => 30 * MINUTE_TIMESTAMP,
                 'param' => null,

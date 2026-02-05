@@ -94,7 +94,7 @@ if ($template->fields['requesttypes_id']) {
         ])
     ) {
         $template->fields['requesttypes_name'] = Dropdown::getDropdownName(
-            getTableForItemType(RequestType::getType()),
+            getTableForItemType(RequestType::class),
             $template->fields['requesttypes_id'],
             false,
             true,

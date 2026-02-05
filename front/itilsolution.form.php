@@ -92,7 +92,7 @@ if ($handled) {
         //if solution should be linked to selected KB entry
         $params = [
             'knowbaseitems_id' => $_POST['kb_linked_id'],
-            'itemtype'         => $track->getType(),
+            'itemtype'         => $track::class,
             'items_id'         => $track->getID(),
         ];
         $existing = $DB->request([

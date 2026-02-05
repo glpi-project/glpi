@@ -65,10 +65,10 @@ class ItemAntivirus extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(
                     self::getTable(),
-                    ['itemtype' => $item->getType(), 'items_id' => $item->getID(), 'is_deleted' => 0 ]
+                    ['itemtype' => $item::class, 'items_id' => $item->getID(), 'is_deleted' => 0 ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -293,7 +293,7 @@ class ItemAntivirus extends CommonDBChild
         global $DB;
 
         $ID = $asset->fields['id'];
-        $itemtype = $asset->getType();
+        $itemtype = $asset::class;
 
         if (
             !$asset->getFromDB($ID)

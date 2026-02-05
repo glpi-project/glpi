@@ -3200,12 +3200,12 @@ class Plugin extends CommonDBTM
                     if (!$plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->install($id);
                         if ($plugin->isInstalled($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3215,12 +3215,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->uninstall($id);
                         if (!$plugin->isInstalled($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3230,12 +3230,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->activate($id);
                         if ($plugin->isActivated($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3245,12 +3245,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->unactivate($id);
                         if (!$plugin->isActivated($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3259,9 +3259,9 @@ class Plugin extends CommonDBTM
                     $plugin->getFromDB($id);
                     if (!$plugin->isLoadable($plugin->fields['directory'])) {
                         $plugin->clean($id);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;

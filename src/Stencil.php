@@ -69,12 +69,12 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      */
     public static function getStencilFromItem(CommonDBTM $item): ?Stencil
     {
-        $itemtype = $item::getType();
+        $itemtype = $item::class;
         $items_id = $item->getID();
 
-        switch ($item->getType()) {
-            case NetworkEquipment::getType():
-            case NetworkEquipmentModel::getType():
+        switch ($item::class) {
+            case NetworkEquipment::class:
+            case NetworkEquipmentModel::class:
                 $stencil = new NetworkEquipmentModelStencil();
                 break;
             default:
@@ -283,7 +283,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
 
         $nb = count(json_decode(static::getStencilFromItem($item)->fields['zones'] ?? '{}', true));
 
-        return self::createTabEntry(static::getTypeName(), $nb, $item::getType());
+        return self::createTabEntry(static::getTypeName(), $nb, $item::class);
     }
 
     public function displayStencil(): void
@@ -347,7 +347,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         TemplateRenderer::getInstance()->display('stencil/editor.html.twig', [
             'item'              => $item,
             'stencil'           => $this,
-            'itemtype'          => $item->gettype(),
+            'itemtype'          => $item::class,
             'items_id'          => $item->getID(),
             'id'                => $self->fields['id'] ?? 0,
             'zones_json'        => $self->fields['zones'] ?? '{}',

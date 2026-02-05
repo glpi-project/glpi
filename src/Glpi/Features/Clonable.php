@@ -136,7 +136,7 @@ trait Clonable
                     $override_input['name'] = $relation_item->fields['name'];
                 }
                 $origin_id = $relation_item->getID();
-                $itemtype = $relation_item->getType();
+                $itemtype = $relation_item::class;
                 if (method_exists($relation_item, 'clone')) {
                     $method = new ReflectionMethod($relation_item, 'clone');
 
@@ -170,7 +170,7 @@ trait Clonable
             }
             // Update relations between cloned items
             foreach ($relation_newitems as $relation_newitem) {
-                $itemtype = $relation_newitem->getType();
+                $itemtype = $relation_newitem::class;
                 $foreignkey = getForeignKeyFieldForItemType($itemtype);
                 if ($relation_newitem->isField($foreignkey) && isset($cloned[$itemtype][$relation_newitem->fields[$foreignkey]])) {
                     $relation_newitem->update([

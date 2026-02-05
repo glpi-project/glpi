@@ -189,7 +189,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
 
                 case Group::class:
                     $nb = 0;
@@ -204,7 +204,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
             }
         }
         return '';
@@ -1414,7 +1414,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
             default:
                 $restrict['glpi_items_problems.items_id'] = $item->getID();
-                $restrict['glpi_items_problems.itemtype'] = $item->getType();
+                $restrict['glpi_items_problems.itemtype'] = $item::class;
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [

@@ -325,7 +325,7 @@ class Lockedfield extends CommonDBTM
         return $DB->delete(
             $this->getTable(),
             [
-                'itemtype'  => $this->item->getType(),
+                'itemtype'  => $this->item::class,
                 'items_id'  => $this->item->fields['id'],
             ]
         );

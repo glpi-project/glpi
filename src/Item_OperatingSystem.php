@@ -59,12 +59,12 @@ class Item_OperatingSystem extends CommonDBRelation
         }
 
         $nb = 0;
-        switch ($item->getType()) {
+        switch ($item::class) {
             default:
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
-                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
     }
 
@@ -133,7 +133,7 @@ class Item_OperatingSystem extends CommonDBRelation
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_operatingsystems.itemtype' => $item->getType(),
+                'glpi_items_operatingsystems.itemtype' => $item::class,
                 'glpi_items_operatingsystems.items_id' => $item->getID(),
             ],
             'ORDERBY'   => "$sort $order",
@@ -202,7 +202,7 @@ class Item_OperatingSystem extends CommonDBRelation
                 $id = array_keys($os)[0];
             } else {
                 //set itemtype and items_id
-                $instance->fields['itemtype']       = $item->getType();
+                $instance->fields['itemtype']       = $item::class;
                 $instance->fields['items_id']       = $item->getID();
                 $instance->fields['install_date']   = $item->fields['install_date'] ?? '';
                 $instance->fields['entities_id']    = $item->fields['entities_id'];
@@ -257,7 +257,7 @@ class Item_OperatingSystem extends CommonDBRelation
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
             }
-            $link = Toolbox::getItemTypeFormURL(self::getType());
+            $link = Toolbox::getItemTypeFormURL(static::class);
             $name = "<a href=\"" . htmlescape($link) . "?id=" . (int) $data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
 
             echo "<tr class='tab_bg_1'>";
@@ -626,28 +626,28 @@ class Item_OperatingSystem extends CommonDBRelation
                     if ($item->getFromDB($id)) {
                         if ($item->can($id, UPDATE, $input)) {
                             $exists = $ios->getFromDBByCrit([
-                                'itemtype'  => $item->getType(),
+                                'itemtype'  => $item::class,
                                 'items_id'  => $item->getID(),
                             ]);
                             $ok = false;
                             if ($exists) {
                                 $ok = $ios->update(['id'  => $ios->getID()] + $input);
                             } else {
-                                $ok = $ios->add(['itemtype' => $item->getType(), 'items_id' => $item->getID()] + $input);
+                                $ok = $ios->add(['itemtype' => $item::class, 'items_id' => $item->getID()] + $input);
                             }
 
                             if ($ok != false) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
