@@ -33,7 +33,7 @@
 
 /* eslint prefer-template: 0 */
 /* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
-/* global glpi_ajax_dialog, glpi_close_all_dialogs */
+/* global glpi_ajax_dialog, glpi_close_all_dialogs, glpi_toast_info, glpi_toast_error */
 
 window.GLPI = window.GLPI || {};
 window.GLPI.Dashboard = {
@@ -458,6 +458,41 @@ class GLPIDashboard {
                 .show('fade').delay(2000).hide('fade');
         });
 
+        // reset dashboard
+        $(document).on('click', 'button.reset-dashboard ', (event) => {
+            event.preventDefault();
+            this.resetDashboard();
+        });
+        $(document).on('click', 'button[name="confirm-reset-dashboard"]', (event) => {
+            event.preventDefault();
+            const btn = $(event.target);
+            const selected_dashboard = btn
+                .closest('.dashboard-reset-container')
+                .find('select[name="default_dashboard_key"]');
+            $.ajax({
+                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                method: 'POST',
+                data: {
+                    action: 'reset',
+                    dashboard: this.current_name,
+                    default_dashboard_key: selected_dashboard.val(),
+                }
+            }).then(() => {
+                glpi_toast_info(__('Dashboard has been reset to default'));
+                if (window.reloadTab !== undefined) {
+                    window.glpi_close_all_dialogs();
+                    window.reloadTab();
+                } else {
+                    this.initFilters();
+                    this.refreshDashboard();
+                    window.glpi_close_all_dialogs();
+                }
+            }, () => {
+                glpi_toast_error(__('An error occurred while resetting the dashboard'));
+                glpi_close_all_dialogs();
+            });
+        });
+
         // display widget types after selecting a card
         $(document).on('select2:select', '.display-widget-form select[name=card_id]', (event) => {
             const select2_data      = event.params.data;
@@ -778,6 +813,17 @@ class GLPIDashboard {
         }).then(() => {
             if (force_refresh) {
                 this.refreshDashboard();
+            }
+        });
+    }
+
+    resetDashboard() {
+        glpi_ajax_dialog({
+            title: __("Reset to default"),
+            url: `${CFG_GLPI.root_doc}/ajax/dashboard.php`,
+            params: {
+                action: 'prepare_reset',
+                dashboard: this.current_name,
             }
         });
     }

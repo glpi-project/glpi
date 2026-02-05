@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.6] unreleased
 
 ### Added
+- Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
 
 ### Changed
 
