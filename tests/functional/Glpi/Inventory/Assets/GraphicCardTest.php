@@ -38,9 +38,7 @@ use Glpi\Inventory\Asset\GraphicCard;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class GraphicCardTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array

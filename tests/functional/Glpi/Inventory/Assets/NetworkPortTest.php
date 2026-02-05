@@ -41,9 +41,7 @@ use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class NetworkPortTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array

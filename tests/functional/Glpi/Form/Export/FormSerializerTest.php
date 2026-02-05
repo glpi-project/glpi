@@ -1574,7 +1574,6 @@ final class FormSerializerTest extends DbTestCase
         $this->assertEquals(0, (new QuestionTypeItem())->getDefaultValueItemId($question));
     }
 
-    #[Group('single-thread')]
     public function testExportAndImportWithCustomIcon(): void
     {
         // Arrange: create a form with a custom icon

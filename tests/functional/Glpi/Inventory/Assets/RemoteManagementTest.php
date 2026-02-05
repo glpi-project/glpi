@@ -38,9 +38,7 @@ use Glpi\Inventory\Asset\RemoteManagement;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class RemoteManagementTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array

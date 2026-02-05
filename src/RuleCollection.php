@@ -879,7 +879,9 @@ TWIG, $twig_params);
         $ruleDescription = new Rule();
 
         // Get actual ranking of Rule to move
-        $ruleDescription->getFromDB($ID);
+        if (!$ruleDescription->getFromDB($ID)) {
+            throw new RuntimeException("Failed to load rule");
+        }
         $old_rank = $ruleDescription->fields["ranking"];
 
         $max_ranking_criteria = [
