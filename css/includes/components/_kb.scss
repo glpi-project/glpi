@@ -86,3 +86,91 @@
         background-color: transparent;
     }
 }
+
+// Drop Zone for document upload
+.kb-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 1.5rem;
+    border: 2px dashed var(--tblr-border-color);
+    border-radius: 0.5rem;
+    background-color: var(--tblr-bg-surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &.dragging {
+        border-color: var(--tblr-primary);
+        background-color: rgb(var(--tblr-primary-rgb) / 5%);
+
+        .kb-dropzone-icon {
+            color: var(--tblr-primary);
+            transform: translateY(-4px);
+        }
+    }
+}
+
+.kb-dropzone-content {
+    text-align: center;
+}
+
+.kb-dropzone-icon {
+    font-size: 2.5rem;
+    color: var(--tblr-secondary);
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.kb-dropzone-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.kb-dropzone-hint {
+    font-size: 0.8125rem;
+    margin-bottom: 0;
+}
+
+// File Preview List
+.kb-file-preview {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.kb-file-item {
+    background-color: var(--tblr-bg-surface);
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    .kb-file-remove {
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .min-width-0 {
+        min-width: 0;
+    }
+}
+
+// Upload progress bar
+.kb-upload-progress {
+    height: 4px;
+    background-color: var(--tblr-border-color);
+    border-radius: 2px;
+    overflow: hidden;
+
+    .kb-upload-progress-bar {
+        height: 100%;
+        background-color: var(--tblr-primary);
+        transition: width 0.3s ease;
+    }
+}
