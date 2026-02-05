@@ -39,6 +39,7 @@ use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use NetworkPort;
+use NetworkPortEthernet;
 use Toolbox;
 
 class NetworkPortTest extends DbTestCase
@@ -457,5 +458,41 @@ class NetworkPortTest extends DbTestCase
                 }
             }
         }
+    }
+
+    public function testCanViewItemWithoutGlobalReadRight()
+    {
+        $this->login();
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $networkport = $this->createItem(
+            NetworkPort::class,
+            [
+                'items_id'           => $computer->getID(),
+                'itemtype'           => $computer->getType(),
+                'entities_id'        => $computer->fields['entities_id'],
+                'is_recursive'       => 0,
+                'logical_number'     => 10,
+                'mac'                => '00:00:00:aa:bb:c0',
+                'instantiation_type' => NetworkPortEthernet::class,
+                'name'               => 'eth_test_rights',
+            ]
+        );
+
+        $this->assertTrue($networkport->canViewItem());
+
+        $old_networking_right = $_SESSION['glpiactiveprofile']['networking'] ?? 0;
+        $_SESSION['glpiactiveprofile']['networking'] = CREATE | UPDATE | DELETE | PURGE;
+
+        $this->assertTrue(NetworkPort::canView());
+        $this->assertTrue($networkport->canViewItem());
+
+        $_SESSION['glpiactiveprofile']['networking'] = 0;
+
+        $this->assertTrue(NetworkPort::canView());
+        $this->assertTrue($networkport->canViewItem());
+
+        $_SESSION['glpiactiveprofile']['networking'] = $old_networking_right;
     }
 }
