@@ -8762,12 +8762,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/SavedSearchFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/AddCommentController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$status of class Symfony\\\\Component\\\\HttpFoundation\\\\Response constructor expects int, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

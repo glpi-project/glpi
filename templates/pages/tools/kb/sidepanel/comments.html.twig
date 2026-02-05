@@ -36,21 +36,20 @@
 {% block title %}{{ __("Comments") }}{% endblock %}
 
 {% block content %}
-    <div class="d-flex flex-column row-gap-4 overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4" data-glpi-comments>
+    <div
+        class="d-flex flex-column row-gap-2 overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4"
+        data-glpi-comments
+    >
         <p
-            class="text-muted fs-3 mt-auto mb-auto align-self-center {{ comments|length > 0 ? 'd-none' : '' }}"
+            class="text-muted fs-3 mt-auto mb-auto align-self-center {{ threads|length > 0 ? 'd-none' : '' }}"
             data-glpi-comments-empty
         >
             {{ __('No comments yet.') }}
         </p>
-        {% for comment in comments %}
-            {{ include('pages/tools/kb/sidepanel/comment.html.twig', {
-                comment_id   : comment.fields.id,
-                date_creation: comment.fields.date_creation,
-                comment      : comment.fields.comment,
-                can_edit     : comment.canUpdateItem(),
-                can_purge   : comment.canPurgeItem(),
-                user         : users[comment.fields.users_id] ?? null,
+        {% for thread in threads %}
+            {{ include('pages/tools/kb/sidepanel/comments_thread.html.twig', {
+                thread: thread,
+                users: users,
             }, with_context = false) }}
         {% endfor %}
     </div>
@@ -59,11 +58,11 @@
 
     <div class="d-flex w-100 mt-2">
         {{ include('components/user/picture.html.twig', {
-            'user_object': get_current_user(),
-            'avatar_size': 'avatar-sm',
-            'extra_class': 'me-2 align-self-start mt-1',
-            'circle': true,
-            'with_link' : false,
+            user_object: get_current_user(),
+            avatar_size: 'avatar-sm',
+            extra_class: 'me-2 align-self-start mt-1',
+            circle: true,
+            with_link : false,
         }, with_context = false) }}
 
         <textarea

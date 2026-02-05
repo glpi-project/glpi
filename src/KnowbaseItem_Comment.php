@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Knowbase\CommentsThread;
+
 /**
  * Class KnowbaseItem_Comment
  * @since 9.2.0
@@ -141,35 +143,31 @@ final class KnowbaseItem_Comment extends CommonDBTM
         return $input;
     }
 
-    /**
-     * Get all comments for specified KB entry
-     *
-     * @return KnowbaseItem_Comment[]
-     */
-    public static function getCommentsForKbItem(KnowbaseItem $article): array
+    /** @return CommentsThread[] */
+    public static function getCommentsThreads(KnowbaseItem $article): array
     {
-        return self::doGetCommentsForKbItem(article: $article, parent: null);
-    }
-
-    /** @return KnowbaseItem_Comment[] */
-    private static function doGetCommentsForKbItem(
-        KnowbaseItem $article,
-        ?KnowbaseItem_Comment $parent,
-    ): array {
+        $threads = [];
         $comments = KnowbaseItem_Comment::getSeveralFromDBByCrit([
             'knowbaseitems_id'  => $article->getID(),
-            'parent_comment_id' => $parent?->getID(),
+            'parent_comment_id' => null,
         ], ['id ASC']);
-        $comments = iterator_to_array($comments);
 
-        foreach ($comments as $i => $comment) {
-            $comments[$i]->fields['_answers'] = self::doGetCommentsForKbItem(
-                article: $article,
-                parent : $comment,
-            );
+        foreach ($comments as $comment) {
+            $thread = new CommentsThread();
+            $thread->addComment($comment);
+
+            $answers = KnowbaseItem_Comment::getSeveralFromDBByCrit([
+                'knowbaseitems_id'  => $article->getID(),
+                'parent_comment_id' => $comment->getID(),
+            ], ['id ASC']);
+            foreach ($answers as $answer) {
+                $thread->addComment($answer);
+            }
+
+            $threads[] = $thread;
         }
 
-        return $comments;
+        return $threads;
     }
 
     private function canComment(): bool

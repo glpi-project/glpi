@@ -80,7 +80,7 @@ bash: ## Start a shell inside the php container
 .PHONY: bash
 
 sql: ## Enter the database cli
-	@$(DB) sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
+	@$(DB) sh -c 'mariadb --user=root --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
 .PHONY: sql
 
 ## —— GLPI commands ————————————————————————————————————————————————————————————

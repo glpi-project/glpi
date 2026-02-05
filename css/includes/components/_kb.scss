@@ -86,3 +86,49 @@
         background-color: transparent;
     }
 }
+
+// KB comment thread reply trigger
+.kb-comment-thread {
+    .kb-reply-trigger {
+        transition: opacity 0.15s ease-in-out;
+    }
+
+    &:hover .kb-reply-trigger {
+        opacity: 1 !important;
+    }
+}
+
+// Handle shared borders for comments in the same thread.
+.kb-comment-card {
+    border-radius: 0 !important;
+    border-bottom-width: 0 !important;
+}
+
+// Re-add top border radius for first comment of a thread
+.kb-comment:first-child {
+    .kb-comment-card {
+        border-top-left-radius: var(--tblr-border-radius) !important;
+        border-top-right-radius: var(--tblr-border-radius) !important;
+    }
+}
+
+// Re-add bottom border radius + border bottom for last comment of a thread.
+// This must only be done if the "reply form" is not displayed.
+.kb-comment-thread:not(.reply-shown) {
+    .kb-comment:nth-last-child(-n + 3) {
+        .kb-comment-card {
+            border-bottom-left-radius: var(--tblr-border-radius) !important;
+            border-bottom-right-radius: var(--tblr-border-radius) !important;
+            border-bottom-width: 1px !important;
+        }
+    }
+}
+
+// Re-add bottom border radius + border bottom for the "reply form".
+.kb-reply-form {
+    .kb-comment-card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-width: 1px !important;
+    }
+}
