@@ -34,6 +34,7 @@
 
 namespace Glpi\Knowbase\SidePanel;
 
+use Glpi\Knowbase\CommentsThread;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use Override;
@@ -56,13 +57,15 @@ final class CommentsRenderer implements RendererInterface
     #[Override]
     public function getParams(KnowbaseItem $item): array
     {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem($item);
+        $threads = KnowbaseItem_Comment::getCommentsThreads($item);
 
         // Load users
         $users = User::getSeveralFromDBByCrit([
-            'id' => $this->extractRequiredUsersIds($comments),
+            'id' => $this->extractRequiredUsersIds($threads),
         ]);
         $users = iterator_to_array($users);
+
+        // Transform the user list into an id -> user hash map
         $users = array_combine(
             keys: array_map(fn(User $user) => $user->getID(), $users),
             values: $users,
@@ -70,36 +73,24 @@ final class CommentsRenderer implements RendererInterface
 
         return [
             'id'       => $item->getID(),
-            'comments' => $comments,
+            'threads'  => $threads,
             'users'    => $users,
         ];
     }
 
     /**
-     * @param KnowbaseItem_Comment[] $comments
+     * @param CommentsThread[] $threads
      * @return int[]
      */
-    private function extractRequiredUsersIds(array $comments): array
-    {
-        $ids = $this->doExtractRequiredUsersIds($comments);
-        return array_unique($ids);
-    }
-
-    /**
-     * @param KnowbaseItem_Comment[] $comments
-     * @return int[]
-     */
-    private function doExtractRequiredUsersIds(array $comments): array
+    private function extractRequiredUsersIds(array $threads): array
     {
         $ids = [];
-
-        foreach ($comments as $comment) {
-            $ids[] = $comment->fields['users_id'];
-
-            $children = $comment->fields['_answers'];
-            array_push($ids, ...$this->doExtractRequiredUsersIds($children));
+        foreach ($threads as $thread) {
+            foreach ($thread->getComments() as $comment) {
+                $ids[] = $comment->fields['users_id'];
+            }
         }
 
-        return $ids;
+        return array_unique($ids);
     }
 }

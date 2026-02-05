@@ -1,0 +1,104 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set root = thread.getRootComment().fields.id %}
+
+<div class="kb-comment-thread" data-glpi-comment-thread="{{ root }}">
+    {% for comment in thread.getComments() %}
+        {{ include('pages/tools/kb/sidepanel/comment.html.twig', {
+            comment_id   : comment.fields.id,
+            date_creation: comment.fields.date_creation,
+            comment      : comment.fields.comment,
+            can_edit     : comment.canUpdateItem(),
+            can_purge    : comment.canPurgeItem(),
+            user         : users[comment.fields.users_id] ?? null,
+        }, with_context = false) }}
+    {% endfor %}
+
+    {# Reply button - visible on hover #}
+    <div class="kb-reply-trigger ms-5 mt-1 opacity-0" data-glpi-reply-trigger>
+        <span
+            role="button"
+            class="text-muted px-2 py-1"
+            data-glpi-reply-btn
+            data-parent-comment-id="{{ root }}"
+        >
+            {{ __('Reply...') }}
+        </span>
+    </div>
+
+    {# Reply form - hidden by default #}
+    <div
+        class="kb-reply-form d-none mb-4"
+        data-glpi-reply-form data-parent-comment-id="{{ root }}"
+    >
+        <div class="d-flex w-100">
+            {{ include('components/user/picture.html.twig', {
+                'user_object': get_current_user(),
+                'avatar_size': 'avatar-sm',
+                'extra_class': 'me-2 align-self-start mt-1',
+                'circle': true,
+                'with_link' : false,
+            }, with_context = false) }}
+
+            <div class="kb-comment-card card rounded w-100 last-comment">
+                <div class="card-body px-3 py-2">
+                    <textarea
+                        class="w-100 form-control auto-resize mb-2"
+                        rows="2"
+                        placeholder="{{ __('Write a reply...') }}"
+                        data-glpi-reply-textarea
+                    ></textarea>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-ghost-secondary"
+                            data-glpi-reply-cancel
+                        >
+                            {{ __('Cancel') }}
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            data-glpi-reply-submit
+                            aria-label="{{ __('Reply') }}"
+                        >
+                            <i class="ti ti-arrow-back-up" data-glpi-icon></i>
+                            <i class="ti ti-loader-2 fa-spin d-none" data-glpi-loading></i>
+                            <span>{{ __('Reply') }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

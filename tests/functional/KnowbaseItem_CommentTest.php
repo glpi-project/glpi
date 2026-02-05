@@ -58,7 +58,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         }
     }
 
-    public function testGetCommentsForKbItem()
+    public function testGetCommentsThreads()
     {
         $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
 
@@ -68,15 +68,30 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $nb = countElementsInTable(
             'glpi_knowbaseitems_comments'
         );
-        $this->assertSame(6, $nb);
+        $this->assertSame(5, $nb);
 
         // second, test what we retrieve
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem($kb1);
-        $this->assertCount(3, $comments);
-        $this->assertCount(2, $comments[0]->fields['_answers']);
-        $this->assertCount(1, $comments[0]->fields['_answers'][0]->fields['_answers']);
-        $this->assertCount(0, $comments[0]->fields['_answers'][1]->fields['_answers']);
-        $this->assertCount(0, $comments[1]->fields['_answers']);
+        $threads = KnowbaseItem_Comment::getCommentsThreads($kb1);
+
+        $thread1 = $threads[0];
+        $this->assertCount(3, $thread1->getComments());
+        $this->assertEquals([
+            'Comment 1 for KB1',
+            'Comment 1 - 1 for KB1',
+            'Comment 1 - 2 for KB1',
+        ], array_map(fn($c) => $c->fields['comment'], $thread1->getComments()));
+
+        $thread2 = $threads[1];
+        $this->assertCount(1, $thread2->getComments());
+        $this->assertEquals([
+            'Comment 2 for KB1',
+        ], array_map(fn($c) => $c->fields['comment'], $thread2->getComments()));
+
+        $thread3 = $threads[2];
+        $this->assertCount(1, $thread3->getComments());
+        $this->assertEquals([
+            'Comment 3 for KB1',
+        ], array_map(fn($c) => $c->fields['comment'], $thread3->getComments()));
     }
 
     /**
@@ -114,10 +129,6 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $kbcom12 = $kbcom->add($input);
         $this->assertTrue($kbcom12 > $kbcom11);
 
-        $input['comment'] = 'Comment 1 - 1 - 1 for KB1';
-        $input['parent_comment_id'] = $kbcom11;
-        $kbcom111 = $kbcom->add($input);
-        $this->assertTrue($kbcom111 > $kbcom12);
 
         // comment from non-existent user to simulate deleted user
         $this->assertGreaterThan(0, $kbcom->add([

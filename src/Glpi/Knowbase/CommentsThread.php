@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,40 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, glpi_toast_error */
+namespace Glpi\Knowbase;
 
-/**
- * Perform a POST request to a GLPI endpoint.
- *
- * @param {string} url - The relative URL path (without root_doc prefix).
- * @param {Object | null} values - The data to send as JSON in the request body or null if the request doens't send any data.
- * @returns {Promise<Response>} The fetch Response object.
- * @throws {Error} If the request fails or returns a non-ok status.
- */
-export async function post(url, values = null)
+use KnowbaseItem_Comment;
+
+final class CommentsThread
 {
-    try {
-        const params = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-            },
-        };
+    public function __construct(
+        /** @var KnowbaseItem_Comment[] $comments */
+        private array $comments = [],
+    ) {}
 
-        if (values !== null) {
-            params.body = JSON.stringify(values);
-        }
+    public function addComment(KnowbaseItem_Comment $comment): void
+    {
+        $this->comments[] = $comment;
+    }
 
-        const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
-        if (!response.ok) {
-            throw new Error("POST request failed");
-        }
+    /** @return KnowbaseItem_Comment[] */
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
 
-        return response;
-    } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
-        throw e;
+    public function getRootComment(): KnowbaseItem_Comment
+    {
+        return $this->comments[array_key_first($this->comments)];
     }
 }
