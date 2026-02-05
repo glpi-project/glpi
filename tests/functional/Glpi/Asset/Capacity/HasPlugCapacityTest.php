@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Computer;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
@@ -41,7 +42,6 @@ use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
-use Item_Plug;
 use Log;
 use Plug;
 
@@ -99,9 +99,9 @@ class HasPlugCapacityTest extends DbTestCase
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
             $this->login(); // must be logged in to get tabs list
             if ($has_capacity) {
-                $this->assertArrayHasKey('Item_Plug$1', $item->defineAllTabs());
+                $this->assertArrayHasKey('Plug$1', $item->defineAllTabs());
             } else {
-                $this->assertArrayNotHasKey('Item_Plug$1', $item->defineAllTabs());
+                $this->assertArrayNotHasKey('Plug$1', $item->defineAllTabs());
             }
         }
     }
@@ -141,35 +141,19 @@ class HasPlugCapacityTest extends DbTestCase
                 'entities_id' => $root_entity_id,
             ]
         );
-        $plug_1 = $this->createItem(
-            Plug::class,
-            [
-                'name' => __FUNCTION__ . '1',
-            ]
-        );
-        $plug_2 = $this->createItem(
-            Plug::class,
-            [
-                'name' => __FUNCTION__ . '2',
-            ]
-        );
 
         $plug_item_1 = $this->createItem(
-            Item_Plug::class,
+            Plug::class,
             [
-                'itemtype' => $item_1::class,
-                'items_id' => $item_1->getID(),
-                'plugs_id' => $plug_1->getID(),
-                'number_plugs' => 1,
+                'itemtype_main' => $item_1::class,
+                'items_id_main' => $item_1->getID(),
             ]
         );
         $plug_item_2 = $this->createItem(
-            Item_Plug::class,
+            Plug::class,
             [
-                'itemtype' => $item_2::class,
-                'items_id' => $item_2->getID(),
-                'plugs_id' => $plug_2->getID(),
-                'number_plugs' => 1,
+                'itemtype_main' => $item_2::class,
+                'items_id_main' => $item_2->getID(),
             ]
         );
 
@@ -181,22 +165,22 @@ class HasPlugCapacityTest extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->assertInstanceOf(Item_Plug::class, Item_Plug::getById($plug_item_1->getID()));
-        $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); //create + add plug
-        $this->assertInstanceOf(Item_Plug::class, Item_Plug::getById($plug_item_2->getID()));
-        $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria)); //create + add plug
+        $this->assertInstanceOf(Plug::class, Plug::getById($plug_item_1->getID()));
+        $this->assertEquals(1, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); //create + add plug
+        $this->assertInstanceOf(Plug::class, Plug::getById($plug_item_2->getID()));
+        $this->assertEquals(1, countElementsInTable(Log::getTable(), $item_2_logs_criteria)); //create + add plug
         $this->assertContains($classname_1, $CFG_GLPI['plug_types']);
         $this->assertContains($classname_2, $CFG_GLPI['plug_types']);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->assertTrue($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]));
-        $this->assertFalse(Item_Plug::getById($plug_item_1->getID()));
+        $this->assertFalse(Plug::getById($plug_item_1->getID()));
         $this->assertEquals(0, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
         $this->assertNotContains($classname_1, $CFG_GLPI['plug_types']);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->assertInstanceOf(Item_Plug::class, Item_Plug::getById($plug_item_2->getID()));
-        $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
+        $this->assertInstanceOf(Plug::class, Plug::getById($plug_item_2->getID()));
+        $this->assertEquals(1, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_2, $CFG_GLPI['plug_types']);
     }
 
@@ -216,42 +200,72 @@ class HasPlugCapacityTest extends DbTestCase
             ]
         );
 
+        $computer = $this->createItem(
+            Computer::class,
+            [
+                'name'        => 'Test Computer',
+                'entities_id' => $entity,
+            ]
+        );
+
         $plug = $this->createItem(
             Plug::class,
             [
-                'name' => __FUNCTION__,
+                'itemtype_asset'     => Computer::class,
+                'items_id_asset'     => $computer->getID(),
+                'itemtype_main'     => $class,
+                'items_id_main'     => $asset->getID(),
             ]
         );
 
-        $this->createItem(
-            Item_Plug::class,
-            [
-                'itemtype'     => $class,
-                'items_id'     => $asset->getID(),
-                'plugs_id'     => $plug->getID(),
-                'number_plugs' => 3,
-            ]
-        );
-
-        $this->assertGreaterThan(0, $clone_id = $asset->clone());
+        $this->assertGreaterThan(0, $plug->clone());
         $this->assertCount(
-            1,
-            getAllDataFromTable(Item_Plug::getTable(), [
-                'itemtype'     => $class,
-                'items_id'     => $clone_id,
-                'plugs_id'     => $plug->getID(),
-                'number_plugs' => 3,
+            2,
+            getAllDataFromTable(Plug::getTable(), [
+                'itemtype_asset'     => Computer::class,
+                'items_id_asset'     => $computer->getID(),
+                'itemtype_main'     => $class,
+                'items_id_main'     => $asset->getID(),
             ])
         );
     }
+
+    public function testIsUsed(): void
+    {
+        $entity_id = $this->getTestRootEntity(true);
+
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPlugCapacity::class)]
+        );
+
+        $asset = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset',
+            'entities_id' => $entity_id,
+        ]);
+
+        // Check that the capacity is not yet considered as used
+        $capacity = new HasPlugCapacity();
+        $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
+
+        // Create a relation with a plug
+        $this->createItem(
+            Plug::class,
+            [
+                'name' => 'Plug AA12',
+                'itemtype_main'     => $definition->getAssetClassName(),
+                'items_id_main'     => $asset->getID(),
+            ]
+        );
+
+        // Check that the capacity is considered as used
+        $this->assertTrue($capacity->isUsed($definition->getAssetClassName()));
+    }
+
 
     public static function provideIsUsed(): iterable
     {
         yield [
             'target_classname'   => Plug::class,
-            'target_fields'      => [],
-            'relation_classname' => Item_Plug::class,
-            'relation_fields'    => ['number_plugs' => 1],
         ];
     }
 
@@ -260,9 +274,61 @@ class HasPlugCapacityTest extends DbTestCase
         yield [
             'target_classname'   => Plug::class,
             'expected'           => '%d plugs attached to %d assets',
-            'target_fields'      => [],
-            'relation_classname' => Item_Plug::class,
-            'relation_fields'    => ['number_plugs' => 1],
         ];
+    }
+
+    public function testGetCapacityUsageDescription(): void
+    {
+        global $CFG_GLPI;
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity(name: HasPlugCapacity::class)]
+        );
+        $class = $definition->getAssetClassName();
+
+        $capacity = new HasPlugCapacity();
+        $this->assertEquals(
+            '0 plugs attached to 0 assets',
+            $capacity->getCapacityUsageDescription($class)
+        );
+
+        $asset1 = $this->createItem($class, [
+            'name' => 'Test asset 1',
+            'entities_id' => $entity_id,
+        ]);
+        $asset2 = $this->createItem($class, [
+            'name' => 'Test asset 2',
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(
+            Plug::class,
+            [
+                'name' => 'Plug AA12',
+                'itemtype_main'     => $class,
+                'items_id_main'     => $asset1->getID(),
+            ]
+        );
+
+        $this->assertEquals(
+            '1 plugs attached to 1 assets',
+            $capacity->getCapacityUsageDescription($class)
+        );
+
+        $this->createItem(
+            Plug::class,
+            [
+                'name' => 'Plug BB34',
+                'itemtype_main'     => $class,
+                'items_id_main'     => $asset2->getID(),
+            ]
+        );
+
+        $this->assertEquals(
+            '2 plugs attached to 2 assets',
+            $capacity->getCapacityUsageDescription($class)
+        );
     }
 }
