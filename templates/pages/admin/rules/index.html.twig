@@ -30,9 +30,9 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro rule_step(itemtype, title, description, url = null) %}
+{% macro rule_step(itemtype, title, description, can_view, url = null) %}
     <li class="step">
-        {% if call(itemtype ~ '::canView') %}
+        {% if can_view %}
             <a class="btn flex-column" href="{{ url ?? (itemtype|itemtype_search_path) }}">
                 <div class="d-flex align-items-center">
                     <i class="{{ itemtype|itemtype_icon }}"></i>
@@ -43,7 +43,7 @@
                 </div>
             </a>
         {% else %}
-            <div class="btn flex-column disabled">
+            <div class="btn flex-column opacity-70" style="cursor: not-allowed;">
                 <div class="d-flex align-items-center">
                     <i class="{{ itemtype|itemtype_icon }}"></i>
                     <span>{{ title }}</span>
@@ -77,38 +77,44 @@
             {{ _self.rule_step(
                 'RuleDefineItemtype',
                 __('Transform itemtypes'),
-                __("Override the asset to another custom definition (like Servers)")
+                __("Override the asset to another custom definition (like Servers)"),
+                call('RuleDefineItemtype::canView')
             ) }}
 
             {{ _self.rule_step(
                 'RuleImportEntity',
                 __('Rules for assigning an item to an entity'),
-                __("Set an entity with some criteria (by its tag for example)")
+                __("Set an entity with some criteria (by its tag for example)"),
+                call('RuleImportEntity::canView')
             ) }}
 
             {{ _self.rule_step(
                 'RuleLocation',
                 __('Location rules'),
-                __("Apply a location by checking common criteria")
+                __("Apply a location by checking common criteria"),
+                call('RuleLocation::canView')
             ) }}
 
             {{ _self.rule_step(
                 'RuleImportAsset',
                 __("Rules for import and link equipments"),
-                __("Match data with an existing asset, create a new asset, or deny the import")
+                __("Match data with an existing asset, create a new asset, or deny the import"),
+                call('RuleImportAsset::canView')
             ) }}
 
             {{ _self.rule_step(
                 'RuleDictionnaryDropdownCollection',
                 _n('Dictionary', 'Dictionaries', get_plural_number()),
                 __("Normalize sub-data (like softwares, OS and models)"),
+                call('RuleDictionnaryDropdownCollection::canView') or call('RuleDictionnarySoftware::canView') or call('RuleDictionnaryPrinter::canView'),
                 path('/front/dictionnary.php')
             ) }}
 
             {{ _self.rule_step(
                 'RuleAsset',
                 __("Business rules for assets"),
-                __("Alter asset fields based on their data")
+                __("Alter asset fields based on their data"),
+                call('RuleAsset::canView')
             ) }}
 
             <li class="end">
