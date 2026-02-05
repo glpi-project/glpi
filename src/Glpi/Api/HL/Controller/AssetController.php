@@ -982,7 +982,7 @@ final class AssetController extends AbstractController
                 'is_selfsign' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,
                     'x-version-introduced' => '2.3.0',
-                    'x-field' => 'is_autosign'
+                    'x-field' => 'is_autosign',
                 ],
                 'date_expiration' => [
                     'type' => Doc\Schema::TYPE_STRING,

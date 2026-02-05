@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Certificate;
 use Computer;
-use Database;
 use DatabaseInstance;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;

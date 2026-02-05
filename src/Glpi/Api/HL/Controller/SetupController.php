@@ -286,7 +286,7 @@ EOT,
                                 'table' => Link_Itemtype::getTable(),
                                 'fkey' => 'id',
                                 'field' => Link::getForeignKeyField(),
-                                'primary-property' => 'id'
+                                'primary-property' => 'id',
                             ],
                         ],
                     ],
@@ -336,47 +336,53 @@ EOT,
             $types = [
                 'LDAPDirectory' => [
                     'itemtype' => AuthLDAP::class,
-                    'label' => AuthLDAP::getTypeName(1)
+                    'label' => AuthLDAP::getTypeName(1),
                 ],
                 // Do not add Config here as it is handled specially
                 'SLM' => [
                     'itemtype' => SLM::class,
-                    'label' => SLM::getTypeName(1)
+                    'label' => SLM::getTypeName(1),
                 ],
                 'SLA' => [
                     'itemtype' => SLA::class,
-                    'label' => SLA::getTypeName(1)
+                    'label' => SLA::getTypeName(1),
                 ],
                 'OLA' => [
                     'itemtype' => OLA::class,
-                    'label' => OLA::getTypeName(1)
+                    'label' => OLA::getTypeName(1),
                 ],
                 'SLALevel' => [
                     'itemtype' => SlaLevel::class,
-                    'label' => SlaLevel::getTypeName(1)
+                    'label' => SlaLevel::getTypeName(1),
                 ],
                 'OLALevel' => [
                     'itemtype' => OlaLevel::class,
-                    'label' => OlaLevel::getTypeName(1)
+                    'label' => OlaLevel::getTypeName(1),
                 ],
                 'ExternalLink' => [
                     'itemtype' => Link::class,
-                    'label' => Link::getTypeName(1)
+                    'label' => Link::getTypeName(1),
                 ],
                 'ManualLink' => [
                     'itemtype' => ManualLink::class,
-                    'label' => ManualLink::getTypeName(1)
+                    'label' => ManualLink::getTypeName(1),
                 ],
             ];
         }
         return $types_only ? array_keys($types) : $types;
     }
 
+    /**
+     * @return string[]
+     */
     public static function getSetupEndpointTypes20()
     {
         return ['LDAPDirectory'];
     }
 
+    /**
+     * @return string[]
+     */
     public static function getSetupEndpointTypes23()
     {
         return ['SLM', 'SLA', 'OLA', 'SLALevel', 'OLALevel', 'ExternalLink', 'ManualLink'];

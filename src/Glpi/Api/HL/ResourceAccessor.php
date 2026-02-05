@@ -36,7 +36,6 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use CommonGLPI;
-use DateTime;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -45,6 +44,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
+use Safe\DateTime;
 use Session;
 use Throwable;
 

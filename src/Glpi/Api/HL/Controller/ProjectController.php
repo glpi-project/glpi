@@ -280,7 +280,7 @@ final class ProjectController extends AbstractController
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 ],
-            ]
+            ],
         ];
     }
 

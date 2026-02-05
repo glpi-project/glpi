@@ -39,6 +39,7 @@ use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
+use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
 use function Safe\strtotime;
@@ -485,7 +486,7 @@ class Schema implements ArrayAccess
      * @param mixed $value
      * @param array{type: string, format?:string} $prop
      * @return mixed
-     * @throws \Safe\Exceptions\DatetimeException
+     * @throws DatetimeException
      */
     private static function castScalarProperty(mixed $value, array $prop): mixed
     {
@@ -526,9 +527,7 @@ class Schema implements ArrayAccess
             $cv = &$current;
 
             if (is_array($cv)) {
-                $cv = array_map(static function ($v) use ($sv) {
-                    return self::castScalarProperty($v, $sv);
-                }, $cv);
+                $cv = array_map(static fn($v) => self::castScalarProperty($v, $sv), $cv);
             } else {
                 $cv = self::castScalarProperty($cv, $sv);
             }

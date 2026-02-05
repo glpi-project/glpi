@@ -373,7 +373,12 @@ final class ManagementController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: ContractType::class, full_schema: 'ContractType'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
+                    'number' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'num',
+                    ],
                     'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location') + ['x-version-introduced' => '2.3.0'],
                     'date_begin' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -475,7 +480,7 @@ final class ManagementController extends AbstractController
                             2 ** Alert::NOTICE,
                             (2 ** Alert::END) + (2 ** Alert::NOTICE),
                             2 ** Alert::PERIODICITY,
-                            (2 ** Alert::PERIODICITY) + (2 ** Alert::NOTICE)
+                            (2 ** Alert::PERIODICITY) + (2 ** Alert::NOTICE),
                         ],
                         'description' => <<<EOT
                         The alert type for this contract
@@ -639,6 +644,7 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 40,
                         'x-version-introduced' => '2.3.0',
+                        'x-field' => 'sha1sum',
                     ],
                     'is_import_denied' => [
                         'type' => Doc\Schema::TYPE_BOOLEAN,
@@ -833,7 +839,7 @@ EOT,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
-                'document' => self::getDropdownTypeSchema(class: Document::class, full_schema: 'Document'),
+                'document' => self::getDropdownTypeSchema(class: Document::class, full_schema: 'Document') + ['x-version-introduced' => '2.3.0'],
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
