@@ -1344,7 +1344,9 @@ TWIG, $twig_params);
                 'itemtype' => static::class,
                 'id' => $data['id'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'name' => $task->getLink(['comments' => true]),
+                'name' => ($withtemplate == 2)
+                    ? htmlescape($data['name'])
+                    : $task->getLink(['comments' => true]),
                 'tname' => $data['transname2'] ?? $data['tname'],
                 'sname' => [
                     'content' => $data['transname3'] ?? $data['sname'],
