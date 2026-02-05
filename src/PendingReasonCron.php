@@ -87,9 +87,9 @@ class PendingReasonCron extends CommonDBTM
         }
 
         $targets = [
-            Ticket::getType(),
-            Change::getType(),
-            Problem::getType(),
+            Ticket::class,
+            Change::class,
+            Problem::class,
         ];
 
         $now = $_SESSION['glpi_currenttime'];

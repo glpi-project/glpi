@@ -142,7 +142,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             $this->data['targets'][] = [
                 '##target.url##'             => $target->getLink(),
                 '##target.name##'            => $target->fields['name'],
-                '##target.itemtype##'        => $target->getType(),
+                '##target.itemtype##'        => $target::class,
             ];
         }
         if ($listofcategories !== []) {

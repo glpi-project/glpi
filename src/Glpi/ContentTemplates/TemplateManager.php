@@ -113,7 +113,7 @@ class TemplateManager
             $html = TemplateManager::render(
                 $template,
                 [
-                    'itemtype' => $itil_item->getType(),
+                    'itemtype' => $itil_item::class,
                     $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
                 ]
             );

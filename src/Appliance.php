@@ -548,16 +548,16 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
                     $input = [
                         'appliances_id'   => $input['appliances_id'],
                         'items_id'        => $id,
-                        'itemtype'        => $item->getType(),
+                        'itemtype'        => $item::class,
                     ];
                     if ($appli_item->can(-1, UPDATE, $input)) {
                         if ($appli_item->add($input)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                     }
                 }
 

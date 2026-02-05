@@ -86,7 +86,7 @@ final class RulesManager
                 continue;
             }
 
-            if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass->getType()]) === 0) {
+            if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass::class]) === 0) {
                 $ruleclass->initRules(false);
                 $has_initialized_rules = true;
             }

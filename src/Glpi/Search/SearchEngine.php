@@ -187,7 +187,7 @@ final class SearchEngine
 
         // Add entity meta if needed
         if ($item->isField('entities_id') && !($item instanceof Entity)) {
-            $linked[] = Entity::getType();
+            $linked[] = Entity::class;
         }
 
         return array_unique($linked);
@@ -399,7 +399,7 @@ final class SearchEngine
         // Instanciate an object to access method
         $data['item'] = null;
 
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype != AllAssets::class) {
             $data['item'] = getItemForItemtype($itemtype);
         }
 

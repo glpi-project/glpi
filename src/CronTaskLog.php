@@ -87,7 +87,7 @@ class CronTaskLog extends CommonDBChild
             $nb = 0;
             if ($item instanceof CronTask) {
                 $ong    = [];
-                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
+                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::class, 'ti ti-report-analytics');
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb =  countElementsInTable(
                         $this->getTable(),
@@ -96,7 +96,7 @@ class CronTaskLog extends CommonDBChild
                         ]
                     );
                 }
-                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
+                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::class);
                 return $ong;
             }
         }

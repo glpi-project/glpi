@@ -86,7 +86,7 @@ trait VobjectConverterTrait
         $vobject = new VObject();
         $vobject_crit = [
             'items_id' => $item->fields['id'],
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
         ];
 
         // Restore previously saved VCalendar if available

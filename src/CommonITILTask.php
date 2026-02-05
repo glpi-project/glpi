@@ -361,7 +361,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         /** @var CommonDBTM $item */
         if (
-            ($item->getType() == static::getItilObjectItemType())
+            ($item::class == static::getItilObjectItemType())
             && static::canView()
         ) {
             $nb = 0;
@@ -379,7 +379,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 }
                 $nb = countElementsInTable($this->getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -540,7 +540,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $input["users_id_tech"],
                 $input["begin"],
                 $input["end"],
-                [$this->getType() => [$input["id"]]]
+                [static::class => [$input["id"]]]
             );
 
             $calendars_id = Entity::getUsedConfig(
@@ -585,7 +585,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (in_array("begin", $this->updates)) {
             PlanningRecall::managePlanningUpdates(
-                $this->getType(),
+                static::class,
                 $this->getID(),
                 $this->fields["begin"]
             );
@@ -651,7 +651,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $this->getField($item->getForeignKeyField()),
                 $item::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_UPDATE_SUBITEM
             );
         }
@@ -761,7 +761,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
         if (isset($input["users_id"])) {
-            $input['timeline_position'] = $parent::getTimelinePosition($input["_job"]->getID(), $this->getType(), $input["users_id"]);
+            $input['timeline_position'] = $parent::getTimelinePosition($input["_job"]->getID(), static::class, $input["users_id"]);
         }
 
         return $input;
@@ -787,7 +787,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $this->fields["users_id_tech"],
                 $this->fields["begin"],
                 $this->fields["end"],
-                [$this->getType() => [$this->fields["id"]]]
+                [static::class => [$this->fields["id"]]]
             );
 
             $calendars_id = Entity::getUsedConfig(
@@ -847,7 +847,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->getField($this->input["_job"]->getForeignKeyField()),
             $this->input["_job"]->getTYpe(),
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_ADD_SUBITEM
         );
 
@@ -1728,7 +1728,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $prep_req = ['SELECT' => self::getTable() . '.id', 'FROM' => self::getTable()];
 
-        $itemtype = str_replace('Task', '', self::getType());
+        $itemtype = str_replace('Task', '', static::class);
         $fk_table = getTableForItemType($itemtype);
         $fk_field = Toolbox::strtolower(getPlural($itemtype)) . '_id';
 
@@ -1975,7 +1975,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='" . htmlescape(strtolower($item_link->getType())) . "ticket" . htmlescape($item_link->fields["id"] . $rand) . "' href='"
+            $link = "<a id='" . htmlescape(strtolower($item_link::class)) . "ticket" . htmlescape($item_link->fields["id"] . $rand) . "' href='"
                    . htmlescape($item_link->getFormURLWithID($item_link->fields["id"]));
             $link .= "&amp;forcetab=" . htmlescape($tab_name) . "$1";
             $link   .= "'>";

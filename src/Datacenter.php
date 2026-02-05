@@ -167,7 +167,7 @@ class Datacenter extends CommonDBTM
             'massiveaction'      => false,
         ];
 
-        if (($itemtype != Rack::getType()) && ($itemtype != DCRoom::getType())) {
+        if (($itemtype != Rack::class) && ($itemtype != DCRoom::class)) {
             $tab[] = [
                 'id'            => '1451',
                 'table'         => Datacenter::getTable(),

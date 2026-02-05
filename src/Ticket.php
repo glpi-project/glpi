@@ -784,7 +784,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
             // Not for Ticket class
             if (!$item instanceof self) {
-                return self::createTabEntry($title, $nb, $item::getType());
+                return self::createTabEntry($title, $nb, $item::class);
             }
         }
 
@@ -798,7 +798,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 $satisfaction->getFromDB($item->getID())
                 && $item->fields['status'] == self::CLOSED
             ) {
-                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::class);
             }
             if ($item->canView()) {
                 $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
@@ -2198,7 +2198,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
 
             if (self::canUpdate()) {
-                $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
+                $actions[static::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
                 = "<i class='ti ti-check'></i>"
                 . __s("Resolve selected tickets");
             }
@@ -2406,12 +2406,12 @@ JAVASCRIPT;
                 Ticket::merge($input['_mergeticket'], $ids, $status, $mergeparams);
                 foreach ($status as $id => $status_code) {
                     if ($status_code == 0) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } elseif ($status_code == 2) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
                 }
@@ -2420,7 +2420,7 @@ JAVASCRIPT;
             case 'link_to_problem':
                 Toolbox::deprecated('Ticket "link_to_problem" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
                 // Skip if not tickets
-                if ($item::getType() !== Ticket::getType()) {
+                if ($item::class !== Ticket::class) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }
@@ -2454,9 +2454,9 @@ JAVASCRIPT;
 
                     // Check if creation was successful
                     if ($res) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
                 }
@@ -2465,7 +2465,7 @@ JAVASCRIPT;
 
             case 'resolve_tickets':
                 // Skip if not tickets
-                if ($item::getType() !== self::getType()) {
+                if ($item::class !== static::class) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }
@@ -2493,7 +2493,7 @@ JAVASCRIPT;
                 foreach ($ids as $id) {
                     // Try to load ticket
                     if (!$ticket->getFromDB($id)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
 
@@ -2503,12 +2503,12 @@ JAVASCRIPT;
                         CommonITILObject::CLOSED,
                     ];
                     if (in_array($ticket->fields['status'], $invalid_status)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
 
                     // Add reference to ticket in input
-                    $input['itemtype'] = self::getType();
+                    $input['itemtype'] = static::class;
                     $input['items_id'] = $id;
 
                     // Insert new solution
@@ -2516,9 +2516,9 @@ JAVASCRIPT;
 
                     // Check if creation was successful
                     if ($res) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
                 }
@@ -2526,7 +2526,7 @@ JAVASCRIPT;
 
             case 'add_contract':
                 // Skip if wrong itemtype
-                if ($item::getType() !== self::getType()) {
+                if ($item::class !== static::class) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }
@@ -2554,7 +2554,7 @@ JAVASCRIPT;
 
                     // Link already exist, skip
                     if (count($links)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         continue;
                     }
 
@@ -2566,9 +2566,9 @@ JAVASCRIPT;
 
                     // Check if creation was successful
                     if ($res) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
                 }
@@ -6302,7 +6302,7 @@ JAVASCRIPT;
 
             default:
                 $restrict['glpi_items_tickets.items_id'] = $item->getID();
-                $restrict['glpi_items_tickets.itemtype'] = $item->getType();
+                $restrict['glpi_items_tickets.itemtype'] = $item::class;
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [

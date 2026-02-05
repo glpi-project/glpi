@@ -1567,14 +1567,14 @@ TWIG, $twig_params);
 
             $addselect = [];
             $ljoin = [];
-            if (Session::haveTranslations(ProjectState::getType(), 'name')) {
+            if (Session::haveTranslations(ProjectState::class, 'name')) {
                 $addselect[] = "namet2.value AS transname";
                 $ljoin['glpi_dropdowntranslations AS namet2'] = [
                     'ON' => [
                         'namet2' => 'items_id',
                         ProjectState::getTable()   => 'id', [
                             'AND' => [
-                                'namet2.itemtype' => ProjectState::getType(),
+                                'namet2.itemtype' => ProjectState::class,
                                 'namet2.language' => $_SESSION['glpilanguage'],
                                 'namet2.field'    => 'name',
                             ],
@@ -2136,7 +2136,7 @@ TWIG, $twig_params);
                     'description' => _x('filters', 'A contact in the team of the item'),
                     'supported_prefixes' => ['!'],
                 ],
-            ] + self::getKanbanPluginFilters(static::getType()),
+            ] + self::getKanbanPluginFilters(static::class),
         ]);
     }
 

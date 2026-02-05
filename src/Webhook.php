@@ -679,7 +679,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function getApiPath(CommonDBTM $item): string
     {
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $id = $item->getID();
         $itemtypes = self::getAPIItemtypeData();
 
@@ -809,13 +809,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $has_preview = !in_array($item->fields['itemtype'], $no_preview, true);
 
         $tabs = [
-            1 => self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock'),
-            2 => self::createTabEntry(__('Payload editor'), 0, $item::getType(), 'ti ti-code-dots'),
-            3 => self::createTabEntry(_n('Custom header', 'Custom headers', Session::getPluralNumber()), $headers_count, $item::getType(), 'ti ti-code-plus'),
-            4 => self::createTabEntry(_n('Query log', 'Queries log', Session::getPluralNumber()), $queries_count, $item::getType(), 'ti ti-mail-forward'),
+            1 => self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock'),
+            2 => self::createTabEntry(__('Payload editor'), 0, $item::class, 'ti ti-code-dots'),
+            3 => self::createTabEntry(_n('Custom header', 'Custom headers', Session::getPluralNumber()), $headers_count, $item::class, 'ti ti-code-plus'),
+            4 => self::createTabEntry(_n('Query log', 'Queries log', Session::getPluralNumber()), $queries_count, $item::class, 'ti ti-mail-forward'),
         ];
         if ($has_preview) {
-            $tabs[5] = self::createTabEntry(__('Preview'), 0, $item::getType(), 'ti ti-eye-exclamation');
+            $tabs[5] = self::createTabEntry(__('Preview'), 0, $item::class, 'ti ti-eye-exclamation');
         }
         return $tabs;
     }
@@ -1177,7 +1177,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 'FROM' => self::getTable(),
                 'WHERE' => [
                     'event' => $event,
-                    'itemtype' => $item->getType(),
+                    'itemtype' => $item::class,
                     'is_active' => 1,
                 ],
             ]);
@@ -1194,7 +1194,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
 
             // Ignore raising if the item type is not supported
-            if (!in_array($item->getType(), $supported_types, true)) {
+            if (!in_array($item::class, $supported_types, true)) {
                 return;
             }
 
@@ -1238,7 +1238,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     'event' => $event,
                     'item' => $api_data,
                 ];
-                $webhook->addParentItemData($api_data, $item::getType(), $item->getID());
+                $webhook->addParentItemData($api_data, $item::class, $item->getID());
 
                 $custom_headers = $webhook->fields['custom_headers'];
                 foreach ($custom_headers as $key => $value) {

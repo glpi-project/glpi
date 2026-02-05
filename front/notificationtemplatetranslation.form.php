@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
         $_GET["notificationtemplates_id"] = $language->fields["notificationtemplates_id"];
     }
     $template->getFromDB($_GET["notificationtemplates_id"]);
-    $_SESSION['glpilisturl'][NotificationTemplateTranslation::getType()] = $template->getLinkURL();
+    $_SESSION['glpilisturl'][NotificationTemplateTranslation::class] = $template->getLinkURL();
 
     if ($_GET["id"] == '') {
         $options = [

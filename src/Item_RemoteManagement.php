@@ -65,7 +65,7 @@ class Item_RemoteManagement extends CommonDBChild
                 self::getTable(),
                 [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                 ]
             );
         }
@@ -99,7 +99,7 @@ class Item_RemoteManagement extends CommonDBChild
         $iterator = $DB->request([
             'FROM'      => self::getTable(),
             'WHERE'     => [
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->fields['id'],
                 'is_deleted'   => 0,
             ],
@@ -118,7 +118,7 @@ class Item_RemoteManagement extends CommonDBChild
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $ID = $item->fields['id'];
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
 
         if (
             !$item->getFromDB($ID)
@@ -135,7 +135,7 @@ class Item_RemoteManagement extends CommonDBChild
             $entries[] = [
                 'id'        => $mgmt->getID(),
                 'items_id'  => $mgmt->fields['items_id'],
-                'itemtype'  => self::getType(),
+                'itemtype'  => static::class,
                 'remoteid'  => $mgmt->getRemoteLink(),
                 'type'      => $mgmt->fields['type'],
                 'comment'   => Dropdown::getYesNo($data['is_dynamic']),

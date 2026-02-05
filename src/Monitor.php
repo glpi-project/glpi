@@ -197,7 +197,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_peripheral' => $this->getType(),
+                'itemtype_peripheral' => static::class,
                 'items_id_peripheral' => $this->fields['id'],
             ],
         ]);

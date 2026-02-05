@@ -78,7 +78,7 @@ final class CriteriaFilter extends CommonDBChild
         return self::createTabEntry(
             self::getTypeName($nb),
             $nb,
-            $item::getType(),
+            $item::class,
             'ti ti-adjustments-horizontal'
         );
     }
@@ -117,7 +117,7 @@ final class CriteriaFilter extends CommonDBChild
             'actionvalue'             => __("Preview results"),
             'extra_actions_templates' => [
                 "components/search/criteria_filter_actions.html.twig" => [
-                    'itemtype'    => $item->getType(),
+                    'itemtype'    => $item::class,
                     'items_id'    => $item->getID(),
                     'show_save'   => $can_edit,
                     'show_delete' => $can_edit && !is_null($filter),
@@ -169,7 +169,7 @@ final class CriteriaFilter extends CommonDBChild
     {
         $filter = new self();
         $filter_exist = $filter->getFromDBByCrit([
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 

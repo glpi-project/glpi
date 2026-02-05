@@ -447,7 +447,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         global $DB;
 
         if (isset($options['validation_id'])) {
-            $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
+            $validationtable = getTableForItemType($this->obj::class . 'Validation');
 
             $criteria = ['LEFT JOIN' => [
                 User::getTable() => [
@@ -482,7 +482,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         global $DB;
 
         if (isset($options['validation_id'])) {
-            $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
+            $validationtable = getTableForItemType($this->obj::class . 'Validation');
 
             $criteria = ['LEFT JOIN' => [
                 User::getTable() => [
@@ -677,7 +677,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $this->addToRecipientsList($data);
             }
         } elseif (isset($options['task_id'])) {
-            $tasktable = getTableForItemType($this->obj->getType() . 'Task');
+            $tasktable = getTableForItemType($this->obj::class . 'Task');
 
             $criteria = array_merge_recursive(
                 ['INNER JOIN' => [
@@ -724,7 +724,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $this->addToRecipientsList($data);
             }
         } elseif (isset($options['task_id'])) {
-            $tasktable = getTableForItemType($this->obj->getType() . 'Task');
+            $tasktable = getTableForItemType($this->obj::class . 'Task');
 
             $criteria = array_merge_recursive(
                 ['INNER JOIN' => [
@@ -766,7 +766,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         if (isset($options['task_groups_id_tech'])) {
             $this->addForGroup(0, $options['task_groups_id_tech']);
         } elseif (isset($options['task_id'])) {
-            $tasktable = getTableForItemType($this->obj->getType() . 'Task');
+            $tasktable = getTableForItemType($this->obj::class . 'Task');
             $iterator = $DB->request([
                 'FROM'   => $tasktable,
                 'INNER JOIN'   => [
@@ -1224,7 +1224,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $is_self_service = $options['additionnaloption']['is_self_service'] ?? true;
         $are_names_anonymized = $is_self_service
             && Entity::getAnonymizeConfig($item->fields['entities_id']) !== Entity::ANONYMIZE_DISABLED;
-        $objettype = strtolower($item->getType());
+        $objettype = strtolower($item::class);
 
         $data["##$objettype.title##"]        = $item->getField('name');
         $data["##$objettype.content##"]      = $item->getField('content');
@@ -1242,7 +1242,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                            = $this->formatURL(
                                $options['additionnaloption']['usertype'],
                                $objettype . "_" . $item->getField("id") . "_"
-                               . $item->getType() . $tab
+                               . $item::class . $tab
                            );
 
         $entity = new Entity();
@@ -1502,7 +1502,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         // Complex mode
         if (!$simple) {
-            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item->getType(), $item->getField('id'));
+            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item::class, $item->getField('id'));
             $data['linkedtickets'] = [];
             $data['linkedchanges'] = [];
             $data['linkedproblems'] = [];
@@ -1704,7 +1704,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         = count($data['documents']);
 
             //costs infos
-            $costtype = $item->getType() . 'Cost';
+            $costtype = $item::class . 'Cost';
             $costs    = $costtype::getCostsSummary($costtype, $item->getField("id"));
 
             $data["##$objettype.costfixed##"]    = $costs['costfixed'];
@@ -1834,7 +1834,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $itilfup = ITILFollowup::getById($timeline_data['item']['id']);
                 if (
                     $item_users_id > 0
-                    && $timeline_data['type'] == ITILFollowup::getType()
+                    && $timeline_data['type'] == ITILFollowup::class
                     && $are_names_anonymized
                     && $itilfup instanceof ITILFollowup
                     && $itilfup->isFromSupportAgent()
@@ -1864,7 +1864,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     // internal inquest
                     if ($inquest->fields['type'] == 1) {
                         $user_type = $options['additionnaloption']['usertype'];
-                        $redirect = "{$objettype}_" . $item->getField("id") . '_' . $item::getType() . '$3';
+                        $redirect = "{$objettype}_" . $item->getField("id") . '_' . $item::class . '$3';
                         $data["##{$objettype}.urlsatisfaction##"] = $this->formatURL($user_type, $redirect);
                     } elseif ($inquest->fields['type'] == 2) { // external inquest
                         $data["##{$objettype}.urlsatisfaction##"] = Entity::generateLinkSatisfaction($item);
@@ -1979,7 +1979,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     public function getTags()
     {
 
-        $itemtype  = $this->obj->getType();
+        $itemtype  = $this->obj::class;
         $objettype = strtolower($itemtype);
 
         //Locales

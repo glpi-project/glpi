@@ -83,7 +83,7 @@ enum ITILCategoryFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== ITILCategory::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== ITILCategory::class || !is_numeric($value['items_id'])) {
             return null;
         }
 
@@ -101,7 +101,7 @@ enum ITILCategoryFieldStrategy: string
         $valid_answers = array_filter($valid_answers, function (Answer $answer) {
             $value = $answer->getRawAnswer();
             if (
-                $value['itemtype'] !== ITILCategory::getType()
+                $value['itemtype'] !== ITILCategory::class
                 || !is_numeric($value['items_id'])
             ) {
                 return false;

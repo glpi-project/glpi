@@ -49,5 +49,5 @@ if (isset($_POST["purge"])) {
     $answers_set->redirectToList();
 } else {
     Session::checkRight(Form::$rightname, READ);
-    AnswersSet::displayFullPageForItem($id, ['admin', Form::getType()], []);
+    AnswersSet::displayFullPageForItem($id, ['admin', Form::class], []);
 }

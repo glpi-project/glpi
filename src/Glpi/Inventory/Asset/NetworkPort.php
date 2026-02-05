@@ -841,9 +841,9 @@ class NetworkPort extends InventoryAsset
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
-                    "itemtype"           => $this->item->getType(),
+                    "itemtype"           => $this->item::class,
                     "items_id"           => $this->item->getID(),
-                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "instantiation_type" => NetworkPortAggregate::class,
                     "name"               => "Management",
                 ], true);
             }
@@ -911,7 +911,7 @@ class NetworkPort extends InventoryAsset
         $id = $link->getOppositeContact($netports_id);
         $netport->getFromDB($id);
 
-        if ($id && $netport->fields['itemtype'] == Unmanaged::getType()) {
+        if ($id && $netport->fields['itemtype'] == Unmanaged::class) {
             $unmanaged = new Unmanaged();
             $unmanaged->getFromDB($netport->fields['items_id']);
             if ($unmanaged->fields['hub'] == 1) {
@@ -935,7 +935,7 @@ class NetworkPort extends InventoryAsset
         $glpi_ports = [];
         $dbports = $netport->find([
             'items_id' => $hubs_id,
-            'itemtype' => Unmanaged::getType(),
+            'itemtype' => Unmanaged::class,
         ]);
         foreach ($dbports as $dbport) {
             $id = $link->getOppositeContact($dbport['id']);
