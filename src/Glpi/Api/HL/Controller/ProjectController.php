@@ -45,7 +45,9 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Item_Project;
 use Project;
+use ProjectState;
 use ProjectTask;
+use ProjectType;
 use Session;
 
 #[Route(path: '/Project', requirements: [
@@ -155,6 +157,30 @@ final class ProjectController extends AbstractController
                             ],
                         ],
                     ],
+                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState') + ['x-version-introduced' => '2.3'],
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'parent' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project') + ['x-version-introduced' => '2.3'],
+                    'type' => self::getDropdownTypeSchema(class: ProjectType::class, full_schema: 'ProjectType') + ['x-version-introduced' => '2.3'],
+                    'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
+                    'group' => self::getDropdownTypeSchema(class: 'Group', full_schema: 'Group') + ['x-version-introduced' => '2.3'],
+                    'plan_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'plan_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'real_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'real_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'percent_done' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-version-introduced' => '2.3',
+                        'minimum' => 0,
+                        'maximum' => 100,
+                    ],
+                    'auto_percent_done' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'show_on_global_gantt' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3'],
+                    'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
                 ],
             ],
             'ProjectTask' => [

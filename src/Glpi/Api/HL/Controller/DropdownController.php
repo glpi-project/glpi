@@ -102,6 +102,7 @@ use PlanningEventCategory;
 use PrinterModel;
 use PrinterType;
 use ProblemTemplate;
+use ProjectState;
 use ProjectTaskType;
 use ProjectType;
 use RequestType;
@@ -1922,6 +1923,25 @@ EOT,
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'mcc' => ['type' => Doc\Schema::TYPE_INTEGER, 'description' => 'Mobile Country Code'],
                 'mnc' => ['type' => Doc\Schema::TYPE_INTEGER, 'description' => 'Mobile Network Code'],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ProjectState'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => ProjectState::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'color' => ['type' => Doc\Schema::TYPE_STRING, 'pattern' => Doc\Schema::PATTERN_COLOR_HEX],
+                'is_finished' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
