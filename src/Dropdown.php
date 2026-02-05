@@ -3575,6 +3575,8 @@ HTML;
                     break;
 
                 case Ticket::class:
+                case Change::class:
+                case Problem::class:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'FROM'   => $table,
@@ -3582,13 +3584,14 @@ HTML;
                     if (count($ljoin)) {
                         $criteria['LEFT JOIN'] = $ljoin;
                     }
-                    if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+                    $itemtype_class = $post['itemtype'];
+                    if (!Session::haveRight($itemtype_class::$rightname, $itemtype_class::READALL)) {
                         $unused_ref = [];
-                        $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
+                        $joins_str = Search::addDefaultJoin($itemtype_class, $itemtype_class::getTable(), $unused_ref);
                         if (!empty($joins_str)) {
                             $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
                         }
-                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
+                        $where[] = new QueryExpression(Search::addDefaultWhere($itemtype_class));
                     }
                     break;
 
