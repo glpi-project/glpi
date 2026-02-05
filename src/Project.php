@@ -1474,7 +1474,7 @@ TWIG, $twig_params);
                             'itemtype' => ProjectTeam::class,
                             'id' => $data['id'],
                             'type' => $item::getTypeName(1),
-                            'member' => $item->getLink(),
+                            'member' => ($withtemplate == 2) ? $item->fields['name'] : $item->getLink(),
                         ];
                     }
                 }
@@ -1495,7 +1495,7 @@ TWIG, $twig_params);
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
+            'showmassiveactions' => ($withtemplate == 2) ? false : $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
