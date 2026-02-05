@@ -401,6 +401,9 @@ final class RecordSet
                     continue;
                 }
                 if ($j['parent_type'] === Doc\Schema::TYPE_ARRAY) {
+                    if (!is_array($join_prop)) {
+                        $join_prop = explode(chr(0x1D), $join_prop);
+                    }
                     $join_prop = array_values($join_prop);
                 } elseif (array_key_exists($name, $this->search->getContext()->getFlattenedProperties())) {
                     // Nothing more to do

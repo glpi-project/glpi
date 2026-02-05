@@ -1507,4 +1507,173 @@ EOT,
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
+
+    #[Route(path: '/User/{users_id}/Certificate', methods: ['POST'], requirements: [
+        'users_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Assign a certificate to an item'
+    )]
+    public function createCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'User');
+        $request->setParameter('items_id', $request->getAttribute('users_id'));
+        return ResourceAccessor::createBySchema(
+            (new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getCertificateItemLink'],
+            [
+                'mapped' => [
+                    'users_id' => $request->getAttribute('users_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Certificate', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Certificate_Item',
+        description: 'List or search certificate links'
+    )]
+    public function searchCertificateItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==User;items_id==' . $request->getAttribute('users_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/User/{users_id}/Certificate/{id}', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Get a specific certificate link'
+    )]
+    public function getCertificateItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==User;items_id==' . $request->getAttribute('users_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/User/{users_id}/Certificate/{id}', methods: ['PATCH'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Update a specific certificate link'
+    )]
+    public function updateCertificateItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/User/{users_id}/Certificate/{id}', methods: ['DELETE'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Delete a specific certificate link'
+    )]
+    public function deleteCertificateItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Entity/{items_id}/KBArticle', methods: ['POST'], requirements: [
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Assign a KB article to an item'
+    )]
+    public function createKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'Entity');
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            (new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBArticleItemLink'],
+            [
+                'mapped' => [
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/Entity/{items_id}/KBArticle', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'List or search KB article links'
+    )]
+    public function searchKBArticleItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Entity;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Entity/{items_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Get a specific KB article link'
+    )]
+    public function getKBArticleItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Entity;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Entity/{items_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Update a specific KB article link'
+    )]
+    public function updateKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Entity/{items_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Delete a specific KB article link'
+    )]
+    public function deleteKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
 }

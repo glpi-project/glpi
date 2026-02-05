@@ -43,8 +43,11 @@ use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Item_Project;
 use Project;
+use ProjectState;
 use ProjectTask;
+use ProjectType;
 use Session;
 
 #[Route(path: '/Project', requirements: [
@@ -154,6 +157,30 @@ final class ProjectController extends AbstractController
                             ],
                         ],
                     ],
+                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState') + ['x-version-introduced' => '2.3'],
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'parent' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project') + ['x-version-introduced' => '2.3'],
+                    'type' => self::getDropdownTypeSchema(class: ProjectType::class, full_schema: 'ProjectType') + ['x-version-introduced' => '2.3'],
+                    'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
+                    'group' => self::getDropdownTypeSchema(class: 'Group', full_schema: 'Group') + ['x-version-introduced' => '2.3'],
+                    'plan_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'plan_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'real_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'real_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'percent_done' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-version-introduced' => '2.3',
+                        'minimum' => 0,
+                        'maximum' => 100,
+                    ],
+                    'auto_percent_done' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'show_on_global_gantt' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3'],
+                    'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
                 ],
             ],
             'ProjectTask' => [
@@ -237,6 +264,21 @@ final class ProjectController extends AbstractController
                     'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
+                ],
+            ],
+            'Item_Project' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Item_Project::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 ],
             ],
         ];
@@ -363,5 +405,174 @@ final class ProjectController extends AbstractController
         $params = $request->getParameters();
         $params['project'] = $request->getAttributes()['project_id'];
         return ResourceAccessor::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params, [self::class, 'getTask']);
+    }
+
+    #[Route(path: '/Project/{items_id}/KBArticle', methods: ['POST'], requirements: [
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Assign a KB article to an item'
+    )]
+    public function createKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'Project');
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            (new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBArticleItemLink'],
+            [
+                'mapped' => [
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/Project/{items_id}/KBArticle', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'List or search KB article links'
+    )]
+    public function searchKBArticleItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Get a specific KB article link'
+    )]
+    public function getKBArticleItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Update a specific KB article link'
+    )]
+    public function updateKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Delete a specific KB article link'
+    )]
+    public function deleteKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/Contract', methods: ['POST'], requirements: [
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Contract_Item',
+        description: 'Assign a contract to an item'
+    )]
+    public function createContractItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'Project');
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            (new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getContractItemLink'],
+            [
+                'mapped' => [
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/Project/{items_id}/Contract', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Contract_Item',
+        description: 'List or search contract links'
+    )]
+    public function searchContractItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/Contract/{id}', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Contract_Item',
+        description: 'Get a specific contract link'
+    )]
+    public function getContractItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Project;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/Contract/{id}', methods: ['PATCH'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Contract_Item',
+        description: 'Update a specific contract link'
+    )]
+    public function updateContractItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{items_id}/Contract/{id}', methods: ['DELETE'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Contract_Item',
+        description: 'Delete a specific contract link'
+    )]
+    public function deleteContractItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

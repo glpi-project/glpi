@@ -2241,4 +2241,95 @@ EOT,
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle', methods: ['POST'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Assign a KB article to an item'
+    )]
+    public function createKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('assistance_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('assistance_id'));
+        return ResourceAccessor::createBySchema(
+            (new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBArticleItemLink'],
+            [
+                'mapped' => [
+                    'assistance_itemtype' => $request->getAttribute('assistance_itemtype'),
+                    'assistance_id' => $request->getAttribute('assistance_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle', methods: ['GET'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'List or search KB article links'
+    )]
+    public function searchKBArticleItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Get a specific KB article link'
+    )]
+    public function getKBArticleItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Update a specific KB article link'
+    )]
+    public function updateKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Delete a specific KB article link'
+    )]
+    public function deleteKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
 }
