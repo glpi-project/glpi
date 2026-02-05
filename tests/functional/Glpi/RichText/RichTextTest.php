@@ -729,6 +729,7 @@ HTML,
 
         $save_pcre_backtrack_limit = ini_get('pcre.backtrack_limit');
         ini_set('pcre.backtrack_limit', 100); // Lower limit to ensure the effectiveness of regex
+        $this->assertEquals(100, ini_get('pcre.backtrack_limit'));
 
         $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
 
