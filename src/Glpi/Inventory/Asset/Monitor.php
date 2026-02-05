@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use AutoUpdateSystem;
 use Computer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
@@ -62,6 +63,7 @@ class Monitor extends InventoryAsset
             }
 
             $val->is_dynamic = 1;
+            $val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
 
             if (!property_exists($val, 'name')) {
                 $val->name = '';
