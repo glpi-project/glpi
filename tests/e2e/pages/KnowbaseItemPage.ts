@@ -76,7 +76,8 @@ export class KnowbaseItemPage extends GlpiPage
         await fileChooser.setFiles(filePaths);
 
         // Wait for files to be processed and appear in preview
-        await expect(modal.getByRole('listitem')).toHaveCount(files.length);
+        // Files are displayed as .kb-file-item divs (not listitem role)
+        await expect(modal.locator('.kb-file-item')).toHaveCount(files.length);
     }
 
     public async doAddFileToKbUploadArea(file: string, modal: Locator): Promise<void>

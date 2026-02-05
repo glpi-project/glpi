@@ -80,9 +80,9 @@ test('Can select files and upload via modal', async ({ page, profile, api }) => 
     // Select a file - verify it appears in preview
     await kb.doSelectFilesForKbUpload(['uploads/foo.png'], modal);
 
-    // Verify file is shown in preview
-    await expect(modal.getByRole('listitem')).toHaveCount(1);
-    await expect(modal.getByRole('listitem')).toContainText('foo.png');
+    // Verify file is shown in preview (files are .kb-file-item divs)
+    await expect(modal.locator('.kb-file-item')).toHaveCount(1);
+    await expect(modal.locator('.kb-file-item')).toContainText('foo.png');
 
     // Verify upload button is enabled
     await expect(modal.getByRole('button', { name: 'Upload Documents' })).toBeEnabled();
@@ -115,8 +115,8 @@ test('Can select multiple files for upload', async ({ page, profile, api }) => {
     // Select multiple files
     await kb.doSelectFilesForKbUpload(['uploads/foo.png', 'uploads/bar.png'], modal);
 
-    // Verify both files are shown in preview
-    await expect(modal.getByRole('listitem')).toHaveCount(2);
+    // Verify both files are shown in preview (files are .kb-file-item divs)
+    await expect(modal.locator('.kb-file-item')).toHaveCount(2);
 
     // Upload and verify modal closes
     await modal.getByRole('button', { name: 'Upload Documents' }).click();
@@ -146,15 +146,15 @@ test('Can remove a file from selection', async ({ page, profile, api }) => {
     // Select multiple files
     await kb.doSelectFilesForKbUpload(['uploads/foo.png', 'uploads/bar.png'], modal);
 
-    // Verify files are in the preview
-    const filePreview = modal.getByRole('list');
-    await expect(filePreview.getByRole('listitem')).toHaveCount(2);
+    // Verify files are in the preview (files are .kb-file-item divs)
+    const fileItems = modal.locator('.kb-file-item');
+    await expect(fileItems).toHaveCount(2);
 
     // Remove the first file
-    await filePreview.getByRole('listitem').first().getByTitle('Remove').click();
+    await fileItems.first().getByTitle('Remove').click();
 
     // Verify only one file remains
-    await expect(filePreview.getByRole('listitem')).toHaveCount(1);
+    await expect(fileItems).toHaveCount(1);
 });
 
 test('Can add description before upload', async ({ page, profile, api }) => {
