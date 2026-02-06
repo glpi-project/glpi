@@ -34,11 +34,13 @@
 
 namespace tests\units;
 
+use Computer;
 use DatabaseInstance;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
+use Session;
 use Toolbox;
 
 class DatabaseInstanceTest extends DbTestCase
@@ -118,7 +120,7 @@ class DatabaseInstanceTest extends DbTestCase
     public function testGetInventoryAgent(): void
     {
         $computer = $this->createItem(
-            \Computer::class,
+            Computer::class,
             [
                 'name'        => 'test computer',
                 'entities_id' => 0,
@@ -128,7 +130,7 @@ class DatabaseInstanceTest extends DbTestCase
             DatabaseInstance::class,
             [
                 'name'     => 'test database',
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'items_id' => $computer->fields['id'],
             ]
         );
@@ -165,7 +167,7 @@ class DatabaseInstanceTest extends DbTestCase
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
                 'agenttypes_id' => $agenttype_id,
-                'itemtype'     => \Computer::class,
+                'itemtype'     => Computer::class,
                 'items_id'     => $computer->fields['id'],
                 'last_contact' => date('Y-m-d H:i:s', strtotime('last hour')),
             ]
@@ -176,7 +178,7 @@ class DatabaseInstanceTest extends DbTestCase
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
                 'agenttypes_id' => $agenttype_id,
-                'itemtype'     => \Computer::class,
+                'itemtype'     => Computer::class,
                 'items_id'     => $computer->fields['id'],
                 'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
             ]
@@ -202,5 +204,89 @@ class DatabaseInstanceTest extends DbTestCase
         $computer_agent = $computer->getInventoryAgent();
         $this->assertInstanceOf(\Agent::class, $computer_agent);
         $this->assertEquals($computer_agent->fields, $db_agent->fields);
+    }
+
+    public function testLinkDatabaseInstanceToComputer()
+    {
+        $this->login();
+
+        // Create a Computer
+        $computer = new Computer();
+        $computer_id = $computer->add([
+            'name' => 'Test Computer for DB Link',
+            'entities_id' => 0,
+        ]);
+        $this->assertIsInt($computer_id);
+
+        // Create a DatabaseInstance (unlinked)
+        $db_instance = new DatabaseInstance();
+        $db_instance_id = $db_instance->add([
+            'name' => 'Test DB Instance Unlinked',
+            'is_active' => 1,
+            'entities_id' => 0,
+        ]);
+        $this->assertIsInt($db_instance_id);
+
+        // Verify initially not linked
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], 0);
+        $this->assertEmpty($db_instance->fields['itemtype']);
+
+        // Perform the link (update)
+        // This simulates the action performed by the form added in showInstances
+        $success = $db_instance->update([
+            'id' => $db_instance_id,
+            'items_id' => $computer_id,
+            'itemtype' => Computer::class,
+        ]);
+        $this->assertTrue($success);
+
+        // Verify they are linked
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], $computer_id);
+        $this->assertEquals($db_instance->fields['itemtype'], 'Computer');
+    }
+
+    public function testDissociateDatabaseInstanceFromComputer()
+    {
+        $this->login();
+
+        // Create a Computer
+        $computer = new Computer();
+        $computer_id = $computer->add([
+            'name' => 'Test Computer for DB Dissociate',
+            'entities_id' => 0,
+        ]);
+        $this->assertIsInt($computer_id);
+
+        // Create a DatabaseInstance linked to the computer
+        $db_instance = new DatabaseInstance();
+        $db_instance_id = $db_instance->add([
+            'name' => 'Test DB Instance Linked',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'items_id' => $computer_id,
+            'itemtype' => Computer::class,
+        ]);
+        $this->assertIsInt($db_instance_id);
+
+        // Verify initially linked
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], $computer_id);
+        $this->assertEquals($db_instance->fields['itemtype'], 'Computer');
+
+        // Perform the dissociation (update to 0/empty)
+        // This mimics the logic inside processMassiveActionsForOneItemtype 'dissociate' case
+        $success = $db_instance->update([
+            'id' => $db_instance_id,
+            'items_id' => 0,
+            'itemtype' => '',
+        ]);
+        $this->assertTrue($success);
+
+        // Verify they are not linked
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], 0);
+        $this->assertEmpty($db_instance->fields['itemtype']);
     }
 }
