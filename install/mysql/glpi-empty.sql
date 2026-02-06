@@ -5075,6 +5075,7 @@ CREATE TABLE `glpi_notificationtargets` (
   `notifications_id` int unsigned NOT NULL DEFAULT '0',
   `is_exclusion` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`notifications_id`,`items_id`,`type`),
   KEY `items` (`type`,`items_id`),
   KEY `notifications_id` (`notifications_id`),
   KEY `is_exclusion` (`is_exclusion`)
