@@ -121,4 +121,48 @@ class QueuedWebhookTest extends DbTestCase
         $this->assertTrue($queuedWebhook3->getFromDB($queuedWebhook3->getID()));
         $this->assertTrue($queuedWebhook4->getFromDB($queuedWebhook4->getID()));
     }
+
+    public function testPrepareInputForAddDeduplicate()
+    {
+        $this->login();
+
+        // Create a new webhook
+        $webhook = new Webhook();
+        $webhook->add([
+            'name' => 'dupwebhook',
+            'sent_try' => 1,
+        ]);
+
+        $this->assertGreaterThan(0, $webhook->getID());
+
+        // Add a first queued webhook
+        $queued = new QueuedWebhook();
+        $send_time1 = date("Y-m-d H:i:s", time() + (1 * HOUR_TIMESTAMP));
+        $id1 = $queued->add([
+            'webhooks_id' => $webhook->getID(),
+            'send_time' => $send_time1,
+        ]);
+
+        $this->assertGreaterThan(0, $id1);
+
+        // Try to add a second queued webhook with the same webhook and send_time
+        // This must be rejected !
+        $queued2 = new QueuedWebhook();
+        $id2 = $queued2->add([
+            'webhooks_id' => $webhook->getID(),
+            'send_time' => $send_time1,
+        ]);
+
+        $this->assertFalse($id2);
+
+        // Adding with a different send_time must be allowed
+        $queued3 = new QueuedWebhook();
+        $send_time2 = date("Y-m-d H:i:s", time() + (2 * HOUR_TIMESTAMP));
+        $id3 = $queued3->add([
+            'webhooks_id' => $webhook->getID(),
+            'send_time' => $send_time2,
+        ]);
+
+        $this->assertGreaterThan(0, $id3);
+    }
 }
