@@ -30,10 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_confirm_danger */
+/* global glpi_toast_error, glpi_toast_info, glpi_confirm_danger, getAjaxCsrfToken */
 
 import { post } from "/js/modules/Ajax.js";
-import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
+import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
 
 export class GlpiKnowbaseArticleController
 {
@@ -48,6 +48,21 @@ export class GlpiKnowbaseArticleController
     #side_panel;
 
     /**
+     * @type {KnowbaseEditor|null}
+     */
+    #editor = null;
+
+    /**
+     * @type {string}
+     */
+    #original_content = '';
+
+    /**
+     * @type {number|null}
+     */
+    #item_id = null;
+
+    /**
      * @param {HTMLElement} container
      * @param {HTMLElement} side_panel_container
      */
@@ -57,7 +72,10 @@ export class GlpiKnowbaseArticleController
         this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
             side_panel_container,
         );
+        this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+
         this.#initEventListeners();
+        this.#initEditor();
 
         // Enable dots menu once listeners are ready
         const dots = this.#container.querySelector('[data-glpi-kb-dots]');
@@ -122,8 +140,8 @@ export class GlpiKnowbaseArticleController
 
         for (const [key, value] of Object.entries(dataset)) {
             if (key.startsWith(prefix)) {
-                const paramName = key.slice(prefix.length).toLowerCase();
-                params[paramName] = value;
+                const param_name = key.slice(prefix.length).toLowerCase();
+                params[param_name] = value;
             }
         }
 
@@ -166,5 +184,131 @@ export class GlpiKnowbaseArticleController
         const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
         const body = await response.json();
         window.location.href = body.redirect;
+    }
+
+    /**
+     * Initialize edit button listeners (editor is loaded lazily on first edit)
+     */
+    #initEditor()
+    {
+        const can_edit = this.#container.dataset.glpiKbCanEdit === 'true';
+        if (!can_edit) {
+            return;
+        }
+
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+        const edit_button = this.#container.querySelector('[data-action="toggle-edit"]');
+        const save_button = this.#container.querySelector('[data-action="save"]');
+        const cancel_button = this.#container.querySelector('[data-action="cancel"]');
+
+        if (!editor_element || !edit_button) {
+            return;
+        }
+
+        // Store original content for cancel functionality
+        this.#original_content = editor_element.innerHTML;
+
+        // Toggle edit mode (lazy load editor on first click)
+        edit_button.addEventListener('click', async () => {
+            await this.#enableEditMode(editor_element, edit_button, save_button, cancel_button);
+        });
+
+        // Cancel editing
+        cancel_button.addEventListener('click', () => {
+            this.#editor.setContent(this.#original_content);
+            this.#editor.setEditable(false);
+            edit_button.classList.remove('d-none');
+            save_button.classList.add('d-none');
+            cancel_button.classList.add('d-none');
+        });
+
+        // Save content
+        save_button.addEventListener('click', async () => {
+            await this.#saveContent(edit_button, save_button, cancel_button);
+        });
+
+        // Enable edit button once editor is ready
+        edit_button.classList.remove('pointer-events-none');
+    }
+
+    /**
+     * Enable edit mode, loading the editor lazily if needed
+     * @param {HTMLElement} editor_element
+     * @param {HTMLElement} edit_button
+     * @param {HTMLElement} save_button
+     * @param {HTMLElement} cancel_button
+     */
+    async #enableEditMode(editor_element, edit_button, save_button, cancel_button)
+    {
+        // Lazy load editor on first use
+        if (this.#editor === null) {
+            const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
+            this.#editor = new KnowbaseEditor(editor_element, {
+                content: this.#original_content,
+                readonly: false,
+                placeholder: __("Start writing..."),
+            });
+        } else {
+            this.#editor.setEditable(true);
+        }
+
+        this.#editor.focus();
+        edit_button.classList.add('d-none');
+        save_button.classList.remove('d-none');
+        cancel_button.classList.remove('d-none');
+    }
+
+    /**
+     * Save the editor content
+     * @param {HTMLElement} edit_button
+     * @param {HTMLElement} save_button
+     * @param {HTMLElement} cancel_button
+     */
+    async #saveContent(edit_button, save_button, cancel_button)
+    {
+        if (this.#item_id === null) {
+            glpi_toast_error(__("Cannot save: article ID is missing"));
+            return;
+        }
+
+        const original_button_html = save_button.innerHTML;
+        save_button.disabled = true;
+        save_button.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+
+        try {
+            const response = await fetch(
+                `${CFG_GLPI.root_doc}/Knowbase/KnowbaseItem/${this.#item_id}/Answer`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    },
+                    body: JSON.stringify({
+                        answer: this.#editor.getHTML(),
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(__("Failed to save"));
+            }
+
+            // Update original content for future cancel operations
+            this.#original_content = this.#editor.getHTML();
+            this.#editor.setEditable(false);
+            edit_button.classList.remove('d-none');
+            save_button.classList.add('d-none');
+            cancel_button.classList.add('d-none');
+
+            // Show success notification
+            glpi_toast_info(__("Article saved successfully"));
+        } catch (error) {
+            glpi_toast_error(error.message || __("An error occurred while saving"));
+        } finally {
+            save_button.disabled = false;
+            save_button.innerHTML = original_button_html;
+        }
     }
 }

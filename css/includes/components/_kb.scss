@@ -48,6 +48,12 @@
 .kb-article {
     max-height: calc(100vh - 150px);
     overflow: auto;
+
+    // Allow bubble menu to overflow when editor is active
+    &:has(.is-editing) {
+        overflow: visible;
+        max-height: none;
+    }
 }
 
 // KB Documents footer section

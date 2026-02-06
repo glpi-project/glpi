@@ -220,6 +220,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $url;
     }
 
+    /**
+     * @param array<string|array<string>>|null $menus
+     * @param array<string, mixed> $options
+     */
+    public static function displayFullPageForItem(
+        $id,
+        ?array $menus = null,
+        array $options = []
+    ): void {
+        // Load Tiptap editor for KB articles
+        Html::requireJs('tiptap');
+
+        parent::displayFullPageForItem($id, $menus, $options);
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -1028,6 +1043,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
         }
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
+            'item_id' => $this->fields['id'],
             'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),
             'subject' => $this->fields['name'],
@@ -1038,8 +1054,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'last_update_can_view_author' => $last_update_info->canViewAuthor(),
             'documents' => $documents,
             'documents_count' => count($documents),
-            'can_add_documents' => $this->canUpdateItem(),
-            'item_id' => $this->fields['id'],
+            'can_add_documents' => $this->can($this->fields['id'], UPDATE),
+            'can_edit' => $this->can($this->fields['id'], UPDATE),
             'edit_mode' => $options['edit_mode'],
             'actions' => $actions,
         ]);
