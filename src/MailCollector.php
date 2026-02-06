@@ -1642,21 +1642,6 @@ class MailCollector extends CommonDBTM
 
             $contents = $this->getDecodedContent($part);
             if (file_put_contents($path . $filename, $contents)) {
-                // Check if the document is blacklisted
-                $document = new Document();
-                if ($document->getFromDBbyContent(0, $path . $filename)) {
-                    if ($document->fields['is_blacklisted']) {
-                        // Remove the temporary file and skip this attachment
-                        unlink($path . $filename);
-                        $this->addtobody .= "\n\n" . sprintf(
-                            __('%1$s: %2$s'),
-                            __('Blacklisted attached file'),
-                            $filename
-                        );
-                        return;
-                    }
-                }
-
                 $this->files[$filename] = $filename;
 
                 // If embeded image, we add a tag
