@@ -111,7 +111,6 @@
         "friendsofphp/php-cs-fixer": "^3.93",
         "friendsoftwig/twigcs": "^6.6",
         "glpi-project/phpstan-glpi": "^1.1",
-        "glpi-project/rector-glpi": "^1.0",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.1",
