@@ -11147,6 +11147,12 @@
                 "url": "https://github.com/glpi-project/rector-glpi.git",
                 "reference": "c62f7192a0bd4b30c7900f9b69429bc5dc74c991"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/glpi-project/rector-glpi/zipball/c62f7192a0bd4b30c7900f9b69429bc5dc74c991",
+                "reference": "c62f7192a0bd4b30c7900f9b69429bc5dc74c991",
+                "shasum": ""
+            },
             "require": {
                 "php": ">=8.2",
                 "rector/rector": "^2.3"
@@ -11164,18 +11170,15 @@
                     "RectorGlpi\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "classmap": [
-                    "tests/"
-                ],
-                "psr-4": {
-                    "RectorGlpi\\Tests\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Rector rules for GLPI.",
+            "support": {
+                "issues": "https://github.com/glpi-project/rector-glpi/issues",
+                "source": "https://github.com/glpi-project/rector-glpi/tree/1.0.0"
+            },
             "time": "2026-02-05T13:10:30+00:00"
         },
         {
