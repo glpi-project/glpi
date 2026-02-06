@@ -44,15 +44,13 @@
             {{ __('No comments yet.') }}
         </p>
         {% for comment in comments %}
-            {% set user_info = users_infos[comment.users_id] %}
-
             {{ include('pages/tools/kb/sidepanel/comment.html.twig', {
-                comment_id: comment.id,
-                user: users_infos[comment.users_id].user,
-                date_creation: comment.date_creation,
-                comment: comment.comment,
-                can_edit: comment.can_edit ?? false,
-                can_delete: comment.can_delete ?? false,
+                comment_id   : comment.fields.id,
+                date_creation: comment.fields.date_creation,
+                comment      : comment.fields.comment,
+                can_edit     : comment.canUpdateItem(),
+                can_purge   : comment.canPurgeItem(),
+                user         : users[comment.fields.users_id] ?? null,
             }, with_context = false) }}
         {% endfor %}
     </div>

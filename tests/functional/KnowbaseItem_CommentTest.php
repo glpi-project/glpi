@@ -62,39 +62,31 @@ class KnowbaseItem_CommentTest extends DbTestCase
     {
         $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
 
-        //first, set data
+        // first, set data
         $this->addComments($kb1);
-        $this->addComments($kb1, 'fr_FR');
 
         $nb = countElementsInTable(
             'glpi_knowbaseitems_comments'
         );
-        $this->assertSame(12, $nb);
+        $this->assertSame(6, $nb);
 
         // second, test what we retrieve
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
+        $comments = KnowbaseItem_Comment::getCommentsForKbItem($kb1);
         $this->assertCount(3, $comments);
-        $this->assertCount(10, $comments[0]);
-        $this->assertCount(2, $comments[0]['answers']);
-        $this->assertCount(1, $comments[0]['answers'][0]['answers']);
-        $this->assertCount(0, $comments[0]['answers'][1]['answers']);
-        $this->assertArrayHasKey('avatar', $comments[0]['user_info']);
-        $this->assertArrayHasKey('link', $comments[0]['user_info']);
-        $this->assertArrayHasKey('initials', $comments[0]['user_info']);
-        $this->assertArrayHasKey('initials_bg_color', $comments[0]['user_info']);
-        $this->assertCount(10, $comments[1]);
-        $this->assertCount(0, $comments[1]['answers']);
+        $this->assertCount(2, $comments[0]->fields['_answers']);
+        $this->assertCount(1, $comments[0]->fields['_answers'][0]->fields['_answers']);
+        $this->assertCount(0, $comments[0]->fields['_answers'][1]->fields['_answers']);
+        $this->assertCount(0, $comments[1]->fields['_answers']);
     }
 
     /**
      * Add comments into database
      *
      * @param KnowbaseItem $kb   KB item instance
-     * @param string        $lang KB item language, defaults to null
      *
      * @return void
      */
-    private function addComments(KnowbaseItem $kb, string $lang = 'NULL')
+    private function addComments(KnowbaseItem $kb)
     {
         $this->login();
         $kbcom = new KnowbaseItem_Comment();
@@ -102,7 +94,6 @@ class KnowbaseItem_CommentTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => getItemByTypeName('User', TU_USER, true),
             'comment'          => 'Comment 1 for KB1',
-            'language'         => $lang,
         ];
         $kbcom1 = $kbcom->add($input);
         $this->assertTrue($kbcom1 > 0);
@@ -133,92 +124,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => 9999999,
             'comment'          => 'Comment 3 for KB1',
-            'language'         => $lang,
         ]));
-    }
-
-    public function testGetTabNameForItemNotLogged()
-    {
-        //we are not logged, we should not see comment tab
-        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
-        $kbcom = new KnowbaseItem_Comment();
-
-        $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->assertSame('', $name);
-    }
-
-    public function testGetTabNameForItemLogged()
-    {
-        $this->login();
-
-        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
-        $this->addComments($kb1);
-        $kbcom = new KnowbaseItem_Comment();
-
-        $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->assertSame("Comments 6", strip_tags($name));
-
-        $_SESSION['glpishow_count_on_tabs'] = 1;
-        $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame("Comments 6", strip_tags($name));
-
-        $_SESSION['glpishow_count_on_tabs'] = 0;
-        $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame("Comments", strip_tags($name));
-
-        // Change knowbase rights to be empty
-        $_SESSION['glpiactiveprofile']['knowbase'] = 0;
-        // Tab name should be empty
-        $this->assertEmpty($kbcom->getTabNameForItem($kb1));
-
-        // Add comment and read right
-        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::COMMENTS;
-        // Tab name should be filled
-        $this->assertSame("Comments", strip_tags($name));
-    }
-
-    public function testDisplayComments()
-    {
-        //TODO This should be part of an E2E test
-        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
-        $this->addComments($kb1);
-
-        ob_start();
-        KnowbaseItem_Comment::showForItem($kb1);
-        $html = ob_get_clean();
-
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
-        $this->assertCount(3, $results[0]);
-
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
-        $this->assertCount(3, $results[0]);
-
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
-        $this->assertCount(4, $results[0]);
-
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
-        $this->assertCount(6, $results[0]);
-
-        //same tests, from another user
-        $auth = new \Auth();
-        $result = $auth->login('glpi', 'glpi', true);
-        $this->assertTrue($result);
-
-        ob_start();
-        KnowbaseItem_Comment::showForItem($kb1);
-        $html = ob_get_clean();
-
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
-        $this->assertCount(3, $results[0]);
-
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
-        $this->assertCount(3, $results[0]);
-
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
-        $this->assertCount(1, $results[0]);
-
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
-        $this->assertCount(6, $results[0]);
     }
 
     public function testRights(): void
@@ -237,12 +143,13 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertTrue($comment::canCreate());
         $this->assertTrue($comment::canUpdate());
         $this->assertTrue($comment::canView());
-        $this->assertTrue($comment::canDelete());
+        $this->assertFalse($comment::canDelete());
         $this->assertTrue($comment::canPurge());
         $this->assertTrue($comment->can(-1, CREATE, $new_comment_input));
         $this->assertNotFalse($comment->add($new_comment_input));
         $this->assertTrue($comment->can($comment->getID(), READ));
         $this->assertTrue($comment->can($comment->getID(), UPDATE));
+        $this->assertFalse($comment->can($comment->getID(), DELETE));
         $this->assertTrue($comment->can($comment->getID(), PURGE));
         $_SESSION['glpiactiveprofile']['knowbase'] = $all_knowbase_rights & ~KnowbaseItem::COMMENTS;
         $this->assertFalse($comment::canCreate());
@@ -276,6 +183,8 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), READ));
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), UPDATE));
         $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), UPDATE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment1->getID(), DELETE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), DELETE));
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), PURGE));
         $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), PURGE));
 
@@ -294,8 +203,10 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertTrue($kb2_comment1->can($kb2_comment1->getID(), READ));
         $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), READ));
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), UPDATE));
-        $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), UPDATE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), UPDATE));
+        $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), DELETE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), DELETE));
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), PURGE));
-        $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), PURGE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), PURGE));
     }
 }

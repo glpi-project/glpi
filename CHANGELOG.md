@@ -31,7 +31,11 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+- `ajax/getKbComment.php`
+- `front/knowbaseitem_comment.form.php`
+- `front/knowbaseitem_comment.form.php`
 - `js/Forms/FaIconSelector.js` module
+- `templates/pages/tools/kb/comments.html.twig`
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -51,6 +55,10 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Glpi\Toolbox\Sanitizer` class
+- `KnowbaseItem_Comment.php::getTabNameForItem()`
+- `KnowbaseItem_Comment.php::displayTabContentForItem()`
+- `KnowbaseItem_Comment.php::showForItem()`
+- `KnowbaseItem_Comment.php::getCommentForm()`
 - `Migration::setOutputHandler()`
 - `Migration::addNewMessageArea()`
 - `Migration::displayTitle()`
