@@ -2465,7 +2465,7 @@ class CommonDBTM extends CommonGLPI
     public function canCreateItem(): bool
     {
 
-        if (!$this->checkEntity()) {
+        if (!$this->checkEntity($this->isTemplate() && $this->isRecursive())) {
             return false;
         }
         return true;

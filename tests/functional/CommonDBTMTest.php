@@ -2403,4 +2403,131 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals("Computer A3", $items[2]->getName());
         $this->assertEquals("Computer A4", $items[3]->getName());
     }
+
+    public static function getTemplateProvider(): iterable
+    {
+        $itemtypes = [
+            \Budget::class,
+            \Cable::class,
+            \Certificate::class,
+            Computer::class,
+            \Contract::class,
+            \Domain::class,
+            \Enclosure::class,
+            \Monitor::class,
+            \NetworkEquipment::class,
+            \PDU::class,
+            \PassiveDCEquipment::class,
+            \Peripheral::class,
+            \Phone::class,
+            \Printer::class,
+            \Project::class,
+            \Rack::class,
+            \Software::class,
+            \SoftwareLicense::class,
+        ];
+
+        foreach ($itemtypes as $itemtype) {
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 1",
+                    'name' => "Test $itemtype 1",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 2",
+                    'name' => "Test $itemtype 2",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 3",
+                    'name' => "Test $itemtype 3",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 4",
+                    'name' => "Test $itemtype 4",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 5",
+                    'name' => "Test $itemtype 5",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_child_2', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 6",
+                    'name' => "Test $itemtype 6",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_child_2', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+        }
+    }
+
+    #[DataProvider('getTemplateProvider')]
+    public function testCanCreateFromTemplate(
+        string $itemtype,
+        array $template_input,
+        int $target_entities_id,
+        bool $expected_result
+    ): void {
+        $this->login();
+
+        $template_input['is_template'] = true;
+
+        if ($itemtype == \SoftwareLicense::class) {
+            $software_id = $this->createItem(\Software::class, [
+                'name' => 'Test Software for Template',
+                'entities_id' => $template_input['entities_id'],
+                'is_recursive' => $template_input['is_recursive'],
+            ])->getID();
+            $template_input['softwares_id'] = $software_id;
+        }
+
+        $template = $this->createItem($itemtype, $template_input);
+
+        $input = $template->fields;
+        $input['entities_id'] = $target_entities_id;
+        $this->setEntity($target_entities_id, false);
+
+        $this->assertEquals($expected_result, $template->can($template->getID(), CREATE, $input));
+    }
 }
