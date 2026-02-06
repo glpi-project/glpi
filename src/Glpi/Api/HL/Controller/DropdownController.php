@@ -953,7 +953,11 @@ EOT,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'name' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'maxLength' => 255,
+                    'required' => true,
+                ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_default' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,

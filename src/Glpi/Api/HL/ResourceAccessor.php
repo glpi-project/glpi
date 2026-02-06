@@ -170,6 +170,60 @@ final class ResourceAccessor
     }
 
     /**
+     * @param array $schema
+     * @param array $input
+     * @return array<string, array{error: string, message: string}[]>
+     */
+    private static function validateInputParamsBySchema(array $schema, array $input): array
+    {
+        $errors = [];
+        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+
+        // Check required properties
+        foreach ($flattened_properties as $prop_name => $prop) {
+            if (($prop['required'] ?? false) && !ArrayPathAccessor::hasElementByArrayPath($input, $prop_name)) {
+                $errors[$prop_name][] = [
+                    'error' => 'required',
+                    'message' => 'This field is required',
+                ];
+            }
+        }
+
+        foreach ($input as $key => $value) {
+            if (!isset($flattened_properties[$key])) {
+                continue;
+            }
+            $prop = $flattened_properties[$key];
+
+            if (isset($prop['maxLength']) && is_string($value) && strlen($value) > $prop['maxLength']) {
+                $errors[$key][] = [
+                    'error' => 'maxLength',
+                    'message' => "This field must be at most {$prop['maxLength']} characters long",
+                ];
+            }
+            if (
+                (isset($prop['minimum']) && is_numeric($value) && $value < $prop['minimum'])
+                || (isset($prop['maximum']) && is_numeric($value) && $value > $prop['maximum'])
+            ) {
+                $errors[$key][] = [
+                    'error' => 'range',
+                    'message' => "This field must be between {$prop['minimum']} and {$prop['maximum']}",
+                    'minimum' => $prop['minimum'] ?? null,
+                    'maximum' => $prop['maximum'] ?? null,
+                ];
+            }
+            if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
+                $errors[$key][] = [
+                    'error' => 'pattern',
+                    'message' => "This field must match the pattern {$prop['pattern']}",
+                    'pattern' => $prop['pattern'],
+                ];
+            }
+        }
+        return $errors;
+    }
+
+    /**
      * Update an item of the given schema using the given request parameters.
      * @param array $schema The schema
      * @param array $request_attrs The request attributes
@@ -220,6 +274,13 @@ final class ResourceAccessor
     {
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
+        }
+        $errors = self::validateInputParamsBySchema($schema, $request_params);
+        if (!empty($errors)) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'Invalid input parameters', $errors),
+                400
+            );
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
 
