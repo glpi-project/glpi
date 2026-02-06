@@ -30,6 +30,34 @@
  # ---------------------------------------------------------------------
  #}
 
+{% macro rule_step(itemtype, title, description, can_view, url = null) %}
+    <li class="step">
+        {% if can_view %}
+            <a class="btn flex-column" href="{{ url ?? (itemtype|itemtype_search_path) }}">
+                <div class="d-flex align-items-center">
+                    <i class="{{ itemtype|itemtype_icon }}"></i>
+                    <span>{{ title }}</span>
+                </div>
+                <div class="text-muted">
+                    {{ description }}
+                </div>
+            </a>
+        {% else %}
+            <div class="btn flex-column opacity-70" style="cursor: not-allowed;"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="{{ __('You do not have the required permissions') }}">
+                <div class="d-flex align-items-center">
+                    <i class="{{ itemtype|itemtype_icon }}"></i>
+                    <span>{{ title }}</span>
+                </div>
+                <div class="text-muted">
+                    {{ description }}
+                </div>
+            </div>
+        {% endif %}
+    </li>
+{% endmacro %}
+
 {{ include('pages/admin/rules/backup_header.html.twig') }}
 
 <div class="row">
@@ -48,77 +76,48 @@
                 <span>{{ __('Agent sends an inventory file') }}</span>
             </li>
 
-            <li class="step">
-                <a class="btn flex-column" href="{{ 'RuleDefineItemtype'|itemtype_search_path }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ 'RuleDefineItemtype'|itemtype_icon }}"></i>
-                        <span>{{ __('Transform itemtypes') }}</span>
-                    </div>
-                    <div class="text-muted">
-                        {{ __("Override the asset to another custom definition (like Servers)") }}
-                    </div>
-                </a>
-            </li>
+            {{ _self.rule_step(
+                'RuleDefineItemtype',
+                __('Transform itemtypes'),
+                __("Override the asset to another custom definition (like Servers)"),
+                call('RuleDefineItemtype::canView')
+            ) }}
 
-            <li class="step">
-                <a class="btn flex-column" href="{{ 'RuleImportEntity'|itemtype_search_path }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ 'RuleImportEntity'|itemtype_icon }}"></i>
-                        <span>{{ __('Rules for assigning an item to an entity') }}</span>
-                    </div>
-                    <div class="text-muted">
-                        {{ __("Set an entity with some criteria (by its tag for example)") }}
-                    </div>
-                </a>
-            </li>
+            {{ _self.rule_step(
+                'RuleImportEntity',
+                __('Rules for assigning an item to an entity'),
+                __("Set an entity with some criteria (by its tag for example)"),
+                call('RuleImportEntity::canView')
+            ) }}
 
-            <li class="step">
-                <a class="btn flex-column" href="{{ 'RuleLocation'|itemtype_search_path }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ 'RuleLocation'|itemtype_icon }}"></i>
-                        <span>{{ __('Location rules') }}</span>
-                    </div>
-                    <div class="text-muted">
-                        {{ __("Apply a location by checking common criteria") }}
-                    </div>
-                </a>
-            </li>
+            {{ _self.rule_step(
+                'RuleLocation',
+                __('Location rules'),
+                __("Apply a location by checking common criteria"),
+                call('RuleLocation::canView')
+            ) }}
 
-            <li class="step">
-                <a class="btn flex-column" href="{{ 'RuleImportAsset'|itemtype_search_path }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ 'RuleImportAsset'|itemtype_icon }}"></i>
-                        <span>{{ __("Rules for import and link equipments") }}</span>
-                    </div>
-                    <div class="text-muted">
-                        {{ __("Match data with an existing asset, create a new asset, or deny the import") }}
-                    </div>
-                </a>
-            </li>
+            {{ _self.rule_step(
+                'RuleImportAsset',
+                __("Rules for import and link equipments"),
+                __("Match data with an existing asset, create a new asset, or deny the import"),
+                call('RuleImportAsset::canView')
+            ) }}
 
-            <li class="step">
-                <a class="btn flex-column" href="{{ path('/front/dictionnary.php') }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ 'RuleDictionnaryDropdownCollection'|itemtype_icon }}"></i>
-                        <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
-                    </div>
-                    <div class="text-muted">
-                        {{ __("Normalize sub-data (like softwares, OS and models)") }}
-                    </div>
-                </a>
-            </li>
+            {{ _self.rule_step(
+                'RuleDictionnaryDropdownCollection',
+                _n('Dictionary', 'Dictionaries', get_plural_number()),
+                __("Normalize sub-data (like softwares, OS and models)"),
+                call('RuleDictionnaryDropdownCollection::canView') or call('RuleDictionnarySoftware::canView') or call('RuleDictionnaryPrinter::canView'),
+                path('/front/dictionnary.php')
+            ) }}
 
-            <li class="step">
-                <a class="btn flex-column" href="{{ 'RuleAsset'|itemtype_search_path }}">
-                    <div class="d-flex align-items-center">
-                        <i class="{{ 'RuleAsset'|itemtype_icon }}"></i>
-                        <span>{{ __("Business rules for assets") }}</span>
-                    </div>
-                    <div class="text-muted">
-                        {{ __("Alter asset fields based on their data") }}
-                    </div>
-                </a>
-            </li>
+            {{ _self.rule_step(
+                'RuleAsset',
+                __("Business rules for assets"),
+                __("Alter asset fields based on their data"),
+                call('RuleAsset::canView')
+            ) }}
 
             <li class="end">
                 <i class="ti ti-circle-check me-1 fa-2x"></i>
