@@ -826,6 +826,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static function getRightsForForm(string $interface = 'all', string $form = 'all', string $group = 'all'): array
     {
+        global $GLPI_CACHE;
+
         /**
          * Helper function to streamline rights definition
          * @param class-string<CommonDBTM>|null $itemtype
@@ -855,311 +857,315 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $dropdown_rights = (new Profile())->getRights();
             unset($dropdown_rights[DELETE], $dropdown_rights[UNLOCK]);
 
-            $all_rights = [
-                'central' => [
-                    'tracking' => [
-                        'itilobjects' => [
-                            $fn_get_rights(TicketTemplate::class, 'central', [
-                                'label' => _n('Template', 'Templates', Session::getPluralNumber()),
-                            ]),
-                            $fn_get_rights(PendingReason::class, 'central'),
+            if (!$GLPI_CACHE->has('profile_rights_core')) {
+                $all_rights = [
+                    'central' => [
+                        'tracking' => [
+                            'itilobjects' => [
+                                $fn_get_rights(TicketTemplate::class, 'central', [
+                                    'label' => _n('Template', 'Templates', Session::getPluralNumber()),
+                                ]),
+                                $fn_get_rights(PendingReason::class, 'central'),
+                            ],
+                            'tickets' => [
+                                $fn_get_rights(Ticket::class, 'central'),
+                                $fn_get_rights(TicketCost::class, 'central'),
+                                $fn_get_rights(TicketRecurrent::class, 'central'),
+                            ],
+                            'followups_tasks' => [
+                                $fn_get_rights(ITILFollowup::class, 'central'),
+                                $fn_get_rights(TicketTask::class, 'central'),
+                            ],
+                            'validations' => [
+                                $fn_get_rights(TicketValidation::class, 'central'),
+                            ],
+                            'visibility' => [
+                                $fn_get_rights(Stat::class, 'central'),
+                                $fn_get_rights(Planning::class, 'central'),
+                            ],
+                            'planning' => [
+                                $fn_get_rights(PlanningExternalEvent::class, 'central'),
+                            ],
+                            'problems' => [
+                                $fn_get_rights(Problem::class, 'central'),
+                            ],
+                            'changes' => [
+                                $fn_get_rights(Change::class, 'central'),
+                                $fn_get_rights(ChangeValidation::class, 'central'),
+                                $fn_get_rights(RecurrentChange::class, 'central'),
+                            ],
                         ],
-                        'tickets' => [
-                            $fn_get_rights(Ticket::class, 'central'),
-                            $fn_get_rights(TicketCost::class, 'central'),
-                            $fn_get_rights(TicketRecurrent::class, 'central'),
+                        'tools' => [
+                            'general' => [
+                                $fn_get_rights(Reminder::class, 'central', [
+                                    'label' => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
+                                ]),
+                                $fn_get_rights(RSSFeed::class, 'central', [
+                                    'label' => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
+                                ]),
+                                $fn_get_rights(SavedSearch::class, 'central', [
+                                    'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber()),
+                                ]),
+                                $fn_get_rights(Report::class, 'central'),
+                                $fn_get_rights(KnowbaseItem::class, 'central'),
+                                $fn_get_rights(ReservationItem::class, 'central'),
+                            ],
+                            'projects' => [
+                                $fn_get_rights(Project::class, 'central'),
+                                $fn_get_rights(ProjectTask::class, 'central'),
+                            ],
                         ],
-                        'followups_tasks' => [
-                            $fn_get_rights(ITILFollowup::class, 'central'),
-                            $fn_get_rights(TicketTask::class, 'central'),
+                        'assets' => [
+                            'general' => [
+                                $fn_get_rights(Computer::class, 'central'),
+                                $fn_get_rights(Monitor::class, 'central'),
+                                $fn_get_rights(Software::class, 'central'),
+                                $fn_get_rights(NetworkEquipment::class, 'central'),
+                                $fn_get_rights(Printer::class, 'central'),
+                                $fn_get_rights(Cartridge::class, 'central'),
+                                $fn_get_rights(Consumable::class, 'central'),
+                                $fn_get_rights(Phone::class, 'central'),
+                                $fn_get_rights(Peripheral::class, 'central'),
+                                $fn_get_rights(NetworkName::class, 'central', [
+                                    'label' => __('Internet'),
+                                ]),
+                                $fn_get_rights(Item_DeviceSimcard::class, 'central', [
+                                    'label' => __('Simcard PIN/PUK'),
+                                    'field' => 'devicesimcard_pinpuk',
+                                ]),
+                            ],
                         ],
-                        'validations' => [
-                            $fn_get_rights(TicketValidation::class, 'central'),
+                        'management' => [
+                            'general' => [
+                                $fn_get_rights(SoftwareLicense::class, 'central'),
+                                $fn_get_rights(Contact::class, 'central', [
+                                    'label' => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / "
+                                        . _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+                                ]),
+                                $fn_get_rights(Document::class, 'central'),
+                                $fn_get_rights(Contract::class, 'central'),
+                                $fn_get_rights(Infocom::class, 'central'),
+                                $fn_get_rights(Budget::class, 'central'),
+                                $fn_get_rights(Line::class, 'central'),
+                                $fn_get_rights(Certificate::class, 'central'),
+                                $fn_get_rights(Datacenter::class, 'central'),
+                                $fn_get_rights(Cluster::class, 'central'),
+                                $fn_get_rights(Domain::class, 'central'),
+                                $fn_get_rights(Appliance::class, 'central'),
+                                $fn_get_rights(DatabaseInstance::class, 'central'),
+                                $fn_get_rights(Cable::class, 'central'),
+                            ],
                         ],
-                        'visibility' => [
-                            $fn_get_rights(Stat::class, 'central'),
-                            $fn_get_rights(Planning::class, 'central'),
-                        ],
-                        'planning' => [
-                            $fn_get_rights(PlanningExternalEvent::class, 'central'),
-                        ],
-                        'problems' => [
-                            $fn_get_rights(Problem::class, 'central'),
-                        ],
-                        'changes' => [
-                            $fn_get_rights(Change::class, 'central'),
-                            $fn_get_rights(ChangeValidation::class, 'central'),
-                            $fn_get_rights(RecurrentChange::class, 'central'),
-                        ],
-                    ],
-                    'tools' => [
-                        'general' => [
-                            $fn_get_rights(Reminder::class, 'central', [
-                                'label' => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
-                            ]),
-                            $fn_get_rights(RSSFeed::class, 'central', [
-                                'label' => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
-                            ]),
-                            $fn_get_rights(SavedSearch::class, 'central', [
-                                'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber()),
-                            ]),
-                            $fn_get_rights(Report::class, 'central'),
-                            $fn_get_rights(KnowbaseItem::class, 'central'),
-                            $fn_get_rights(ReservationItem::class, 'central'),
-                        ],
-                        'projects' => [
-                            $fn_get_rights(Project::class, 'central'),
-                            $fn_get_rights(ProjectTask::class, 'central'),
-                        ],
-                    ],
-                    'assets' => [
-                        'general' => [
-                            $fn_get_rights(Computer::class, 'central'),
-                            $fn_get_rights(Monitor::class, 'central'),
-                            $fn_get_rights(Software::class, 'central'),
-                            $fn_get_rights(NetworkEquipment::class, 'central'),
-                            $fn_get_rights(Printer::class, 'central'),
-                            $fn_get_rights(Cartridge::class, 'central'),
-                            $fn_get_rights(Consumable::class, 'central'),
-                            $fn_get_rights(Phone::class, 'central'),
-                            $fn_get_rights(Peripheral::class, 'central'),
-                            $fn_get_rights(NetworkName::class, 'central', [
-                                'label' => __('Internet'),
-                            ]),
-                            $fn_get_rights(Item_DeviceSimcard::class, 'central', [
-                                'label' => __('Simcard PIN/PUK'),
-                                'field' => 'devicesimcard_pinpuk',
-                            ]),
-                        ],
-                    ],
-                    'management' => [
-                        'general' => [
-                            $fn_get_rights(SoftwareLicense::class, 'central'),
-                            $fn_get_rights(Contact::class, 'central', [
-                                'label' => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / "
-                                    . _n('Supplier', 'Suppliers', Session::getPluralNumber()),
-                            ]),
-                            $fn_get_rights(Document::class, 'central'),
-                            $fn_get_rights(Contract::class, 'central'),
-                            $fn_get_rights(Infocom::class, 'central'),
-                            $fn_get_rights(Budget::class, 'central'),
-                            $fn_get_rights(Line::class, 'central'),
-                            $fn_get_rights(Certificate::class, 'central'),
-                            $fn_get_rights(Datacenter::class, 'central'),
-                            $fn_get_rights(Cluster::class, 'central'),
-                            $fn_get_rights(Domain::class, 'central'),
-                            $fn_get_rights(Appliance::class, 'central'),
-                            $fn_get_rights(DatabaseInstance::class, 'central'),
-                            $fn_get_rights(Cable::class, 'central'),
-                        ],
-                    ],
-                    'admin' => [
-                        'general' => [
-                            $fn_get_rights(User::class, 'central'),
-                            $fn_get_rights(Entity::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(Group::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(self::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(Event::class, 'central', [
-                                'scope' => 'global',
-                                'label' => __('System logs'),
-                            ]),
-                            $fn_get_rights(Form::class, 'central'),
-                        ],
-                        'inventory' => [
-                            $fn_get_rights(Conf::class, 'central', [
-                                'label' => __('Inventory'),
-                                'field' => 'inventory',
-                                'scope' => 'global',
-                            ]),
-                            $fn_get_rights(Lockedfield::class, 'central', [
-                                'rights' => [
-                                    CREATE => __('Create'), // For READ / CREATE
-                                    UPDATE => __('Update'), //for CREATE / PURGE global lock
-                                ],
-                                'scope' => 'global',
-                            ]),
-                            $fn_get_rights(SNMPCredential::class, 'central', ['scope' => 'global']),
-                            $fn_get_rights(RefusedEquipment::class, 'central', [
-                                'rights' => [
-                                    READ  => __('Read'),
-                                    UPDATE  => __('Update'),
-                                    PURGE   => [
-                                        'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently'),
+                        'admin' => [
+                            'general' => [
+                                $fn_get_rights(User::class, 'central'),
+                                $fn_get_rights(Entity::class, 'central', ['scope' => 'global']),
+                                $fn_get_rights(Group::class, 'central', ['scope' => 'global']),
+                                $fn_get_rights(self::class, 'central', ['scope' => 'global']),
+                                $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
+                                $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
+                                $fn_get_rights(Event::class, 'central', [
+                                    'scope' => 'global',
+                                    'label' => __('System logs'),
+                                ]),
+                                $fn_get_rights(Form::class, 'central'),
+                            ],
+                            'inventory' => [
+                                $fn_get_rights(Conf::class, 'central', [
+                                    'label' => __('Inventory'),
+                                    'field' => 'inventory',
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(Lockedfield::class, 'central', [
+                                    'rights' => [
+                                        CREATE => __('Create'), // For READ / CREATE
+                                        UPDATE => __('Update'), //for CREATE / PURGE global lock
                                     ],
-                                ],
-                                'scope' => 'global',
-                            ]),
-                            $fn_get_rights(Unmanaged::class, 'central', [
-                                'rights' => [
-                                    READ  => __('Read'),
-                                    UPDATE  => __('Update'),
-                                    DELETE => [
-                                        'short' => __('Delete'),
-                                        'long'  => _x('button', 'Put in trashbin'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(SNMPCredential::class, 'central', ['scope' => 'global']),
+                                $fn_get_rights(RefusedEquipment::class, 'central', [
+                                    'rights' => [
+                                        READ => __('Read'),
+                                        UPDATE => __('Update'),
+                                        PURGE => [
+                                            'short' => __('Purge'),
+                                            'long' => _x('button', 'Delete permanently'),
+                                        ],
                                     ],
-                                    PURGE   => [
-                                        'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(Unmanaged::class, 'central', [
+                                    'rights' => [
+                                        READ => __('Read'),
+                                        UPDATE => __('Update'),
+                                        DELETE => [
+                                            'short' => __('Delete'),
+                                            'long' => _x('button', 'Put in trashbin'),
+                                        ],
+                                        PURGE => [
+                                            'short' => __('Purge'),
+                                            'long' => _x('button', 'Delete permanently'),
+                                        ],
                                     ],
-                                ],
-                                'scope' => 'global',
-                            ]),
-                            $fn_get_rights(Agent::class, 'central', [
-                                'rights' => [
-                                    READ  => __('Read'),
-                                    UPDATE  => __('Update'),
-                                    PURGE   => [
-                                        'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(Agent::class, 'central', [
+                                    'rights' => [
+                                        READ => __('Read'),
+                                        UPDATE => __('Update'),
+                                        PURGE => [
+                                            'short' => __('Purge'),
+                                            'long' => _x('button', 'Delete permanently'),
+                                        ],
                                     ],
-                                ],
-                                'scope' => 'global',
-                            ]),
+                                    'scope' => 'global',
+                                ]),
+                            ],
+                            'rules' => [
+                                $fn_get_rights(RuleRight::class, 'central', [
+                                    'label' => __('Authorizations assignment rules'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleImportAsset::class, 'central', [
+                                    'label' => __('Rules for assigning a computer to an entity'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleLocation::class, 'central', [
+                                    'label' => __('Rules for assigning a computer to a location'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleMailCollector::class, 'central', [
+                                    'label' => __('Rules for assigning a ticket created through a mails receiver'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleSoftwareCategory::class, 'central', [
+                                    'label' => __('Rules for assigning a category to a software'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleTicket::class, 'central', [
+                                    'label' => __('Business rules for tickets (entity)'),
+                                ]),
+                                $fn_get_rights(RuleChange::class, 'central', [
+                                    'label' => __('Business rules for changes (entity)'),
+                                ]),
+                                $fn_get_rights(RuleProblem::class, 'central', [
+                                    'label' => __('Business rules for problems (entity)'),
+                                ]),
+                                $fn_get_rights(RuleAsset::class, 'central', [
+                                    'label' => __('Business rules for assets'),
+                                ]),
+                                $fn_get_rights(Transfer::class, 'central', [
+                                    'label' => __('Transfer'),
+                                    'scope' => 'global',
+                                ]),
+                            ],
+                            'dictionaries' => [
+                                $fn_get_rights(RuleDictionnaryDropdown::class, 'central', [
+                                    'label' => __('Dropdowns dictionary'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleDictionnarySoftware::class, 'central', [
+                                    'label' => __('Software dictionary'),
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(RuleDictionnaryPrinter::class, 'central', [
+                                    'label' => __('Printers dictionary'),
+                                    'scope' => 'global',
+                                ]),
+                            ],
                         ],
-                        'rules' => [
-                            $fn_get_rights(RuleRight::class, 'central', [
-                                'label'     => __('Authorizations assignment rules'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleImportAsset::class, 'central', [
-                                'label'     => __('Rules for assigning a computer to an entity'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleLocation::class, 'central', [
-                                'label'     => __('Rules for assigning a computer to a location'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleMailCollector::class, 'central', [
-                                'label'     => __('Rules for assigning a ticket created through a mails receiver'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleSoftwareCategory::class, 'central', [
-                                'label'     => __('Rules for assigning a category to a software'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleTicket::class, 'central', [
-                                'label'     => __('Business rules for tickets (entity)'),
-                            ]),
-                            $fn_get_rights(RuleChange::class, 'central', [
-                                'label'     => __('Business rules for changes (entity)'),
-                            ]),
-                            $fn_get_rights(RuleProblem::class, 'central', [
-                                'label'     => __('Business rules for problems (entity)'),
-                            ]),
-                            $fn_get_rights(RuleAsset::class, 'central', [
-                                'label'     => __('Business rules for assets'),
-                            ]),
-                            $fn_get_rights(Transfer::class, 'central', [
-                                'label'     => __('Transfer'),
-                                'scope'     => 'global',
-                            ]),
-                        ],
-                        'dictionaries' => [
-                            $fn_get_rights(RuleDictionnaryDropdown::class, 'central', [
-                                'label'     => __('Dropdowns dictionary'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleDictionnarySoftware::class, 'central', [
-                                'label'     => __('Software dictionary'),
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(RuleDictionnaryPrinter::class, 'central', [
-                                'label'     => __('Printers dictionary'),
-                                'scope'     => 'global',
-                            ]),
-                        ],
-                    ],
-                    'setup' => [
-                        'general' => [
-                            $fn_get_rights(Config::class, 'central', ['scope' => 'entity']),
-                            $fn_get_rights(null, 'central', [
-                                'rights'  => [
-                                    READ    => __('Read'),
-                                    UPDATE  => __('Update'),
-                                ],
-                                'label'  => __('Personalization'),
-                                'field'  => 'personalization',
-                                'scope'     => 'entity',
-                            ]),
-                            $fn_get_rights(Grid::class, 'central', [
-                                'rights'    => [
-                                    READ   => __('Read'),
-                                    UPDATE => __('Update'),
-                                    CREATE => __('Create'),
-                                    PURGE  => [
-                                        'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently'),
+                        'setup' => [
+                            'general' => [
+                                $fn_get_rights(Config::class, 'central', ['scope' => 'entity']),
+                                $fn_get_rights(null, 'central', [
+                                    'rights' => [
+                                        READ => __('Read'),
+                                        UPDATE => __('Update'),
                                     ],
-                                ],
-                                'label'     => __('All dashboards'),
-                                'field'     => 'dashboard',
-                                'scope'     => 'entity',
-                            ]),
-                            $fn_get_rights(DisplayPreference::class, 'central', ['scope' => 'entity']),
-                            $fn_get_rights(Item_Devices::class, 'central', [
-                                'label'     => _n('Component', 'Components', Session::getPluralNumber()),
-                                'field'     => 'device',
-                            ]),
-                            $fn_get_rights(null, 'central', [
-                                'rights'    => $dropdown_rights,
-                                'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
-                                'field'     => 'dropdown',
-                                'scope'     => 'global',
-                            ]),
-                            $fn_get_rights(Location::class, 'central'),
-                            $fn_get_rights(ITILCategory::class, 'central'),
-                            $fn_get_rights(KnowbaseItemCategory::class, 'central'),
-                            $fn_get_rights(TaskCategory::class, 'central'),
-                            $fn_get_rights(State::class, 'central'),
-                            $fn_get_rights(ITILFollowupTemplate::class, 'central'),
-                            $fn_get_rights(TaskTemplate::class, 'central'),
-                            $fn_get_rights(SolutionTemplate::class, 'central'),
-                            $fn_get_rights(ITILValidationTemplate::class, 'central'),
-                            $fn_get_rights(Calendar::class, 'central'),
-                            $fn_get_rights(DocumentType::class, 'central'),
-                            $fn_get_rights(Link::class, 'central'),
-                            $fn_get_rights(Notification::class, 'central'),
-                            $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')]),
-                            $fn_get_rights(LineOperator::class, 'central'),
-                            $fn_get_rights(OAuthClient::class, 'central'),
-                            $fn_get_rights(DefaultFilter::class, 'central'),
+                                    'label' => __('Personalization'),
+                                    'field' => 'personalization',
+                                    'scope' => 'entity',
+                                ]),
+                                $fn_get_rights(Grid::class, 'central', [
+                                    'rights' => [
+                                        READ => __('Read'),
+                                        UPDATE => __('Update'),
+                                        CREATE => __('Create'),
+                                        PURGE => [
+                                            'short' => __('Purge'),
+                                            'long' => _x('button', 'Delete permanently'),
+                                        ],
+                                    ],
+                                    'label' => __('All dashboards'),
+                                    'field' => 'dashboard',
+                                    'scope' => 'entity',
+                                ]),
+                                $fn_get_rights(DisplayPreference::class, 'central', ['scope' => 'entity']),
+                                $fn_get_rights(Item_Devices::class, 'central', [
+                                    'label' => _n('Component', 'Components', Session::getPluralNumber()),
+                                    'field' => 'device',
+                                ]),
+                                $fn_get_rights(null, 'central', [
+                                    'rights' => $dropdown_rights,
+                                    'label' => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
+                                    'field' => 'dropdown',
+                                    'scope' => 'global',
+                                ]),
+                                $fn_get_rights(Location::class, 'central'),
+                                $fn_get_rights(ITILCategory::class, 'central'),
+                                $fn_get_rights(KnowbaseItemCategory::class, 'central'),
+                                $fn_get_rights(TaskCategory::class, 'central'),
+                                $fn_get_rights(State::class, 'central'),
+                                $fn_get_rights(ITILFollowupTemplate::class, 'central'),
+                                $fn_get_rights(TaskTemplate::class, 'central'),
+                                $fn_get_rights(SolutionTemplate::class, 'central'),
+                                $fn_get_rights(ITILValidationTemplate::class, 'central'),
+                                $fn_get_rights(Calendar::class, 'central'),
+                                $fn_get_rights(DocumentType::class, 'central'),
+                                $fn_get_rights(Link::class, 'central'),
+                                $fn_get_rights(Notification::class, 'central'),
+                                $fn_get_rights(SLM::class, 'central', ['label' => __('SLM')]),
+                                $fn_get_rights(LineOperator::class, 'central'),
+                                $fn_get_rights(OAuthClient::class, 'central'),
+                                $fn_get_rights(DefaultFilter::class, 'central'),
+                            ],
                         ],
                     ],
-                ],
-                'helpdesk' => [
-                    'tracking' => [
-                        'general' => [
-                            $fn_get_rights(Ticket::class, 'helpdesk'),
-                            $fn_get_rights(ITILFollowup::class, 'helpdesk'),
-                            $fn_get_rights(TicketTask::class, 'helpdesk'),
-                            $fn_get_rights(TicketValidation::class, 'helpdesk'),
+                    'helpdesk' => [
+                        'tracking' => [
+                            'general' => [
+                                $fn_get_rights(Ticket::class, 'helpdesk'),
+                                $fn_get_rights(ITILFollowup::class, 'helpdesk'),
+                                $fn_get_rights(TicketTask::class, 'helpdesk'),
+                                $fn_get_rights(TicketValidation::class, 'helpdesk'),
+                            ],
+                        ],
+                        'tools' => [
+                            'general' => [
+                                $fn_get_rights(KnowbaseItem::class, 'helpdesk'),
+                                $fn_get_rights(ReservationItem::class, 'helpdesk'),
+                                $fn_get_rights(Reminder::class, 'helpdesk'),
+                                $fn_get_rights(RSSFeed::class, 'helpdesk'),
+                            ],
+                        ],
+                        'setup' => [
+                            'general' => [
+                                $fn_get_rights(null, 'helpdesk', [
+                                    'rights' => [
+                                        READ => __('Read'),
+                                        UPDATE => __('Update'),
+                                    ],
+                                    'label' => __('Personalization'),
+                                    'field' => 'personalization',
+                                ]),
+                            ],
                         ],
                     ],
-                    'tools' => [
-                        'general' => [
-                            $fn_get_rights(KnowbaseItem::class, 'helpdesk'),
-                            $fn_get_rights(ReservationItem::class, 'helpdesk'),
-                            $fn_get_rights(Reminder::class, 'helpdesk'),
-                            $fn_get_rights(RSSFeed::class, 'helpdesk'),
-                        ],
-                    ],
-                    'setup' => [
-                        'general' => [
-                            $fn_get_rights(null, 'helpdesk', [
-                                'rights'  => [
-                                    READ    => __('Read'),
-                                    UPDATE  => __('Update'),
-                                ],
-                                'label'  => __('Personalization'),
-                                'field'  => 'personalization',
-                            ]),
-                        ],
-                    ],
-                ],
-            ];
+                ];
+                $GLPI_CACHE->set('profile_rights_core', $all_rights);
+            }
+            $all_rights = $GLPI_CACHE->get('profile_rights_core');
 
             // Add rights for custom assets
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions(only_active: true);

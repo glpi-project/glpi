@@ -870,7 +870,6 @@ EOT,
                 'timezone' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-version-introduced' => '2.2.0',
-                    'enum' => array_keys($DB->getTimezones()),
                     'maxLength' => 50,
                 ],
             ],

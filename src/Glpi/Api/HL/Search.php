@@ -91,8 +91,9 @@ final class Search
     private Parser $rsql_parser;
     private SearchContext $context;
     private DBmysql $db_read;
+    private array $sql_field_cache = [];
 
-    private function __construct(array $schema, array $request_params)
+    public function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
         $this->rsql_parser = new Parser($this);
@@ -102,6 +103,11 @@ final class Search
     public function getContext(): SearchContext
     {
         return $this->context;
+    }
+
+    public function getRSQLParser(): Parser
+    {
+        return $this->rsql_parser;
     }
 
     public function getDBRead(): DBmysql
@@ -129,8 +135,7 @@ final class Search
 
     public function getSQLFieldForProperty(string $prop_name): string
     {
-        static $cache = [];
-        if (!isset($cache[$prop_name]) || Environment::get() === Environment::TESTING) {
+        if (!isset($this->sql_field_cache[$prop_name]) || Environment::get() === Environment::TESTING) {
             $prop = $this->context->getFlattenedProperties()[$prop_name];
             $is_scalar_join = false;
             $is_join = $this->context->isJoinedProperty($prop_name);
@@ -145,8 +150,8 @@ final class Search
 
             // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
             if ($is_computed) {
-                $cache[$prop_name] = str_replace('.', chr(0x1F), trim($prop_name, '.'));
-                return $cache[$prop_name];
+                $this->sql_field_cache[$prop_name] = str_replace('.', chr(0x1F), trim($prop_name, '.'));
+                return $this->sql_field_cache[$prop_name];
             }
 
             if (!$is_join) {
@@ -154,22 +159,22 @@ final class Search
                 // Still need to replace all except the last '.' with 0x1F in case it is a nested property.
                 $sql_field_parts = explode('.', $sql_field);
                 $field_name = array_pop($sql_field_parts);
-                $cache[$prop_name] = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
-                if (!str_contains($cache[$prop_name], chr(0x1F))) {
-                    $cache[$prop_name] = '_.' . $cache[$prop_name];
+                $this->sql_field_cache[$prop_name] = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
+                if (!str_contains($this->sql_field_cache[$prop_name], chr(0x1F))) {
+                    $this->sql_field_cache[$prop_name] = '_.' . $this->sql_field_cache[$prop_name];
                 }
             } else {
                 if ($is_scalar_join) {
-                    $cache[$prop_name] = str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
-                    return $cache[$prop_name];
+                    $this->sql_field_cache[$prop_name] = str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
+                    return $this->sql_field_cache[$prop_name];
                 }
                 $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
                 $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
                 $join_alias = str_replace('.', chr(0x1F), trim($join_alias, '.'));
-                $cache[$prop_name] = "{$join_alias}.{$sql_field}";
+                $this->sql_field_cache[$prop_name] = "{$join_alias}.{$sql_field}";
             }
         }
-        return $cache[$prop_name];
+        return $this->sql_field_cache[$prop_name];
     }
 
     /**
@@ -178,7 +183,7 @@ final class Search
      * @param bool $distinct_groups Whether to use DISTINCT in GROUP_CONCAT
      * @return QueryExpression|null
      */
-    private function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
+    public function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
         $prop = $this->context->getFlattenedProperties()[$prop_name];
         if ($prop['writeOnly'] ?? false) {
@@ -275,7 +280,7 @@ final class Search
      * @param array $join_definition The join definition
      * @return array JOIN clauses in array format used bt {@link \DBmysqlIterator}
      */
-    private function getJoins(string $join_alias, array $join_definition): array
+    public function getJoins(string $join_alias, array $join_definition): array
     {
         $joins = [];
 
@@ -358,14 +363,24 @@ final class Search
      * @return array|array[]
      * @throws RSQLException
      */
-    private function getSearchCriteria(): array
+    public function getSearchCriteria(): array
     {
         // Handle fields to return
         $criteria = [
             'SELECT' => $this->getSelectCriteria(),
         ];
 
-        // Handle joins
+        $this->addJoinsCriteria($criteria);
+        $this->addRSQLCriteria($criteria);
+        $this->addVisibilityCriteria($criteria);
+        $this->addPaginationCriteria($criteria);
+        $this->addSortingCriteria($criteria);
+
+        return $criteria;
+    }
+
+    public function addJoinsCriteria(array &$criteria): void
+    {
         foreach ($this->context->getJoins() as $join_alias => $join_definition) {
             $join_clauses = $this->getJoins($join_alias, $join_definition);
             foreach ($join_clauses as $join_type => $join_tables) {
@@ -375,8 +390,10 @@ final class Search
                 $criteria[$join_type] = array_merge($criteria[$join_type], $join_tables);
             }
         }
+    }
 
-        // Handle RSQL filter
+    public function addRSQLCriteria(&$criteria): void
+    {
         if (!empty($this->context->getRequestParameter('filter'))) {
             $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->context->getRequestParameter('filter')));
             // Fail the request if any of the filters are invalid
@@ -389,9 +406,10 @@ final class Search
             $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
             $criteria['HAVING'] = [$filter_result->getSQLHavingCriteria()];
         }
+    }
 
-        // Handle entity and other visibility restrictions
-        $entity_restrict = [];
+    public function addVisibilityCriteria(array &$criteria): void
+    {
         if (!$this->context->isUnionSearchMode()) {
             $itemtype = $this->context->getSchemaItemtype(); //should not that use self::getItemFromSchema()?
             /** @var CommonDBTM $item */
@@ -484,8 +502,10 @@ final class Search
         if (!empty($entity_restrict) && $entity_restrict !== [0 => []]) {
             $criteria['WHERE'][] = ['AND' => $entity_restrict];
         }
+    }
 
-        // Handle pagination
+    public function addPaginationCriteria(array &$criteria): void
+    {
         $start = $this->context->getRequestParameter('start');
         $limit = $this->context->getRequestParameter('limit');
         if (is_numeric($start)) {
@@ -494,8 +514,10 @@ final class Search
         if (is_numeric($limit)) {
             $criteria['LIMIT'] = (int) $limit;
         }
+    }
 
-        // Handle sorting
+    public function addSortingCriteria(array &$criteria): void
+    {
         $sort = $this->context->getRequestParameter('sort');
         if ($sort !== null) {
             $sorts = array_map(static fn($s) => trim($s), explode(',', (string) $sort));
@@ -521,8 +543,6 @@ final class Search
             }
             $criteria['ORDERBY'] = $orderby;
         }
-
-        return $criteria;
     }
 
     /**
@@ -531,7 +551,7 @@ final class Search
      * @return void
      * @throws RightConditionNotMetException If the read condition check returns false indicating we know the user cannot view any of the resources without needing to check the database.
      */
-    private function addReadRestrictCriteria(array &$criteria): void
+    public function addReadRestrictCriteria(array &$criteria): void
     {
         $read_right_criteria = $this->context->getSchemaReadRestrictCriteria();
         if (is_callable($read_right_criteria)) {
@@ -598,6 +618,7 @@ final class Search
             'SELECT' => [],
         ];
 
+        Profiler::getInstance()->start('Build search criteria', Profiler::CATEGORY_HLAPI);
         $criteria = array_merge_recursive($criteria, $this->getSearchCriteria());
 
         if ($count_only) {
@@ -648,7 +669,7 @@ final class Search
                 }
                 $criteria['SELECT'] = $count_select;
             }
-
+            Profiler::getInstance()->stop('Build search criteria');
             // request just to get the ids/union itemtypes
             $iterator = $this->db_read->request($criteria);
             $this->validateIterator($iterator);
@@ -672,14 +693,15 @@ final class Search
                     $records[$row['_itemtype']][$row['id']] = $row;
                 }
             } else {
+                Profiler::getInstance()->start('Organize search results', Profiler::CATEGORY_HLAPI);
+                $schema_itemtype = $this->context->getSchemaItemtype();
                 foreach ($iterator as $row) {
-                    if (!isset($records[$this->context->getSchemaItemtype()])) {
-                        $records[$this->context->getSchemaItemtype()] = [];
-                    }
-                    $records[$this->context->getSchemaItemtype()][$row['id']] = $row;
+                    $records[$schema_itemtype][$row['id']] = $row;
                 }
+                Profiler::getInstance()->stop('Organize search results');
             }
 
+            Profiler::getInstance()->start('Fetch full records for joined filters', Profiler::CATEGORY_HLAPI);
             if ($this->criteriaHasJoinFilter($criteria['WHERE'] ?? [])) {
                 // There was a filter on joined data, so the IDs we got are only the ones that match the filter.
                 // We want to get all related items in the result and not just the ones that match the filter.
@@ -710,6 +732,7 @@ final class Search
                     $records[$itemtype][$data['id']] = $data;
                 }
             }
+            Profiler::getInstance()->stop('Fetch full records for joined filters');
         } else {
             // Count only mode
             $row = $iterator->current();
