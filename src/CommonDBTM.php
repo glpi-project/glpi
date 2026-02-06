@@ -5603,7 +5603,7 @@ class CommonDBTM extends CommonGLPI
                 }
             } else {
                 // Only block blacklisted documents when importing via mail collector
-                if (isset($input['_auto_import']) && $input['_auto_import']) {
+                if ($input['_auto_import'] ?? false) {
                     $blacklisted_doc = new Document();
                     if ($blacklisted_doc->getFromDBbyContent($entities_id, $filename)) {
                         if ($blacklisted_doc->fields['is_blacklisted']) {
