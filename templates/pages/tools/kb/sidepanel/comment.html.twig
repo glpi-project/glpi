@@ -31,7 +31,7 @@
  #}
 
 
-<div class="d-flex w-100" data-testid="comment" data-glpi-comment-id="{{ comment_id }}">
+<div class="d-flex w-100 kb-comment" data-testid="comment" data-glpi-comment-id="{{ comment_id }}">
     {{ include('components/user/picture.html.twig', {
         'user_object': user,
         'avatar_size': 'avatar-sm',
@@ -39,7 +39,7 @@
         'circle': true,
     }, with_context = false) }}
 
-    <div class="card rounded w-100">
+    <div class="kb-comment-card card rounded w-100">
         <div class="card-body px-3 py-2">
             <div class="card-title fs-4 d-flex align-items-start">
                 <div class="flex-grow-1" data-testid="comment-header">
@@ -54,7 +54,7 @@
                         {{ date_creation|relative_datetime }}
                     </span>
                 </div>
-                {% set has_actions = can_edit or can_delete %}
+                {% set has_actions = can_edit or can_purge %}
                 {% if has_actions %}
                     <div class="dropdown ms-2">
                         <button
@@ -81,7 +81,7 @@
                                     </button>
                                 </li>
                             {% endif %}
-                            {% if can_delete %}
+                            {% if can_purge %}
                                 <li>
                                     <button
                                         type="button"

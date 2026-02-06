@@ -1,0 +1,57 @@
+{# Reply button - visible on hover #}
+<div class="kb-reply-trigger ms-5 mt-1 opacity-0" data-glpi-reply-trigger>
+    <span
+        role="button"
+        class="text-muted px-2 py-1"
+        data-glpi-reply-btn
+        data-parent-comment-id="{{ comment.id }}"
+    >
+        {{ __('Reply...') }}
+    </span>
+</div>
+
+{# Reply form - hidden by default #}
+<div
+    class="kb-reply-form d-none mb-4"
+    data-glpi-reply-form data-parent-comment-id="{{ comment.id }}"
+>
+    <div class="d-flex w-100">
+        {{ include('components/user/picture.html.twig', {
+            'user_object': get_current_user(),
+            'avatar_size': 'avatar-sm',
+            'extra_class': 'me-2 align-self-start mt-1',
+            'circle': true,
+            'with_link' : false,
+        }, with_context = false) }}
+
+        <div class="kb-comment-card card rounded w-100 last-comment">
+            <div class="card-body px-3 py-2">
+                <textarea
+                    class="w-100 form-control auto-resize mb-2"
+                    rows="2"
+                    placeholder="{{ __('Write a reply...') }}"
+                    data-glpi-reply-textarea
+                ></textarea>
+                <div class="d-flex justify-content-end gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-ghost-secondary"
+                        data-glpi-reply-cancel
+                    >
+                        {{ __('Cancel') }}
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        data-glpi-reply-submit
+                        aria-label="{{ __('Reply') }}"
+                    >
+                        <i class="ti ti-arrow-back-up" data-glpi-icon></i>
+                        <i class="ti ti-loader-2 fa-spin d-none" data-glpi-loading></i>
+                        <span>{{ __('Reply') }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

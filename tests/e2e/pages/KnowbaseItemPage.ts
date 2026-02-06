@@ -57,10 +57,38 @@ export class KnowbaseItemPage extends GlpiPage
         await response_promise;
     }
 
+    public async doOpenCommentsPanel(): Promise<void>
+    {
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('Comments').click();
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({
             'visible': true,
         });
+    }
+
+    public getCommentsCounter(): Locator
+    {
+        return this.page.getByTestId('comments-counter');
+    }
+
+    public getNoCommentsMessage(): Locator
+    {
+        return this.page.getByText('No comments yet.');
+    }
+
+    public getComment(content: string): Locator
+    {
+        return this.page.getByTestId('comment').filter({
+            hasText: content
+        });
+    }
+
+    public getNewCommentTextarea(): Locator
+    {
+        return this.page.getByPlaceholder("Add a comment...");
     }
 }

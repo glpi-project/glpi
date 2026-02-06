@@ -34,9 +34,11 @@
 
 namespace Glpi\Knowbase\SidePanel;
 
+use Glpi\Knowbase\CommentsThread;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use Override;
+use User;
 
 final class CommentsRenderer implements RendererInterface
 {
@@ -55,24 +57,40 @@ final class CommentsRenderer implements RendererInterface
     #[Override]
     public function getParams(KnowbaseItem $item): array
     {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
-            kbitem_id: $item->getID(),
-            lang: null,
-            parent: null,
-            user_data_cache: $users_infos,
+        $threads = KnowbaseItem_Comment::getCommentsThreads($item);
+
+        // Load users
+        $users = User::getSeveralFromDBByCrit([
+            'id' => $this->extractRequiredUsersIds($threads),
+        ]);
+        $users = iterator_to_array($users);
+
+        // Transform the user list into an id -> user hash map
+        $users = array_combine(
+            keys: array_map(fn(User $user) => $user->getID(), $users),
+            values: $users,
         );
 
-        foreach ($comments as &$comment) {
-            $comment_item = new KnowbaseItem_Comment();
-            $comment_item->getFromResultSet($comment);
-            $comment['can_edit'] = $comment_item->canUpdateItem();
-            $comment['can_delete'] = $comment_item->canDeleteItem();
+        return [
+            'id'       => $item->getID(),
+            'threads'  => $threads,
+            'users'    => $users,
+        ];
+    }
+
+    /**
+     * @param CommentsThread[] $threads
+     * @return int[]
+     */
+    private function extractRequiredUsersIds(array $threads): array
+    {
+        $ids = [];
+        foreach ($threads as $thread) {
+            foreach ($thread->getComments() as $comment) {
+                $ids[] = $comment->fields['users_id'];
+            }
         }
 
-        return [
-            'id' => $item->getID(),
-            'comments' => $comments,
-            'users_infos' => $users_infos,
-        ];
+        return array_unique($ids);
     }
 }

@@ -35,18 +35,22 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Knowbase\CommentsThread;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
-use RuntimeException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\json_decode;
+
 final class AddCommentController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/{id}/AddComment",
         name: "knowbase_article_add_comment",
@@ -56,6 +60,8 @@ final class AddCommentController extends AbstractController
     )]
     public function __invoke(int $id, Request $request): Response
     {
+        $data = json_decode($request->getContent(), true);
+
         // Parse kb id
         $kb = KnowbaseItem::getById($id);
         if (!$kb) {
@@ -63,33 +69,36 @@ final class AddCommentController extends AbstractController
         }
 
         // Parse content
-        $content = $request->request->getString('content');
+        $content = $data['content'] ?? '';
         if (empty($content)) {
             throw new BadRequestHttpException();
         }
 
-        $comment = new KnowbaseItem_Comment();
-        $input = [
-            'knowbaseitems_id' => $id,
-            'comment' => $content,
-        ];
-        if (!$comment->can(-1, CREATE, $input)) {
-            throw new AccessDeniedHttpException();
-        }
+        // Parse optional parent comment id
+        $parent_comment_id = $data['parent_comment_id'] ?? null;
 
-        // Try to add comment
-        if (!$comment->add($input)) {
-            throw new RuntimeException("Failed to create comment");
-        }
-
-        // Render new comment
-        return $this->render('pages/tools/kb/sidepanel/comment.html.twig', [
-            'comment_id'    => $comment->getID(),
-            'user'          => Session::getCurrentUser(),
-            'date_creation' => $comment->fields['date_creation'],
-            'comment'       => $comment->fields['comment'],
-            'can_edit'      => true,
-            'can_delete'    => true,
+        $comment = $this->add(KnowbaseItem_Comment::class, [
+            'knowbaseitems_id'  => $id,
+            'comment'           => $content,
+            'parent_comment_id' => $parent_comment_id,
         ]);
+
+        if ($parent_comment_id === null) {
+            // Comment has no parent, render a new thread
+            return $this->render('pages/tools/kb/sidepanel/comments_thread.html.twig', [
+                'thread' => new CommentsThread([$comment]),
+                'users'  => [Session::getLoginUserID() => Session::getCurrentUser()],
+            ]);
+        } else {
+            // Render new comment
+            return $this->render('pages/tools/kb/sidepanel/comment.html.twig', [
+                'comment_id'    => $comment->getID(),
+                'user'          => Session::getCurrentUser(),
+                'date_creation' => $comment->fields['date_creation'],
+                'comment'       => $comment->fields['comment'],
+                'can_edit'      => true,
+                'can_purge'     => true,
+            ]);
+        }
     }
 }

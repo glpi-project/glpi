@@ -21074,18 +21074,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_Comment\\:\\:getCommentsForKbItem\\(\\) has parameter \\$user_data_cache with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Comment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_Comment\\:\\:getCommentsForKbItem\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Comment.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method KnowbaseItem_Item\\:\\:getForbiddenStandardMassiveAction\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

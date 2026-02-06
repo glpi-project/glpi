@@ -43,6 +43,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\json_decode;
+
 final class UpdateCommentController extends AbstractController
 {
     use CrudControllerTrait;
@@ -57,8 +59,10 @@ final class UpdateCommentController extends AbstractController
     )]
     public function __invoke(int $id, Request $request): Response
     {
+        $data = json_decode($request->getContent(), true);
+
         // Get submitted comment
-        $content = $request->request->getString('content');
+        $content = $data['content'] ?? '';
         if (empty($content)) {
             throw new BadRequestHttpException();
         }

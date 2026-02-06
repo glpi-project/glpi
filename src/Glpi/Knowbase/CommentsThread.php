@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,25 +32,30 @@
  * ---------------------------------------------------------------------
  */
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
+namespace Glpi\Knowbase;
 
-Session::checkCentralAccess();
+use KnowbaseItem_Comment;
 
-if (!isset($_POST['kbitem_id'])) {
-    throw new RuntimeException('Required argument missing!');
+final class CommentsThread
+{
+    public function __construct(
+        /** @var KnowbaseItem_Comment[] $comments */
+        private array $comments = [],
+    ) {}
+
+    public function addComment(KnowbaseItem_Comment $comment): void
+    {
+        $this->comments[] = $comment;
+    }
+
+    /** @return KnowbaseItem_Comment[] */
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
+
+    public function getRootComment(): KnowbaseItem_Comment
+    {
+        return $this->comments[array_key_first($this->comments)];
+    }
 }
-
-$item = new KnowbaseItem();
-if (!$item->getFromDB($_POST['kbitem_id']) || !$item->can($_POST['kbitem_id'], READ)) {
-    return;
-}
-
-$kbitem_id = $_POST['kbitem_id'];
-$lang = $_POST['language'] ?? null;
-
-$edit = $_POST['edit'] ?? false;
-
-$answer = $_POST['answer'] ?? false;
-
-echo KnowbaseItem_Comment::getCommentForm($kbitem_id, $lang, $edit, $answer);
