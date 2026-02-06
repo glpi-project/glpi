@@ -43,7 +43,9 @@
                 </div>
             </a>
         {% else %}
-            <div class="btn flex-column opacity-70" style="cursor: not-allowed;">
+            <div class="btn flex-column opacity-70" style="cursor: not-allowed;"
+                 data-bs-toggle="tooltip" data-bs-placement="top"
+                 title="{{ __('You do not have the required permissions') }}">
                 <div class="d-flex align-items-center">
                     <i class="{{ itemtype|itemtype_icon }}"></i>
                     <span>{{ title }}</span>
