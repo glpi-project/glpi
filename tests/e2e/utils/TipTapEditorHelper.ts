@@ -31,7 +31,6 @@
  */
 
 import { Page, Locator, expect } from '@playwright/test';
-import { waitForFullEditorInit, EDITOR_TIMEOUTS } from './EditorWaitStrategies';
 
 export class TipTapEditorHelper {
     private readonly page: Page;
@@ -45,11 +44,16 @@ export class TipTapEditorHelper {
 
     async enterEditMode(): Promise<Locator> {
         const editButton = this.page.getByTestId('edit-button');
-        this.editor = await waitForFullEditorInit(
-            this.page,
-            this.contentContainer,
-            editButton
-        );
+        await editButton.click();
+
+        // eslint-disable-next-line playwright/no-raw-locators
+        const editor = this.contentContainer.locator('.ProseMirror');
+        await expect(editor).toBeVisible();
+        await expect(editor).toHaveAttribute('contenteditable', 'true');
+        this.editor = editor;
+
+        await this.editor.click();
+        await expect(this.page.getByTestId('save-button')).toBeVisible();
         return this.editor;
     }
 
@@ -84,12 +88,11 @@ export class TipTapEditorHelper {
     async save(): Promise<void> {
         const saveButton = this.page.getByTestId('save-button');
         const saveResponse = this.page.waitForResponse(
-            response => response.url().includes('/Answer') && response.request().method() === 'POST',
-            { timeout: EDITOR_TIMEOUTS.SAVE_COMPLETE }
+            response => response.url().includes('/Answer') && response.request().method() === 'POST'
         );
         await saveButton.click();
         await saveResponse;
-        await expect(saveButton).toBeHidden({ timeout: EDITOR_TIMEOUTS.EDITOR_INIT });
+        await expect(saveButton).toBeHidden();
         await expect(this.page.getByTestId('edit-button')).toBeVisible();
     }
 

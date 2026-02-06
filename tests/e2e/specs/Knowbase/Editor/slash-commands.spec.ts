@@ -36,8 +36,6 @@ import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
 test.describe('Knowledge Base Editor - Slash Commands', () => {
-    test.describe.configure({ mode: 'serial' });
-
     test.describe('Insert via click', () => {
 
         test('Can insert Heading 1', async ({ page, profile, api }) => {

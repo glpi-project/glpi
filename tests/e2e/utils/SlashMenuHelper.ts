@@ -32,7 +32,6 @@
 
 import { Page, Locator, expect } from '@playwright/test';
 import { TipTapEditorHelper } from './TipTapEditorHelper';
-import { waitForSlashMenuVisible, waitForSlashMenuHidden } from './EditorWaitStrategies';
 
 export type SlashCommand =
     | 'Heading 1'
@@ -55,34 +54,56 @@ export class SlashMenuHelper {
         this.editorHelper = editorHelper;
     }
 
+    private getMenu(): Locator {
+        // eslint-disable-next-line playwright/no-raw-locators
+        return this.page.locator('.slash-menu');
+    }
+
+    async assertVisible(): Promise<Locator> {
+        const menu = this.getMenu();
+        await expect(menu).toBeVisible();
+        // eslint-disable-next-line playwright/no-raw-locators
+        const hasItems = menu.locator('.slash-menu-item').first();
+        // eslint-disable-next-line playwright/no-raw-locators
+        const hasNoResults = menu.locator('.slash-menu-empty');
+        await expect(hasItems.or(hasNoResults)).toBeVisible();
+        return menu;
+    }
+
+    async assertHidden(): Promise<void> {
+        await expect(this.getMenu()).toBeHidden();
+    }
+
     async open(): Promise<Locator> {
         const editor = this.editorHelper.getEditor();
         await editor.pressSequentially('/');
-        return await waitForSlashMenuVisible(this.page);
+        return await this.assertVisible();
     }
 
     async openWithFilter(query: string): Promise<Locator> {
         const editor = this.editorHelper.getEditor();
         await editor.pressSequentially(`/${query}`);
-        return await waitForSlashMenuVisible(this.page);
+        return await this.assertVisible();
     }
 
     async close(): Promise<void> {
-        await this.page.keyboard.press('Control+a');
-        await this.page.keyboard.press('Backspace');
-        await waitForSlashMenuHidden(this.page);
+        // Delete the slash command trigger (/ and any filter text)
+        // First Ctrl+Backspace deletes filter text (if any), second deletes "/"
+        await this.page.keyboard.press('Control+Backspace');
+        await this.page.keyboard.press('Control+Backspace');
+        await this.assertHidden();
     }
 
     async selectByClick(command: SlashCommand): Promise<void> {
-        const menu = await waitForSlashMenuVisible(this.page);
+        const menu = await this.assertVisible();
         const button = menu.getByRole('button', { name: command });
         await expect(button).toBeVisible();
         await button.click();
-        await waitForSlashMenuHidden(this.page);
+        await this.assertHidden();
     }
 
     async selectByKeyboard(command: SlashCommand): Promise<void> {
-        const menu = await waitForSlashMenuVisible(this.page);
+        const menu = await this.assertVisible();
         // eslint-disable-next-line playwright/no-raw-locators
         const items = menu.locator('.slash-menu-item');
         const count = await items.count();
@@ -106,7 +127,7 @@ export class SlashMenuHelper {
         }
 
         await this.page.keyboard.press('Enter');
-        await waitForSlashMenuHidden(this.page);
+        await this.assertHidden();
     }
 
     async insert(command: SlashCommand, method: 'click' | 'keyboard' = 'click'): Promise<void> {
@@ -121,13 +142,12 @@ export class SlashMenuHelper {
     }
 
     async assertCommandVisible(command: SlashCommand): Promise<void> {
-        const menu = await waitForSlashMenuVisible(this.page);
+        const menu = await this.assertVisible();
         await expect(menu.getByRole('button', { name: command })).toBeVisible();
     }
 
     async assertCommandHidden(command: SlashCommand): Promise<void> {
-        // eslint-disable-next-line playwright/no-raw-locators
-        const menu = this.page.locator('.slash-menu');
+        const menu = this.getMenu();
         await expect(menu.getByRole('button', { name: command })).toBeHidden();
     }
 
@@ -138,8 +158,7 @@ export class SlashMenuHelper {
     }
 
     async assertNoResults(): Promise<void> {
-        // eslint-disable-next-line playwright/no-raw-locators
-        const menu = this.page.locator('.slash-menu');
+        const menu = this.getMenu();
         // eslint-disable-next-line playwright/no-raw-locators
         await expect(menu.locator('.slash-menu-empty')).toContainText('No results');
     }

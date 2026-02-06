@@ -36,8 +36,6 @@ import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
 test.describe('Knowledge Base Editor - Bubble Menu', () => {
-    test.describe.configure({ mode: 'serial' });
-
     test.describe('Text Formatting', () => {
 
         test('Can apply bold formatting via bubble menu', async ({ page, profile, api }) => {

@@ -339,6 +339,7 @@ input[type="checkbox"].toggle_comments {
     border-radius: var(--tblr-border-radius);
     box-shadow: var(--tblr-box-shadow);
     padding: 0.25rem;
+    z-index: 1060;
 
     .bubble-menu-btn {
         display: flex;
@@ -363,7 +364,7 @@ input[type="checkbox"].toggle_comments {
 
         &.is-active {
             background: var(--tblr-primary);
-            color: #fff;
+            color: var(--tblr-primary-fg);
         }
     }
 

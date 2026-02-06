@@ -36,8 +36,6 @@ import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
 
 test.describe('Knowledge Base Editor - Core', () => {
-    test.describe.configure({ mode: 'serial' });
-
     test('Can enter edit mode', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);

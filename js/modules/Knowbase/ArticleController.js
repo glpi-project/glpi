@@ -226,6 +226,9 @@ export class GlpiKnowbaseArticleController
         save_button.addEventListener('click', async () => {
             await this.#saveContent(edit_button, save_button, cancel_button);
         });
+
+        // Enable edit button once editor is ready
+        edit_button.classList.remove('pointer-events-none');
     }
 
     /**

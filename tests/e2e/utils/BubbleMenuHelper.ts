@@ -32,7 +32,6 @@
 
 import { Page, Locator, expect } from '@playwright/test';
 import { TipTapEditorHelper } from './TipTapEditorHelper';
-import { waitForBubbleMenuVisible, waitForBubbleMenuHidden } from './EditorWaitStrategies';
 
 export type BubbleMenuCommand =
     | 'Bold'
@@ -57,53 +56,57 @@ export class BubbleMenuHelper {
         this.editorHelper = editorHelper;
     }
 
+    private getMenu(): Locator {
+        // eslint-disable-next-line playwright/no-raw-locators
+        return this.page.locator('.bubble-menu');
+    }
+
     async selectAllContent(): Promise<void> {
         const editor = this.editorHelper.getEditor();
         await editor.click();
         await this.page.keyboard.press('Control+a');
-        await waitForBubbleMenuVisible(this.page);
+        await expect(this.getMenu()).toBeVisible();
     }
 
-    async waitForVisible(): Promise<Locator> {
-        return await waitForBubbleMenuVisible(this.page);
+    async assertVisible(): Promise<Locator> {
+        const menu = this.getMenu();
+        await expect(menu).toBeVisible();
+        return menu;
     }
 
-    async waitForHidden(): Promise<void> {
-        await waitForBubbleMenuHidden(this.page);
+    async assertHidden(): Promise<void> {
+        await expect(this.getMenu()).toBeHidden();
     }
 
     async clickButton(command: BubbleMenuCommand): Promise<void> {
-        const menu = await waitForBubbleMenuVisible(this.page);
-        // eslint-disable-next-line playwright/no-raw-locators
-        const button = menu.locator(`button[title="${command}"]`);
+        const menu = await this.assertVisible();
+        const button = menu.getByTitle(command, { exact: true });
         await expect(button).toBeVisible();
         await button.click();
     }
 
     async assertButtonActive(command: BubbleMenuCommand): Promise<void> {
-        const menu = await waitForBubbleMenuVisible(this.page);
-        // eslint-disable-next-line playwright/no-raw-locators
-        const button = menu.locator(`button[title="${command}"]`);
+        const menu = await this.assertVisible();
+        const button = menu.getByTitle(command, { exact: true });
         await expect(button).toHaveClass(/is-active/);
     }
 
     async assertButtonInactive(command: BubbleMenuCommand): Promise<void> {
-        const menu = await waitForBubbleMenuVisible(this.page);
-        // eslint-disable-next-line playwright/no-raw-locators
-        const button = menu.locator(`button[title="${command}"]`);
+        const menu = await this.assertVisible();
+        const button = menu.getByTitle(command, { exact: true });
         await expect(button).not.toHaveClass(/is-active/);
     }
 
     async assertButtonVisible(command: BubbleMenuCommand): Promise<void> {
-        const menu = await waitForBubbleMenuVisible(this.page);
+        const menu = await this.assertVisible();
         // eslint-disable-next-line playwright/no-raw-locators
-        await expect(menu.locator(`button[title="${command}"]`)).toBeVisible();
+        await expect(menu.getByTitle(command, { exact: true })).toBeVisible();
     }
 
     async assertButtonHidden(command: BubbleMenuCommand): Promise<void> {
-        const menu = await waitForBubbleMenuVisible(this.page);
+        const menu = await this.assertVisible();
         // eslint-disable-next-line playwright/no-raw-locators
-        await expect(menu.locator(`button[title="${command}"]`)).toBeHidden();
+        await expect(menu.getByTitle(command, { exact: true })).toBeHidden();
     }
 
     async setLink(url: string): Promise<void> {
