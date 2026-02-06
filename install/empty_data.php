@@ -6372,7 +6372,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'contract',
@@ -6680,7 +6680,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contract',
@@ -7286,7 +7286,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'contract',

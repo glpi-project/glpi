@@ -426,6 +426,11 @@ final class ManagementController extends AbstractController
                         - 5: Right
                         EOT,
                 ],
+                'is_private' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Whether the document is private (visible only to technicians with SEEPRIVATE right)',
+                ],
             ],
         ];
 

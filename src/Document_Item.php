@@ -52,6 +52,21 @@ class Document_Item extends CommonDBRelation
     public static ?string $items_id_2    = 'items_id';
     public static bool $take_entity_2 = false;
 
+    /**
+     * Right constant to see private documents attached to ITIL objects.
+     * This follows the ITILSubItemRights pattern (value 8192).
+     *
+     * @var int
+     */
+    public const SEEPRIVATE = 8192;
+
+    /**
+     * Right name for document items attached to ITIL objects.
+     *
+     * @var string
+     */
+    public static string $rightname = 'document';
+
     public static function getTypeName($nb = 0)
     {
         return _n('Document item', 'Document items', $nb);
@@ -78,6 +93,37 @@ class Document_Item extends CommonDBRelation
         }
 
         return parent::canCreateItem();
+    }
+
+    /**
+     * Check if the current user can view this document item.
+     * Handles visibility based on is_private flag for ITIL objects.
+     *
+     * @return bool
+     */
+    public function canViewItem(): bool
+    {
+        if (!parent::canViewItem()) {
+            return false;
+        }
+
+        // Check if the document item is attached to an ITIL object
+        if (is_a($this->fields['itemtype'], CommonITILObject::class, true)) {
+            // If document is private, check SEEPRIVATE right
+            if ($this->fields['is_private']) {
+                // User can see if they have SEEPRIVATE right
+                if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
+                    return true;
+                }
+                // User can see their own private documents
+                if ($this->fields['users_id'] === Session::getLoginUserID()) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function prepareInputForAdd($input)
@@ -118,6 +164,11 @@ class Document_Item extends CommonDBRelation
         // to another item
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID();
+        }
+
+        // Set default value for is_private if not set
+        if (!isset($input['is_private'])) {
+            $input['is_private'] = 0;
         }
 
         /** FIXME: should not this be handled on CommonITILObject side? */
@@ -938,6 +989,25 @@ TWIG, $twig_params);
         }
 
         return $criteria;
+    }
+
+    /**
+     * Get rights definitions for this class.
+     * Adds the SEEPRIVATE right for viewing private documents on ITIL objects.
+     *
+     * @param string $interface Interface type ('central' or 'helpdesk')
+     *
+     * @return array
+     */
+    public function getRights($interface = 'central')
+    {
+        $values = parent::getRights($interface);
+
+        if ($interface === 'central') {
+            $values[self::SEEPRIVATE] = __('See private ones');
+        }
+
+        return $values;
     }
 
     public static function getIcon()

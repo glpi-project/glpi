@@ -1637,7 +1637,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.numberofincoming##"]
                = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $incoming_restrict, false);
 
-            // Document
+            // Document - only include public documents in notifications
             $iterator = $DB->request([
                 'SELECT'    => 'glpi_documents.*',
                 'FROM'      => 'glpi_documents',
@@ -1652,6 +1652,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'WHERE'     => [
                     $item->getAssociatedDocumentsCriteria(true),
                     'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
+                    'glpi_documents_items.is_private' => 0, // exclude private documents from notifications
                 ],
             ]);
 

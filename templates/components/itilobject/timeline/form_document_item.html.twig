@@ -80,16 +80,37 @@
                     </div>
                 {% endif %}
                 {% if get_current_interface() == 'central' %}
-                    {{ fields.dropdownField(
-                        'DocumentCategory',
-                        'documentcategories_id',
-                        null,
-                        __("Heading"),
-                        {
-                            'full_width': true,
-                            'is_horizontal': false
-                        }
-                    ) }}
+                    <div class="row">
+                        <div class="col-12 col-xl-6">
+                            {{ fields.dropdownField(
+                                'DocumentCategory',
+                                'documentcategories_id',
+                                null,
+                                __("Heading"),
+                                {
+                                    'full_width': true,
+                                    'is_horizontal': false
+                                }
+                            ) }}
+                        </div>
+                        <div class="col-12 col-xl-6">
+                            {% set doc_private_lbl %}
+                                <i class="ti ti-eye-off me-1" title="{{ __('Private') }}"></i>
+                            {% endset %}
+                            {{ fields.sliderField(
+                                'is_private',
+                                subitem.fields['is_private'] ?? 0,
+                                doc_private_lbl,
+                                {
+                                    'full_width': true,
+                                    'icon_label': true,
+                                    'additional_attributes': {
+                                        'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                                    }
+                                }
+                            ) }}
+                        </div>
+                    </div>
                 {% endif %}
 
                 {{ fields.fileField(

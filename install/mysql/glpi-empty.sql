@@ -2671,6 +2671,7 @@ CREATE TABLE `glpi_documents_items` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `users_id` int unsigned DEFAULT '0',
   `timeline_position` tinyint NOT NULL DEFAULT '0',
+  `is_private` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2682,7 +2683,8 @@ CREATE TABLE `glpi_documents_items` (
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `date` (`date`),
-  KEY `timeline_position` (`timeline_position`)
+  KEY `timeline_position` (`timeline_position`),
+  KEY `is_private` (`is_private`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
