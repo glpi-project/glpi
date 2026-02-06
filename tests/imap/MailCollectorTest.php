@@ -1594,7 +1594,7 @@ PLAINTEXT,
             ]
         );
 
-        // Verify documents are& attached when manually uploaded
+        // Verify documents are attached when manually uploaded
         $doc_items_manual = getAllDataFromTable(\Document_Item::getTable(), [
             'itemtype' => Ticket::getType(),
             'items_id' => $ticket->getID(),
