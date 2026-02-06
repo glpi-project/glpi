@@ -5594,6 +5594,17 @@ class CommonDBTM extends CommonGLPI
                     $doc->update($input2);
                 }
             } else {
+                // Only block blacklisted documents when importing via mail collector
+                if ($input['_auto_import'] ?? false) {
+                    $blacklisted_doc = new Document();
+                    if ($blacklisted_doc->getFromDBbyContent($entities_id, $filename)) {
+                        if ($blacklisted_doc->fields['is_blacklisted']) {
+                            // Document is blacklisted, skip attachment
+                            continue;
+                        }
+                    }
+                }
+
                 if ($this instanceof Ticket || (isset($input['_job']) && $input['_job'] instanceof Ticket)) {
                     if (isset($input['_job']) && $input['_job'] instanceof Ticket) {
                         $ticket_id = $input['_job']->getID();
