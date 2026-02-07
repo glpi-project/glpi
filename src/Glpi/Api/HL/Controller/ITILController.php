@@ -35,12 +35,14 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Budget;
 use Calendar;
 use Change;
 use Change_Change;
 use Change_Item;
 use Change_Problem;
 use Change_Ticket;
+use ChangeCost;
 use ChangeSatisfaction;
 use ChangeTask;
 use ChangeTemplate;
@@ -78,6 +80,7 @@ use PlanningExternalEventTemplate;
 use Problem;
 use Problem_Problem;
 use Problem_Ticket;
+use ProblemCost;
 use ProblemTask;
 use ProblemTemplate;
 use RecurrentChange;
@@ -89,6 +92,7 @@ use SolutionType;
 use TaskCategory;
 use Ticket;
 use Ticket_Ticket;
+use TicketCost;
 use TicketRecurrent;
 use TicketSatisfaction;
 use TicketTask;
@@ -544,6 +548,33 @@ final class ITILController extends AbstractController
                     'properties' => $schemas['TeamMember']['properties'],
                     'x-full-schema' => 'TeamMember',
                 ],
+            ];
+
+            $cost_type = match($itil_type) {
+                Ticket::class => TicketCost::class,
+                Change::class => ChangeCost::class,
+                Problem::class => ProblemCost::class,
+            };
+            $schemas[$itil_type]['properties']['costs'] = [
+                'x-version-introduced' => '2.3.0',
+                'type' => Doc\Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => $cost_type,
+                    'x-join' => [
+                        'table' => $cost_type::getTable(),
+                        'fkey' => 'id',
+                        'field' => $itil_type::getForeignKeyField(),
+                        'primary-property' => 'id',
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'readOnly' => true,
+                        ],
+                    ],
+                ]
             ];
         }
 
@@ -1364,6 +1395,105 @@ EOT,
                 'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+            ],
+        ];
+
+        $schemas['ChangeCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ChangeCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
+        $schemas['ProblemCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ProblemCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'problem' => self::getDropdownTypeSchema(class: Problem::class, full_schema: 'Problem'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
+        $schemas['TicketCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => TicketCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             ],
         ];
 
