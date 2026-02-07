@@ -416,4 +416,66 @@ final class ProjectController extends AbstractController
         $params['project'] = $request->getAttributes()['project_id'];
         return ResourceAccessor::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params, [self::class, 'getTask']);
     }
+
+    #[Route(path: '/Project/{id}/Cost', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'ProjectCost', description: 'Get the costs for a specific Project')]
+    public function searchCosts(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        $parameters = $request->getParameters();
+        $filters = $parameters['filter'] ?? '';
+        $filters .= 'project.id==' . $request->getAttribute('id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($schema, $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{id}/Cost', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: 'ProjectCost', description: 'Create a new cost for a specific Project')]
+    public function createCost(Request $request): Response
+    {
+        $parameters = $request->getParameters();
+        $parameters['project'] = $request->getAttribute('id');
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getCost'], [
+            'mapped' => [
+                'id' => $request->getAttribute('id'),
+            ],
+            'id' => 'cost_id',
+        ]);
+    }
+
+    #[Route(path: '/Project/{id}/Cost/{cost_id}', methods: ['GET'], requirements: [
+        'cost_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'ProjectCost', description: 'Get a specific cost by ID for a specific Project')]
+    public function getCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::getOneBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{id}/Cost/{cost_id}', methods: ['PATCH'], requirements: [
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: 'ProjectCost', description: 'Update a specific cost by ID for a specific Project')]
+    public function updateCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::updateBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{id}/Cost/{cost_id}', methods: ['DELETE'], requirements: [
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: 'ProjectCost', description: 'Delete a specific cost by ID for a specific Project')]
+    public function deleteCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::deleteBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
 }

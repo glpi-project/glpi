@@ -57,10 +57,13 @@ class ProjectCost extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        $empty_end_date = empty($input['end_date']) || ($input['end_date'] === 'NULL');
         if (
-            empty($input['end_date'])
-            || ($input['end_date'] === 'NULL')
-            || ($input['end_date'] < $input['begin_date'])
+            !empty($input['begin_date'])
+            && (
+                $empty_end_date
+                || ($input['end_date'] < $input['begin_date'])
+            )
         ) {
             $input['end_date'] = $input['begin_date'];
         }
@@ -70,12 +73,16 @@ class ProjectCost extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
+        $empty_end_date = empty($input['end_date']) || ($input['end_date'] === 'NULL');
+        $begin_date = $input['begin_date'] ?? $this->fields['begin_date'];
         if (
-            empty($input['end_date'])
-            || ($input['end_date'] === 'NULL')
-            || ($input['end_date'] < $input['begin_date'])
+            !empty($begin_date)
+            && (
+                $empty_end_date
+                || ($input['end_date'] < $begin_date)
+            )
         ) {
-            $input['end_date'] = $input['begin_date'];
+            $input['end_date'] = $begin_date;
         }
 
         return parent::prepareInputForUpdate($input);
