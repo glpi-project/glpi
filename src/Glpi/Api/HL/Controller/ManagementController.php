@@ -46,6 +46,7 @@ use CommonITILObject;
 use Contact;
 use ContactType;
 use Contract;
+use ContractCost;
 use ContractType;
 use Database;
 use DatabaseInstance;
@@ -354,6 +355,27 @@ final class ManagementController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: ContractType::class, full_schema: 'ContractType'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'costs' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'ContractCost',
+                            'x-join' => [
+                                'table' => ContractCost::getTable(),
+                                'fkey' => 'id',
+                                'field' => Contract::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ]
+                    ]
                 ],
             ],
             'Database' => [
@@ -752,6 +774,36 @@ final class ManagementController extends AbstractController
             ],
         ];
 
+        $schemas['ContractCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ContractCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'contract' => self::getDropdownTypeSchema(class: Contract::class, full_schema: 'Contract'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'cost' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -970,5 +1022,67 @@ final class ManagementController extends AbstractController
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Contract/{id}/Cost', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'ContractCost', description: 'Get the costs for a specific Contract')]
+    public function searchCosts(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ContractCost', $this->getAPIVersion($request));
+        $parameters = $request->getParameters();
+        $filters = $parameters['filter'] ?? '';
+        $filters .= 'contract.id==' . $request->getAttribute('id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($schema, $request->getParameters());
+    }
+
+    #[Route(path: '/Contract/{id}/Cost', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: 'ContractCost', description: 'Create a new cost for a specific Contract')]
+    public function createCost(Request $request): Response
+    {
+        $parameters = $request->getParameters();
+        $parameters['contract'] = $request->getAttribute('id');
+        $schema = $this->getKnownSchema('ContractCost', $this->getAPIVersion($request));
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getCost'], [
+            'mapped' => [
+                'id' => $request->getAttribute('id'),
+            ],
+            'id' => 'cost_id',
+        ]);
+    }
+
+    #[Route(path: '/Contract/{id}/Cost/{cost_id}', methods: ['GET'], requirements: [
+        'cost_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'ContractCost', description: 'Get a specific cost by ID for a specific Contract')]
+    public function getCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ContractCost', $this->getAPIVersion($request));
+        return ResourceAccessor::getOneBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/Contract/{id}/Cost/{cost_id}', methods: ['PATCH'], requirements: [
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: 'ContractCost', description: 'Update a specific cost by ID for a specific Contract')]
+    public function updateCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ContractCost', $this->getAPIVersion($request));
+        return ResourceAccessor::updateBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/Contract/{id}/Cost/{cost_id}', methods: ['DELETE'], requirements: [
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: 'ContractCost', description: 'Delete a specific cost by ID for a specific Contract')]
+    public function deleteCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ContractCost', $this->getAPIVersion($request));
+        return ResourceAccessor::deleteBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
     }
 }

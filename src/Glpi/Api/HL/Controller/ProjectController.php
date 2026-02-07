@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Budget;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -44,6 +45,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Project;
+use ProjectCost;
 use ProjectTask;
 use Session;
 
@@ -154,6 +156,27 @@ final class ProjectController extends AbstractController
                             ],
                         ],
                     ],
+                    'costs' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'ProjectCost',
+                            'x-join' => [
+                                'table' => ProjectCost::getTable(),
+                                'fkey' => 'id',
+                                'field' => Project::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ]
+                    ]
                 ],
             ],
             'ProjectTask' => [
@@ -237,6 +260,35 @@ final class ProjectController extends AbstractController
                     'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
+                ],
+            ],
+            'ProjectCost' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => ProjectCost::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_begin' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-field' => 'begin_date',
+                    ],
+                    'date_end' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-field' => 'end_date',
+                    ],
+                    'cost' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                    'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 ],
             ],
         ];
@@ -363,5 +415,67 @@ final class ProjectController extends AbstractController
         $params = $request->getParameters();
         $params['project'] = $request->getAttributes()['project_id'];
         return ResourceAccessor::createBySchema($this->getKnownSchema('ProjectTask', $this->getAPIVersion($request)), $params, [self::class, 'getTask']);
+    }
+
+    #[Route(path: '/Project/{id}/Cost', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'ProjectCost', description: 'Get the costs for a specific Project')]
+    public function searchCosts(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        $parameters = $request->getParameters();
+        $filters = $parameters['filter'] ?? '';
+        $filters .= 'project.id==' . $request->getAttribute('id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($schema, $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{id}/Cost', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: 'ProjectCost', description: 'Create a new cost for a specific Project')]
+    public function createCost(Request $request): Response
+    {
+        $parameters = $request->getParameters();
+        $parameters['project'] = $request->getAttribute('id');
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getCost'], [
+            'mapped' => [
+                'id' => $request->getAttribute('id'),
+            ],
+            'id' => 'cost_id',
+        ]);
+    }
+
+    #[Route(path: '/Project/{id}/Cost/{cost_id}', methods: ['GET'], requirements: [
+        'cost_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'ProjectCost', description: 'Get a specific cost by ID for a specific Project')]
+    public function getCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::getOneBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{id}/Cost/{cost_id}', methods: ['PATCH'], requirements: [
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: 'ProjectCost', description: 'Update a specific cost by ID for a specific Project')]
+    public function updateCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::updateBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/Project/{id}/Cost/{cost_id}', methods: ['DELETE'], requirements: [
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: 'ProjectCost', description: 'Delete a specific cost by ID for a specific Project')]
+    public function deleteCost(Request $request): Response
+    {
+        $schema = $this->getKnownSchema('ProjectCost', $this->getAPIVersion($request));
+        return ResourceAccessor::deleteBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
     }
 }

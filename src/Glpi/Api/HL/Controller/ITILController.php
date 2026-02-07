@@ -35,12 +35,14 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Budget;
 use Calendar;
 use Change;
 use Change_Change;
 use Change_Item;
 use Change_Problem;
 use Change_Ticket;
+use ChangeCost;
 use ChangeSatisfaction;
 use ChangeTask;
 use ChangeTemplate;
@@ -78,6 +80,7 @@ use PlanningExternalEventTemplate;
 use Problem;
 use Problem_Problem;
 use Problem_Ticket;
+use ProblemCost;
 use ProblemTask;
 use ProblemTemplate;
 use RecurrentChange;
@@ -89,6 +92,7 @@ use SolutionType;
 use TaskCategory;
 use Ticket;
 use Ticket_Ticket;
+use TicketCost;
 use TicketRecurrent;
 use TicketSatisfaction;
 use TicketTask;
@@ -544,6 +548,33 @@ final class ITILController extends AbstractController
                     'properties' => $schemas['TeamMember']['properties'],
                     'x-full-schema' => 'TeamMember',
                 ],
+            ];
+
+            $cost_type = match($itil_type) {
+                Ticket::class => TicketCost::class,
+                Change::class => ChangeCost::class,
+                Problem::class => ProblemCost::class,
+            };
+            $schemas[$itil_type]['properties']['costs'] = [
+                'x-version-introduced' => '2.3.0',
+                'type' => Doc\Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => $cost_type,
+                    'x-join' => [
+                        'table' => $cost_type::getTable(),
+                        'fkey' => 'id',
+                        'field' => $itil_type::getForeignKeyField(),
+                        'primary-property' => 'id',
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'readOnly' => true,
+                        ],
+                    ],
+                ]
             ];
         }
 
@@ -1364,6 +1395,106 @@ EOT,
                 'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+            ],
+        ];
+
+        //FIXME Changes may be recursive and ChangeCost has an is_recursive field which is valid.
+        // Problems may also be recursive but ProblemCost doesn't have an is_recursive field so there is a hack in the API Search engine to do entity restriction checks.
+        // Tickets may not be recursive and TicketCost doesn't have an is_recursive field.
+        // Shouldn't these be aligned? At the least, the ProblemCost schema needs fixed.
+        $schemas['ChangeCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ChangeCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            ],
+        ];
+
+        $schemas['ProblemCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ProblemCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'problem' => self::getDropdownTypeSchema(class: Problem::class, full_schema: 'Problem'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            ],
+        ];
+
+        $schemas['TicketCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => TicketCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
             ],
         ];
 
@@ -2240,5 +2371,89 @@ EOT,
     public function deleteExternalEvent(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost', methods: ['GET'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: '{itemtype}Cost', description: 'Get the costs for a specific {itemtype}')]
+    public function searchCosts(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        $parameters = $request->getParameters();
+        $parent_prop = match ($itemtype) {
+            'Ticket' => 'ticket',
+            'Change' => 'change',
+            'Problem' => 'problem',
+        };
+        $filters = $parameters['filter'] ?? '';
+        $filters .= $parent_prop . '.id==' . $request->getAttribute('id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($schema, $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost', methods: ['POST'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: '{itemtype}Cost', description: 'Create a new cost for a specific {itemtype}')]
+    public function createCost(Request $request): Response
+    {
+        $parameters = $request->getParameters();
+        $parent_prop = match ($request->getAttribute('itemtype')) {
+            'Ticket' => 'ticket',
+            'Change' => 'change',
+            'Problem' => 'problem',
+        };
+        $parameters[$parent_prop] = $request->getAttribute('id');
+        $schema = $this->getKnownSchema($request->getAttribute('itemtype') . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getCost'], [
+            'mapped' => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'id' => $request->getAttribute('id'),
+            ],
+            'id' => 'cost_id',
+        ]);
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost/{cost_id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+        'cost_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: '{itemtype}Cost', description: 'Get a specific cost by ID for a specific {itemtype}')]
+    public function getCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::getOneBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost/{cost_id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: '{itemtype}Cost', description: 'Update a specific cost by ID for a specific {itemtype}')]
+    public function updateCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::updateBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost/{cost_id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: '{itemtype}Cost', description: 'Delete a specific cost by ID for a specific {itemtype}')]
+    public function deleteCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::deleteBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
     }
 }
