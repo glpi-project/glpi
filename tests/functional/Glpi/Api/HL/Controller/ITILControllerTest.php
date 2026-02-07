@@ -703,4 +703,35 @@ class ITILControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testCRUDCost()
+    {
+        $tickets_id = getItemByTypeName(Ticket::class, '_ticket01', true);
+        $changes_id = getItemByTypeName(Change::class, '_change01', true);
+        $problems_id = getItemByTypeName(Problem::class, '_problem01', true);
+
+        $this->api->autoTestCRUD('/Assistance/Ticket/' . $tickets_id . '/Cost', [
+            'name' => __FUNCTION__,
+            'cost_fixed' => 100,
+        ], [
+            'name' => __FUNCTION__ . '2',
+            'cost_fixed' => 150,
+        ]);
+
+        $this->api->autoTestCRUD('/Assistance/Change/' . $changes_id . '/Cost', [
+            'name' => __FUNCTION__,
+            'cost_fixed' => 100,
+        ], [
+            'name' => __FUNCTION__ . '2',
+            'cost_fixed' => 150,
+        ]);
+
+        $this->api->autoTestCRUD('/Assistance/Problem/' . $problems_id . '/Cost', [
+            'name' => __FUNCTION__,
+            'cost_fixed' => 100,
+        ], [
+            'name' => __FUNCTION__ . '2',
+            'cost_fixed' => 150,
+        ]);
+    }
 }
