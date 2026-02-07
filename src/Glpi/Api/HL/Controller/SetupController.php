@@ -45,14 +45,18 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Api\HL\RSQL\Parser;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use OLA;
 use OlaLevel;
+use Plugin;
 use SLA;
 use SlaLevel;
 use SLM;
+use Throwable;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -265,6 +269,41 @@ EOT,
                     'ola' => self::getDropdownTypeSchema(class: OLA::class, full_schema: 'OLA'),
                 ],
             ],
+            'Plugin' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => Plugin::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'internal_name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true, 'x-field' => 'directory'],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'version' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'state' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [-1, 0, 1, 2, 3, 4, 5, 6, 7],
+                        'description' => <<<EOT
+                        - -1: Unknown
+                        - 0: New (This status may not actually be used)
+                        - 1: Enabled
+                        - 2: Not installed
+                        - 3: Needs configured (Installed, but required configuration before it can be enabled)
+                        - 4: Disabled
+                        - 5: To clean (Uninstalled and the files are no longer present, but the metadata is still present in the database)
+                        - 6: Needs updated (A new version of the plugin is present and it needs have the update started)
+                        - 7: Replaced (The plugin has been replaced by another one)
+EOT,
+
+                        'readOnly' => true,
+                    ],
+                    'author' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'homepage' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'license' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                ],
+            ],
         ];
     }
 
@@ -475,6 +514,107 @@ EOT,
             return AbstractController::getNotFoundErrorResponse();
         }
         Config::deleteConfigurationValues($context, [$name]);
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\SearchRoute(schema_name: 'Plugin')]
+    public function listPlugins(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Plugin', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Plugin/{id}/Enable', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Enable a plugin')]
+    public function enablePlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        $success = $plugin->activate($request->getAttribute('id'));
+        if (!$success) {
+            return AbstractController::getCRUDErrorResponse('enable');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Disable', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Disable a plugin')]
+    public function disablePlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        $success = $plugin->unactivate($request->getAttribute('id'));
+        if (!$success) {
+            return AbstractController::getCRUDErrorResponse('disable');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Install', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Install a plugin')]
+    public function installPlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $plugin->install($request->getAttribute('id'));
+        } catch (Throwable) {
+            return AbstractController::getCRUDErrorResponse('install');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Uninstall', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Uninstall a plugin')]
+    public function uninstallPlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $plugin->uninstall($request->getAttribute('id'));
+        } catch (Throwable) {
+            return AbstractController::getCRUDErrorResponse('uninstall');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Clean', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Clean a plugin (delete its metadata from the database)')]
+    public function cleanPlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $plugin->clean($request->getAttribute('id'));
+        } catch (Throwable) {
+            return AbstractController::getCRUDErrorResponse('clean');
+        }
         return new JSONResponse(null, 204);
     }
 }
