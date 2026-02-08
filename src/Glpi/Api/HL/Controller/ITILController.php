@@ -1901,7 +1901,7 @@ EOT,
 
     /**
      * @param CommonITILObject $item
-     * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string}[]
+     * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string, type: string}[]
      */
     private static function getCleanTeam(CommonITILObject $item): array
     {
@@ -1920,6 +1920,7 @@ EOT,
             // Add a link to the full resource represented by the team member (User, Group, etc)
             $member['id'] = $member_items_id;
             $member['href'] = $member_itemtype::getFormURLWithID($member_items_id);
+            $member['type'] = $member_itemtype;
             // Replace role with non-localized textual representation
             try {
                 $member['role'] = self::getRoleName($member['role']);
