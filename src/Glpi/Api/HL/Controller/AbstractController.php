@@ -221,7 +221,6 @@ abstract class AbstractController
 
     /**
      * @param string $action
-     * @phpstan-param self::CRUD_ACTION_* $action
      * @return Response
      */
     public static function getCRUDErrorResponse(string $action): Response
