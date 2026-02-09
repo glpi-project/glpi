@@ -308,7 +308,7 @@ class DBConnection extends CommonGLPI
         string $config_dir = GLPI_CONFIG_DIR
     ): bool {
         return self::createConfigFile(
-            classname: 'DBReplica', //FIXME: change class name.
+            classname: 'DBReplica',
             filename: self::DBREPLICA_FILE,
             host: $host,
             user: $user,
@@ -576,7 +576,7 @@ class DBConnection extends CommonGLPI
         global $CFG_GLPI, $DB;
 
         if (
-            $CFG_GLPI['use_replica_for_search'] //TODO: rename this one. Needs a migration script.
+            $CFG_GLPI['use_replica_for_search']
             && !$DB->isReplica()
             && self::isDBReplicaActive()
         ) {

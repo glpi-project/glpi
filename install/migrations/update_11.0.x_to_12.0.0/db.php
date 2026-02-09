@@ -60,9 +60,9 @@ if (file_exists(GLPI_CONFIG_DIR . '/config_db_slave.php')) {
 }
 
 global $CFG_GLPI;
-$curent_replica_config = $CFG_GLPI['use_slave_for_search'];
+$current_replica_config = $CFG_GLPI['use_slave_for_search'] ?? 0;
 /**
  * @var Migration $migration
  */
-$migration->addConfig(['use_replica_for_search' => $curent_replica_config]);
+$migration->addConfig(['use_replica_for_search' => $current_replica_config]);
 $migration->removeConfig(['use_slave_for_search']);
