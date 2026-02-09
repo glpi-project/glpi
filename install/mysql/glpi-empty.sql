@@ -1279,7 +1279,7 @@ CREATE TABLE `glpi_impactitems` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `parent_id` int unsigned NOT NULL DEFAULT '0',
   `impactcontexts_id` int unsigned NOT NULL DEFAULT '0',
-  `is_slave` tinyint NOT NULL DEFAULT '1',
+  `is_dependent` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `source` (`itemtype`,`items_id`),

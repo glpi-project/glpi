@@ -164,7 +164,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $context_id = 0;
         if (
             $impact_item->fields["impactcontexts_id"] == 0
-            || $impact_item->fields["is_slave"] == 1
+            || $impact_item->fields["is_dependent"] == 1
         ) {
             // There is no context OR we are slave to another context -> let's
             // create a new one
@@ -172,7 +172,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
             // Set the context_id to be updated
             $data['items'][$start_node_impact_item_id]['impactcontexts_id'] = $context_id;
-            $data['items'][$start_node_impact_item_id]['is_slave'] = 0;
+            $data['items'][$start_node_impact_item_id]['is_dependent'] = 0;
         } else {
             // Update existing context
             $context_id = $impact_item->fields["impactcontexts_id"];
@@ -262,7 +262,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         // If this node has no context -> make it a slave
                         if ($em->fields['impactcontexts_id'] == 0) {
                             $impactItem['impactcontexts_id'] = $context_id;
-                            $impactItem['is_slave'] = 1;
+                            $impactItem['is_dependent'] = 1;
                         }
                     }
 
