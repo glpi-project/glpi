@@ -504,12 +504,6 @@ class NotificationEventMailing extends NotificationEventAbstract
                 continue;
             }
             $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
-            if (Document::isImage($path)) {
-                $path = Document::getImage(
-                    $path,
-                    'mail'
-                );
-            }
 
             $encoding = PHPMailer::ENCODING_BASE64;
             $mime = mime_content_type($path);
