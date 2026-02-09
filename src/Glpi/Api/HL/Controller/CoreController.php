@@ -131,6 +131,29 @@ EOT,
                                 // Filled dynamically below
                             ],
                         ],
+                        'helpdesk_hardware' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'x-version-introduced' => '2.3',
+                            'enum' => [0, 1, 2, 3],
+                            'description' => <<<EOT
+                                Indicates the level of rights the user has regarding associating assets with assistance items (like tickets). Possible values:
+                                - 0: Cannot associate any assets with assistance items
+                                - 1: Can link their own assets with assistance items
+                                - 2: Can link any assets with assistance items
+                                - 3: Same as 2 but may see both "My devices" and "All items" in the web interface when associating assets with assistance items
+                                See 'helpdesk_item_type' for which item types can be associated when helpdesk_hardware is greater than 0.
+EOT,
+                        ],
+                        'helpdesk_item_type' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'If helpdesk_hardware is greater than 0, this is a JSON-encoded string which indicates the item types that the user can associate with assistance items.',
+                        ],
+                        'managed_domainrecordtypes' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'A JSON-encoded string which indicates the IDs of domain record types that the user can manage. An array element with a value of -1 indicates that the user can manage all domain record types.',
+                        ],
                     ],
                 ],
                 'active_entity' => [
@@ -519,6 +542,9 @@ HTML;
             'id' => $active_profile['id'],
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
+            'helpdesk_hardware' => $active_profile['helpdesk_hardware'] ?? 0,
+            'helpdesk_item_type' => $active_profile['helpdesk_item_type'] ?? '[]',
+            'managed_domainrecordtypes' => $active_profile['managed_domainrecordtypes'] ?? '[]',
         ];
 
         if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
