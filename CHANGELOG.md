@@ -29,7 +29,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\Inventoriable::displayAgentInformation()`
 - `User::loadMinimalSession()`
 - `DBmysql::$slave`
-- `DBConnection::isSlave()`
+- `DBmysql::isSlave()`
 - `DBConnection::isDBSlaveActive()`
 - `DBConnection::switchToSlave()`
 - `DBConnection::switchToMaster()`
@@ -37,9 +37,7 @@ The present file will list all changes made to the project; according to the
 - `DBConnection::deleteDBSlaveConfig()`
 - `DBConnection::createSlaveConnectionFile()`
 - `DBConnection::getDBSlaveConf()`
-- `DBConnection::deleteDBSlaveConfig()`
 - `DBConnection::saveDBSlaveConf()`
-- `DBConnection::createSlaveConnectionFile()`
 - `DBSlave` class
 
 #### Removed
