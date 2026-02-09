@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Agent;
+use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
 use CommonDropdown;
@@ -94,6 +95,11 @@ abstract class InventoryAsset
     {
         $this->item = $item;
         if ($data !== null) {
+            foreach ($data as $val) {
+                if ($val instanceof \stdClass) {
+                    $val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
+                }
+            }
             $this->data = $data;
         }
     }
