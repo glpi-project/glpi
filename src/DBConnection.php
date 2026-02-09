@@ -77,10 +77,10 @@ class DBConnection extends CommonGLPI
     /**
      * For replica connection.
      */
-    public const PROPERTY_REPLICA = 'slave'; //FIXME: change property name. Need a migration script (the one which change file name probably).
+    public const PROPERTY_REPLICA = 'replica';
 
     public const DBCONF_FILE = 'config_db.php';
-    public const DBREPLICA_FILE = 'config_db_slave.php'; //FIXME: change file name. Need a migration script.
+    public const DBREPLICA_FILE = 'config_db_replica.php';
 
     protected static bool $notable = true;
 
@@ -308,7 +308,7 @@ class DBConnection extends CommonGLPI
         string $config_dir = GLPI_CONFIG_DIR
     ): bool {
         return self::createConfigFile(
-            classname: 'DBSlave', //FIXME: change class name.
+            classname: 'DBReplica', //FIXME: change class name.
             filename: self::DBREPLICA_FILE,
             host: $host,
             user: $user,
@@ -397,7 +397,7 @@ class DBConnection extends CommonGLPI
     {
         if (self::isDBReplicaActive()) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-            return new DBSlave($choice);
+            return new DBReplica($choice);
         }
     }
 
@@ -414,7 +414,7 @@ class DBConnection extends CommonGLPI
         Toolbox::deprecated('Use getDBReplicaConf()');
         if (self::isDBReplicaActive()) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-            return new DBSlave($choice);
+            return new DBReplica($choice);
         }
     }
 
@@ -525,7 +525,7 @@ class DBConnection extends CommonGLPI
 
         if (self::isDBReplicaActive()) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-            $DB = new DBSlave();
+            $DB = new DBReplica();
             return $DB->connected;
         }
         return false;
@@ -576,12 +576,12 @@ class DBConnection extends CommonGLPI
         global $CFG_GLPI, $DB;
 
         if (
-            $CFG_GLPI['use_slave_for_search'] //TODO: rename this one. Needs a migration script.
+            $CFG_GLPI['use_replica_for_search'] //TODO: rename this one. Needs a migration script.
             && !$DB->isReplica()
             && self::isDBReplicaActive()
         ) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-            $DBread = new DBSlave();
+            $DBread = new DBReplica();
 
             if ($DBread->connected) {
                 $sql = [
@@ -589,7 +589,7 @@ class DBConnection extends CommonGLPI
                     'FROM'   => Log::getTable(),
                 ];
 
-                switch ($CFG_GLPI['use_slave_for_search']) {
+                switch ($CFG_GLPI['use_replica_for_search']) {
                     case 3: // If synced or read-only account
                         if (Session::isReadOnlyAccount()) {
                             return $DBread;
@@ -700,7 +700,7 @@ class DBConnection extends CommonGLPI
 
         include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
         return (int) (self::getHistoryMaxDate(new DB())
-                    - self::getHistoryMaxDate(new DBSlave($choice)));
+                    - self::getHistoryMaxDate(new DBReplica($choice)));
     }
 
     /**
@@ -741,12 +741,12 @@ class DBConnection extends CommonGLPI
 
         // Get replica status
         include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-        $db_replica_config = new DBSlave();
+        $db_replica_config = new DBReplica();
 
         $hosts = is_array($db_replica_config->dbhost) ? $db_replica_config->dbhost : [$db_replica_config->dbhost];
         foreach ($hosts as $num => $host) {
             $data['replica'][$num]['host'] = $host;
-            $db_replica = new DBSlave($num);
+            $db_replica = new DBReplica($num);
             if ($db_replica->connected) {
                 $global_vars = $db_replica->getGlobalVariables([
                     'server_id',

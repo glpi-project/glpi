@@ -262,7 +262,7 @@ $empty_data_builder = new class {
             'user_deleted_ldap_authorizations' => '0',
             'user_restored_ldap' => '0',
             'auto_create_infocoms' => '0',
-            'use_slave_for_search' => '0',
+            'use_replica_for_search' => '0',
             'proxy_passwd' => '',
             'smtp_passwd' => '',
             // Avoid counters for e2e tests to improve performances.

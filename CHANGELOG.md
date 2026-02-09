@@ -40,6 +40,7 @@ The present file will list all changes made to the project; according to the
 - `DBConnection::deleteDBSlaveConfig()`
 - `DBConnection::saveDBSlaveConf()`
 - `DBConnection::createSlaveConnectionFile()`
+- `DBSlave` class
 
 #### Removed
 
