@@ -1217,7 +1217,7 @@ class IPAddress extends CommonDBChild
                     ],
                 ],
             ];
-            $criteria['WHERE'] = $itemtype::getSystemSQLCriteria('ITEM');
+            $criteria['WHERE'] += $itemtype::getSystemSQLCriteria('ITEM');
             $queries[] = $criteria;
         }
 
