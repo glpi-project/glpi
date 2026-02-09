@@ -6402,7 +6402,7 @@ final class SQLProvider implements SearchProviderInterface
                         $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity']);
                         $color = ($date < $_SESSION['glpi_currenttime']) ? '#cf9b9b' : null;
                         if ($before) {
-                            $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
+                            $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . "+$before days"));
                             $color = match (true) {
                                 $date < $_SESSION['glpi_currenttime'] => '#d63939',
                                 $date < $before => '#de5d06',
