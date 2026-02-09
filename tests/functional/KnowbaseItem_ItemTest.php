@@ -230,13 +230,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
 
         // KnowbaseItem tab is no longer displayed (handled in main article view)
-        $_SESSION['glpishow_count_on_tabs'] = 1;
-        $name = $kb_item->getTabNameForItem($kb1);
-        $this->assertSame('', $name);
-
-        $_SESSION['glpishow_count_on_tabs'] = 0;
-        $name = $kb_item->getTabNameForItem($kb1);
-        $this->assertSame('', $name);
+        $this->assertSame('', $kb_item->getTabNameForItem($kb1));
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
 

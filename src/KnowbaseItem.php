@@ -1185,7 +1185,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'admin'      => 'text-orange',  // Orange
         ];
 
-        $color_class = $color_mapping[$sector] ?? 'text-secondary';
+        $color_class = $color_mapping[$sector ?? ''] ?? 'text-secondary';
 
         return [
             'icon_class' => $itemtype::getIcon(),
