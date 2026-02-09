@@ -1497,6 +1497,7 @@ class NotificationTarget extends CommonDBChild
             ],
         ]));
         if ($exclusions === []) {
+            // No exclusion, no need to filter
             return $target_list;
         }
         $user_ids = [];
@@ -1506,6 +1507,7 @@ class NotificationTarget extends CommonDBChild
             }
         }
         if ($user_ids === []) {
+            // Cannot filter targets without a user id
             return $target_list;
         }
 
