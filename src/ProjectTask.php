@@ -1408,6 +1408,7 @@ TWIG, $twig_params);
                     'purge' => _x('button', 'Delete permanently'),
                 ],
             ],
+            'disable_checkbox' => ($withtemplate == 2),
         ]);
     }
 

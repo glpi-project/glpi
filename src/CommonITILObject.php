@@ -7051,6 +7051,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         $params = array_replace([
             'ticket_stats' => false,
+            'disable_links' => false,
         ], $params);
 
         $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
@@ -7087,15 +7088,27 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             $name = '<span class="fw-bold">' . htmlescape($item->getName()) . '</span>';
             if ($item->canViewItem()) {
-                $name  = sprintf(
-                    __s('%1$s (%2$s)'),
-                    '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
-                    sprintf(
-                        __s('%1$s - %2$s'),
-                        $item->numberOfFollowups($showprivate_fup),
-                        $item->numberOfTasks($showprivate_task[$itemtype])
-                    )
-                );
+                if (!empty($params['disable_links'])) {
+                    $name  = sprintf(
+                        __s('%1$s (%2$s)'),
+                        $name . '<br>',
+                        sprintf(
+                            __s('%1$s - %2$s'),
+                            $item->numberOfFollowups($showprivate_fup),
+                            $item->numberOfTasks($showprivate_task[$itemtype])
+                        )
+                    );
+                } else {
+                    $name  = sprintf(
+                        __s('%1$s (%2$s)'),
+                        '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
+                        sprintf(
+                            __s('%1$s - %2$s'),
+                            $item->numberOfFollowups($showprivate_fup),
+                            $item->numberOfTasks($showprivate_task[$itemtype])
+                        )
+                    );
+                }
                 $name = sprintf(
                     __s('%1$s %2$s'),
                     $name,

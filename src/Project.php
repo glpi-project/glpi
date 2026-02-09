@@ -1485,6 +1485,7 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
             ],
+            'disable_checkbox' => ($withtemplate == 2),
         ]);
 
         return true;

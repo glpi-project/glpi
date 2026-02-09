@@ -105,7 +105,8 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container']|e('js') }}', '.massive_action_checkbox');" />
+                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container']|e('js') }}', '.massive_action_checkbox');"
+                                        {% if disable_checkbox %}disabled{% endif %} />
                                 </div>
                             </th>
                         {% endif %}
@@ -240,7 +241,7 @@
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
                                         <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
                                                value="1" aria-label="{{ __("Select item") }}"
-                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" {% if disable_checkbox %}disabled{% endif %}/>
                                     {% endif %}
                                 </td>
                             {% endif %}

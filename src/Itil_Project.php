@@ -220,7 +220,12 @@ TWIG, $twig_params);
         $entries = [];
         /** @var class-string<CommonITILObject> $itemtype */
         foreach ($entries_by_itemtype as $itemtype => $v) {
-            $entries = [...$entries, ...$itemtype::getDatatableEntries($v)];
+            // If withtemplate == 2, pass a special parameter to disable links in the datatable
+            $datatable_params = [];
+            if ($withtemplate == 2) {
+                $datatable_params['disable_links'] = true;
+            }
+            $entries = [...$entries, ...$itemtype::getDatatableEntries($v, $datatable_params)];
         }
         // add itemtype for MA
         foreach ($entries as &$entry) {
@@ -235,12 +240,13 @@ TWIG, $twig_params);
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
+            'showmassiveactions' => ($withtemplate != 2) ? $canedit : false,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+                'specific_actions' => ($withtemplate != 2) ? ['purge' => _x('button', 'Delete permanently')] : [],
             ],
+            'disable_checkbox' => ($withtemplate == 2),
         ]);
 
         return true;
