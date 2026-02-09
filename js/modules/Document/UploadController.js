@@ -55,11 +55,8 @@ export class GlpiDocumentUploadController
     /** @type {HTMLFormElement} */
     #form;
 
-    /** @type {File[]} */
-    #files = [];
-
-    /** @type {Object[]} */
-    #uploadedFiles = [];
+    /** @type {{ file: File, status: string, result: Object|null, error: string|null, xhr: XMLHttpRequest|null }[]} */
+    #fileEntries = [];
 
     /** @type {HTMLElement|null} */
     #modal;
@@ -158,9 +155,25 @@ export class GlpiDocumentUploadController
     #addFiles(newFiles)
     {
         const validFiles = newFiles.filter(file => this.#validateFile(file));
-        this.#files.push(...validFiles);
+        const startIndex = this.#fileEntries.length;
+
+        for (const file of validFiles) {
+            this.#fileEntries.push({
+                file,
+                status: 'pending',
+                result: null,
+                error: null,
+                xhr: null,
+            });
+        }
+
         this.#updatePreview();
         this.#updateUploadButton();
+
+        // Start uploading each new file immediately
+        for (let i = startIndex; i < this.#fileEntries.length; i++) {
+            this.#uploadSingleFile(i);
+        }
     }
 
     /**
@@ -189,8 +202,14 @@ export class GlpiDocumentUploadController
      */
     #removeFile(index)
     {
-        this.#files.splice(index, 1);
-        this.#uploadedFiles.splice(index, 1);
+        const entry = this.#fileEntries[index];
+
+        // Abort active upload if in progress
+        if (entry?.xhr) {
+            entry.xhr.abort();
+        }
+
+        this.#fileEntries.splice(index, 1);
         this.#updatePreview();
         this.#updateUploadButton();
     }
@@ -199,20 +218,31 @@ export class GlpiDocumentUploadController
     {
         const listContainer = this.#previewContainer.querySelector('.kb-file-list');
 
-        if (this.#files.length === 0) {
+        if (this.#fileEntries.length === 0) {
             this.#previewContainer.classList.add('d-none');
             listContainer.innerHTML = '';
             return;
         }
 
         this.#previewContainer.classList.remove('d-none');
-        listContainer.innerHTML = this.#files.map((file, index) => `
-            <div class="kb-file-item d-flex align-items-center p-2 border rounded mb-2" role="listitem" data-file-index="${index}">
+        listContainer.innerHTML = this.#fileEntries.map((entry, index) => {
+            const file = entry.file;
+            const isError = entry.status === 'error';
+            const isSuccess = entry.status === 'success';
+            const errorClass = isError ? 'border-danger bg-danger bg-opacity-10' : '';
+            const statusIcon = isSuccess
+                ? '<i class="ti ti-check text-success ms-2"></i>'
+                : '';
+
+            return `
+            <div class="kb-file-item d-flex align-items-center p-2 border rounded mb-2 ${errorClass}" role="listitem" data-file-index="${index}">
                 <i class="ti ${this.#getFileIcon(file.name)} me-2 text-muted"></i>
                 <div class="flex-grow-1 min-width-0">
                     <div class="fw-medium text-truncate">${this.#escapeHtml(file.name)}</div>
                     <small class="text-muted">${this.#formatFileSize(file.size)}</small>
+                    ${isError ? `<div class="text-danger small mt-1">${this.#escapeHtml(entry.error)}</div>` : ''}
                 </div>
+                ${statusIcon}
                 <button type="button"
                         class="btn btn-sm btn-ghost-danger kb-file-remove ms-2"
                         data-index="${index}"
@@ -220,12 +250,21 @@ export class GlpiDocumentUploadController
                     <i class="ti ti-x"></i>
                 </button>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 
     #updateUploadButton()
     {
-        this.#uploadBtn.disabled = this.#files.length === 0;
+        if (this.#fileEntries.length === 0) {
+            this.#uploadBtn.disabled = true;
+            return;
+        }
+
+        const hasUploading = this.#fileEntries.some(e => e.status === 'uploading' || e.status === 'pending');
+        const hasSuccess = this.#fileEntries.some(e => e.status === 'success');
+
+        this.#uploadBtn.disabled = hasUploading || !hasSuccess;
     }
 
     /**
@@ -235,18 +274,18 @@ export class GlpiDocumentUploadController
     {
         e.preventDefault();
 
-        if (this.#files.length === 0) {
+        const successEntries = this.#fileEntries.filter(e => e.status === 'success');
+        if (successEntries.length === 0) {
             return;
         }
 
         this.#setLoading(true);
 
         try {
-            await this.#uploadFilesToTemp();
-            await this.#createDocuments();
+            await this.#createDocuments(successEntries);
             this.#onSuccess();
         } catch (error) {
-            console.error('Upload failed:', error);
+            console.error('Document creation failed:', error);
             this.#onError(error);
         } finally {
             this.#setLoading(false);
@@ -263,77 +302,119 @@ export class GlpiDocumentUploadController
             this.#uploadBtn.dataset.originalHtml = this.#uploadBtn.innerHTML;
             this.#uploadBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${__('Uploading...')}`;
         } else {
-            this.#uploadBtn.disabled = this.#files.length === 0;
+            this.#updateUploadButton();
             if (this.#uploadBtn.dataset.originalHtml) {
                 this.#uploadBtn.innerHTML = this.#uploadBtn.dataset.originalHtml;
             }
         }
     }
 
-    async #uploadFilesToTemp()
+    /**
+     * @param {number} index
+     */
+    #uploadSingleFile(index)
     {
-        this.#uploadedFiles = [];
+        const entry = this.#fileEntries[index];
+        const file = entry.file;
 
-        for (let i = 0; i < this.#files.length; i++) {
-            const file = this.#files[i];
+        entry.status = 'uploading';
 
-            const result = await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                const formData = new FormData();
-                // Generate unique prefix to avoid filename collisions (same as setupFileUpload in common.js)
-                const uniquePrefix = uniqid('', true);
-                const uploadName = uniquePrefix + file.name;
+        const xhr = new XMLHttpRequest();
+        entry.xhr = xhr;
 
-                // Create a new File object with the prefixed name
-                const renamedFile = new File([file], uploadName, { type: file.type });
+        const formData = new FormData();
+        // Generate unique prefix to avoid filename collisions (same as setupFileUpload in common.js)
+        const uniquePrefix = uniqid('', true);
+        const uploadName = uniquePrefix + file.name;
 
-                formData.append('name', 'filename');
-                formData.append('filename[]', renamedFile);
+        // Create a new File object with the prefixed name
+        const renamedFile = new File([file], uploadName, { type: file.type });
 
-                xhr.upload.addEventListener('progress', (e) => {
-                    if (e.lengthComputable) {
-                        const percent = Math.round((e.loaded / e.total) * 100);
-                        this.#updateFileProgress(i, percent);
-                    }
-                });
+        formData.append('name', 'filename');
+        formData.append('filename[]', renamedFile);
 
-                xhr.addEventListener('load', () => {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        try {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response.filename && response.filename[0]) {
-                                this.#updateFileProgress(i, 100, 'success');
-                                resolve(response.filename[0]);
-                            } else if (response.filename?.[0]?.error) {
-                                this.#updateFileProgress(i, 0, 'error');
-                                reject(new Error(response.filename[0].error));
-                            } else {
-                                this.#updateFileProgress(i, 100, 'success');
-                                resolve(response);
-                            }
-                        } catch {
-                            this.#updateFileProgress(i, 0, 'error');
-                            reject(new Error(`Invalid response for ${file.name}`));
-                        }
+        xhr.upload.addEventListener('progress', (e) => {
+            if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                this.#updateFileProgress(index, percent);
+            }
+        });
+
+        xhr.addEventListener('load', () => {
+            entry.xhr = null;
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    const fileData = response.filename?.[0];
+
+                    // Check for backend error FIRST (e.g. filetype not allowed)
+                    if (fileData?.error) {
+                        entry.status = 'error';
+                        entry.error = fileData.error;
+                        this.#updateFileProgress(index, 0, 'error');
+                        this.#showFileError(index, fileData.error);
+                        glpi_toast_error(`${file.name}: ${fileData.error}`);
+                    } else if (fileData) {
+                        entry.status = 'success';
+                        entry.result = fileData;
+                        this.#updateFileProgress(index, 100, 'success');
                     } else {
-                        this.#updateFileProgress(i, 0, 'error');
-                        reject(new Error(`Upload failed for ${file.name}`));
+                        entry.status = 'error';
+                        entry.error = __('Invalid server response');
+                        this.#updateFileProgress(index, 0, 'error');
+                        this.#showFileError(index, entry.error);
                     }
-                });
+                } catch {
+                    entry.status = 'error';
+                    entry.error = __('Invalid server response');
+                    this.#updateFileProgress(index, 0, 'error');
+                    this.#showFileError(index, entry.error);
+                }
+            } else {
+                entry.status = 'error';
+                entry.error = __('Upload failed');
+                this.#updateFileProgress(index, 0, 'error');
+                this.#showFileError(index, entry.error);
+                glpi_toast_error(`${file.name}: ${__('Upload failed')}`);
+            }
 
-                xhr.addEventListener('error', () => {
-                    this.#updateFileProgress(i, 0, 'error');
-                    reject(new Error(`Upload failed for ${file.name}`));
-                });
+            this.#updateUploadButton();
+        });
 
-                xhr.open('POST', `${CFG_GLPI.root_doc}/ajax/fileupload.php`);
-                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
-                xhr.send(formData);
-            });
+        xhr.addEventListener('error', () => {
+            entry.xhr = null;
+            entry.status = 'error';
+            entry.error = __('Upload failed');
+            this.#updateFileProgress(index, 0, 'error');
+            this.#showFileError(index, entry.error);
+            glpi_toast_error(`${file.name}: ${__('Upload failed')}`);
+            this.#updateUploadButton();
+        });
 
-            this.#uploadedFiles.push(result);
+        xhr.open('POST', `${CFG_GLPI.root_doc}/ajax/fileupload.php`);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
+        xhr.send(formData);
+    }
+
+    /**
+     * @param {number} index
+     * @param {string} message
+     */
+    #showFileError(index, message)
+    {
+        const fileItem = this.#previewContainer.querySelector(`[data-file-index="${index}"]`);
+        if (!fileItem || fileItem.querySelector('.text-danger')) {
+            return;
         }
+
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'text-danger small mt-1';
+        errorDiv.textContent = message;
+        fileItem.querySelector('.flex-grow-1').appendChild(errorDiv);
+
+        fileItem.classList.add('border-danger', 'bg-danger', 'bg-opacity-10');
     }
 
     /**
@@ -368,17 +449,18 @@ export class GlpiDocumentUploadController
         }
     }
 
-    async #createDocuments()
+    /**
+     * @param {{ file: File, status: string, result: Object|null }[]} successEntries
+     */
+    async #createDocuments(successEntries)
     {
         const description = this.#form.querySelector('#kb-document-description')?.value || '';
         const itemtype = this.#form.querySelector('[name="itemtype"]')?.value;
         const items_id = this.#form.querySelector('[name="items_id"]')?.value;
 
-        for (const uploadedFile of this.#uploadedFiles) {
+        for (const entry of successEntries) {
+            const uploadedFile = entry.result;
             const formData = new FormData();
-            // uploadedFile.name = full temp filename (prefix + original name)
-            // uploadedFile.display = original filename without prefix
-            // uploadedFile.prefix = 23-char prefix
             const fullTempName = uploadedFile.name || '';
             const displayName = uploadedFile.display || '';
             const filePrefix = uploadedFile.prefix || '';
@@ -417,7 +499,7 @@ export class GlpiDocumentUploadController
 
     #onSuccess()
     {
-        const count = this.#files.length;
+        const count = this.#fileEntries.filter(e => e.status === 'success').length;
 
         if (this.#modal) {
             const modalInstance = bootstrap.Modal.getInstance(this.#modal);
@@ -447,8 +529,14 @@ export class GlpiDocumentUploadController
 
     #reset()
     {
-        this.#files = [];
-        this.#uploadedFiles = [];
+        // Abort any in-progress uploads
+        for (const entry of this.#fileEntries) {
+            if (entry.xhr) {
+                entry.xhr.abort();
+            }
+        }
+
+        this.#fileEntries = [];
         this.#updatePreview();
         this.#updateUploadButton();
 

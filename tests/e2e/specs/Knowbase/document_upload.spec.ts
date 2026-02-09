@@ -34,6 +34,7 @@ import { expect, test } from "../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
+import path from 'path';
 
 test('Can open document upload modal', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -190,6 +191,40 @@ test('Can add description before upload', async ({ page, profile, api }) => {
 
     // Wait for page reload
     await page.waitForLoadState('load');
+});
+
+test('Shows error for disallowed file type', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for filetype error test',
+        entities_id: getWorkerEntityId(),
+        answer: "Article content",
+    });
+
+    await kb.goto(id);
+
+    // Open the document upload modal
+    await page.getByRole('button', { name: 'Add Document' }).click();
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    // Select a file with disallowed type (.json)
+    const filePaths = [path.join(__dirname, '../../fixtures/uploads/test.json')];
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await modal.getByText('Drop files here or click to browse').click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles(filePaths);
+
+    // Wait for the file to appear in preview
+    await expect(modal.getByRole('listitem')).toHaveCount(1);
+
+    // Verify error is shown on the file item
+    await expect(modal.getByRole('listitem').first()).toContainText('Filetype not allowed');
+
+    // Verify upload button stays disabled
+    await expect(modal.getByRole('button', { name: 'Upload Documents' })).toBeDisabled();
 });
 
 test('Upload button is disabled without files', async ({ page, profile, api }) => {

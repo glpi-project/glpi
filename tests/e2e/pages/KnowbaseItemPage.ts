@@ -81,7 +81,8 @@ export class KnowbaseItemPage extends GlpiPage
     public async goto(id: number): Promise<void>
     {
         await this.page.goto(
-            `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`
+            `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
+            { waitUntil: 'domcontentloaded' }
         );
     }
 
@@ -142,6 +143,9 @@ export class KnowbaseItemPage extends GlpiPage
 
         // Wait for files to be processed and appear in preview
         await expect(modal.getByRole('listitem')).toHaveCount(files.length);
+
+        // Wait for all uploads to tmp to complete (button becomes enabled)
+        await expect(modal.getByRole('button', { name: 'Upload Documents' })).toBeEnabled();
     }
 
     public async doAddFileToKbUploadArea(file: string, modal: Locator): Promise<void>
