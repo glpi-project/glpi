@@ -36,10 +36,9 @@ namespace tests\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
 
-/* Test for inc/knowbaseitem_revision.class.php */
-
-class KnowbaseItem_RevisionTest extends DbTestCase
+final class KnowbaseItem_RevisionTest extends DbTestCase
 {
     public function tearDown(): void
     {
@@ -149,57 +148,9 @@ class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertTrue($kb1->revertTo($rev_id));
     }
 
-    public function testGetTabNameForItemNotLogged()
+    private function getNewKbItem(): KnowbaseItem
     {
-        //we are not logged, we should not see revision tab
-        $kb_rev = new \KnowbaseItem_Revision();
-        $kb1 = $this->getNewKbItem();
-
-        $_SESSION['glpishow_count_on_tabs'] = 1;
-        $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame('', $name);
-    }
-
-    public function testGetTabNameForItemLogged()
-    {
-        $this->login();
-
-        $kb_rev = new \KnowbaseItem_Revision();
-        $kb1 = $this->getNewKbItem();
-
-        $this->assertTrue(
-            $kb1->update(
-                [
-                    'id'   => $kb1->getID(),
-                    'name' => '_knowbaseitem01-01',
-                ]
-            )
-        );
-
-        $_SESSION['glpishow_count_on_tabs'] = 1;
-        $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("Revision 1", strip_tags($name));
-
-        $this->assertTrue(
-            $kb1->update(
-                [
-                    'id'   => $kb1->getID(),
-                    'name' => '_knowbaseitem01-02',
-                ]
-            )
-        );
-
-        $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("Revisions 2", strip_tags($name));
-
-        $_SESSION['glpishow_count_on_tabs'] = 0;
-        $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("Revisions", strip_tags($name));
-    }
-
-    private function getNewKbItem()
-    {
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
         $toadd = $kb1->fields;
         unset($toadd['id']);
         unset($toadd['date_creation']);

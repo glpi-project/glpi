@@ -15584,12 +15584,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_Revision\\:\\:createNew\\(\\) should return int\\|false but returns bool\\|int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Revision.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on LevelAgreementLevel\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 3,

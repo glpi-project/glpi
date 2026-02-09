@@ -22,6 +22,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
+- `KnowbaseItem_Revision` is now final
 
 #### Deprecated
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
@@ -66,10 +67,9 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Glpi\Toolbox\Sanitizer` class
-- `KnowbaseItem_Comment.php::getTabNameForItem()`
-- `KnowbaseItem_Comment.php::displayTabContentForItem()`
-- `KnowbaseItem_Comment.php::showForItem()`
-- `KnowbaseItem_Comment.php::getCommentForm()`
+- `KnowbaseItem_Revision.php::getTabNameForItem()`
+- `KnowbaseItem_Revision.php::displayTabContentForItem()`
+- `KnowbaseItem_Revision.php::showForItem()`
 - `Migration::setOutputHandler()`
 - `Migration::addNewMessageArea()`
 - `Migration::displayTitle()`
