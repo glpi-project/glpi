@@ -1488,6 +1488,10 @@ class NotificationTarget extends CommonDBChild
     private function removeExcludedTargets(array $target_list): array
     {
         global $DB;
+
+        if ($target_list === []) {
+            return $target_list;
+        }
         $exclusions = iterator_to_array($DB->request([
             'SELECT' => ['type', 'items_id'],
             'FROM'   => self::getTable(),
