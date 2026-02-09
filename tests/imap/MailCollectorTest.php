@@ -1557,7 +1557,7 @@ PLAINTEXT,
         );
 
         // Test 1: Auto-import (mail collector) should be blocked
-        copy($png_file, GLPI_TMP_DIR . '/foo.png');
+        \Safe\copy($png_file, GLPI_TMP_DIR . '/foo.png');
 
         $ticket = $this->createItem(
             Ticket::class,
@@ -1581,7 +1581,7 @@ PLAINTEXT,
         // Test 2: Manual upload should work (not blocked)
         $png_file_manual = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
 
-        copy($png_file_manual, GLPI_TMP_DIR . '/bar.png');
+        \Safe\copy($png_file_manual, GLPI_TMP_DIR . '/bar.png');
 
         $ticket = $this->createItem(
             Ticket::class,
@@ -1602,7 +1602,7 @@ PLAINTEXT,
         $this->assertCount(1, $doc_items_manual, 'Documents should be attached when manually uploaded');
 
         // Cleanup temporary copies only
-        @unlink(GLPI_TMP_DIR . '/foo.png');
-        @unlink(GLPI_TMP_DIR . '/bar.png');
+        \Safe\unlink(GLPI_TMP_DIR . '/foo.png');
+        \Safe\unlink(GLPI_TMP_DIR . '/bar.png');
     }
 }
