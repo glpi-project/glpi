@@ -33,7 +33,7 @@
  */
 
 // This file contains class stubs for the DB config classes.
-// It permits to indicates to PHPStan and IDEs that the `DB` and the `DBReplica` classes are extending the `DBmysql` class.
+// It indicates PHPStan and IDEs that the `DB` and the `DBReplica` classes extend the `DBmysql` class.
 
 if (!class_exists('DB', false)) {
     class DB extends DBmysql {}
