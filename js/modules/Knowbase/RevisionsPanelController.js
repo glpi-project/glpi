@@ -36,6 +36,7 @@ import { computeHtmlDiff } from "/js/modules/Knowbase/RevisionDiffRenderer.js";
 
 const revert_selector = "[data-glpi-revert-revision]";
 const revision_selector = "[data-glpi-revision-id]";
+const current_version_selector = "[data-glpi-current-version]";
 
 export class GlpiKnowbaseRevisionsPanelController
 {
@@ -72,6 +73,13 @@ export class GlpiKnowbaseRevisionsPanelController
             if (revisionItem) {
                 e.preventDefault();
                 this.#handleCompareToggle(revisionItem);
+                return;
+            }
+
+            // Click on current version item → deactivate comparison
+            const currentVersionItem = e.target.closest(current_version_selector);
+            if (currentVersionItem && this.#activeRevisionId !== null) {
+                this.#deactivateComparison();
             }
         });
     }
@@ -98,6 +106,11 @@ export class GlpiKnowbaseRevisionsPanelController
      */
     async #activateComparison(revisionId)
     {
+        // Restore original DOM before computing new diff
+        if (this.#activeRevisionId !== null) {
+            this.#deactivateComparison();
+        }
+
         try {
             // Fetch revision content
             const response = await fetch(

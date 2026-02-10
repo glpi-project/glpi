@@ -204,3 +204,91 @@ test('Can compare a revision with the current version', async ({ page, profile, 
     // Original content should be restored
     await expect(page.getByText('Updated paragraph')).toBeVisible();
 });
+
+test('Switching between revisions does not corrupt the diff', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item with 3 revisions so we can switch between them
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Diff Title',
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Content V1</p>',
+    });
+    await api.updateItem('KnowbaseItem', id, { answer: '<p>Content V2</p>' });
+    await api.updateItem('KnowbaseItem', id, { answer: '<p>Content V3</p>' });
+
+    await kb.goto(id);
+
+    // Open history panel
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    const revisions = page.getByTestId('revision');
+    await expect(revisions).toHaveCount(3);
+
+    const article = page.getByRole('article');
+    const content = page.getByTestId('content');
+
+    // Click on Version 2 to activate comparison
+    await revisions.nth(1).click();
+    await expect(article).toHaveClass(/kb-article--diff-mode/);
+    await expect(article.getByRole('deletion').first()).toBeAttached();
+
+    // Count diff markers after first click
+    const delCountAfterFirst = await content.locator('del').count();
+
+    // Click on Initial version — diff should be recomputed, not accumulated
+    await revisions.nth(2).click();
+    await expect(article).toHaveClass(/kb-article--diff-mode/);
+    await expect(revisions.nth(2)).toHaveClass(/kb-revision--comparing/);
+    await expect(revisions.nth(1)).not.toHaveClass(/kb-revision--comparing/);
+
+    // The number of <del> elements should not grow with each click
+    const delCountAfterSecond = await content.locator('del').count();
+    expect(delCountAfterSecond).toBeLessThanOrEqual(delCountAfterFirst + 5);
+
+    // Click back to Version 2 — still no accumulation
+    await revisions.nth(1).click();
+    const delCountAfterThird = await content.locator('del').count();
+    expect(delCountAfterThird).toBeLessThanOrEqual(delCountAfterFirst + 5);
+});
+
+test('Clicking current version deactivates comparison', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Reset Title',
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Original content</p>',
+    });
+    await api.updateItem('KnowbaseItem', id, { answer: '<p>Updated content</p>' });
+
+    await kb.goto(id);
+    await expect(page.getByText('Updated content')).toBeVisible();
+
+    // Open history panel
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    const revisions = page.getByTestId('revision');
+    const article = page.getByRole('article');
+    const currentVersion = revisions.nth(0);
+    const initialRevision = revisions.nth(1);
+
+    // Activate comparison on the initial revision
+    await initialRevision.click();
+    await expect(article).toHaveClass(/kb-article--diff-mode/);
+    await expect(initialRevision).toHaveClass(/kb-revision--comparing/);
+
+    // Click on "Current version" to deactivate comparison
+    await currentVersion.click();
+
+    // Article should exit diff mode and show original content
+    await expect(article).not.toHaveClass(/kb-article--diff-mode/);
+    await expect(initialRevision).not.toHaveClass(/kb-revision--comparing/);
+    await expect(page.getByText('Updated content')).toBeVisible();
+});
