@@ -155,3 +155,52 @@ test('Document attachment changes appear in history', async ({ page, profile, ap
     await expect(events.filter({ hasText: 'File added' })).toBeVisible();
     await expect(events.filter({ hasText: 'test_attachment.pdf' })).toBeVisible();
 });
+
+test('Can compare a revision with the current version', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Compare Title',
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Original paragraph</p>',
+    });
+    await api.updateItem('KnowbaseItem', id, { answer: '<p>Updated paragraph</p>' });
+
+    await kb.goto(id);
+    await expect(page.getByText('Updated paragraph')).toBeVisible();
+
+    // Open history panel
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    const revisions = page.getByTestId('revision');
+    await expect(revisions).toHaveCount(2);
+
+    const article = page.getByRole('article');
+    const initialRevision = revisions.nth(1);
+
+    // Click on the initial revision to activate comparison
+    await initialRevision.click();
+
+    // Article should enter diff mode
+    await expect(article).toHaveClass(/kb-article--diff-mode/);
+
+    // The revision item should be highlighted
+    await expect(initialRevision).toHaveClass(/kb-revision--comparing/);
+
+    // Diff markers should be visible (ins/del elements from htmldiff)
+    await expect(article.getByRole('insertion').first()).toBeAttached();
+    await expect(article.getByRole('deletion').first()).toBeAttached();
+
+    // Click the same revision again to deactivate comparison
+    await initialRevision.click();
+
+    // Article should exit diff mode
+    await expect(article).not.toHaveClass(/kb-article--diff-mode/);
+    await expect(initialRevision).not.toHaveClass(/kb-revision--comparing/);
+
+    // Original content should be restored
+    await expect(page.getByText('Updated paragraph')).toBeVisible();
+});
