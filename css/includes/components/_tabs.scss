@@ -1,84 +1,122 @@
-/* ---------------------------------------------------------------------
- * GLPI - Card Tabs Fix (Nuclear Option)
- * --------------------------------------------------------------------- */
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
 
 .tab-content {
     border-top-left-radius: 0;
 }
 
 .card-tabs {
-    /* Target the container specifically */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
-        
-        /* NUCLEAR FIX 1: Kill any flex-gap that separates items */
-        gap: 0 !important; 
     }
 
-    /* Target the tabs container */
     #tabspanel.nav-tabs {
-        border-bottom: 0 !important; /* Remove Bootstrap container border */
-
-        /* NUCLEAR FIX 2: Ensure list items have ZERO influence on spacing */
-        .nav-item {
-            border: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* Target the links (the actual visible tabs) */
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-            
-            /* NUCLEAR FIX 3: Reset ALL borders and margins first */
-            border: 0 !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            
-            /* NUCLEAR FIX 4: Apply ONLY a bottom border */
-            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+
+            /* FIXED: Kill Top/Left/Right borders explicitly */
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+
+            /* FIXED: Make the bottom separator TRANSPARENT by default 
+               so inactive tabs don't show lines (prevents double borders) */
+            border-bottom: 1px solid transparent;
 
             &.active {
+                /* Active Tab Background & Text */
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
+                font-weight: bold;
 
-                /* Active state specifics */
+                /* FIXED: Active borders specifics */
+                border-right: 1px solid transparent !important;
+                margin-right: -1px; // Hack for border overlap
+
+                /* The Left Accent Border (Primary Color) */
                 border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
+                
+                /* The Bottom Border (Visible only on Active tab) */
                 border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
                 
-                /* Ensure active tab font is bold */
-                font-weight: bold;
-                .badge { font-weight: bold; }
+                .badge {
+                    font-weight: bold;
+                }
             }
 
             .badge {
                 margin-left: 5px;
             }
         }
+    }
 
-        /* NUCLEAR FIX 5: Remove border from the very last tab so it doesn't duplicate the container edge */
-        .nav-item:last-child .nav-link {
-            border-bottom: 0 !important;
+    /* Vertical Specifics (Legacy/Backup) */
+    &.vertical {
+        #tabspanel.nav-tabs .nav-link {
+             /* Ensure vertical tabs follow the main rule */
+             border-bottom: 1px solid transparent;
+             border-top-right-radius: 0;
+             border-top-left-radius: 0;
+
+             &.active {
+                 border-left: 5px solid var(--glpi-tabs-active-border-color);
+                 border-right-color: transparent !important;
+                 border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+             }
         }
     }
 
-    /* Horizontal View (Legacy/Desktop) */
+    /* Horizontal View Specifics */
     &.horizontal {
         #tabspanel.nav-tabs {
-            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-
             .nav-link {
-                /* In horizontal, we need the bottom border to be transparent to blend with content */
-                border: 1px solid transparent !important;
-                border-bottom: 0 !important; 
-                border-left: 1px solid var(--glpi-tabs-border-color) !important;
+                /* Restore borders for horizontal mode */
+                border-bottom-width: 1px;
+                border-bottom-style: solid;
+                border-left: 1px solid var(--glpi-tabs-border-color);
+
+                &:last-of-type {
+                    border-right-width: 1px;
+
+                    &.active {
+                        border-right-color: var(--glpi-tabs-border-color) !important;
+                    }
+                }
 
                 &.active {
-                    background: #fff;
-                    border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff !important;
-                    border-left-width: 1px !important; 
-                    margin-bottom: -1px !important; /* Push active tab down over the line */
+                    border-bottom-color: transparent !important;
+                    border-left-width: 1px; /* Reset the 5px vertical accent */
                 }
             }
         }
