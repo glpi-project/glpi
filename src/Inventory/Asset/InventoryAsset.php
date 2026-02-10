@@ -228,7 +228,8 @@ abstract class InventoryAsset
 
             // Set autoupdate system for all assets contained in this field and linked to the current item.
             // Extract the asset class name (e.g., "Monitor" from "Glpi\Inventory\Asset\Monitor")
-            $asset_itemtype = end(explode('\\', get_class($this)));
+            $asset_itemtype = get_class($this);
+            $asset_itemtype = end(explode('\\', $asset_itemtype));
 
             if ($temp_item = getItemForItemtype($asset_itemtype)) {
                 if ($temp_item->isField('autoupdatesystems_id') && isset($this->item->fields['autoupdatesystems_id'])) {
