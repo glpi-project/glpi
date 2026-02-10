@@ -95,11 +95,6 @@ abstract class InventoryAsset
     {
         $this->item = $item;
         if ($data !== null) {
-            foreach ($data as $val) {
-                if ($val instanceof \stdClass) {
-                    $val->autoupdatesystems_id = AutoUpdateSystem::NATIVE_INVENTORY;
-                }
-            }
             $this->data = $data;
         }
     }
@@ -229,6 +224,17 @@ abstract class InventoryAsset
             $manufacturer_name = "";
             if (property_exists($value, 'manufacturers_id')) {
                 $manufacturer_name = $value->manufacturers_id;
+            }
+
+            // Set autoupdate system for all assets contained in this field and linked to the current item.
+            // Extract the asset class name (e.g., "Monitor" from "Glpi\Inventory\Asset\Monitor")
+            $asset_itemtype = end(explode('\\', get_class($this)));
+
+            if (class_exists($asset_itemtype)) {
+                $temp_item = new $asset_itemtype();
+                if ($temp_item->isField('autoupdatesystems_id') && isset($this->item->fields['autoupdatesystems_id'])) {
+                    $value->autoupdatesystems_id = Dropdown::getDropdownName('glpi_autoupdatesystems', $this->item->fields['autoupdatesystems_id']);
+                }
             }
 
             foreach ($value as $key => &$val) {
