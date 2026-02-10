@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Agent;
-use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
 use CommonDropdown;
