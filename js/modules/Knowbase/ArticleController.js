@@ -174,7 +174,7 @@ export class GlpiKnowbaseArticleController
         }
 
         // Save original content on first activation
-        if (!this.#isDiffMode) {
+        if (this.#originalSubject === null) {
             this.#originalSubject = subjectEl.innerHTML;
             this.#originalContent = contentEl.innerHTML;
         }
