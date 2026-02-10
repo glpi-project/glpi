@@ -5576,11 +5576,12 @@ class CommonDBTM extends CommonGLPI
             // Check if document is blacklisted when importing via mail collector
             if ($input['_auto_import'] ?? false) {
                 $blacklisted_doc = new Document();
-                if ($blacklisted_doc->getFromDBbyContent($entities_id, $filename)) {
-                    if ($blacklisted_doc->fields['is_blacklisted']) {
-                        // Document is blacklisted, skip attachment
-                        continue;
-                    }
+                if (
+                    $blacklisted_doc->getFromDBbyContent($entities_id, $filename)
+                    && $blacklisted_doc->fields['is_blacklisted']
+                ) {
+                    // Document is blacklisted, skip attachment
+                    continue;
                 }
             }
 
