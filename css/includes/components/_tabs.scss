@@ -36,17 +36,17 @@
 }
 
 .card-tabs {
-    /* 1. Main container border (Vertical Line) */
+    /* 1. Main Container Border */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
     /* 2. Vertical Tabs Layout */
     #tabspanel.nav-tabs {
-        border-bottom: 0; /* Remove container bottom border */
-        gap: 0; /* Prevent flex gaps from creating double lines */
+        border-bottom: 0; 
+        gap: 0; 
 
-        /* CLEANUP: Remove all styles from the list item wrapper */
+        /* Kill all spacing on the list items */
         .nav-item {
             border: 0 !important;
             margin: 0 !important;
@@ -57,31 +57,37 @@
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
 
-            /* OVERRIDE _cards.scss: Set all borders to transparent first */
-            border: 1px solid transparent; 
+            /* FIX: Strictly set Top/Left/Right borders to 0 width */
+            border-top: 0 !important;
+            border-left: 0 !important;
+            border-right: 0 !important;
             
-            /* FORCE: Add a clean single line at the bottom */
+            /* Add the ONE true separator line */
             border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
             
-            /* STRATEGY: Pull the next item up by 1px to merge overlapping borders */
-            margin-bottom: -1px;
-            border-radius: 0;
-            position: relative; /* Needed for z-index */
+            /* Remove negative margin - let them stack naturally */
+            margin-bottom: 0 !important;
+            border-radius: 0 !important;
 
             &.active {
-                /* Active State: Bring to front so it covers the overlap */
-                z-index: 10;
-                
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
                 font-weight: bold;
 
                 /* Active Borders */
-                border-color: var(--glpi-tabs-active-border-color);
+                /* 1. Left Accent */
                 border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
-                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-                border-right: 1px solid transparent !important; /* Open to content */
                 
+                /* 2. Bottom Separator (Matches the list) */
+                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+                
+                /* 3. Open to the right */
+                border-right: 1px solid transparent !important;
+                margin-right: -1px !important; 
+
+                /* 4. Ensure no Top border leaks in */
+                border-top: 0 !important;
+
                 .badge {
                     font-weight: bold;
                 }
@@ -92,7 +98,7 @@
             }
         }
 
-        /* CLEANUP: Remove border from the very last tab so it doesn't double with container edge */
+        /* Cleanup: Remove border from the very last tab */
         .nav-item:last-child .nav-link {
             border-bottom: 0 !important;
         }
@@ -104,16 +110,15 @@
             border-bottom: 1px solid var(--glpi-tabs-border-color);
 
             .nav-link {
-                margin-bottom: -1px; /* Overlap bottom container border */
+                margin-bottom: -1px;
                 border: 1px solid transparent;
-                border-bottom: 0; /* Let container handle the line */
+                border-bottom: 0;
                 border-left: 1px solid var(--glpi-tabs-border-color);
 
                 &.active {
-                    z-index: 2;
                     background: #fff;
                     border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff;
-                    border-left-width: 1px; /* Reset the 5px accent */
+                    border-left-width: 1px;
                     border-bottom-color: transparent !important;
                 }
             }
