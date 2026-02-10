@@ -7094,8 +7094,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $name . '<br>',
                         sprintf(
                             __s('%1$s - %2$s'),
-                            $item->numberOfFollowups($showprivate_fup),
-                            $item->numberOfTasks($showprivate_task[$itemtype])
+                            $item->numberOfFollowups((bool)$showprivate_fup),
+                            $item->numberOfTasks((bool)$showprivate_task[$itemtype])
                         )
                     );
                 } else {
@@ -7104,8 +7104,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
                         sprintf(
                             __s('%1$s - %2$s'),
-                            $item->numberOfFollowups($showprivate_fup),
-                            $item->numberOfTasks($showprivate_task[$itemtype])
+                            $item->numberOfFollowups((bool)$showprivate_fup),
+                            $item->numberOfTasks((bool)$showprivate_task[$itemtype])
                         )
                     );
                 }
