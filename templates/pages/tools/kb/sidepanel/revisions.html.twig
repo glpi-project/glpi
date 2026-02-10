@@ -37,11 +37,16 @@
 
 {% block content %}
     <ul class="steps steps-vertical overflow-auto flex-grow-1 my-n3 py-3" data-glpi-revisions>
-        {% for revision in revisions %}
+        {% for event in history.getEvents() %}
+            {% set is_revision = event is instanceof("\\Glpi\\Knowbase\\History\\RevisionEvent") %}
+
             {{ include('pages/tools/kb/sidepanel/revision_item.html.twig', {
                 id: id,
-                revision: revision,
+                event: event,
+                is_revision: is_revision,
                 can_revert: can_revert,
+                users: users,
+                first: loop.first,
             }, with_context = false) }}
         {% endfor %}
     </ul>

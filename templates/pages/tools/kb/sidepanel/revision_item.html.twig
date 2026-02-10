@@ -30,27 +30,22 @@
  # ---------------------------------------------------------------------
  #}
 
-<li class="step-item {{ revision.is_current ? 'active' : '' }}" data-testid="revision">
+<li
+    class="step-item {{ first ? 'active' : '' }}"
+    data-testid="history-event"
+>
     <div class="d-flex align-items-start justify-content-between">
         <div>
             <div class="h4 m-0">
-                {% if revision.is_current %}
-                    {{ __("Current version") }}
-                {% elseif revision.is_first %}
-                    {{ __("Initial version") }}
-                {% else %}
-                    {{ __("Version %s")|format(revision.revision) }}
-                {% endif %}
+                {{ event.getLabel() }}
             </div>
             <div class="text-secondary small">
-                {% if revision.is_first %}
-                    {{ __("Created by") }}
-                {% else %}
-                    {{ __("Updated by") }}
-                {% endif %}
-                {% if revision.user %}
-                    <a rel="author" href="{{ revision.user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
-                        @{{ revision.user.getFriendlyName() }}
+                {{ event.getDescription() }}
+
+                {% set user = users.getUser(event.getAuthor()) %}
+                {% if user %}
+                    <a rel="author" href="{{ user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
+                        @{{ user.getFriendlyName() }}
                     </a>
                 {% else %}
                     <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>
@@ -58,19 +53,19 @@
             </div>
             <div class="text-secondary small">
                 <span
-                    title="{{ revision.date }}"
+                    title="{{ event.date }}"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                 >
-                    {{ revision.date|relative_datetime }}
+                    {{ event.date|relative_datetime }}
                 </span>
             </div>
         </div>
-        {% if can_revert and not revision.is_current and revision.id %}
+        {% if is_revision and can_revert %}
             <button
                 type="button"
                 class="btn btn-ghost-secondary btn-sm"
-                data-glpi-revert-revision="{{ revision.id }}"
+                data-glpi-revert-revision="{{ event.getRevisionId() }}"
                 data-glpi-kb-id="{{ id }}"
                 title="{{ __("Restore this version") }}"
                 data-bs-toggle="tooltip"

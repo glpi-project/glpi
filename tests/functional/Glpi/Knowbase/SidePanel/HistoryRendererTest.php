@@ -35,12 +35,12 @@
 namespace tests\units\Glpi\Knowbase\SidePanel;
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Knowbase\SidePanel\RevisionsRenderer;
+use Glpi\Knowbase\SidePanel\HistoryRenderer;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use Symfony\Component\DomCrawler\Crawler;
 
-final class RevisionsRendererTest extends DbTestCase
+final class HistoryRendererTest extends DbTestCase
 {
     public function testRevisionsAreRendered(): void
     {
@@ -63,7 +63,7 @@ final class RevisionsRendererTest extends DbTestCase
         $kb->getFromDB($kb->getID());
         $revisions = $this->renderRevisions($kb);
 
-        $revisionNodes = $revisions->filter('[data-testid=revision]');
+        $revisionNodes = $revisions->filter('[data-testid=history-event]');
         $this->assertEquals(2, $revisionNodes->count());
 
         $currentVersion = $revisionNodes->first();
@@ -71,13 +71,13 @@ final class RevisionsRendererTest extends DbTestCase
         $this->assertEquals(0, $currentVersion->filter('[data-glpi-revert-revision]')->count());
 
         $initialVersion = $revisionNodes->last();
-        $this->assertStringContainsString('Initial version', $initialVersion->text());
+        $this->assertStringContainsString('Version 1', $initialVersion->text());
         $this->assertEquals(1, $initialVersion->filter('[data-glpi-revert-revision]')->count());
     }
 
     private function renderRevisions(KnowbaseItem $kb): Crawler
     {
-        $renderer = new RevisionsRenderer();
+        $renderer = new HistoryRenderer();
         $html = TemplateRenderer::getInstance()->render(
             $renderer->getTemplate(),
             $renderer->getParams($kb),
