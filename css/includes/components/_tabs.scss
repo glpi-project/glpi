@@ -1,6 +1,33 @@
 /*!
  * ---------------------------------------------------------------------
- * GLPI - Card Tabs Fix (Final)
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  * ---------------------------------------------------------------------
  */
 
@@ -9,36 +36,52 @@
 }
 
 .card-tabs {
+    /* 1. Main container border (Vertical Line) */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
+    /* 2. Vertical Tabs Layout */
     #tabspanel.nav-tabs {
+        border-bottom: 0; /* Remove container bottom border */
+        gap: 0; /* Prevent flex gaps from creating double lines */
+
+        /* CLEANUP: Remove all styles from the list item wrapper */
+        .nav-item {
+            border: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
 
-            /* 1. FORCE REMOVAL OF ALL BORDERS BY DEFAULT */
-            /* This kills the "second border" on inactive tabs */
-            border: 0 !important;
+            /* OVERRIDE _cards.scss: Set all borders to transparent first */
+            border: 1px solid transparent; 
+            
+            /* FORCE: Add a clean single line at the bottom */
+            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+            
+            /* STRATEGY: Pull the next item up by 1px to merge overlapping borders */
+            margin-bottom: -1px;
             border-radius: 0;
+            position: relative; /* Needed for z-index */
 
             &.active {
-                /* 2. RESTORE BORDERS ONLY FOR ACTIVE TAB */
+                /* Active State: Bring to front so it covers the overlap */
+                z-index: 10;
+                
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
                 font-weight: bold;
 
-                /* Left accent (thick line) */
+                /* Active Borders */
+                border-color: var(--glpi-tabs-active-border-color);
                 border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
-                
-                /* Bottom separator (thin line) */
                 border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+                border-right: 1px solid transparent !important; /* Open to content */
                 
-                /* Ensure right side is open/transparent */
-                border-right: 1px solid transparent !important;
-                margin-right: -1px; 
-
                 .badge {
                     font-weight: bold;
                 }
@@ -48,23 +91,30 @@
                 margin-left: 5px;
             }
         }
-        
-        /* Optional: clean up the list item container */
-        .nav-item {
-            border: 0 !important;
+
+        /* CLEANUP: Remove border from the very last tab so it doesn't double with container edge */
+        .nav-item:last-child .nav-link {
+            border-bottom: 0 !important;
         }
     }
 
-    /* Horizontal Mode (Legacy) - Restore borders if needed */
+    /* 3. Horizontal View Specifics (Legacy/Desktop) */
     &.horizontal {
         #tabspanel.nav-tabs {
+            border-bottom: 1px solid var(--glpi-tabs-border-color);
+
             .nav-link {
-                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-                border-left: 1px solid var(--glpi-tabs-border-color) !important;
+                margin-bottom: -1px; /* Overlap bottom container border */
+                border: 1px solid transparent;
+                border-bottom: 0; /* Let container handle the line */
+                border-left: 1px solid var(--glpi-tabs-border-color);
 
                 &.active {
+                    z-index: 2;
+                    background: #fff;
+                    border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff;
+                    border-left-width: 1px; /* Reset the 5px accent */
                     border-bottom-color: transparent !important;
-                    border-left-width: 1px !important;
                 }
             }
         }
