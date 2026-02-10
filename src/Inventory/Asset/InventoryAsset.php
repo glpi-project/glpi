@@ -230,8 +230,7 @@ abstract class InventoryAsset
             // Extract the asset class name (e.g., "Monitor" from "Glpi\Inventory\Asset\Monitor")
             $asset_itemtype = end(explode('\\', get_class($this)));
 
-            if (class_exists($asset_itemtype)) {
-                $temp_item = new $asset_itemtype();
+            if ($temp_item = getItemForItemtype($asset_itemtype)) {
                 if ($temp_item->isField('autoupdatesystems_id') && isset($this->item->fields['autoupdatesystems_id'])) {
                     $value->autoupdatesystems_id = Dropdown::getDropdownName('glpi_autoupdatesystems', $this->item->fields['autoupdatesystems_id']);
                 }
