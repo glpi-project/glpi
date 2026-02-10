@@ -1,112 +1,84 @@
-/*!
- * ---------------------------------------------------------------------
- *
- * GLPI - Gestionnaire Libre de Parc Informatique
- *
- * http://glpi-project.org
- *
- * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
- * @licence   https://www.gnu.org/licenses/gpl-3.0.html
- *
- * ---------------------------------------------------------------------
- *
- * LICENSE
- *
- * This file is part of GLPI.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * ---------------------------------------------------------------------
- */
-
-/*!
- * ---------------------------------------------------------------------
- * GLPI - Custom Tab Fix
- * ---------------------------------------------------------------------
- */
+/* ---------------------------------------------------------------------
+ * GLPI - Card Tabs Fix (Nuclear Option)
+ * --------------------------------------------------------------------- */
 
 .tab-content {
     border-top-left-radius: 0;
 }
 
 .card-tabs {
-    /* 1. Main Container Border */
+    /* Target the container specifically */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
+        
+        /* NUCLEAR FIX 1: Kill any flex-gap that separates items */
+        gap: 0 !important; 
     }
 
-    /* 2. Global Reset for this tab panel */
+    /* Target the tabs container */
     #tabspanel.nav-tabs {
-        border-bottom: 0; /* Remove Bootstrap's default bottom border on the container */
+        border-bottom: 0 !important; /* Remove Bootstrap container border */
 
-        /* KILL THE GHOST: Remove any potential border from the list item wrapper */
+        /* NUCLEAR FIX 2: Ensure list items have ZERO influence on spacing */
         .nav-item {
             border: 0 !important;
-            margin-bottom: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
+        /* Target the links (the actual visible tabs) */
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
             
-            /* RESET: Ensure no rogue borders appear */
-            border: 0;
-            border-radius: 0; /* Sharp corners for vertical stacking */
-
-            /* STRATEGY: Add bottom border, then pull the next item up by 1px to overlap */
-            border-bottom: 1px solid var(--glpi-tabs-border-color);
-            margin-bottom: -1px; 
+            /* NUCLEAR FIX 3: Reset ALL borders and margins first */
+            border: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            
+            /* NUCLEAR FIX 4: Apply ONLY a bottom border */
+            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
 
             &.active {
-                /* Active State: Bring to front (z-index) so its border sits on top */
-                z-index: 2; 
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
 
-                /* Active Borders */
-                border-bottom: 1px solid var(--glpi-tabs-border-color);
-                border-left: 5px solid var(--glpi-tabs-active-border-color);
-                border-right: 1px solid transparent; // Blend with content area
+                /* Active state specifics */
+                border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
+                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
                 
+                /* Ensure active tab font is bold */
                 font-weight: bold;
-
-                .badge {
-                    font-weight: bold;
-                }
+                .badge { font-weight: bold; }
             }
 
             .badge {
                 margin-left: 5px;
             }
         }
+
+        /* NUCLEAR FIX 5: Remove border from the very last tab so it doesn't duplicate the container edge */
+        .nav-item:last-child .nav-link {
+            border-bottom: 0 !important;
+        }
     }
 
-    /* 3. Horizontal View (Legacy/Desktop) */
+    /* Horizontal View (Legacy/Desktop) */
     &.horizontal {
         #tabspanel.nav-tabs {
-            border-bottom: 1px solid var(--glpi-tabs-border-color); /* Restore container border */
+            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
 
             .nav-link {
-                margin-bottom: -1px; /* Overlap bottom container border */
-                border: 1px solid transparent;
-                border-bottom: 0; /* Let container handle the line */
-                border-left: 1px solid var(--glpi-tabs-border-color);
+                /* In horizontal, we need the bottom border to be transparent to blend with content */
+                border: 1px solid transparent !important;
+                border-bottom: 0 !important; 
+                border-left: 1px solid var(--glpi-tabs-border-color) !important;
 
                 &.active {
-                    border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff;
-                    border-left-width: 1px; /* Reset the 5px accent */
+                    background: #fff;
+                    border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff !important;
+                    border-left-width: 1px !important; 
+                    margin-bottom: -1px !important; /* Push active tab down over the line */
                 }
             }
         }
