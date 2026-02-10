@@ -82,7 +82,6 @@ export class GlpiKnowbaseRevisionsPanelController
     async #handleCompareToggle(revisionItem)
     {
         const revisionId = revisionItem.dataset.glpiRevisionId;
-        const kbId = revisionItem.dataset.glpiKbId;
 
         // Toggle off if clicking the already-active revision
         if (this.#activeRevisionId === revisionId) {
@@ -91,14 +90,13 @@ export class GlpiKnowbaseRevisionsPanelController
         }
 
         // Activate comparison
-        await this.#activateComparison(kbId, revisionId);
+        await this.#activateComparison(revisionId);
     }
 
     /**
-     * @param {string} kbId
      * @param {string} revisionId
      */
-    async #activateComparison(kbId, revisionId)
+    async #activateComparison(revisionId)
     {
         try {
             // Fetch revision content
