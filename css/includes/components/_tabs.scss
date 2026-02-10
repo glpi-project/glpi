@@ -31,36 +31,55 @@
  * ---------------------------------------------------------------------
  */
 
+/*!
+ * ---------------------------------------------------------------------
+ * GLPI - Custom Tab Fix
+ * ---------------------------------------------------------------------
+ */
+
 .tab-content {
     border-top-left-radius: 0;
 }
 
 .card-tabs {
+    /* 1. Main Container Border */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
+    /* 2. Global Reset for this tab panel */
     #tabspanel.nav-tabs {
+        border-bottom: 0; /* Remove Bootstrap's default bottom border on the container */
+
+        /* KILL THE GHOST: Remove any potential border from the list item wrapper */
+        .nav-item {
+            border: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
+            
+            /* RESET: Ensure no rogue borders appear */
+            border: 0;
+            border-radius: 0; /* Sharp corners for vertical stacking */
 
-            /* FIXED: Explicitly reset side/top borders but FORCE the bottom one */
-            border-top: 0;
-            border-left: 0;
-            border-right: 0;
+            /* STRATEGY: Add bottom border, then pull the next item up by 1px to overlap */
             border-bottom: 1px solid var(--glpi-tabs-border-color);
+            margin-bottom: -1px; 
 
             &.active {
+                /* Active State: Bring to front (z-index) so its border sits on top */
+                z-index: 2; 
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
 
-                /* FIXED: Vertical active state borders */
-                border-left: 5px solid var(--glpi-tabs-active-border-color);
-                border-right: 1px solid transparent !important;
+                /* Active Borders */
                 border-bottom: 1px solid var(--glpi-tabs-border-color);
+                border-left: 5px solid var(--glpi-tabs-active-border-color);
+                border-right: 1px solid transparent; // Blend with content area
                 
-                margin-right : -1px; // Hack for border overlap
                 font-weight: bold;
 
                 .badge {
@@ -72,33 +91,22 @@
                 margin-left: 5px;
             }
         }
-
-        /* FIXED: Remove the border from the very last tab so it doesn't double with container edge */
-        .nav-item:last-child .nav-link {
-            border-bottom: 0 !important;
-        }
     }
 
-    /* Horizontal View Specifics */
+    /* 3. Horizontal View (Legacy/Desktop) */
     &.horizontal {
         #tabspanel.nav-tabs {
+            border-bottom: 1px solid var(--glpi-tabs-border-color); /* Restore container border */
+
             .nav-link {
-                /* Restore borders for horizontal mode */
-                border-bottom-width: 1px;
-                border-bottom-style: solid;
+                margin-bottom: -1px; /* Overlap bottom container border */
+                border: 1px solid transparent;
+                border-bottom: 0; /* Let container handle the line */
                 border-left: 1px solid var(--glpi-tabs-border-color);
 
-                &:last-of-type {
-                    border-right-width: 1px;
-
-                    &.active {
-                        border-right-color: var(--glpi-tabs-border-color) !important;
-                    }
-                }
-
                 &.active {
-                    border-bottom-color: transparent !important;
-                    border-left-width: 1px; /* Reset the 5px vertical accent */
+                    border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff;
+                    border-left-width: 1px; /* Reset the 5px accent */
                 }
             }
         }
