@@ -41,18 +41,33 @@
     }
 
     #tabspanel.nav-tabs {
+        /* Ensure the list item wrapper has no border (prevents double-border issue) */
+        .nav-item {
+            border: 0 !important;
+        }
+
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-            border-color: var(--glpi-tabs-border-color);
+            
+            /* RESET: Remove default borders */
+            border: 0;
             border-right-width: 0;
+            
+            /* FORCE: Add a clean single line at the bottom */
+            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
 
             &.active {
                 border-right: 1px solid transparent !important;
-                margin-right : -1px; // Hack for border overlap
+                margin-right : -1px;
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
+                
+                /* Specific borders for active state */
                 border-color: var(--glpi-tabs-active-border-color);
+                border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
+                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+                
                 font-weight: bold;
 
                 .badge {
@@ -63,6 +78,11 @@
             .badge {
                 margin-left: 5px;
             }
+        }
+
+        /* CLEANUP: Remove the border from the very last tab */
+        .nav-item:last-child .nav-link {
+            border-bottom: 0 !important;
         }
     }
 
