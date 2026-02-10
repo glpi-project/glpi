@@ -64,7 +64,7 @@ final class RevertRevisionController extends AbstractController
         }
 
         // Check permissions
-        if (!$kb->can($id, READ)) {
+        if (!$kb->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

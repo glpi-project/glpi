@@ -146,6 +146,44 @@
     }
 }
 
+// KB revision diff - inline highlights (htmldiff-js classes)
+.kb-article--diff-mode {
+    ins.diffins {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffdel {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+
+    ins.diffmod {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffmod {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+}
+
+// KB revision comparison - side panel state
+.kb-sidepanel [data-glpi-revision-id] {
+    cursor: pointer;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    &.kb-revision--comparing {
+        background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+        box-shadow: inset -3px 0 0 var(--tblr-primary);
+    }
+}
+
 // KB modal tabs navigation
 .kb-modal-nav {
     gap: 0.5rem;

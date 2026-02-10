@@ -32,7 +32,10 @@
 
 /* global glpi_toast_error, glpi_toast_info, glpi_html_dialog, getAjaxCsrfToken */
 
+import { computeHtmlDiff } from "/js/modules/Knowbase/RevisionDiffRenderer.js";
+
 const revert_selector = "[data-glpi-revert-revision]";
+const revision_selector = "[data-glpi-revision-id]";
 
 export class GlpiKnowbaseRevisionsPanelController
 {
@@ -40,6 +43,11 @@ export class GlpiKnowbaseRevisionsPanelController
      * @type {HTMLElement}
      */
     #container;
+
+    /**
+     * @type {string|null}
+     */
+    #activeRevisionId = null;
 
     constructor(container)
     {
@@ -50,12 +58,129 @@ export class GlpiKnowbaseRevisionsPanelController
     #initEventListeners()
     {
         this.#container.addEventListener('click', (e) => {
+            // Revert button takes priority — stop propagation to avoid triggering compare
             const revertButton = e.target.closest(revert_selector);
             if (revertButton) {
                 e.preventDefault();
+                e.stopPropagation();
                 this.#handleRevert(revertButton);
+                return;
+            }
+
+            // Click on a revision item → toggle comparison
+            const revisionItem = e.target.closest(revision_selector);
+            if (revisionItem) {
+                e.preventDefault();
+                this.#handleCompareToggle(revisionItem);
             }
         });
+    }
+
+    /**
+     * @param {HTMLElement} revisionItem
+     */
+    async #handleCompareToggle(revisionItem)
+    {
+        const revisionId = revisionItem.dataset.glpiRevisionId;
+        const kbId = revisionItem.dataset.glpiKbId;
+
+        // Toggle off if clicking the already-active revision
+        if (this.#activeRevisionId === revisionId) {
+            this.#deactivateComparison();
+            return;
+        }
+
+        // Activate comparison
+        await this.#activateComparison(kbId, revisionId);
+    }
+
+    /**
+     * @param {string} kbId
+     * @param {string} revisionId
+     */
+    async #activateComparison(kbId, revisionId)
+    {
+        try {
+            // Fetch revision content
+            const response = await fetch(
+                `${CFG_GLPI.root_doc}/ajax/getKbRevision.php?revid=${revisionId}`,
+                {headers: {'X-Requested-With': 'XMLHttpRequest'}}
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to load revision');
+            }
+
+            const revisionData = await response.json();
+
+            // Get current article content from the DOM
+            const subjectEl = document.querySelector('[data-testid="subject"]');
+            const contentEl = document.querySelector('[data-testid="content"]');
+
+            if (!subjectEl || !contentEl) {
+                return;
+            }
+
+            // Compute diffs (strip long_text wrapper, scripts, read_more from both sides)
+            const titleDiff = await computeHtmlDiff(
+                revisionData.name,
+                subjectEl.textContent
+            );
+            const contentDiff = await computeHtmlDiff(
+                GlpiKnowbaseRevisionsPanelController.#stripRichTextWrapper(revisionData.answer),
+                GlpiKnowbaseRevisionsPanelController.#stripRichTextWrapper(contentEl.innerHTML)
+            );
+
+            // Dispatch event to ArticleController
+            this.#container.dispatchEvent(new CustomEvent('glpi:kb:compare', {
+                bubbles: true,
+                detail: {revisionId, titleDiff, contentDiff},
+            }));
+
+            // Update state
+            this.#activeRevisionId = revisionId;
+            this.#updateRevisionItemsState();
+
+        } catch {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
+    }
+
+    #deactivateComparison()
+    {
+        this.#container.dispatchEvent(new CustomEvent('glpi:kb:compare-off', {
+            bubbles: true,
+        }));
+
+        this.#activeRevisionId = null;
+        this.#updateRevisionItemsState();
+    }
+
+    /**
+     * Strip the long_text wrapper, read_more button and scripts added by RichText::getEnhancedHtml().
+     *
+     * @param {string} html
+     * @returns {string}
+     */
+    static #stripRichTextWrapper(html)
+    {
+        const container = document.createElement('div');
+        container.innerHTML = html;
+        const longText = container.querySelector('.long_text');
+        const source = longText || container;
+        source.querySelectorAll('script, .read_more').forEach(el => el.remove());
+        return source.innerHTML;
+    }
+
+    #updateRevisionItemsState()
+    {
+        const items = this.#container.querySelectorAll(revision_selector);
+        for (const item of items) {
+            item.classList.toggle(
+                'kb-revision--comparing',
+                item.dataset.glpiRevisionId === this.#activeRevisionId
+            );
+        }
     }
 
     #handleRevert(button)
