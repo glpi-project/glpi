@@ -44,11 +44,11 @@ $duplicates_targets_iterator = $DB->request([
         'items_id',
         'type',
         'MIN' => 'id AS min_id',
-        'COUNT' => '* AS count'
+        'COUNT' => '* AS count',
     ],
     'FROM' => 'glpi_notificationtargets',
     'GROUPBY' => ['notifications_id', 'items_id', 'type'],
-    'HAVING' => ['count' => ['>', 1]]
+    'HAVING' => ['count' => ['>', 1]],
 ]);
 
 foreach ($duplicates_targets_iterator as $target) {
@@ -56,7 +56,7 @@ foreach ($duplicates_targets_iterator as $target) {
         'notifications_id' => $target['notifications_id'],
         'items_id' => $target['items_id'],
         'type' => $target['type'],
-        'id' => ['>', $target['min_id']]
+        'id' => ['>', $target['min_id']],
     ]);
 }
 
