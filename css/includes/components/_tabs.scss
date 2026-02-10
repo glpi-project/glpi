@@ -41,33 +41,26 @@
     }
 
     #tabspanel.nav-tabs {
-        /* Ensure the list item wrapper has no border (prevents double-border issue) */
-        .nav-item {
-            border: 0 !important;
-        }
-
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-            
-            /* RESET: Remove default borders */
-            border: 0;
-            border-right-width: 0;
-            
-            /* FORCE: Add a clean single line at the bottom */
-            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+
+            /* FIXED: Explicitly reset side/top borders but FORCE the bottom one */
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            border-bottom: 1px solid var(--glpi-tabs-border-color);
 
             &.active {
-                border-right: 1px solid transparent !important;
-                margin-right : -1px;
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
+
+                /* FIXED: Vertical active state borders */
+                border-left: 5px solid var(--glpi-tabs-active-border-color);
+                border-right: 1px solid transparent !important;
+                border-bottom: 1px solid var(--glpi-tabs-border-color);
                 
-                /* Specific borders for active state */
-                border-color: var(--glpi-tabs-active-border-color);
-                border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
-                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-                
+                margin-right : -1px; // Hack for border overlap
                 font-weight: bold;
 
                 .badge {
@@ -80,30 +73,20 @@
             }
         }
 
-        /* CLEANUP: Remove the border from the very last tab */
+        /* FIXED: Remove the border from the very last tab so it doesn't double with container edge */
         .nav-item:last-child .nav-link {
             border-bottom: 0 !important;
         }
     }
 
-    &.vertical {
-        .nav:not(.nav-underline)
-            .nav-link {
-                border-bottom: 1px solid var(--glpi-tabs-border-color);
-                border-top-right-radius: 0;
-
-                &.active {
-                    border-left-width: 5px;
-                    border-right-color: transparent !important;
-                }
-            }
-    }
-
+    /* Horizontal View Specifics */
     &.horizontal {
         #tabspanel.nav-tabs {
             .nav-link {
+                /* Restore borders for horizontal mode */
                 border-bottom-width: 1px;
                 border-bottom-style: solid;
+                border-left: 1px solid var(--glpi-tabs-border-color);
 
                 &:last-of-type {
                     border-right-width: 1px;
@@ -115,6 +98,7 @@
 
                 &.active {
                     border-bottom-color: transparent !important;
+                    border-left-width: 1px; /* Reset the 5px vertical accent */
                 }
             }
         }
