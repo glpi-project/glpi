@@ -834,7 +834,7 @@
    }
 
    .planning_on_central .fc-view-container * {
-      min-height: 1em;
+      min-height: 2em;
 
       /** Ensure no event message is displayed well */
       &::before, &::after {
