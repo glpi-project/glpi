@@ -237,7 +237,7 @@ test('Switching between revisions does not corrupt the diff', async ({ page, pro
     await expect(article.getByRole('deletion').first()).toBeAttached();
 
     // Count diff markers after first click
-    const delCountAfterFirst = await content.locator('del').count();
+    const delCountAfterFirst = await content.getByRole('deletion').count();
 
     // Click on Initial version — diff should be recomputed, not accumulated
     await revisions.nth(2).click();
@@ -246,12 +246,12 @@ test('Switching between revisions does not corrupt the diff', async ({ page, pro
     await expect(revisions.nth(1)).not.toHaveClass(/kb-revision--comparing/);
 
     // The number of <del> elements should not grow with each click
-    const delCountAfterSecond = await content.locator('del').count();
+    const delCountAfterSecond = await content.getByRole('deletion').count();
     expect(delCountAfterSecond).toBeLessThanOrEqual(delCountAfterFirst + 5);
 
     // Click back to Version 2 — still no accumulation
     await revisions.nth(1).click();
-    const delCountAfterThird = await content.locator('del').count();
+    const delCountAfterThird = await content.getByRole('deletion').count();
     expect(delCountAfterThird).toBeLessThanOrEqual(delCountAfterFirst + 5);
 });
 
