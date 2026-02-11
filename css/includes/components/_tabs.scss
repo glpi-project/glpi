@@ -68,21 +68,19 @@
 
     &.vertical {
         .nav:not(.nav-underline) {
-            .nav-item {
+            .nav-link {
                 border-bottom: 1px solid var(--glpi-tabs-border-color);
+                border-top-right-radius: 0;
     
-                &:last-child {
+                /* Remove bottom border only from last visible link */
+                &:last-of-type {
                     border-bottom: 0;
                 }
-            }
     
-            .nav-link {
-                border-bottom: 0; // prevent double border
-                border-top-right-radius: 0;
-
                 &.active {
                     border-left-width: 5px;
                     border-right-color: transparent !important;
+                    margin-right: -1px;
                 }
             }
         }
