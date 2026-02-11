@@ -36,83 +36,79 @@
 }
 
 .card-tabs {
-    /* 1. Main Divider: Keep the right border on the UL container */
+    /* 1. APPLY THE FULL FRAME TO THE CONTAINER */
+    /* This fixes the "missing top and left border" issue */
     #tabspanel {
-        border-right: 1px solid var(--glpi-tabs-border-color);
+        border: 1px solid var(--glpi-tabs-border-color);
+        border-radius: var(--tblr-border-radius, 4px);
     }
 
-    /* 2. Reset Default Bootstrap Tabs styles */
+    /* Reset Bootstrap defaults */
     #tabspanel.nav-tabs {
-        border-bottom: 0; 
-        
+        border-bottom: 0;
         .nav-link {
             border-right-width: 0;
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-
-            /* Badge alignment */
             .badge { margin-left: 5px; }
         }
     }
 
-    /* 3. VERTICAL LAYOUT FIXES */
     &.vertical {
         .nav:not(.nav-underline) {
             
-            /* Ensure items don't have extra padding disrupting the flow */
             .nav-item {
                 margin: 0;
+
+                /* 2. ROUNDED CORNERS MANAGEMENT */
+                /* Force the first item to fit the container's top-left radius */
+                &:first-child .nav-link {
+                    border-top-left-radius: var(--tblr-border-radius, 4px);
+                }
+                /* Force the last item to fit the container's bottom-left radius */
+                &:last-child .nav-link {
+                    border-bottom-left-radius: var(--tblr-border-radius, 4px);
+                    /* 3. REMOVE LAST SEPARATOR */
+                    /* Prevent double border at the bottom of the list */
+                    border-bottom: 0;
+                }
             }
 
             .nav-link {
-                /* A. RESTORE SEPARATORS: Give every link a bottom border */
-                border: 1px solid transparent; /* Reset everything first */
+                /* 4. DEFINE THE SEPARATORS */
+                /* Give every item a bottom border by default (fixes "missing border") */
+                border: 0; 
                 border-bottom: 1px solid var(--glpi-tabs-border-color);
-                
-                /* Reset radius for the list look */
-                border-radius: 0;
+                border-radius: 0; /* Square by default */
                 
                 /* Standard spacing */
                 margin-right: 0;
-                
-                /* Interactive state for non-active items */
+
+                /* Hover State - ensure border persists */
                 &:hover {
                     background: var(--glpi-tabs-hover-bg, rgba(0,0,0,0.02));
+                    border-bottom-color: var(--glpi-tabs-border-color);
                 }
 
-                /* B. ACTIVE STATE CONFIGURATION */
+                /* 5. ACTIVE STATE "FUSION" */
                 &.active {
-                    /* Colors */
                     background: var(--glpi-tabs-active-bg);
                     color: var(--glpi-tabs-active-fg);
                     font-weight: bold;
 
-                    /* Borders: Full box except right side */
-                    border-color: var(--glpi-tabs-active-border-color);
-                    border-left-width: 5px; 
-                    border-right-color: transparent !important;
+                    /* LEFT ACCENT */
+                    border-left: 5px solid var(--glpi-tabs-active-border-color);
                     
-                    /* C. THE DOUBLE-BORDER FIX */
-                    /* Pull the active tab UP by 1px so its top border overlaps the previous item's bottom border */
-                    margin-top: -1px;
-                    /* Pull it RIGHT by 1px to overlap the main panel line */
+                    /* CONNECTION TO CONTENT */
+                    /* Shift right by 1px to cover the container's right border */
                     margin-right: -1px;
-                    
-                    /* Ensure it sits on top of neighbors so the borders merge cleanly */
+                    border-right: 1px solid transparent;
+
+                    /* Bring to front so it covers the line */
                     position: relative;
                     z-index: 10; 
-                    
-                    .badge { font-weight: bold; }
-                }
-            }
 
-            /* D. CORNER FIX: Restore rounded corner ONLY on the very first item */
-            .nav-item:first-child .nav-link {
-                border-top-left-radius: var(--tblr-border-radius, 4px);
-                
-                /* If the active tab is first, prevent it from shifting up (optional, keeps alignment tidy) */
-                &.active {
-                    margin-top: 0;
+                    .badge { font-weight: bold; }
                 }
             }
         }
