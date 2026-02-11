@@ -67,7 +67,12 @@
     }
 
     &.vertical {
-        /* Remove Bootstrap nav-tabs borders completely */
+        /* The real visual frame belongs to the container */
+        border: 1px solid var(--glpi-tabs-border-color);
+        border-radius: var(--tblr-border-radius);
+        overflow: hidden;
+
+        /* Remove Bootstrap nav-tabs borders */
         #tabspanel.nav-tabs {
             border: 0 !important;
         }
@@ -77,18 +82,12 @@
             margin: 0;
         }
 
-        /* Panel frame (top + right side) */
+        /* Remove right border from previous rule */
         #tabspanel {
-            border-top: 1px solid var(--glpi-tabs-border-color);
-            border-right: 1px solid var(--glpi-tabs-border-color);
-            border-top-left-radius: var(--tblr-border-radius);
-            overflow: hidden; // ensures radius is visible
+            border: 0;
         }
 
         .nav:not(.nav-underline) {
-            /* Remove inherited borders from other rules */
-            border: 0;
-
             .nav-item {
                 border: 0; // prevent double stacking
 
