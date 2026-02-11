@@ -1645,7 +1645,7 @@ class Plugin extends CommonDBTM
         $content = '';
 
         $plug     = new Plugin();
-        $pluglist = $plug->find([], "name, directory");
+        $pluglist = $plug->find([], "state, name, directory");
         foreach ($pluglist as $plugin) {
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
@@ -1656,7 +1656,7 @@ class Plugin extends CommonDBTM
 
             $msg  = substr(str_pad($plugin['directory'], 30), 0, 20)
                  . " Name: " . Toolbox::substr(str_pad($name, 40), 0, 30)
-                 . " Version: " . str_pad($version, 10)
+                 . " Version: " . str_pad($version, 12)
                  . " State: " . str_pad($state, 40)
                  . " Install Method: " . $install_method;
             $content .= "\n" . $msg;
