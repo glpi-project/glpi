@@ -244,9 +244,11 @@ abstract class InventoryAsset
                 $this->raw_links[$known_key] = $val;
 
                 //do not process field if it's locked
-                foreach ($locks as $lock) {
-                    if ($key == $lock) {
-                        continue 2;
+                if ($this->item->isNewItem()) {
+                    foreach ($locks as $lock) {
+                        if ($key == $lock) {
+                            continue 2;
+                        }
                     }
                 }
 
@@ -521,7 +523,6 @@ abstract class InventoryAsset
                 if (isset($this->raw_links[$known_key])) {
                     if (isset($this->known_links[$known_key])) {
                         $input[$key] = $this->known_links[$known_key];
-                        $input['_raw' . $key] = $this->raw_links[$known_key];
                     } elseif (!$item->isNewItem()) {
                         // If $item is new and the input key is locked, we do not want to set it using the raw value.
                         // This is because locked fields are no longer processed or sanitized during the addition process.
