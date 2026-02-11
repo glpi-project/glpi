@@ -1037,4 +1037,78 @@ class LockedfieldTest extends DbTestCase
         $this->assertEquals(0, $networkEquipment->fields['networkequipmenttypes_id'], 'Network equipment type should be 0 before applying the global locked field.');
     }
 
+
+    public function testglobalLockOnAddSaveValue()
+    {
+        global $DB;
+
+        //create global lock on Computer Name
+        $lockedfield = new \Lockedfield();
+        $this->assertGreaterThan(
+            0,
+            $lockedfield->add([
+                'item' => 'Computer - name',
+            ])
+        );
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
+      <FQDN>test-pc002</FQDN>
+      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
+      <HOSTID>a8c07701</HOSTID>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
+      <NAME>Fedora</NAME>
+      <TIMEZONE>
+        <NAME>CEST</NAME>
+        <OFFSET>+0200</OFFSET>
+      </TIMEZONE>
+      <VERSION>28 (Workstation Edition)</VERSION>
+    </OPERATINGSYSTEM>
+    <ANTIVIRUS>
+      <COMPANY>Microsoft Corporation</COMPANY>
+      <ENABLED>1</ENABLED>
+      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
+      <NAME>Microsoft Security Essentials</NAME>
+      <UPTODATE>1</UPTODATE>
+      <VERSION>4.3.216.0</VERSION>
+      <EXPIRATION>01/04/2019</EXPIRATION>
+    </ANTIVIRUS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $inventory = new \Glpi\Inventory\Inventory($json);
+
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertEmpty($inventory->getErrors());
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals('>pc002', $computer->fields['name']);
+
+    }
+
 }
