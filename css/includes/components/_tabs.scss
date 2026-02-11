@@ -1,136 +1,105 @@
-/*!
- * ---------------------------------------------------------------------
- *
- * GLPI - Gestionnaire Libre de Parc Informatique
- *
- * http://glpi-project.org
- *
- * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
- * @licence   https://www.gnu.org/licenses/gpl-3.0.html
- *
- * ---------------------------------------------------------------------
- *
- * LICENSE
- *
- * This file is part of GLPI.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * ---------------------------------------------------------------------
- */
-
 .tab-content {
     border-top-left-radius: 0;
 }
 
-/* Main Container Styling */
 .card-tabs {
-    
-    /* 1. Reset default Bootstrap nav-tabs styles so they don't interfere */
+    /* 1. CONTAINER BORDER (The "Red Line" Fix) */
+    /* We apply the full border to the UL container to create the frame */
+    #tabspanel {
+        border: 1px solid var(--glpi-tabs-border-color);
+        /* Round the left corners of the container */
+        border-radius: var(--tblr-border-radius, 4px) 0 0 var(--tblr-border-radius, 4px);
+    }
+
+    /* Reset Bootstrap defaults */
     #tabspanel.nav-tabs {
         border-bottom: 0;
         .nav-link {
-            border: 0; /* Wipe out all default link borders */
-            margin-right: 0;
+            border-right-width: 0;
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-            border-radius: 0; /* Ensure they are square by default */
-            
             .badge { margin-left: 5px; }
         }
     }
 
-    /* ==================================================
-       VERTICAL ORIENTATION (The fix)
-    ================================================== */
+    /* VERTICAL LAYOUT */
     &.vertical {
-        /* A. THE CONTAINER FRAME */
-        #tabspanel {
-            /* Give the UL the main border and rounded corners */
-            border: 1px solid var(--glpi-tabs-border-color);
-            /* IMPORTANT: Don't put a right border here, the content pane has the matching left border */
-            border-right: 0; 
-            /* Apply rounding only to the left side corners */
-            border-radius: var(--tblr-border-radius, 4px) 0 0 var(--tblr-border-radius, 4px);
-            /* CRITICAL: Clip inner items so they don't overflow the rounded corners */
-            overflow: hidden; 
-        }
-
         .nav:not(.nav-underline) {
             
-            /* B. THE SEPARATORS (Apply to the list item LI, not the anchor A) */
             .nav-item {
                 margin: 0;
-                /* Add bottom border to create separators between items */
-                border-bottom: 1px solid var(--glpi-tabs-border-color);
+                /* 2. LINK BORDERS (Restoring "Missing Borders") */
+                /* We apply borders to the link, not the item, to ensure they are visible */
+                .nav-link {
+                    /* Reset defaults */
+                    border: 0;
+                    border-radius: 0;
+                    
+                    /* The Separator Line */
+                    border-bottom: 1px solid var(--glpi-tabs-border-color);
+                    
+                    /* Interactive states */
+                    &:hover {
+                        background: var(--glpi-tabs-hover-bg, rgba(0,0,0,0.02));
+                    }
 
-                /* Remove the separator from the very last item to avoid a double-bottom-border */
-                &:last-child {
-                    border-bottom: 0;
+                    /* 3. ACTIVE STATE "MERGE" */
+                    &.active {
+                        background: var(--glpi-tabs-active-bg);
+                        color: var(--glpi-tabs-active-fg);
+                        font-weight: bold;
+
+                        /* Thick Accent on Left */
+                        border-left: 5px solid var(--glpi-tabs-active-border-color);
+                        
+                        /* Borders to match the separators */
+                        border-top: 1px solid var(--glpi-tabs-border-color);
+                        border-bottom: 1px solid var(--glpi-tabs-border-color);
+                        
+                        /* Open connection to the right (Content) */
+                        border-right: 1px solid transparent; 
+                        margin-right: -1px; /* Overlaps the container's right border */
+
+                        /* Slight overlap vertically to merge cleanly with neighbors */
+                        margin-top: -1px;
+                        margin-bottom: -1px;
+                        
+                        position: relative;
+                        z-index: 10;
+                    }
                 }
-            }
 
-            /* C. THE LINKS */
-            .nav-link {
-                /* Ensure hover state exists */
-                &:hover {
-                    background: var(--glpi-tabs-hover-bg, rgba(0,0,0,0.02));
+                /* 4. CORNER & BORDER CLEANUP */
+                
+                /* Top Item: Round the top-left corner */
+                &:first-child .nav-link {
+                    border-top-left-radius: var(--tblr-border-radius, 4px);
+                    /* Prevent active tab from shifting up out of the box */
+                    &.active { margin-top: 0; }
                 }
 
-                /* D. ACTIVE STATE "FUSION" */
-                &.active {
-                    background: var(--glpi-tabs-active-bg);
-                    color: var(--glpi-tabs-active-fg);
-                    font-weight: bold;
-
-                    /* Re-apply borders specifically for the active tab definition */
-                    border: 1px solid var(--glpi-tabs-active-border-color);
-                    border-left-width: 5px; /* Thick accent */
-                    border-right-color: transparent; /* Open connection to content */
-
-                    /* MAGIC MARGINS: Pull the tab outward to overlap surrounding borders */
-                    margin-top: -1px;    /* Covers the separator above it */
-                    /* Important: margin-bottom needs to be handled carefully if it's the last item, 
-                       but usually -1px works fine so it covers the separator below it */
-                    margin-bottom: -1px; 
-                    margin-right: -1px;  /* Covers the content pane's border */
-
-                    /* Z-Index ensures it sits on top of the separators */
-                    position: relative;
-                    z-index: 10;
-
-                    .badge { font-weight: bold; }
+                /* Bottom Item: Round the bottom-left corner and REMOVE double border */
+                &:last-child .nav-link {
+                    border-bottom-left-radius: var(--tblr-border-radius, 4px);
+                    border-bottom: 0; /* The container already has the bottom border */
+                    
+                    /* Prevent active tab from shifting down out of the box */
+                    &.active { margin-bottom: 0; }
                 }
             }
         }
     }
 
-    /* Horizontal fallback (Unchanged from original) */
+    /* Horizontal fallback (Unchanged) */
     &.horizontal {
-        #tabspanel { border-right: 1px solid var(--glpi-tabs-border-color); }
         #tabspanel.nav-tabs .nav-link {
-            border: 1px solid transparent;
-            border-bottom-color: var(--glpi-tabs-border-color);
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
             &:last-of-type {
-                border-right: 1px solid transparent;
+                border-right-width: 1px;
                 &.active { border-right-color: var(--glpi-tabs-border-color) !important; }
             }
-            &.active {
-                border-color: var(--glpi-tabs-border-color);
-                border-bottom-color: transparent !important;
-            }
+            &.active { border-bottom-color: transparent !important; }
         }
     }
 }
