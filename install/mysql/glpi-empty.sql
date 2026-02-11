@@ -5077,7 +5077,6 @@ CREATE TABLE `glpi_notificationtargets` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`notifications_id`,`items_id`,`type`),
   KEY `items` (`type`,`items_id`),
-  KEY `notifications_id` (`notifications_id`),
   KEY `is_exclusion` (`is_exclusion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
