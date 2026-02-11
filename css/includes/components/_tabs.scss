@@ -72,34 +72,34 @@
                     /* 1. VISIBILITY: Fix bottom border and remove overlap gap */
                     border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
                     margin-bottom: 0 !important;
-    
+
                     /* 2. LAYOUT: Remove top border (prevents double lines) */
                     border-top: 0 !important;
-    
+
                     /* 3. CORNER FIX: Flatten the right side to attach to the panel */
                     border-top-right-radius: 0 !important;
                     border-bottom-right-radius: 0 !important;
-    
+
                     /* 4. ACTIVE STATE: Restore the thick left border */
                     &.active {
                         /* We force the width and style to ensure it appears */
                         border-left-width: 5px !important;
                         border-left-style: solid !important;
-                        
+
                         /* We explicitly inherit the color to ensure it stays Blue (or your theme color) */
                         border-left-color: var(--glpi-tabs-active-border-color) !important;
-                        
+
                         /* Ensure the right side remains open */
                         border-right-color: transparent !important;
                     }
                 }
-    
+
                 /* 5. FIRST ITEM: Restore top border to close the list */
                 .nav-item:first-child .nav-link {
                     border-top: 1px solid var(--glpi-tabs-border-color) !important;
                     border-top-left-radius: 4px;
                 }
-    
+
                 /* 6. LAST ITEM: Flatten bottom-right corner */
                 .nav-item:last-child .nav-link {
                     border-bottom-right-radius: 0 !important;
