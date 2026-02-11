@@ -502,6 +502,10 @@ abstract class InventoryAsset
             } elseif (isset($this->known_links[$known_key])) {
                 $input[$key] = $this->known_links[$known_key];
             } else {
+                // if it a foreygn ket field and is not an int
+                if (isForeignKeyField($key) && !is_int($val)) {
+                    continue;
+                }
                 $input[$key] = $val;
             }
         }
