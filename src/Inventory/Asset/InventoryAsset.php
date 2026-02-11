@@ -234,9 +234,9 @@ abstract class InventoryAsset
                 //keep raw values...
                 $this->raw_links[$known_key] = $val;
 
-                //do not process field if it's locked
+                //do not process field if it's locked and from update process
                 foreach ($locks as $lock) {
-                    if ($key == $lock) {
+                    if ($key == $lock && !$this->item->isNewItem()) {
                         continue 2;
                     }
                 }
@@ -477,9 +477,9 @@ abstract class InventoryAsset
         $input = ['_auto' => 1];
         $locks = [];
 
-        if ($item !== null && !$item->isNewItem()) {
+        if ($item !== null) {
             $lockeds = new \Lockedfield();
-            $locks = $lockeds->getLockedNames($item->getType(), $item->fields['id']);
+            $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
         foreach ($value as $key => $val) {
@@ -497,15 +497,13 @@ abstract class InventoryAsset
                         // This is because locked fields are no longer processed or sanitized during the addition process.
                         // For more details, see: https://github.com/glpi-project/glpi/pull/19426
                         $input[$key] = $this->raw_links[$known_key];
+                    } else {
+                        $input[$key] = $val;
                     }
                 }
             } elseif (isset($this->known_links[$known_key])) {
                 $input[$key] = $this->known_links[$known_key];
             } else {
-                // if it a foreygn ket field and is not an int
-                if (isForeignKeyField($key) && !is_int($val)) {
-                    continue;
-                }
                 $input[$key] = $val;
             }
         }
@@ -514,7 +512,6 @@ abstract class InventoryAsset
             // Pass the tag that can be used in rules criteria
             $input['_tag'] = $this->agent->fields['tag'];
         }
-
         return $input;
     }
 

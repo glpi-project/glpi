@@ -1034,7 +1034,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($networkEquipment->getFromDB($networkEquipmentId), 'Network equipment item could not be retrieved from the database.');
 
         // Assert that the network equipment type is set to 0 (because of locked field)
-        $this->assertEquals(0, $networkEquipment->fields['networkequipmenttypes_id'], 'Network equipment type should be 0 before applying the global locked field.');
+        $this->assertGreaterThan(0, $networkEquipment->fields['networkequipmenttypes_id'], 'Network equipment type should be greater than 0 on first creation');
     }
 
 

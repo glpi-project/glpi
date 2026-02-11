@@ -1327,7 +1327,7 @@ class CommonDBTM extends CommonGLPI
                     ($key[0] != '_')
                     && isset($table_fields[$key])
                 ) {
-                    $this->fields[$key] = $this->input['_raw' . $key] ?? $this->input[$key];
+                    $this->fields[$key] = $this->input[$key];
                 }
             }
 
