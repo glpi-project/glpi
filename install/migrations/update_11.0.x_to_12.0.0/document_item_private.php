@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\DBAL\QueryExpression;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -33,6 +31,8 @@ use Glpi\DBAL\QueryExpression;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
 
 /**
  * @var DBmysql $DB

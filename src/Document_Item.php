@@ -166,11 +166,6 @@ class Document_Item extends CommonDBRelation
             $input['users_id'] = Session::getLoginUserID();
         }
 
-        // Set default value for is_private if not set
-        if (!isset($input['is_private'])) {
-            $input['is_private'] = 0;
-        }
-
         /** FIXME: should not this be handled on CommonITILObject side? */
         if (is_subclass_of($input['itemtype'], 'CommonITILObject') && !isset($input['timeline_position'])) {
             $input['timeline_position'] = CommonITILObject::TIMELINE_LEFT;
@@ -997,9 +992,9 @@ TWIG, $twig_params);
      *
      * @param string $interface Interface type ('central' or 'helpdesk')
      *
-     * @return array
+     * @return array<string, string> Array of rights with their labels
      */
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         $values = parent::getRights($interface);
 

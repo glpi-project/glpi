@@ -164,7 +164,6 @@ class Document_ItemTest extends DbTestCase
             'items_id'     => $cid,
             'documents_id' => $document->getID(),
             'users_id'     => false,
-            'is_private'   => 0,
             'entities_id'  => 0,
             'is_recursive' => 0,
         ];
@@ -591,7 +590,7 @@ class Document_ItemTest extends DbTestCase
     }
 
     /**
-     * Test that private documents are excluded from email notifications.
+     * Test that private documents are excluded from email notifications when user doesn't have SEEPRIVATE right.
      */
     public function testPrivateDocumentsExcludedFromNotifications()
     {
@@ -651,12 +650,13 @@ class Document_ItemTest extends DbTestCase
             ]
         );
 
-        // Get notification data
+        // Get notification data without show_private (default behavior)
         $notification = new \NotificationTargetTicket();
         $notif_data = $notification->getDataForObject($ticket, [
             'additionnaloption' => [
                 'usertype' => \NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
+                'show_private' => false, // User doesn't have SEEPRIVATE right
             ],
         ]);
 
@@ -669,7 +669,23 @@ class Document_ItemTest extends DbTestCase
         // Verify public document is in notification
         $this->assertContains('Public document for notification test', $document_names);
 
-        // Verify private document is NOT in notification
+        // Verify private document is NOT in notification when show_private is false
         $this->assertNotContains('Private document for notification test', $document_names);
+
+        // Now test with show_private = true (user has SEEPRIVATE right)
+        $notif_data_with_private = $notification->getDataForObject($ticket, [
+            'additionnaloption' => [
+                'usertype' => \NotificationTarget::GLPI_USER,
+                'is_self_service' => false,
+                'show_private' => true, // User has SEEPRIVATE right
+            ],
+        ]);
+
+        // Extract document names with private access
+        $document_names_with_private = array_column($notif_data_with_private['documents'], '##document.name##');
+
+        // Verify both documents are in notification when show_private is true
+        $this->assertContains('Public document for notification test', $document_names_with_private);
+        $this->assertContains('Private document for notification test', $document_names_with_private);
     }
 }
