@@ -477,7 +477,7 @@ abstract class InventoryAsset
         $input = ['_auto' => 1];
         $locks = [];
 
-        if ($item !== null) {
+        if ($item !== null && !$item->isNewItem()) {
             $lockeds = new \Lockedfield();
             $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
         }
