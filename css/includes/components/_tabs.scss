@@ -36,57 +36,23 @@
 }
 
 .card-tabs {
-    /* 1. Main Container Border */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
-    /* 2. Vertical Tabs Layout */
     #tabspanel.nav-tabs {
-        border-bottom: 0; 
-        gap: 0; 
-
-        /* Kill all spacing on the list items */
-        .nav-item {
-            border: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-
-            /* FIX: Strictly set Top/Left/Right borders to 0 width */
-            border-top: 0 !important;
-            border-left: 0 !important;
-            border-right: 0 !important;
-            
-            /* Add the ONE true separator line */
-            border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-            
-            /* Remove negative margin - let them stack naturally */
-            margin-bottom: 0 !important;
-            border-radius: 0 !important;
+            border: 1px solid var(--glpi-tabs-border-color);
+            border-right-width: 0;
+            border-radius: 0;
 
             &.active {
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
+                border-color: var(--glpi-tabs-active-border-color);
                 font-weight: bold;
-
-                /* Active Borders */
-                /* 1. Left Accent */
-                border-left: 5px solid var(--glpi-tabs-active-border-color) !important;
-                
-                /* 2. Bottom Separator (Matches the list) */
-                border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-                
-                /* 3. Open to the right */
-                border-right: 1px solid transparent !important;
-                margin-right: -1px !important; 
-
-                /* 4. Ensure no Top border leaks in */
-                border-top: 0 !important;
 
                 .badge {
                     font-weight: bold;
@@ -97,28 +63,41 @@
                 margin-left: 5px;
             }
         }
+    }
 
-        /* Cleanup: Remove border from the very last tab */
-        .nav-item:last-child .nav-link {
-            border-bottom: 0 !important;
+    &.vertical {
+        .nav:not(.nav-underline) {
+            .nav-link {
+                border-bottom: 0;
+                border-top-right-radius: 0;
+
+                & + .nav-link {
+                    border-top: 1px solid var(--glpi-tabs-border-color);
+                }
+
+                &.active {
+                    border-left-width: 5px;
+                    border-right-color: transparent !important;
+                }
+            }
         }
     }
 
-    /* 3. Horizontal View Specifics (Legacy/Desktop) */
     &.horizontal {
         #tabspanel.nav-tabs {
-            border-bottom: 1px solid var(--glpi-tabs-border-color);
-
             .nav-link {
-                margin-bottom: -1px;
-                border: 1px solid transparent;
-                border-bottom: 0;
-                border-left: 1px solid var(--glpi-tabs-border-color);
+                border-bottom-width: 1px;
+                border-bottom-style: solid;
+
+                &:last-of-type {
+                    border-right-width: 1px;
+
+                    &.active {
+                        border-right-color: var(--glpi-tabs-border-color) !important;
+                    }
+                }
 
                 &.active {
-                    background: #fff;
-                    border-color: var(--glpi-tabs-border-color) var(--glpi-tabs-border-color) #fff;
-                    border-left-width: 1px;
                     border-bottom-color: transparent !important;
                 }
             }
