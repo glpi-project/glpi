@@ -246,6 +246,7 @@ abstract class InventoryAsset
                 //do not process field if it's locked
                 foreach ($locks as $lock) {
                     if ($key == $lock) {
+                        unset($value->$key);
                         continue 2;
                     }
                 }
