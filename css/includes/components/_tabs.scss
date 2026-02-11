@@ -36,23 +36,33 @@
 }
 
 .card-tabs {
+    /* 1. Keep the main separation line on the UL (the right side) */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
+    /* 2. Style the tabs within the panel */
     #tabspanel.nav-tabs {
+        border-bottom: 0; /* Remove default bootstrap nav-tabs bottom border */
+
         .nav-link {
+            /* 3. RESET: clear all default borders first to prevent "double border" */
+            border: 1px solid transparent; 
+            border-right-width: 0; /* We handle the right side via the panel or margin hack */
+            
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-            border-color: var(--glpi-tabs-border-color);
-            border-right-width: 0;
 
+            /* 4. ACTIVE STATE: The "Fusion" effect */
             &.active {
-                border-right: 1px solid transparent !important;
-                margin-right: -1px; // required for horizontal merge
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
-                border-color: var(--glpi-tabs-active-border-color);
+                
+                /* Overlap the panel's right border */
+                margin-right: -1px; 
+                border: 1px solid var(--glpi-tabs-active-border-color);
+                border-right-color: transparent !important; 
+                
                 font-weight: bold;
 
                 .badge {
@@ -66,50 +76,43 @@
         }
     }
 
+    /* 5. VERTICAL SPECIFIC STYLES */
     &.vertical {
-        /* The real visual frame belongs to the container */
-        border: 1px solid var(--glpi-tabs-border-color);
-        border-radius: var(--tblr-border-radius);
-        overflow: hidden;
-
-        /* Remove Bootstrap nav-tabs borders */
-        #tabspanel.nav-tabs {
-            border: 0 !important;
-        }
-
-        /* Remove Bootstrap negative margin behavior */
-        #tabspanel.nav-tabs .nav-link {
-            margin: 0;
-        }
-
-        /* Remove right border from previous rule */
-        #tabspanel {
-            border: 0;
-        }
-
         .nav:not(.nav-underline) {
             .nav-item {
-                border: 0; // prevent double stacking
+                /* Ensure no extra spacing interferes with borders */
+                margin: 0; 
 
-                /* separator line */
-                &:not(:last-child) {
-                    border-bottom: 1px solid var(--glpi-tabs-border-color);
+                /* 6. Restore Rounded Corner on FIRST item only */
+                &:first-child .nav-link {
+                    border-top-left-radius: var(--tblr-border-radius, 4px);
+                }
+                
+                /* Ensure other items are square */
+                &:not(:first-child) .nav-link {
+                    border-radius: 0;
                 }
             }
 
             .nav-link {
-                border: 0;
-                border-left: 3px solid transparent;
-                border-radius: 0;
+                /* 7. The clean separator line */
+                border-bottom: 1px solid var(--glpi-tabs-border-color);
+                
+                /* Ensure no left border by default (unless active) */
+                border-left: 1px solid transparent; 
+                border-top: 0; /* Clean top to avoid double lines with previous bottom */
 
                 &.active {
+                    /* The thick accent on the left */
                     border-left: 5px solid var(--glpi-tabs-active-border-color);
-                    font-weight: bold;
+                    border-right-color: transparent !important;
+                    border-bottom-color: var(--glpi-tabs-border-color);
                 }
             }
         }
     }
 
+    /* Horizontal fallback (kept from your original) */
     &.horizontal {
         #tabspanel.nav-tabs {
             .nav-link {
