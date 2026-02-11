@@ -3210,7 +3210,9 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object assigned to an entity
+     * Can item type be assigned to an entity ?
+     *
+     * Notice the method name begins with 'is' but is releated to item type, not to an item (instance).
      *
      * @return bool
      **/
@@ -3225,7 +3227,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object may be recursive
+     * Can item type be recursive ?
      *
      * @return bool
      **/
@@ -3240,7 +3242,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object recursive
+     * Is the item recursive ?
      *
      * @return bool
      **/
@@ -3254,7 +3256,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Item has an is_deleted field ?
+     * Does itemtype supports soft deleted ?
      *
      * @return bool
      **/
@@ -3269,7 +3271,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object deleted
+     * Is item soft deleted ?
      *
      * @return bool
      **/
@@ -3283,7 +3285,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Can object be activated
+     * Can item type be activated ?
      *
      * @since 9.2
      *
@@ -3300,7 +3302,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object active
+     * Is the item active ?
      *
      * @since 9.2
      *
@@ -3316,7 +3318,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object may be a template
+     * Can the item type be a template ?
      *
      * @return bool
      **/
@@ -3331,7 +3333,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object a template
+     * Is item a template ?
      *
      * @return bool
      **/
@@ -3345,7 +3347,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Can the object be dynamic
+     * Can the item type be dynamic ?
      *
      * @since 0.84
      *
@@ -3376,7 +3378,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Item maybeDynamic and has is_dynamic field.
+     * Is item dynamic ?
      *
      * @since 0.84
      *
@@ -3392,7 +3394,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object may be private
+     * Can item type be private ?
      *
      * @return bool
      **/
@@ -3408,7 +3410,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object private
+     * Is the item private ?
      *
      * @return bool
      **/
@@ -3421,7 +3423,7 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Can object have a location
+     * Can item type have a location ?
      *
      * @since 9.3
      *
