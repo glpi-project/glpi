@@ -1044,7 +1044,7 @@ class Auth extends CommonGLPI
             }
 
             if ($DB->isReplica()) {
-                if (!$this->user_present) { // Can't add in slave mode
+                if (!$this->user_present) { // Can't add in replica mode
                     $this->addToError(__('User not authorized to connect in GLPI'));
                     $this->auth_succeded = false;
                 }

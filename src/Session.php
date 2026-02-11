@@ -1482,7 +1482,7 @@ class Session
             return true;
         }
 
-        //If GLPI is using the slave DB -> read only mode
+        //If GLPI is using the replica DB -> read only mode
         if (
             $DB->isReplica()
             && ($right & (CREATE | UPDATE | DELETE | PURGE))
