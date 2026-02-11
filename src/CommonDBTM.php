@@ -3208,7 +3208,6 @@ class CommonDBTM extends CommonGLPI
         return  -1;
     }
 
-
     /**
      * Can item type be assigned to an entity ?
      *
@@ -3225,7 +3224,6 @@ class CommonDBTM extends CommonGLPI
         return array_key_exists('entities_id', $this->fields);
     }
 
-
     /**
      * Can item type be recursive ?
      *
@@ -3240,7 +3238,6 @@ class CommonDBTM extends CommonGLPI
         return array_key_exists('is_recursive', $this->fields);
     }
 
-
     /**
      * Is the item recursive ?
      *
@@ -3254,7 +3251,6 @@ class CommonDBTM extends CommonGLPI
         return false;
     }
 
-
     /**
      * Does itemtype supports soft deleted ?
      *
@@ -3262,13 +3258,11 @@ class CommonDBTM extends CommonGLPI
      **/
     public function maybeDeleted()
     {
-
         if (!isset($this->fields['id'])) {
             $this->getEmpty();
         }
         return array_key_exists('is_deleted', $this->fields);
     }
-
 
     /**
      * Is item soft deleted ?
@@ -3282,7 +3276,6 @@ class CommonDBTM extends CommonGLPI
         }
         return false;
     }
-
 
     /**
      * Can item type be activated ?
@@ -3349,8 +3342,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Can the item type be dynamic ?
      *
-     * @since 0.84
-     *
      * @return bool
      **/
     public function maybeDynamic()
@@ -3367,7 +3358,6 @@ class CommonDBTM extends CommonGLPI
      * Use deleted field in case of dynamic management to lock ?
      *
      * need to be overriden if object need to use standard deleted management (Computer...)
-     * @since 0.84
      *
      * @return bool
      **/
@@ -3376,11 +3366,8 @@ class CommonDBTM extends CommonGLPI
         return $this->maybeDynamic();
     }
 
-
     /**
      * Is item dynamic ?
-     *
-     * @since 0.84
      *
      * @return bool
      **/
@@ -3442,7 +3429,6 @@ class CommonDBTM extends CommonGLPI
      * Return the linked items (`Asset_PeripheralAsset` relations)
      *
      * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-     * @since 0.84.4
      **/
     public function getLinkedItems()
     {
@@ -3454,7 +3440,6 @@ class CommonDBTM extends CommonGLPI
      * Return the count of linked items (`Asset_PeripheralAsset` relations)
      *
      * @return int number of linked items
-     * @since 0.84.4
      **/
     public function getLinkedItemsCount()
     {
@@ -3680,8 +3665,6 @@ class CommonDBTM extends CommonGLPI
      *
      * @see CommonDBTM::getCompleteNameField
      *
-     * @since 0.85
-     *
      * @return string
      **/
     public function getRawCompleteName()
@@ -3754,8 +3737,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get additional information to add before name
      *
-     * @since 0.84
-     *
      * @return string string to add
      **/
     public function getPreAdditionalInfosForName()
@@ -3765,8 +3746,6 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Get additional information to add after name
-     *
-     * @since 0.84
      *
      * @return string string to add
      **/
@@ -5390,8 +5369,6 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Is entity information forward To ?
-     *
-     * @since 0.84
      *
      * @param string $itemtype itemtype to check
      *
