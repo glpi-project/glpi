@@ -116,7 +116,14 @@ class PeripheralTest extends AbstractInventoryAsset
             $idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']),
             'Peripheral has not been linked to computer :('
         );
-        $this->assertSame($computer->fields['autoupdatesystems_id'], $idp->fields['autoupdatesystems_id'], 'Peripheral has not the same autoupdatesystems_id as computer :(');
+
+        $peripheral = new \Peripheral();
+        $this->assertTrue(
+            $peripheral->getFromDB($idp->fields['items_id']),
+            'Peripheral does not exist.'
+        );
+
+        $this->assertSame($computer->fields['autoupdatesystems_id'], $peripheral->fields['autoupdatesystems_id'], 'Peripheral has not the same autoupdatesystems_id as computer :(');
     }
 
     public function testInventoryUpdate()

@@ -176,7 +176,14 @@ class MonitorTest extends AbstractInventoryAsset
             $ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']),
             'Monitor has not been linked to computer :('
         );
-        $this->assertSame($computer->fields['autoupdatesystems_id'], $ico->fields['autoupdatesystems_id'], 'Monitor has not the same autoupdatesystems_id as computer :(');
+
+        $monitor = new \Monitor();
+        $this->assertTrue(
+            $monitor->getFromDB($ico->fields['items_id']),
+            'Monitor does not exist.'
+        );
+
+        $this->assertSame($computer->fields['autoupdatesystems_id'], $monitor->fields['autoupdatesystems_id'], 'Monitor has not the same autoupdatesystems_id as computer :(');
     }
 
     public function testInventoryMove()
