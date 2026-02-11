@@ -36,8 +36,6 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
-/* Test for inc/inventory/asset/controller.class.php */
-
 class PeripheralTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array
@@ -60,7 +58,7 @@ class PeripheralTest extends AbstractInventoryAsset
          <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
          <QUERY>INVENTORY</QUERY>
          </REQUEST>",
-                'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1, "autoupdatesystems_id": "GLPI Native Inventory"}',
+                'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1}',
             ],
         ];
     }
@@ -118,6 +116,7 @@ class PeripheralTest extends AbstractInventoryAsset
             $idp->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Peripheral']),
             'Peripheral has not been linked to computer :('
         );
+        $this->assertSame($computer->fields['autoupdatesystems_id'], $idp->fields['autoupdatesystems_id'], 'Peripheral has not the same autoupdatesystems_id as computer :(');
     }
 
     public function testInventoryUpdate()
