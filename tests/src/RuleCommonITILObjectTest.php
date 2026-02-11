@@ -110,7 +110,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      *
      * This only works for classes in the global namespace.
      * @param string $other_type The simple name of the other class (No namespaces)
-     * @return class-string|null The link class name or null if the link class cannot be determined
+     * @return string|null The link class name or null if the link class cannot be determined
      */
     protected function getITILLinkClass(string $other_type): ?string
     {
