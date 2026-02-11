@@ -506,6 +506,7 @@ class DBConnection extends CommonGLPI
      * Delete replica DB configuration file
      *
      * @return void
+     * @deprecated 12
      */
     public static function deleteDBSlaveConfig()
     {

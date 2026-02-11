@@ -177,7 +177,7 @@ final class StatusChecker
                 if (is_array($DBReplica->dbhost)) {
                     $hosts = $DBReplica->dbhost;
                 } else {
-                    $hosts = [$DBslave->dbhost];
+                    $hosts = [$DBReplica->dbhost];
                 }
 
                 if (count($hosts)) {
