@@ -68,20 +68,23 @@
 
     &.vertical {
         .nav:not(.nav-underline) {
-            .nav-link {
-                border-bottom: 1px solid var(--glpi-tabs-border-color);
-                border-top-right-radius: 0;
-    
-                /* Remove bottom border only from last visible link */
-                &:last-of-type {
-                    border-bottom: 0;
+            .nav-item {
+                .nav-link {
+                    border-bottom: 1px solid var(--glpi-tabs-border-color);
+                    border-top-right-radius: 0;
                 }
     
-                &.active {
-                    border-left-width: 5px;
-                    border-right-color: transparent !important;
-                    margin-right: -1px;
+                &:last-child {
+                    .nav-link {
+                        border-bottom: 0;
+                    }
                 }
+            }
+    
+            .nav-link.active {
+                border-left-width: 5px;
+                border-right-color: transparent !important;
+                margin-right: -1px; // keep overlap hack
             }
         }
     }
