@@ -67,24 +67,36 @@
     }
 
     &.vertical {
+        #tabspanel.nav-tabs {
+            border-bottom: 0; // kill Bootstrap bottom border
+        }
+    
+        .nav-tabs .nav-link {
+            border: 0; // remove ALL Bootstrap borders
+        }
+    
         .nav:not(.nav-underline) {
             .nav-item {
-                .nav-link {
-                    border-bottom: 1px solid var(--glpi-tabs-border-color);
-                    border-top-right-radius: 0;
-                }
+                border-bottom: 1px solid var(--glpi-tabs-border-color);
     
                 &:last-child {
-                    .nav-link {
-                        border-bottom: 0;
-                    }
+                    border-bottom: 0;
                 }
             }
     
-            .nav-link.active {
-                border-left-width: 5px;
-                border-right-color: transparent !important;
-                margin-right: -1px; // keep overlap hack
+            .nav-link {
+                background: var(--glpi-tabs-bg);
+                color: var(--glpi-tabs-fg);
+                border-top-right-radius: 0;
+    
+                &.active {
+                    border-left: 5px solid var(--glpi-tabs-active-border-color);
+                    border-right: 1px solid transparent !important;
+                    margin-right: -1px; // keep overlap
+                    background: var(--glpi-tabs-active-bg);
+                    color: var(--glpi-tabs-active-fg);
+                    font-weight: bold;
+                }
             }
         }
     }
