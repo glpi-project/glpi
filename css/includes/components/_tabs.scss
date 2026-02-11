@@ -67,14 +67,14 @@
     }
 
     &.vertical {
+        /* Remove Bootstrap nav-tabs bottom border */
         #tabspanel.nav-tabs {
-            border: 0;
+            border-bottom: 0 !important;
         }
 
+        /* Remove Bootstrap negative margin */
         #tabspanel.nav-tabs .nav-link {
-            border: 0;
-            margin: 0;
-            border-radius: 0;
+            margin-bottom: 0;
         }
 
         .nav:not(.nav-underline) {
@@ -87,20 +87,13 @@
             }
 
             .nav-link {
-                background: var(--glpi-tabs-bg);
-                color: var(--glpi-tabs-fg);
+                border: 0;
                 border-left: 3px solid transparent;
-                border-top-right-radius: 0;
+                border-radius: 0;
 
                 &.active {
-                    background: var(--glpi-tabs-active-bg);
-                    color: var(--glpi-tabs-active-fg);
                     border-left: 5px solid var(--glpi-tabs-active-border-color);
                     font-weight: bold;
-                }
-
-                .badge {
-                    margin-left: 5px;
                 }
             }
         }
