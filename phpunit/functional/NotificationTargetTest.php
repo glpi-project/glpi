@@ -489,7 +489,7 @@ class NotificationTargetTest extends DbTestCase
                 "itemtype" => "Glpi\\Socket",
                 "items_id" => 3,
                 "event" => "new",
-                "expected" => "/^GLPI_%UUID%-GlpiSocket-3\/new@%UNAME%$/",
+                "expected" => "/^GLPI_%UUID%-Glpi-Socket-3\/new@%UNAME%$/",
             ],
         ];
     }
