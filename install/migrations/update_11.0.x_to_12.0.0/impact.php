@@ -32,13 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-// This file contains class stubs for the DB config classes.
-// It indicates PHPStan and IDEs that the `DB` and the `DBReplica` classes extend the `DBmysql` class.
-
-if (!class_exists('DB', false)) {
-    class DB extends DBmysql {}
-}
-
-if (!class_exists('DBReplica', false)) {
-    class DBReplica extends DBmysql {}
-}
+/**
+ * @var Migration $migration
+ */
+$migration->changeField('glpi_impactitems', 'is_slave', 'is_dependent', 'bool', ['value' => 1]);

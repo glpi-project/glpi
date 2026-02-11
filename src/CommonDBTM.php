@@ -1279,7 +1279,7 @@ class CommonDBTM extends CommonGLPI
     {
         global $CFG_GLPI, $DB;
 
-        if ($DB->isSlave()) {
+        if ($DB->isReplica()) {
             return false;
         }
 
@@ -1631,7 +1631,7 @@ class CommonDBTM extends CommonGLPI
     {
         global $DB;
 
-        if ($DB->isSlave()) {
+        if ($DB->isReplica()) {
             return false;
         }
 
@@ -2107,7 +2107,7 @@ class CommonDBTM extends CommonGLPI
     {
         global $DB;
 
-        if ($DB->isSlave()) {
+        if ($DB->isReplica()) {
             return false;
         }
 

@@ -1662,10 +1662,10 @@ TWIG,
         TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
         if (
-            $DB->isSlave()
+            $DB->isReplica()
             && !$DB->first_connection
         ) {
-            echo "<div id='dbslave-float'>";
+            echo "<div id='dbreplica-float'>";
             echo "<a href='#see_debug'>" . __s('SQL replica: read only') . "</a>";
             echo "</div>";
         }

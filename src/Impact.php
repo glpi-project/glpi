@@ -1500,7 +1500,7 @@ TWIG, $twig_params);
         $params = array_intersect_key($impact_item->fields, [
             'parent_id'         => 1,
             'impactcontexts_id' => 1,
-            'is_slave'          => 1,
+            'is_dependent'          => 1,
         ]);
 
         // Load context if exist
@@ -1731,11 +1731,11 @@ TWIG, $twig_params);
 
         $impact_item->delete($impact_item->fields);
 
-        // Remove impact context if defined and not a slave, update others
-        // contexts if they are slave to us
+        // Remove impact context if defined and not a dependent, update others
+        // contexts if they are dependent to us
         if (
             $impact_item->fields['impactcontexts_id'] !== 0
-            && $impact_item->fields['is_slave'] !== 0
+            && $impact_item->fields['is_dependent'] !== 0
         ) {
             $DB->update(ImpactItem::getTable(), [
                 'impactcontexts_id' => 0,

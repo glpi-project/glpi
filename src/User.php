@@ -2338,7 +2338,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
 
             ///Only process rules if working on the master database
-            if (!$DB->isSlave()) {
+            if (!$DB->isReplica()) {
                 //Instanciate the affectation's rule
                 $rule = new RuleRightCollection();
 
@@ -2564,7 +2564,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         // force authtype as we retrieve this user by imap (we could have login with SSO)
         $this->fields["authtype"] = Auth::MAIL;
 
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
 
@@ -2673,7 +2673,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
         ///Only process rules if working on the master database
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
 
