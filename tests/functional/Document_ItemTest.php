@@ -319,7 +319,7 @@ class Document_ItemTest extends DbTestCase
 
         // Attach document to ticket as private
         $doc_item = $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'items_id'      => $tickets_id,
                 'itemtype'      => \Ticket::class,
@@ -401,7 +401,7 @@ class Document_ItemTest extends DbTestCase
 
         // Attach document to ticket as private
         $doc_item = $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'items_id' => $tickets_id,
                 'itemtype' => \Ticket::class,
@@ -481,7 +481,7 @@ class Document_ItemTest extends DbTestCase
 
         // Attach document to ticket without specifying is_private
         $doc_item = $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'items_id'      => $tickets_id,
                 'itemtype'      => \Ticket::class,
@@ -562,7 +562,7 @@ class Document_ItemTest extends DbTestCase
 
         // Attach document as private with current user as owner
         $doc_item = $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'items_id'      => $tickets_id,
                 'itemtype'      => \Ticket::class,
@@ -629,7 +629,7 @@ class Document_ItemTest extends DbTestCase
 
         // Attach public document
         $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'items_id'      => $tickets_id,
                 'itemtype'      => \Ticket::class,
@@ -641,7 +641,7 @@ class Document_ItemTest extends DbTestCase
 
         // Attach private document
         $this->createItem(
-            \Document_Item::class,
+            Document_Item::class,
             [
                 'items_id'      => $tickets_id,
                 'itemtype'      => \Ticket::class,

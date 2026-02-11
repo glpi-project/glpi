@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -33,8 +35,8 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
 
 // Add is_private column to glpi_documents_items table
@@ -54,7 +56,7 @@ $migration->addKey('glpi_documents_items', 'is_private');
 // This preserves existing behavior where technicians can see all documents
 $DB->update(
     'glpi_profilerights',
-    ['rights' => new \Glpi\DBAL\QueryExpression($DB->quoteName('rights') . ' | ' . Document_Item::SEEPRIVATE)],
+    ['rights' => new QueryExpression($DB->quoteName('rights') . ' | ' . Document_Item::SEEPRIVATE)],
     [
         'name'   => 'document',
         'rights' => ['&', UPDATE],
