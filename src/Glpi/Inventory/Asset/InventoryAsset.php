@@ -284,14 +284,16 @@ abstract class InventoryAsset
                             getItemtypeForForeignKeyField($key),
                             $value->$key,
                             $entities_id,
-                            ['manufacturer' => $manufacturer_name]
+                            ['manufacturer' => $manufacturer_name],
+                            '',
+                            !isset($is_locked[$key])
                         );
                         if ($new_id < 0) { //importExternal can return -1
                             $new_id = 0;
                         }
                         $this->known_links[$known_key] = $new_id;
                     } elseif (isset($foreignkey_itemtype[$key])) {
-                        $new_id = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
+                        $new_id = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id, [], '', !isset($is_locked[$key]));
                         if ($new_id < 0) { //importExternal can return -1
                             $new_id = 0;
                         }
@@ -302,7 +304,10 @@ abstract class InventoryAsset
                         $new_id = Dropdown::importExternal(
                             $foreignkey_itemtype[$key],
                             $value->$key,
-                            $entities_id
+                            $entities_id,
+                            [],
+                            '',
+                            !isset($is_locked[$key])
                         );
                         if ($new_id < 0) { //importExternal can return -1
                             $new_id = 0;
