@@ -43,9 +43,15 @@ export class GlpiKnowbaseArticleSidePanelController
      */
     #container;
 
-    constructor(container)
+    /**
+     * @type {HTMLElement}
+     */
+    #article;
+
+    constructor(container, article)
     {
         this.#container = container;
+        this.#article = article;
         this.#initEventListeners();
 
         new GlpiKnowbaseCommentsPanelController(this.#container);
@@ -57,9 +63,23 @@ export class GlpiKnowbaseArticleSidePanelController
     {
         this.#container.addEventListener('click', (e) => {
             if (e.target.closest('[data-glpi-knowbase-side-panel-close]')) {
-                this.#container.classList.add('d-none');
+                this.#close();
             }
         });
+    }
+
+    #open()
+    {
+        this.#container.classList.remove('closed');
+        this.#article.classList.remove('col-12');
+        this.#article.classList.add('col-9');
+    }
+
+    #close()
+    {
+        this.#container.classList.add('closed');
+        this.#article.classList.remove('col-9');
+        this.#article.classList.add('col-12');
     }
 
     /**
@@ -78,7 +98,7 @@ export class GlpiKnowbaseArticleSidePanelController
 
         // jQuery's .html() trigger scripts execution, which is needed for select2 and tinymce
         $(this.#container).html(await response.text());
-        this.#container.classList.remove('d-none');
+        this.#open();
 
         // Trigger bootstrap tooltips
         new bootstrap.Tooltip(this.#container, {

@@ -34,7 +34,10 @@
      data-glpi-knowbase-article
      data-glpi-kb-item-id="{{ item_id }}"
      data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}">
-    <article class="col-9 container ms-0 px-4 py-3 kb-article">
+    <article
+        class="col-12 container ms-0 px-4 py-3 kb-article"
+        data-glpi-knowbase-article-content
+    >
         <div class="d-flex align-items-center mb-3">
             <h1 class="fw-bold mb-0" data-testid="subject">{{ subject }}</h1>
             <div class="ms-auto d-flex align-items-center gap-2">
@@ -169,10 +172,14 @@
 
         <hr class="mt-4 mb-4">
 
+<<<<<<< HEAD
         {# Tiptap editor container #}
         <div id="kb-tiptap-editor"
              class="rich_text_container"
              data-testid="content">
+=======
+        <div class="rich_text_container article-container" data-testid="content">
+>>>>>>> 8aea1fe262 (Expand KB article container until side panel is opened)
             {{ answer|safe_html }}
         </div>
 
@@ -274,7 +281,7 @@
         {% endif %}
     </article>
     <div
-        class="col-3 kb-sidepanel px-4 py-3 d-none d-flex flex-column"
+        class="col-3 kb-sidepanel px-4 py-3 closed d-flex flex-column"
         data-glpi-knowbase-side-panel
     >
     </div>

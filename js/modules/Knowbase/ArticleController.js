@@ -71,6 +71,7 @@ export class GlpiKnowbaseArticleController
         this.#container = container;
         this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
             side_panel_container,
+            this.#container.querySelector('[data-glpi-knowbase-article-content]'),
         );
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
 
