@@ -77,6 +77,11 @@
             margin-bottom: 0;
         }
 
+        /* Add top border for full frame */
+        #tabspanel {
+            border-top: 1px solid var(--glpi-tabs-border-color);
+        }
+
         .nav:not(.nav-underline) {
             .nav-item {
                 border-bottom: 1px solid var(--glpi-tabs-border-color);
