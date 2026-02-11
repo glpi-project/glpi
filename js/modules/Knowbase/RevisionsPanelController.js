@@ -79,6 +79,7 @@ export class GlpiKnowbaseRevisionsPanelController
             // Click on current version item → deactivate comparison
             const currentVersionItem = e.target.closest(current_version_selector);
             if (currentVersionItem && this.#activeRevisionId !== null) {
+                e.preventDefault();
                 this.#deactivateComparison();
             }
         });
