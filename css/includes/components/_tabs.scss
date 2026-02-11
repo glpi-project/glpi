@@ -36,101 +36,98 @@
 }
 
 .card-tabs {
-    /* 1. Keep the main separation line on the UL (the right side) */
+    /* 1. Main Divider: Keep the right border on the UL container */
     #tabspanel {
         border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
-    /* 2. Style the tabs within the panel */
+    /* 2. Reset Default Bootstrap Tabs styles */
     #tabspanel.nav-tabs {
-        border-bottom: 0; /* Remove default bootstrap nav-tabs bottom border */
-
+        border-bottom: 0; 
+        
         .nav-link {
-            /* 3. RESET: clear all default borders first to prevent "double border" */
-            border: 1px solid transparent; 
-            border-right-width: 0; /* We handle the right side via the panel or margin hack */
-            
+            border-right-width: 0;
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
 
-            /* 4. ACTIVE STATE: The "Fusion" effect */
-            &.active {
-                background: var(--glpi-tabs-active-bg);
-                color: var(--glpi-tabs-active-fg);
-                
-                /* Overlap the panel's right border */
-                margin-right: -1px; 
-                border: 1px solid var(--glpi-tabs-active-border-color);
-                border-right-color: transparent !important; 
-                
-                font-weight: bold;
-
-                .badge {
-                    font-weight: bold;
-                }
-            }
-
-            .badge {
-                margin-left: 5px;
-            }
+            /* Badge alignment */
+            .badge { margin-left: 5px; }
         }
     }
 
-    /* 5. VERTICAL SPECIFIC STYLES */
+    /* 3. VERTICAL LAYOUT FIXES */
     &.vertical {
         .nav:not(.nav-underline) {
+            
+            /* Ensure items don't have extra padding disrupting the flow */
             .nav-item {
-                /* Ensure no extra spacing interferes with borders */
-                margin: 0; 
-
-                /* 6. Restore Rounded Corner on FIRST item only */
-                &:first-child .nav-link {
-                    border-top-left-radius: var(--tblr-border-radius, 4px);
-                }
-                
-                /* Ensure other items are square */
-                &:not(:first-child) .nav-link {
-                    border-radius: 0;
-                }
+                margin: 0;
             }
 
             .nav-link {
-                /* 7. The clean separator line */
+                /* A. RESTORE SEPARATORS: Give every link a bottom border */
+                border: 1px solid transparent; /* Reset everything first */
                 border-bottom: 1px solid var(--glpi-tabs-border-color);
                 
-                /* Ensure no left border by default (unless active) */
-                border-left: 1px solid transparent; 
-                border-top: 0; /* Clean top to avoid double lines with previous bottom */
+                /* Reset radius for the list look */
+                border-radius: 0;
+                
+                /* Standard spacing */
+                margin-right: 0;
+                
+                /* Interactive state for non-active items */
+                &:hover {
+                    background: var(--glpi-tabs-hover-bg, rgba(0,0,0,0.02));
+                }
 
+                /* B. ACTIVE STATE CONFIGURATION */
                 &.active {
-                    /* The thick accent on the left */
-                    border-left: 5px solid var(--glpi-tabs-active-border-color);
+                    /* Colors */
+                    background: var(--glpi-tabs-active-bg);
+                    color: var(--glpi-tabs-active-fg);
+                    font-weight: bold;
+
+                    /* Borders: Full box except right side */
+                    border-color: var(--glpi-tabs-active-border-color);
+                    border-left-width: 5px; 
                     border-right-color: transparent !important;
-                    border-bottom-color: var(--glpi-tabs-border-color);
+                    
+                    /* C. THE DOUBLE-BORDER FIX */
+                    /* Pull the active tab UP by 1px so its top border overlaps the previous item's bottom border */
+                    margin-top: -1px;
+                    /* Pull it RIGHT by 1px to overlap the main panel line */
+                    margin-right: -1px;
+                    
+                    /* Ensure it sits on top of neighbors so the borders merge cleanly */
+                    position: relative;
+                    z-index: 10; 
+                    
+                    .badge { font-weight: bold; }
+                }
+            }
+
+            /* D. CORNER FIX: Restore rounded corner ONLY on the very first item */
+            .nav-item:first-child .nav-link {
+                border-top-left-radius: var(--tblr-border-radius, 4px);
+                
+                /* If the active tab is first, prevent it from shifting up (optional, keeps alignment tidy) */
+                &.active {
+                    margin-top: 0;
                 }
             }
         }
     }
 
-    /* Horizontal fallback (kept from your original) */
+    /* Horizontal fallback (Unchanged) */
     &.horizontal {
-        #tabspanel.nav-tabs {
-            .nav-link {
-                border-bottom-width: 1px;
-                border-bottom-style: solid;
-
-                &:last-of-type {
-                    border-right-width: 1px;
-
-                    &.active {
-                        border-right-color: var(--glpi-tabs-border-color) !important;
-                    }
-                }
-
-                &.active {
-                    border-bottom-color: transparent !important;
-                }
+        #tabspanel.nav-tabs .nav-link {
+            border-bottom-width: 1px;
+            border-bottom-style: solid;
+            &:last-of-type {
+                border-right-width: 1px;
+                &.active { border-right-color: var(--glpi-tabs-border-color) !important; }
             }
+            &.active { border-bottom-color: transparent !important; }
         }
     }
 }
