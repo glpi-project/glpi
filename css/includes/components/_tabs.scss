@@ -69,35 +69,20 @@
     &.vertical {
             #tabspanel.nav-tabs {
                 .nav-link {
-                    /* FORCE the borders to be visible (Solid and Correct Color) */
-                    border-left: 1px solid var(--glpi-tabs-border-color) !important;
+                    /* 1. FORCE the bottom border to be visible on all items */
                     border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
-                    
-                    /* Remove top border from ALL items by default to prevent "double lines" */
-                    border-top: 0 !important;
-                    
-                    /* Keep right side open (handled by the main container border) */
-                    border-right: 0 !important;
-                    
-                    /* Reset radius for clean stacking */
-                    border-radius: 0; 
     
-                    &.active {
-                        /* Active State: Thick left border, white background */
-                        border-left: 5px solid var(--glpi-active-color, #0d6efd) !important;
-                        background: var(--glpi-tabs-active-bg) !important;
-                        /* Ensure text is dark/visible */
-                        color: var(--glpi-tabs-active-fg, #000) !important;
-                        
-                        /* Overlap the container's right border */
-                        margin-right: -1px;
-                    }
+                    /* 2. REMOVE the top border to prevent the "double line" issue */
+                    border-top: 0 !important;
+    
+                    /* 3. Do NOT touch border-left or border-right. 
+                       This preserves your blue active indicator and default box layout. */
                 }
     
-                /* EXCEPTION: The very first tab needs a Top Border to close the box */
+                /* 4. EXCEPTION: The first tab needs a top border to close the container */
                 .nav-item:first-child .nav-link {
                     border-top: 1px solid var(--glpi-tabs-border-color) !important;
-                    border-top-left-radius: 4px; /* Optional: adds a nice curve to the top-left */
+                    border-top-left-radius: 4px; /* Matches default bootstrap radius */
                 }
             }
         }
