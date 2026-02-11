@@ -259,7 +259,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if ($id !== $start_node_impact_item_id) {
                         $em->getFromDB($id);
 
-                        // If this node has no context -> make it a slave
+                        // If this node has no context -> make it a dependent
                         if ($em->fields['impactcontexts_id'] == 0) {
                             $impactItem['impactcontexts_id'] = $context_id;
                             $impactItem['is_dependent'] = 1;

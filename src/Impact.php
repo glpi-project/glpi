@@ -1731,7 +1731,7 @@ TWIG, $twig_params);
 
         $impact_item->delete($impact_item->fields);
 
-        // Remove impact context if defined and not a slave, update others
+        // Remove impact context if defined and not a dependent, update others
         // contexts if they are dependent to us
         if (
             $impact_item->fields['impactcontexts_id'] !== 0
