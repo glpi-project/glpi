@@ -244,9 +244,11 @@ abstract class InventoryAsset
                 $this->raw_links[$known_key] = $val;
 
                 //do not process field if it's locked
-                if ($this->item->isNewItem()) {
-                    foreach ($locks as $lock) {
-                        if ($key == $lock) {
+                foreach ($locks as $lock) {
+                    if ($key == $lock) {
+                        if ($this->item->isNewItem()) {
+                            $is_locked[$key] = true;
+                        } else {
                             continue 2;
                         }
                     }
@@ -270,7 +272,7 @@ abstract class InventoryAsset
                 if (!isset($this->known_links[$known_key]) && $value->$key !== 0) {
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
-                        $new_id = Dropdown::importExternal('Location', $value->$key, $entities_id);
+                        $new_id = Dropdown::importExternal('Location', $value->$key, $entities_id, [], '', !isset($is_locked[$key]));
                         if ($new_id < 0) { //importExternal can return -1
                             $new_id = 0;
                         }
@@ -523,6 +525,7 @@ abstract class InventoryAsset
                 if (isset($this->raw_links[$known_key])) {
                     if (isset($this->known_links[$known_key])) {
                         $input[$key] = $this->known_links[$known_key];
+                        $input['_raw' . $key] = $this->raw_links[$known_key];
                     } elseif (!$item->isNewItem()) {
                         // If $item is new and the input key is locked, we do not want to set it using the raw value.
                         // This is because locked fields are no longer processed or sanitized during the addition process.
