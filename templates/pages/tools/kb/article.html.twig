@@ -288,7 +288,18 @@
     <div
         class="col-3 kb-sidepanel px-4 py-3 closed d-flex flex-column"
         data-glpi-knowbase-side-panel
+        data-testid="side-panel"
     >
+    </div>
+</div>
+
+<div
+    class="offcanvas offcanvas-end"
+    tabindex="-1"
+    data-glpi-knowbase-side-panel-offcanvas
+    data-testid="offcanvas"
+>
+    <div class="offcanvas-body px-4 py-3 d-flex flex-column">
     </div>
 </div>
 
@@ -300,6 +311,7 @@
         new module.GlpiKnowbaseArticleController(
             document.querySelector('[data-glpi-knowbase-article]'),
             document.querySelector('[data-glpi-knowbase-side-panel]'),
+            document.querySelector('[data-glpi-knowbase-side-panel-offcanvas]'),
         );
     })();
 </script>

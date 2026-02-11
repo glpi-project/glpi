@@ -65,12 +65,14 @@ export class GlpiKnowbaseArticleController
     /**
      * @param {HTMLElement} container
      * @param {HTMLElement} side_panel_container
+     * @param {HTMLElement} offcanvas_container
      */
-    constructor(container, side_panel_container)
+    constructor(container, side_panel_container, offcanvas_container)
     {
         this.#container = container;
         this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
             side_panel_container,
+            offcanvas_container,
             this.#container.querySelector('[data-glpi-knowbase-article-content]'),
         );
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;

@@ -381,7 +381,7 @@ input[type="checkbox"].toggle_comments {
 }
 
 .kb-article {
-    transition: width 0.35s ease-in-out, width 0.35s ease-in-out;
+    transition: width 0.35s ease-in-out;
 }
 
 .kb-sidepanel {
@@ -390,4 +390,8 @@ input[type="checkbox"].toggle_comments {
         overflow: hidden;
         padding: 0 !important;
     }
+}
+
+[data-glpi-knowbase-side-panel-offcanvas] {
+    width: min(400px, 85vw);
 }
