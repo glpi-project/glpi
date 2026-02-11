@@ -67,27 +67,33 @@
     }
 
     &.vertical {
-        /* Remove Bootstrap nav-tabs bottom border */
+        /* Remove Bootstrap nav-tabs borders completely */
         #tabspanel.nav-tabs {
-            border-bottom: 0 !important;
+            border: 0 !important;
         }
 
-        /* Remove Bootstrap negative margin */
+        /* Remove Bootstrap negative margin behavior */
         #tabspanel.nav-tabs .nav-link {
-            margin-bottom: 0;
+            margin: 0;
         }
 
-        /* Add top border for full frame */
+        /* Panel frame (top + right side) */
         #tabspanel {
             border-top: 1px solid var(--glpi-tabs-border-color);
+            border-right: 1px solid var(--glpi-tabs-border-color);
             border-top-left-radius: var(--tblr-border-radius);
+            overflow: hidden; // ensures radius is visible
         }
 
         .nav:not(.nav-underline) {
-            .nav-item {
-                border-bottom: 1px solid var(--glpi-tabs-border-color);
+            /* Remove inherited borders from other rules */
+            border: 0;
 
-                &:last-child {
+            .nav-item {
+                border: 0; // prevent double stacking
+
+                /* separator line */
+                &:not(:last-child) {
                     border-bottom: 1px solid var(--glpi-tabs-border-color);
                 }
             }
