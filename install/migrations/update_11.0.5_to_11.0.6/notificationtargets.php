@@ -60,4 +60,5 @@ foreach ($duplicates_targets_iterator as $target) {
     ]);
 }
 
+$migration->dropKey('glpi_notificationtargets', 'notifications_id');
 $migration->addKey('glpi_notificationtargets', ['notifications_id', 'items_id', 'type'], 'unicity', 'UNIQUE');
