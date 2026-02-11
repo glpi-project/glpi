@@ -187,8 +187,10 @@ class MassiveActionTest extends DbTestCase
 
                 if ($res == MassiveAction::ACTION_OK) {
                     $ma_ok += $increment;
-                } elseif ($res == MassiveAction::ACTION_KO) {
+                } elseif ($res == MassiveAction::ACTION_KO || $res == MassiveAction::ACTION_NORIGHT) {
                     $ma_ko += $increment;
+                } else {
+                    throw new \RuntimeException("Unexpected result '$res' in itemDone callback");
                 }
             }
         );
