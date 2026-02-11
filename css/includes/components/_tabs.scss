@@ -67,32 +67,37 @@
     }
 
     &.vertical {
-            /* We add #tabspanel here to ensure we win the 'specificity war' against the generic rules */
             #tabspanel.nav-tabs {
                 .nav-link {
-                    /* 1. Ensure borders are solid and visible on all sides first */
-                    border: 1px solid var(--glpi-tabs-border-color);
+                    /* FORCE the borders to be visible (Solid and Correct Color) */
+                    border-left: 1px solid var(--glpi-tabs-border-color) !important;
+                    border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
                     
-                    /* 2. Remove the top border from ALL items to stop the "double border" thickness */
-                    border-top: 0;
+                    /* Remove top border from ALL items by default to prevent "double lines" */
+                    border-top: 0 !important;
                     
-                    /* 3. Keep the right side square (standard for vertical tabs) */
-                    border-top-right-radius: 0;
-                    border-bottom-right-radius: 0;
+                    /* Keep right side open (handled by the main container border) */
+                    border-right: 0 !important;
+                    
+                    /* Reset radius for clean stacking */
+                    border-radius: 0; 
     
                     &.active {
-                        /* Restore the active indicator */
-                        border-left-width: 5px;
-                        border-right-color: transparent !important;
+                        /* Active State: Thick left border, white background */
+                        border-left: 5px solid var(--glpi-active-color, #0d6efd) !important;
+                        background: var(--glpi-tabs-active-bg) !important;
+                        /* Ensure text is dark/visible */
+                        color: var(--glpi-tabs-active-fg, #000) !important;
+                        
+                        /* Overlap the container's right border */
                         margin-right: -1px;
                     }
                 }
     
-                /* 4. EXCEPTION: The very first item MUST have a top border to close the list */
+                /* EXCEPTION: The very first tab needs a Top Border to close the box */
                 .nav-item:first-child .nav-link {
-                    border-top: 1px solid var(--glpi-tabs-border-color);
-                    /* Optional: Ensure the top-left corner is rounded if you prefer */
-                    border-top-left-radius: var(--bs-border-radius, 4px); 
+                    border-top: 1px solid var(--glpi-tabs-border-color) !important;
+                    border-top-left-radius: 4px; /* Optional: adds a nice curve to the top-left */
                 }
             }
         }
