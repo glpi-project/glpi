@@ -3635,9 +3635,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * @since 0.84
-     *
-     * Get field used for name
+     * Get field name used for name
      *
      * @return string
      **/
@@ -3648,9 +3646,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * @since 0.84
-     *
-     * Get field used for completename
+     * Get field name used for completename
      *
      * @return string
      **/
@@ -3660,7 +3656,8 @@ class CommonDBTM extends CommonGLPI
     }
 
 
-    /** Get raw completename of the object
+    /**
+     * Get raw completename of the object
      * Maybe overloaded
      *
      * @see CommonDBTM::getCompleteNameField
@@ -3672,7 +3669,6 @@ class CommonDBTM extends CommonGLPI
 
         return $this->fields[static::getCompleteNameField()] ?? '';
     }
-
 
     /**
      * Get the name of the object
