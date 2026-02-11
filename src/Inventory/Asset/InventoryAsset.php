@@ -479,7 +479,7 @@ abstract class InventoryAsset
 
         if ($item !== null && !$item->isNewItem()) {
             $lockeds = new \Lockedfield();
-            $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
+            $locks = $lockeds->getLockedNames($item->getType(), $item->fields['id']);
         }
 
         foreach ($value as $key => $val) {
