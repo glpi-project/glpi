@@ -69,20 +69,27 @@
     &.vertical {
             #tabspanel.nav-tabs {
                 .nav-link {
-                    /* 1. FORCE the bottom border to be visible on all items */
+                    /* 1. VISIBILITY: Force borders to show and prevent overlapping */
                     border-bottom: 1px solid var(--glpi-tabs-border-color) !important;
+                    margin-bottom: 0 !important; /* Replaces your commented-out line safely */
     
-                    /* 2. REMOVE the top border to prevent the "double line" issue */
+                    /* 2. LAYOUT: Remove top border to prevent double-thickness */
                     border-top: 0 !important;
     
-                    /* 3. Do NOT touch border-left or border-right. 
-                       This preserves your blue active indicator and default box layout. */
+                    /* 3. CORNER FIX: Remove the strange radius you see on the right */
+                    border-top-right-radius: 0 !important;
+                    border-bottom-right-radius: 0 !important;
                 }
     
-                /* 4. EXCEPTION: The first tab needs a top border to close the container */
+                /* 4. FIRST ITEM: Needs a top border to close the list */
                 .nav-item:first-child .nav-link {
                     border-top: 1px solid var(--glpi-tabs-border-color) !important;
-                    border-top-left-radius: 4px; /* Matches default bootstrap radius */
+                    border-top-left-radius: 4px; /* Optional: Keep top-left rounded */
+                }
+                
+                /* 5. LAST ITEM: Ensure the very bottom-right corner is square (optional safety) */
+                 .nav-item:last-child .nav-link {
+                    border-bottom-right-radius: 0 !important;
                 }
             }
         }
