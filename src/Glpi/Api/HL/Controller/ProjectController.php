@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL\Controller;
 
 use Budget;
+use Change;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -45,12 +46,15 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Item_Project;
+use Itil_Project;
+use Problem;
 use Project;
 use ProjectCost;
 use ProjectState;
 use ProjectTask;
 use ProjectType;
 use Session;
+use Ticket;
 
 #[Route(path: '/Project', requirements: [
     'project_id' => '\d+',
@@ -204,6 +208,93 @@ final class ProjectController extends AbstractController
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
                     'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3'],
                     'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'tickets' => [
+                        'x-version-introduced' => '2.3',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Ticket',
+                            'x-join' => [
+                                'table' => Ticket::getTable(),
+                                'fkey' => 'items_id',
+                                'field' => 'id',
+                                'primary-property' => 'id',
+                                'ref-join' => [
+                                    'table' => Itil_Project::getTable(),
+                                    'fkey' => 'id',
+                                    'field' => 'projects_id',
+                                    'condition' => [
+                                        'itemtype' => Ticket::class,
+                                    ],
+                                ],
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'changes' => [
+                        'x-version-introduced' => '2.3',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Change',
+                            'x-join' => [
+                                'table' => Change::getTable(),
+                                'fkey' => 'items_id',
+                                'field' => 'id',
+                                'primary-property' => 'id',
+                                'ref-join' => [
+                                    'table' => Itil_Project::getTable(),
+                                    'fkey' => 'id',
+                                    'field' => 'projects_id',
+                                    'condition' => [
+                                        'itemtype' => Change::class,
+                                    ],
+                                ],
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'problems' => [
+                        'x-version-introduced' => '2.3',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Problem',
+                            'x-join' => [
+                                'table' => Problem::getTable(),
+                                'fkey' => 'items_id',
+                                'field' => 'id',
+                                'primary-property' => 'id',
+                                'ref-join' => [
+                                    'table' => Itil_Project::getTable(),
+                                    'fkey' => 'id',
+                                    'field' => 'projects_id',
+                                    'condition' => [
+                                        'itemtype' => Problem::class,
+                                    ],
+                                ],
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'ProjectTask' => [
@@ -330,6 +421,28 @@ final class ProjectController extends AbstractController
                     ],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                ],
+            ],
+            'ITIL_Project' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Itil_Project::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [
+                            Ticket::class,
+                            Change::class,
+                            Problem::class,
+                        ],
+                    ],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 ],
             ],
@@ -688,5 +801,185 @@ final class ProjectController extends AbstractController
     public function deleteContractItemLink(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{project_id}/Ticket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'ITIL_Project',
+        description: 'List or search tickets linked to the project'
+    )]
+    public function getLinkedTickets(Request $request): Response
+    {
+        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filter .= ';project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Ticket';
+        $request->setParameter('filter', $filter);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{project_id}/Ticket', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'ITIL_Project',
+        description: 'Link a ticket to the project'
+    )]
+    public function addLinkedTicket(Request $request): Response
+    {
+        $params = $request->getParameters();
+        $params['project'] = $request->getAttributes()['project_id'];
+        $params['itemtype'] = Ticket::class;
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $params, [self::class, 'getLinkedTickets']);
+    }
+
+    #[Route(path: '/{project_id}/Ticket/{ticket_id}', methods: ['DELETE'], requirements: ['ticket_id' => '\d+'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'ITIL_Project',
+        description: 'Unlink a ticket from the project'
+    )]
+    public function deleteLinkedTicket(Request $request): Response
+    {
+        global $DB;
+
+        // find the link ID
+        $it = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => Itil_Project::getTable(),
+            'WHERE' => [
+                'projects_id' => $request->getAttributes()['project_id'],
+                'itemtype' => Ticket::class,
+                'items_id' => $request->getAttributes()['ticket_id'],
+            ],
+        ]);
+
+        if (!$it->count()) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        return ResourceAccessor::deleteBySchema(
+            $this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)),
+            ['id' => $it->current()['id']],
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{project_id}/Change', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'ITIL_Project',
+        description: 'List or search changes linked to the project'
+    )]
+    public function getLinkedChanges(Request $request): Response
+    {
+        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filter .= ';project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Change';
+        $request->setParameter('filter', $filter);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{project_id}/Change', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'ITIL_Project',
+        description: 'Link a change to the project'
+    )]
+    public function addLinkedChange(Request $request): Response
+    {
+        $params = $request->getParameters();
+        $params['project'] = $request->getAttributes()['project_id'];
+        $params['itemtype'] = Change::class;
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $params, [self::class, 'getLinkedChanges']);
+    }
+
+    #[Route(path: '/{project_id}/Change/{change_id}', methods: ['DELETE'], requirements: ['change_id' => '\d+'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'ITIL_Project',
+        description: 'Unlink a change from the project'
+    )]
+    public function deleteLinkedChange(Request $request): Response
+    {
+        global $DB;
+
+        // find the link ID
+        $it = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => Itil_Project::getTable(),
+            'WHERE' => [
+                'projects_id' => $request->getAttributes()['project_id'],
+                'itemtype' => Change::class,
+                'items_id' => $request->getAttributes()['change_id'],
+            ],
+        ]);
+
+        if (!$it->count()) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        return ResourceAccessor::deleteBySchema(
+            $this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)),
+            ['id' => $it->current()['id']],
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{project_id}/Problem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'ITIL_Project',
+        description: 'List or search problems linked to the project'
+    )]
+    public function getLinkedProblems(Request $request): Response
+    {
+        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filter .= ';project.id==' . $request->getAttributes()['project_id'] . ';itemtype==Problem';
+        $request->setParameter('filter', $filter);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{project_id}/Problem', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'ITIL_Project',
+        description: 'Link a problem to the project'
+    )]
+    public function addLinkedProblem(Request $request): Response
+    {
+        $params = $request->getParameters();
+        $params['project'] = $request->getAttributes()['project_id'];
+        $params['itemtype'] = Problem::class;
+        return ResourceAccessor::createBySchema($this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)), $params, [self::class, 'getLinkedProblems']);
+    }
+
+    #[Route(path: '/{project_id}/Problem/{problem_id}', methods: ['DELETE'], requirements: ['problem_id' => '\d+'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'ITIL_Project',
+        description: 'Unlink a problem from the project'
+    )]
+    public function deleteLinkedProblem(Request $request): Response
+    {
+        global $DB;
+
+        // find the link ID
+        $it = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => Itil_Project::getTable(),
+            'WHERE' => [
+                'projects_id' => $request->getAttributes()['project_id'],
+                'itemtype' => Problem::class,
+                'items_id' => $request->getAttributes()['problem_id'],
+            ],
+        ]);
+
+        if (!$it->count()) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        return ResourceAccessor::deleteBySchema(
+            $this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)),
+            ['id' => $it->current()['id']],
+            $request->getParameters()
+        );
     }
 }
