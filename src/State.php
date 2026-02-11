@@ -379,7 +379,7 @@ class State extends CommonTreeDropdown
             $itemtype_options[$asset_class] = $definition->getFriendlyName() ?: $asset_class;
         }
 
-        echo __('Asset type') . '<br>';
+        echo __s('Asset type') . '<br>';
         Dropdown::showFromArray('visible_itemtype', $itemtype_options, [
             'display_emptychoice' => false,
             'multiple' => true,
@@ -387,7 +387,7 @@ class State extends CommonTreeDropdown
         echo '<br><br>';
 
         // Visibility choice
-        echo __('Visible') . '<br>';
+        echo __s('Visible') . '<br>';
         Dropdown::showYesNo('is_visible', 1);
         echo '<br><br>';
 
