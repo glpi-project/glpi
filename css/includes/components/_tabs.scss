@@ -67,19 +67,35 @@
     }
 
     &.vertical {
-        .nav:not(.nav-underline)
-            .nav-link {
-                /* FIX: Remove top border to prevent doubling with the bottom border of the previous item */
-                border-top: 0;
-                border-bottom: 1px solid var(--glpi-tabs-border-color);
-                border-top-right-radius: 0;
-
-                &.active {
-                    border-left-width: 5px;
-                    border-right-color: transparent !important;
+            /* We add #tabspanel here to ensure we win the 'specificity war' against the generic rules */
+            #tabspanel.nav-tabs {
+                .nav-link {
+                    /* 1. Ensure borders are solid and visible on all sides first */
+                    border: 1px solid var(--glpi-tabs-border-color);
+                    
+                    /* 2. Remove the top border from ALL items to stop the "double border" thickness */
+                    border-top: 0;
+                    
+                    /* 3. Keep the right side square (standard for vertical tabs) */
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+    
+                    &.active {
+                        /* Restore the active indicator */
+                        border-left-width: 5px;
+                        border-right-color: transparent !important;
+                        margin-right: -1px;
+                    }
+                }
+    
+                /* 4. EXCEPTION: The very first item MUST have a top border to close the list */
+                .nav-item:first-child .nav-link {
+                    border-top: 1px solid var(--glpi-tabs-border-color);
+                    /* Optional: Ensure the top-left corner is rounded if you prefer */
+                    border-top-left-radius: var(--bs-border-radius, 4px); 
                 }
             }
-    }
+        }
 
     &.horizontal {
         #tabspanel.nav-tabs {
