@@ -157,4 +157,3 @@ final class FuzzyMatcher
         return true;
     }
 }
-
