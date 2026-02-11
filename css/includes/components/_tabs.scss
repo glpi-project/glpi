@@ -80,6 +80,7 @@
         /* Add top border for full frame */
         #tabspanel {
             border-top: 1px solid var(--glpi-tabs-border-color);
+            border-top-left-radius: var(--tblr-border-radius);
         }
 
         .nav:not(.nav-underline) {
