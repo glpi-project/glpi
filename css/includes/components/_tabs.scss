@@ -49,7 +49,7 @@
 
             &.active {
                 border-right: 1px solid transparent !important;
-                margin-right: -1px; // Keep original overlap hack
+                margin-right: -1px; // Hack for border overlap
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
                 border-color: var(--glpi-tabs-active-border-color);
@@ -68,14 +68,17 @@
 
     &.vertical {
         .nav:not(.nav-underline) {
-            .nav-link {
-                border-bottom: 0; // reset first
-                border-top-right-radius: 0;
-
-                /* Apply separator only between items */
-                .nav-link:not(:last-child) {
-                    border-bottom: 1px solid var(--glpi-tabs-border-color);
+            .nav-item {
+                border-bottom: 1px solid var(--glpi-tabs-border-color);
+    
+                &:last-child {
+                    border-bottom: 0;
                 }
+            }
+    
+            .nav-link {
+                border-bottom: 0; // prevent double border
+                border-top-right-radius: 0;
 
                 &.active {
                     border-left-width: 5px;
