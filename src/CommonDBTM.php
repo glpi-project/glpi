@@ -4595,7 +4595,10 @@ class CommonDBTM extends CommonGLPI
                         if ($tmp->maybeTemplate()) {
                             $where['is_template'] = 0;
                         }
-
+                        // GLPI Custom Assets support - filter by asset definition ID
+                        if ($this instanceof \Glpi\Asset\Asset) {
+                            $where['assets_assetdefinitions_id'] = static::getDefinition()->getID();
+                        }
                         //If update, exclude ID of the current object
                         if (!$add) {
                             $where['NOT'] = [static::getTable() . '.id' => $this->input['id']];
