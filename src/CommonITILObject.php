@@ -7874,9 +7874,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 // Check visibility for private documents
-                $doc_item_check = new Document_Item();
-                $doc_item_check->fields = $document_item;
-                if (!$doc_item_check->canViewItem()) {
+                if ($params['check_view_rights'] && !empty($document_item['is_private'])) {
+                    if (
+                        !Session::haveRight('document', Document_Item::SEEPRIVATE)
+                        && (int) ($document_item['users_id'] ?? 0) !== Session::getLoginUserID()
+                    ) {
+                        continue;
+                    }
+                }
+                if ($params['hide_private_items'] && !empty($document_item['is_private'])) {
                     continue;
                 }
 

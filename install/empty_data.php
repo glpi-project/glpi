@@ -7581,7 +7581,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'document',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Document_Item::SEEPRIVATE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'contract',
