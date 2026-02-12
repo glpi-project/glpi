@@ -747,7 +747,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item to the database
      *
-     * @return int|bool new ID of the item is insert successful else false
+     * @return int|false new ID of the item is insert successful else false
      **/
     public function addToDB()
     {
