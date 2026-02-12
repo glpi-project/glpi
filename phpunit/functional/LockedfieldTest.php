@@ -1054,30 +1054,6 @@ class LockedfieldTest extends DbTestCase
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
-    <OPERATINGSYSTEM>
-      <ARCH>x86_64</ARCH>
-      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
-      <FQDN>test-pc002</FQDN>
-      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
-      <HOSTID>a8c07701</HOSTID>
-      <KERNEL_NAME>linux</KERNEL_NAME>
-      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
-      <NAME>Fedora</NAME>
-      <TIMEZONE>
-        <NAME>CEST</NAME>
-        <OFFSET>+0200</OFFSET>
-      </TIMEZONE>
-      <VERSION>28 (Workstation Edition)</VERSION>
-    </OPERATINGSYSTEM>
-    <ANTIVIRUS>
-      <COMPANY>Microsoft Corporation</COMPANY>
-      <ENABLED>1</ENABLED>
-      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
-      <NAME>Microsoft Security Essentials</NAME>
-      <UPTODATE>1</UPTODATE>
-      <VERSION>4.3.216.0</VERSION>
-      <EXPIRATION>01/04/2019</EXPIRATION>
-    </ANTIVIRUS>
     <HARDWARE>
       <NAME>pc002</NAME>
     </HARDWARE>
@@ -1114,30 +1090,6 @@ class LockedfieldTest extends DbTestCase
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
-    <OPERATINGSYSTEM>
-      <ARCH>x86_64</ARCH>
-      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
-      <FQDN>test-pc002</FQDN>
-      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
-      <HOSTID>a8c07701</HOSTID>
-      <KERNEL_NAME>linux</KERNEL_NAME>
-      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
-      <NAME>Fedora</NAME>
-      <TIMEZONE>
-        <NAME>CEST</NAME>
-        <OFFSET>+0200</OFFSET>
-      </TIMEZONE>
-      <VERSION>28 (Workstation Edition)</VERSION>
-    </OPERATINGSYSTEM>
-    <ANTIVIRUS>
-      <COMPANY>Microsoft Corporation</COMPANY>
-      <ENABLED>1</ENABLED>
-      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
-      <NAME>Microsoft Security Essentials</NAME>
-      <UPTODATE>1</UPTODATE>
-      <VERSION>4.3.216.0</VERSION>
-      <EXPIRATION>01/04/2019</EXPIRATION>
-    </ANTIVIRUS>
     <HARDWARE>
       <NAME>pc_with_other_name</NAME>
     </HARDWARE>
@@ -1201,30 +1153,6 @@ class LockedfieldTest extends DbTestCase
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
-    <OPERATINGSYSTEM>
-      <ARCH>x86_64</ARCH>
-      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
-      <FQDN>test-pc002</FQDN>
-      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
-      <HOSTID>a8c07701</HOSTID>
-      <KERNEL_NAME>linux</KERNEL_NAME>
-      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
-      <NAME>Fedora</NAME>
-      <TIMEZONE>
-        <NAME>CEST</NAME>
-        <OFFSET>+0200</OFFSET>
-      </TIMEZONE>
-      <VERSION>28 (Workstation Edition)</VERSION>
-    </OPERATINGSYSTEM>
-    <ANTIVIRUS>
-      <COMPANY>Microsoft Corporation</COMPANY>
-      <ENABLED>1</ENABLED>
-      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
-      <NAME>Microsoft Security Essentials</NAME>
-      <UPTODATE>1</UPTODATE>
-      <VERSION>4.3.216.0</VERSION>
-      <EXPIRATION>01/04/2019</EXPIRATION>
-    </ANTIVIRUS>
     <HARDWARE>
       <NAME>pc002</NAME>
     </HARDWARE>
@@ -1275,30 +1203,6 @@ class LockedfieldTest extends DbTestCase
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
-    <OPERATINGSYSTEM>
-      <ARCH>x86_64</ARCH>
-      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
-      <FQDN>test-pc002</FQDN>
-      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
-      <HOSTID>a8c07701</HOSTID>
-      <KERNEL_NAME>linux</KERNEL_NAME>
-      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
-      <NAME>Fedora</NAME>
-      <TIMEZONE>
-        <NAME>CEST</NAME>
-        <OFFSET>+0200</OFFSET>
-      </TIMEZONE>
-      <VERSION>28 (Workstation Edition)</VERSION>
-    </OPERATINGSYSTEM>
-    <ANTIVIRUS>
-      <COMPANY>Microsoft Corporation</COMPANY>
-      <ENABLED>1</ENABLED>
-      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
-      <NAME>Microsoft Security Essentials</NAME>
-      <UPTODATE>1</UPTODATE>
-      <VERSION>4.3.216.0</VERSION>
-      <EXPIRATION>01/04/2019</EXPIRATION>
-    </ANTIVIRUS>
     <HARDWARE>
       <NAME>pc002</NAME>
     </HARDWARE>
@@ -1389,30 +1293,6 @@ class LockedfieldTest extends DbTestCase
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
-    <OPERATINGSYSTEM>
-      <ARCH>x86_64</ARCH>
-      <BOOT_TIME>2018-10-02 08:56:09</BOOT_TIME>
-      <FQDN>test-pc002</FQDN>
-      <FULL_NAME>Fedora 28 (Workstation Edition)</FULL_NAME>
-      <HOSTID>a8c07701</HOSTID>
-      <KERNEL_NAME>linux</KERNEL_NAME>
-      <KERNEL_VERSION>4.18.9-200.fc28.x86_64</KERNEL_VERSION>
-      <NAME>Fedora</NAME>
-      <TIMEZONE>
-        <NAME>CEST</NAME>
-        <OFFSET>+0200</OFFSET>
-      </TIMEZONE>
-      <VERSION>28 (Workstation Edition)</VERSION>
-    </OPERATINGSYSTEM>
-    <ANTIVIRUS>
-      <COMPANY>Microsoft Corporation</COMPANY>
-      <ENABLED>1</ENABLED>
-      <GUID>{641105E6-77ED-3F35-A304-765193BCB75F}</GUID>
-      <NAME>Microsoft Security Essentials</NAME>
-      <UPTODATE>1</UPTODATE>
-      <VERSION>4.3.216.0</VERSION>
-      <EXPIRATION>01/04/2019</EXPIRATION>
-    </ANTIVIRUS>
     <HARDWARE>
       <NAME>pc002</NAME>
     </HARDWARE>
