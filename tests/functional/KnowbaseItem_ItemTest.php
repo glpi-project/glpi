@@ -250,4 +250,33 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $name = $kb_item->getTabNameForItem($ticket3);
         $this->assertSame("Knowledge base", strip_tags($name));
     }
+
+    public function testLinkToRootEntity(): void
+    {
+        $this->login();
+
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name' => 'Test KB for root entity',
+            'answer' => 'Test answer',
+        ]);
+
+        $kb_item_item = new KnowbaseItem_Item();
+        $input = [
+            'knowbaseitems_id' => $kb_item->getID(),
+            'itemtype' => \Entity::class,
+            'items_id' => 0,
+        ];
+
+        try {
+            $kb_item_item->check(-1, CREATE, $input);
+        } catch (\Glpi\Exception\Http\AccessDeniedHttpException $e) {
+        }
+
+        $link_id = $kb_item_item->add($input);
+
+        $this->assertGreaterThan(0, $link_id);
+        $this->assertTrue($kb_item_item->getFromDB($link_id));
+        $this->assertEquals(0, $kb_item_item->fields['items_id']);
+        $this->assertEquals(\Entity::class, $kb_item_item->fields['itemtype']);
+    }
 }

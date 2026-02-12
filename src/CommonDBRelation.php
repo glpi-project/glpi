@@ -2175,7 +2175,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $required_fields = [];
         $must_check = $input !== null && $right == CREATE;
 
-        if ($must_check && static::$mustBeAttached_1 === true && (!isset($input[static::$items_id_1]) || empty($input[static::$items_id_1]))) {
+        if ($must_check && static::$mustBeAttached_1 === true && (!isset($input[static::$items_id_1]) || $input[static::$items_id_1] === null || $input[static::$items_id_1] === '')) {
             $itemtype = static::$itemtype_1;
             if (!preg_match('/^itemtype/', $itemtype)) {
                 $itemtype = static::$itemtype_1::getTypeName(1);
@@ -2183,7 +2183,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $error_types[] = $itemtype;
             $required_fields[] = static::$items_id_1;
         }
-        if ($must_check && static::$mustBeAttached_2 === true && (!isset($input[static::$items_id_2]) || empty($input[static::$items_id_2]))) {
+        if ($must_check && static::$mustBeAttached_2 === true && (!isset($input[static::$items_id_2]) || $input[static::$items_id_2] === null || $input[static::$items_id_2] === '')) {
             $itemtype = static::$itemtype_2;
             if (!preg_match('/^itemtype/', $itemtype)) {
                 $itemtype = static::$itemtype_2::getTypeName(1);
