@@ -77,4 +77,21 @@ trait CrudControllerTrait
             throw new RuntimeException("Failed to delete item");
         }
     }
+
+    private function purge(string $class, int $id): void
+    {
+        $item = getItemForItemtype($class);
+        if (!$item || !$item->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $input = ['id' => $id];
+        if (!$item->can($id, PURGE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if ($input === null || !$item->delete($input, force: true)) {
+            throw new RuntimeException("Failed to purge item");
+        }
+    }
 }

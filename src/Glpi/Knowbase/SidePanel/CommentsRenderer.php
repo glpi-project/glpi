@@ -37,6 +37,7 @@ namespace Glpi\Knowbase\SidePanel;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use Override;
+use User;
 
 final class CommentsRenderer implements RendererInterface
 {
@@ -55,24 +56,50 @@ final class CommentsRenderer implements RendererInterface
     #[Override]
     public function getParams(KnowbaseItem $item): array
     {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
-            kbitem_id: $item->getID(),
-            lang: null,
-            parent: null,
-            user_data_cache: $users_infos,
+        $comments = KnowbaseItem_Comment::getCommentsForKbItem($item);
+
+        // Load users
+        $users = User::getSeveralFromDBByCrit([
+            'id' => $this->extractRequiredUsersIds($comments),
+        ]);
+        $users = iterator_to_array($users);
+        $users = array_combine(
+            keys: array_map(fn(User $user) => $user->getID(), $users),
+            values: $users,
         );
 
-        foreach ($comments as &$comment) {
-            $comment_item = new KnowbaseItem_Comment();
-            $comment_item->getFromResultSet($comment);
-            $comment['can_edit'] = $comment_item->canUpdateItem();
-            $comment['can_delete'] = $comment_item->canDeleteItem();
+        return [
+            'id'       => $item->getID(),
+            'comments' => $comments,
+            'users'    => $users,
+        ];
+    }
+
+    /**
+     * @param KnowbaseItem_Comment[] $comments
+     * @return int[]
+     */
+    private function extractRequiredUsersIds(array $comments): array
+    {
+        $ids = $this->doExtractRequiredUsersIds($comments);
+        return array_unique($ids);
+    }
+
+    /**
+     * @param KnowbaseItem_Comment[] $comments
+     * @return int[]
+     */
+    private function doExtractRequiredUsersIds(array $comments): array
+    {
+        $ids = [];
+
+        foreach ($comments as $comment) {
+            $ids[] = $comment->fields['users_id'];
+
+            $children = $comment->fields['_answers'];
+            array_push($ids, ...$this->doExtractRequiredUsersIds($children));
         }
 
-        return [
-            'id' => $item->getID(),
-            'comments' => $comments,
-            'users_infos' => $users_infos,
-        ];
+        return $ids;
     }
 }
