@@ -543,6 +543,10 @@ class FieldUnicity extends CommonDropdown
             ];
         }
         $item_table = $item::getTable();
+         // Custom Assets support - filter by asset definition ID
+        if ($item instanceof \Glpi\Asset\Asset) {
+            $where[$item_table . '.assets_assetdefinitions_id'] = $item::getDefinition()->getID();
+        }
 
         $iterator = $DB->request([
             'SELECT'    => $fields,
