@@ -535,6 +535,113 @@ HTML,
         }
     }
 
+    public function testSolutionDocumentsAttachedToSolvedNotification(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $solved_notif = new \Notification();
+        $this->assertTrue($solved_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'solved']));
+
+        $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
+
+        $deactivated = $DB->update(
+            \Notification::getTable(),
+            ['is_active' => false],
+            ['id' => ['<>', $solved_notif->getID()]]
+        );
+        $this->assertTrue($deactivated);
+        $this->assertTrue($solved_notif->update(['id' => $solved_notif->getID(), 'is_active' => 1]));
+
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+        $this->assertTrue($solved_notif->update(['id' => $solved_notif->getID(), 'attach_documents' => \NotificationSetting::ATTACH_INHERIT]));
+
+        $notification_notificationtemplate_it = $DB->request([
+            'FROM' => 'glpi_notifications_notificationtemplates',
+            'WHERE' => ['notifications_id' => $solved_notif->getID()],
+        ]);
+        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
+            $notificationtemplate_it = $DB->request([
+                'FROM' => 'glpi_notificationtemplates',
+                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
+            ]);
+            foreach ($notificationtemplate_it as $notificationtemplate_data) {
+                $template_updated = $DB->update(
+                    'glpi_notificationtemplatetranslations',
+                    ['content_html' => null],
+                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
+                );
+                $this->assertTrue($template_updated);
+            }
+        }
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name'        => __FUNCTION__,
+            'content'     => '<p>Test ticket</p>',
+            'entities_id' => $entity,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $solution_doc = $this->createTxtDocument();
+
+        $this->assertEmpty(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
+
+        $solution = new \ITILSolution();
+        $solution_id = $solution->add([
+            'itemtype'   => \Ticket::class,
+            'items_id'   => $ticket_id,
+            'content'    => '<p>Solution with attachment</p>',
+        ]);
+        $this->assertGreaterThan(0, $solution_id);
+
+        $this->createItem(
+            \Document_Item::class,
+            [
+                'documents_id' => $solution_doc->getID(),
+                'itemtype'     => $solution->getType(),
+                'items_id'     => $solution->getID(),
+            ]
+        );
+
+        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
+            'is_deleted' => 0,
+            'event'      => 'solved',
+        ]);
+        $this->assertCount(1, $queued_notifications);
+
+        $queued = reset($queued_notifications);
+        $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
+        $this->assertEquals($solution_id, $queued['items_id_trigger']);
+
+        $transport = new class extends AbstractTransport {
+            public $sent_email;
+
+            protected function doSend(SentMessage $message): void
+            {
+                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
+                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
+            }
+
+            public function __toString(): string
+            {
+                return 'test://';
+            }
+        };
+
+        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::send($queued_notifications);
+        \NotificationEventMailing::setMailer(null);
+
+        $attachments = $transport->sent_email->getAttachments();
+        $this->assertCount(1, $attachments);
+        $this->assertInstanceOf(DataPart::class, $attachments[0]);
+        $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
+    }
+
     /**
      * Simulates upload of a random PNG image and return its filename.
      */
