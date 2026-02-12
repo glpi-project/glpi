@@ -410,19 +410,34 @@
 
 // KB link item modal form
 .kb-link-item-form {
-    .form-control-plaintext {
+    .kb-link-item-dropdowns {
+        display: flex;
+        gap: 0.5rem;
+        align-items: start;
+
         br {
             display: none;
         }
 
-        > .select2-container,
-        > span[id^="show_items_id"] {
-            display: block;
-            margin-top: 0.75rem;
+        // Override inline style="width: 80%" set by PHP/select2
+        select,
+        .select2-container {
+            width: 100% !important;
         }
 
-        > span[id^="show_items_id"]:first-of-type {
-            margin-top: 0;
+        > .select2-container,
+        > span[id^="show_items_id"] {
+            flex: 1;
+            min-width: 0;
         }
+    }
+
+    // Mimic modal-footer: break out of modal-body padding
+    .kb-link-item-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+        padding: 0.75rem var(--tblr-modal-padding);
+        border-top: var(--tblr-border-width) solid var(--tblr-border-color);
     }
 }
