@@ -35,10 +35,13 @@
 
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\Inventoriable;
 
 /// Class Plug
 class Plug extends CommonDBRelation
 {
+    use Inventoriable;
+
     public static ?string $itemtype_1 = 'itemtype_main';
     public static ?string $items_id_1 = 'items_id_main';
     public static bool $mustBeAttached_1       = false;
@@ -72,6 +75,12 @@ class Plug extends CommonDBRelation
         return "ti ti-plug";
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
+
     public function post_getEmpty()
     {
         $this->fields['itemtype_main'] = PDU::class;
@@ -89,47 +98,9 @@ class Plug extends CommonDBRelation
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
+            ->addStandardTab(Lock::class, $ong, $options)
             ->addStandardTab(Log::class, $ong, $options);
         return $ong;
-    }
-
-
-    public function getSpecificMassiveActions($checkitem = null)
-    {
-        $actions = parent::getSpecificMassiveActions($checkitem);
-        if (static::canUpdate() && is_null($checkitem)) {
-            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Unlink plug');
-        }
-        return $actions;
-    }
-
-    public static function processMassiveActionsForOneItemtype(
-        MassiveAction $ma,
-        CommonDBTM $item,
-        array $ids
-    ) {
-        switch ($ma->getAction()) {
-            case 'unlink':
-                foreach ($ids as $id) {
-                    $plug = new self();
-                    if ($plug->getFromDB($id)) {
-                        if ($plug->update(
-                            [
-                                'itemtype_main'  => '',
-                                'items_id_main'  => 0,
-                                'id'            => $id,
-                            ]
-                        )
-                        ) {
-                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                        } else {
-                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                        }
-                    }
-                }
-                return;
-        }
-        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
 
@@ -150,15 +121,6 @@ class Plug extends CommonDBRelation
             );
             return false;
         }
-
-        if (isset($input['itemtype_main']) &&  !is_a($input['itemtype_main'], CommonDBTM::class, true)) {
-            trigger_error(
-                sprintf('Invalid itemtype_main value: %s', $input['itemtype_main'] ?? 'NULL'),
-                E_USER_WARNING
-            );
-            return false;
-        }
-
         return $input;
 
     }
@@ -186,6 +148,7 @@ class Plug extends CommonDBRelation
                 [
                     'itemtype_main' => $item::class,
                     'items_id_main' => $item->getID(),
+                    'is_deleted'    => false, // do not dcount deleted item
                 ]
             );
         }
@@ -239,6 +202,10 @@ class Plug extends CommonDBRelation
             'WHERE'  => [
                 'itemtype_main' => $item::class,
                 'items_id_main' => $ID,
+                'is_deleted'    => false,
+            ],
+            'ORDER' => [
+                'number',
             ],
         ]);
 
@@ -292,7 +259,9 @@ class Plug extends CommonDBRelation
             }
 
             $entries[] = [
+                'number' => $plug->fields['number'],
                 'name' => $plug->getLink(),
+                'type' => Dropdown::getDropdownName(PlugType::getTable(), $plug->fields['plugtypes_id']),
                 'itemtype' => $plug::class,
                 'items_id' => $plug->getID(),
                 'custom_name' => $plug->fields['custom_name'],
@@ -305,8 +274,10 @@ class Plug extends CommonDBRelation
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [
+                'number' => _x('plug', 'Number'),
                 'name' => Plug::getTypeName(0),
                 'custom_name' => __('Custom name'),
+                'type' => PlugType::getTypeName(0),
                 'linked_item' => __s('Associated asset'),
             ],
             'formatters' => [
@@ -334,21 +305,21 @@ class Plug extends CommonDBRelation
         ];
 
         $tab[] = [
-            'id'            => 1,
-            'table'         => static::getTable(),
-            'field'         => 'name',
-            'name'          => __('Name'),
-            'datatype'      => 'itemlink',
-            'massiveaction' => false,
+            'id'                 => 1,
+            'table'              => static::getTable(),
+            'field'              => 'name',
+            'name'               => __('Name'),
+            'datatype'           => 'itemlink',
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
-            'id'       => 86,
-            'table'      => static::getTable(),
-            'field'      => 'is_recursive',
-            'name'       => __('Child entities'),
-            'datatype'   => 'bool',
-            'searchtype' => 'equals',
+            'id'                 => 86,
+            'table'              => static::getTable(),
+            'field'              => 'is_recursive',
+            'name'               => __('Child entities'),
+            'datatype'           => 'bool',
+            'searchtype'         => 'equals',
         ];
 
         $tab[] = [
@@ -362,6 +333,23 @@ class Plug extends CommonDBRelation
 
         $tab[] = [
             'id'                 => 3,
+            'table'              => 'glpi_plugtypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'dropdown',
+        ];
+
+        $tab[] = [
+            'id'                 => 4,
+            'table'              => $this->getTable(),
+            'field'              => 'number',
+            'name'               => _x('plug', 'Number'),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
+            'id'                 => 5,
             'table'              => $this->getTable(),
             'field'              => 'itemtype_main',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Support type')),
@@ -371,9 +359,8 @@ class Plug extends CommonDBRelation
             'massiveaction'      => false,
         ];
 
-
         $tab[] = [
-            'id'                 => 4,
+            'id'                 => 6,
             'table'              => $this->getTable(),
             'field'              => 'items_id_main',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Support type')),
@@ -385,7 +372,7 @@ class Plug extends CommonDBRelation
 
 
         $tab[] = [
-            'id'                 => 5,
+            'id'                 => 7,
             'table'              => $this->getTable(),
             'field'              => 'itemtype_asset',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item type', 'Associated item types', 1), __('Associated asset')),
@@ -397,7 +384,7 @@ class Plug extends CommonDBRelation
 
 
         $tab[] = [
-            'id'                 => '8',
+            'id'                 => 8,
             'table'              => $this->getTable(),
             'field'              => 'items_id_asset',
             'name'               => sprintf(__('%s (%s)'), _n('Associated item', 'Associated items', 1), __('Associated asset')),

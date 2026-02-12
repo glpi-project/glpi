@@ -73,6 +73,25 @@
                         field_options
                     ) }}
 
+                    {{ fields.numberField(
+                        'number',
+                        item.fields['number'],
+                        _x('plug', 'Number'),
+                        field_options|merge({
+                            'min': 0,
+                            'step': 1,
+                            'max' : 20,
+                        }),
+                    ) }}
+
+                    {{ fields.dropdownField(
+                        'PlugType',
+                        'plugtypes_id',
+                        item.fields['plugtypes_id'],
+                        'PlugType'|itemtype_name,
+                        field_options
+                    ) }}
+
                     {{ fields.dropdownItemsFromItemtypes(
                         'itemtype_main',
                         __('Support type'),
@@ -82,8 +101,6 @@
                             itemtypes               : config('plug_types'),
                             entity_restrict         : entity_restrict,
                             checkright              : false,
-                            display_emptychoice     : false,
-                            required                : true,
                             default_itemtype        : item.fields['itemtype_main']|default(''),
                             default_items_id        : item.fields['items_id_main']|default(0),
                         }
@@ -98,7 +115,6 @@
                             itemtypes               : config('inventory_types'),
                             entity_restrict         : entity_restrict,
                             checkright              : false,
-                            display_emptychoice     : false,
                             default_itemtype        : item.fields['itemtype_asset']|default(''),
                             default_items_id        : item.fields['items_id_asset']|default(0),
                         }
@@ -111,6 +127,14 @@
                         field_options
                     ) }}
 
+                    {{ fields.dropdownField(
+                        'AutoUpdateSystem',
+                        'autoupdatesystems_id',
+                        item.fields['autoupdatesystems_id'],
+                        'AutoUpdateSystem'|itemtype_name,
+                        field_options
+                    ) }}
+
                 </div> {# .row #}
             </div> {# .row #}
          </div> {# .flex-row #}
@@ -120,6 +144,11 @@
    {% if no_form_buttons is not defined or no_form_buttons == false %}
       {{ include('components/form/buttons.html.twig') }}
    {% endif %}
+
+    {% if no_inventory_footer is not defined or no_inventory_footer == false %}
+      {{ include('components/form/inventory_info.html.twig') }}
+    {% endif %}
+
 
    {% if params['formfooter'] ?? true %}
       <div class="card-footer mx-n2 mb-n2 mt-4">

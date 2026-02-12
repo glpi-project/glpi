@@ -140,6 +140,8 @@ $RELATION = [
         'glpi_refusedequipments' => 'autoupdatesystems_id',
         'glpi_unmanageds'        => 'autoupdatesystems_id',
         'glpi_assets_assets'     => 'autoupdatesystems_id',
+        'glpi_pdus'              => 'autoupdatesystems_id',
+        'glpi_plugs'             => 'autoupdatesystems_id',
     ],
 
     'glpi_budgets' => [
@@ -699,6 +701,11 @@ $RELATION = [
         'glpi_wifinetworks'                => 'entities_id',
         'glpi_webhooks'                    => 'entities_id',
         'glpi_queuedwebhooks'              => 'entities_id',
+        'glpi_plugtypes'                   => 'entities_id',
+    ],
+
+    'glpi_plugtypes' => [
+        'glpi_plugs' => 'plugtypes_id',
     ],
 
     'glpi_filesystems' => [
@@ -1301,6 +1308,7 @@ $RELATION = [
         'glpi_networkequipments' => 'snmpcredentials_id',
         'glpi_printers'          => 'snmpcredentials_id',
         'glpi_unmanageds'        => 'snmpcredentials_id',
+        'glpi_pdus'              => 'snmpcredentials_id',
     ],
 
     'glpi_socketmodels' => [

@@ -23762,6 +23762,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method PDU\\:\\:getMostRecentAgent\\(\\) has parameter \\$conditions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method PDU\\:\\:getOwnAssetsCriteria\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -24890,13 +24896,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Plug\\:\\:getSpecificMassiveActions\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Plug\\:\\:processMassiveActionsForOneItemtype\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#',
+	'message' => '#^Method Plug\\:\\:getMostRecentAgent\\(\\) has parameter \\$conditions with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Plug.php',
