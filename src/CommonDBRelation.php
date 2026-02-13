@@ -2175,7 +2175,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $required_fields = [];
         $must_check = $input !== null && $right == CREATE;
 
-        if ($must_check && static::$mustBeAttached_1 === true && (!isset($input[static::$items_id_1]) || $input[static::$items_id_1] === null || $input[static::$items_id_1] === '')) {
+        if ($must_check && static::$mustBeAttached_1 === true && $this->isValueEmpty($input[static::$items_id_1] ?? null, static::$itemtype_1, $input)) {
             $itemtype = static::$itemtype_1;
             if (!preg_match('/^itemtype/', $itemtype)) {
                 $itemtype = static::$itemtype_1::getTypeName(1);
@@ -2183,7 +2183,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $error_types[] = $itemtype;
             $required_fields[] = static::$items_id_1;
         }
-        if ($must_check && static::$mustBeAttached_2 === true && (!isset($input[static::$items_id_2]) || $input[static::$items_id_2] === null || $input[static::$items_id_2] === '')) {
+        if ($must_check && static::$mustBeAttached_2 === true && $this->isValueEmpty($input[static::$items_id_2] ?? null, static::$itemtype_2, $input)) {
             $itemtype = static::$itemtype_2;
             if (!preg_match('/^itemtype/', $itemtype)) {
                 $itemtype = static::$itemtype_2::getTypeName(1);
@@ -2208,5 +2208,39 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         parent::check($ID, $right, $input);
+    }
+
+    /**
+     * Check if a value is empty for validation purposes.
+     * For Entity itemtype, 0 is a valid value (root entity).
+     * For other itemtypes, 0 means no link.
+     *
+     * @param mixed $value The value to check
+     * @param string $itemtype_field The itemtype field name or class
+     * @param array $input The complete input array
+     * @return bool True if the value should be considered empty
+     */
+    private function isValueEmpty($value, string $itemtype_field, array $input): bool
+    {
+        if ($value === null || $value === '') {
+            return true;
+        }
+
+        if ($value === 0 || $value === '0') {
+            $itemtype = null;
+            if (preg_match('/^itemtype/', $itemtype_field)) {
+                $itemtype = $input[$itemtype_field] ?? null;
+            } else {
+                $itemtype = $itemtype_field;
+            }
+
+            if ($itemtype === \Entity::class) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
