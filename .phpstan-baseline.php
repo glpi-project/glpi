@@ -3922,13 +3922,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$with_private of method CommonITILObject\\:\\:numberOfFollowups\\(\\) expects bool, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$with_private of method CommonITILObject\\:\\:numberOfTasks\\(\\) expects bool, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
