@@ -36,6 +36,7 @@ namespace test\units;
 
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem_Item;
@@ -269,7 +270,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         try {
             $kb_item_item->check(-1, CREATE, $input);
-        } catch (\Glpi\Exception\Http\AccessDeniedHttpException $e) {
+        } catch (AccessDeniedHttpException $e) {
         }
 
         $link_id = $kb_item_item->add($input);

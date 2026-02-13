@@ -2234,7 +2234,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $itemtype = $itemtype_field;
             }
 
-            if ($itemtype === \Entity::class) {
+            if ($itemtype === Entity::class) {
                 return false;
             }
 
