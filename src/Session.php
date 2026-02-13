@@ -1017,12 +1017,16 @@ class Session
         }
 
         // Check if remote user changed (SSO case)
+        // Only invalidate session when the SSO variable IS present but has a different value,
+        // which indicates a different user is now authenticated (e.g., shared workstation scenario).
+        // When the SSO variable is absent (e.g., pages not protected by mod_auth_gssapi),
+        // we should not invalidate the session.
         if ($valid_user && array_key_exists('glpi_remote_user', $_SESSION)) {
             $ssovariable = Dropdown::getDropdownName(
                 'glpi_ssovariables',
                 $CFG_GLPI["ssovariables_id"]
             );
-            if (!array_key_exists($ssovariable, $_SERVER) || $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
+            if (array_key_exists($ssovariable, $_SERVER) && $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
                 $valid_user = false;
             }
         }
