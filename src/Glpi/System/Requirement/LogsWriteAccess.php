@@ -44,6 +44,17 @@ use function Safe\touch;
  */
 class LogsWriteAccess extends AbstractRequirement
 {
+    private const LOG_FILES = [
+        'php-errors.log',
+        'access-errors.log',
+        'api.log',
+        'cron.log',
+        'event.log',
+        'mail-error.log',
+        'mailgate.log',
+        'webhook.log',
+    ];
+
     private string $log_dir;
 
     public function __construct(string $log_dir)
@@ -63,26 +74,29 @@ class LogsWriteAccess extends AbstractRequirement
             return;
         }
 
-        $file_path = $this->log_dir . '/php-errors.log';
+        $this->validated = true;
 
-        if (file_exists($file_path)) {
-            if (!is_writable($file_path)) {
-                $this->validated = false;
-                $this->validation_messages[] = sprintf(__('The log file %s is not writable.'), $file_path);
-                return;
-            }
-        } else {
-            // Do not remove the file after touch(), as SELinux may prevent re-creation.
-            try {
-                touch($file_path);
-            } catch (FilesystemException) {
-                $this->validated = false;
-                $this->validation_messages[] = sprintf(__('The log file %s could not be created.'), $file_path);
-                return;
+        foreach (self::LOG_FILES as $log_file) {
+            $file_path = $this->log_dir . '/' . $log_file;
+
+            if (file_exists($file_path)) {
+                if (!is_writable($file_path)) {
+                    $this->validated = false;
+                    $this->validation_messages[] = sprintf(__('The log file %s is not writable.'), $file_path);
+                }
+            } else {
+                // Do not remove the file after touch(), as SELinux may prevent re-creation.
+                try {
+                    touch($file_path);
+                } catch (FilesystemException) {
+                    $this->validated = false;
+                    $this->validation_messages[] = sprintf(__('The log file %s could not be created.'), $file_path);
+                }
             }
         }
 
-        $this->validated = true;
-        $this->validation_messages[] = __('Write access to log files has been validated.');
+        if ($this->validated) {
+            $this->validation_messages[] = __('Write access to log files has been validated.');
+        }
     }
 }

@@ -88,4 +88,73 @@ class LogsWriteAccessTest extends GLPITestCase
             $instance->getValidationMessages()
         );
     }
+
+    public function testCheckAllLogFilesWritable()
+    {
+        vfsStream::setup('root', 0o777, [
+            'php-errors.log'    => '',
+            'access-errors.log' => '',
+            'api.log'           => '',
+            'cron.log'          => '',
+            'event.log'         => '',
+            'mail-error.log'    => '',
+            'mailgate.log'      => '',
+            'webhook.log'       => '',
+        ]);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertTrue($instance->isValidated());
+        $this->assertEquals(
+            ['Write access to log files has been validated.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckWithOneUnwritableFile()
+    {
+        $structure = vfsStream::setup('root', 0o777, [
+            'php-errors.log'    => '',
+            'access-errors.log' => '',
+            'api.log'           => '',
+            'cron.log'          => '',
+            'event.log'         => '',
+            'mail-error.log'    => '',
+            'mailgate.log'      => '',
+            'webhook.log'       => '',
+        ]);
+        $structure->getChild('mailgate.log')->chmod(0o444);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log file ' . vfsStream::url('root/mailgate.log') . ' is not writable.'],
+            $instance->getValidationMessages()
+        );
+    }
+
+    public function testCheckWithMultipleUnwritableFiles()
+    {
+        $structure = vfsStream::setup('root', 0o777, [
+            'php-errors.log'    => '',
+            'access-errors.log' => '',
+            'api.log'           => '',
+            'cron.log'          => '',
+            'event.log'         => '',
+            'mail-error.log'    => '',
+            'mailgate.log'      => '',
+            'webhook.log'       => '',
+        ]);
+        $structure->getChild('cron.log')->chmod(0o444);
+        $structure->getChild('webhook.log')->chmod(0o444);
+
+        $instance = new LogsWriteAccess(vfsStream::url('root'));
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            [
+                'The log file ' . vfsStream::url('root/cron.log') . ' is not writable.',
+                'The log file ' . vfsStream::url('root/webhook.log') . ' is not writable.',
+            ],
+            $instance->getValidationMessages()
+        );
+    }
 }
