@@ -543,22 +543,25 @@ HTML,
 
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
+        // Arrange - Configure notifications
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+
         $solved_notif = new \Notification();
         $this->assertTrue($solved_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'solved']));
 
-        $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
-
-        $deactivated = $DB->update(
+        $DB->update(
             \Notification::getTable(),
             ['is_active' => false],
             ['id' => ['<>', $solved_notif->getID()]]
         );
-        $this->assertTrue($deactivated);
-        $this->assertTrue($solved_notif->update(['id' => $solved_notif->getID(), 'is_active' => 1]));
+        $this->updateItem(\Notification::class, $solved_notif->getID(), [
+            'is_active'        => 1,
+            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+        ]);
 
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
-        $this->assertTrue($solved_notif->update(['id' => $solved_notif->getID(), 'attach_documents' => \NotificationSetting::ATTACH_INHERIT]));
-
+        // Set notification template to plain text (no HTML content)
         $notification_notificationtemplate_it = $DB->request([
             'FROM' => 'glpi_notifications_notificationtemplates',
             'WHERE' => ['notifications_id' => $solved_notif->getID()],
@@ -578,45 +581,43 @@ HTML,
             }
         }
 
-        $ticket = new \Ticket();
-        $ticket_id = $ticket->add([
+        // Arrange - Create ticket with a solution and attach a document to it
+        $ticket = $this->createItem(\Ticket::class, [
             'name'        => __FUNCTION__,
             'content'     => '<p>Test ticket</p>',
             'entities_id' => $entity,
         ]);
-        $this->assertGreaterThan(0, $ticket_id);
 
         $solution_doc = $this->createTxtDocument();
 
-        $this->assertEmpty(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
 
-        $solution = new \ITILSolution();
-        $solution_id = $solution->add([
+        $solution = $this->createItem(\ITILSolution::class, [
             'itemtype'   => \Ticket::class,
-            'items_id'   => $ticket_id,
+            'items_id'   => $ticket->getID(),
             'content'    => '<p>Solution with attachment</p>',
         ]);
-        $this->assertGreaterThan(0, $solution_id);
 
-        $this->createItem(
-            \Document_Item::class,
-            [
-                'documents_id' => $solution_doc->getID(),
-                'itemtype'     => $solution->getType(),
-                'items_id'     => $solution->getID(),
-            ]
-        );
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $solution_doc->getID(),
+            'itemtype'     => $solution->getType(),
+            'items_id'     => $solution->getID(),
+        ]);
 
+        // Act - Retrieve queued notification
         $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
             'is_deleted' => 0,
             'event'      => 'solved',
         ]);
+
+        // Assert - Solution is the trigger for the notification
         $this->assertCount(1, $queued_notifications);
 
         $queued = reset($queued_notifications);
         $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
-        $this->assertEquals($solution_id, $queued['items_id_trigger']);
+        $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
 
+        // Assert - Solution document is attached to the sent email
         $transport = new class extends AbstractTransport {
             public $sent_email;
 
