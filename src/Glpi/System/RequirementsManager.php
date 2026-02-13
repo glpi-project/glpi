@@ -142,8 +142,7 @@ class RequirementsManager
             $requirements[] = new DbEngine($db);
         }
 
-        global $PHPLOGGER;
-        $requirements[] = new LogsWriteAccess($PHPLOGGER);
+        $requirements[] = new LogsWriteAccess(GLPI_LOG_DIR);
 
         $requirements[] = new DirectoriesWriteAccess(
             __('Permissions for GLPI data directories'),
