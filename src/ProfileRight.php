@@ -62,7 +62,7 @@ class ProfileRight extends CommonDBChild
         global $DB;
 
         if ($DB->isReplica()) {
-            throw new CloneException('Cannot clone item on a DB slave.');
+            throw new CloneException('Cannot clone item on a DB replica.');
         }
         $new_item = new static();
         $input = $this->fields;
