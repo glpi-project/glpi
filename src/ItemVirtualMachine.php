@@ -149,9 +149,10 @@ class ItemVirtualMachine extends CommonDBChild
 
         $linked_asset = "";
         if ($link_asset = self::findVirtualMachine($this->fields)) {
-            $asset_to_link = getItemForItemtype($this->fields['itemtype']);
-            if ($asset_to_link->getFromDB($link_asset)) {
-                $linked_asset = $asset_to_link->getLink(['comments' => true]);
+            if ($asset_to_link = getItemForItemtype($this->fields['itemtype'])) {
+                if ($asset_to_link->getFromDB($link_asset)) {
+                    $linked_asset = $asset_to_link->getLink(['comments' => true]);
+                }
             }
         }
 
@@ -291,11 +292,12 @@ class ItemVirtualMachine extends CommonDBChild
 
             $linked_asset_url = ''; //no asset linked
             if ($link_assets_id = self::findVirtualMachine($virtualmachine)) {
-                $linked_asset = getItemForItemtype($virtualmachine['itemtype']);
-                if ($linked_asset->can($link_assets_id, READ)) {
-                    $linked_asset_url = $linked_asset->getLink();
-                } else {
-                    $linked_asset_url = $linked_asset->fields['name'];
+                if ($linked_asset = getItemForItemtype($virtualmachine['itemtype'])) {
+                    if ($linked_asset->can($link_assets_id, READ)) {
+                        $linked_asset_url = $linked_asset->getLink();
+                    } else {
+                        $linked_asset_url = $linked_asset->fields['name'];
+                    }
                 }
             }
 
@@ -395,7 +397,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param array<string,mixed> $fields  Array of virtual machine fields
      *
-     * @return int|bool ID of the asset that have this uuid or false otherwise
+     * @return int|false ID of the asset that have this uuid or false otherwise
      **/
     public static function findVirtualMachine($fields = [])
     {
