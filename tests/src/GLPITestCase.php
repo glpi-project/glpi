@@ -58,6 +58,7 @@ use Glpi\Tests\Log\TestHandler;
 use InvalidArgumentException;
 use Item_Devices;
 use Item_DeviceSimcard;
+use ITILFollowupTemplate;
 use Laminas\I18n\Translator\Translator;
 use Log;
 use Monolog\Level;
@@ -77,6 +78,7 @@ use SebastianBergmann\Comparator\ComparisonFailure;
 use Session;
 use Software;
 use SoftwareLicense;
+use TaskTemplate;
 use Throwable;
 use Ticket;
 
@@ -614,8 +616,8 @@ class GLPITestCase extends TestCase
             case Problem::class:
             case Ticket::class:
             case Change::class:
-            case Problem::class:
-            case Ticket::class:
+            case ITILFollowupTemplate::class:
+            case TaskTemplate::class:
                 $input['content'] = $this->getUniqueString();
                 break;
             case Consumable::class:
