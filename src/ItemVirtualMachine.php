@@ -289,6 +289,16 @@ class ItemVirtualMachine extends CommonDBChild
             $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
             $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
 
+            $linked_asset_url = ''; //no asset linked
+            if ($link_assets_id = self::findVirtualMachine($virtualmachine)) {
+                $linked_asset = getItemForItemtype($virtualmachine['itemtype']);
+                if ($linked_asset->can($link_assets_id, READ)) {
+                    $linked_asset_url = $linked_asset->getLink();
+                } else {
+                    $linked_asset_url = $linked_asset->fields['name'];
+                }
+            }
+
             $entries[] = [
                 'name'                      => $vm->getLink(),
                 'comment'                   => $virtualmachine['comment'],
@@ -299,6 +309,7 @@ class ItemVirtualMachine extends CommonDBChild
                 'uuid'                      => $virtualmachine['uuid'],
                 'vcpu'                      => $virtualmachine['vcpu'],
                 'ram'                       => $virtualmachine['ram'],
+                'linked_asset'              => $linked_asset_url,
             ];
         }
 
@@ -316,6 +327,7 @@ class ItemVirtualMachine extends CommonDBChild
                 'uuid' => __('UUID'),
                 'vcpu' => __('Processors number'),
                 'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+                'linked_asset' => __('Machine'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
@@ -324,6 +336,7 @@ class ItemVirtualMachine extends CommonDBChild
                 'virtualmachinestates_id' => 'raw_html',
                 'vcpu' => 'integer',
                 'ram' => 'integer',
+                'linked_asset' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
