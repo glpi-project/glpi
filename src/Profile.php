@@ -871,6 +871,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         'followups_tasks' => [
                             $fn_get_rights(ITILFollowup::class, 'central'),
                             $fn_get_rights(TicketTask::class, 'central'),
+                            $fn_get_rights(Document_Item::class, 'central'),
                         ],
                         'validations' => [
                             $fn_get_rights(TicketValidation::class, 'central'),

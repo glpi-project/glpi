@@ -1808,14 +1808,4 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         );
         return $control_manager->canAnswerForm($form, $parameters);
     }
-
-    /**
-     * @param string $interface
-     *
-     * @return array<string, string> Array of rights with their labels
-     */
-    public function getRights($interface = 'central'): array
-    {
-        return (new Document_Item())->getRights($interface);
-    }
 }

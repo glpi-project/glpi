@@ -996,8 +996,6 @@ TWIG, $twig_params);
      */
     public function getRights($interface = 'central'): array
     {
-        $values = parent::getRights($interface);
-
         if ($interface === 'central') {
             $values[self::SEEPRIVATE] = __('See private ones');
         }
