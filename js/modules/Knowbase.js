@@ -122,6 +122,7 @@ class Knowbase {
             }
 
             glpi_html_dialog({
+                modalclass: 'modal-xl',
                 title: __('Compare revisions %1$d and %2$d')
                     .replace("%1$d", old_id)
                     .replace("%2$d", new_id),
