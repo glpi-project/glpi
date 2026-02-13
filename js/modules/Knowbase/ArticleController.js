@@ -162,7 +162,7 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
-     * @param {{revisionId: string, titleDiff: string, contentDiff: string}} detail
+     * @param {{titleDiff: string, contentDiff: string}} detail
      */
     #showDiff({titleDiff, contentDiff})
     {
