@@ -1303,7 +1303,7 @@ class CommonDBTM extends CommonGLPI
                 $id_to_clone = $input['id'];
             }
             if (isset($id_to_clone)) {
-                if ($this->getFromDB($id_to_clone)) {
+                if (!$this->getFromDB($id_to_clone)) {
                     throw new CloneException('Unable to load item to clone #' . $id_to_clone);
                 }
                 if ($clone_id = $this->clone($input, $history)) {
