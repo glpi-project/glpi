@@ -627,6 +627,10 @@ CREATE TABLE `glpi_changecosts` (
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `changes_id` (`changes_id`),
@@ -634,7 +638,11 @@ CREATE TABLE `glpi_changecosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1466,6 +1474,10 @@ CREATE TABLE `glpi_contractcosts` (
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `contracts_id` (`contracts_id`),
@@ -1473,7 +1485,11 @@ CREATE TABLE `glpi_contractcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5711,13 +5727,21 @@ CREATE TABLE `glpi_problemcosts` (
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `problems_id` (`problems_id`),
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5985,6 +6009,10 @@ CREATE TABLE `glpi_projectcosts` (
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `projects_id` (`projects_id`),
@@ -5992,7 +6020,11 @@ CREATE TABLE `glpi_projectcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7253,13 +7285,21 @@ CREATE TABLE `glpi_ticketcosts` (
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `tickets_id` (`tickets_id`),
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

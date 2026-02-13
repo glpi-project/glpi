@@ -69,6 +69,8 @@ class ContractCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
+        $input['users_id'] = Session::getLoginUserID();
+
         return parent::prepareInputForAdd($input);
     }
 
@@ -83,6 +85,8 @@ class ContractCost extends CommonDBChild
         ) {
             $input['end_date'] = $input['begin_date'];
         }
+
+        $input['users_id_lastupdater'] = Session::getLoginUserID();
 
         return parent::prepareInputForUpdate($input);
     }
@@ -354,6 +358,7 @@ TWIG, $twig_params);
 
         $entries = [];
         $budget_cache = [];
+        $user_links = [];
         foreach ($iterator as $data) {
             $name = empty($data['name']) ? sprintf(
                 __('%1$s (%2$s)'),
@@ -368,6 +373,16 @@ TWIG, $twig_params);
             if (!isset($budget_cache[$data['budgets_id']])) {
                 $budget_cache[$data['budgets_id']] = Dropdown::getDropdownName(table: 'glpi_budgets', id: $data['budgets_id'], default: '');
             }
+            if (!array_key_exists($data['users_id'], $user_links)) {
+                $user = new User();
+                $user->getFromDB($data['users_id']);
+                $user_links[$data['users_id']] = $user->getLink();
+            }
+            if (!array_key_exists($data['users_id_lastupdater'], $user_links)) {
+                $user = new User();
+                $user->getFromDB($data['users_id_lastupdater']);
+                $user_links[$data['users_id_lastupdater']] = $user->getLink();
+            }
             $entries[] = [
                 'itemtype' => self::class,
                 'id' => $data['id'],
@@ -377,6 +392,10 @@ TWIG, $twig_params);
                 'end_date' => $data['end_date'],
                 'budgets_id' => $budget_cache[$data['budgets_id']],
                 'cost' => $data['cost'],
+                'date_creation' => $data['date_creation'],
+                'date_mod' => $data['date_mod'],
+                'users_id' => $user_links[$data['users_id']],
+                'users_id_lastupdater' => $user_links[$data['users_id_lastupdater']],
             ];
         }
 
@@ -388,6 +407,10 @@ TWIG, $twig_params);
             'order' => $order,
             'columns' => [
                 'name' => __('Name'),
+                'date_creation' => __('Creation date'),
+                'users_id' => User::getTypeName(1),
+                'date_mod' => __('Modification date'),
+                'users_id_lastupdater' => User::getTypeName(1) . ' (' . __('Last updater') . ')',
                 'begin_date' => __('Begin date'),
                 'end_date' => __('End date'),
                 'budgets_id' => Budget::getTypeName(1),
@@ -395,12 +418,20 @@ TWIG, $twig_params);
             ],
             'formatters' => [
                 'name' => 'raw_html',
+                'date_creation' => 'datetime',
+                'users_id' => 'raw_html',
+                'date_mod' => 'datetime',
+                'users_id_lastupdater' => 'raw_html',
                 'begin_date' => 'date',
                 'end_date' => 'date',
                 'cost' => 'number',
             ],
             'footers' => [
                 [
+                    '',
+                    '',
+                    '',
+                    '',
                     '',
                     '',
                     '',

@@ -1508,6 +1508,10 @@ $RELATION = [
             'users_id_recipient',
             'users_id_lastupdater',
         ],
+        'glpi_changecosts' => [
+            'users_id',
+            'users_id_lastupdater',
+        ],
         '_glpi_changes_users'           => 'users_id',
         'glpi_changetasks'              => [
             'users_id',
@@ -1529,6 +1533,10 @@ $RELATION = [
         'glpi_consumableitems'          => [
             'users_id_tech',
             'users_id',
+        ],
+        'glpi_contractcosts' => [
+            'users_id',
+            'users_id_lastupdater',
         ],
         '_glpi_dashboards_dashboards'   => 'users_id',
         'glpi_dashboards_filters'       => 'users_id',
@@ -1617,6 +1625,10 @@ $RELATION = [
             'users_id_recipient',
             'users_id_lastupdater',
         ],
+        'glpi_problemcosts' => [
+            'users_id',
+            'users_id_lastupdater',
+        ],
         '_glpi_problems_users'          => 'users_id',
         'glpi_problemtasks'             => [
             'users_id',
@@ -1625,6 +1637,10 @@ $RELATION = [
         ],
         '_glpi_profiles_users'          => 'users_id',
         'glpi_projects'                 => 'users_id',
+        'glpi_projectcosts' => [
+            'users_id',
+            'users_id_lastupdater',
+        ],
         'glpi_projecttasks'             => 'users_id',
         'glpi_projecttasktemplates'     => 'users_id',
         'glpi_racks'                    => [
@@ -1650,6 +1666,10 @@ $RELATION = [
         'glpi_tasktemplates'            => 'users_id_tech',
         'glpi_tickets'                  => [
             'users_id_recipient',
+            'users_id_lastupdater',
+        ],
+        'glpi_ticketcosts' => [
+            'users_id',
             'users_id_lastupdater',
         ],
         '_glpi_tickets_users'           => 'users_id',
