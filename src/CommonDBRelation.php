@@ -2216,11 +2216,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * For other itemtypes, 0 means no link.
      *
      * @param mixed $value The value to check
-     * @param string $itemtype_field The itemtype field name or class
-     * @param array $input The complete input array
+     * @param string|null $itemtype_field The itemtype field name or class
+     * @param array<string, mixed> $input The complete input array
      * @return bool True if the value should be considered empty
      */
-    private function isValueEmpty($value, string $itemtype_field, array $input): bool
+    private function isValueEmpty($value, ?string $itemtype_field, array $input): bool
     {
         if ($value === null || $value === '') {
             return true;
@@ -2228,7 +2228,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         if ($value === 0 || $value === '0') {
             $itemtype = null;
-            if (preg_match('/^itemtype/', $itemtype_field)) {
+            if ($itemtype_field !== null && preg_match('/^itemtype/', $itemtype_field)) {
                 $itemtype = $input[$itemtype_field] ?? null;
             } else {
                 $itemtype = $itemtype_field;
