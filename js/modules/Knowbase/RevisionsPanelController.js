@@ -133,14 +133,14 @@ export class GlpiKnowbaseRevisionsPanelController
                 return;
             }
 
-            // Compute diffs (strip long_text wrapper, scripts, read_more from current DOM content)
+            // Compute diffs
             const titleDiff = await computeHtmlDiff(
                 revisionData.name,
                 subjectEl.textContent
             );
             const contentDiff = await computeHtmlDiff(
                 revisionData.answer,
-                GlpiKnowbaseRevisionsPanelController.#stripRichTextWrapper(contentEl.innerHTML)
+                contentEl.innerHTML
             );
 
             // Dispatch event to ArticleController
@@ -166,23 +166,6 @@ export class GlpiKnowbaseRevisionsPanelController
 
         this.#activeRevisionId = null;
         this.#updateRevisionItemsState();
-    }
-
-    /**
-     * Strip the long_text wrapper, read_more button and scripts added by
-     * RichText::getEnhancedHtml() from the current DOM article content.
-     *
-     * @param {string} html
-     * @returns {string}
-     */
-    static #stripRichTextWrapper(html)
-    {
-        const container = document.createElement('div');
-        container.innerHTML = html;
-        const longText = container.querySelector('.long_text');
-        const source = longText || container;
-        source.querySelectorAll('script, .read_more').forEach(el => el.remove());
-        return source.innerHTML;
     }
 
     #updateRevisionItemsState()
