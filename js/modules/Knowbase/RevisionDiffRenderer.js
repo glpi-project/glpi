@@ -41,6 +41,19 @@ async function ensureLib()
 }
 
 /**
+ * Normalize HTML through browser's DOMParser to ensure consistent
+ * entity encoding and attribute formatting between both diff inputs.
+ *
+ * @param {string} html
+ * @returns {string}
+ */
+function normalizeHtml(html)
+{
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.innerHTML.replace(/&nbsp;/g, ' ');
+}
+
+/**
  * Compute an inline HTML diff between two HTML strings.
  *
  * @param {string} oldHtml
@@ -51,6 +64,6 @@ export async function computeHtmlDiff(oldHtml, newHtml)
 {
     await ensureLib();
 
-    const diff = new window.HtmlDiff(oldHtml, newHtml);
+    const diff = new window.HtmlDiff(normalizeHtml(oldHtml), normalizeHtml(newHtml));
     return diff.build();
 }
