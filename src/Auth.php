@@ -179,6 +179,8 @@ class Auth extends CommonGLPI
     /**
      * Check user existence in DB
      *
+     * Side effect : may also fill $this->user_dn
+     *
      * @global DBmysql $DB
      * @param  array   $options conditions : array('name'=>'glpi')
      *                                    or array('email' => 'test at test.com')
@@ -219,6 +221,39 @@ class Auth extends CommonGLPI
             }
             return self::USER_EXISTS_WITH_PWD;
         }
+    }
+
+    /**
+     * User can log in
+     *
+     * All conditions to meet :
+     * - User is not deleted
+     * - active
+     * - current time between restricted dates
+     */
+    public function canUserLogin(): bool
+    {
+        // in some contexts, we can have "NULL" as string instead of null value
+        if ($this->user->fields['begin_date'] === 'NULL') {
+            $this->user->fields['begin_date'] = null;
+        }
+        if ($this->user->fields['end_date'] === 'NULL') {
+            $this->user->fields['begin_date'] = null;
+        }
+
+        return
+            $this->user->fields['is_deleted'] === 0
+            && (
+                $this->user->fields['is_active'] === 1
+                && (
+                    ($this->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                    || is_null($this->user->fields['begin_date'])
+                )
+                && (
+                    ($this->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
+                    || is_null($this->user->fields['end_date'])
+                )
+            );
     }
 
     /**
