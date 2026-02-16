@@ -133,8 +133,8 @@ export class GlpiKnowbaseCommentsPanelController
             if (thread) {
                 const trigger = thread.querySelector(reply_trigger_selector);
                 if (trigger) {
-                    trigger.classList.remove('opacity-0');
-                    trigger.classList.add('opacity-100');
+                    trigger.classList.remove('opacity-0-hoverable');
+                    trigger.classList.add('opacity-100-hoverable');
                 }
             }
         }, true);
@@ -144,8 +144,8 @@ export class GlpiKnowbaseCommentsPanelController
             if (thread) {
                 const trigger = thread.querySelector(reply_trigger_selector);
                 if (trigger) {
-                    trigger.classList.add('opacity-0');
-                    trigger.classList.remove('opacity-100');
+                    trigger.classList.add('opacity-0-hoverable');
+                    trigger.classList.remove('opacity-100-hoverable');
                 }
             }
         }, true);
