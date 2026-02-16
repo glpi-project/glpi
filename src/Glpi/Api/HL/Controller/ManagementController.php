@@ -374,8 +374,8 @@ final class ManagementController extends AbstractController
                                     'readOnly' => true,
                                 ],
                             ],
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ],
             'Database' => [

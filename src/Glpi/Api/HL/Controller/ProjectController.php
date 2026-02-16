@@ -175,7 +175,7 @@ final class ProjectController extends AbstractController
                                     'readOnly' => true,
                                 ],
                             ],
-                        ]
+                        ],
                     ]
                 ],
             ],

@@ -551,7 +551,7 @@ final class ITILController extends AbstractController
                 ],
             ];
 
-            $cost_type = match($itil_type) {
+            $cost_type = match ($itil_type) {
                 Ticket::class => TicketCost::class,
                 Change::class => ChangeCost::class,
                 Problem::class => ProblemCost::class,
@@ -575,7 +575,7 @@ final class ITILController extends AbstractController
                             'readOnly' => true,
                         ],
                     ],
-                ]
+                ],
             ];
         }
 
