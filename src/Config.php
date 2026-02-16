@@ -544,7 +544,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public function showFormDBReplica(): void
+    private function showFormDBReplica(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -576,16 +576,6 @@ class Config extends CommonDBTM
             'replication_status' => $replication_status,
             'replication_delay'  => $replication_delay,
         ]);
-    }
-
-    /**
-     * @return void
-     * @deprecated 12
-     */
-    public function showFormDBSlave()
-    {
-        Toolbox::deprecated('Use showFormDBReplica()');
-        $this->showFormDBReplica();
     }
 
     /**

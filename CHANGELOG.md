@@ -22,6 +22,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
+- `KnowbaseItem_Comment` is now final
 - `KnowbaseItem_Revision` is now final
 
 #### Deprecated
@@ -29,25 +30,18 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Features\Inventoriable::showInventoryInfo()`
 - `Glpi\Features\Inventoriable::displayAgentInformation()`
 - `User::loadMinimalSession()`
+- `DBConnection::switchToMaster()`
+- `DBConnection::switchToSlave()`
 - `DBmysql::$slave`
 - `DBmysql::isSlave()`
-- `DBConnection::isDBSlaveActive()`
-- `DBConnection::switchToSlave()`
-- `DBConnection::switchToMaster()`
-- `DBConnection::createDBSlaveConfig()`
-- `DBConnection::deleteDBSlaveConfig()`
-- `DBConnection::createSlaveConnectionFile()`
-- `DBConnection::getDBSlaveConf()`
-- `DBConnection::saveDBSlaveConf()`
 - `DBSlave` class
 
 #### Removed
 
-- `ajax/getKbComment.php`
-- `front/knowbaseitem_comment.form.php`
-- `front/knowbaseitem_comment.form.php`
-- `js/Forms/FaIconSelector.js` module
-- `templates/pages/tools/kb/comments.html.twig`
+- `diff-match-patch` JS library
+- `jquery-prettytextdiff` JS library
+- `Forms/FaIconSelector` JS module
+- `Knowbase` JS module
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -55,9 +49,16 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
-- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
+- `Config::showFormDBSlave()`
+- `DBConnection::PROPERTY_SLAVE` constant
+- `DBConnection::createDBSlaveConfig()`
+- `DBConnection::createSlaveConnectionFile()`
+- `DBConnection::deleteDBSlaveConfig()`
+- `DBConnection::getDBSlaveConf()`
+- `DBConnection::isDBSlaveActive()`
+- `DBConnection::saveDBSlaveConf()`
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
 - `DBmysql::doQueryOrDie()`
@@ -66,52 +67,48 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
-- `Glpi\Toolbox\Sanitizer` class
-- `KnowbaseItem_Revision.php::getTabNameForItem()`
-- `KnowbaseItem_Revision.php::displayTabContentForItem()`
-- `KnowbaseItem_Revision.php::showForItem()`
-- `Migration::setOutputHandler()`
-- `Migration::addNewMessageArea()`
-- `Migration::displayTitle()`
-- `Migration::displayWarning()`
-- `Migration::displayError()`
-- `Timer` class
-- `Toolbox::seems_utf8()`
-- `Toolbox::sendFile()`
-- `Toolbox::addslashes_deep()`
-- `Toolbox::stripslashes_deep()`
-- `Html::entity_decode_deep()`
-- `Html::entities_deep()`
-- `Html::cleanInputText()`
-- `Html::cleanPostForTextArea()`
-- `Html::displayNotFoundError()`
-- `Html::displayRightError()`
-- `Html::displayDebugInfos()`
-- `Html::displayErrorAndDie()`
-- `Html::progressBar()`
-- `Html::createProgressBar()`
-- `Html::changeProgressBarMessage()`
-- `Html::changeProgressBarPosition()`
-- `Html::displayProgressBar()`
-- `Html::ajaxFooter()`
-- `Html::glpi_flush()`
-- `Html::jsGetElementbyID()`
-- `Html::jsSetDropdownValue()`
-- `Html::jsGetDropdownValue()`
 - `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashoboard\Filter::getAll()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Http\Response::sendContent()`
 - `Glpi\Http\Response::sendError()`
 - `Glpi\Http\Response::sendHeaders()`
-- `Glpi\Http\Response::sendContent()`
-- `Glpi\Http\Response::send()`
-- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Inventory\Asset\Software::getCompareKey()`
 - `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
 - `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
-- `ITILFollowup::ADDMYTICKET` constant
-- `ITILFollowup::ADDGROUPTICKET` constant
+- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Toolbox\Sanitizer` class
+- `Html::ajaxFooter()`
+- `Html::changeProgressBarMessage()`
+- `Html::changeProgressBarPosition()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
+- `Html::createProgressBar()`
+- `Html::displayDebugInfos()`
+- `Html::displayErrorAndDie()`
+- `Html::displayNotFoundError()`
+- `Html::displayProgressBar()`
+- `Html::displayRightError()`
+- `Html::entities_deep()`
+- `Html::entity_decode_deep()`
+- `Html::glpi_flush()`
+- `Html::jsGetDropdownValue()`
+- `Html::jsGetElementbyID()`
+- `Html::jsSetDropdownValue()`
+- `Html::progressBar()`
 - `ITILFollowup::ADDALLTICKET` constant
+- `ITILFollowup::ADDGROUPTICKET` constant
+- `ITILFollowup::ADDMYTICKET` constant
+- `KnowbaseItem_Comment::getCommentForm()`
+- `KnowbaseItem_Comment::showForItem()`
+- `KnowbaseItem_Revision::showForItem()`
+- `Migration::addNewMessageArea()`
+- `Migration::setOutputHandler()`
+- `Migration::displayError()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
 - `Pdu_Plug` class
 - `Plugin::getWebDir()`
 - `QueryExprfession` class
@@ -119,8 +116,13 @@ The present file will list all changes made to the project; according to the
 - `QuerySubQuery` class
 - `QueryUnion` class
 - `Search::joinDropdownTranslations()`
+- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
-- `Glpi\Inventory\Asset\Software::getCompareKey()`
+- `Timer` class
+- `Toolbox::addslashes_deep()`
+- `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
+- `Toolbox::stripslashes_deep()`
 
 
 ## [11.0.6] unreleased
