@@ -118,7 +118,7 @@ class CompileScssCommand extends Command
         $dry_run = $input->getOption('dry-run');
 
         if (empty($files)) {
-            $root_path = realpath(GLPI_ROOT);
+            $root_path = str_replace(DIRECTORY_SEPARATOR, '/', realpath(GLPI_ROOT));
 
             $css_dir_iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($root_path . '/css'),
@@ -126,17 +126,19 @@ class CompileScssCommand extends Command
             );
             /** @var SplFileInfo $file */
             foreach ($css_dir_iterator as $file) {
+                $file_path = str_replace(DIRECTORY_SEPARATOR, '/', $file->getPath());
                 if (
                     !$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'scss'
-                     || preg_match('/^' . preg_quote(GLPI_ROOT . '/css/lib/', '/') . '/', $file->getPath()) === 1
+                     || preg_match('/^' . preg_quote($root_path . '/css/lib/', '/') . '/', $file_path) === 1
                      || preg_match('/^_/', $file->getBasename()) === 1
                 ) {
                     continue;
                 }
 
-                $files[] = str_replace($root_path . '/', '', dirname($file->getRealPath()))
-                . '/'
-                . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
+                $dir_path = str_replace(DIRECTORY_SEPARATOR, '/', dirname($file->getRealPath()));
+                $files[] = str_replace($root_path . '/', '', $dir_path)
+                    . '/'
+                    . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
             }
         }
 
