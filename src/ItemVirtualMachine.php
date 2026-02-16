@@ -296,7 +296,7 @@ class ItemVirtualMachine extends CommonDBChild
                     if ($linked_asset->can($link_assets_id, READ)) {
                         $linked_asset_url = $linked_asset->getLink();
                     } else {
-                        $linked_asset_url = $linked_asset->fields['name'];
+                        $linked_asset_url = htmlescape($linked_asset->fields['name']);
                     }
                 }
             }
