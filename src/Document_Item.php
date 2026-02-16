@@ -992,7 +992,7 @@ TWIG, $twig_params);
      *
      * @param string $interface Interface type ('central' or 'helpdesk')
      *
-     * @return array<integer, string> Array of rights with their labels
+     * @return array<int, string> Array of rights with their labels
      */
     public function getRights($interface = 'central'): array
     {
