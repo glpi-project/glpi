@@ -325,65 +325,11 @@ class DBConnection extends CommonGLPI
     }
 
     /**
-     * Create replicated DB configuration file
-     *
-     * @param string  $host                      The DB host
-     * @param string  $user                      The DB user
-     * @param string  $password                  The DB password
-     * @param string  $dbname                    The name of the DB
-     * @param bool $use_timezones             Flag that indicates if timezones usage should be activated
-     * @param bool $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-     * @param bool $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param bool $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-     * @param bool $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
-     * @param string  $config_dir
-     *
-     * @return bool
-     * @deprecated 12
-     */
-    public static function createSlaveConnectionFile(
-        string $host,
-        string $user,
-        string $password,
-        string $dbname,
-        bool $use_timezones = false,
-        bool $log_deprecation_warnings = false,
-        bool $use_utf8mb4 = false,
-        bool $allow_datetime = true,
-        bool $allow_signed_keys = true,
-        string $config_dir = GLPI_CONFIG_DIR
-    ): bool {
-        Toolbox::deprecated('Use createReplicaConnectionFile()');
-        return self::createReplicaConnectionFile(
-            $host,
-            $user,
-            $password,
-            $dbname,
-            $use_timezones,
-            $log_deprecation_warnings,
-            $use_utf8mb4,
-            $allow_datetime,
-            $allow_signed_keys,
-            $config_dir
-        );
-    }
-
-    /**
      * Indicates is the DB replica is active or not
      */
     public static function isDBReplicaActive(): bool
     {
         return file_exists(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-    }
-
-    /**
-     * @return bool
-     * @deprecated 12
-     */
-    public static function isDBSlaveActive()
-    {
-        Toolbox::deprecated('Use isDBReplicaActive()');
-        return self::isDBReplicaActive();
     }
 
     /**
@@ -395,23 +341,6 @@ class DBConnection extends CommonGLPI
      **/
     public static function getDBReplicaConf(?int $choice = null)
     {
-        if (self::isDBReplicaActive()) {
-            include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-            return new DBReplica($choice);
-        }
-    }
-
-    /**
-     * Read replica DB configuration file
-     *
-     * @param ?int $choice  Host number (default NULL)
-     *
-     * @return DBmysql|void object
-     * @deprecated 12
-     **/
-    public static function getDBSlaveConf(?int $choice = null)
-    {
-        Toolbox::deprecated('Use getDBReplicaConf()');
         if (self::isDBReplicaActive()) {
             include_once(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
             return new DBReplica($choice);
@@ -440,18 +369,6 @@ class DBConnection extends CommonGLPI
     }
 
     /**
-     * Create a default replica DB configuration file
-     *
-     * @return void
-     * @deprecated 12
-     */
-    public static function createDBSlaveConfig()
-    {
-        Toolbox::deprecated('Use createDBReplicaConfig()');
-        self::createDBReplicaConfig();
-    }
-
-    /**
      * Save changes to the replica DB configuration file
      */
     public static function saveDBReplicaConf(string $host, string $user, string $password, string $DBname): void
@@ -471,28 +388,6 @@ class DBConnection extends CommonGLPI
     }
 
     /**
-     * Save changes to the replica DB configuration file
-     *
-     * @param string $host
-     * @param string $user
-     * @param string $password
-     * @param string $DBname
-     *
-     * @return void
-     * @deprecated 12
-     */
-    public static function saveDBSlaveConf($host, $user, $password, $DBname)
-    {
-        Toolbox::deprecated('Use saveDBReplicaConf()');
-        self::saveDBReplicaConf(
-            $host,
-            $user,
-            $password,
-            $DBname
-        );
-    }
-
-    /**
      * Delete replica DB configuration file
      *
      * @return void
@@ -500,18 +395,6 @@ class DBConnection extends CommonGLPI
     public static function deleteDBReplicaConfig(): void
     {
         unlink(GLPI_CONFIG_DIR . "/" . self::DBREPLICA_FILE);
-    }
-
-    /**
-     * Delete replica DB configuration file
-     *
-     * @return void
-     * @deprecated 12
-     */
-    public static function deleteDBSlaveConfig()
-    {
-        Toolbox::deprecated('Use deleteDBReplicaConfig()');
-        self::deleteDBReplicaConfig();
     }
 
 
