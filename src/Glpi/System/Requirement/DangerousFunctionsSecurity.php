@@ -87,19 +87,20 @@ class DangerousFunctionsSecurity extends AbstractRequirement
             __('Ensure dangerous functions are disabled.'),
             true,
             true,
-            isCommandLine() // out of context when tested from CLI
         );
     }
 
     protected function check()
     {
+        $enabled_functions = [];
         foreach ($this->dangerous_functions as $function) {
             if (function_exists($function)) {
-                $this->validation_messages[] = sprintf(
-                    __('Function "%s" is enabled. Please disable it to avoid security risks.'),
-                    $function
-                );
+                $enabled_functions[] = $function;
             }
         }
+        $this->validation_messages[] = sprintf(
+            __('Functions "%s" are enabled. Please disable them in php.ini (see disable_functions directive) to avoid security risks.'),
+            implode(', ', $enabled_functions)
+        );
     }
 }
