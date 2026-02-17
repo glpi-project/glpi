@@ -36,6 +36,7 @@
 namespace Glpi\System;
 
 use DBmysql;
+use Glpi\System\Requirement\DangerousFunctionsSecurity;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
@@ -161,6 +162,7 @@ class RequirementsManager
 
         $requirements[] = new PhpSupportedVersion();
 
+        $requirements[] = new DangerousFunctionsSecurity();
         $requirements[] = new SessionsSecurityConfiguration();
         $requirements[] = new Extension(
             'exif',
