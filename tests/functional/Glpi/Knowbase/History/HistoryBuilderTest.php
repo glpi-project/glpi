@@ -39,6 +39,7 @@ use Document;
 use Document_Item;
 use Entity;
 use Entity_KnowbaseItem;
+use Glpi\Form\Category;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -383,7 +384,7 @@ final class HistoryBuilderTest extends DbTestCase
 
     public function testFaqChanges(): void
     {
-        // Act: create KB item with 2 FAQ status changes
+        // Arrange: create KB item with 2 FAQ status changes
         $this->login();
         $this->setCurrentTime("2026-01-15 10:00:00");
 
@@ -420,6 +421,105 @@ final class HistoryBuilderTest extends DbTestCase
             new LogEvent(
                 label: "Added to the FAQ",
                 description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: "_test_user (8)",
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testServiceCatalogChanges(): void
+    {
+        // Arrange: create KB item with changes on the service catalog properties
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $category = $this->createItem(Category::class, [
+            'name' => 'My category',
+        ]);
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Version 1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'show_in_service_catalog' => 1,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'is_pinned' => 1,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 13:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'description' => 'Service catalog description',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 14:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'is_pinned' => 0,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 15:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'show_in_service_catalog' => 0,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 16:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'forms_categories_id' => $category->getID(),
+        ]);
+
+        // Act: build history
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Assert: the history should contain references to service catalog changes
+        $this->assertEquals([
+            new LogEvent(
+                label: "Service catalog updated",
+                description: "Category updated by",
+                date: "2026-01-15 16:00:00",
+                author: "_test_user (8)",
+                new_value: "My category ({$category->getID()})",
+                old_value: " (0)",
+            ),
+            new LogEvent(
+                label: "Service catalog updated",
+                description: "Removed from the service catalog by",
+                date: "2026-01-15 15:00:00",
+                author: "_test_user (8)",
+            ),
+            new LogEvent(
+                label: "Service catalog updated",
+                description: "Unpinned from the top by",
+                date: "2026-01-15 14:00:00",
+                author: "_test_user (8)",
+            ),
+            new LogEvent(
+                label: "Service catalog updated",
+                description: "Description updated by",
+                date: "2026-01-15 13:00:00",
+                author: "_test_user (8)",
+                new_value: "Service catalog description",
+            ),
+            new LogEvent(
+                label: "Service catalog updated",
+                description: "Pinned to the top by",
+                date: "2026-01-15 12:00:00",
+                author: "_test_user (8)",
+            ),
+            new LogEvent(
+                label: "Service catalog updated",
+                description: "Added to the service catalog by",
                 date: "2026-01-15 11:00:00",
                 author: "_test_user (8)",
             ),

@@ -40,6 +40,7 @@ use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionSeparator;
@@ -2136,6 +2137,43 @@ TWIG, $twig_params);
                     ],
                 ],
             ],
+        ];
+
+        $tab[] = [
+            'id'   => 'service_catalog',
+            'name' => __('Service catalog'),
+        ];
+
+        $tab[] = [
+            'id'                 => '84',
+            'table'              => self::getTable(),
+            'field'              => 'show_in_service_catalog',
+            'name'               => __("Show in service catalog"),
+            'datatype'           => 'bool',
+        ];
+
+        $tab[] = [
+            'id'                 => '85',
+            'table'              => self::getTable(),
+            'field'              => 'is_pinned',
+            'name'               => __("Pin to top of the service catalog"),
+            'datatype'           => 'bool',
+        ];
+
+        $tab[] = [
+            'id'                 => '86',
+            'table'              => self::getTable(),
+            'field'              => 'description',
+            'name'               => __("Description"),
+            'datatype'           => 'text',
+        ];
+
+        $tab[] = [
+            'id'                 => '87',
+            'table'              => Category::getTable(),
+            'field'              => 'name',
+            'name'               => _n("Category", "Categories", 1),
+            'datatype'           => 'dropdown',
         ];
 
         // add objectlock search options

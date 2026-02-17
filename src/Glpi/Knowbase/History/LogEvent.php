@@ -45,6 +45,8 @@ final class LogEvent implements HistoryEventInterface
         private string $description,
         private string $date,
         private string $author,
+        private ?string $new_value = null,
+        private ?string $old_value = null,
     ) {}
 
     #[Override]
@@ -70,5 +72,23 @@ final class LogEvent implements HistoryEventInterface
     {
         preg_match("/.*(\d+)/", $this->author, $matches);
         return (int) $matches[1];
+    }
+
+    public function getNewValue(): ?string
+    {
+        if ($this->new_value === null) {
+            return null;
+        }
+
+        return strip_tags($this->new_value);
+    }
+
+    public function getOldValue(): ?string
+    {
+        if ($this->old_value === null) {
+            return null;
+        }
+
+        return strip_tags($this->old_value);
     }
 }
