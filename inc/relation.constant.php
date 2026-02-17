@@ -140,6 +140,8 @@ $RELATION = [
         'glpi_refusedequipments' => 'autoupdatesystems_id',
         'glpi_unmanageds'        => 'autoupdatesystems_id',
         'glpi_assets_assets'     => 'autoupdatesystems_id',
+        'glpi_pdus'              => 'autoupdatesystems_id',
+        'glpi_plugs'             => 'autoupdatesystems_id',
     ],
 
     'glpi_budgets' => [
@@ -654,6 +656,7 @@ $RELATION = [
         'glpi_phones'                      => 'entities_id',
         'glpi_planningexternalevents'      => 'entities_id',
         'glpi_planningexternaleventtemplates' => 'entities_id',
+        'glpi_plugs'                       => 'entities_id',
         'glpi_printers'                    => 'entities_id',
         '_glpi_problemcosts'               => 'entities_id',
         'glpi_problems'                    => 'entities_id',
@@ -698,6 +701,11 @@ $RELATION = [
         'glpi_wifinetworks'                => 'entities_id',
         'glpi_webhooks'                    => 'entities_id',
         'glpi_queuedwebhooks'              => 'entities_id',
+        'glpi_plugtypes'                   => 'entities_id',
+    ],
+
+    'glpi_plugtypes' => [
+        'glpi_plugs' => 'plugtypes_id',
     ],
 
     'glpi_filesystems' => [
@@ -1130,10 +1138,6 @@ $RELATION = [
         'glpi_planningexternalevents' => 'planningexternaleventtemplates_id',
     ],
 
-    'glpi_plugs' => [
-        '_glpi_items_plugs' => 'plugs_id',
-    ],
-
     'glpi_printermodels' => [
         '_glpi_cartridgeitems_printermodels' => 'printermodels_id',
         'glpi_printers'                      => 'printermodels_id',
@@ -1304,6 +1308,7 @@ $RELATION = [
         'glpi_networkequipments' => 'snmpcredentials_id',
         'glpi_printers'          => 'snmpcredentials_id',
         'glpi_unmanageds'        => 'snmpcredentials_id',
+        'glpi_pdus'              => 'snmpcredentials_id',
     ],
 
     'glpi_socketmodels' => [
@@ -1772,7 +1777,6 @@ $polymorphic_types_mapping = [
     NetworkPort::class             => $CFG_GLPI['networkport_types'],
     ReservationItem::class         => $CFG_GLPI['reservation_types'],
     Socket::class                  => $CFG_GLPI['socket_types'],
-    Item_Plug::class               => $CFG_GLPI['plug_types'],
 ];
 foreach (Item_Devices::getDeviceTypes() as $itemdevice_itemtype) {
     $source_itemtypes = $itemdevice_itemtype::itemAffinity();
@@ -1837,6 +1841,16 @@ foreach ($CFG_GLPI['networkport_types'] as $source_itemtype) {
 
     $add_mapping_entry($source_table, $target_table_key, ['mainitems_id', 'mainitemtype']);
 }
+
+// Plug specific case
+// items_id_main/itemtype_main are mainly a copy of item related to source PDU
+foreach ($CFG_GLPI['plug_types'] as $source_itemtype) {
+    $target_table_key = Plug::getTable();
+    $source_table     = $source_itemtype::getTable();
+
+    $add_mapping_entry($source_table, $target_table_key, ['items_id_main', 'itemtype_main']);
+}
+
 
 // Asset_PeripheralAsset specific case
 foreach ($CFG_GLPI['directconnect_types'] as $directconnect_itemtype) {

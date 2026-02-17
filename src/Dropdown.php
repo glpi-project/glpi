@@ -1290,6 +1290,7 @@ HTML;
                     'LineType' => null,
                     'RackType' => null,
                     'PDUType' => null,
+                    'PlugType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null,
@@ -1403,9 +1404,6 @@ HTML;
 
                 __('External authentications') => [
                     'SsoVariable' => null,
-                ],
-                __('Power management') => [
-                    'Plug' => null,
                 ],
                 __('Appliances') => [
                     'ApplianceType' => null,
