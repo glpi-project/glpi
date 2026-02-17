@@ -5642,18 +5642,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:convertOldRequestArgsToCriteria\\(\\) has parameter \\$args with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:convertOldRequestArgsToCriteria\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method DBmysqlIterator\\:\\:execute\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

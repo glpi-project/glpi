@@ -40,7 +40,6 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 
 class DBmysqlIteratorTest extends DbTestCase
 {
@@ -727,13 +726,6 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testWhere()
     {
-        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => 'id=1']);
-        $this->assertSame('SELECT * FROM `foo` WHERE id=1', $it->getSql());
-        $this->hasPhpLogRecordThatContains(
-            'Passing SQL request criteria as strings is deprecated for security reasons.',
-            LogLevel::INFO
-        );
-
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => null]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` IS NULL', $it->getSql());
 
@@ -766,24 +758,6 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryParam()]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
-
-        foreach ([false, 0, '0'] as $false) {
-            $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$false]]);
-            $this->assertSame('SELECT * FROM `foo` WHERE false', $it->getSql());
-            $this->hasPhpLogRecordThatContains(
-                'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("false");`',
-                LogLevel::INFO
-            );
-        }
-
-        foreach ([true, 1, '1'] as $true) {
-            $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [$true]]);
-            $this->assertSame('SELECT * FROM `foo` WHERE true', $it->getSql());
-            $this->hasPhpLogRecordThatContains(
-                'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("true");`',
-                LogLevel::INFO
-            );
-        }
 
         $stringable_object = new class ("L'Appel de Cthulhu") {
             public function __construct(private string $val) {}
@@ -1808,142 +1782,5 @@ class DBmysqlIteratorTest extends DbTestCase
                 'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)"),
             ])
         );
-    }
-
-    public static function requestArgsProvider(): iterable
-    {
-        // Table name as first param, default value for criteria argument
-        yield [
-            'params'   => ['glpi_computers', ''],
-            'expected' => [
-                'FROM' => 'glpi_computers',
-            ],
-            'sql'      => 'SELECT * FROM `glpi_computers`',
-        ];
-
-        // Table name as first param, criteria as a string
-        yield [
-            'params'   => ['glpi_computers', 'is_deleted = 0'],
-            'expected' => [
-                'FROM'  => 'glpi_computers',
-                'WHERE' => [new QueryExpression('is_deleted = 0')],
-            ],
-            'sql'      => 'SELECT * FROM `glpi_computers` WHERE is_deleted = 0',
-        ];
-
-        // Table name as first param, criteria as an array
-        yield [
-            'params'   => ['glpi_computers', ['WHERE' => ['is_deleted' => 0], 'ORDER' => 'id DESC']],
-            'expected' => [
-                'FROM'  => 'glpi_computers',
-                'WHERE' => ['is_deleted' => 0],
-                'ORDER' => 'id DESC',
-            ],
-            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
-        ];
-
-        // Table name as first param, criteria as an array but not encapsulated inside a `WHERE` key
-        yield [
-            'params'   => ['glpi_computers', ['is_deleted' => 1]],
-            'expected' => [
-                'FROM'  => 'glpi_computers',
-                'is_deleted' => 1,
-            ],
-            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'1\'',
-        ];
-
-        // First argument is a QueryUnion
-        $union = new QueryUnion(
-            [
-                ['SELECT' => 'serial', 'FROM' => 'glpi_computers'],
-                ['SELECT' => 'serial', 'FROM' => 'glpi_printers'],
-            ],
-            false,
-            'testalias'
-        );
-        yield [
-            'params'   => [$union, ''],
-            'expected' => [
-                'FROM'  => $union,
-            ],
-            'sql'      => 'SELECT * FROM ((SELECT `serial` FROM `glpi_computers`) UNION ALL (SELECT `serial` FROM `glpi_printers`)) AS `testalias`',
-        ];
-    }
-
-    #[DataProvider('requestArgsProvider')]
-    public function testConvertOldRequestArgsToCriteria(array $params, array $expected, string $sql): void
-    {
-        $db = $this->getMockBuilder('DBMysql')
-            ->disableOriginalConstructor()
-             ->getMock();
-        $iterator = new \DBmysqlIterator($db);
-
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-        $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
-        \error_reporting($reporting_level); // restore previous level
-
-        $this->hasPhpLogRecordThatContains(
-            'The `test()` method signature changed. Its previous signature is deprecated.',
-            LogLevel::INFO
-        );
-        $this->assertEquals($expected, $result);
-    }
-
-    #[DataProvider('requestArgsProvider')]
-    public function testExecuteWithOldSignature(array $params, array $expected, string $sql): void
-    {
-        $iterator = new \DBmysqlIterator(null);
-
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-        $iterator->execute(...$params);
-        \error_reporting($reporting_level); // restore previous level
-
-        $this->hasPhpLogRecordThatContains(
-            'The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
-            LogLevel::INFO
-        );
-        $this->assertEquals($sql, $iterator->getSql());
-    }
-
-    public function testExecuteWithRawDirectQuery(): void
-    {
-        $db = $this->getMockBuilder('DBMysql')
-            ->disableOriginalConstructor()
-             ->getMock();
-
-        $iterator = new \DBmysqlIterator($db);
-        $this->expectExceptionMessage('Building and executing raw queries with the `DBmysqlIterator::execute()` method is prohibited.');
-        $iterator->execute('SELECT * FROM `glpi_computers`');
-    }
-
-    #[DataProvider('requestArgsProvider')]
-    public function testBuildQueryWithOldSignature(array $params, array $expected, string $sql): void
-    {
-        $db = $this->getMockBuilder('DBMysql')
-            ->disableOriginalConstructor()
-             ->getMock();
-
-        $iterator = new \DBmysqlIterator($db);
-
-        $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-        $iterator->buildQuery(...$params);
-        \error_reporting($reporting_level); // restore previous level
-
-        $this->hasPhpLogRecordThatContains(
-            'The `DBmysqlIterator::buildQuery()` method signature changed. Its previous signature is deprecated.',
-            LogLevel::INFO
-        );
-        $this->assertEquals($sql, $iterator->getSql());
-    }
-
-    public function testBuildQueryWithRawDirectQuery(): void
-    {
-        $db = $this->getMockBuilder('DBMysql')
-            ->disableOriginalConstructor()
-             ->getMock();
-
-        $iterator = new \DBmysqlIterator($db);
-        $this->expectExceptionMessage('Building and executing raw queries with the `DBmysqlIterator::buildQuery()` method is prohibited.');
-        $iterator->buildQuery('SELECT * FROM `glpi_computers`');
     }
 }
