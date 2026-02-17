@@ -790,24 +790,6 @@ class Config extends CommonDBTM
 
         // No need to translate, this part always display in english (for copy/paste to forum)
 
-        // Try to compute a better version for .git
-        $ver = GLPI_VERSION;
-        if (is_dir(GLPI_ROOT . "/.git")) {
-            $dir = getcwd();
-            chdir(GLPI_ROOT);
-            $returnCode = 1;
-            $output = [];
-            $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
-            $gitbranch = '';
-            if (!$returnCode) {
-                $gitbranch = @exec('git symbolic-ref --quiet --short HEAD || git rev-parse --short HEAD 2>&1', $output, $returnCode);
-            }
-            chdir($dir);
-            if (!$returnCode) {
-                $ver .= '-git-' . $gitbranch . '-' . $gitrev;
-            }
-        }
-
         $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
         $requirements = [];
         /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
@@ -853,7 +835,7 @@ class Config extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_table.html.twig', [
-            'ver' => $ver,
+            'ver' => GLPI_VERSION,
             'language' => $oldlang,
             '_server' => $_SERVER,
             'db_info' => $DB->getInfo(),
