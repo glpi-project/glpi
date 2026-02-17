@@ -103,7 +103,7 @@ function update91xto920()
                 'completename' =>  new QueryExpression(DBmysql::quoteName("name")),
                 'is_recursive' => "1",
             ],
-            [true]
+            [new QueryExpression('true')]
         );
     }
 
@@ -653,7 +653,7 @@ function update91xto920()
             [
                 'completename' => new QueryExpression(DBmysql::quoteName("name")),
             ],
-            [true]
+            [new QueryExpression('true')]
         );
     }
 
@@ -1161,7 +1161,7 @@ function update91xto920()
         $DB->buildUpdate(
             "glpi_queuednotifications",
             ['mode' => Notification_NotificationTemplate::MODE_MAIL],
-            [true]
+            [new QueryExpression('true')]
         ),
         "9.2 set default mode in queue"
     );
