@@ -97,9 +97,6 @@ class GLPITestCase extends TestCase
 
     public function setUp(): void
     {
-        /** @var Translator $TRANSLATE */
-        global $TRANSLATE;
-
         $this->storeGlobals();
 
         global $DB;
@@ -107,12 +104,6 @@ class GLPITestCase extends TestCase
 
         // By default, no session, not connected
         $this->resetSession();
-
-        // Locale from previous session may persist until another login is done.
-        if ($TRANSLATE->getLocale() !== "en_GB") {
-            // Reload default language only if needed to prevent performance hit
-            Session::loadLanguage();
-        }
 
         // By default, there shouldn't be any pictures in the test files
         $this->resetPictures();
@@ -522,11 +513,19 @@ class GLPITestCase extends TestCase
      */
     private function resetGlobalsAndStaticValues(): void
     {
+        /** @var Translator $TRANSLATE */
+        global $TRANSLATE;
+
         // Super globals
         $_GET = $this->superglobals_copy['GET'];
         $_POST = $this->superglobals_copy['POST'];
         $_REQUEST = $this->superglobals_copy['REQUEST'];
         $_SERVER = $this->superglobals_copy['SERVER'];
+
+        // Reset language to English if it was changed by a test
+        if ($TRANSLATE->getLocale() !== 'en_GB') {
+            Session::loadLanguage('en_GB');
+        }
 
         // Globals
         global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;
