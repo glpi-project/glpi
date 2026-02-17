@@ -195,7 +195,7 @@ class GLPITestCase extends TestCase
         $dir = GLPI_PICTURE_DIR;
 
         // Delete nested folders and files in dir
-        $this->removeDirectory($dir);
+        $this->removeDirectory($dir, true);
         // We recreate the directory to ensure it's empty and present, as test rely on it being present.
         mkdir($dir);
     }
