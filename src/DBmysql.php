@@ -1943,7 +1943,7 @@ class DBmysql
                 $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
             }
             if (!$this->log_deprecation_warnings) {
-                // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+                // Mute deprecations related to elements that are heavily used in old migrations and in plugins
                 // as it may require a lot of work to fix them.
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }

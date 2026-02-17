@@ -112,10 +112,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function execute($criteria): self
+    public function execute(array $criteria): self
     {
-        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
-
         $this->buildQuery($criteria);
         $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
@@ -132,10 +130,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$log` parameter has been removed.
      */
-    public function buildQuery($criteria): void
+    public function buildQuery(array $criteria): void
     {
-        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
-
         $this->sql = null;
         $this->res = false;
 
@@ -504,25 +500,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function analyseCrit($crit, $bool = "AND")
     {
-        if (is_string($crit)) {
-            Toolbox::deprecated(
-                sprintf(
-                    'Passing SQL request criteria as strings is deprecated for security reasons. Criteria was `` %s ``.',
-                    $crit
-                ),
-                version: '12.0'
-            );
-
-            /**
-             * Delegate the safeness check to the caller.
-             * There is no such usage in GLPI, it is the plugin developer responsibility to switch to safer criteria specs.
-             * @psalm-taint-escape sql
-             */
-            $safe_crit = $crit;
-
-            return $safe_crit;
-        }
-
         if (!is_array($crit)) {
             throw new InvalidArgumentException(
                 sprintf(
@@ -543,15 +520,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $ret .= $value->getValue();
                 } elseif ($value instanceof QuerySubQuery) {
                     $ret .= $value->getQuery();
-                } elseif (in_array($value, [1, 0, '1', '0', true, false], true)) {
-                    Toolbox::deprecated(
-                        sprintf(
-                            'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("%s");`.',
-                            $value ? 'true' : 'false'
-                        ),
-                        version: '12.0'
-                    );
-                    $ret .= $value ? 'true' : 'false';
                 } else {
                     // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";
@@ -906,44 +874,5 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function fetchFields(): array
     {
         return $this->res->fetch_fields();
-    }
-
-    /**
-     * Convert arguments used for `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods
-     * from old signature to new signature.
-     * For security reasons, an exception is thrown whenever the arguments contains a direct raw query.
-     *
-     * @param array $args
-     * @return array
-     */
-    private function convertOldRequestArgsToCriteria(array $args, string $method): array
-    {
-        if (is_string($args[0]) && str_contains($args[0], " ")) {
-            $names = preg_split('/\s+AS\s+/i', $args[0]);
-            if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
-                throw new InvalidArgumentException(
-                    sprintf('Building and executing raw queries with the `%s()` method is prohibited.', $method)
-                );
-            }
-        }
-
-        if (is_array($args[0])) {
-            // The new signature ($criteria, $debug = false) is already used
-            $criteria = $args[0];
-        } else {
-            // The old signature ($tableorsql, $crit = "", $debug = false) is still used
-            Toolbox::deprecated(
-                sprintf('The `%s()` method signature changed. Its previous signature is deprecated.', $method)
-            );
-            $criteria = $args[1] ?? [];
-            if (is_string($criteria)) {
-                $criteria = $criteria !== ''
-                    ? ['WHERE' => [new QueryExpression($criteria)]]
-                    : [];
-            }
-            $criteria['FROM'] = $args[0];
-        }
-
-        return $criteria;
     }
 }
