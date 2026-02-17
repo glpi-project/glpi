@@ -368,7 +368,7 @@ class NotificationTarget extends CommonDBChild
 
         $reference_event = null;
         if ($is_item_related) {
-            $message_id .= sprintf('-%s-%d', $itemtype, $items_id);
+            $message_id .= sprintf('-%s-%d', str_replace(['\\', '/'], '-', $itemtype), $items_id);
             $reference_event = $itemtype::getMessageReferenceEvent($event);
         }
 

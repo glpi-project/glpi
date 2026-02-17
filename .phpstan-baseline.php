@@ -11194,10 +11194,16 @@ $ignoreErrors[] = [
     'path' => __DIR__ . '/src/Glpi/Inventory/Asset/HardDrive.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\\.$#',
-    'identifier' => 'foreach.nonIterable',
-    'count' => 1,
-    'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+	'message' => '#^Access to an undefined property object\\:\\:\\$autoupdatesystems_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\\.$#',
+	'identifier' => 'foreach.nonIterable',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
 ];
 $ignoreErrors[] = [
     'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',

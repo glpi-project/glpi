@@ -85,7 +85,8 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Get the ITIL Object class name that the tested Rule class is related to
-     * @return string
+     *
+     * @return class-string<\CommonITILObject>
      */
     protected function getITILObjectClass(): string
     {

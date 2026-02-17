@@ -544,6 +544,14 @@ class NotificationTargetTest extends DbTestCase
                 "event" => null,
                 "expected" => "/^GLPI_%UUID%\/none\.\d+\.\d+@%UNAME%$/",
             ],
+            [
+                // namespaced itemtype (real GLPI class) - validates RFC 2822 fix
+                // backslashes from namespace must be stripped from message ID
+                "itemtype" => "Glpi\\Socket",
+                "items_id" => 3,
+                "event" => "new",
+                "expected" => "/^GLPI_%UUID%-Glpi-Socket-3\/new@%UNAME%$/",
+            ],
         ];
     }
 
@@ -572,6 +580,9 @@ class NotificationTargetTest extends DbTestCase
         $instance = new NotificationTarget();
         $messageid = $instance->getMessageIdForEvent($itemtype, $items_id, $event);
         $this->assertMatchesRegularExpression($expected, $messageid);
+
+        // Ensure the message ID never contains backslashes (RFC 2822 compliance)
+        $this->assertStringNotContainsString('\\', $messageid, 'Message ID must not contain backslashes to comply with RFC 2822 addr-spec');
     }
 
     public function testGetTargetsWithExclusions()

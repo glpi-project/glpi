@@ -116,7 +116,7 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.84
      *
-     * @param int $groups_id Group ID
+     * @param int|int[] $groups_id Group ID
      * @param array   $condition Query extra condition (default [])
      *
      * @return array
