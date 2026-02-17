@@ -175,6 +175,11 @@ EOT;
                 'version' => '2.2.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
             ],
+            [
+                'api_version' => '2',
+                'version' => '2.3.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
+            ],
         ];
     }
 
