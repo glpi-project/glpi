@@ -2151,6 +2151,14 @@ TWIG, $twig_params);
 
     public function pre_updateInDB()
     {
+        // Only create a revision if name or answer was modified.
+        if (
+            !in_array('name', $this->updates)
+            && !in_array('answer', $this->updates)
+        ) {
+            return;
+        }
+
         $revision = new KnowbaseItem_Revision();
         $kb = new KnowbaseItem();
         $kb->getFromDB($this->getID());

@@ -223,4 +223,53 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertInstanceOf(RevisionEvent::class, $version_1);
         $this->assertEquals("Created by", $version_1->getDescription());
     }
+
+    public function testFaqChanges(): void
+    {
+        // Act: create KB item with 2 FAQ status changes
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Version 1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'is_faq' => 1,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'is_faq' => 0,
+        ]);
+
+        // Act: build history
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Assert: the history should contain references to the FAQ changes
+        $this->assertEquals([
+            new LogEvent(
+                label: "Removed from the FAQ",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: "_test_user (8)",
+            ),
+            new LogEvent(
+                label: "Added to the FAQ",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: "_test_user (8)",
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
 }
