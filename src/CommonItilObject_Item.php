@@ -63,6 +63,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
+        /** @var CommonITILObject $obj */
         $obj = getItemForItemtype(static::$itemtype_1);
 
         if ($obj->canUpdateItem()) {
@@ -91,6 +92,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public function post_addItem()
     {
         $this->updateItemTCO();
+        /** @var CommonITILObject $obj */
         $obj = getItemForItemtype(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
