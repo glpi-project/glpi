@@ -66,7 +66,6 @@ class DangerousFunctionsSecurity extends AbstractRequirement
         'posix_ctermid',
         'posix_getcwd',
         'posix_getegid',
-        'posix_geteuid',
         'posix_getgid',
         'posix_getgrgid',
         'posix_getgrnam',
