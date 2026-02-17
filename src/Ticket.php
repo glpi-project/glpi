@@ -5789,9 +5789,9 @@ JAVASCRIPT;
                         continue;
                     }
 
+                    $tt = new Ticket_Ticket();
                     if ($p['link_type'] > 0 && $p['link_type'] < 5) {
                         // Clean up any existing links between the tickets to avoid duplicates
-                        $tt = new Ticket_Ticket();
                         $tt->deleteByCriteria([
                             'OR' => [
                                 [

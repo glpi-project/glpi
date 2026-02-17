@@ -1224,4 +1224,110 @@ class MassiveActionTest extends DbTestCase
             "No event log should be created when no items are successfully processed"
         );
     }
+
+
+    public function testMergeSonOf()
+    {
+        $this->login('glpi', 'glpi');
+
+        // Create 3 tickets
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => "Ticket A",
+            'content'     => "Ticket A",
+        ]);
+        $ticket_id1 = $ticket->getID();
+        $ticket_id2 = $this->createItem(Ticket::class, [
+            'name'        => "Ticket B",
+            'content'     => "Ticket B",
+        ])->getID();
+        $ticket_id3 = $this->createItem(Ticket::class, [
+            'name'        => "Ticket C",
+            'content'     => "Ticket C",
+        ])->getID();
+
+        // Add followups to the tickets to check that they are copied to the parent ticket after merge
+        $this->createItems(\ITILFollowup::class, [
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id1,
+                'content'  => 'Followup 1 for ticket A',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id1,
+                'content'  => 'Followup 2 for ticket A',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id2,
+                'content'  => 'Followup 1 for ticket B',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id2,
+                'content'  => 'Followup 2 for ticket B',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id3,
+                'content'  => 'Followup 1 for ticket C',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id3,
+                'content'  => 'Followup 2 for ticket C',
+            ],
+        ]);
+
+        // Count followups in each ticket
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id1,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id2,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id3,
+        ]));
+
+        // Link ticket A as sons of ticket B
+        $this->createItem(\Ticket_Ticket::class, [
+            'tickets_id_1' => $ticket_id1,
+            'tickets_id_2' => $ticket_id2,
+            'link'         => \Ticket_Ticket::SON_OF,
+        ]);
+
+        // Merge ticket B and C as sons of ticket A
+        $status = [];
+        $mergeparams = [
+            'linktypes' => [
+                'ITILFollowup',
+                'TicketTask',
+                'Document',
+            ],
+            'link_type'  => \Ticket_Ticket::SON_OF,
+        ];
+        Ticket::merge($ticket_id1, [$ticket_id2, $ticket_id3], $status, $mergeparams);
+
+        // Count followups in each ticket
+        $this->assertEquals(8, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id1,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id2,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id3,
+        ]));
+    }
 }
