@@ -5780,6 +5780,35 @@ JAVASCRIPT;
                         //Cannot retrieve ticket. Abort/fail the merge
                         throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
                     }
+                    if ($ticket->fields['id'] == $merge_target_id) {
+                        // Cannot merge a ticket into itself. Abort/fail the merge
+                        throw new RuntimeException(sprintf(__('Cannot merge ticket %d into itself'), $id), 1);
+                    }
+                    if ($ticket->isDeleted()) {
+                        //ignore deleted tickets
+                        continue;
+                    }
+
+                    if ($p['link_type'] > 0 && $p['link_type'] < 5) {
+                        // Clean up any existing links between the tickets to avoid duplicates
+                        $tt = new Ticket_Ticket();
+                        $tt->deleteByCriteria([
+                            'OR' => [
+                                [
+                                    'AND' => [
+                                        'tickets_id_1' => $merge_target_id,
+                                        'tickets_id_2' => $id,
+                                    ],
+                                ],
+                                [
+                                    'AND' => [
+                                        'tickets_id_2' => $merge_target_id,
+                                        'tickets_id_1' => $id,
+                                    ],
+                                ],
+                            ],
+                        ]);
+                    }
                     //Build followup from the original ticket
                     $input = [
                         'itemtype'        => Ticket::class,
@@ -5863,28 +5892,11 @@ JAVASCRIPT;
                     }
                     if ($p['link_type'] > 0 && $p['link_type'] < 5) {
                         //Add relation (this is parent of merge target)
-                        $tt = new Ticket_Ticket();
                         $linkparams = [
                             'link'         => $p['link_type'],
                             'tickets_id_1' => $id,
                             'tickets_id_2' => $merge_target_id,
                         ];
-                        $tt->deleteByCriteria([
-                            'OR' => [
-                                [
-                                    'AND' => [
-                                        'tickets_id_1' => $merge_target_id,
-                                        'tickets_id_2' => $id,
-                                    ],
-                                ],
-                                [
-                                    'AND' => [
-                                        'tickets_id_2' => $merge_target_id,
-                                        'tickets_id_1' => $id,
-                                    ],
-                                ],
-                            ],
-                        ]);
                         if (!$tt->add($linkparams)) {
                             //Cannot link tickets. Abort/fail the merge
                             throw new RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);
