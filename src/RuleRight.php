@@ -149,7 +149,7 @@ class RuleRight extends Rule
                                         $regex_result
                                     );
                                     $group = new Group();
-                                    $group_id = $group->getFromDBByCrit(['name' => $res]);
+                                    $group_id = $group->getFromDBByCrit(['name' => $res, 'entities_id' => $this->getEntityID()]);
                                     if ($group_id) {
                                         $output["_ldap_rules"]['groups_id'][] = $group->getID();
                                         break;
