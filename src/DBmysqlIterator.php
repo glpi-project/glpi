@@ -112,8 +112,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function execute(array $criteria): self
+    public function execute($criteria): self
     {
+        if (!is_array($criteria)) {
+            throw new RuntimeException(
+                'Criteria must be an array, ' . get_debug_type($criteria) . ' given.'
+            );
+        }
         $this->buildQuery($criteria);
         $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
@@ -130,8 +135,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$log` parameter has been removed.
      */
-    public function buildQuery(array $criteria): void
+    public function buildQuery($criteria): void
     {
+        if (!is_array($criteria)) {
+            throw new RuntimeException(
+                'Criteria must be an array, ' . get_debug_type($criteria) . ' given.'
+            );
+        }
+
         $this->sql = null;
         $this->res = false;
 
@@ -501,6 +512,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function analyseCrit($crit, $bool = "AND")
     {
         if (!is_array($crit)) {
+            var_dump(debug_backtrace(2));
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid criteria type. Expected `array`, `%s` received.',

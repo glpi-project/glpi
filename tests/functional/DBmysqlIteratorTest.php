@@ -40,7 +40,6 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 
 class DBmysqlIteratorTest extends DbTestCase
 {
