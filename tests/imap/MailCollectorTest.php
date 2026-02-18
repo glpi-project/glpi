@@ -101,6 +101,9 @@ class MailCollectorTest extends DbTestCase
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
                 'expected'  => "Subject with \n character",
+            ], [
+                'raw'       => str_repeat('A', 300),
+                'expected'  => str_repeat('A', 255),
             ],
         ];
     }
@@ -980,7 +983,7 @@ PLAINTEXT,
       <p class=MsoNormal>
         <span style='font-family:Roboto'></span>
       </p>
-      
+
     </div>
 HTML,
             '39 - Link in content' => <<<PLAINTEXT
