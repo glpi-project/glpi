@@ -55,7 +55,7 @@ final class LinkItemModalController extends AbstractController
         if (!$kb) {
             throw new BadRequestHttpException();
         }
-        if (!$kb->canUpdateItem()) {
+        if (!$kb->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

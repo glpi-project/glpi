@@ -302,7 +302,7 @@
                         {% for item in related_items %}
                         <a href="{{ item.link_url }}"
                            class="kb-related-item-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
-                           title="{{ item.type_name }}: {{ item.name }}"
+                           title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
                            data-testid="related-item-chip">
                             <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
                             <span>{{ item.name }}</span>
