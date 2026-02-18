@@ -759,72 +759,6 @@ class SearchTest extends DbTestCase
         $this->assertSame($expected, $data['data']['totalcount']);
     }
 
-    public function testAllCriterionProducesValidSQL()
-    {
-        global $CFG_GLPI;
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['allow_search_all'] = 1;
-
-        $this->createItem('Project', [
-            'name'        => 'test_all_criterion_sql',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-
-        $data = $this->doSearch('Project', [
-            'reset'      => 'reset',
-            'is_deleted' => 0,
-            'start'      => 0,
-            'search'     => 'Search',
-            'criteria'   => [
-                [
-                    'link'       => 'AND',
-                    'field'      => 'all',
-                    'searchtype' => 'contains',
-                    'value'      => 'test_all_criterion_sql',
-                ],
-            ],
-        ]);
-
-        $CFG_GLPI = $cfg_backup;
-
-        $this->assertDoesNotMatchRegularExpression(
-            '/\(\s*OR\s/',
-            $data['sql']['search']
-        );
-        $this->assertGreaterThan(0, $data['data']['totalcount']);
-    }
-
-    public function testAllCriterionOnProject()
-    {
-        global $CFG_GLPI;
-        $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['allow_search_all'] = 1;
-
-        $this->createItem('Project', [
-            'name'        => 'test_project_search_all',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-
-        $data = $this->doSearch('Project', [
-            'reset'      => 'reset',
-            'is_deleted' => 0,
-            'start'      => 0,
-            'search'     => 'Search',
-            'criteria'   => [
-                [
-                    'link'       => 'AND',
-                    'field'      => 'all',
-                    'searchtype' => 'contains',
-                    'value'      => 'test_project_search_all',
-                ],
-            ],
-        ]);
-
-        $CFG_GLPI = $cfg_backup;
-
-        $this->assertGreaterThan(0, $data['data']['totalcount']);
-    }
-
     public function testAllCriterionWithEmptyValue()
     {
         global $CFG_GLPI;
@@ -902,6 +836,11 @@ class SearchTest extends DbTestCase
 
         // Search must complete without error
         $this->assertArrayHasKey('totalcount', $data['data']);
+
+        // For "AND/OR contains" (without NOT), the created project must be found
+        if ($searchtype === 'contains' && !str_contains($link, 'NOT')) {
+            $this->assertGreaterThan(0, $data['data']['totalcount']);
+        }
     }
 
     public function testSearchOnRelationTable()
