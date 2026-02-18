@@ -1274,7 +1274,7 @@ class MailCollector extends CommonDBTM
     public function cleanSubject($text)
     {
         $text = str_replace("=20", "\n", $text);
-        return $text;
+        return mb_substr($text, 0, 255, 'UTF-8');
     }
 
 
