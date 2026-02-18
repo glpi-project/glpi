@@ -1952,7 +1952,7 @@ class Session
      *
      * @since 0.85
      *
-     * @param string $itemtype itemtype
+     * @param class-string<CommonDBTM> $itemtype itemtype
      * @param string $field    field
      *
      * @return bool

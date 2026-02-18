@@ -1475,7 +1475,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         return $criteria;
                     }
-                    return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
+                    return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                 }
                 if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                     $name1 = 'firstname';
@@ -1892,7 +1892,7 @@ final class SQLProvider implements SearchProviderInterface
                             if ($searchtype === 'notequals') {
                                 $nott = !$nott;
                             }
-                            return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
+                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                         }
                     }
                     if ($searchtype === 'lessthan') {
@@ -2321,8 +2321,8 @@ final class SQLProvider implements SearchProviderInterface
         if (Session::haveTranslations($transitemtype, $field)) {
             return [
                 'OR' => [
-                    new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, '')),
-                    new QueryExpression(self::makeTextCriteria($tocomputetrans, $val, $nott, '')),
+                    self::getTextCriteria($tocompute, $val, $nott, Operator::NONE),
+                    self::getTextCriteria($tocomputetrans, $val, $nott, Operator::NONE),
                 ],
             ];
         }
@@ -4081,7 +4081,7 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [new QueryExpression(self::makeTextCriteria("`$NAME`", $val, $NOT, ''))];
+        return [self::getTextCriteria($NAME, $val, $NOT, Operator::NONE)];
     }
 
 
@@ -5380,15 +5380,21 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
-     * @param string   $field Name (should **NOT** be ` protected)
-     * @param ?string  $val   Value to search
-     * @param bool     $not   Is a negative search ? (false by default)
-     * @param Operator $link  With previous criteria (default 'AND')
+     * @param string|QueryExpression $field Name (should **NOT** be ` protected)
+     * @param string|int|null        $val   Value to search
+     * @param bool                   $not   Is a negative search ? (false by default)
+     * @param Operator               $link  With previous criteria (default 'AND')
      *
      * @return array<int, mixed>
      */
-    public static function getTextCriteria(string $field, ?string $val, bool $not = false, Operator $link = Operator::AND): array
+    public static function getTextCriteria(string|QueryExpression $field, string|int|null $val, bool $not = false, Operator $link = Operator::AND): array
     {
+        if (is_a($field, QueryExpression::class)) {
+            //This case seems often not realistic; but let's keep for backward compatibility
+            return [new QueryExpression(self::makeTextCriteria($field, $val, $not, $link->value))];
+        }
+        $old =  self::makeTextCriteria($field, $val ?? '', $not, $link->value);
+
         $field = str_replace('`', '', $field);
         $search_val = self::makeTextSearchValue($val);
         if ($search_val == null) {
@@ -5398,24 +5404,13 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         if (strtolower($val ?? 'null') == 'null') {
-            // FIXME
-            // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
-            // when following datatype are used:
-            //  - integer
-            //  - number
-            //  - decimal
-            //  - count
-            //  - mio
-            //  - percentage
-            //  - timestamp
-            //  - datetime
-            //  - date_delay
-            //
-            // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
-            // to ensure that the `''` value will not be stored in DB.
-
             if ($not) {
-                $criteria[] = [$field => ''];
+                $criteria = [
+                    'OR' => [
+                        [$criteria],
+                        [$field => ''],
+                    ],
+                ];
             } else {
                 $criteria = [
                     'OR' => [
@@ -5502,12 +5497,16 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @since 9.4
      *
-     * @param string  $val value to search
+     * @param ?string $val value to search
      *
      * @return string|null
      **/
-    public static function makeTextSearchValue($val)
+    public static function makeTextSearchValue(?string $val): ?string
     {
+        if ($val === 'NULL' || $val === 'null' || $val === null) {
+            return null;
+        }
+
         // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
         // https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html
         // > To search for \, specify it as \\\\; this is because the backslashes are stripped once by the parser
@@ -5518,10 +5517,6 @@ final class SQLProvider implements SearchProviderInterface
 
         // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\_', $val);
-
-        if ($val === 'NULL' || $val === 'null') {
-            return null;
-        }
 
         $val = trim($val);
 
