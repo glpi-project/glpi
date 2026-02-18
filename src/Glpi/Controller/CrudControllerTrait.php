@@ -41,7 +41,36 @@ use RuntimeException;
 
 trait CrudControllerTrait
 {
-    /** @param array<mixed> $input */
+    /**
+     * @template T of CommonDBTM
+     * @param class-string<T> $class
+     * @param array<mixed> $input
+     * @return T
+     */
+    private function add(string $class, array $input): CommonDBTM
+    {
+        $item = getItemForItemtype($class);
+        if (!$item) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$item->can(-1, CREATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if ($input === null || !$item->add($input)) {
+            throw new RuntimeException("Failed to create item");
+        }
+
+        return $item;
+    }
+
+    /**
+     * @template T of CommonDBTM
+     * @param class-string<T> $class
+     * @param array<mixed> $input
+     * @return T
+     */
     private function update(string $class, int $id, array $input): CommonDBTM
     {
         $item = getItemForItemtype($class);
@@ -61,6 +90,9 @@ trait CrudControllerTrait
         return $item;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $class
+     */
     private function delete(string $class, int $id): void
     {
         $item = getItemForItemtype($class);
