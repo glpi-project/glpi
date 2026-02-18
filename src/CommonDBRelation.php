@@ -2238,7 +2238,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 return false;
             }
 
-            return true;
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
+                throw new \RuntimeException('Unable to get itemtype from relation input.');
+            }
+
+            return $itemtype::isNewID($value);
         }
 
         return false;
