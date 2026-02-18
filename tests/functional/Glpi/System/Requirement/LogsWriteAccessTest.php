@@ -52,6 +52,29 @@ class LogsWriteAccessTest extends GLPITestCase
         );
     }
 
+    public function testCheckOnMissingDirCreatesIt()
+    {
+        vfsStream::setup('root', 0o777, []);
+
+        $dir = vfsStream::url('root/logs');
+        $instance = new LogsWriteAccess($dir);
+        $this->assertTrue($instance->isValidated());
+        $this->assertTrue(is_dir($dir));
+    }
+
+    public function testCheckOnNonCreatableDir()
+    {
+        vfsStream::setup('root', 0o555, []);
+
+        $dir = vfsStream::url('root/logs');
+        $instance = new LogsWriteAccess($dir);
+        $this->assertFalse($instance->isValidated());
+        $this->assertEquals(
+            ['The log directory ' . $dir . ' could not be created.'],
+            $instance->getValidationMessages()
+        );
+    }
+
     public function testCheckOnExistingProtectedDir()
     {
         vfsStream::setup('root', 0o555, []);
@@ -97,8 +120,10 @@ class LogsWriteAccessTest extends GLPITestCase
             'api.log'           => '',
             'cron.log'          => '',
             'event.log'         => '',
+            'mail.log'          => '',
             'mail-error.log'    => '',
             'mailgate.log'      => '',
+            'notification.log'  => '',
             'webhook.log'       => '',
         ]);
 
@@ -118,8 +143,10 @@ class LogsWriteAccessTest extends GLPITestCase
             'api.log'           => '',
             'cron.log'          => '',
             'event.log'         => '',
+            'mail.log'          => '',
             'mail-error.log'    => '',
             'mailgate.log'      => '',
+            'notification.log'  => '',
             'webhook.log'       => '',
         ]);
         $structure->getChild('mailgate.log')->chmod(0o444);
@@ -140,8 +167,10 @@ class LogsWriteAccessTest extends GLPITestCase
             'api.log'           => '',
             'cron.log'          => '',
             'event.log'         => '',
+            'mail.log'          => '',
             'mail-error.log'    => '',
             'mailgate.log'      => '',
+            'notification.log'  => '',
             'webhook.log'       => '',
         ]);
         $structure->getChild('cron.log')->chmod(0o444);

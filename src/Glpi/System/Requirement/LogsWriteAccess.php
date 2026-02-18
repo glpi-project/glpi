@@ -37,6 +37,7 @@ namespace Glpi\System\Requirement;
 
 use Safe\Exceptions\FilesystemException;
 
+use function Safe\mkdir;
 use function Safe\touch;
 
 /**
@@ -50,8 +51,10 @@ class LogsWriteAccess extends AbstractRequirement
         'api.log',
         'cron.log',
         'event.log',
+        'mail.log',
         'mail-error.log',
         'mailgate.log',
+        'notification.log',
         'webhook.log',
     ];
 
@@ -68,7 +71,17 @@ class LogsWriteAccess extends AbstractRequirement
 
     protected function check()
     {
-        if (!is_dir($this->log_dir) || !is_writable($this->log_dir)) {
+        if (!is_dir($this->log_dir)) {
+            try {
+                mkdir($this->log_dir, 0o755, true);
+            } catch (FilesystemException) {
+                $this->validated = false;
+                $this->validation_messages[] = sprintf(__('The log directory %s could not be created.'), $this->log_dir);
+                return;
+            }
+        }
+
+        if (!is_writable($this->log_dir)) {
             $this->validated = false;
             $this->validation_messages[] = sprintf(__('The log directory %s is not writable.'), $this->log_dir);
             return;
@@ -85,7 +98,6 @@ class LogsWriteAccess extends AbstractRequirement
                     $this->validation_messages[] = sprintf(__('The log file %s is not writable.'), $file_path);
                 }
             } else {
-                // Do not remove the file after touch(), as SELinux may prevent re-creation.
                 try {
                     touch($file_path);
                 } catch (FilesystemException) {
