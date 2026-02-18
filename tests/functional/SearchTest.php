@@ -759,6 +759,310 @@ class SearchTest extends DbTestCase
         $this->assertSame($expected, $data['data']['totalcount']);
     }
 
+    public function testAllCriterionProducesValidSQL()
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $data = $this->doSearch('Computer', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'all',
+                    'searchtype' => 'contains',
+                    'value'      => 'test',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertMatchesRegularExpression(
+            "/`glpi_computers`\.`name`\s+LIKE\s+'%test%'/",
+            $data['sql']['search']
+        );
+        $this->assertGreaterThan(0, $data['data']['totalcount']);
+    }
+
+    public function testAllCriterionOnProject()
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $this->createItem('Project', [
+            'name'        => 'test_project_search_all',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $data = $this->doSearch('Project', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'all',
+                    'searchtype' => 'contains',
+                    'value'      => 'test_project_search_all',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertGreaterThan(0, $data['data']['totalcount']);
+    }
+
+    public function testAllCriterionWithEmptyValue()
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $data = $this->doSearch('Ticket', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'all',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertArrayHasKey('totalcount', $data['data']);
+    }
+
+    public static function allCriterionProvider(): array
+    {
+        return [
+            'AND contains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9,
+            ],
+            'AND contains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1,
+            ],
+            'AND notcontains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0,
+            ],
+            'AND notcontains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8,
+            ],
+            'AND NOT contains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0,
+            ],
+            'AND NOT contains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8,
+            ],
+            'AND NOT notcontains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9,
+            ],
+            'AND NOT notcontains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'AND NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1,
+            ],
+            'OR contains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9,
+            ],
+            'OR contains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1,
+            ],
+            'OR notcontains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0,
+            ],
+            'OR notcontains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8,
+            ],
+            'OR NOT contains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 0,
+            ],
+            'OR NOT contains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'contains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 8,
+            ],
+            'OR NOT notcontains test' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => 'test',
+                    ],
+                ],
+                'expected' => 9,
+            ],
+            'OR NOT notcontains _test_pc01' => [
+                'itemtype' => 'Computer',
+                'criteria' => [
+                    [
+                        'link'       => 'OR NOT',
+                        'field'      => 'all',
+                        'searchtype' => 'notcontains',
+                        'value'      => '_test_pc01',
+                    ],
+                ],
+                'expected' => 1,
+            ],
+        ];
+    }
+
+    #[DataProvider('allCriterionProvider')]
+    public function testAllCriterionNew(string $itemtype, array $criteria, int $expected)
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $data = $this->doSearch($itemtype, [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => $criteria,
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertSame($expected, $data['data']['totalcount']);
+    }
 
     public function testSearchOnRelationTable()
     {
