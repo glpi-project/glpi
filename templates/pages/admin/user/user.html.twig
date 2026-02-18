@@ -257,7 +257,11 @@
                             {{ fields.textField('phone', item.fields['phone'], 'Phone'|itemtype_name(1)) }}
                             {{ fields.textField('mobile', item.fields['mobile'], __('Mobile phone')) }}
                             {% if not simple_form %}
-                                {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2')) }}
+                                {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2'), {
+                                    additional_attributes: {
+                                        autocomplete: 'off',
+                                    },
+                                }) }}
                             {% endif %}
 
                             {% if not item.isNewItem() and ((caneditpassword ?? false) or is_preference_form) %}
@@ -268,7 +272,7 @@
                                     clearable: false,
                                     is_copyable: true,
                                     additional_attributes: {
-                                        autocomplete: 'off',
+                                        autocomplete: 'new-password',
                                     },
                                 }) }}
                                 {% if not external_auth %}
