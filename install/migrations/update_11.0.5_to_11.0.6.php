@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,43 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\FuzzyMatcher;
+use function Safe\preg_match;
+use function Safe\scandir;
 
 /**
- * Default strategy.
- * Allow partial matches on string thanks to a zero deletion cost.
- * See tests for more precise examples.
- */
-final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
+ * Update from 11.0.5 to 11.0.6
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update1105to1106()
 {
-    public function tryToMatchUsingStrContains(): bool
-    {
-        return true;
+    /**
+     * @var DBmysql $DB
+     * @var Migration $migration
+     */
+    global $DB, $migration;
+
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_11.0.5_to_11.0.6/';
+
+    $migration->setVersion('11.0.6');
+
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
     }
 
-    public function minimumFilterLenghtForFuzzySearch(): int
-    {
-        return 3;
-    }
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
-    public function insertionCost(): int
-    {
-        return 1;
-    }
+    $migration->executeMigration();
 
-    public function replacementCost(): int
-    {
-        return 1;
-    }
-
-    public function deletionCost(): int
-    {
-        return 0;
-    }
-
-    public function maxCostForSuccess(?int $word_length = 0): int
-    {
-        // Allow up to 10% of the word length as cost
-        return (int) ceil($word_length * 0.1);
-    }
+    return $updateresult;
 }

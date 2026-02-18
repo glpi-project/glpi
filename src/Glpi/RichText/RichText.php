@@ -364,8 +364,15 @@ HTML;
     private static function loadImagesLazy(string $content): string
     {
         return preg_replace_callback(
-            '/<img([^>]+?)\s*\/?>/i',
-            fn($matches) => '<img' . $matches[1] . ' loading="lazy">',
+            '/<img\b((?>[^>]*))\s*\/?>/i',
+            static function (array $matches): string {
+                $attrs = $matches[1];
+                $attrs = rtrim($attrs, '/ \t\n\r\0\x0B');
+                if (preg_match('/\bloading\s*=/i', $attrs)) {
+                    return $matches[0];
+                }
+                return sprintf('<img%s loading="lazy">', $attrs);
+            },
             $content
         );
     }

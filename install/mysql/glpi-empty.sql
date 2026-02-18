@@ -5117,8 +5117,8 @@ CREATE TABLE `glpi_notificationtargets` (
   `notifications_id` int unsigned NOT NULL DEFAULT '0',
   `is_exclusion` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`notifications_id`,`items_id`,`type`),
   KEY `items` (`type`,`items_id`),
-  KEY `notifications_id` (`notifications_id`),
   KEY `is_exclusion` (`is_exclusion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -7602,7 +7602,7 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
-  `value` text,
+  `value` longtext,
   PRIMARY KEY (`id`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7614,7 +7614,7 @@ CREATE TABLE `glpi_changetemplatepredefinedfields` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
-  `value` text,
+  `value` longtext,
   PRIMARY KEY (`id`),
   KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7626,7 +7626,7 @@ CREATE TABLE `glpi_problemtemplatepredefinedfields` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
-  `value` text,
+  `value` longtext,
   PRIMARY KEY (`id`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

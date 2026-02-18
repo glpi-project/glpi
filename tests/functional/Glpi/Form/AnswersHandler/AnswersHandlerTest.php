@@ -57,6 +57,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\ValidationResult;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -495,6 +496,20 @@ class AnswersHandlerTest extends DbTestCase
             ],
             'expectedIsValid' => true,
             'expectedErrors' => [],
+        ];
+
+        $mandatory_urgency_form_builder = (new FormBuilder("Mandatory Urgency Test Form"))
+            ->addQuestion("Mandatory Urgency", QuestionTypeUrgency::class, is_mandatory: true);
+
+        yield 'Empty mandatory urgency field - should be invalid' => [
+            'builder' => $mandatory_urgency_form_builder,
+            'answers' => [
+                'Mandatory Urgency' => null,
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Urgency' => 'This field is mandatory',
+            ],
         ];
     }
 

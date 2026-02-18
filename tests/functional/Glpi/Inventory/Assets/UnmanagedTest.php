@@ -39,9 +39,7 @@ use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
 use Lockedfield;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class UnmanagedTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array

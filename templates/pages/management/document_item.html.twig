@@ -62,7 +62,7 @@
                         {{ inputs.hidden('is_recursive', item.isRecursive() ? '1' : '0') }}
                         {{ inputs.hidden('itemtype', item.getType()) }}
                         {{ inputs.hidden('items_id', item.getID()) }}
-                        {% if item.getType == 'Ticket' %}
+                        {% if item.getType() == 'Ticket' %}
                             {{ inputs.hidden('tickets_id', item.getID()) }}
                         {% endif %}
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}

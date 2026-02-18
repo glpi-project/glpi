@@ -122,7 +122,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      **/
     public function canCreateItem(): bool
     {
-        if (!Session::haveAccessToEntity($this->getEntityID())) {
+        if (!Session::haveAccessToEntity($this->getEntityID(), $this->isTemplate() && $this->isRecursive())) {
             return false;
         }
         return Session::haveRight(self::$rightname, CREATE);

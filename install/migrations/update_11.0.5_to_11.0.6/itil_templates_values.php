@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,43 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\FuzzyMatcher;
-
 /**
- * Default strategy.
- * Allow partial matches on string thanks to a zero deletion cost.
- * See tests for more precise examples.
+ * @var Migration $migration
  */
-final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
-{
-    public function tryToMatchUsingStrContains(): bool
-    {
-        return true;
-    }
-
-    public function minimumFilterLenghtForFuzzySearch(): int
-    {
-        return 3;
-    }
-
-    public function insertionCost(): int
-    {
-        return 1;
-    }
-
-    public function replacementCost(): int
-    {
-        return 1;
-    }
-
-    public function deletionCost(): int
-    {
-        return 0;
-    }
-
-    public function maxCostForSuccess(?int $word_length = 0): int
-    {
-        // Allow up to 10% of the word length as cost
-        return (int) ceil($word_length * 0.1);
-    }
-}
+$migration->changeField('glpi_tickettemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
+$migration->changeField('glpi_changetemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);
+$migration->changeField('glpi_problemtemplatepredefinedfields', 'value', 'value', 'longtext', ['nodefault' => true]);

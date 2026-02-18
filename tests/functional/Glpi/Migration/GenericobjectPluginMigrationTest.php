@@ -83,6 +83,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             $DB->dropTable($table['TABLE_NAME']);
         }
 
+        $DB->clearSchemaCache();
         parent::tearDownAfterClass();
     }
 

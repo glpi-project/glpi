@@ -110,6 +110,7 @@ class ResourcesCheckerTest extends GLPITestCase
                 ],
             ],
             'expected'  => false,
+            'expected_output'    => 'Missing composer autoload file.',
         ];
 
         // No `public/lib` -> need dependencies install
@@ -120,6 +121,7 @@ class ResourcesCheckerTest extends GLPITestCase
                 ],
             ],
             'expected'  => false,
+            'expected_output'    => 'Missing node /public/lib folder.',
         ];
 
         $composer_lock = <<<JSON
@@ -180,6 +182,7 @@ class ResourcesCheckerTest extends GLPITestCase
                 'package-lock.json' => $package_lock,
             ],
             'expected'  => false,
+            'expected_output'    => 'Composer hash not matching.',
         ];
 
         // No `.composer.hash` -> need dependencies install
@@ -197,6 +200,7 @@ class ResourcesCheckerTest extends GLPITestCase
                 'package-lock.json' => $package_lock,
             ],
             'expected'  => false,
+            'expected_output'    => 'Missing .composer.hash file.',
         ];
 
         // Unsychronized `.package.hash` -> need dependencies install
@@ -215,6 +219,7 @@ class ResourcesCheckerTest extends GLPITestCase
                 'package-lock.json' => $package_lock,
             ],
             'expected'  => false,
+            'expected_output'    => 'Node package hash not matching.',
         ];
 
         // No `.package.hash` -> need dependencies install
@@ -232,15 +237,26 @@ class ResourcesCheckerTest extends GLPITestCase
                 'package-lock.json' => $package_lock,
             ],
             'expected'  => false,
+            'expected_output'    => 'Missing .package.hash file.',
         ];
     }
 
     #[DataProvider('dependenciesVfsStructureProvider')]
-    public function testAreDependenciesUpToDate(array $structure, bool $expected): void
+    public function testAreDependenciesUpToDate(array $structure, bool $expected, string $expected_output = ''): void
     {
         $root_dir = vfsStream::setup(structure: $structure);
 
         $resources_checker = new ResourcesChecker($root_dir->url());
-        $this->assertEquals($expected, $this->callPrivateMethod($resources_checker, 'areDependenciesUpToDate'));
+
+        ob_start();
+        $result = $this->callPrivateMethod($resources_checker, 'areDependenciesUpToDate');
+        $output = ob_get_clean();
+
+        $this->assertEquals($expected, $result);
+        if ($expected_output !== '') {
+            $this->assertEquals($expected_output, trim($output));
+        } else {
+            $this->assertEmpty(trim($output));
+        }
     }
 }

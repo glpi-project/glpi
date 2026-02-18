@@ -37,14 +37,15 @@ namespace tests\units\Glpi\Migration;
 use Glpi\Exception\OAuth2KeyException;
 use Glpi\OAuth\Server;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 class ServerTest extends DbTestCase
 {
     public function tearDown(): void
     {
         //reset correct chmod
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0o644);
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0o644);
+        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0o600);
+        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0o600);
         parent::tearDown();
     }
 
@@ -54,6 +55,7 @@ class ServerTest extends DbTestCase
         $this->assertTrue(Server::checkKeys());
     }
 
+    #[Group('single-thread')] // Modifing permission on the oauth file
     public function testPrivateKeyNotReadable()
     {
         //by default, keys must be present and readable.
@@ -66,6 +68,7 @@ class ServerTest extends DbTestCase
         $this->assertTrue(Server::checkKeys());
     }
 
+    #[Group('single-thread')] // Modifing permission on the oauth file
     public function testPublicKeyNotReadable()
     {
         //by default, keys must be present and readable.

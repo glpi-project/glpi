@@ -640,7 +640,10 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Get an empty item
+     * Get an empty item - defines item fields default values
+     *
+     * A fresh item (created with `new MyItem()`) has an empty fields property,
+     * This method populate the fields with defaults values defined here.
      *
      * @return bool true if succeed else false
      **/
@@ -726,14 +729,11 @@ class CommonDBTM extends CommonGLPI
         if (count($tobeupdated) === 0) {
             return false;
         }
-        $result = $DB->update(
+        $DB->update(
             static::getTable(),
             $tobeupdated,
             ['id' => $this->fields['id']]
         );
-        if ($result === false) {
-            return false;
-        }
         $affected_rows = $DB->affectedRows();
 
         if (count($oldvalues) && $affected_rows > 0) {
@@ -854,7 +854,7 @@ class CommonDBTM extends CommonGLPI
                 $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
             }
 
-            $result = $DB->update(
+            $DB->update(
                 static::getTable(),
                 [
                     'is_deleted' => 1,
@@ -864,10 +864,7 @@ class CommonDBTM extends CommonGLPI
                 ]
             );
             $this->cleanDBonMarkDeleted();
-
-            if ($result) {
-                return true;
-            }
+            return true;
         }
 
         return false;
@@ -998,6 +995,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done when item is deleted from the database
      *
+     * Method called before item is really deleted from database.
+     * @see CommonDBTM::deleteFromDB()
      * @return void
      **/
     public function cleanDBonPurge() {}
@@ -1357,7 +1356,7 @@ class CommonDBTM extends CommonGLPI
                     ($key[0] !== '_')
                     && isset($table_fields[$key])
                 ) {
-                    $this->fields[$key] = $this->input['_raw' . $key] ?? $this->input[$key];
+                    $this->fields[$key] = $this->input[$key];
                 }
             }
 
@@ -2457,7 +2456,7 @@ class CommonDBTM extends CommonGLPI
     public function canCreateItem(): bool
     {
 
-        if (!$this->checkEntity()) {
+        if (!$this->checkEntity($this->isTemplate() && $this->isRecursive())) {
             return false;
         }
         return true;
@@ -3196,9 +3195,10 @@ class CommonDBTM extends CommonGLPI
         return  -1;
     }
 
-
     /**
-     * Is the object assigned to an entity
+     * Can item type be assigned to an entity ?
+     *
+     * Notice the method name begins with 'is' but is releated to item type, not to an item (instance).
      *
      * @return bool
      **/
@@ -3211,9 +3211,8 @@ class CommonDBTM extends CommonGLPI
         return array_key_exists('entities_id', $this->fields);
     }
 
-
     /**
-     * Is the object may be recursive
+     * Can item type be recursive ?
      *
      * @return bool
      **/
@@ -3226,9 +3225,8 @@ class CommonDBTM extends CommonGLPI
         return array_key_exists('is_recursive', $this->fields);
     }
 
-
     /**
-     * Is the object recursive
+     * Is the item recursive ?
      *
      * @return bool
      **/
@@ -3240,24 +3238,21 @@ class CommonDBTM extends CommonGLPI
         return false;
     }
 
-
     /**
-     * Is the object may be deleted
+     * Does itemtype supports soft deleted ?
      *
      * @return bool
      **/
     public function maybeDeleted()
     {
-
         if (!isset($this->fields['id'])) {
             $this->getEmpty();
         }
         return array_key_exists('is_deleted', $this->fields);
     }
 
-
     /**
-     * Is the object deleted
+     * Is item soft deleted ?
      *
      * @return bool
      **/
@@ -3269,9 +3264,8 @@ class CommonDBTM extends CommonGLPI
         return false;
     }
 
-
     /**
-     * Can object be activated
+     * Can item type be activated ?
      *
      * @since 9.2
      *
@@ -3288,7 +3282,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object active
+     * Is the item active ?
      *
      * @since 9.2
      *
@@ -3304,7 +3298,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object may be a template
+     * Can the item type be a template ?
      *
      * @return bool
      **/
@@ -3319,7 +3313,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object a template
+     * Is item a template ?
      *
      * @return bool
      **/
@@ -3333,9 +3327,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Can the object be dynamic
-     *
-     * @since 0.84
+     * Can the item type be dynamic ?
      *
      * @return bool
      **/
@@ -3353,7 +3345,6 @@ class CommonDBTM extends CommonGLPI
      * Use deleted field in case of dynamic management to lock ?
      *
      * need to be overriden if object need to use standard deleted management (Computer...)
-     * @since 0.84
      *
      * @return bool
      **/
@@ -3362,11 +3353,8 @@ class CommonDBTM extends CommonGLPI
         return $this->maybeDynamic();
     }
 
-
     /**
-     * Is an object dynamic or not
-     *
-     * @since 0.84
+     * Is item dynamic ?
      *
      * @return bool
      **/
@@ -3380,7 +3368,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object may be private
+     * Can item type be private ?
      *
      * @return bool
      **/
@@ -3396,7 +3384,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object private
+     * Is the item private ?
      *
      * @return bool
      **/
@@ -3409,7 +3397,7 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Can object have a location
+     * Can item type have a location ?
      *
      * @since 9.3
      *
@@ -3428,7 +3416,6 @@ class CommonDBTM extends CommonGLPI
      * Return the linked items (`Asset_PeripheralAsset` relations)
      *
      * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
-     * @since 0.84.4
      **/
     public function getLinkedItems()
     {
@@ -3440,7 +3427,6 @@ class CommonDBTM extends CommonGLPI
      * Return the count of linked items (`Asset_PeripheralAsset` relations)
      *
      * @return int number of linked items
-     * @since 0.84.4
      **/
     public function getLinkedItemsCount()
     {
@@ -3636,9 +3622,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * @since 0.84
-     *
-     * Get field used for name
+     * Get field name used for name
      *
      * @return string
      **/
@@ -3649,9 +3633,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * @since 0.84
-     *
-     * Get field used for completename
+     * Get field name used for completename
      *
      * @return string
      **/
@@ -3661,12 +3643,11 @@ class CommonDBTM extends CommonGLPI
     }
 
 
-    /** Get raw completename of the object
+    /**
+     * Get raw completename of the object
      * Maybe overloaded
      *
      * @see CommonDBTM::getCompleteNameField
-     *
-     * @since 0.85
      *
      * @return string
      **/
@@ -3675,7 +3656,6 @@ class CommonDBTM extends CommonGLPI
 
         return $this->fields[static::getCompleteNameField()] ?? '';
     }
-
 
     /**
      * Get the name of the object
@@ -3740,8 +3720,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get additional information to add before name
      *
-     * @since 0.84
-     *
      * @return string string to add
      **/
     public function getPreAdditionalInfosForName()
@@ -3751,8 +3729,6 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Get additional information to add after name
-     *
-     * @since 0.84
      *
      * @return string string to add
      **/
@@ -5377,8 +5353,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is entity information forward To ?
      *
-     * @since 0.84
-     *
      * @param string $itemtype itemtype to check
      *
      * @return bool
@@ -5555,6 +5529,18 @@ class CommonDBTM extends CommonGLPI
                 // it may change over time, and can be related to dynamic profiles assignation.
                 // Related documents have to be available on all entities.
                 $is_recursive = 1;
+            }
+
+            // Check if document is blacklisted when importing via mail collector
+            if ($input['_auto_import'] ?? false) {
+                $blacklisted_doc = new Document();
+                if (
+                    $blacklisted_doc->getFromDBbyContent($entities_id, $filename)
+                    && $blacklisted_doc->fields['is_blacklisted']
+                ) {
+                    // Document is blacklisted, skip attachment
+                    continue;
+                }
             }
 
             // Check for duplicate and availability (e.g. file deleted in _files)

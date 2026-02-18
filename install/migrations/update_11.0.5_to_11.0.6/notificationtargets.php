@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,43 +32,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\FuzzyMatcher;
-
 /**
- * Default strategy.
- * Allow partial matches on string thanks to a zero deletion cost.
- * See tests for more precise examples.
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
-{
-    public function tryToMatchUsingStrContains(): bool
-    {
-        return true;
-    }
 
-    public function minimumFilterLenghtForFuzzySearch(): int
-    {
-        return 3;
-    }
+// Remove duplicates targets
+$duplicates_targets_iterator = $DB->request([
+    'SELECT' => [
+        'notifications_id',
+        'items_id',
+        'type',
+        'MIN' => 'id AS min_id',
+        'COUNT' => '* AS count',
+    ],
+    'FROM' => 'glpi_notificationtargets',
+    'GROUPBY' => ['notifications_id', 'items_id', 'type'],
+    'HAVING' => ['count' => ['>', 1]],
+]);
 
-    public function insertionCost(): int
-    {
-        return 1;
-    }
-
-    public function replacementCost(): int
-    {
-        return 1;
-    }
-
-    public function deletionCost(): int
-    {
-        return 0;
-    }
-
-    public function maxCostForSuccess(?int $word_length = 0): int
-    {
-        // Allow up to 10% of the word length as cost
-        return (int) ceil($word_length * 0.1);
-    }
+foreach ($duplicates_targets_iterator as $target) {
+    $DB->delete('glpi_notificationtargets', [
+        'notifications_id' => $target['notifications_id'],
+        'items_id' => $target['items_id'],
+        'type' => $target['type'],
+        'id' => ['>', $target['min_id']],
+    ]);
 }
+
+$migration->dropKey('glpi_notificationtargets', 'notifications_id');
+$migration->addKey('glpi_notificationtargets', ['notifications_id', 'items_id', 'type'], 'unicity', 'UNIQUE');

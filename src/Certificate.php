@@ -553,7 +553,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
             if ($before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity'])) {
                 if ($this->fields['date_expiration'] < date('Y-m-d')) {
                     $class = 'expired';
-                } elseif ($this->fields['date_expiration'] < date('Y-m-d', strtotime("+ $before days"))) {
+                } elseif ($this->fields['date_expiration'] < date('Y-m-d', strtotime("+$before days"))) {
                     $class = 'soon_expired';
                 } else {
                     $class = "not_expired";

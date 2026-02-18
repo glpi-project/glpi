@@ -3488,12 +3488,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonITILObject\\:\\:updateActionTime\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'status\' might not exist on array\\{\\}\\|array\\{status\\: non\\-empty\\-array\\<array\\{id\\: \\(int\\|string\\), name\\: string, color_class\\: non\\-falsy\\-string, header_color\\: \'var\\(\\-\\-status\\-color\\)\', drop_only\\: bool\\}\\>\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -4112,12 +4106,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method canUpdateItem\\(\\) on CommonDBTM\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
@@ -4149,12 +4137,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method update\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on CommonDBTM\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
@@ -4222,7 +4204,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 4,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -4235,12 +4217,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function method_exists expects object\\|string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$table of function getItemForTable expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
@@ -5562,18 +5538,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:migrateConfigsInDb\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPIKey\\:\\:migrateFieldsInDb\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPIKey.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$string of method GLPIKey\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#',
@@ -10724,6 +10688,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/HardDrive.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$autoupdatesystems_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
@@ -15046,17 +15016,11 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLink\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
@@ -15426,12 +15390,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_SoftwareVersion\\:\\:updateDatasForItem\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
@@ -15848,19 +15806,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Lock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:can\\(\\) expects int, int\\<min, \\-1\\>\\|int\\<1, max\\>\\|true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$haystack of function str_starts_with expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lock.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\<min, \\-1\\>\\|int\\<1, max\\>\\|true given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Lock.php',
@@ -15880,18 +15826,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on class\\-string\\<CommonDBTM\\>\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lockedfield.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Lockedfield\\:\\:itemDeleted\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Lockedfield.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Lockedfield\\:\\:setLastValue\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Lockedfield.php',
 ];
@@ -18122,12 +18056,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method PlanningRecall\\:\\:managePlanningUpdates\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PlanningRecall.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'field\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -19358,12 +19286,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleCollection\\:\\:deleteRuleOrder\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method RuleCollection\\:\\:getRuleClassName\\(\\) should return class\\-string\\<Rule\\> but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -19803,24 +19725,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method SavedSearch\\:\\:prepareInputForClone\\(\\) should return array but returns array\\|false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:setDoCount\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:setEntityRecur\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:unmarkDefaults\\(\\) should return bool but returns bool\\|mysqli_result\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',

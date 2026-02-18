@@ -177,6 +177,18 @@ test-db-update: ## Update testing's database
 		--env=testing
 .PHONY: test-db-update
 
+test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-clone p=8
+	@$(eval p ?= 4)
+	@$(DB) bash -c ' \
+		for i in $$(seq 2 $(p)); do \
+			mariadb -u root -pglpi -e "DROP DATABASE IF EXISTS glpi_test_$$i"; \
+			mariadb -u root -pglpi -e "CREATE DATABASE glpi_test_$$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"; \
+			mariadb-dump -u root -pglpi --single-transaction glpi_test | mariadb -u root -pglpi glpi_test_$$i; \
+			echo "Database glpi_test_$$i created and populated"; \
+		done \
+	'
+.PHONY: test-db-clone
+
 e2e-db-install: ## Install e2e testing's database
 	@$(CONSOLE) database:install \
 		-r -f \
@@ -215,6 +227,12 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/phpunit $(c)
 .PHONY: phpunit
+
+paratest: ## Run paratest, example: make paratest p=8
+	@$(eval p ?= 4)
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/paratest -p $(p) --exclude-group "single-thread" $(c)
+.PHONY: paratest
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)

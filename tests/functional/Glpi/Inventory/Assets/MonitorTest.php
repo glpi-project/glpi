@@ -39,9 +39,7 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class MonitorTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array
@@ -188,6 +186,14 @@ class MonitorTest extends AbstractInventoryAsset
             ]),
             'Monitor has not been linked to computer :('
         );
+
+        $monitor = new \Monitor();
+        $this->assertTrue(
+            $monitor->getFromDB($ico->fields['items_id_peripheral']),
+            'Monitor does not exist.'
+        );
+
+        $this->assertSame($computer->fields['autoupdatesystems_id'], $monitor->fields['autoupdatesystems_id'], 'Monitor has not the same autoupdatesystems_id as computer :(');
     }
 
     public function testInventoryMove()

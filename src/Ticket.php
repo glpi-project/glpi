@@ -50,7 +50,7 @@ use Safe\DateTime;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;
-use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 use function Safe\strtotime;
 
 /**
@@ -5366,7 +5366,28 @@ JAVASCRIPT;
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
                     if (preg_match("/" . preg_quote($data, '/') . "/i", $src_attr)) {
-                        $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . htmlescape(Document::getImageTag($tags[$filename])) . "</p>", $html);
+                        $html = preg_replace_callback(
+                            "/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s",
+                            function ($img_matches) use ($tags, $filename) {
+                                $img_tag = $img_matches[0];
+
+                                // Extract width attribute if present
+                                $width_attr = '';
+                                if (preg_match('/\bwidth\s*=\s*["\']?(\d+)["\']?/i', $img_tag, $w_matches)) {
+                                    $width_attr = ' width="' . (int) $w_matches[1] . '"';
+                                }
+
+                                // Extract height attribute if present
+                                $height_attr = '';
+                                if (preg_match('/\bheight\s*=\s*["\']?(\d+)["\']?/i', $img_tag, $h_matches)) {
+                                    $height_attr = ' height="' . (int) $h_matches[1] . '"';
+                                }
+
+                                // Return an img tag with the tag as id, preserving width/height
+                                return '<img id="' . htmlescape($tags[$filename]) . '"' . $width_attr . $height_attr . '>';
+                            },
+                            $html
+                        );
                     }
                 }
             }
@@ -5754,6 +5775,35 @@ JAVASCRIPT;
                         //Cannot retrieve ticket. Abort/fail the merge
                         throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
                     }
+                    if ($ticket->fields['id'] == $merge_target_id) {
+                        // Cannot merge a ticket into itself. Abort/fail the merge
+                        throw new RuntimeException(sprintf(__('Cannot merge ticket %d into itself'), $id), 1);
+                    }
+                    if ($ticket->isDeleted()) {
+                        //ignore deleted tickets
+                        continue;
+                    }
+
+                    $tt = new Ticket_Ticket();
+                    if ($p['link_type'] > 0 && $p['link_type'] < 5) {
+                        // Clean up any existing links between the tickets to avoid duplicates
+                        $tt->deleteByCriteria([
+                            'OR' => [
+                                [
+                                    'AND' => [
+                                        'tickets_id_1' => $merge_target_id,
+                                        'tickets_id_2' => $id,
+                                    ],
+                                ],
+                                [
+                                    'AND' => [
+                                        'tickets_id_2' => $merge_target_id,
+                                        'tickets_id_1' => $id,
+                                    ],
+                                ],
+                            ],
+                        ]);
+                    }
                     //Build followup from the original ticket
                     $input = [
                         'itemtype'        => Ticket::class,
@@ -5837,28 +5887,11 @@ JAVASCRIPT;
                     }
                     if ($p['link_type'] > 0 && $p['link_type'] < 5) {
                         //Add relation (this is parent of merge target)
-                        $tt = new Ticket_Ticket();
                         $linkparams = [
                             'link'         => $p['link_type'],
                             'tickets_id_1' => $id,
                             'tickets_id_2' => $merge_target_id,
                         ];
-                        $tt->deleteByCriteria([
-                            'OR' => [
-                                [
-                                    'AND' => [
-                                        'tickets_id_1' => $merge_target_id,
-                                        'tickets_id_2' => $id,
-                                    ],
-                                ],
-                                [
-                                    'AND' => [
-                                        'tickets_id_2' => $merge_target_id,
-                                        'tickets_id_1' => $id,
-                                    ],
-                                ],
-                            ],
-                        ]);
                         if (!$tt->add($linkparams)) {
                             //Cannot link tickets. Abort/fail the merge
                             throw new RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);

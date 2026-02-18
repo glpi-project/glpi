@@ -117,6 +117,10 @@
     field-sizing: content;
 }
 
+.max-width-unset {
+    max-width: unset !important;
+}
+
 @media (hover: hover) {
     .opacity-0-hoverable {
         opacity: 0 !important;
