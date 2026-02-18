@@ -499,6 +499,13 @@ final class ManagementController extends AbstractController
                         'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                         'readOnly' => true,
                     ],
+                    'download_url' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static fn($v) => '/Management/Document/' . $v . '/Download',
+                        'readOnly' => true,
+                    ],
                     'mime' => ['type' => Doc\Schema::TYPE_STRING],
                     'sha1sum' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
@@ -672,6 +679,16 @@ final class ManagementController extends AbstractController
                         - 4: Mid right
                         - 5: Right
                         EOT,
+                ],
+                'date_creation' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                 ],
             ],
         ];
