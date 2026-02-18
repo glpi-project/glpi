@@ -2226,25 +2226,21 @@ abstract class CommonDBRelation extends CommonDBConnexity
             return true;
         }
 
-        if ($value === 0 || $value === '0') {
-            $itemtype = null;
-            if ($itemtype_field !== null && preg_match('/^itemtype/', $itemtype_field)) {
-                $itemtype = $input[$itemtype_field] ?? $this->fields[$itemtype_field] ?? null;
-            } else {
-                $itemtype = $itemtype_field;
-            }
-
-            if ($itemtype === Entity::class) {
-                return false;
-            }
-
-            if (!is_a($itemtype, CommonDBTM::class, true)) {
-                throw new \RuntimeException('Unable to get itemtype from relation input.');
-            }
-
-            return $itemtype::isNewID($value);
+        $itemtype = null;
+        if ($itemtype_field !== null && preg_match('/^itemtype/', $itemtype_field)) {
+            $itemtype = $input[$itemtype_field] ?? $this->fields[$itemtype_field] ?? null;
+        } else {
+            $itemtype = $itemtype_field;
         }
 
-        return false;
+        if ($itemtype === Entity::class) {
+            return false;
+        }
+
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
+            throw new \RuntimeException('Unable to get itemtype from relation input.');
+        }
+
+        return $itemtype::isNewID($value);
     }
 }
