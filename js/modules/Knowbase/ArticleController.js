@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_confirm_danger */
+/* global glpi_toast_error, glpi_confirm_danger, glpi_ajax_dialog */
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
@@ -111,6 +111,9 @@ export class GlpiKnowbaseArticleController
             case 'DELETE_ARTICLE':
                 this.#deleteItem(params.id);
                 break;
+            case 'LOAD_MODAL':
+                this.#loadModal(params.id, params.key, params.title);
+                break;
         }
     }
 
@@ -166,5 +169,20 @@ export class GlpiKnowbaseArticleController
         const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
         const body = await response.json();
         window.location.href = body.redirect;
+    }
+
+    /**
+     * Load content in a modal dialog
+     * @param {string} id - KnowbaseItem ID
+     * @param {string} key - Content key (e.g., 'permissions')
+     * @param {string} title - Modal title
+     */
+    #loadModal(id, key, title)
+    {
+        glpi_ajax_dialog({
+            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/SidePanel/${key}`,
+            title: title || '',
+            dialogclass: 'modal-lg',
+        });
     }
 }
