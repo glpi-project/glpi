@@ -2229,7 +2229,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($value === 0 || $value === '0') {
             $itemtype = null;
             if ($itemtype_field !== null && preg_match('/^itemtype/', $itemtype_field)) {
-                $itemtype = $input[$itemtype_field] ?? null;
+                $itemtype = $input[$itemtype_field] ?? $this->fields[$itemtype_field] ?? null;
             } else {
                 $itemtype = $itemtype_field;
             }
