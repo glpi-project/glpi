@@ -38,8 +38,8 @@
             comment_id   : comment.fields.id,
             date_creation: comment.fields.date_creation,
             comment      : comment.fields.comment,
-            can_edit     : comment.canUpdateItem(),
-            can_purge    : comment.canPurgeItem(),
+            can_edit     : comment.can(comment.fields.id, constant('UPDATE')),
+            can_purge    : comment.can(comment.fields.id, constant('PURGE')),
             user         : users[comment.fields.users_id] ?? null,
         }, with_context = false) }}
     {% endfor %}
