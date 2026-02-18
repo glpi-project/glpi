@@ -57,6 +57,7 @@ use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\DBAL\Operator;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
@@ -2326,7 +2327,7 @@ final class SQLProvider implements SearchProviderInterface
             ];
         }
 
-        return [new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, ''))];
+        return [self::getTextCriteria($tocompute, $val, $nott, Operator::NONE)];
     }
 
     /**
@@ -5374,6 +5375,78 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
         Profiler::getInstance()->stop('SQLProvider::constructData');
+    }
+
+    /**
+     * Create SQL search condition
+     *
+     * @param string   $field Name (should **NOT** be ` protected)
+     * @param ?string  $val   Value to search
+     * @param bool     $not   Is a negative search ? (false by default)
+     * @param Operator $link  With previous criteria (default 'AND')
+     *
+     * @return array<int, mixed>
+     */
+    public static function getTextCriteria(string $field, ?string $val, bool $not = false, Operator $link = Operator::AND): array
+    {
+        $field = str_replace('`', '', $field);
+        $search_val = self::makeTextSearchValue($val);
+        if ($search_val == null) {
+            $criteria = [$field => $search_val];
+        } else {
+            $criteria = [$field => ['LIKE', $search_val]];
+        }
+
+        if (strtolower($val ?? 'null') == 'null') {
+            // FIXME
+            // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
+            // when following datatype are used:
+            //  - integer
+            //  - number
+            //  - decimal
+            //  - count
+            //  - mio
+            //  - percentage
+            //  - timestamp
+            //  - datetime
+            //  - date_delay
+            //
+            // Removing this condition requires, at least, to use the `int`/`float`/`double`/`timestamp`/`date` types in DB,
+            // to ensure that the `''` value will not be stored in DB.
+
+            if ($not) {
+                $criteria[] = [$field => ''];
+            } else {
+                $criteria = [
+                    'OR' => [
+                        [$criteria],
+                        [$field => ''],
+                    ],
+                ];
+            }
+        }
+
+        if ($not) {
+            $criteria = ['NOT' => $criteria];
+        }
+
+        if (
+            ($not && ($val != 'NULL') && ($val != 'null') && ($val != '^$')) // Not something
+            || (!$not && ($val == '^$'))
+        ) {   // Empty
+            $criteria = [
+                'OR' => [
+                    [$criteria],
+                    [$field => null],
+                ],
+            ];
+        }
+        if ($link !== Operator::NONE) {
+            $criteria = [
+                $link->value => $criteria,
+            ];
+        }
+        return $criteria;
     }
 
     /**
