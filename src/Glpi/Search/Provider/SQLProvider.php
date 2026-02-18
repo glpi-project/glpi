@@ -4822,6 +4822,10 @@ final class SQLProvider implements SearchProviderInterface
                     if (isset($val2['nosearch']) && $val2['nosearch']) {
                         continue;
                     }
+                    // Skip section headers (e.g. 'common') that have no 'table' key
+                    if (!isset($val2['table'])) {
+                        continue;
+                    }
                     if (!preg_match(QueryBuilder::getInputValidationPattern($val2['datatype'] ?? '')['pattern'], $criterion['value'])) {
                         // Do not add a clause on the current field if the searched term does not match the exepected pattern.
                         // For instance, do not filter on date fields if the searched value is a word.
@@ -4845,7 +4849,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $criterion['value'],
                                 $meta
                             );
-                            if ($new_where !== false) {
+                            if ($new_where !== false && $new_where !== '') {
                                 $first2  = false;
                                 $view_sql .=  $new_where;
                             }
