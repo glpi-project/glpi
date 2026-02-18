@@ -363,11 +363,10 @@ jobs:
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
-          grep -v '\*\*\* Test logger' tests/e2e/glpi_files/_log/php-errors.log > /tmp/php-errors-filtered.log || true
-          if [[ $(wc -l < /tmp/php-errors-filtered.log) -ge 1 ]]; then
+          if [[ -s tests/e2e/glpi_files/_log/php-errors.log ]]; then
             echo "PHP errors detected in log file"
             echo "==============================="
-            cat /tmp/php-errors-filtered.log
+            cat tests/e2e/glpi_files/_log/php-errors.log
             exit 1
           fi
       - uses: actions/upload-artifact@v6
