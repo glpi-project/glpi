@@ -69,14 +69,19 @@ use Item_Problem;
 use Item_Ticket;
 use ITILCategory;
 use ITILFollowup;
+use ITILFollowupTemplate;
+use ITILReminder;
 use ITILSolution;
 use Location;
 use OLA;
 use OlaLevel;
+use PendingReason;
+use PendingReason_Item;
 use Planning;
 use PlanningEventCategory;
 use PlanningExternalEvent;
 use PlanningExternalEventTemplate;
+use PlanningRecall;
 use Problem;
 use Problem_Problem;
 use Problem_Ticket;
@@ -89,6 +94,7 @@ use RuntimeException;
 use Session;
 use SLA;
 use SlaLevel;
+use SolutionTemplate;
 use SolutionType;
 use TaskCategory;
 use Ticket;
@@ -1499,6 +1505,91 @@ EOT,
             ],
         ];
 
+        $schemas['PlanningReminder'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PlanningRecall::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-rights-conditions' => [ // Object-level extra permissions
+                'read' => static fn() => [
+                    'WHERE' => ['users_id' => Session::getLoginUserID()],
+                ],
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'date' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'when',
+                ],
+                'before_time' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+            ],
+        ];
+
+        $schemas['ITILReminder'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ITILReminder::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'pending_reason' => self::getDropdownTypeSchema(class: PendingReason::class, full_schema: 'PendingReason'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PendingReason'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PendingReason::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'followup_frequency' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'followups_before_resolution' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'followup_template' => self::getDropdownTypeSchema(class: ITILFollowupTemplate::class, full_schema: 'FollowupTemplate'),
+                'solution_template' => self::getDropdownTypeSchema(class: SolutionTemplate::class, full_schema: 'SolutionTemplate'),
+                'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            ],
+        ];
+
+        $schemas['PendingReason_Item'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PendingReason_Item::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'followup_frequency' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'followups_before_resolution' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'bump_count' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'last_bump_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'previous_status' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2562,5 +2653,84 @@ EOT,
     public function deleteKBArticleItemLink(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PlanningReminder', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'PlanningReminder')]
+    public function searchPlanningReminder(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PlanningReminder', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/PlanningReminder/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'PlanningReminder')]
+    public function getPlanningReminder(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('PlanningReminder', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'PendingReason')]
+    public function searchPendingReason(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'PendingReason')]
+    public function getPendingReason(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: 'PendingReason')]
+    public function createPendingReason(Request $request): Response
+    {
+        return ResourceAccessor::createBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPendingReason']);
+    }
+
+    #[Route(path: '/PendingReason/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: 'PendingReason')]
+    public function updatePendingReason(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: 'PendingReason')]
+    public function deletePendingReason(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/PendingReason', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'PendingReason_Item',
+        description: 'Get the pending reason for a specific Ticket, Change or Problem'
+    )]
+    public function getItemPendingReason(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema('PendingReason_Item', $this->getAPIVersion($request));
+        $filters = 'itemtype==' . $itemtype;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($schema, ['items_id' => $request->getAttribute('id')], $request->getParameters(), 'items_id');
     }
 }
