@@ -43,6 +43,7 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
+use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
@@ -1021,9 +1022,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 type: EditorActionType::LOAD_SIDE_PANEL,
                 params: [
                     'id' => $this->fields['id'],
-                    'key' => 'revisions',
+                    'key' => 'history',
                 ],
-                counter: countElementsInTable(KnowbaseItem_Revision::getTable(), [
+                // 1 for initial revision
+                counter: 1 + countElementsInTable(KnowbaseItem_Revision::getTable(), [
                     'knowbaseitems_id' => $this->fields['id'],
                     'language' => '',
                 ]),
@@ -1067,15 +1069,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function getLastUpdateInfo(): LastUpdateInfo
     {
-        // TODO: the new history feature has not yet been deployed so we can't
-        // use it yet to retrieve the correct information.
-        // For now, we will just use the author + last update date.
-        // It will be improved later.
-        $author = User::getById($this->fields['users_id']) ?: null;
+        $history = (new HistoryBuilder($this))->buildHistory();
+        $event = $history->getLatestEvent();
+
+        $author = User::getById($event->getAuthor()) ?: null;
         return new LastUpdateInfo(
             author_link: $author?->getLinkUrl(),
             author_name: $author?->getName(),
-            date: $this->fields['date_mod'],
+            date: $event->getDate(),
             can_view_author: $author ? $author->can($author->getID(), READ) : false,
         );
     }

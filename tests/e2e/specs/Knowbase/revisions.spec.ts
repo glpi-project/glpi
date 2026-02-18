@@ -55,16 +55,16 @@ test('Can view revision history and restore a previous version', async ({ page, 
     // Toggle history panel
     await expect(kb.getHeading('History')).not.toBeAttached();
     await page.getByTitle('More actions').click();
-    await expect(page.getByTestId('revisions-counter')).toHaveText("2");
+    await expect(page.getByTestId('history-counter')).toHaveText("3");
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
     // Revisions should be displayed with correct badges
-    const revisions = page.getByTestId('revision');
+    const revisions = page.getByTestId('history-event');
     await expect(revisions).toHaveCount(3);
     await expect(revisions.nth(0).getByText('Current version')).toBeVisible();
     await expect(revisions.nth(1).getByText('Version 2')).toBeVisible();
-    await expect(revisions.nth(2).getByText('Initial version')).toBeVisible();
+    await expect(revisions.nth(2).getByText('Version 1')).toBeVisible();
 
     // Restore button should only be visible on non-current revisions
     await expect(revisions.nth(0).getByTitle('Restore this version')).not.toBeAttached();
@@ -85,5 +85,5 @@ test('Can view revision history and restore a previous version', async ({ page, 
 
     // Counter should be updated (new revision created from previous current version)
     await page.getByTitle('More actions').click();
-    await expect(page.getByTestId('revisions-counter')).toHaveText("3");
+    await expect(page.getByTestId('history-counter')).toHaveText("4");
 });

@@ -38,9 +38,9 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\SidePanel\CommentsRenderer;
+use Glpi\Knowbase\SidePanel\HistoryRenderer;
 use Glpi\Knowbase\SidePanel\PermissionsRenderer;
 use Glpi\Knowbase\SidePanel\RendererInterface;
-use Glpi\Knowbase\SidePanel\RevisionsRenderer;
 use Glpi\Knowbase\SidePanel\ServiceCatalogRenderer;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
@@ -84,8 +84,8 @@ final class SidePanelController extends AbstractController
         return match ($key) {
             'comments'        => new CommentsRenderer(),
             'service-catalog' => new ServiceCatalogRenderer(),
-            'revisions'       => new RevisionsRenderer(),
             'permissions'     => new PermissionsRenderer(),
+            'history'         => new HistoryRenderer(),
             default           => throw new BadRequestHttpException(),
         };
     }
