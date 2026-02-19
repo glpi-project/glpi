@@ -6698,12 +6698,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$name of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getKnownSchema\\(\\) expects string, class\\-string\\<CommonITILTask\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$class of static method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getDropdownTypeSchema\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

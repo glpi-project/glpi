@@ -82,6 +82,7 @@ use ProblemTask;
 use ProblemTemplate;
 use RecurrentChange;
 use RequestType;
+use RuntimeException;
 use Session;
 use SLA;
 use SlaLevel;
@@ -1476,9 +1477,17 @@ EOT,
         if ($subitem_type === 'Document') {
             $schema = (new ManagementController())->getKnownSchema('Document_Item', $api_version);
         } elseif ($subitem_type === 'Task') {
-            $schema = $this->getKnownSchema($item::getTaskClass(), $api_version);
-        } elseif ($subitem_type === 'Validation' && class_exists($item::getType() . 'Validation')) {
-            $schema = $this->getKnownSchema($item::getType() . 'Validation', $api_version);
+            $schema_name = $item::getTaskClass();
+            if ($schema_name === null) {
+                throw new RuntimeException(sprintf('Task sub item not found for `%s`.', $item::class));
+            }
+            $schema = $this->getKnownSchema($schema_name, $api_version);
+        } elseif ($subitem_type === 'Validation') {
+            $schema_name = $item::getValidationClassName();
+            if ($schema_name === null) {
+                throw new RuntimeException(sprintf('Validation sub item not found for `%s`.', $item::class));
+            }
+            $schema = $this->getKnownSchema($schema_name, $api_version);
         } else {
             $schema = $this->getKnownSchema($subitem_type, $api_version);
         }
@@ -1494,7 +1503,13 @@ EOT,
      */
     private function getITILTimelineItems(CommonITILObject $item, Request $request, array $subitem_types = []): ?array
     {
-        $subitem_types = $subitem_types === [] ? ['Followup', 'Task', 'Document', 'Solution', 'Validation'] : $subitem_types;
+        if ($subitem_types === []) {
+            $subitem_types = ['Followup', 'Task', 'Document', 'Solution'];
+            if ($item::getValidationClassName() !== null) {
+                $subitem_types[] = 'Validation';
+            }
+        }
+
         $results = [];
         foreach ($subitem_types as $subitem_type) {
             $filters = $this->getTimelineItemFilters($item, $request, $subitem_type);
