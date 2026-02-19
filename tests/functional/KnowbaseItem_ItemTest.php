@@ -36,7 +36,6 @@ namespace test\units;
 
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem_Item;
@@ -256,26 +255,24 @@ class KnowbaseItem_ItemTest extends DbTestCase
     {
         $this->login();
 
-        $kb_item = $this->createItem(\KnowbaseItem::class, [
-            'name' => 'Test KB for root entity',
-            'answer' => 'Test answer',
-        ]);
+        $kb_item = $this->createItem(
+            \KnowbaseItem::class,
+            [
+                'name' => 'Test KB for root entity',
+                'answer' => 'Test answer',
+            ]
+        );
+
+        $link_id = $this->createItem(
+            KnowbaseItem_Item::class,
+            [
+                'knowbaseitems_id' => $kb_item->getID(),
+                'itemtype' => \Entity::class,
+                'items_id' => 0,
+            ]
+        )->getID();
 
         $kb_item_item = new KnowbaseItem_Item();
-        $input = [
-            'knowbaseitems_id' => $kb_item->getID(),
-            'itemtype' => \Entity::class,
-            'items_id' => 0,
-        ];
-
-        try {
-            $kb_item_item->check(-1, CREATE, $input);
-        } catch (AccessDeniedHttpException $e) {
-        }
-
-        $link_id = $kb_item_item->add($input);
-
-        $this->assertGreaterThan(0, $link_id);
         $this->assertTrue($kb_item_item->getFromDB($link_id));
         $this->assertEquals(0, $kb_item_item->fields['items_id']);
         $this->assertEquals(\Entity::class, $kb_item_item->fields['itemtype']);
