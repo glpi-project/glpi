@@ -3064,7 +3064,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_match expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 22,
+	'count' => 20,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
