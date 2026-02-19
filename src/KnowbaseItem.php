@@ -1073,7 +1073,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $actions[] = new EditorAction(
             label: _n('Target', 'Targets', Session::getPluralNumber()),
             icon: "ti ti-eye",
-            type: EditorActionType::OPEN_MODAL,
+            type: EditorActionType::LOAD_MODAL,
             params: [
                 'id' => $this->fields['id'],
                 'key' => 'permissions',
