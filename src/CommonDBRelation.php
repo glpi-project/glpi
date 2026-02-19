@@ -2233,10 +2233,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $itemtype = $itemtype_field;
         }
 
-        if ($itemtype === Entity::class) {
-            return false;
-        }
-
         if (!is_a($itemtype, CommonDBTM::class, true)) {
             throw new RuntimeException('Unable to get itemtype from relation input.');
         }
