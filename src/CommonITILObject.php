@@ -9092,62 +9092,69 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // user/groups assignements
             foreach ($input["_add_validation"] as $key => $value) {
                 switch ($value) {
+                    // send approval request to manager(?s) of requester group(s)
+                    // requester groups are the new ones + the one already defined
                     case 'requester_supervisor':
+                        // groups set by input/rule
                         if (
                             isset($input['_groups_id_requester'])
                             && $input['_groups_id_requester']
                         ) {
-                            $users = Group_User::getGroupUsers(
+                            $managers = Group_User::getGroupUsers(
                                 $input['_groups_id_requester'],
                                 ['is_manager' => 1]
                             );
-                            foreach ($users as $data) {
+                            foreach ($managers as $manager) {
                                 $validations_to_send[] = [
                                     'itemtype_target' => User::class,
-                                    'items_id_target' => $data['id'],
+                                    'items_id_target' => $manager['id'],
                                 ];
                             }
                         }
-                        // Add to already set groups
+                        // Already set groups
                         foreach ($this->getGroups(CommonITILActor::REQUESTER) as $d) {
-                            $users = Group_User::getGroupUsers(
+                            $managers = Group_User::getGroupUsers(
                                 $d['groups_id'],
                                 ['is_manager' => 1]
                             );
-                            foreach ($users as $data) {
+                            foreach ($managers as $manager) {
                                 $validations_to_send[] = [
                                     'itemtype_target' => User::class,
-                                    'items_id_target' => $data['id'],
+                                    'items_id_target' => $manager['id'],
                                 ];
                             }
                         }
                         break;
 
+                    // send approval request to manager(?s) of tech group(s)
+                    // tech groups are the new ones + the one already defined
                     case 'assign_supervisor':
+                        // groups set by input/rule
                         if (
                             isset($input['_groups_id_assign'])
                             && $input['_groups_id_assign']
                         ) {
-                            $users = Group_User::getGroupUsers(
+                            $managers = Group_User::getGroupUsers(
                                 $input['_groups_id_assign'],
                                 ['is_manager' => 1]
                             );
-                            foreach ($users as $data) {
+                            foreach ($managers as $manager) {
                                 $validations_to_send[] = [
                                     'itemtype_target' => User::class,
-                                    'items_id_target' => $data['id'],
+                                    'items_id_target' => $manager['id'],
                                 ];
                             }
                         }
+                        // Already set groups
                         foreach ($this->getGroups(CommonITILActor::ASSIGN) as $d) {
-                            $users = Group_User::getGroupUsers(
+                            $managers = Group_User::getGroupUsers(
                                 $d['groups_id'],
                                 ['is_manager' => 1]
                             );
-                            foreach ($users as $data) {
+                            foreach ($managers as $manager) {
                                 $validations_to_send[] = [
                                     'itemtype_target' => User::class,
-                                    'items_id_target' => $data['id'],
+                                    'items_id_target' => $manager['id'],
                                 ];
                             }
                         }
@@ -9254,9 +9261,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
             }
 
-            // Keep only one
+            // dedeplicate validations to send
             $validations_to_send = array_unique($validations_to_send, SORT_REGULAR);
 
+            // create validation requests
             if (count($validations_to_send)) {
                 $values            = [];
                 $values[$self_fk]  = $this->fields['id'];
