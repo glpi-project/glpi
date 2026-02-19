@@ -166,8 +166,8 @@ export class GlpiKnowbaseArticleController
      */
     #showDiff({titleDiff, contentDiff})
     {
-        const subjectEl = this.#container.querySelector('[data-testid="subject"]');
-        const contentEl = this.#container.querySelector('[data-testid="content"]');
+        const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
+        const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
 
         if (!subjectEl || !contentEl) {
             return;
@@ -198,8 +198,8 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        const subjectEl = this.#container.querySelector('[data-testid="subject"]');
-        const contentEl = this.#container.querySelector('[data-testid="content"]');
+        const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
+        const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
 
         if (subjectEl && this.#originalSubject !== null) {
             subjectEl.innerHTML = this.#originalSubject;

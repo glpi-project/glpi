@@ -40,7 +40,7 @@
     >
         <div class="d-flex align-items-center mb-3">
             <h1 class="fw-bold mb-0 kb-title-editable"
-                data-testid="subject"
+                data-glpi-kb-subject
                 data-field="name"
                 data-placeholder="{{ __('Untitled') }}"
                 spellcheck="true">{{ subject }}</h1>
@@ -187,7 +187,7 @@
         <div
             id="kb-tiptap-editor"
             class="rich_text_container article-container"
-            data-testid="content"
+            data-glpi-kb-content
         >
             {{ answer|safe_html }}
         </div>

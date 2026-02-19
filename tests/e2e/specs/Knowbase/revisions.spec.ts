@@ -175,7 +175,7 @@ test('Can compare a revision with the current version', async ({ page, profile, 
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
-    const revisions = page.getByTestId('revision');
+    const revisions = page.getByTestId('history-event');
     await expect(revisions).toHaveCount(2);
 
     const article = page.getByRole('article');
@@ -225,7 +225,7 @@ test('Switching between revisions does not corrupt the diff', async ({ page, pro
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
-    const revisions = page.getByTestId('revision');
+    const revisions = page.getByTestId('history-event');
     await expect(revisions).toHaveCount(3);
 
     const article = page.getByRole('article');
@@ -274,7 +274,7 @@ test('Clicking current version deactivates comparison', async ({ page, profile, 
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
-    const revisions = page.getByTestId('revision');
+    const revisions = page.getByTestId('history-event');
     const article = page.getByRole('article');
     const currentVersion = revisions.nth(0);
     const initialRevision = revisions.nth(1);

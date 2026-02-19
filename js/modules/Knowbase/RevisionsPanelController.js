@@ -126,8 +126,8 @@ export class GlpiKnowbaseRevisionsPanelController
             const revisionData = await response.json();
 
             // Get current article content from the DOM
-            const subjectEl = document.querySelector('[data-testid="subject"]');
-            const contentEl = document.querySelector('[data-testid="content"]');
+            const subjectEl = document.querySelector('[data-glpi-kb-subject]');
+            const contentEl = document.querySelector('[data-glpi-kb-content]');
 
             if (!subjectEl || !contentEl) {
                 return;
