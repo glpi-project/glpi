@@ -154,9 +154,6 @@ export class GlpiKnowbaseArticleController
             case 'DELETE_ARTICLE':
                 this.#deleteItem(params.id);
                 break;
-            case 'LOAD_MODAL':
-                this.#loadModal(params.id, params.key, params.title);
-                break;
             case 'OPEN_MODAL':
                 this.#openModal(params.id, params.key, params.title);
                 break;
@@ -215,20 +212,6 @@ export class GlpiKnowbaseArticleController
         const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
         const body = await response.json();
         window.location.href = body.redirect;
-    }
-
-    /**
-     * @param {number} id
-     * @param {string} key
-     * @param {string} title
-     */
-    #loadModal(id, key, title)
-    {
-        glpi_ajax_dialog({
-            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/SidePanel/${key}`,
-            title: title || '',
-            dialogclass: 'modal-lg',
-        });
     }
 
     /**
