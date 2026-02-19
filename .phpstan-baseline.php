@@ -6656,42 +6656,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getIDForOtherUniqueFieldBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 11,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 6,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 9,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$users_id of method Glpi\\\\Api\\\\HL\\\\Controller\\\\AdministrationController\\:\\:getUsedOrManagedItems\\(\\) expects int, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
@@ -6716,148 +6680,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 17,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 17,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 16,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 16,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 17,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$schemas of static method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchema\\(\\) expects non\\-empty\\-array\\<string, array\\{x\\-itemtype\\: string, properties\\: mixed\\}\\>, array\\<string, mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'properties\' might not exist on array\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'x\\-itemtype\' might not exist on array\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ComponentController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$identifier of method Glpi\\\\OAuth\\\\User\\:\\:setIdentifier\\(\\) expects non\\-empty\\-string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CustomAssetController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/DropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/DropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/DropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/DropdownController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/DropdownController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemType\\(\\) should return string but returns string\\|null\\.$#',
@@ -6872,105 +6704,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/KnowbaseController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/KnowbaseController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getInputParamsBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/KnowbaseController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/KnowbaseController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/KnowbaseController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/KnowbaseController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$class of static method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getDropdownTypeSchema\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
@@ -6984,66 +6720,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/NotepadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/NotepadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/NotepadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/NotepadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/NotepadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ProjectController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset mixed on array\\|void\\.$#',
@@ -7106,36 +6782,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$criterion of static method RuleCriteria\\:\\:getConditions\\(\\) expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7146,66 +6792,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/SetupController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/SetupController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/SetupController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/SetupController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/SetupController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:createBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ToolController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:deleteBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ToolController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:getOneBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ToolController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:searchBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ToolController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$schema of static method Glpi\\\\Api\\\\HL\\\\ResourceAccessor\\:\\:updateBySchema\\(\\) expects array, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ToolController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getProperties\\(\\) should return array\\<string, array\\{type\\: string, format\\?\\: string, properties\\?\\: array, items\\?\\: array\\}\\> but returns array\\<string, array\\<string, mixed\\>\\>\\.$#',

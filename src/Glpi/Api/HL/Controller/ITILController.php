@@ -1471,7 +1471,7 @@ EOT,
         return $filters;
     }
 
-    private function getKnownSubitemSchema(CommonITILObject $item, string $subitem_type, string $api_version): ?array
+    private function getKnownSubitemSchema(CommonITILObject $item, string $subitem_type, string $api_version): array
     {
         if ($subitem_type === 'Document') {
             $schema = (new ManagementController())->getKnownSchema('Document_Item', $api_version);
@@ -1499,9 +1499,6 @@ EOT,
         foreach ($subitem_types as $subitem_type) {
             $filters = $this->getTimelineItemFilters($item, $request, $subitem_type);
             $schema = $this->getKnownSubitemSchema($item, $subitem_type, $this->getAPIVersion($request));
-            if ($schema === null) {
-                continue;
-            }
 
             /** @var class-string<CommonDBTM> $schema_itemtype */
             $schema_itemtype = $schema['x-itemtype'];
