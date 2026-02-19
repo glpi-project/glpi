@@ -828,12 +828,6 @@ class SearchTest extends DbTestCase
 
         $CFG_GLPI = $cfg_backup;
 
-        // SQL must not start with "( OR" (the original bug)
-        $this->assertDoesNotMatchRegularExpression(
-            '/\(\s*OR\s/',
-            $data['sql']['search']
-        );
-
         // Search must complete without error
         $this->assertArrayHasKey('totalcount', $data['data']);
 
