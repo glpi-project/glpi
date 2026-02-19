@@ -45,6 +45,27 @@
     }
 }
 
+.kb-title-editable {
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+
+    &.is-editing {
+        outline: none;
+        padding: 2px 6px;
+        margin: -2px -6px;
+
+        &:focus {
+            background-color: rgb(var(--tblr-primary-rgb) / 4%);
+        }
+
+        &:empty::before {
+            content: attr(data-placeholder);
+            color: var(--tblr-muted);
+            pointer-events: none;
+        }
+    }
+}
+
 .kb-article {
     max-height: calc(100vh - 150px);
     overflow: auto;

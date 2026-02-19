@@ -36,7 +36,11 @@
      data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}">
     <article class="col-9 container ms-0 px-4 py-3 kb-article">
         <div class="d-flex align-items-center mb-3">
-            <h1 class="fw-bold mb-0" data-testid="subject">{{ subject }}</h1>
+            <h1 class="fw-bold mb-0 kb-title-editable"
+                data-testid="subject"
+                data-field="name"
+                data-placeholder="{{ __('Untitled') }}"
+                spellcheck="true">{{ subject }}</h1>
             <div class="ms-auto d-flex align-items-center gap-2">
                 {# Edit/Save/Cancel buttons #}
                 {% if can_edit %}
