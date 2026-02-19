@@ -205,7 +205,7 @@ class SearchTest extends DbTestCase
         $data = $this->doSearch('Software', $search_params);
 
         $this->assertMatchesRegularExpression(
-            "/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/",
+            "/HAVING\s*\(\s+NOT\s+\(`ITEM_Computer_2`\s+IS\s+NULL\s*\)/",
             $data['sql']['search']
         );
     }
@@ -453,7 +453,7 @@ class SearchTest extends DbTestCase
             '/LEFT JOIN\s*`glpi_assets_assets_peripheralassets`\s*AS `glpi_assets_assets_peripheralassets_Printer`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_asset`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_asset`\s*=\s*\'Computer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_peripheral`\s*=\s*\'Printer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`is_deleted`\s*=\s*\'0\'\)/im',
             '/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_peripheral`\s*=\s*`glpi_printers`\.`id`/im',
             // match having
-            "/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/",
+            "/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(\(\(\s+NOT\s+\(`ITEM_Printer_1`\s+LIKE\s+'%HP%'\)\)\)\s+OR\s+\(`ITEM_Printer_1`\s+IS NULL\)\)\)/",
         ];
 
         foreach ($regexps as $regexp) {

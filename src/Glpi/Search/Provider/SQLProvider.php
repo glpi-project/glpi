@@ -5398,7 +5398,7 @@ final class SQLProvider implements SearchProviderInterface
         $field = str_replace('`', '', $field);
         $search_val = self::makeTextSearchValue($val);
         if ($search_val == null) {
-            $criteria = [$field => $search_val];
+            $criteria = [$field => null];
         } else {
             $criteria = [$field => ['LIKE', $search_val]];
         }
