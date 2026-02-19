@@ -2399,6 +2399,7 @@ EOT,
             'Ticket' => 'ticket',
             'Change' => 'change',
             'Problem' => 'problem',
+            default => throw new RuntimeException(\sprintf('Unexpected type `%s`.', $itemtype)),
         };
         $filters = $parameters['filter'] ?? '';
         $filters .= $parent_prop . '.id==' . $request->getAttribute('id');
@@ -2413,17 +2414,19 @@ EOT,
     #[Doc\CreateRoute(schema_name: '{itemtype}Cost', description: 'Create a new cost for a specific {itemtype}')]
     public function createCost(Request $request): Response
     {
+        $itemtype = $request->getAttribute('itemtype');
         $parameters = $request->getParameters();
-        $parent_prop = match ($request->getAttribute('itemtype')) {
+        $parent_prop = match ($itemtype) {
             'Ticket' => 'ticket',
             'Change' => 'change',
             'Problem' => 'problem',
+            default => throw new RuntimeException(\sprintf('Unexpected type `%s`.', $itemtype)),
         };
         $parameters[$parent_prop] = $request->getAttribute('id');
         $schema = $this->getKnownSchema($request->getAttribute('itemtype') . 'Cost', $this->getAPIVersion($request));
         return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getCost'], [
             'mapped' => [
-                'itemtype' => $request->getAttribute('itemtype'),
+                'itemtype' => $itemtype,
                 'id' => $request->getAttribute('id'),
             ],
             'id' => 'cost_id',

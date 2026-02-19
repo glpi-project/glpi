@@ -176,7 +176,7 @@ final class ProjectController extends AbstractController
                                 ],
                             ],
                         ],
-                    ]
+                    ],
                 ],
             ],
             'ProjectTask' => [
