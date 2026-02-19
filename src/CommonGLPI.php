@@ -43,6 +43,8 @@ use Glpi\Search\FilterableInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
+use function Safe\ob_start;
+use function Safe\ob_get_clean;
 
 /**
  * Common GLPI object
@@ -709,30 +711,22 @@ class CommonGLPI implements CommonGLPIInterface
                     return $ret;
                 }
 
-                // Check if we're creating an object from template and this is not the main tab
-                if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
-                    // Display generic message for template creation
-                    $template = <<<HTML
-                    <div class="alert alert-warning d-flex">
-                        <div class="me-2">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                        <div>
-                            <strong>%s</strong><br>
-                            %s
-                        </div>
-                    </div>
-                    HTML;
-                    echo sprintf(
-                        $template,
-                        __s('Creating from template'),
-                        __s('You are currently creating an object from a template. You need to save it, in the main tab, before editing data in other tabs.')
-                    );
-                }
-
                 if ($obj = getItemForItemtype($itemtype)) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
+
+                    // When creating from template, display a warning and render tab content
+                    // in a non-interactive wrapper to prevent accidental edits on the template.
+                    if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
+                        ob_start();
+                        $obj->displayTabContentForItem($item, (int) $tabnum, $withtemplate);
+                        $tab_content = ob_get_clean();
+                        TemplateRenderer::getInstance()->display('components/tab/creating_from_template.html.twig', [
+                            'tab_content' => $tab_content,
+                        ]);
+                        return true;
+                    }
+
                     Plugin::doHook(Hooks::PRE_SHOW_TAB, [ 'item' => $item, 'options' => &$options]);
                     Profiler::getInstance()->start(get_class($obj) . '::displayTabContentForItem');
                     $ret = $obj->displayTabContentForItem($item, (int) $tabnum, $withtemplate);
