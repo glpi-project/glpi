@@ -201,6 +201,24 @@ class MailCollector extends CommonDBTM
      */
     public function prepareInput(array $input, $mode = 'add')
     {
+        if (
+            $mode === 'add'
+            && !array_key_exists('mail_server', $input)
+            && !array_key_exists('server_type', $input)
+            && isset($input['host'])
+        ) {
+            $config = Toolbox::parseMailServerConnectString($input['host']);
+            $input['mail_server'] = $config['address'];
+            $input['server_port'] = $config['port'];
+            $input['server_mailbox'] = $config['mailbox'];
+            $input['server_type'] = $config['type'] ? '/' . $config['type'] : '';
+            $input['server_tls']         = $config['tls'] ? '/tls' : '';
+            $input['server_ssl']         = $config['ssl'] ? '/ssl' : '';
+            $input['server_cert'] = $config['validate-cert'] ? '/validate-cert' : '/novalidate-cert';
+            $input['server_rsh']    = $config['norsh'] ? '/norsh' : '';
+            $input['server_secure'] = $config['secure'] ? '/secure' : '';
+            $input['server_debug']  = $config['debug'] ? '/debug' : '';
+        }
         $missing_fields = [];
         if (($mode === 'add' || array_key_exists('mail_server', $input)) && empty($input['mail_server'])) {
             $missing_fields[] = __('Server');
