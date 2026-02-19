@@ -63,4 +63,15 @@ final class HistoryEventList
 
         return $this->events[$key];
     }
+
+    public function sort(): void
+    {
+        usort(
+            $this->events,
+            static fn(HistoryEventInterface $left, HistoryEventInterface $right): int => strcmp(
+                $right->getDate(),
+                $left->getDate()
+            )
+        );
+    }
 }

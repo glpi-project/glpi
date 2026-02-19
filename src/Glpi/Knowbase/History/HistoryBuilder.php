@@ -52,6 +52,8 @@ final class HistoryBuilder
     {
         $this->addCurrentVersionToHistory();
         $this->addRevisionsToHistory();
+        $this->addFaqStatusChangesToHistory();
+        $this->history->sort();
         return $this->history;
     }
 
@@ -129,5 +131,41 @@ final class HistoryBuilder
             date: $row['date_mod'],
             author: $row['user_name'],
         ));
+    }
+
+    private function addFaqStatusChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => [
+                'date_mod',
+                'user_name',
+                'new_value',
+            ],
+            'FROM' => Log::getTable(),
+            'WHERE' => [
+                'itemtype'         => KnowbaseItem::class,
+                'items_id'         => $this->kb->getID(),
+                'linked_action'    => 0, // Update
+                'id_search_option' => 8, // is_faq
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+
+        foreach ($logs as $row) {
+            $label = $row['new_value']
+                ? __("Added to the FAQ")
+                : __("Removed from the FAQ")
+            ;
+
+            $this->history->addEvent(new LogEvent(
+                label: $label,
+                description: __("Updated by"),
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
     }
 }
