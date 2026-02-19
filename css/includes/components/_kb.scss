@@ -107,14 +107,34 @@
     border: 1px solid var(--tblr-border-color);
     transition: all 0.2s ease;
 
+    .kb-unlink-document {
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
+        font-size: 0.5rem;
+        padding: 0.25rem;
+
+        &:hover {
+            color: var(--tblr-danger) !important;
+            opacity: 1 !important;
+        }
+    }
+
     &:hover {
         background-color: var(--tblr-primary) !important;
         color: var(--tblr-bg-surface) !important;
         border-color: var(--tblr-primary);
         box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
 
+        a {
+            color: inherit;
+        }
+
         i {
             color: var(--tblr-bg-surface) !important;
+        }
+
+        .kb-unlink-document {
+            opacity: 1;
         }
     }
 }

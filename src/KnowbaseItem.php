@@ -939,6 +939,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
                     $documents[] = [
                         'id' => $docID,
+                        'assoc_id' => $data['assocID'],
                         'filename' => $filename,
                         'extension' => $extension,
                         'icon_class' => $iconAndColor['icon_class'],
