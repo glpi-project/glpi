@@ -119,6 +119,12 @@
         }
     }
 
+    &:focus-within {
+        .kb-unlink-document {
+            opacity: 1;
+        }
+    }
+
     &:hover {
         background-color: var(--tblr-primary) !important;
         color: var(--tblr-bg-surface) !important;

@@ -129,7 +129,9 @@ export class GlpiKnowbaseArticleController
             if (button) {
                 e.stopPropagation();
                 e.preventDefault();
-                this.#unlinkDocument(button);
+                this.#unlinkDocument(button).catch((err) => {
+                    console.error(err);
+                });
             }
         });
     }
@@ -297,9 +299,7 @@ export class GlpiKnowbaseArticleController
                 // Hide the entire metadata entry when no documents remain
                 meta_link.closest('.d-flex')?.remove();
             } else {
-                const label = updated === 1
-                    ? __('%s document').replace('%s', updated)
-                    : __('%s documents').replace('%s', updated);
+                const label = _n('%s document', '%s documents', updated).replace('%s', updated);
                 meta_link.textContent = label;
             }
         }
