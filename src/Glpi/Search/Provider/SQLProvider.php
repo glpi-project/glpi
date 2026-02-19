@@ -5390,8 +5390,6 @@ final class SQLProvider implements SearchProviderInterface
             //This case seems often not realistic; but let's keep for backward compatibility
             return [new QueryExpression(self::makeTextCriteria($field, $val, $not, $link->value))];
         }
-        $old =  self::makeTextCriteria($field, $val ?? '', $not, $link->value);
-
         $field = str_replace('`', '', $field);
         $search_val = self::makeTextSearchValue($val);
         if ($search_val == null) {
