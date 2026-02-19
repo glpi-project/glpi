@@ -96,29 +96,6 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         }
     }
 
-    private function getArrayDiffRecursive($array1, $array2, $path = '')
-    {
-        $differences = [];
-        foreach ($array1 as $key => $value) {
-            $current_path = $path === '' ? $key : $path . '.' . $key;
-            if (!array_key_exists($key, $array2)) {
-                $differences[] = "Key '$current_path' missing in second array";
-            } elseif (is_array($value) && is_array($array2[$key])) {
-                $nested_diffs = $this->getArrayDiffRecursive($value, $array2[$key], $current_path);
-                $differences = array_merge($differences, $nested_diffs);
-            } elseif ($value !== $array2[$key]) {
-                $differences[] = "Value for key '$current_path' differs";
-            }
-        }
-        foreach ($array2 as $key => $value) {
-            $current_path = $path === '' ? $key : $path . '.' . $key;
-            if (!array_key_exists($key, $array1)) {
-                $differences[] = "Key '$current_path' missing in first array";
-            }
-        }
-        return $differences;
-    }
-
     private function diffSchemaPaths($snapshot, $schema)
     {
         // Compare OpenAPI route paths and return differences
@@ -169,38 +146,31 @@ class OpenAPIGeneratorTest extends HLAPITestCase
     }
 
     /**
-     * @param array $snapshot
-     * @param array $schema
-     * @return string[] Array of differences (example: Key 'foo.bar.baz' missing in snapshot, value for key 'foo.bar.qux' differs)
+     * @param array $array1
+     * @param array $array2
+     * @param string $path
+     * @return string[] Array of differences (example: Key 'foo.bar.baz' missing in second array, value for key 'foo.bar.qux' differs)
      */
-    private function getArrayDiffRecursive(array $snapshot, array $schema): array
+    private function getArrayDiffRecursive($array1, $array2, $path = '')
     {
         $differences = [];
-        $all_keys = array_unique(array_merge(array_keys($snapshot), array_keys($schema)));
-
-        foreach ($all_keys as $key) {
-            $in_snapshot = array_key_exists($key, $snapshot);
-            $in_schema = array_key_exists($key, $schema);
-
-            if (!$in_snapshot) {
-                $differences[] = "Key '$key' missing in snapshot";
-            } elseif (!$in_schema) {
-                $differences[] = "Key '$key' missing in schema";
-            } else {
-                $snapshot_value = $snapshot[$key];
-                $schema_value = $schema[$key];
-
-                if (is_array($snapshot_value) && is_array($schema_value)) {
-                    $nested_diffs = $this->getArrayDiffRecursive($snapshot_value, $schema_value);
-                    foreach ($nested_diffs as $diff) {
-                        $differences[] = "$key.$diff";
-                    }
-                } elseif ($snapshot_value !== $schema_value) {
-                    $differences[] = "Value for key '$key' differs between snapshot and schema";
-                }
+        foreach ($array1 as $key => $value) {
+            $current_path = $path === '' ? $key : $path . '.' . $key;
+            if (!array_key_exists($key, $array2)) {
+                $differences[] = "Key '$current_path' missing in second array";
+            } elseif (is_array($value) && is_array($array2[$key])) {
+                $nested_diffs = $this->getArrayDiffRecursive($value, $array2[$key], $current_path);
+                $differences = array_merge($differences, $nested_diffs);
+            } elseif ($value !== $array2[$key]) {
+                $differences[] = "Value for key '$current_path' differs";
             }
         }
-
+        foreach ($array2 as $key => $value) {
+            $current_path = $path === '' ? $key : $path . '.' . $key;
+            if (!array_key_exists($key, $array1)) {
+                $differences[] = "Key '$current_path' missing in first array";
+            }
+        }
         return $differences;
     }
 
