@@ -94,6 +94,7 @@ use Reminder;
 use Reservation;
 use ReservationItem;
 use RSSFeed;
+use RuntimeException;
 use SavedSearch;
 use Search;
 use Session;
@@ -544,9 +545,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         if (isset($opt["computation"])) {
-            $tocompute = $opt["computation"];
-            $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
-            $tocompute = new QueryExpression(str_replace("TABLE", $DB::quoteName("$table$addtable"), $tocompute));
+            $tocompute = self::getOptComputation($opt["computation"], "$table$addtable");
         } else {
             $tocompute = new QueryExpression($DB::quoteName($tocompute));
         }
@@ -1832,13 +1831,7 @@ final class SQLProvider implements SearchProviderInterface
         $tocompute      = "`$table`.`$field`";
         $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
         if (isset($opt["computation"])) {
-            $is_query_exp = is_a($opt["computation"], QueryExpression::class);
-            $tocompute = $opt["computation"];
-            $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
-            $tocompute = str_replace("TABLE", $DB::quoteName("$table"), $tocompute);
-            if ($is_query_exp) {
-                $tocompute = new QueryExpression($tocompute);
-            }
+            $tocompute = self::getOptComputation($opt["computation"], $table);
         }
 
         // Preformat items
@@ -1868,7 +1861,7 @@ final class SQLProvider implements SearchProviderInterface
                             $criteria = [
                                 $l => [
                                     [
-                                        $tocompute => [$nott ? '<>' : '=', ''],
+                                        (string) $tocompute => [$nott ? '<>' : '=', ''],
                                     ],
                                 ],
                             ];
@@ -1905,7 +1898,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
-                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"])) {
+                    if (!isset($opt["computation"]) && $date_computation && in_array($searchtype, ["contains", "notcontains"])) {
                         // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
@@ -1989,7 +1982,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype == 'notequals') {
                         $nott = !$nott;
                     }
-                    $criteria = [$tocompute => ['&', $val]];
+                    $criteria = [(string) $tocompute => ['&', $val]];
                     return $nott ? ['NOT' => $criteria] : $criteria;
 
                 case "bool":
@@ -2089,7 +2082,7 @@ final class SQLProvider implements SearchProviderInterface
                         $criteria = [
                             $l => [
                                 [
-                                    $tocompute => [$nott ? '<>' : '=', ''],
+                                    (string) $tocompute => [$nott ? '<>' : '=', ''],
                                 ],
                             ],
                         ];
@@ -7099,5 +7092,24 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         return $suffix;
+    }
+
+    private static function getOptComputation(mixed $opt_value, string $table): QueryExpression
+    {
+        global $DB;
+        if (!is_string($opt_value) && !$opt_value instanceof QueryExpression) {
+            throw new RuntimeException('Computation parameter must be a string or a QueryExpression');
+        }
+        return new QueryExpression(
+            str_replace(
+                "TABLE",
+                $DB::quoteName($table),
+                str_replace(
+                    $DB::quoteName('TABLE'),
+                    'TABLE',
+                    $opt_value
+                )
+            )
+        );
     }
 }
