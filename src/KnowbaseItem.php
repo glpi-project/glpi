@@ -977,7 +977,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             /** @var class-string<CommonDBTM> $linked_itemtype */
 
             $linked_item = new $linked_itemtype();
-            if (!$linked_item->getFromDB($linked_items_id) || !$linked_item->canView()) {
+            if (!$linked_item->getFromDB($linked_items_id) || !$linked_item->can($linked_items_id, READ)) {
                 continue;
             }
 
