@@ -737,10 +737,6 @@ TWIG,
                 Html::requireJs('marketplace');
             }
 
-            if (in_array('kb', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/kb.scss'];
-            }
-
             if (in_array('tiptap', $jslibs)) {
                 Html::requireJs('tiptap');
             }

@@ -598,8 +598,8 @@ $CFG_GLPI['javascript'] = [
     ],
     'tools'     => [
         'project'                 => ['sortable'],
-        'knowbaseitem'            => ['kb', 'tiptap'],
-        'knowbaseitemtranslation' => ['kb'],
+        'knowbaseitem'            => ['tiptap'],
+        'knowbaseitemtranslation' => [],
         'report'                  => ['dashboard'],
         'reservationitem'         => $reservations_libs,
     ],
