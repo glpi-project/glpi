@@ -152,7 +152,7 @@
         // Placeholder
         p.is-editor-empty:first-child::before {
             content: attr(data-placeholder);
-            float: left;
+            float: inline-start;
             color: var(--tblr-muted);
             pointer-events: none;
             height: 0;
@@ -160,28 +160,27 @@
 
         // Typography
         h1, h2, h3, h4, h5, h6 {
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
+            margin-block: 1.5rem 0.75rem;
 
             &:first-child {
-                margin-top: 0;
+                margin-block-start: 0;
             }
         }
 
         p {
-            margin-bottom: 0.75rem;
+            margin-block-end: 0.75rem;
         }
 
         ul, ol {
-            padding-left: 1.5rem;
-            margin-bottom: 0.75rem;
+            padding-inline-start: 1.5rem;
+            margin-block-end: 0.75rem;
         }
 
         blockquote {
-            border-left: 3px solid var(--tblr-border-color);
-            padding-left: 1rem;
-            margin-left: 0;
-            margin-bottom: 0.75rem;
+            border-inline-start: 3px solid var(--tblr-border-color);
+            padding-inline-start: 1rem;
+            margin-inline-start: 0;
+            margin-block-end: 0.75rem;
             color: var(--tblr-muted);
         }
 
