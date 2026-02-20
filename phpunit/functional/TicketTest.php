@@ -8003,7 +8003,7 @@ HTML,
                 'ticket'   => 0,
                 'document' => CREATE,
             ],
-            'expected' => true, // requester can always add docs if the ticket is not modified
+            'expected' => false,
         ];
 
         yield [
@@ -8030,7 +8030,7 @@ HTML,
                 'ticket'   => CREATE,
                 'document' => CREATE,
             ],
-            'expected' => true, // requester can always add docs if the ticket is not modified
+            'expected' => false,
         ];
     }
 
@@ -8054,7 +8054,7 @@ HTML,
 
         $this->login();
 
-        $ticket = $this->createItem(\Change::class, [
+        $ticket = $this->createItem(\Ticket::class, [
             'name' => 'Ticket Test',
             'content' => 'Ticket content',
             '_actors' => [
