@@ -372,15 +372,19 @@ class CommonDBRelationTest extends DbTestCase
             public static $itemtype_2 = 'itemtype';
             public static $items_id_2 = 'items_id';
             public static $mustBeAttached_2 = true;
+
+            public static function getTable($classname = null)
+            {
+                return 'glpi_knowbaseitems_items'; // ensure using a table with expected fields, some backend code rely on table columns
+            }
         };
 
         // items_id = 0 with Entity itemtype should pass validation
         $input = ['knowbaseitems_id' => 42, 'itemtype' => \Entity::class, 'items_id' => 0];
         try {
             $instance->check(-1, CREATE, $input);
-        } catch (\RuntimeException $e) {
-            // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
+        } catch (AccessDeniedHttpException $e) {
+            // no session is set up, so rights check fails after validation; this is expected
         }
 
         // items_id = 0 with non-Entity itemtype should fail validation
