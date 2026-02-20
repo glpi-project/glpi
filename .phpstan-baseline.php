@@ -20948,15 +20948,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|class\\-string\\|string given\\.$#',
+	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\<0, max\\>\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|class\\-string\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
-	'path' => __DIR__ . '/src/autoload/CFG_GLPI.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\.\\.\\.\\$arrays of function array_merge expects array, array\\<int\\<0, max\\>\\|string, list\\<string\\>\\|string\\>\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/autoload/CFG_GLPI.php',
 ];
 $ignoreErrors[] = [
