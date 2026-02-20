@@ -44,7 +44,7 @@
     {% if get_class(item) == 'KnowbaseItem' %}
         <label class="form-label">{{ __('Add a linked item') }}</label>
         <div class="kb-link-item-dropdowns">
-            {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
+            {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_items]) %}
         </div>
     {% else %}
         {{ 'KnowbaseItem'|itemtype_dropdown({

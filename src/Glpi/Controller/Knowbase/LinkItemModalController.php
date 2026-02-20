@@ -59,17 +59,18 @@ final class LinkItemModalController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $visibility = KnowbaseItem::getVisibilityCriteria();
-        $condition = (isset($visibility['WHERE']) && count($visibility['WHERE']))
-            ? $visibility['WHERE'] : [];
-        $used_items = KnowbaseItem_Item::getItems($kb, 0, 0, true);
+        $used_items = [];
+        foreach (KnowbaseItem_Item::getItems($kb, 0, 0) as $data) {
+            $used_items[$data['itemtype']][] = $data['items_id'];
+        }
 
         return $this->render(
             'pages/tools/kb/knowbaseitem_item.html.twig',
             [
                 'item' => $kb,
-                'visibility_condition' => $condition,
-                'used_knowbase_items' => $used_items,
+                'visibility_condition' => [],
+                'used_knowbase_items' => [],
+                'used_items' => $used_items,
             ]
         );
     }

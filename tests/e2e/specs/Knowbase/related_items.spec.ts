@@ -36,6 +36,41 @@ import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 import { randomUUID } from "crypto";
 
+test('Link modal works when items are already linked', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const computer_name = `Computer - ${randomUUID()}`;
+    const computer_id = await api.createItem('Computer', {
+        name: computer_name,
+        entities_id: getWorkerEntityId(),
+    });
+
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: `KB article - ${randomUUID()}`,
+        entities_id: getWorkerEntityId(),
+        answer: 'Test content',
+    });
+
+    await api.createItem('KnowbaseItem_Item', {
+        knowbaseitems_id: kb_id,
+        itemtype: 'Computer',
+        items_id: computer_id,
+    });
+
+    await kb.goto(kb_id);
+
+    const related_items_tab = page.getByRole('tab', { name: /Related items/ });
+    await expect(related_items_tab).toContainText('1');
+
+    await related_items_tab.click();
+    await page.getByRole('button', { name: /Link to another item/ }).click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Link to another item')).toBeVisible();
+});
+
 test('Can link an item to a knowledge base article', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
