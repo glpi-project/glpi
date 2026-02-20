@@ -375,23 +375,3 @@ input[type="checkbox"].toggle_comments {
         margin: 0 0.25rem;
     }
 }
-
-.article-container {
-    max-width: 1320px !important;
-}
-
-.kb-article {
-    transition: width 0.35s ease-in-out;
-}
-
-.kb-sidepanel {
-    &.closed {
-        width: 0;
-        overflow: hidden;
-        padding: 0 !important;
-    }
-}
-
-[data-glpi-knowbase-side-panel-offcanvas] {
-    width: min(400px, 85vw);
-}

@@ -30,6 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
+.article-container {
+    max-width: 1320px !important;
+}
+
 .kb-sidepanel {
     background-color: var(--tblr-card-cap-bg);
     border-left: 1px solid #e1e4e8;
@@ -43,6 +47,12 @@
         padding-right: 0.5rem;
         border-left: none;
     }
+
+    &.closed {
+        width: 0;
+        overflow: hidden;
+        padding: 0 !important;
+    }
 }
 
 .kb-article {
@@ -54,6 +64,12 @@
         overflow: visible;
         max-height: none;
     }
+
+    transition: width 0.35s ease-in-out;
+}
+
+[data-glpi-knowbase-side-panel-offcanvas] {
+    width: min(400px, 85vw);
 }
 
 // KB Documents footer section
