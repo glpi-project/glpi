@@ -59,5 +59,37 @@ test('Can view permissions modal', async ({ page, profile, api }) => {
 
     const modal = page.getByRole('dialog');
     await expect(modal).toBeVisible();
-    await expect(modal.getByRole('cell', { name: 'Entity', exact: true })).toBeVisible();
+    await expect(modal.getByText('Entity', { exact: true }).first()).toBeVisible();
+});
+
+test('Can delete a permission from the modal', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for permission delete test',
+        entities_id: entity_id,
+        answer: "Test content",
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    const permission_row = modal.locator('[data-glpi-permission-id]');
+    await expect(permission_row).toBeVisible();
+
+    await permission_row.getByTitle('Delete').click();
+
+    await expect(permission_row).not.toBeAttached();
+    await expect(modal.getByText('No specific permissions defined.')).toBeVisible();
 });
