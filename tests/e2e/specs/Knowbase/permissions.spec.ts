@@ -59,7 +59,10 @@ test('Can view permissions modal', async ({ page, profile, api }) => {
 
     const modal = page.getByRole('dialog');
     await expect(modal).toBeVisible();
-    await expect(modal.getByText('Entity', { exact: true }).first()).toBeVisible();
+
+    const permission_row = modal.locator('[data-glpi-permission-id]');
+    await expect(permission_row).toBeVisible();
+    await expect(permission_row.locator('.badge', { hasText: 'Entity' })).toBeVisible();
 });
 
 test('Can delete a permission from the modal', async ({ page, profile, api }) => {
@@ -85,11 +88,11 @@ test('Can delete a permission from the modal', async ({ page, profile, api }) =>
     const modal = page.getByRole('dialog');
     await expect(modal).toBeVisible();
 
-    const permission_row = modal.locator('[data-glpi-permission-id]');
-    await expect(permission_row).toBeVisible();
+    const entity_row = modal.locator('[data-glpi-permission-itemtype="Entity_KnowbaseItem"]');
+    await expect(entity_row).toBeVisible();
+    await expect(entity_row.locator('.badge', { hasText: 'Entity' })).toBeVisible();
 
-    await permission_row.getByTitle('Delete').click();
+    await entity_row.locator('[data-glpi-permission-delete]').click();
 
-    await expect(permission_row).not.toBeAttached();
-    await expect(modal.getByText('No specific permissions defined.')).toBeVisible();
+    await expect(entity_row).not.toBeAttached();
 });
