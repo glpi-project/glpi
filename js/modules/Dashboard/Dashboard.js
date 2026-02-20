@@ -845,7 +845,11 @@ class GLPIDashboard {
      * @param {number} desktop_cols - the original number of columns to restore on desktop
      */
     switchColumnLayout(desktop_cols) {
-        const grid_width = this.grid.el.clientWidth || this.elem_dom.clientWidth;
+        if (typeof this.grid?.getColumn !== 'function') {
+            return;
+        }
+
+        const grid_width = (this.grid.el?.clientWidth) || this.elem_dom.clientWidth;
         const is_mobile  = grid_width > 0 && grid_width <= this.mobile_threshold;
         const current    = this.grid.getColumn();
 
