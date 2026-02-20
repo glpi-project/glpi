@@ -79,9 +79,27 @@ final class ChangeProfileController extends AbstractController
             $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Helpdesk";
             $redirect = $request->getBasePath() . $route;
         } else {
-            $redirect = Html::getBackUrl();
-            $separator = str_contains($redirect, '?') ? "&" : "?";
-            $redirect = $redirect . $separator . '_redirected_from_profile_selector=true';
+            $back_url = Html::getBackUrl();
+
+            // Check if the back URL points to a specific item page (e.g. ticket.form.php?id=123).
+            // After a profile change, the user's active entities are reset and they may no longer
+            // have access to the item they were previously viewing, which would cause an
+            // AccessDeniedHttpException and a silent redirect to the homepage (see #23187).
+            // To avoid this confusing behavior, redirect directly to the central page
+            // when the back URL references a specific item.
+            $back_query = parse_url($back_url, PHP_URL_QUERY);
+            $back_params = [];
+            if ($back_query !== null) {
+                parse_str($back_query, $back_params);
+            }
+            $points_to_specific_item = isset($back_params['id']) && (int) $back_params['id'] > 0;
+
+            if ($points_to_specific_item) {
+                $redirect = sprintf('%s/front/central.php', $request->getBasePath());
+            } else {
+                $separator = str_contains($back_url, '?') ? "&" : "?";
+                $redirect = $back_url . $separator . '_redirected_from_profile_selector=true';
+            }
         }
 
         return new RedirectResponse($redirect);
