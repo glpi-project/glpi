@@ -28,6 +28,34 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
+ #
+ # --- Usage ---
+ #
+ # This partial provides a reusable file uploader dropzone.
+ # The JS (FileUploader.js) and SCSS (_file-uploader.scss) are already generic;
+ # this Twig layer completes the extraction to make the component fully reusable.
+ #
+ # To use this partial anywhere in GLPI:
+ #
+ #   {{ include('components/form/file_uploader.html.twig', {
+ #       'input_id': 'my-upload-input',
+ #   }, with_context = false) }}
+ #
+ #   <script type="module">
+ #       import { FileUploader } from '{{ js_path("js/modules/FileUploader.js") }}';
+ #       new FileUploader(document.getElementById('my-container'));
+ #   </script>
+ #
+ # Full integration with document creation requires an adapter controller
+ # (see Document/UploadController.js for the KB example).
+ #
+ # Parameters:
+ #   - input_id      (string)  Unique ID for the file input (default: random)
+ #   - input_name    (string)  Name attribute for the input (default: 'files[]')
+ #   - multiple      (bool)    Allow multiple files (default: true)
+ #   - title         (string)  Dropzone title text
+ #   - hint          (string)  Dropzone hint text
+ #   - browse_label  (string)  Browse button label
  #}
 
 {% set input_id = input_id ?? 'file-uploader-input-' ~ random() %}
