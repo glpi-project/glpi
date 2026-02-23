@@ -336,7 +336,8 @@ JAVASCRIPT;
         echo "<tr class='tab_bg_2'><td  colspan='2'>" . __('Repeat') . "</td>";
         echo "<td>";
         echo self::showRepetitionForm($this->fields['rrule'] ?? '', [
-            'rand' => $rand_rrule,
+            'rand'  => $rand_rrule,
+            'begin' => $this->fields['begin'],
         ]);
         echo "</td></tr>";
 
