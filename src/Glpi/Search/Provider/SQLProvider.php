@@ -1490,11 +1490,11 @@ final class SQLProvider implements SearchProviderInterface
                     $append_criterion_with_search($criteria, "$table.id");
                     return $criteria;
                 }
-                $toadd   = '';
+                $text_criteria = null;
 
-                $tmplink = 'OR';
+                $link_operator = Operator::OR;
                 if ($nott) {
-                    $tmplink = 'AND';
+                    $link_operator = Operator::AND;
                 }
 
                 if (is_a($itemtype, CommonITILObject::class, true)) {
@@ -1503,15 +1503,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($has_join && in_array($opt["joinparams"]["beforejoin"]["table"], $itil_user_tables, true)) {
                         $bj        = $opt["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . Search::computeComplexJoinID($bj['joinparams']) . $addmeta;
-                        //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
-                        $toadd     = self::makeTextCriteria(
-                            "`$linktable`.`alternative_email`",
-                            $val,
-                            $nott,
-                            $tmplink
-                        );
-                        // Remove $tmplink (may have spaces around it) from front of $toadd
-                        $toadd = preg_replace('/^\s*' . preg_quote($tmplink, '/') . '\s*/', '', $toadd);
+
                         if ($val === '^$') {
                             return [
                                 'OR' => [
@@ -1520,6 +1512,13 @@ final class SQLProvider implements SearchProviderInterface
                                 ],
                             ];
                         }
+
+                        $text_criteria = self::getTextCriteria(
+                            "$linktable.alternative_email",
+                            $val,
+                            $nott,
+                            $link_operator
+                        );
                     }
                 }
                 if ($use_subquery_on_text_search) {
@@ -1543,13 +1542,13 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 } else {
                     $criteria = [
-                        $tmplink => [],
+                        $link_operator->value => [],
                     ];
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$field");
+                    $append_criterion_with_search($criteria[$link_operator->value], "$table.$name1");
+                    $append_criterion_with_search($criteria[$link_operator->value], "$table.$name2");
+                    $append_criterion_with_search($criteria[$link_operator->value], "$table.$field");
                     $append_criterion_with_search(
-                        $criteria[$tmplink],
+                        $criteria[$link_operator->value],
                         QueryFunction::concat([
                             "$table.$name1",
                             new QueryExpression($DB::quoteValue(' ')),
@@ -1559,15 +1558,15 @@ final class SQLProvider implements SearchProviderInterface
 
                     if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
                         $criteria = [
-                            $tmplink => [
+                            $link_operator->value => [
                                 'OR' => [
                                     $criteria,
                                     "$table.$field" => null,
                                 ],
                             ],
                         ];
-                        if ($toadd !== '') {
-                            $criteria[$tmplink][] = new QueryExpression($toadd);
+                        if ($text_criteria !== null) {
+                            $criteria[$link_operator->value][] = $text_criteria;
                         }
                     }
                     return $criteria;
@@ -1707,15 +1706,15 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case "glpi_tickets_tickets.tickets_id_1":
-                $tmplink = 'OR';
+                $link_operator = Operator::OR;
                 $compare = '=';
                 if ($nott) {
-                    $tmplink = 'AND';
+                    $link_operator = Operator::AND;
                     $compare = '<>';
                 }
 
                 $criteria = [
-                    $tmplink => [
+                    $link_operator->value => [
                         "$table.tickets_id_1" => [$compare, $val],
                         "$table.tickets_id_2" => [$compare, $val],
                     ],
@@ -1971,9 +1970,7 @@ final class SQLProvider implements SearchProviderInterface
                     // Date format modification if needed
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
                     if ($date_computation) {
-                        return [
-                            new QueryExpression(self::makeTextCriteria($date_computation, $val, $nott, '')),
-                        ];
+                        return self::getTextCriteria($date_computation, $val, $nott, Operator::NONE);
                     }
                     return [];
 
