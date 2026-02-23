@@ -39,13 +39,35 @@ import { GlpiKnowbaseRevisionsPanelController } from "/js/modules/Knowbase/Revis
 export class GlpiKnowbaseArticleSidePanelController
 {
     /**
+     * @type {number}
+     */
+    static #OFFCANVAS_BREAKPOINT = 1500;
+
+    /**
      * @type {HTMLElement}
      */
     #container;
 
-    constructor(container)
+    /**
+     * @type {HTMLElement}
+     */
+    #offcanvas_container;
+
+    /**
+     * @type {HTMLElement}
+     */
+    #article;
+
+    /**
+     * @param {HTMLElement} container
+     * @param {HTMLElement} offcanvas_container
+     * @param {HTMLElement} article
+     */
+    constructor(container, offcanvas_container, article)
     {
         this.#container = container;
+        this.#offcanvas_container = offcanvas_container;
+        this.#article = article;
         this.#initEventListeners();
 
         new GlpiKnowbaseCommentsPanelController(this.#container);
@@ -53,13 +75,53 @@ export class GlpiKnowbaseArticleSidePanelController
         new GlpiKnowbaseRevisionsPanelController(this.#container);
     }
 
+    /**
+     * @returns {boolean}
+     */
+    #isSmallScreen()
+    {
+        return window.innerWidth < GlpiKnowbaseArticleSidePanelController.#OFFCANVAS_BREAKPOINT;
+    }
+
     #initEventListeners()
     {
         this.#container.addEventListener('click', (e) => {
             if (e.target.closest('[data-glpi-knowbase-side-panel-close]')) {
-                this.#container.classList.add('d-none');
+                this.#close();
             }
         });
+
+        this.#offcanvas_container.addEventListener('click', (e) => {
+            if (e.target.closest('[data-glpi-knowbase-side-panel-close]')) {
+                this.#close();
+            }
+        });
+    }
+
+    #open()
+    {
+        if (this.#isSmallScreen()) {
+            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(this.#offcanvas_container);
+            offcanvas.show();
+        } else {
+            this.#container.classList.remove('closed');
+            this.#article.classList.remove('col-12');
+            this.#article.classList.add('col-9');
+        }
+    }
+
+    #close()
+    {
+        if (this.#isSmallScreen()) {
+            const offcanvas = bootstrap.Offcanvas.getInstance(this.#offcanvas_container);
+            if (offcanvas) {
+                offcanvas.hide();
+            }
+        } else {
+            this.#container.classList.add('closed');
+            this.#article.classList.remove('col-9');
+            this.#article.classList.add('col-12');
+        }
     }
 
     /**
@@ -76,12 +138,17 @@ export class GlpiKnowbaseArticleSidePanelController
             throw new Error("Failed to load side panel content.");
         }
 
+        const html = await response.text();
+        const target = this.#isSmallScreen()
+            ? this.#offcanvas_container.querySelector('.offcanvas-body')
+            : this.#container;
+
         // jQuery's .html() trigger scripts execution, which is needed for select2 and tinymce
-        $(this.#container).html(await response.text());
-        this.#container.classList.remove('d-none');
+        $(target).html(html);
+        this.#open();
 
         // Trigger bootstrap tooltips
-        new bootstrap.Tooltip(this.#container, {
+        new bootstrap.Tooltip(target, {
             selector: "[data-bs-toggle='tooltip']"
         });
     }

@@ -42,6 +42,7 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionSeparator;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
@@ -969,53 +970,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $last_update_info = $this->getLastUpdateInfo();
         $actions = [];
-        if ($this->canComment()) {
-            $actions[] = new EditorAction(
-                label: "Comments",
-                icon: "ti ti-message-circle",
-                type: EditorActionType::LOAD_SIDE_PANEL,
-                params: [
-                    'id' => $this->fields['id'],
-                    'key' => 'comments',
-                ],
-                counter: countElementsInTable(KnowbaseItem_Comment::getTable(), [
-                    'knowbaseitems_id' => $this->fields['id'],
-                ]),
-            );
-        }
-        if ($this->canUpdateItem()) {
-            $actions[] = new EditorAction(
-                label: "Add to FAQ",
-                icon: "ti ti-bookmark",
-                type: EditorActionType::TOGGLE_VALUE,
-                params: [
-                    'id' => $this->fields['id'],
-                    'field' => 'is_faq',
-                    'checked' => $this->fields['is_faq'],
-                ],
-            );
-            $actions[] = new EditorAction(
-                label: "Service catalog",
-                icon: "ti ti-library",
-                type: EditorActionType::LOAD_SIDE_PANEL,
-                params: [
-                    'id' => $this->fields['id'],
-                    'key' => 'service-catalog',
-                ],
-            );
-        }
-        if ($this->canDeleteItem()) {
-            $actions[] = new EditorAction(
-                label: __("Delete article"),
-                icon: "ti ti-trash",
-                type: EditorActionType::DELETE_ARTICLE,
-                params: [
-                    'id' => $this->fields['id'],
-                ],
-                is_danger: true,
-            );
-        }
-        if ($this->canUpdateItem()) {
+        $can_update_item = $this->can($this->fields['id'], UPDATE);
+        if ($can_update_item) {
             $actions[] = new EditorAction(
                 label: __("History"),
                 icon: "ti ti-history",
@@ -1029,6 +985,56 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'knowbaseitems_id' => $this->fields['id'],
                     'language' => '',
                 ]),
+            );
+
+            if ($this->canComment()) {
+                $actions[] = new EditorAction(
+                    label: "Comments",
+                    icon: "ti ti-message-circle",
+                    type: EditorActionType::LOAD_SIDE_PANEL,
+                    params: [
+                        'id' => $this->fields['id'],
+                        'key' => 'comments',
+                    ],
+                    counter: countElementsInTable(KnowbaseItem_Comment::getTable(), [
+                        'knowbaseitems_id' => $this->fields['id'],
+                    ]),
+                );
+            }
+
+            $actions[] = new EditorAction(
+                label: "Service catalog",
+                icon: "ti ti-library",
+                type: EditorActionType::LOAD_SIDE_PANEL,
+                params: [
+                    'id' => $this->fields['id'],
+                    'key' => 'service-catalog',
+                ],
+            );
+
+            $actions[] = new EditorActionSeparator();
+            $actions[] = new EditorAction(
+                label: "Add to FAQ",
+                icon: "ti ti-bookmark",
+                type: EditorActionType::TOGGLE_VALUE,
+                params: [
+                    'id' => $this->fields['id'],
+                    'field' => 'is_faq',
+                    'checked' => $this->fields['is_faq'],
+                ],
+            );
+        }
+
+        if ($this->canDeleteItem()) {
+            $actions[] = new EditorActionSeparator();
+            $actions[] = new EditorAction(
+                label: __("Delete article"),
+                icon: "ti ti-trash",
+                type: EditorActionType::DELETE_ARTICLE,
+                params: [
+                    'id' => $this->fields['id'],
+                ],
+                is_danger: true,
             );
         }
         $actions[] = new EditorAction(
@@ -1053,8 +1059,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'last_update_can_view_author' => $last_update_info->canViewAuthor(),
             'documents' => $documents,
             'documents_count' => count($documents),
-            'can_add_documents' => $this->can($this->fields['id'], UPDATE),
             'can_edit' => $this->can($this->fields['id'], UPDATE),
+            'can_add_documents' => $can_update_item,
             'edit_mode' => $options['edit_mode'],
             'actions' => $actions,
         ]);

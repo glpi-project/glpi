@@ -196,7 +196,7 @@ test('Can reply to a comment thread', async ({ page, profile, api }) => {
     const thread = page.getByText('Root comment for thread').filter({
         visible: true
     });
-    await thread.hover();
+    await thread.hover({ position: {x: 5, y: 5}});
 
     // Click the reply button
     await kb.getButton('Reply...').click();
