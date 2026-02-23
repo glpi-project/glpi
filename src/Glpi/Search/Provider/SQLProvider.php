@@ -7083,12 +7083,9 @@ final class SQLProvider implements SearchProviderInterface
         return $suffix;
     }
 
-    private static function getOptComputation(mixed $opt_value, string $table): QueryExpression
+    private static function getOptComputation(string|QueryExpression $opt_value, string $table): QueryExpression
     {
         global $DB;
-        if (!is_string($opt_value) && !$opt_value instanceof QueryExpression) {
-            throw new RuntimeException('Computation parameter must be a string or a QueryExpression');
-        }
         return new QueryExpression(
             str_replace(
                 "TABLE",
