@@ -202,6 +202,8 @@ if (isset($_POST["add"])) {
     if (
         isset($_REQUEST['_add_fromitem'], $_REQUEST['itemtype'], $_REQUEST['items_id'])
     ) {
+        $_REQUEST['_from_itemtype'] = $_REQUEST['itemtype'];
+        $_REQUEST['_from_items_id'] = $_REQUEST['items_id'];
         $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
     }
 

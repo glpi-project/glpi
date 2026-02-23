@@ -63,6 +63,32 @@ class ChangeTest extends DbTestCase
         $this->assertTrue($change_item->getFromDBForItems($change, $computer));
     }
 
+    public function testAddFromItemFormFlow(): void
+    {
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $change   = new Change();
+
+        $changes_id = $change->add([
+            'name'           => 'test add from item form flow',
+            'content'        => 'test add from item form flow',
+            'items_id'       => ['Computer' => [$computer->getID()]],
+            '_from_itemtype' => 'Computer',
+            '_from_items_id' => $computer->getID(),
+        ]);
+        $this->assertGreaterThan(0, $changes_id);
+
+        $change_item = new \Change_Item();
+        $this->assertTrue($change_item->getFromDBForItems($change, $computer));
+        $this->assertEquals(
+            1,
+            countElementsInTable(\Change_Item::getTable(), [
+                'changes_id' => $changes_id,
+                'itemtype'   => 'Computer',
+                'items_id'   => $computer->getID(),
+            ])
+        );
+    }
+
     public function testAssignFromCategory()
     {
         $this->login('glpi', 'glpi');
