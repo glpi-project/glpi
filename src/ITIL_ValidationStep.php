@@ -151,7 +151,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
             return CommonITILValidation::ACCEPTED;
         }
         // required validation threshold can be reached
-       if (($achievements[CommonITILValidation::ACCEPTED] + $achievements[CommonITILValidation::WAITING]) >= $required_percent) {
+        if (($achievements[CommonITILValidation::ACCEPTED] + $achievements[CommonITILValidation::WAITING]) >= $required_percent) {
             return CommonITILValidation::WAITING;
         }
 
@@ -185,13 +185,13 @@ abstract class ITIL_ValidationStep extends CommonDBChild
         $count_by_status = fn($status) => count(array_filter($validations, fn($v) => $v["status"] === $status));
 
         $result = [
-            CommonITILValidation::ACCEPTED => floor($count_by_status(CommonITILValidation::ACCEPTED) / $validations_count * 100),
-            CommonITILValidation::REFUSED => floor($count_by_status(CommonITILValidation::REFUSED) / $validations_count * 100),
-            CommonITILValidation::WAITING => floor($count_by_status(CommonITILValidation::WAITING) / $validations_count * 100),
+            CommonITILValidation::ACCEPTED => round($count_by_status(CommonITILValidation::ACCEPTED) / $validations_count * 100, 2),
+            CommonITILValidation::REFUSED => round($count_by_status(CommonITILValidation::REFUSED) / $validations_count * 100, 2),
+            CommonITILValidation::WAITING => round($count_by_status(CommonITILValidation::WAITING) / $validations_count * 100, 2),
         ];
 
         // one of the status needs to be incremented by 1
-        if(array_sum($result) !== 100.0) {
+        if (array_sum($result) !== 100.0) {
             // try on states by order : ACCEPTED, WAITING, REFUSED
             foreach ([CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::REFUSED] as $status) {
                 if ($result[$status] > 0.0) {
@@ -199,6 +199,11 @@ abstract class ITIL_ValidationStep extends CommonDBChild
                     break;
                 }
             }
+        }
+
+        // ensure total is 100%
+        if (array_sum($result) !== 100.0) {
+            throw new RuntimeException("Achievements percentages should sum to 100%. result is  " . array_sum($result), );
         }
 
         return $result;
