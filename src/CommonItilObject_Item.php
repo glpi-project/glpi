@@ -460,19 +460,29 @@ TWIG, $twig_params);
                 continue;
             }
 
+            $model_class = $itemtype::getModelClass();
+            $model_fkey = $model_class != null ? $model_class::getForeignKeyField() : null;
+
             $iterator = static::getTypeItems($instID, $itemtype);
             foreach ($iterator as $data) {
                 $item->getFromDB($data["id"]);
+
+                $model = '-';
+                if ($model_fkey !== null && isset($data[$model_fkey]) && $data[$model_fkey] > 0) {
+                    $model = Dropdown::getDropdownName($model_class::getTable(), $data[$model_fkey]);
+                }
+
                 $entry = [
                     'itemtype' => static::class,
                     'id'   => $data["linkid"],
                     'row_class' => $data['is_deleted'] ? 'table-deleted' : '',
                     'linked_itemtype' => $item::getTypeName(1),
+                    'model'  => $model,
                     'serial'  => $data["serial"] ?? "-",
                     'otherserial' => $data["otherserial"] ?? "-",
                     'entity' => Dropdown::getDropdownName("glpi_entities", $data['entity']),
-                    'state' => Dropdown::getDropdownName("glpi_states", $data['states_id']),
-                    'location' => Dropdown::getDropdownName("glpi_locations", $data['locations_id']),
+                    'state' => isset($data['states_id']) ? Dropdown::getDropdownName("glpi_states", $data['states_id']) : "",
+                    'location' => isset($data['locations_id']) ? Dropdown::getDropdownName("glpi_locations", $data['locations_id']) : "",
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
@@ -502,6 +512,7 @@ TWIG, $twig_params);
                 'linked_itemtype' => _n('Type', 'Types', 1),
                 'entity'          => Entity::getTypeName(1),
                 'name'            => __('Name'),
+                'model'           => _n('Model', 'Models', 1),
                 'serial'          => __('Serial number'),
                 'otherserial'     => __('Inventory number'),
                 'kb'              => __('Knowledge base entries'),
