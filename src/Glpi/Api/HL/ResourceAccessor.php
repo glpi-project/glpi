@@ -44,6 +44,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
+use Safe\DateTime;
 use Session;
 use Throwable;
 
@@ -137,7 +138,7 @@ final class ResourceAccessor
             $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $prop_name);
             if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
-                $prop_name = strstr($prop_name, '.', true);
+                $prop_name = (string) strstr($prop_name, '.', true);
                 $prop = $schema['properties'][$prop_name];
             } else {
                 if ($prop['readOnly'] ?? false) {
@@ -153,6 +154,15 @@ final class ResourceAccessor
                 $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
             } else {
                 $internal_name = $prop_name;
+            }
+
+            if (array_key_exists('format', $prop) && $prop['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME) {
+                // convert RFC 3339 to YYYY-MM-DD HH:MM:SS
+                if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
+                    $dt = new DateTime(ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name));
+                    $params[$internal_name] = $dt->format('Y-m-d H:i:s');
+                }
+                continue;
             }
 
             // Modify the request params to support setting a dropdown value by its id as expected from the OpenAPI schema

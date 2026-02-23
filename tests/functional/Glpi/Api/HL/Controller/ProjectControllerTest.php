@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Computer;
 use Entity;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
@@ -203,8 +204,6 @@ class ProjectControllerTest extends HLAPITestCase
 
     public function testRestrictedProjectTaskRead()
     {
-        global $DB;
-
         $this->loginWeb();
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
         $project = getItemByTypeName(Project::class, strtolower('_project01'));
@@ -243,6 +242,18 @@ class ProjectControllerTest extends HLAPITestCase
         ], [
             'name' => __FUNCTION__ . '2',
             'cost' => 150,
+        ]);
+    }
+
+    public function testCRUDItemProjectLink()
+    {
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $projects_id = getItemByTypeName(Project::class, '_project01', true);
+
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computers_id . '/Project', [
+            'project' => $projects_id,
+        ], [
+            'project' => $projects_id,
         ]);
     }
 }

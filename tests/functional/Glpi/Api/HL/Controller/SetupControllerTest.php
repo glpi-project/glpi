@@ -37,11 +37,13 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use AuthLDAP;
 use AuthLdapReplicate;
 use AuthMail;
+use Computer;
 use Config;
 use Glpi\Api\HL\Controller\SetupController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Link;
 use MailCollector;
 use SLM;
 
@@ -59,7 +61,7 @@ class SetupControllerTest extends HLAPITestCase
                     foreach ($content as $asset) {
                         $this->assertNotEmpty($asset['itemtype']);
                         $this->assertNotEmpty($asset['name']);
-                        $this->assertEquals('/Setup/' . $asset['itemtype'], $asset['href']);
+                        $this->assertStringStartsWith('/Setup/', $asset['href']);
                     }
                 });
         });
@@ -69,94 +71,129 @@ class SetupControllerTest extends HLAPITestCase
     {
         $this->login();
         $entity = $this->getTestRootEntity(true);
+        $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+
         $dataset = [
             [
                 'name' => 'testAutoSearch_1',
                 'entity' => $entity,
+                'slm' => $slm->getID(),
+                'time' => 30,
+                'time_unit' => 'hour',
+                'execution_time' => 45,
+                'url' => 'https://example.com',
+                'link' => 'https://example.com',
             ],
             [
                 'name' => 'testAutoSearch_2',
                 'entity' => $entity,
+                'slm' => $slm->getID(),
+                'time' => 30,
+                'time_unit' => 'hour',
+                'execution_time' => 45,
+                'url' => 'https://example.com',
+                'link' => 'https://example.com',
             ],
             [
                 'name' => 'testAutoSearch_3',
                 'entity' => $entity,
+                'slm' => $slm->getID(),
+                'time' => 30,
+                'time_unit' => 'hour',
+                'execution_time' => 45,
+                'url' => 'https://example.com',
+                'link' => 'https://example.com',
             ],
         ];
-
-        $slm = $this->createItem(SLM::class, [
-            'name' => 'Default SLA for AutoSearch',
-            'entities_id' => $entity,
-        ]);
-
-        $types_20 = SetupController::getSetupEndpointTypes20();
-        $types_23 = SetupController::getSetupEndpointTypes23();
-
-        foreach ($types_20 as $type) {
-            $this->api->autoTestSearch('/Setup/' . $type, $dataset);
-        }
-        foreach ($types_23 as $type) {
-            if ($type === 'SLA' || $type === 'OLA') {
-                $dataset = array_map(static function ($item) use ($slm) {
-                    $item['slm'] = $slm->getID();
-                    $item['time'] = 2;
-                    $item['time_unit'] = 'hour';
-                    return $item;
-                }, $dataset);
-            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
-                continue;
-            } elseif ($type === 'FieldUnicity') {
-                $dataset = array_map(static function ($item) {
-                    $item['itemtype'] = 'Computer';
-                    $item['fields'] = 'serial';
-                    return $item;
-                }, $dataset);
-            } elseif ($type === 'EmailCollector') {
-                $dataset = array_map(static function ($item) {
-                    $item['host'] = '{imap.example.com:993/imap/ssl/novalidate-cert}';
-                    return $item;
-                }, $dataset);
-            }
-            $this->api->autoTestSearch('/Setup/' . $type, $dataset);
-        }
+        $this->api->call(new Request('GET', '/Setup'), function ($call) use ($dataset) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($dataset) {
+                    $this->assertGreaterThanOrEqual(1, count($content));
+                    foreach ($content as $type) {
+                        if ($type['itemtype'] === 'ManualLink') {
+                            $dataset[0]['itemtype'] = Computer::class;
+                            $dataset[0]['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                            $dataset[1]['itemtype'] = Computer::class;
+                            $dataset[1]['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                            $dataset[2]['itemtype'] = Computer::class;
+                            $dataset[2]['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                        } elseif ($type['itemtype'] === 'FieldUnicity') {
+                            $dataset[0]['itemtype'] = Computer::class;
+                            $dataset[0]['fields'] = 'serial';
+                            $dataset[1]['itemtype'] = Computer::class;
+                            $dataset[1]['fields'] = 'serial';
+                            $dataset[2]['itemtype'] = Computer::class;
+                            $dataset[2]['fields'] = 'serial';
+                        } else {
+                            continue;
+                        }
+                        $this->api->autoTestSearch($type['href'], $dataset);
+                    }
+                });
+        });
     }
 
     public function testAutoCRUD()
     {
         $this->login();
 
-        $types_20 = SetupController::getSetupEndpointTypes20();
-        $types_23 = SetupController::getSetupEndpointTypes23();
-        $slm = $this->createItem(SLM::class, [
-            'name' => 'Default SLA for AutoCRUD',
-            'entities_id' => $this->getTestRootEntity(true),
-        ]);
 
-        foreach ($types_20 as $type) {
-            $this->api->autoTestCRUD('/Setup/' . $type);
-        }
-        foreach ($types_23 as $type) {
-            $create_params = [];
-            if ($type === 'SLA' || $type === 'OLA') {
-                $create_params = [
-                    'slm' => $slm->getID(),
-                    'time' => 2,
-                    'time_unit' => 'hour',
-                ];
-            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
-                continue;
-            } elseif ($type === 'FieldUnicity') {
-                $create_params = [
-                    'itemtype' => 'Computer',
-                    'fields' => 'serial',
-                ];
-            } elseif ($type === 'EmailCollector') {
-                $create_params = [
-                    'host' => '{imap.example.com:993/imap/ssl/novalidate-cert}',
-                ];
-            }
-            $this->api->autoTestCRUD(endpoint: '/Setup/' . $type, create_params: $create_params);
-        }
+        $this->api->call(new Request('GET', '/Setup'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertGreaterThanOrEqual(1, count($content));
+                    $entity = $this->getTestRootEntity(true);
+                    $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+                    $sla = $this->createItem('SLA', [
+                        'name' => 'Test SLA for AutoCRUD',
+                        'entities_id' => $entity,
+                        'slms_id' => $slm->getID(),
+                        'number_time' => 30,
+                        'definition_time' => 'hour',
+                    ]);
+                    $ola = $this->createItem('OLA', [
+                        'name' => 'Test OLA for AutoCRUD',
+                        'entities_id' => $entity,
+                        'slms_id' => $slm->getID(),
+                        'number_time' => 30,
+                        'definition_time' => 'hour',
+                    ]);
+                    foreach ($content as $type) {
+                        if ($type['itemtype'] === 'CronTask') {
+                            continue;
+                        }
+                        $create_params = [];
+                        if ($type['itemtype'] === 'SLA' || $type['itemtype'] === 'OLA') {
+                            $create_params['slm'] = $slm->getID();
+                            $create_params['entity'] = $entity;
+                            $create_params['time'] = 30;
+                            $create_params['time_unit'] = 'hour';
+                        } elseif ($type['itemtype'] === 'ManualLink') {
+                            $create_params['itemtype'] = Computer::class;
+                            $create_params['url'] = 'https://example.com';
+                            $create_params['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                        } elseif ($type['itemtype'] === 'SlaLevel') {
+                            $create_params['execution_time'] = 45;
+                            $create_params['sla'] = $sla->getID();
+                            $create_params['entity'] = $entity;
+                        } elseif ($type['itemtype'] === 'OlaLevel') {
+                            $create_params['execution_time'] = 45;
+                            $create_params['ola'] = $ola->getID();
+                            $create_params['entity'] = $entity;
+                        } elseif ($type['itemtype'] === 'FieldUnicity') {
+                            $create_params['itemtype'] = Computer::class;
+                            $create_params['fields'] = 'serial';
+                        } elseif ($type['itemtype'] === 'MailCollector') {
+                            $create_params['host'] = '{imap.example.com:993/imap/ssl/novalidate-cert}';
+                        }
+                        $this->api->autoTestCRUD($type['href'], $create_params);
+                    }
+                });
+        });
     }
 
     public function testCRUDNoRights()
@@ -167,9 +204,21 @@ class SetupControllerTest extends HLAPITestCase
         $types_20 = SetupController::getSetupEndpointTypes20();
         $types_23 = SetupController::getSetupEndpointTypes23();
 
-        $slm = $this->createItem(SLM::class, [
-            'name' => 'Default SLA for AutoCRUDNoRights',
-            'entities_id' => $this->getTestRootEntity(true),
+        $entity = $this->getTestRootEntity(true);
+        $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+        $sla = $this->createItem('SLA', [
+            'name' => 'Test SLA for AutoCRUD',
+            'entities_id' => $entity,
+            'slms_id' => $slm->getID(),
+            'number_time' => 30,
+            'definition_time' => 'hour',
+        ]);
+        $ola = $this->createItem('OLA', [
+            'name' => 'Test OLA for AutoCRUD',
+            'entities_id' => $entity,
+            'slms_id' => $slm->getID(),
+            'number_time' => 30,
+            'definition_time' => 'hour',
         ]);
 
         foreach ([...$types_20, ...$types_23] as $type) {
@@ -181,8 +230,6 @@ class SetupControllerTest extends HLAPITestCase
                 $create_request->setParameter('slm', $slm->getID());
                 $create_request->setParameter('time', 2);
                 $create_request->setParameter('time_unit', 'hour');
-            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
-                continue;
             } elseif ($type === 'FieldUnicity') {
                 $create_request->setParameter('itemtype', 'Computer');
                 $create_request->setParameter('fields', 'serial');
@@ -196,6 +243,20 @@ class SetupControllerTest extends HLAPITestCase
             } elseif ($type === 'LDAPDirectoryReplicate') {
                 $itemtype = AuthLdapReplicate::class;
                 $create_request->setParameter('ldap_directory', getItemByTypeName('AuthLDAP', '_local_ldap', true));
+            } elseif ($type === 'ManualLink') {
+                $create_request->setParameter('itemtype', Computer::class);
+                $create_request->setParameter('url', 'https://example.com');
+                $create_request->setParameter('items_id', getItemByTypeName(Computer::class, '_test_pc01', true));
+            } elseif ($type === 'ExternalLink') {
+                $itemtype = Link::class;
+            } elseif ($type === 'SLALevel') {
+                $create_request->setParameter('execution_time', 45);
+                $create_request->setParameter('sla', $sla->getID());
+                $create_request->setParameter('entity', $entity);
+            } elseif ($type === 'OLALevel') {
+                $create_request->setParameter('execution_time', 45);
+                $create_request->setParameter('ola', $ola->getID());
+                $create_request->setParameter('entity', $entity);
             }
             $new_location = null;
             $new_items_id = null;
@@ -229,6 +290,20 @@ class SetupControllerTest extends HLAPITestCase
                         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
                     },
                 );
+            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
+                $this->api->autoTestCRUDNoRights(
+                    endpoint: '/Setup/' . $type,
+                    itemtype: $itemtype,
+                    items_id: (int) $new_items_id,
+                    deny_create: static function () {
+                        $_SESSION['glpiactiveprofile']['slm'] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                    deny_purge: static function () {
+                        $_SESSION['glpiactiveprofile']['slm'] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                );
+            } elseif ($type === 'ManualLink') {
+                continue;
             } else {
                 $this->api->autoTestCRUDNoRights(
                     endpoint: '/Setup/' . $type,
