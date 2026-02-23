@@ -654,11 +654,14 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
 
     public function getCriterias()
     {
-        static $criterias = [];
+        static $criterias_by_class = [];
 
-        if (count($criterias)) {
-            return $criterias;
+        $rule_class = static::class;
+        if (isset($criterias_by_class[$rule_class])) {
+            return $criterias_by_class[$rule_class];
         }
+
+        $criterias = [];
 
         $itemtype = static::getItemtype();
         $itil_table = $itemtype::getTable();
@@ -825,6 +828,8 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             'linkfield'       => '_date_creation_calendars_id',
             'type'            => 'dropdown',
         ];
+
+        $criterias_by_class[$rule_class] = $criterias;
 
         return $criterias;
     }
