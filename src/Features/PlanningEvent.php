@@ -811,7 +811,7 @@ trait PlanningEvent
         $out .= Html::scriptBlock("
             \$(document).on('change', '[name=\"plan[begin]\"]', function() {
                 const val = \$(this).val();
-                const untilFp = document.getElementById('showdate{$rand}');
+                const untilFp = document.getElementById(" . json_encode("showdate{$rand}") . ");
                 if (untilFp && untilFp._flatpickr) {
                     untilFp._flatpickr.set('minDate', val ?? null);
                 }
