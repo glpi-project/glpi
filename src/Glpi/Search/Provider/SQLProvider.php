@@ -5399,21 +5399,12 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         if (strtolower((string) ($val ?? 'null')) == 'null') {
-            if ($not) {
-                $criteria = [
-                    'OR' => [
-                        [$criteria],
-                        [$field => ''],
-                    ],
-                ];
-            } else {
-                $criteria = [
-                    'OR' => [
-                        [$criteria],
-                        [$field => ''],
-                    ],
-                ];
-            }
+            $criteria = [
+                'OR' => [
+                    [$criteria],
+                    [$field => ''],
+                ],
+            ];
         }
 
         if ($not) {
