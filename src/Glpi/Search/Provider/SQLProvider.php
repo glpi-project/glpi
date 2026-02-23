@@ -94,7 +94,6 @@ use Reminder;
 use Reservation;
 use ReservationItem;
 use RSSFeed;
-use RuntimeException;
 use SavedSearch;
 use Search;
 use Session;
