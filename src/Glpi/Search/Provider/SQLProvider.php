@@ -57,6 +57,7 @@ use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\DBAL\Operator;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
@@ -543,9 +544,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         if (isset($opt["computation"])) {
-            $tocompute = $opt["computation"];
-            $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
-            $tocompute = new QueryExpression(str_replace("TABLE", $DB::quoteName("$table$addtable"), $tocompute));
+            $tocompute = self::getOptComputation($opt["computation"], "$table$addtable");
         } else {
             $tocompute = new QueryExpression($DB::quoteName($tocompute));
         }
@@ -1474,7 +1473,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         return $criteria;
                     }
-                    return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
+                    return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                 }
                 if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                     $name1 = 'firstname';
@@ -1831,13 +1830,7 @@ final class SQLProvider implements SearchProviderInterface
         $tocompute      = "`$table`.`$field`";
         $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
         if (isset($opt["computation"])) {
-            $is_query_exp = is_a($opt["computation"], QueryExpression::class);
-            $tocompute = $opt["computation"];
-            $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
-            $tocompute = str_replace("TABLE", $DB::quoteName("$table"), $tocompute);
-            if ($is_query_exp) {
-                $tocompute = new QueryExpression($tocompute);
-            }
+            $tocompute = self::getOptComputation($opt["computation"], $table);
         }
 
         // Preformat items
@@ -1867,7 +1860,7 @@ final class SQLProvider implements SearchProviderInterface
                             $criteria = [
                                 $l => [
                                     [
-                                        $tocompute => [$nott ? '<>' : '=', ''],
+                                        (string) $tocompute => [$nott ? '<>' : '=', ''],
                                     ],
                                 ],
                             ];
@@ -1891,7 +1884,7 @@ final class SQLProvider implements SearchProviderInterface
                             if ($searchtype === 'notequals') {
                                 $nott = !$nott;
                             }
-                            return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
+                            return self::getTextCriteria($table . '.' . $field, $val, $nott, Operator::NONE);
                         }
                     }
                     if ($searchtype === 'lessthan') {
@@ -1904,7 +1897,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
-                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"])) {
+                    if (!isset($opt["computation"]) && $date_computation && in_array($searchtype, ["contains", "notcontains"])) {
                         // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
@@ -1988,7 +1981,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype == 'notequals') {
                         $nott = !$nott;
                     }
-                    $criteria = [$tocompute => ['&', $val]];
+                    $criteria = [(string) $tocompute => ['&', $val]];
                     return $nott ? ['NOT' => $criteria] : $criteria;
 
                 case "bool":
@@ -2088,7 +2081,7 @@ final class SQLProvider implements SearchProviderInterface
                         $criteria = [
                             $l => [
                                 [
-                                    $tocompute => [$nott ? '<>' : '=', ''],
+                                    (string) $tocompute => [$nott ? '<>' : '=', ''],
                                 ],
                             ],
                         ];
@@ -2316,17 +2309,18 @@ final class SQLProvider implements SearchProviderInterface
             }
             return $criteria;
         }
-        $transitemtype = getItemTypeForTable($inittable);
-        if (Session::haveTranslations($transitemtype, $field)) {
-            return [
-                'OR' => [
-                    new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, '')),
-                    new QueryExpression(self::makeTextCriteria($tocomputetrans, $val, $nott, '')),
-                ],
-            ];
+        if ($transitemtype = getItemTypeForTable($inittable)) {
+            if (Session::haveTranslations($transitemtype, $field)) {
+                return [
+                    'OR' => [
+                        self::getTextCriteria($tocompute, $val, $nott, Operator::NONE),
+                        self::getTextCriteria($tocomputetrans, $val, $nott, Operator::NONE),
+                    ],
+                ];
+            }
         }
 
-        return [new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, ''))];
+        return [self::getTextCriteria($tocompute, $val, $nott, Operator::NONE)];
     }
 
     /**
@@ -2776,15 +2770,16 @@ final class SQLProvider implements SearchProviderInterface
 
         // Auto link
         if ($ref_table === $new_table && empty($complexjoin) && !$is_fkey_composite_on_self) {
-            $transitemtype = getItemTypeForTable($new_table);
-            if (Session::haveTranslations($transitemtype, $field)) {
-                $transAS            = $nt . '_trans_' . $field;
-                return self::getDropdownTranslationJoinCriteria(
-                    $transAS,
-                    $nt,
-                    $transitemtype,
-                    $field
-                );
+            if ($transitemtype = getItemTypeForTable($new_table)) {
+                if (Session::haveTranslations($transitemtype, $field)) {
+                    $transAS = $nt . '_trans_' . $field;
+                    return self::getDropdownTranslationJoinCriteria(
+                        $transAS,
+                        $nt,
+                        $transitemtype,
+                        $field
+                    );
+                }
             }
             return [];
         }
@@ -3241,15 +3236,16 @@ final class SQLProvider implements SearchProviderInterface
 
                     case "custom_condition_only":
                         $specific_leftjoin_criteria = ['LEFT JOIN' => ["$new_table$AS" => $add_criteria]];
-                        $transitemtype = getItemTypeForTable($new_table);
-                        if (Session::haveTranslations($transitemtype, $field)) {
-                            $transAS            = $nt . '_trans_' . $field;
-                            $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getDropdownTranslationJoinCriteria(
-                                $transAS,
-                                $nt,
-                                $transitemtype,
-                                $field
-                            ));
+                        if ($transitemtype = getItemTypeForTable($new_table)) {
+                            if (Session::haveTranslations($transitemtype, $field)) {
+                                $transAS = $nt . '_trans_' . $field;
+                                $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getDropdownTranslationJoinCriteria(
+                                    $transAS,
+                                    $nt,
+                                    $transitemtype,
+                                    $field
+                                ));
+                            }
                         }
                         break;
 
@@ -3304,15 +3300,16 @@ final class SQLProvider implements SearchProviderInterface
                             $append_join_criteria($standard_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         }
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $standard_join);
-                        $transitemtype = getItemTypeForTable($new_table);
-                        if (Session::haveTranslations($transitemtype, $field)) {
-                            $transAS            = $nt . '_trans_' . $field;
-                            $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getDropdownTranslationJoinCriteria(
-                                $transAS,
-                                $nt,
-                                $transitemtype,
-                                $field
-                            ));
+                        if ($transitemtype = getItemTypeForTable($new_table)) {
+                            if (Session::haveTranslations($transitemtype, $field)) {
+                                $transAS = $nt . '_trans_' . $field;
+                                $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, self::getDropdownTranslationJoinCriteria(
+                                    $transAS,
+                                    $nt,
+                                    $transitemtype,
+                                    $field
+                                ));
+                            }
                         }
                         break;
                 }
@@ -4080,7 +4077,7 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [new QueryExpression(self::makeTextCriteria("`$NAME`", $val, $NOT, ''))];
+        return [self::getTextCriteria($NAME, $val, $NOT, Operator::NONE)];
     }
 
 
@@ -5379,8 +5376,64 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
+     * @param string|QueryExpression $field Name (should **NOT** be ` protected)
+     * @param string|int|null        $val   Value to search
+     * @param bool                   $not   Is a negative search ? (false by default)
+     * @param Operator               $link  With previous criteria (default 'AND')
+     *
+     * @return array<string|int, mixed>
+     */
+    public static function getTextCriteria(string|QueryExpression $field, string|int|null $val, bool $not = false, Operator $link = Operator::AND): array
+    {
+        if (!is_string($field)) {
+            //This case seems often not realistic; but let's keep for backward compatibility
+            return [new QueryExpression(self::makeTextCriteria($field, $val, $not, $link->value))];
+        }
+        $field = str_replace('`', '', $field);
+        $search_val = self::makeTextSearchValue($val);
+        if ($search_val == null) {
+            $criteria = [$field => null];
+        } else {
+            $criteria = [$field => ['LIKE', $search_val]];
+        }
+
+        if (strtolower((string) ($val ?? 'null')) == 'null') {
+            $criteria = [
+                'OR' => [
+                    [$criteria],
+                    [$field => ''],
+                ],
+            ];
+        }
+
+        if ($not) {
+            $criteria = ['NOT' => $criteria];
+        }
+
+        if (
+            ($not && ($val != 'NULL') && ($val != 'null') && ($val != '^$')) // Not something
+            || (!$not && ($val == '^$'))
+        ) {   // Empty
+            $criteria = [
+                'OR' => [
+                    [$criteria],
+                    [$field => null],
+                ],
+            ];
+        }
+        if ($link !== Operator::NONE) {
+            $criteria = [
+                $link->value => $criteria,
+            ];
+        }
+        return $criteria;
+    }
+
+    /**
+     * Create SQL search condition
+     *
      * @param string  $field  Name (should be ` protected)
-     * @param string  $val    Value to search
+     * @param string|int|null $val    Value to search
      * @param bool $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
      *
@@ -5391,7 +5444,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $sql = $field . self::makeTextSearch($val, $not);
 
-        if (strtolower($val) == "null") {
+        if (strtolower((string) ($val ?? 'null')) == "null") {
             // FIXME
             // `OR field = ''` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
             // when following datatype are used:
@@ -5429,12 +5482,17 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @since 9.4
      *
-     * @param string  $val value to search
+     * @param string|int|null $val value to search
      *
-     * @return string|null
-     **/
-    public static function makeTextSearchValue($val)
+     * @return ?string
+     */
+    public static function makeTextSearchValue(string|int|null $val): ?string
     {
+        if ($val === 'NULL' || $val === 'null' || $val === null) {
+            return null;
+        }
+        $val = (string) $val;
+
         // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
         // https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html
         // > To search for \, specify it as \\\\; this is because the backslashes are stripped once by the parser
@@ -5445,10 +5503,6 @@ final class SQLProvider implements SearchProviderInterface
 
         // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\_', $val);
-
-        if ($val === 'NULL' || $val === 'null') {
-            return null;
-        }
 
         $val = trim($val);
 
@@ -5483,7 +5537,7 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
-     * @param string  $val  Value to search
+     * @param string|int|null $val  Value to search
      * @param bool $not  Is a negative search? (false by default)
      *
      * @return string Search string
@@ -7026,5 +7080,21 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         return $suffix;
+    }
+
+    private static function getOptComputation(string|QueryExpression $opt_value, string $table): QueryExpression
+    {
+        global $DB;
+        return new QueryExpression(
+            str_replace(
+                "TABLE",
+                $DB::quoteName($table),
+                str_replace(
+                    $DB::quoteName('TABLE'),
+                    'TABLE',
+                    $opt_value
+                )
+            )
+        );
     }
 }

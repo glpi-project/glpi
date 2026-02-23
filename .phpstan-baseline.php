@@ -4760,12 +4760,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Session\\:\\:haveTranslations\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -5309,12 +5303,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Session\\:\\:haveTranslations\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
@@ -13460,18 +13448,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string and \' \\<\\> \' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string and \' \\= \' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'id\' on non\\-empty\\-array\\<non\\-empty\\-string, string\\|null\\>\\|int\\<1, max\\>\\|string\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -13562,24 +13538,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$expression of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string, array\\<string\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$expression of static method Glpi\\\\DBAL\\\\QueryFunction\\:\\:convert\\(\\) expects Glpi\\\\DBAL\\\\QueryExpression\\|string, array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$field of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:makeTextCriteria\\(\\) expects string, array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -13607,12 +13565,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Glpi\\\\Search\\\\SearchOption\\:\\:getOptionsForItemtype\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Session\\:\\:haveTranslations\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -13658,12 +13610,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$val of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:makeTextSearchValue\\(\\) expects string, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$val of static method Html\\:\\:computeGenericDateTimeSearch\\(\\) expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -13700,39 +13646,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$val of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:makeTextCriteria\\(\\) expects string, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$itemtype of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getDropdownTranslationJoinCriteria\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Part \\$date_computation \\(array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\|null\\) of encapsed string cannot be cast to string\\.$#',
-	'identifier' => 'encapsedStringPart.nonString',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Part \\$tocompute \\(array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\) of encapsed string cannot be cast to string\\.$#',
-	'identifier' => 'encapsedStringPart.nonString',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Part \\$token \\(array\\<int\\>\\|int\\|string\\|null\\) of encapsed string cannot be cast to string\\.$#',
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\.$#',
-	'identifier' => 'array.invalidKey',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [

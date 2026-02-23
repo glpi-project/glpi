@@ -570,7 +570,8 @@ class Dropdown
         if ($id) {
             $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
             $JOIN          = [];
-            if ($translate && Session::haveTranslations(getItemTypeForTable($table), 'name')) {
+            $transitemtype = getItemTypeForTable($table);
+            if ($translate && $transitemtype && Session::haveTranslations($transitemtype, 'name')) {
                 $SELECTNAME = 'namet.value AS transname';
                 $JOIN = [
                     'LEFT JOIN' => [
@@ -682,6 +683,7 @@ class Dropdown
 
         if (
             $translate
+            && $itemtype
             && Session::haveTranslations($itemtype, 'comment')
         ) {
             $criteria['SELECT'][] = 'comment_translations.value AS translated_comment';
