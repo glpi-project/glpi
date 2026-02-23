@@ -6968,18 +6968,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/ResourceAccessor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$path of static method Glpi\\\\Toolbox\\\\ArrayPathAccessor\\:\\:getElementByArrayPath\\(\\) expects string, int\\|string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/ResourceAccessor.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$path of static method Glpi\\\\Toolbox\\\\ArrayPathAccessor\\:\\:hasElementByArrayPath\\(\\) expects string, int\\|string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/ResourceAccessor.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$middlewares on Glpi\\\\Api\\\\HL\\\\Route\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
