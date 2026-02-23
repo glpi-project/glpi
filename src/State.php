@@ -529,14 +529,13 @@ class State extends CommonTreeDropdown
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id'),
                 ],
             ],
-            'massiveaction'      => false, // managed by custom massive action @see getSpecificMassiveActions()
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
             'id'                 => '22',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
-            // on ne défini pas linkfield -> il est défini automatiquement là : src/Glpi/Search/SearchOption.php:400 en se basant sur le nom de la table
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
