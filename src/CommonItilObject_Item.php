@@ -460,7 +460,8 @@ TWIG, $twig_params);
                 continue;
             }
 
-            $model_fkey = $itemtype::getModelForeignKeyField();
+            $model_class = $itemtype::getModelClass();
+            $model_fkey = $model_class != null ? $model_class::getForeignKeyField() : null;
 
             $iterator = static::getTypeItems($instID, $itemtype);
             foreach ($iterator as $data) {
