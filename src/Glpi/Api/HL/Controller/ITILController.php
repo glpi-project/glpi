@@ -896,10 +896,10 @@ final class ITILController extends AbstractController
                     ],
                     'description' => <<<EOT
                         The status of the validation.
-                        - 0: None
-                        - 1: Waiting
-                        - 2: Accepted
-                        - 3: Refused
+                        - 1: None
+                        - 2: Waiting
+                        - 3: Accepted
+                        - 4: Refused
                         EOT,
                 ],
                 'submission_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
