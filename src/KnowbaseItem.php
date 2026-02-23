@@ -1053,6 +1053,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),
             'subject' => $this->fields['name'],
+            'illustration' => $this->fields['illustration'] ?: 'kb-faq',
             'last_update_date' => $last_update_info->getRawDate(),
             'last_update_relative_date' => $last_update_info->getRelativeDate(),
             'last_update_author_name' => $last_update_info->getAuthorName(),

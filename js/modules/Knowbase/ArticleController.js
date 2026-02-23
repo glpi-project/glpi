@@ -117,6 +117,7 @@ export class GlpiKnowbaseArticleController
         this.#initEventListeners();
         this.#initEditor();
         this.#initDiffListeners();
+        this.#initIllustrationPicker();
 
         // Enable dots menu once listeners are ready
         const dots = this.#container.querySelector('[data-glpi-kb-dots]');
@@ -439,6 +440,49 @@ export class GlpiKnowbaseArticleController
 
         // Enable edit button once editor is ready
         edit_button.classList.remove('pointer-events-none');
+    }
+
+    #initIllustrationPicker()
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        const illustration_input = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-icon-picker-value]'
+        );
+        if (!illustration_input) {
+            return;
+        }
+
+        // Update hook for illustration input
+        const original_descriptor = Object.getOwnPropertyDescriptor(
+            HTMLInputElement.prototype, 'value'
+        );
+        const controller = this;
+        Object.defineProperty(illustration_input, 'value', {
+            get() {
+                return original_descriptor.get.call(this);
+            },
+            set(new_value) {
+                const old_value = original_descriptor.get.call(this);
+                original_descriptor.set.call(this, new_value);
+                if (new_value !== old_value) {
+                    controller.#saveIllustration(new_value);
+                }
+            },
+        });
+    }
+
+    async #saveIllustration(illustration)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        await post(`Knowbase/${this.#item_id}/UpdateIllustration`, {
+            illustration: illustration,
+        });
     }
 
     /**
