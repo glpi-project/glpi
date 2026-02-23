@@ -337,6 +337,97 @@ EOD,
                         'readOnly' => true,
                     ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'code' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'ldap_field' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'description' => 'Attribute of LDAP users that may contain this group for membership (memberof)',
+                    ],
+                    'ldap_value' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'Value of the LDAP attribute to match for membership. Usually the DN of the group.',
+                    ],
+                    'ldap_group_dn' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'DN of the group in LDAP. Only populated in certain cases. If you want to know the group DN you need to check both this and ldap_value fields.',
+                    ],
+                    'maybe_requester' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_requester',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can be a requester',
+                    ],
+                    'maybe_observer' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_watcher',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can be an observer',
+                    ],
+                    'maybe_assigned' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_assign',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can be assigned',
+                    ],
+                    'maybe_assigned_task' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_task',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can be assigned to tasks',
+                    ],
+                    'maybe_notified' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_notify',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can be notified',
+                    ],
+                    'may_contain_items' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_itemgroup',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can contain items',
+                    ],
+                    'may_contain_users' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_usergroup',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can contain users',
+                    ],
+                    'maybe_manager' => [
+                        'x-version-introduced' => '2.3.0',
+                        'x-field' => 'is_manager',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Can be manager',
+                    ],
+                    'recursive_membership' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether users of this group are implied members of all child groups',
+                    ],
+                    'mfa_enforced' => [
+                        'x-version-introduced' => '2.3.0',
+                        // property renamed because GraphQL field names cannot start with a number
+                        'x-field' => '2fa_enforced',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Is two-factor authentication enforced for members of this group',
+                    ],
+                    'date_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'date_mod' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.3.0',
+                    ],
                 ],
             ],
             'Entity' => [
@@ -390,6 +481,165 @@ EOD,
                         'description' => 'Level',
                         'readOnly' => true,
                     ],
+                    'registration_number' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.3.0',
+                        'maxLength' => 255,
+                    ],
+                    'address' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                    ],
+                    'postcode' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'city' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'town',
+                        'maxLength' => 255,
+                    ],
+                    'state' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'country' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'latitude' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'longitude' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'altitude' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'website' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_URI,
+                        'maxLength' => 255,
+                    ],
+                    'phone' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'phonenumber',
+                        'maxLength' => 255,
+                    ],
+                    'fax' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'email' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_EMAIL,
+                        'maxLength' => 255,
+                    ],
+                    'admin_email' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_EMAIL,
+                        'maxLength' => 255,
+                    ],
+                    'admin_email_name' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'from_email' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_EMAIL,
+                        'maxLength' => 255,
+                    ],
+                    'from_email_name' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'noreply_email' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_EMAIL,
+                        'maxLength' => 255,
+                    ],
+                    'noreply_email_name' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'replyto_email' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_EMAIL,
+                        'maxLength' => 255,
+                    ],
+                    'replyto_email_name' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'notification_subject_tag' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'ldap_dn' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'DN of the entity in LDAP. Used as the base DN when doing LDAP searches to import new users.',
+                    ],
+                    'tag' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'description' => 'Tag of the entity populated by an inventory tool.',
+                    ],
+                    'authldap' => self::getDropdownTypeSchema(class: 'AuthLDAP', full_schema: 'LDAPDirectory') + ['x-version-introduced' => '2.3.0'],
+                    'mail_domain' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'description' => 'Email domain of the entity',
+                    ],
+                    'entity_ldapfilter' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                    ],
+                    'mailing_signature' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                    ],
+                    'url_base' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_URI,
+                        'description' => 'Base URL of the GLPI instance used by this entity. Used when generating links in notifications for users of this entity.',
+                    ],
+                    'date_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.3.0',
+                    ],
+                    'date_mod' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.3.0',
+                    ],
                 ],
             ],
             'Profile' => [
@@ -410,6 +660,40 @@ EOD,
                     'comment' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Comment',
+                    ],
+                    'is_default' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                    ],
+                    'helpdesk_hardware' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-version-introduced' => '2.3',
+                        'enum' => [0, 1, 2, 3],
+                        'description' => <<<EOT
+                                Indicates the level of rights the user has regarding associating assets with assistance items (like tickets). Possible values:
+                                - 0: Cannot associate any assets with assistance items
+                                - 1: Can link their own assets with assistance items
+                                - 2: Can link any assets with assistance items
+                                - 3: Same as 2 but may see both "My devices" and "All items" in the web interface when associating assets with assistance items
+                                See 'helpdesk_item_type' for which item types can be associated when helpdesk_hardware is greater than 0.
+EOT,
+                    ],
+                    'helpdesk_item_type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.3',
+                        'description' => 'If helpdesk_hardware is greater than 0, this is a JSON-encoded string which indicates the item types that the user can associate with assistance items.',
+                    ],
+                    'managed_domainrecordtypes' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.3',
+                        'description' => 'A JSON-encoded string which indicates the IDs of domain record types that the user can manage. An array element with a value of -1 indicates that the user can manage all domain record types.',
+                    ],
+                    'mfa_enforced' => [
+                        'x-version-introduced' => '2.3.0',
+                        // property renamed because GraphQL field names cannot start with a number
+                        'x-field' => '2fa_enforced',
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Is two-factor authentication enforced for this profile',
                     ],
                 ],
             ],
