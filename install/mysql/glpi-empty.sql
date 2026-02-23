@@ -5538,6 +5538,7 @@ CREATE TABLE `glpi_plugins` (
   `version` varchar(255) NOT NULL,
   `state` int NOT NULL DEFAULT '0',
   `author` varchar(255) DEFAULT NULL,
+  `highest_available_version` varchar(255),
   `homepage` varchar(255) DEFAULT NULL,
   `license` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
