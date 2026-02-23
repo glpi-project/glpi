@@ -158,13 +158,22 @@ class GLPIDashboard {
             draggable: { // override jquery ui draggable options
                 'cancel': 'textarea' // avoid draggable on some child elements
             },
-            'minWidth': 768 -  width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)
+            // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
+            // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
+            // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
         }, `#grid-stack-${options.rand}`);
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
         // see https://github.com/gridstack/gridstack.js/issues/1229
         this.grid.setStatic(true);
+
+        this.mobile_threshold = Math.round(768 - width_offset);
+
+        // Apply mobile layout if needed on initial load
+        window.requestAnimationFrame(() => {
+            this.switchColumnLayout(options.cols);
+        });
 
         // set the width of the select box to match the selected option
         this.resizeSelect();
@@ -292,6 +301,8 @@ class GLPIDashboard {
 
             window.clearTimeout(debounce);
             debounce = window.setTimeout(() => {
+                this.switchColumnLayout(this.cols);
+
                 // fit again numbers
                 this.fitNumbers();
             }, 200);
@@ -823,6 +834,39 @@ class GLPIDashboard {
     }
 
     /**
+     * Switch between single-column (mobile) and multi-column (desktop) layout depending on the
+     * current grid container width vs the mobile threshold.
+     *
+     * GridStack v12 columnOpts triggers GridStackEngine._fixCollisions during column changes.
+     * With float:true enabled, this causes infinite recursion (moveNode <-> _fixCollisions).
+     * To prevent this, float is temporarily disabled during the column switch (pushing items
+     * down deterministically terminates), then restored afterwards.
+     *
+     * @param {number} desktop_cols - the original number of columns to restore on desktop
+     */
+    switchColumnLayout(desktop_cols) {
+        if (typeof this.grid?.getColumn !== 'function') {
+            return;
+        }
+
+        const grid_width = (this.grid.el?.clientWidth) || this.elem_dom.clientWidth;
+        const is_mobile  = grid_width > 0 && grid_width <= this.mobile_threshold;
+        const current    = this.grid.getColumn();
+
+        if (is_mobile && current !== 1) {
+            this.grid.float(false);
+            this.grid.column(1, 'compact');
+            this.grid.float(true);
+            this.grid.cellHeight(60, false);
+        } else if (!is_mobile && current === 1) {
+            this.grid.float(false);
+            this.grid.column(desktop_cols, 'moveScale');
+            this.grid.float(true);
+            this.grid.cellHeight('auto', false);
+        }
+    }
+
+    /**
      * Remove the custom width as it should only be used temporarily to 'trick'
      * fitText into using a different fontSize and should not be applied to the
      * actual text
@@ -842,7 +886,7 @@ class GLPIDashboard {
 
         // responsive mode
         if (this.dash_width <= 700
-            || $(this.grid.el).hasClass('grid-stack-one-column-mode')) {
+            || $(this.grid.el).hasClass('gs-1')) {
             text_offset = 1.8;
         }
 
