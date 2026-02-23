@@ -849,23 +849,25 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         $tabs = [];
         $this->addDefaultFormTab($tabs);
 
-        if (Session::getCurrentInterface() == 'central') {
-            $this->addStandardTab(self::class, $tabs, $options);
-            $this->addStandardTab(TicketValidation::class, $tabs, $options);
-            $this->addStandardTab(KnowbaseItem_Item::class, $tabs, $options);
-            $this->addStandardTab(Item_Ticket::class, $tabs, $options);
+        if ($this->canShowSubTabs($options)) {
+            if (Session::getCurrentInterface() == 'central') {
+                $this->addStandardTab(self::class, $tabs, $options);
+                $this->addStandardTab(TicketValidation::class, $tabs, $options);
+                $this->addStandardTab(KnowbaseItem_Item::class, $tabs, $options);
+                $this->addStandardTab(Item_Ticket::class, $tabs, $options);
 
-            if ($this->hasImpactTab()) {
-                $this->addStandardTab(Impact::class, $tabs, $options);
+                if ($this->hasImpactTab()) {
+                    $this->addStandardTab(Impact::class, $tabs, $options);
+                }
+
+                $this->addStandardTab(TicketCost::class, $tabs, $options);
+                $this->addStandardTab(Itil_Project::class, $tabs, $options);
+                $this->addStandardTab(ProjectTask_Ticket::class, $tabs, $options);
+                $this->addStandardTab(Problem_Ticket::class, $tabs, $options);
+                $this->addStandardTab(Change_Ticket::class, $tabs, $options);
+                $this->addStandardTab(Ticket_Contract::class, $tabs, $options);
+                $this->addStandardTab(Log::class, $tabs, $options);
             }
-
-            $this->addStandardTab(TicketCost::class, $tabs, $options);
-            $this->addStandardTab(Itil_Project::class, $tabs, $options);
-            $this->addStandardTab(ProjectTask_Ticket::class, $tabs, $options);
-            $this->addStandardTab(Problem_Ticket::class, $tabs, $options);
-            $this->addStandardTab(Change_Ticket::class, $tabs, $options);
-            $this->addStandardTab(Ticket_Contract::class, $tabs, $options);
-            $this->addStandardTab(Log::class, $tabs, $options);
         }
 
         return $tabs;

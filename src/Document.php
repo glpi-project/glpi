@@ -213,9 +213,12 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(Document_Item::class, $ong, $options);
-        $this->addStandardTab(Notepad::class, $ong, $options);
-        $this->addStandardTab(Log::class, $ong, $options);
+
+        if ($this->canShowSubTabs($options)) {
+        $this->addStandardTab(Document_Item::class, $ong, $options)
+            ->addStandardTab(Notepad::class, $ong, $options)
+            ->addStandardTab(Log::class, $ong, $options);
+        }
 
         return $ong;
     }
