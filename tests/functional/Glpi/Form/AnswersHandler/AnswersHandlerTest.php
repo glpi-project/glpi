@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
+use Computer;
 use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
@@ -58,12 +59,15 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Glpi\Form\ValidationResult;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 class AnswersHandlerTest extends DbTestCase
@@ -792,5 +796,48 @@ class AnswersHandlerTest extends DbTestCase
         // Assert: check validity
         $this->assertEquals(true, $valid_result->isValid());
         $this->assertEquals(false, $invalid_result->isValid());
+    }
+
+    public function testSaveAnswerWithConditionsOnUserDeviceQuestion(): void
+    {
+        // Arrange: create a form with a user device question
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Device",
+            type: QuestionTypeUserDevice::class,
+            extra_data: json_encode(new QuestionTypeUserDevicesConfig())
+        );
+        $builder->setQuestionVisibility(
+            question_name: "Device",
+            strategy: VisibilityStrategy::ALWAYS_VISIBLE,
+            conditions: [],
+        );
+        $builder->addQuestion("Text", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            question_name: "Text",
+            strategy: VisibilityStrategy::HIDDEN_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_type'      => Type::QUESTION,
+                    'item_name'      => "Device",
+                    'value_operator' => ValueOperator::NOT_EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: compute visiblity
+        $this->login();
+        $computer_id = getItemByTypeName(Computer::class, "_test_pc01", true);
+        $handler = AnswersHandler::getInstance();
+        $set = $handler->saveAnswers($form, [
+            $this->getQuestionId($form, "Device") => "Computer_$computer_id",
+            $this->getQuestionId($form, "Text") => "",
+        ], Session::getLoginUserID());
+
+        // Assert: no assertions, we just make sure no fatal errors occurred
+        $this->assertNotNull($set);
     }
 }
