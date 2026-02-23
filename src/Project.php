@@ -1407,15 +1407,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Show team for a project
      * @param Project $project
-     * @param int $withtemplate
      * @return true
      **/
-    public function showTeam(Project $project, $withtemplate = 0)
+    public function showTeam(Project $project)
     {
         $ID      = $project->fields['id'];
         $canedit = $project->can($ID, UPDATE);
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             $twig_params = [
                 'id' => $ID,
                 'label' => __('Add a team member'),
