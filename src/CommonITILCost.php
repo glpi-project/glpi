@@ -779,7 +779,9 @@ TWIG, $twig_params);
             return false;
         }
 
-        $input['users_id'] = Session::getLoginUserID();
+        if (Session::getLoginUserID()) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
 
         return $input;
     }
@@ -792,7 +794,9 @@ TWIG, $twig_params);
             return false;
         }
 
-        $input['users_id_lastupdater'] = Session::getLoginUserID();
+        if (Session::getLoginUserID()) {
+            $input['users_id_lastupdater'] = Session::getLoginUserID();
+        }
 
         return $input;
     }

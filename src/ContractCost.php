@@ -69,7 +69,9 @@ class ContractCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
-        $input['users_id'] = Session::getLoginUserID();
+        if (Session::getLoginUserID()) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
 
         return parent::prepareInputForAdd($input);
     }
@@ -86,7 +88,9 @@ class ContractCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
-        $input['users_id_lastupdater'] = Session::getLoginUserID();
+        if (Session::getLoginUserID()) {
+            $input['users_id_lastupdater'] = Session::getLoginUserID();
+        }
 
         return parent::prepareInputForUpdate($input);
     }
