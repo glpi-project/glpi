@@ -1490,7 +1490,7 @@ final class SQLProvider implements SearchProviderInterface
                     $append_criterion_with_search($criteria, "$table.id");
                     return $criteria;
                 }
-                $toadd   = null;
+                $text_criteria = null;
 
                 $tmplink = Operator::OR;
                 if ($nott) {
@@ -1513,7 +1513,7 @@ final class SQLProvider implements SearchProviderInterface
                             ];
                         }
 
-                        $toadd = self::getTextCriteria(
+                        $text_criteria = self::getTextCriteria(
                             "$linktable.alternative_email",
                             $val,
                             $nott,
@@ -1565,8 +1565,8 @@ final class SQLProvider implements SearchProviderInterface
                                 ],
                             ],
                         ];
-                        if ($toadd !== null) {
-                            $criteria[$tmplink->value][] = $toadd;
+                        if ($text_criteria !== null) {
+                            $criteria[$tmplink->value][] = $text_criteria;
                         }
                     }
                     return $criteria;
