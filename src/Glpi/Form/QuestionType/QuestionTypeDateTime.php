@@ -149,6 +149,11 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
             return (new DateTime($answer))->format('Y-m-d H:i');
         }
 
+        $answer = \Html::convDateTime(
+            $answer,
+            (int) \Config::getConfigurationValue('core', 'date_format'),
+        );
+
         return $answer;
     }
 
