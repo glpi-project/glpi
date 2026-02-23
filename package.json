@@ -96,5 +96,9 @@
         "terser": "^5.43.1",
         "webpack": "^5.105.2",
         "webpack-cli": "^6.0.1"
+    },
+    "overrides": {
+        "ajv": "^8.18.0",
+        "minimatch": "^10.2.1"
     }
 }
