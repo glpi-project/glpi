@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, */
+/* global glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, */
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
@@ -57,10 +57,32 @@ export class GlpiKnowbaseArticleController
      */
     #original_content = '';
 
+    /** @type {HTMLElement|null} */
+    #title_element = null;
+
+    /** @type {string} */
+    #original_title = '';
+
     /**
      * @type {number|null}
      */
     #item_id = null;
+
+    #handleTitleKeydown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.#editor.focus();
+        }
+    };
+
+    #handleTitlePaste = (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData)
+            .getData('text/plain')
+            .replace(/[\r\n]+/g, ' ')
+            .trim();
+        document.execCommand('insertText', false, text);
+    };
 
     /**
      * @param {HTMLElement} container
@@ -229,6 +251,12 @@ export class GlpiKnowbaseArticleController
         // Store original content for cancel functionality
         this.#original_content = editor_element.innerHTML;
 
+        // Store title element for inline editing
+        this.#title_element = this.#container.querySelector('[data-field="name"]');
+        if (this.#title_element) {
+            this.#original_title = this.#title_element.textContent.trim();
+        }
+
         // Toggle edit mode (lazy load editor on first click)
         edit_button.addEventListener('click', async () => {
             await this.#enableEditMode(editor_element, edit_button, save_button, cancel_button);
@@ -238,6 +266,9 @@ export class GlpiKnowbaseArticleController
         cancel_button.addEventListener('click', () => {
             this.#editor.setContent(this.#original_content);
             this.#editor.setEditable(false);
+
+            this.#disableTitleEditing(true);
+
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');
             cancel_button.classList.add('d-none');
@@ -273,10 +304,38 @@ export class GlpiKnowbaseArticleController
             this.#editor.setEditable(true);
         }
 
+        this.#enableTitleEditing();
+
         this.#editor.focus();
         edit_button.classList.add('d-none');
         save_button.classList.remove('d-none');
         cancel_button.classList.remove('d-none');
+    }
+
+    #enableTitleEditing()
+    {
+        if (this.#title_element) {
+            this.#title_element.contentEditable = 'true';
+            this.#title_element.classList.add('is-editing');
+            this.#title_element.addEventListener('keydown', this.#handleTitleKeydown);
+            this.#title_element.addEventListener('paste', this.#handleTitlePaste);
+        }
+    }
+
+    /**
+     * @param {boolean} restore - Whether to restore the original title text
+     */
+    #disableTitleEditing(restore = false)
+    {
+        if (this.#title_element) {
+            if (restore) {
+                this.#title_element.textContent = this.#original_title;
+            }
+            this.#title_element.contentEditable = 'false';
+            this.#title_element.classList.remove('is-editing');
+            this.#title_element.removeEventListener('keydown', this.#handleTitleKeydown);
+            this.#title_element.removeEventListener('paste', this.#handleTitlePaste);
+        }
     }
 
     /**
@@ -292,41 +351,46 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
+        // Validate title is not empty
+        const new_title = this.#title_element
+            ? this.#title_element.textContent.trim()
+            : null;
+        if (this.#title_element && new_title.length === 0) {
+            glpi_toast_error(__("Title cannot be empty"));
+            this.#title_element.focus();
+            return;
+        }
+
         const original_button_html = save_button.innerHTML;
         save_button.disabled = true;
         save_button.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
 
         try {
-            const response = await fetch(
-                `${CFG_GLPI.root_doc}/Knowbase/KnowbaseItem/${this.#item_id}/Answer`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-                    },
-                    body: JSON.stringify({
-                        answer: this.#editor.getHTML(),
-                    }),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(__("Failed to save"));
+            const body = {
+                answer: this.#editor.getHTML(),
+            };
+            if (new_title !== null) {
+                body.name = new_title;
             }
 
-            // Update original content for future cancel operations
+            await post(`Knowbase/KnowbaseItem/${this.#item_id}/Answer`, body);
+
+            // Update originals for future cancel operations
             this.#original_content = this.#editor.getHTML();
+            if (new_title !== null) {
+                this.#original_title = new_title;
+            }
             this.#editor.setEditable(false);
+            this.#disableTitleEditing();
+
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');
             cancel_button.classList.add('d-none');
 
             // Show success notification
             glpi_toast_info(__("Article saved successfully"));
-        } catch (error) {
-            glpi_toast_error(error.message || __("An error occurred while saving"));
+        } catch {
+            // Error toast already shown by post()
         } finally {
             save_button.disabled = false;
             save_button.innerHTML = original_button_html;

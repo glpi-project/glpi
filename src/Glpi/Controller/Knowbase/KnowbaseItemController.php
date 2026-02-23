@@ -114,7 +114,7 @@ final class KnowbaseItemController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        if (!$kbitem->can($id, UPDATE, $input)) {
+        if (!$kbitem->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -131,10 +131,24 @@ final class KnowbaseItemController extends AbstractController
         // Sanitize HTML content to prevent XSS
         $answer = RichText::getSafeHtml($answer);
 
-        $success = $kbitem->update([
+        $update_data = [
             'id' => $id,
             'answer' => $answer,
-        ]);
+        ];
+
+        // Handle optional title update
+        if (isset($data['name'])) {
+            $name = strip_tags(trim($data['name']));
+            if ($name === '') {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => __('Title cannot be empty'),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $update_data['name'] = $name;
+        }
+
+        $success = $kbitem->update($update_data);
 
         if ($success) {
             return new JsonResponse([
