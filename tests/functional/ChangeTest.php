@@ -68,12 +68,13 @@ class ChangeTest extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $change   = new Change();
 
+        // Simulate raw inputs as received by the front controller
         $changes_id = $change->add([
             'name'           => 'test add from item form flow',
             'content'        => 'test add from item form flow',
-            'items_id'       => ['Computer' => [$computer->getID()]],
-            '_from_itemtype' => 'Computer',
-            '_from_items_id' => $computer->getID(),
+            '_add_fromitem'  => true,
+            'itemtype'       => 'Computer',
+            'items_id'       => $computer->getID(),
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
