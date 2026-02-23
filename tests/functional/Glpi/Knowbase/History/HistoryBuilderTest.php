@@ -37,11 +37,15 @@ namespace Glpi\Knowbase\History;
 use Computer;
 use Document;
 use Document_Item;
+use Entity;
+use Entity_KnowbaseItem;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use KnowbaseItem_Revision;
+use KnowbaseItem_User;
 use Ticket;
+use User;
 
 final class HistoryBuilderTest extends DbTestCase
 {
@@ -227,6 +231,154 @@ final class HistoryBuilderTest extends DbTestCase
         $version_1 = $events[2];
         $this->assertInstanceOf(RevisionEvent::class, $version_1);
         $this->assertEquals("Created by", $version_1->getDescription());
+    }
+
+    public function testPermissionAdded(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => $this->getTestRootEntity(only_id: true),
+            'is_recursive'     => 1,
+        ]);
+
+        $root_entity = new Entity();
+        $root_entity->getFromDB($this->getTestRootEntity(only_id: true));
+        $entity_name = $root_entity->getNameID(['forceid' => true]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: sprintf("Permission added: %s", $entity_name),
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: "_test_user (8)",
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testPermissionRemoved(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $relation = $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => $this->getTestRootEntity(only_id: true),
+            'is_recursive'     => 1,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->deleteItem(Entity_KnowbaseItem::class, $relation->getID());
+
+        $root_entity = new Entity();
+        $root_entity->getFromDB($this->getTestRootEntity(only_id: true));
+        $entity_name = $root_entity->getNameID(['forceid' => true]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: sprintf("Permission removed: %s", $entity_name),
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: "_test_user (8)",
+            ),
+            new LogEvent(
+                label: sprintf("Permission added: %s", $entity_name),
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: "_test_user (8)",
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testMultiplePermissionTypes(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => $this->getTestRootEntity(only_id: true),
+            'is_recursive'     => 1,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => 2,
+        ]);
+
+        $root_entity = new Entity();
+        $root_entity->getFromDB($this->getTestRootEntity(only_id: true));
+        $entity_name = $root_entity->getNameID(['forceid' => true]);
+
+        $user = new User();
+        $user->getFromDB(2);
+        $user_name = $user->getNameID(['forceid' => true]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: sprintf("Permission added: %s", $user_name),
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: "_test_user (8)",
+            ),
+            new LogEvent(
+                label: sprintf("Permission added: %s", $entity_name),
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: "_test_user (8)",
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
     }
 
     public function testFaqChanges(): void

@@ -122,6 +122,31 @@ test('Associated item changes appear in history', async ({ page, profile, api })
     await expect(events.filter({ hasText: 'Computer' })).toBeVisible();
 });
 
+test('Permission changes appear in history', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for permission history test',
+        entities_id: entity_id,
+        answer: 'Test content',
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    const events = page.getByTestId('history-event');
+    await expect(events.filter({ hasText: /Permission added/ })).toBeVisible();
+});
+
 test('Document attachment changes appear in history', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
