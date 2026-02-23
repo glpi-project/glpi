@@ -2930,12 +2930,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTypeName\\(\\) on string\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonDBRelation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonDBRelation\\:\\:getItemField\\(\\) should return string but returns string\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 2,
@@ -3064,7 +3058,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$subject of function Safe\\\\preg_match expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 22,
+	'count' => 20,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
