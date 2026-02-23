@@ -142,6 +142,11 @@ EOT,
                         'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
                     ],
                 ],
+                'groups' => [
+                    'x-version-introduced' => '2.3',
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => ['type' => Doc\Schema::TYPE_INTEGER],
+                ],
             ],
         ];
         $all_right_names = array_keys(ProfileRight::getAllPossibleRights());
@@ -496,6 +501,10 @@ HTML;
             ],
             'glpiactiveentities' => [
                 'name' => 'active_entities',
+                'default' => [],
+            ],
+            'glpigroups' => [
+                'name' => 'groups',
                 'default' => [],
             ],
         ];
