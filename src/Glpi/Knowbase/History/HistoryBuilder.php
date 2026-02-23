@@ -35,9 +35,13 @@
 namespace Glpi\Knowbase\History;
 
 use Document;
+use Entity;
+use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
 use Log;
+use Profile;
+use User;
 
 final class HistoryBuilder
 {
@@ -142,10 +146,10 @@ final class HistoryBuilder
         global $DB;
 
         $target_types = [
-            \Entity::class,
-            \Group::class,
-            \Profile::class,
-            \User::class,
+            Entity::class,
+            Group::class,
+            Profile::class,
+            User::class,
         ];
 
         $logs = $DB->request([
@@ -218,10 +222,10 @@ final class HistoryBuilder
         // Exclude permission types (Entity, Group, Profile, User) as they
         // are handled separately by addPermissionChangesToHistory().
         $permission_types = [
-            \Entity::class,
-            \Group::class,
-            \Profile::class,
-            \User::class,
+            Entity::class,
+            Group::class,
+            Profile::class,
+            User::class,
         ];
         $item_types = array_values(array_diff($CFG_GLPI['kb_types'], $permission_types));
 
