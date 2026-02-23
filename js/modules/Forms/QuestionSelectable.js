@@ -398,8 +398,7 @@ export class GlpiFormQuestionTypeSelectable {
         });
 
         // Reindex the order of the empty option
-        this._container.closest('div[data-glpi-form-editor-question-type-specific]')
-            .find('div[data-glpi-form-editor-question-extra-details]')
+        this._container.siblings('div[data-glpi-form-selectable-question-option]')
             .find('input[data-glpi-form-editor-question-option-order]')
             .val(this._container.children().length);
     }
