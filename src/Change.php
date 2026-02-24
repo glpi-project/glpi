@@ -310,12 +310,12 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 ->addStandardTab(Change_Problem::class, $ong, $options)
                 ->addStandardTab(Change_Ticket::class, $ong, $options)
                 ->addStandardTab(Change_Item::class, $ong, $options);
-        if ($this->hasImpactTab()) {
-            $this->addStandardTab(Impact::class, $ong, $options);
-        }
-        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
-            ->addStandardTab(Notepad::class, $ong, $options)
-            ->addStandardTab(Log::class, $ong, $options);
+            if ($this->hasImpactTab()) {
+                $this->addStandardTab(Impact::class, $ong, $options);
+            }
+            $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
+                ->addStandardTab(Notepad::class, $ong, $options)
+                ->addStandardTab(Log::class, $ong, $options);
         }
 
         return $ong;

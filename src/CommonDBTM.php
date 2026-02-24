@@ -67,12 +67,12 @@ use function Safe\unlink;
  */
 class CommonDBTM extends CommonGLPI
 {
-/**
- * Data fields of the Item.
- *
- * @var array<string,mixed>
- */
-public $fields = [];
+    /**
+     * Data fields of the Item.
+     *
+     * @var array<string,mixed>
+     */
+    public $fields = [];
     /**
      * Determine if sub-tabs should be shown for this item.
      * Returns false if item is new or in template mode.
