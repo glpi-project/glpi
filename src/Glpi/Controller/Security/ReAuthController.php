@@ -85,6 +85,9 @@ class ReAuthController extends AbstractController
         }
         if ($this->reAuthManager->verify((string) $totp_code)) { // @todo refacto gestion de l'array dans verify ?
             $this->reAuthManager->authenticate();
+
+            // @todo pour la conservation des données POST (si la le réauth n'est plus valable au moment de la soumission du form),
+            // il faut afficher un form qui contient les données post stockées ($this->reAuthManager->getPostDataForRedirect())
             throw new RedirectException($this->reAuthManager->getRedirectSuccessURL());
         }
 
