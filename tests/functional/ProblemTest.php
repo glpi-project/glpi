@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use CommonITILObject;
+use Computer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
@@ -65,7 +66,7 @@ class ProblemTest extends DbTestCase
 
     public function testAddFromItemFormFlow(): void
     {
-        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
         $problem  = new Problem();
 
         // Simulate raw inputs as received by the front controller
@@ -73,7 +74,7 @@ class ProblemTest extends DbTestCase
             'name'           => 'test add from item form flow',
             'content'        => 'test add from item form flow',
             '_add_fromitem'  => true,
-            'itemtype'       => 'Computer',
+            'itemtype'       => Computer::class,
             'items_id'       => $computer->getID(),
         ]);
         $this->assertGreaterThan(0, $problems_id);
@@ -84,7 +85,7 @@ class ProblemTest extends DbTestCase
             1,
             countElementsInTable(\Item_Problem::getTable(), [
                 'problems_id' => $problems_id,
-                'itemtype'    => 'Computer',
+                'itemtype'    => Computer::class,
                 'items_id'    => $computer->getID(),
             ])
         );
