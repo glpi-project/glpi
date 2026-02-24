@@ -751,10 +751,12 @@ trait PlanningEvent
         $rrule = array_merge($defaults, $rrule);
 
         $default_options = [
-            'rand' => mt_rand(),
+            'rand'  => mt_rand(),
+            'begin' => '',
         ];
         $options = array_merge($default_options, $options);
-        $rand    = $options['rand'];
+        $rand  = $options['rand'];
+        $begin = $options['begin'];
 
         $out = "<div class='card' style='padding: 5px; width: 100%;'>";
         $out .= Dropdown::showFromArray('rrule[freq]', [
@@ -801,9 +803,20 @@ trait PlanningEvent
         $out .= "<div>" . Html::showDateField('rrule[until]', [
             'value'   => $rrule['until'],
             'rand'    => $rand,
+            'min'     => $begin,
             'display' => false,
         ]) . "</div>";
         $out .= "</div>";
+
+        $out .= Html::scriptBlock("
+            \$(document).on('change', '[name=\"plan[begin]\"]', function() {
+                const val = \$(this).val();
+                const untilFp = document.getElementById(" . json_encode("showdate{$rand}") . ");
+                if (untilFp && untilFp._flatpickr) {
+                    untilFp._flatpickr.set('minDate', val ?? null);
+                }
+            });
+        ");
 
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_byday$rand'>" . __("By day") . "</label>";
