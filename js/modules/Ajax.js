@@ -67,3 +67,32 @@ export async function post(url, values = null)
         throw e;
     }
 }
+
+/**
+ * Perform a GET request to a GLPI endpoint.
+ *
+ * @param {string} url - The relative URL path (without root_doc prefix).
+ * @returns {Promise<Response>} The fetch Response object.
+ * @throws {Error} If the request fails or returns a non-ok status.
+ */
+export async function get(url)
+{
+    try {
+        const params = {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        };
+
+        const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
+        if (!response.ok) {
+            throw new Error("POST request failed");
+        }
+
+        return response;
+    } catch (e) {
+        glpi_toast_error(__("An unexpected error occurred."));
+        throw e;
+    }
+}

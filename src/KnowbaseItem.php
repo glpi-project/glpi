@@ -1047,6 +1047,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'title' => _n('Target', 'Targets', Session::getPluralNumber()),
             ],
         );
+        $translations_count = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
+        $existing_translations = KnowbaseItemTranslation::getAlreadyTranslatedForItem($this);
+
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
             'item_id' => $this->fields['id'],
             'views' => $this->fields['view'],
@@ -1059,6 +1062,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'last_update_can_view_author' => $last_update_info->canViewAuthor(),
             'documents' => $documents,
             'documents_count' => count($documents),
+            'translations_count' => $translations_count,
+            'existing_translations' => array_values($existing_translations),
+            'default_language' => $CFG_GLPI['language'],
             'can_edit' => $this->can($this->fields['id'], UPDATE),
             'can_add_documents' => $can_update_item,
             'edit_mode' => $options['edit_mode'],
