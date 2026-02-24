@@ -262,8 +262,8 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertEquals([
             new LogEvent(
-                label: sprintf("Permission added: %s", $entity_name),
-                description: "Updated by",
+                label: "Permissions updated",
+                description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
                 author: "_test_user (8)",
             ),
@@ -306,14 +306,14 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertEquals([
             new LogEvent(
-                label: sprintf("Permission removed: %s", $entity_name),
-                description: "Updated by",
+                label: "Permissions updated",
+                description: sprintf("Access revoked from %s by", $entity_name),
                 date: "2026-01-15 12:00:00",
                 author: "_test_user (8)",
             ),
             new LogEvent(
-                label: sprintf("Permission added: %s", $entity_name),
-                description: "Updated by",
+                label: "Permissions updated",
+                description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
                 author: "_test_user (8)",
             ),
@@ -363,14 +363,14 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertEquals([
             new LogEvent(
-                label: sprintf("Permission added: %s", $user_name),
-                description: "Updated by",
+                label: "Permissions updated",
+                description: sprintf("Access granted to %s by", $user_name),
                 date: "2026-01-15 12:00:00",
                 author: "_test_user (8)",
             ),
             new LogEvent(
-                label: sprintf("Permission added: %s", $entity_name),
-                description: "Updated by",
+                label: "Permissions updated",
+                description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
                 author: "_test_user (8)",
             ),
