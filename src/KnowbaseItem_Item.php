@@ -63,7 +63,10 @@ class KnowbaseItem_Item extends CommonDBRelation
     {
         // Avoid duplicate entry
         if (
-            countElementsInTable(
+            static::$items_id_1 !== null
+            && static::$itemtype_2 !== null
+            && static::$items_id_2 !== null
+            && countElementsInTable(
                 static::getTable(),
                 [
                     'WHERE' => [
