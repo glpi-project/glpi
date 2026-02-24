@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
+/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
 
-import { post } from "/js/modules/Ajax.js";
+import { get, post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 
 export class GlpiKnowbaseArticleController
@@ -67,6 +67,24 @@ export class GlpiKnowbaseArticleController
      * @type {number|null}
      */
     #item_id = null;
+
+    /** @type {boolean} */
+    #is_editing = false;
+
+    /** @type {string|null} */
+    #translation_language = null;
+
+    /** @type {string} */
+    #default_language = '';
+
+    /** @type {string[]} */
+    #existing_translations = [];
+
+    /** @type {string} */
+    #base_content = '';
+
+    /** @type {string} */
+    #base_title = '';
 
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
@@ -111,11 +129,16 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        this.#default_language = container.dataset.glpiKbDefaultLanguage;
+        this.#existing_translations = JSON.parse(
+            container.dataset.glpiKbExistingTranslations
+        );
 
         this.#initEventListeners();
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
+        this.#initTranslationMode();
 
         if (mode === 'add') {
             this.#enableEditMode();
@@ -422,7 +445,7 @@ export class GlpiKnowbaseArticleController
             cancel_button.addEventListener('click', () => {
                 this.#editor.setContent(this.#original_content);
                 this.#editor.setEditable(false);
-
+                this.#is_editing = false;
                 this.#disableTitleEditing(true);
 
                 edit_button.classList.remove('d-none');
@@ -510,6 +533,7 @@ export class GlpiKnowbaseArticleController
         }
 
         this.#enableTitleEditing();
+        this.#is_editing = true;
 
         this.#editor.focus();
         if (edit_button) {
@@ -593,6 +617,10 @@ export class GlpiKnowbaseArticleController
             }
             this.#editor.setEditable(false);
             this.#disableTitleEditing();
+            this.#is_editing = false;
+
+            this.#base_content = this.#original_content;
+            this.#base_title = this.#original_title;
 
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');
@@ -645,5 +673,431 @@ export class GlpiKnowbaseArticleController
 
         document.body.appendChild(form);
         form.submit();
+    }
+
+    #initTranslationMode()
+    {
+        const toggle_link = this.#container.querySelector('[data-glpi-kb-toggle-translation-mode]');
+        toggle_link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            await this.#enterTranslationMode();
+        });
+        toggle_link.classList.remove("pointer-events-none");
+
+        const close_btn = this.#container.querySelector('[data-glpi-kb-translation-close]');
+        close_btn.addEventListener('click', () => {
+            this.#exitTranslationMode();
+        });
+
+        const delete_btn = this.#container.querySelector('[data-glpi-kb-translation-delete]');
+        delete_btn.addEventListener('click', async () => {
+            await this.#deleteTranslation();
+        });
+
+        const translation_save_btn = this.#container.querySelector('[data-glpi-kb-translation-save]');
+        translation_save_btn.addEventListener('click', async () => {
+            await this.#saveTranslation(translation_save_btn);
+        });
+
+        const language_select = this.#container.querySelector('[data-glpi-kb-translation-language]');
+        language_select.addEventListener('change', async () => {
+            await this.#switchTranslationLanguage(language_select.value);
+        });
+    }
+
+    async #enterTranslationMode()
+    {
+        if (this.#is_editing) {
+            glpi_alert({
+                title: __('Translation mode unavailable'),
+                message: __('Please save or cancel your current changes before entering translation mode.'),
+            });
+            return;
+        }
+
+        const alert_el = this.#container.querySelector('[data-glpi-kb-translation-alert]');
+        const language_select = this.#container.querySelector('[data-glpi-kb-translation-language]');
+
+        this.#base_content = this.#original_content;
+        this.#base_title = this.#original_title;
+
+        const response = await get(`Knowbase/KnowbaseItem/${this.#item_id}/Languages`);
+        const data = await response.json();
+        this.#populateLanguageDropdown(language_select, data.languages);
+
+        alert_el.classList.remove('d-none');
+        alert_el.classList.add('d-flex');
+
+        // Hide main editor actions during translation mode
+        const editor_actions = this.#container.querySelector('.kb-editor-actions');
+        if (editor_actions) {
+            editor_actions.classList.remove('d-flex');
+            editor_actions.classList.add('d-none');
+        }
+
+        const edit_button = this.#container.querySelector('[data-action="toggle-edit"]');
+        const save_button = this.#container.querySelector('[data-action="save"]');
+        const cancel_button = this.#container.querySelector('[data-action="cancel"]');
+
+        const selected_language = language_select.value;
+        this.#translation_language = selected_language;
+        this.#updateDeleteButtonVisibility();
+        await this.#loadTranslationContent(selected_language);
+
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+        if (editor_element && edit_button) {
+            await this.#enableEditMode(editor_element, edit_button, save_button, cancel_button);
+        }
+    }
+
+    /**
+     * @param {HTMLSelectElement} select
+     * @param {Array<{code: string, name: string, has_translation: boolean}>} languages
+     */
+    #populateLanguageDropdown(select, languages)
+    {
+        select.innerHTML = '';
+
+        const default_lang = languages.find(l => l.code === this.#default_language);
+        const with_translation = languages.filter(l => l.has_translation && l.code !== this.#default_language);
+        const without_translation = languages.filter(l => !l.has_translation && l.code !== this.#default_language);
+
+        const existing_group = document.createElement('optgroup');
+        existing_group.label = __("Existing translations");
+
+        if (default_lang) {
+            const option = document.createElement('option');
+            option.value = default_lang.code;
+            option.textContent = `${default_lang.name} (${__('Default')})`;
+            existing_group.appendChild(option);
+        }
+        for (const lang of with_translation) {
+            const option = document.createElement('option');
+            option.value = lang.code;
+            option.textContent = lang.name;
+            existing_group.appendChild(option);
+        }
+        select.appendChild(existing_group);
+
+        if (without_translation.length > 0) {
+            const group = document.createElement('optgroup');
+            group.label = __("Add new translation");
+            for (const lang of without_translation) {
+                const option = document.createElement('option');
+                option.value = lang.code;
+                option.textContent = lang.name;
+                group.appendChild(option);
+            }
+            select.appendChild(group);
+        }
+
+        if (with_translation.length > 0) {
+            select.value = with_translation[0].code;
+        } else {
+            select.value = this.#default_language;
+        }
+    }
+
+    async #switchTranslationLanguage(language)
+    {
+        this.#translation_language = language;
+        this.#updateDeleteButtonVisibility();
+        await this.#loadTranslationContent(language);
+    }
+
+    async #loadTranslationContent(language)
+    {
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+
+        if (language === this.#default_language) {
+            this.#original_content = this.#base_content;
+            this.#original_title = this.#base_title;
+
+            if (this.#editor) {
+                this.#editor.setContent(this.#base_content);
+            } else if (editor_element) {
+                editor_element.innerHTML = this.#base_content;
+            }
+            if (this.#title_element) {
+                this.#title_element.textContent = this.#base_title;
+            }
+            return;
+        }
+
+        const response = await get(
+            `Knowbase/KnowbaseItem/${this.#item_id}/Translation/${language}`
+        );
+        const data = await response.json();
+
+        if (!data.exists) {
+            this.#original_content = this.#base_content;
+            this.#original_title = this.#base_title;
+
+            if (this.#editor) {
+                this.#editor.setContent(this.#base_content);
+            } else if (editor_element) {
+                editor_element.innerHTML = this.#base_content;
+            }
+            if (this.#title_element) {
+                this.#title_element.textContent = this.#base_title;
+            }
+            return;
+        }
+
+        const content = data.answer;
+        const title = data.name;
+
+        this.#original_content = content;
+        this.#original_title = title;
+
+        if (this.#editor) {
+            this.#editor.setContent(content);
+        } else if (editor_element) {
+            editor_element.innerHTML = content;
+        }
+        if (this.#title_element) {
+            this.#title_element.textContent = title || this.#title_element.dataset.placeholder || '';
+        }
+    }
+
+    #exitTranslationMode()
+    {
+        this.#translation_language = null;
+
+        const alert_el = this.#container.querySelector('[data-glpi-kb-translation-alert]');
+        if (alert_el) {
+            alert_el.classList.add('d-none');
+            alert_el.classList.remove('d-flex');
+        }
+
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+        const edit_button = this.#container.querySelector('[data-action="toggle-edit"]');
+        const save_button = this.#container.querySelector('[data-action="save"]');
+        const cancel_button = this.#container.querySelector('[data-action="cancel"]');
+
+        this.#original_content = this.#base_content;
+        this.#original_title = this.#base_title;
+
+        if (this.#editor) {
+            this.#editor.setContent(this.#base_content);
+            this.#editor.setEditable(false);
+        } else if (editor_element) {
+            editor_element.innerHTML = this.#base_content;
+        }
+        if (this.#title_element) {
+            this.#title_element.textContent = this.#base_title;
+        }
+        this.#disableTitleEditing();
+        this.#is_editing = false;
+
+        // Restore main editor actions visibility
+        const editor_actions = this.#container.querySelector('.kb-editor-actions');
+        if (editor_actions) {
+            editor_actions.classList.remove('d-none');
+            editor_actions.classList.add('d-flex');
+        }
+        if (edit_button) {
+            edit_button.classList.remove('d-none');
+        }
+        if (save_button) {
+            save_button.classList.add('d-none');
+        }
+        if (cancel_button) {
+            cancel_button.classList.add('d-none');
+        }
+    }
+
+    async #saveTranslation(save_btn)
+    {
+        if (this.#item_id === null) {
+            glpi_toast_error(__("Cannot save: article ID is missing"));
+            return;
+        }
+
+        const new_title = this.#title_element
+            ? this.#title_element.textContent.trim()
+            : null;
+        if (this.#title_element && new_title.length === 0) {
+            glpi_toast_error(__("Title cannot be empty"));
+            this.#title_element.focus();
+            return;
+        }
+
+        const original_button_html = save_btn.innerHTML;
+        save_btn.disabled = true;
+        save_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+
+        if (this.#translation_language !== this.#default_language) {
+            const body = {
+                language: this.#translation_language,
+                answer: this.#editor.getHTML(),
+            };
+            if (new_title !== null) {
+                body.name = new_title;
+            }
+            await post(
+                `Knowbase/KnowbaseItem/${this.#item_id}/Translation`,
+                body
+            );
+
+            if (!this.#existing_translations.includes(this.#translation_language)) {
+                this.#existing_translations.push(this.#translation_language);
+                this.#updateTranslationsCount();
+                this.#moveOptionToExistingGroup(this.#translation_language);
+            }
+            this.#updateDeleteButtonVisibility();
+
+            this.#original_content = this.#editor.getHTML();
+            if (new_title !== null) {
+                this.#original_title = new_title;
+            }
+
+            glpi_toast_info(__("Translation saved successfully"));
+        } else {
+            const body = {
+                answer: this.#editor.getHTML(),
+            };
+            if (new_title !== null) {
+                body.name = new_title;
+            }
+
+            await post(`Knowbase/KnowbaseItem/${this.#item_id}/Answer`, body);
+
+            this.#original_content = this.#editor.getHTML();
+            this.#base_content = this.#original_content;
+            if (new_title !== null) {
+                this.#original_title = new_title;
+                this.#base_title = this.#original_title;
+            }
+
+            glpi_toast_info(__("Article saved successfully"));
+        }
+
+        save_btn.disabled = false;
+        save_btn.innerHTML = original_button_html;
+    }
+
+    async #deleteTranslation()
+    {
+        if (!this.#translation_language || this.#translation_language === this.#default_language) {
+            return;
+        }
+
+        const confirmed = await glpi_confirm_danger({
+            title: __('Delete translation'),
+            message: __('Are you sure you want to delete this translation?'),
+            confirm_label: __('Delete'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        await post(
+            `Knowbase/KnowbaseItem/${this.#item_id}/Translation/${this.#translation_language}/Delete`,
+            {}
+        );
+
+        const idx = this.#existing_translations.indexOf(this.#translation_language);
+        if (idx !== -1) {
+            this.#existing_translations.splice(idx, 1);
+        }
+        this.#updateTranslationsCount();
+
+        this.#moveOptionToNewGroup(this.#translation_language);
+        await this.#loadTranslationContent(this.#translation_language);
+        this.#updateDeleteButtonVisibility();
+
+        glpi_toast_info(__("Translation deleted successfully"));
+    }
+
+    #updateTranslationsCount()
+    {
+        const count_el = this.#container.querySelector('[data-testid="translations-count"]');
+        if (count_el) {
+            const count = this.#existing_translations.length;
+            count_el.textContent = `${count} ${_n('translation', 'translations', count)}`;
+        }
+    }
+
+    #moveOptionToExistingGroup(language_code)
+    {
+        const select = this.#container.querySelector('[data-glpi-kb-translation-language]');
+        if (!select) {
+            return;
+        }
+
+        const option = select.querySelector(`option[value="${CSS.escape(language_code)}"]`);
+        if (!option) {
+            return;
+        }
+
+        let existing_group = select.querySelector(`optgroup[label="${CSS.escape(__('Existing translations'))}"]`);
+        if (!existing_group) {
+            existing_group = document.createElement('optgroup');
+            existing_group.label = __('Existing translations');
+            select.prepend(existing_group);
+        }
+
+        existing_group.appendChild(option);
+
+        const new_group = select.querySelector(`optgroup[label="${CSS.escape(__('Add new translation'))}"]`);
+        if (new_group && new_group.children.length === 0) {
+            new_group.remove();
+        }
+
+        select.value = language_code;
+    }
+
+    #moveOptionToNewGroup(language_code)
+    {
+        const select = this.#container.querySelector('[data-glpi-kb-translation-language]');
+        if (!select) {
+            return;
+        }
+
+        const option = select.querySelector(`option[value="${CSS.escape(language_code)}"]`);
+        if (!option) {
+            return;
+        }
+
+        let new_group = select.querySelector(`optgroup[label="${CSS.escape(__('Add new translation'))}"]`);
+        if (!new_group) {
+            new_group = document.createElement('optgroup');
+            new_group.label = __('Add new translation');
+            select.appendChild(new_group);
+        }
+
+        const options = Array.from(new_group.querySelectorAll('option'));
+        const insert_before = options.find(o => o.textContent.localeCompare(option.textContent) > 0);
+        if (insert_before) {
+            new_group.insertBefore(option, insert_before);
+        } else {
+            new_group.appendChild(option);
+        }
+
+        const existing_group = select.querySelector(`optgroup[label="${CSS.escape(__('Existing translations'))}"]`);
+        if (existing_group && existing_group.children.length === 0) {
+            existing_group.remove();
+        }
+
+        select.value = language_code;
+    }
+
+    #updateDeleteButtonVisibility()
+    {
+        const delete_btn = this.#container.querySelector('[data-glpi-kb-translation-delete]');
+        if (!delete_btn) {
+            return;
+        }
+
+        if (
+            this.#translation_language
+            && this.#translation_language !== this.#default_language
+            && this.#existing_translations.includes(this.#translation_language)
+        ) {
+            delete_btn.classList.remove('d-none');
+        } else {
+            delete_btn.classList.add('d-none');
+        }
     }
 }
