@@ -88,6 +88,11 @@
                         config['existing_auth_server_field_clean_domain'],
                         __('Remove the domain of logins like login@domain')
                      ) }}
+                     {{ fields.dropdownYesNo(
+                        'useFrontChannelLogout',
+                        config['useFrontChannelLogout'],
+                        __('Use Front-Channel Logout from SSO')
+                     ) }}
                      {{ fields.textField('realname_ssofield', config['realname_ssofield'], __('Surname')) }}
                      {{ fields.textField('firstname_ssofield', config['firstname_ssofield'], __('First name')) }}
                      {{ fields.textField('comment_ssofield', config['comment_ssofield'], __('Comments')) }}
