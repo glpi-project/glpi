@@ -144,7 +144,8 @@ test('Permission changes appear in history', async ({ page, profile, api }) => {
     await expect(kb.getHeading('History')).toBeVisible();
 
     const events = page.getByTestId('history-event');
-    await expect(events.filter({ hasText: /Permission added/ })).toBeVisible();
+    await expect(events.filter({ hasText: /Permissions updated/ })).toBeVisible();
+    await expect(events.filter({ hasText: /Access granted to/ })).toBeVisible();
 });
 
 test('Document attachment changes appear in history', async ({ page, profile, api }) => {
