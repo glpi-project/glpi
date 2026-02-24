@@ -45,6 +45,7 @@ use Safe\DateTime;
 /**
  * $_SESSION[glpi_reauth_until] is set to a timestamp until which the user is considered re-authenticated.
  * $_SESSION[glpi_reauth_redirect] stores the URL to redirect after successful re-authentication. - ? doc a virer, géré par $this->setSuccessRedirectURL() et $this->getRedirectSuccessURL()
+ * $_SESSION[glpi_reauth_postdata] stores the POST data to restore after successful re-authentication.
  */
 class ReAuthManager
 {
@@ -76,7 +77,8 @@ class ReAuthManager
     public function checkReAuthenticated(): void
     {
         if (!$this->isReAuthenticated()) {
-            $this->setSuccessRedirectURL($_SERVER['REDIRECT_URL'] . '?' . $_SERVER['REDIRECT_QUERY_STRING']);// @todo maybe not the best way to retrieve the url
+            $this->setSuccessRedirectURL(($_SERVER['REDIRECT_URL'] ?? '') . '?' . ($_SERVER['REDIRECT_QUERY_STRING'] ?? ''));// @todo maybe not the best way to retrieve the url + remove ? when no query string
+            $this->setPostDataForRedirect($_POST);
             // also maybe it's better to store the url in get parameter
             throw new RedirectException("/ReAuth/Prompt"); // @todo éventuellement utilise le router pour générer l'url, mais ça peut alourdir inutilement le code.
         }
@@ -206,6 +208,16 @@ class ReAuthManager
     private function setSuccessRedirectURL(string $url): void
     {
         $_SESSION['glpi_reauth_redirect'] = $url;
+    }
+
+    private function setPostDataForRedirect(array $post): void
+    {
+        $_SESSION['glpi_reauth_postdata'] = $post;
+    }
+
+    public function getPostDataForRedirect(): array
+    {
+        return $_SESSION['glpi_reauth_postdata'] ?? [];
     }
 
 }
