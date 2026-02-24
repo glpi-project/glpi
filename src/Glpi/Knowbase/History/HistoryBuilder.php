@@ -167,13 +167,13 @@ final class HistoryBuilder
         foreach ($logs as $row) {
             $is_add = (int) $row['linked_action'] === Log::HISTORY_ADD_RELATION;
             $target_name = $is_add ? $row['new_value'] : $row['old_value'];
-            $label = $is_add
-                ? sprintf(__("Permission added: %s"), $target_name)
-                : sprintf(__("Permission removed: %s"), $target_name);
+            $description = $is_add
+                ? sprintf(__("Access granted to %s by"), $target_name)
+                : sprintf(__("Access revoked from %s by"), $target_name);
 
             $this->history->addEvent(new LogEvent(
-                label: $label,
-                description: __("Updated by"),
+                label: __("Permissions updated"),
+                description: $description,
                 date: $row['date_mod'],
                 author: $row['user_name'],
             ));
