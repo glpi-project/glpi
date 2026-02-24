@@ -5042,12 +5042,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$name of static method DBmysql\\:\\:quoteName\\(\\) expects Glpi\\\\DBAL\\\\QueryExpression\\|string, array\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$query of method DBmysql\\:\\:doQuery\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -9167,12 +9161,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#6 \\$year of function Safe\\\\mktime expects int\\|null, float\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$condition of static method Glpi\\\\DBAL\\\\QueryFunction\\:\\:if\\(\\) expects array\\|Glpi\\\\DBAL\\\\QueryExpression\\|string, Glpi\\\\DBAL\\\\QueryExpression\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
