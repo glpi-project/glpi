@@ -62,7 +62,7 @@ final class IndexController extends AbstractController
         $this->interface = Session::getCurrentInterface();
     }
 
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    #[SecurityStrategy(Firewall::STRATEGY_REAUTHENTICATE)]
     #[Route(
         "/ServiceCatalog",
         name: "glpi_service_catalog",
