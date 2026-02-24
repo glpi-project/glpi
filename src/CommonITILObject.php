@@ -2013,6 +2013,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
         }
 
+        // When the category changes, resolve the template from the new category
+        if (
+            isset($input['itilcategories_id'])
+            && (int) $input['itilcategories_id'] !== (int) ($this->fields['itilcategories_id'] ?? 0)
+        ) {
+            $type   = $input['type'] ?? $this->fields['type'];
+            $new_template = $this->getITILTemplateToUse(0, $type, $input['itilcategories_id'], $this->fields['entities_id']);
+            $tpl_fk = static::getTemplateClass()::getForeignKeyField();
+            if ($new_template !== null && $new_template->fields['id'] > 0) {
+                $input[$tpl_fk] = $new_template->fields['id'];
+            }
+        }
+
         if ($this->getType() !== Ticket::getType()) {
             //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
             $input = $this->handleTemplateFields($input);
