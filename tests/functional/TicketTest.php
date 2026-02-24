@@ -8968,15 +8968,14 @@ HTML,
             'expected' => false,
         ];
 
-        // TODO: this case doesn't work anymore after the test was fixed in #23012.
-        // yield [
-        //     'profilerights' => [
-        //         'followup' => 0,
-        //         'ticket'   => 0,
-        //         'document' => CREATE,
-        //     ],
-        //     'expected' => true, // requester can always add docs if the ticket is not modified
-        // ];
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
 
         yield [
             'profilerights' => [
@@ -8996,15 +8995,14 @@ HTML,
             'expected' => true,
         ];
 
-        // TODO: this case doesn't work anymore after the test was fixed in #23012.
-        // yield [
-        //     'profilerights' => [
-        //         'followup' => 0,
-        //         'ticket'   => CREATE,
-        //         'document' => CREATE,
-        //     ],
-        //     'expected' => true, // requester can always add docs if the ticket is not modified
-        // ];
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => CREATE,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
     }
 
     #[DataProvider('canAddDocumentProvider')]
