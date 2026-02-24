@@ -9588,6 +9588,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (
                     $actor['itemtype'] === User::class
                     && $actor['items_id'] > 0
+                    && $found === false
                 ) {
                     $valid_users = iterator_to_array(
                         User::getSqlSearchResult(
