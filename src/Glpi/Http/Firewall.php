@@ -203,7 +203,12 @@ final class Firewall
     {
         if (!file_exists($this->glpi_root . $path)) {
             // Modern controllers
-            return self::FALLBACK_STRATEGY;
+            return match ($path) {
+                (new \Computer())->getFormURL(full: false), // maybe prefere hardcoded version ? '/front/computer.php'
+                'another_route'
+                => self::STRATEGY_REAUTHENTICATE,
+                default => self::FALLBACK_STRATEGY
+            };
         }
 
         $paths = [
