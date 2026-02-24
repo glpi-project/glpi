@@ -98,7 +98,6 @@
         "webpack-cli": "^6.0.1"
     },
     "overrides": {
-        "ajv": "^8.18.0",
         "minimatch": "^10.2.1"
     }
 }
