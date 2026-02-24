@@ -304,12 +304,12 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             ->addStandardTab(self::class, $ong, $options);
 
         if ($this->canShowSubTabs($options)) {
-        $this->addStandardTab(ChangeValidation::class, $ong, $options)
-            ->addStandardTab(ChangeCost::class, $ong, $options)
-            ->addStandardTab(Itil_Project::class, $ong, $options)
-            ->addStandardTab(Change_Problem::class, $ong, $options)
-            ->addStandardTab(Change_Ticket::class, $ong, $options)
-            ->addStandardTab(Change_Item::class, $ong, $options);
+            $this->addStandardTab(ChangeValidation::class, $ong, $options)
+                ->addStandardTab(ChangeCost::class, $ong, $options)
+                ->addStandardTab(Itil_Project::class, $ong, $options)
+                ->addStandardTab(Change_Problem::class, $ong, $options)
+                ->addStandardTab(Change_Ticket::class, $ong, $options)
+                ->addStandardTab(Change_Item::class, $ong, $options);
         if ($this->hasImpactTab()) {
             $this->addStandardTab(Impact::class, $ong, $options);
         }

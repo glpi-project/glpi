@@ -429,22 +429,22 @@ class User extends CommonDBTM implements TreeBrowseInterface
         $this->addImpactTab($ong, $options);
 
         if ($this->canShowSubTabs($options)) {
-        $this->addStandardTab(Profile_User::class, $ong, $options)
-            ->addStandardTab(Group_User::class, $ong, $options)
-            ->addStandardTab(Config::class, $ong, $options)
-            ->addStandardTab(self::class, $ong, $options)
-            ->addStandardTab(Consumable::class, $ong, $options)
-            ->addStandardTab(Ticket::class, $ong, $options)
-            ->addStandardTab(Problem::class, $ong, $options)
-            ->addStandardTab(Change::class, $ong, $options)
-            ->addStandardTab(Document_Item::class, $ong, $options)
-            ->addStandardTab(Reservation::class, $ong, $options)
-            ->addStandardTab(Auth::class, $ong, $options)
-            ->addStandardTab(ManualLink::class, $ong, $options)
-            ->addStandardTab(Certificate_Item::class, $ong, $options)
-            ->addStandardTab(SoftwareLicense_User::class, $ong, $options)
-            ->addStandardTab(Contract_User::class, $ong, $options)
-            ->addStandardTab(Log::class, $ong, $options);
+            $this->addStandardTab(Profile_User::class, $ong, $options)
+                ->addStandardTab(Group_User::class, $ong, $options)
+                ->addStandardTab(Config::class, $ong, $options)
+                ->addStandardTab(self::class, $ong, $options)
+                ->addStandardTab(Consumable::class, $ong, $options)
+                ->addStandardTab(Ticket::class, $ong, $options)
+                ->addStandardTab(Problem::class, $ong, $options)
+                ->addStandardTab(Change::class, $ong, $options)
+                ->addStandardTab(Document_Item::class, $ong, $options)
+                ->addStandardTab(Reservation::class, $ong, $options)
+                ->addStandardTab(Auth::class, $ong, $options)
+                ->addStandardTab(ManualLink::class, $ong, $options)
+                ->addStandardTab(Certificate_Item::class, $ong, $options)
+                ->addStandardTab(SoftwareLicense_User::class, $ong, $options)
+                ->addStandardTab(Contract_User::class, $ong, $options)
+                ->addStandardTab(Log::class, $ong, $options);
         }
 
         return $ong;
