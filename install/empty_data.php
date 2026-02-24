@@ -307,6 +307,7 @@ $empty_data_builder = new class {
             'registration_number_ssofield' => '',
             'ssovariables_id' => '0',
             'ssologout_url' => '',
+            'sso_use_front_channel_logout' => '0',
             'pdffont' => 'dejavusans',
             'keep_devices_when_purging_item' => '0',
             'maintenance_mode' => '0',
