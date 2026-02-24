@@ -1096,7 +1096,7 @@ class Plugin extends CommonDBTM
      *
      * @return array
      */
-    public function getList(array $fields = [], array $order = ['name', 'directory'])
+    public function getList(array $fields = [], array $order = ['directory'])
     {
         global $DB;
 
