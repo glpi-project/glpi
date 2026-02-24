@@ -71,6 +71,7 @@
         "scssphp/scssphp": "^2.1",
         "sebastian/diff": "^6.0",
         "simplepie/simplepie": "^1.9",
+        "ssddanbrown/htmldiff": "^2.0",
         "symfony/cache": "^7.4",
         "symfony/config": "^7.4",
         "symfony/console": "^7.4",

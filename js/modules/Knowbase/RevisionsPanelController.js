@@ -32,8 +32,6 @@
 
 /* global glpi_toast_error, glpi_toast_info, glpi_html_dialog, getAjaxCsrfToken */
 
-import { computeHtmlDiff } from "/js/modules/Knowbase/RevisionDiffRenderer.js";
-
 const revert_selector = "[data-glpi-revert-revision]";
 const revision_selector = "[data-glpi-revision-id]";
 const current_version_selector = "[data-glpi-current-version]";
@@ -91,6 +89,7 @@ export class GlpiKnowbaseRevisionsPanelController
     async #handleCompareToggle(revisionItem)
     {
         const revisionId = revisionItem.dataset.glpiRevisionId;
+        const kbId = revisionItem.dataset.glpiKbId;
 
         // Toggle off if clicking the already-active revision
         if (this.#activeRevisionId === revisionId) {
@@ -99,13 +98,14 @@ export class GlpiKnowbaseRevisionsPanelController
         }
 
         // Activate comparison
-        await this.#activateComparison(revisionId);
+        await this.#activateComparison(kbId, revisionId);
     }
 
     /**
+     * @param {string} kbId
      * @param {string} revisionId
      */
-    async #activateComparison(revisionId)
+    async #activateComparison(kbId, revisionId)
     {
         // Restore original DOM before computing new diff
         if (this.#activeRevisionId !== null) {
@@ -113,35 +113,17 @@ export class GlpiKnowbaseRevisionsPanelController
         }
 
         try {
-            // Fetch revision content
+            const base_url = CFG_GLPI.root_doc;
             const response = await fetch(
-                `${CFG_GLPI.root_doc}/ajax/getKbRevision.php?revid=${revisionId}`,
+                `${base_url}/Knowbase/${kbId}/CompareRevision/${revisionId}`,
                 {headers: {'X-Requested-With': 'XMLHttpRequest'}}
             );
 
             if (!response.ok) {
-                throw new Error('Failed to load revision');
+                throw new Error('Failed to load revision diff');
             }
 
-            const revisionData = await response.json();
-
-            // Get current article content from the DOM
-            const subjectEl = document.querySelector('[data-glpi-kb-subject]');
-            const contentEl = document.querySelector('[data-glpi-kb-content]');
-
-            if (!subjectEl || !contentEl) {
-                return;
-            }
-
-            // Compute diffs
-            const titleDiff = await computeHtmlDiff(
-                revisionData.name,
-                subjectEl.textContent
-            );
-            const contentDiff = await computeHtmlDiff(
-                revisionData.answer,
-                contentEl.innerHTML
-            );
+            const {titleDiff, contentDiff} = await response.json();
 
             // Dispatch event to ArticleController
             this.#container.dispatchEvent(new CustomEvent('glpi:kb:compare', {
