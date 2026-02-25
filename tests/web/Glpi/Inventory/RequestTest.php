@@ -602,6 +602,148 @@ class RequestTest extends TestCase
         ]);
     }
 
+    public function testAuthOAuthClientCredentialsIpRestriction()
+    {
+        // Enable inventory with OAuth client credentials
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required'     => Conf::CLIENT_CREDENTIALS,
+        ]);
+
+        // Create an OAuth client with 192.168.99.99 in allowed_ips
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name'            => __FUNCTION__,
+            'is_active'       => 1,
+            'is_confidential' => 1,
+            'grants'          => ['client_credentials'],
+            'scopes'          => ['inventory'],
+            'allowed_ips'     => '192.168.99.99',
+        ]);
+        $this->assertGreaterThan(0, $client_id);
+
+        // Get client ID and secret
+        global $DB;
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM'   => \OAuthClient::getTable(),
+            'WHERE'  => ['id' => $client_id],
+        ]);
+        $this->assertCount(1, $it);
+        $client_data = $it->current();
+        $auth_data = [
+            'grant_type'    => 'client_credentials',
+            'client_id'     => $client_data['identifier'],
+            'client_secret' => (new GLPIKey())->decrypt($client_data['secret']),
+            'scope'         => 'inventory',
+        ];
+
+        // Obtain an access token
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'api.php/token',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body'    => json_encode($auth_data),
+            ]
+        );
+        $this->assertEquals(200, $response->getStatusCode());
+        $responseContent = json_decode((string) $response->getBody(), true);
+        $this->assertNotEmpty($responseContent['access_token']);
+
+        // Attempt to call inventory with the access token, should be forbidden due to IP restriction
+        try {
+            $this->http_client->request(
+                'POST',
+                $this->base_uri . 'Inventory',
+                [
+                    'headers' => [
+                        'Content-Type'  => 'application/xml',
+                        'Authorization' => 'Bearer ' . $responseContent['access_token'],
+                    ],
+                    'body' => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
+                ]
+            );
+            $this->fail('Expected a 403 response due to IP restriction');
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $this->assertInstanceOf(Response::class, $response);
+            $this->checkJsonResponse(
+                $response,
+                '{"status":"error","message":"Access denied. Your IP address is not allowed to use this OAuth client.","expiration":24}',
+                403
+            );
+        }
+
+        // Create an OAuth client with the local IP in allowed_ips (request comes from 127.0.0.1)
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name'            => __FUNCTION__ . '_allowed',
+            'is_active'       => 1,
+            'is_confidential' => 1,
+            'grants'          => ['client_credentials'],
+            'scopes'          => ['inventory'],
+            'allowed_ips'     => '127.0.0.1',
+        ]);
+        $this->assertGreaterThan(0, $client_id);
+
+        // Get client ID and secret
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM'   => \OAuthClient::getTable(),
+            'WHERE'  => ['id' => $client_id],
+        ]);
+        $this->assertCount(1, $it);
+        $allowed_client_data = $it->current();
+        $allowed_auth_data = [
+            'grant_type'    => 'client_credentials',
+            'client_id'     => $allowed_client_data['identifier'],
+            'client_secret' => (new GLPIKey())->decrypt($allowed_client_data['secret']),
+            'scope'         => 'inventory',
+        ];
+
+        // Obtain an access token for the client with local IP allowed
+        $allowed_response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'api.php/token',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body'    => json_encode($allowed_auth_data),
+            ]
+        );
+        $this->assertEquals(200, $allowed_response->getStatusCode());
+        $allowed_content = json_decode((string) $allowed_response->getBody(), true);
+        $this->assertNotEmpty($allowed_content['access_token']);
+
+        // IP is allowed — inventory request should succeed
+        $allowed_inventory_response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type'  => 'application/xml',
+                    'Authorization' => 'Bearer ' . $allowed_content['access_token'],
+                ],
+                'body' => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->checkXmlResponse($allowed_inventory_response, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+
+        // disable oauth client credentials
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required'     => 'none',
+        ]);
+    }
+
     public function testAuthOAuthClientCredentialsInvalidToken()
     {
         $invalid_bearer_token = 'invalid_token';

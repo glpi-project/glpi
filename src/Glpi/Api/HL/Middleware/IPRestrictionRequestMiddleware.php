@@ -69,7 +69,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return;
         }
 
-        if (!$this->isIPAllowed($request_ip, $allowed_ips)) {
+        if (!self::isIPAllowed($request_ip, $allowed_ips)) {
             // IP doesn't match the allowed IPs
             $input->response = AbstractController::getAccessDeniedErrorResponse();
             return;
@@ -79,12 +79,12 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         $next($input);
     }
 
-    private function isIPAllowed(string $ip, string $allowed_ips): bool
+    public static function isIPAllowed(string $ip, string $allowed_ips): bool
     {
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
         foreach ($allowed_ip_array as $allowed_ip) {
             if (str_contains($allowed_ip, '/')) {
-                if ($this->isCidrMatch($ip, $allowed_ip)) {
+                if (self::isCidrMatch($ip, $allowed_ip)) {
                     return true;
                 }
             } elseif ($ip === $allowed_ip) {
@@ -100,7 +100,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
      * @param string $range The CIDR notation range
      * @return bool
      */
-    private function isCidrMatch(string $ip, string $range): bool
+    private static function isCidrMatch(string $ip, string $range): bool
     {
         $ipv6 = str_contains($ip, ':');
         $max_mask = $ipv6 ? 128 : 32;
