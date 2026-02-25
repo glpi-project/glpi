@@ -118,17 +118,17 @@ class Supplier extends CommonDBTM
         $this->addDefaultFormTab($ong);
 
         if ($this->canShowSubTabs($options)) {
-            $this->addStandardTab(Contact_Supplier::class, $ong, $options)
-                ->addStandardTab(Contract_Supplier::class, $ong, $options)
-                ->addStandardTab(Infocom::class, $ong, $options)
-                ->addStandardTab(Document_Item::class, $ong, $options)
-                ->addStandardTab(Item_Ticket::class, $ong, $options)
-                ->addStandardTab(Item_Problem::class, $ong, $options)
-                ->addStandardTab(Change_Item::class, $ong, $options)
-                ->addStandardTab(ManualLink::class, $ong, $options)
-                ->addStandardTab(Notepad::class, $ong, $options)
-                ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
-                ->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(Contact_Supplier::class, $ong, $options)
+            ->addStandardTab(Contract_Supplier::class, $ong, $options)
+            ->addStandardTab(Infocom::class, $ong, $options)
+            ->addStandardTab(Document_Item::class, $ong, $options)
+            ->addStandardTab(Item_Ticket::class, $ong, $options)
+            ->addStandardTab(Item_Problem::class, $ong, $options)
+            ->addStandardTab(Change_Item::class, $ong, $options)
+            ->addStandardTab(ManualLink::class, $ong, $options)
+            ->addStandardTab(Notepad::class, $ong, $options)
+            ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
+            ->addStandardTab(Log::class, $ong, $options);
         }
 
         return $ong;

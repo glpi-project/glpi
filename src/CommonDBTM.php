@@ -67,34 +67,34 @@ use function Safe\unlink;
  */
 class CommonDBTM extends CommonGLPI
 {
-/**
- * Data fields of the Item.
- *
- * @var array<string,mixed>
- */
-public $fields = [];
     /**
-     * Determine if sub-tabs should be shown for this item.
-     * Returns false if item is new or in template mode.
+     * Data fields of the Item.
      *
-     * @param array $options Optional options array (may contain 'withtemplate')
-     * @return bool
+     * @var array<string,mixed>
      */
-    public function canShowSubTabs(array $options = []): bool
-    {
-        // Check if item is new
-        if (method_exists($this, 'isNewItem') && $this->isNewItem()) {
-            return false;
+    public $fields = [];
+        /**
+         * Determine if sub-tabs should be shown for this item.
+         * Returns false if item is new or in template mode.
+         *
+         * @param array $options Optional options array (may contain 'withtemplate')
+         * @return bool
+         */
+        public function canShowSubTabs(array $options = []): bool
+        {
+            // Check if item is new
+            if (method_exists($this, 'isNewItem') && $this->isNewItem()) {
+                return false;
+            }
+            // Check template mode
+            if (
+                (isset($options['withtemplate']) && $options['withtemplate'] >= 1)
+                || (isset($this->fields['withtemplate']) && $this->fields['withtemplate'] >= 1)
+            ) {
+                return false;
+            }
+            return true;
         }
-        // Check template mode
-        if (
-            (isset($options['withtemplate']) && $options['withtemplate'] >= 1)
-            || (isset($this->fields['withtemplate']) && $this->fields['withtemplate'] >= 1)
-        ) {
-            return false;
-        }
-        return true;
-    }
 
     /**
      * Add/Update fields input. Filled during add/update process.
