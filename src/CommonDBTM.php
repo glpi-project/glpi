@@ -1004,7 +1004,7 @@ class CommonDBTM extends CommonGLPI
      * Actions done when item is deleted from the database
      *
      * Method called before item is really deleted from database.
-     * @see \CommonDBTM::deleteFromDB()
+     * @see CommonDBTM::deleteFromDB()
      * @return void
      **/
     public function cleanDBonPurge() {}
