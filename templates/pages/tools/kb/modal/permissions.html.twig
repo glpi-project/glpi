@@ -32,18 +32,6 @@
 
 {% import "components/form/fields_macros.html.twig" as fields %}
 
-{# Owner line #}
-<div class="kb-permission-owner d-flex align-items-center gap-2">
-    {{ include('components/user/picture.html.twig', {
-        users_id: owner.users_id,
-        enable_anonymization: false,
-    }) }}
-    <div class="flex-grow-1">
-        <div class="fw-medium">{{ owner.name }}</div>
-        <div class="text-secondary small">{{ __('Owner') }}</div>
-    </div>
-</div>
-
 {# Add target form #}
 {% if can_edit %}
     <div>
@@ -56,12 +44,14 @@
                     rand: rand,
                     mb: '',
                 }) }}
-                <div id="visibility{{ rand }}" class="kb-permission-visibility"></div>
-                <div id="visibility-submit{{ rand }}" class="d-none">
+                <div id="visibility-submit{{ rand }}" class="d-none d-flex gap-2 align-items-center">
+                    <div class="flex-grow-1">
+                        <div id="visibility{{ rand }}" class="kb-permission-visibility"></div>
+                    </div>
                     <input type="submit"
                            name="addvisibility"
                            value="{{ _x('button', 'Add') }}"
-                           class="btn btn-primary w-100">
+                           class="btn btn-primary">
                 </div>
             </div>
             <script>
@@ -69,7 +59,7 @@
                     const $submit = $('#visibility-submit{{ rand }}');
                     if (e.target.value === '') {
                         $('#visibility{{ rand }}').empty();
-                        $submit.addClass('d-none');
+                        $submit.addClass('d-none').removeClass('d-flex');
                         return;
                     }
                     $('#visibility{{ rand }}').load(
@@ -79,65 +69,80 @@
                             type: e.target.value,
                             nobutton: 1,
                         },
-                        () => $submit.removeClass('d-none')
+                        () => $submit.removeClass('d-none').addClass('d-flex')
                     );
                 });
             </script>
         </form>
     </div>
-    <hr class="my-2">
+    <hr class="mt-3 mb-2">
 {% endif %}
 
 {# Permissions list #}
 <div class="list-group list-group-flush" data-glpi-permissions-list>
     {% for entry in entries %}
-        <div class="list-group-item d-flex align-items-center gap-2 px-0"
-             data-glpi-permission-id="{{ entry.id }}"
-             data-glpi-permission-itemtype="{{ entry.itemtype }}">
+            <div class="list-group-item d-flex align-items-center gap-2 px-0"
+                 data-glpi-permission-id="{{ entry.id }}"
+                 data-glpi-permission-itemtype="{{ entry.itemtype }}">
 
-            {# Typed icon #}
-            <span class="avatar avatar-sm rounded {{ entry.badge_class }}">
-                <i class="ti {{ entry.icon }}"></i>
-            </span>
+                {# Avatar: user picture for Users, typed icon for others #}
+                {% if entry.type == 'User' %}
+                    {{ include('components/user/picture.html.twig', {
+                        users_id: entry.users_id,
+                        avatar_size: 'avatar-sm',
+                        with_link: false,
+                        enable_anonymization: false,
+                    }) }}
+                {% else %}
+                    <span class="avatar avatar-sm rounded {{ entry.badge_class }}">
+                        <i class="ti {{ entry.icon }}"></i>
+                    </span>
+                {% endif %}
 
-            {# Info #}
-            <div class="flex-grow-1" style="min-width: 0;">
-                <div class="d-flex align-items-center gap-1">
-                    <span class="fw-medium text-truncate">{{ entry.name }}</span>
-                    <span class="badge {{ entry.badge_class }}">{{ entry.type_label }}</span>
-                    {% if entry.is_recursive %}
-                        <span class="badge bg-secondary-lt"
-                              title="{{ __('Recursive') }}"
-                              data-bs-toggle="tooltip">
-                            <i class="ti ti-arrow-iteration me-1"></i>R
-                        </span>
-                    {% endif %}
-                    {% if entry.is_owner %}
-                        <span class="badge bg-azure-lt">{{ __('Owner') }}</span>
+                {# Info #}
+                <div class="flex-grow-1" style="min-width: 0;">
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="fw-medium text-truncate">{{ entry.name }}</span>
+                        {% if entry.is_recursive %}
+                            <span class="badge bg-secondary-lt"
+                                  title="{{ __('Recursive') }}"
+                                  data-bs-toggle="tooltip">
+                                <i class="ti ti-arrow-iteration me-1"></i>R
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="text-secondary small">{{ __('Can view') }}</div>
+                    {% if entry.entity_name %}
+                        <div class="text-secondary small text-truncate">{{ entry.entity_name }}</div>
                     {% endif %}
                 </div>
-                {% if entry.entity_name %}
-                    <div class="text-secondary small text-truncate">{{ entry.entity_name }}</div>
+
+                {# Delete button #}
+                {% if can_edit %}
+                    <button type="button"
+                            class="btn btn-ghost-danger btn-sm btn-icon ms-auto"
+                            data-glpi-permission-delete
+                            title="{{ __('Delete') }}"
+                            data-bs-toggle="tooltip">
+                        <i class="ti ti-trash"></i>
+                    </button>
                 {% endif %}
             </div>
-
-            {# Delete button #}
-            {% if can_edit and not entry.is_owner %}
-                <button type="button"
-                        class="btn btn-ghost-secondary btn-sm btn-icon ms-auto"
-                        data-glpi-permission-delete
-                        title="{{ __('Delete') }}"
-                        data-bs-toggle="tooltip">
-                    <i class="ti ti-x"></i>
-                </button>
-            {% endif %}
-        </div>
-    {% else %}
-        <div class="text-secondary text-center py-3" data-glpi-permissions-empty>
-            <i class="ti ti-lock-open me-1"></i>
-            {{ __('No specific permissions defined.') }}
-        </div>
     {% endfor %}
+</div>
+
+{# Owner footer (full-width, differentiated background) #}
+<div class="kb-permission-owner d-flex align-items-center gap-2">
+    {{ include('components/user/picture.html.twig', {
+        users_id: owner.users_id,
+        avatar_size: 'avatar-sm',
+        with_link: false,
+        enable_anonymization: false,
+    }) }}
+    <div class="flex-grow-1" style="min-width: 0;">
+        <span class="fw-medium text-truncate d-block">{{ owner.name }}</span>
+        <div class="text-secondary small">{{ __('Owner') }}</div>
+    </div>
 </div>
 
 {% if can_edit %}
@@ -187,17 +192,6 @@
                 }
 
                 row.remove();
-
-                // Show empty state if no entries left
-                const remaining = list.querySelectorAll('[data-glpi-permission-id]');
-                if (remaining.length === 0) {
-                    list.innerHTML = `
-                        <div class="text-secondary text-center py-3" data-glpi-permissions-empty>
-                            <i class="ti ti-lock-open me-1"></i>
-                            {{ __('No specific permissions defined.')|e("js") }}
-                        </div>
-                    `;
-                }
             } catch {
                 glpi_toast_error('{{ __("An error occurred while deleting the permission.")|e("js") }}');
             }
