@@ -1781,7 +1781,7 @@ class Stat extends CommonGLPI
                 }
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
-                        $names["/plugins/{$plug}/{$page}"] = [
+                        $names["plugins/{$plug}/{$page}"] = [
                             "name" => $name,
                             "plug" => $plug,
                         ];
@@ -1796,7 +1796,7 @@ class Stat extends CommonGLPI
             $group = $title;
             foreach ($names as $key => $val) {
                 if ($opt == $val["plug"]) {
-                    $file                  = $CFG_GLPI["root_doc"] . $key;
+                    $file                  = $CFG_GLPI["root_doc"] . "/" . $key;
                     $values[$group][$file] = $val["name"];
                 }
             }
