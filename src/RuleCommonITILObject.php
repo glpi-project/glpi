@@ -815,7 +815,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             $criterias['global_validation']['type'] = 'dropdown_validation_status';
 
             // validation step name
-            $criterias['_validationsteps_id']['name'] = ValidationStep::getTypeName(1) . ' debug';
+            $criterias['_validationsteps_id']['name'] = ValidationStep::getTypeName(1);
             $criterias['_validationsteps_id']['type'] = 'dropdown';
             $criterias['_validationsteps_id']['table'] = ValidationStep::getTable();
             $criterias['_validationsteps_id']['field'] = 'name';
