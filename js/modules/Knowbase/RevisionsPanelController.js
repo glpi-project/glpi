@@ -123,12 +123,12 @@ export class GlpiKnowbaseRevisionsPanelController
                 throw new Error('Failed to load revision diff');
             }
 
-            const {titleDiff, contentDiff} = await response.json();
+            const {title_diff, content_diff} = await response.json();
 
             // Dispatch event to ArticleController
             this.#container.dispatchEvent(new CustomEvent('glpi:kb:compare', {
                 bubbles: true,
-                detail: {revisionId, titleDiff, contentDiff},
+                detail: {revisionId, title_diff, content_diff},
             }));
 
             // Update state

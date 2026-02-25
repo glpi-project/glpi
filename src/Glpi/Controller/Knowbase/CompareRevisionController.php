@@ -73,24 +73,24 @@ final class CompareRevisionController extends AbstractController
         }
 
         // Old = revision content, New = current article content
-        $oldName = $revision->fields['name'];
-        $newName = $kb->fields['name'];
+        $old_name = $revision->fields['name'];
+        $new_name = $kb->fields['name'];
 
-        $oldAnswer = RichText::getEnhancedHtml($revision->fields['answer'], ['text_maxsize' => 0]);
-        $newAnswer = RichText::getEnhancedHtml($kb->fields['answer'], ['text_maxsize' => 0]);
+        $old_answer = RichText::getEnhancedHtml($revision->fields['answer'], ['text_maxsize' => 0]);
+        $new_answer = RichText::getEnhancedHtml($kb->fields['answer'], ['text_maxsize' => 0]);
 
         // Normalize non-breaking spaces (same as the former JS normalizeHtml)
-        $oldName   = $this->normalizeHtml($oldName);
-        $newName   = $this->normalizeHtml($newName);
-        $oldAnswer = $this->normalizeHtml($oldAnswer);
-        $newAnswer = $this->normalizeHtml($newAnswer);
+        $old_name   = $this->normalizeHtml($old_name);
+        $new_name   = $this->normalizeHtml($new_name);
+        $old_answer = $this->normalizeHtml($old_answer);
+        $new_answer = $this->normalizeHtml($new_answer);
 
-        $titleDiff   = (new Diff($oldName, $newName))->build();
-        $contentDiff = (new Diff($oldAnswer, $newAnswer))->build();
+        $title_diff   = (new Diff($old_name, $new_name))->build();
+        $content_diff = (new Diff($old_answer, $new_answer))->build();
 
         return new JsonResponse([
-            'titleDiff'   => $titleDiff,
-            'contentDiff' => $contentDiff,
+            'title_diff'   => $title_diff,
+            'content_diff' => $content_diff,
         ]);
     }
 

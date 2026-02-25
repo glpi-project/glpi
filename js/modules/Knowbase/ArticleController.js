@@ -162,9 +162,9 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
-     * @param {{titleDiff: string, contentDiff: string}} detail
+     * @param {{title_diff: string, content_diff: string}} detail
      */
-    #showDiff({titleDiff, contentDiff})
+    #showDiff({title_diff, content_diff})
     {
         const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
         const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
@@ -180,8 +180,8 @@ export class GlpiKnowbaseArticleController
         }
 
         // Replace with diff
-        subjectEl.innerHTML = titleDiff;
-        contentEl.innerHTML = contentDiff;
+        subjectEl.innerHTML = title_diff;
+        contentEl.innerHTML = content_diff;
 
         // Add diff-mode class for styling
         const article = this.#container.querySelector('.kb-article');
