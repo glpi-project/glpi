@@ -9584,9 +9584,26 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     break; // As actor is found, do not continue to list existings
                 }
 
-                if ($found === false) {
+                if (
+                    $actor['itemtype'] === User::class
+                    && $actor['items_id'] > 0
+                    && $found === false
+                ) {
+                    $valid_users = iterator_to_array(
+                        User::getSqlSearchResult(
+                            false,
+                            'all',
+                            $this->fields['entities_id']
+                        )
+                    );
+
+                    if (isset($valid_users[$actor['items_id']])) {
+                        $added[] = $actor;
+                    }
+                } elseif ($found === false) {
                     $added[] = $actor;
                 }
+
             }
 
             // Add new actors

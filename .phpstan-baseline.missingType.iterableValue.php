@@ -5624,49 +5624,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:analyseCrit\\(\\) has parameter \\$crit with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:analyseJoins\\(\\) has parameter \\$joinarray with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:buildQuery\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:execute\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method DBmysqlIterator\\:\\:fetchFields\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:handleFields\\(\\) has parameter \\$f with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysqlIterator\\:\\:handleOrderClause\\(\\) has parameter \\$clause with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property DBmysqlIterator\\:\\:\\$allowed_operators type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
@@ -11768,112 +11726,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/DBAL/JsonFieldInterface.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\PrepareForCloneInterface\\:\\:prepareInputForClone\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/PrepareForCloneInterface.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\PrepareForCloneInterface\\:\\:prepareInputForClone\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/PrepareForCloneInterface.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\DBAL\\\\QueryFunction has PHPDoc tag @method for method coalesce\\(\\) parameter \\#1 \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\DBAL\\\\QueryFunction has PHPDoc tag @method for method concat\\(\\) parameter \\#1 \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\DBAL\\\\QueryFunction has PHPDoc tag @method for method greatest\\(\\) parameter \\#1 \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\DBAL\\\\QueryFunction has PHPDoc tag @method for method jsonExtract\\(\\) parameter \\#1 \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\DBAL\\\\QueryFunction has PHPDoc tag @method for method jsonRemove\\(\\) parameter \\#1 \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Class Glpi\\\\DBAL\\\\QueryFunction has PHPDoc tag @method for method least\\(\\) parameter \\#1 \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryFunction\\:\\:__callStatic\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryFunction\\:\\:concat_ws\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryFunction\\:\\:getExpression\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryFunction\\:\\:groupConcat\\(\\) has parameter \\$order_by with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryFunction\\:\\:if\\(\\) has parameter \\$condition with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\DBAL\\\\QuerySubQuery\\:\\:__construct\\(\\) has parameter \\$crit with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/DBAL/QuerySubQuery.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryUnion\\:\\:__construct\\(\\) has parameter \\$queries with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryUnion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryUnion\\:\\:addQuery\\(\\) has parameter \\$query with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryUnion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\DBAL\\\\QueryUnion\\:\\:getQueries\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryUnion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\DBAL\\\\QueryUnion\\:\\:\\$queries type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/DBAL/QueryUnion.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Dashboard\\\\Dashboard\\:\\:checkRights\\(\\) has parameter \\$rights with no value type specified in iterable type array\\.$#',
@@ -13256,18 +13112,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/ControlType/DirectAccessConfig.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\ControlType\\\\DirectAccessConfig\\:\\:prepareInputForClone\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/ControlType/DirectAccessConfig.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\ControlType\\\\DirectAccessConfig\\:\\:prepareInputForClone\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/ControlType/DirectAccessConfig.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\AccessControl\\\\FormAccessControl\\:\\:createConfigFromUserInput\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -13977,18 +13821,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\AbstractCommonITILFormDestination\\:\\:prepareDynamicConfigDataForImport\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractCommonITILFormDestination.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\AbstractCommonITILFormDestination\\:\\:prepareInputForClone\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractCommonITILFormDestination.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\AbstractCommonITILFormDestination\\:\\:prepareInputForClone\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractCommonITILFormDestination.php',

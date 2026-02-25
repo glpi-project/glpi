@@ -145,11 +145,14 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
 
     public function formatAnswer(string $answer): string
     {
-        if (str_contains($answer, 'T')) {
-            return (new DateTime($answer))->format('Y-m-d H:i');
+        $timePattern = '/^\d{2}:\d{2}(?::\d{2})?$/';
+        if (preg_match($timePattern, trim($answer)) === 1) {
+            return $answer;
         }
-
-        return $answer;
+        return trim((string) \Html::convDateTime(
+            $answer,
+            (int) \Config::getConfigurationValue('core', 'date_format'),
+        ));
     }
 
     public function isDefaultValueCurrentTime(?Question $question): bool

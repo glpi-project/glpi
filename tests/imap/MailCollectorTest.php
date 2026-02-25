@@ -101,6 +101,9 @@ class MailCollectorTest extends DbTestCase
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
                 'expected'  => "Subject with \n character",
+            ], [
+                'raw'       => str_repeat('A', 300),
+                'expected'  => str_repeat('A', 255),
             ],
         ];
     }
@@ -832,6 +835,8 @@ class MailCollectorTest extends DbTestCase
         $this->assertSame($not_imported_specs, $not_imported_values);
 
         // Check created tickets and their actors
+        $long_subject = 'This email subject is designed to test how inboxes handle very long text. It contains exactly three hundred characters to check whether everything displays correctly, whether the text is truncated, or if the mail client handles maximum length properly 12345678901234567890';
+        $long_subject_expected = substr($long_subject, 0, 255);
         $actors_specs = [
             // Mails having "tech" user as requester
             [
@@ -889,6 +894,7 @@ class MailCollectorTest extends DbTestCase
                     '44 - Hebrew encoding issue',
                     '47 - Missing charset parameter',
                     '49 - Message with invalid CC email address',
+                    $long_subject_expected,
                 ],
             ],
             // Mails having "normal" user as observer

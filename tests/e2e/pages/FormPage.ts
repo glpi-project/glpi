@@ -101,6 +101,16 @@ export class FormPage extends GlpiPage
         return this.getRegion('Question details').nth(questionIndex);
     }
 
+    public async setQuestionType(question: Locator, type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question type', question)
+                .filter({visible : true}),
+            type,
+            false
+        );
+    }
+
     public async addComment(name: string): Promise<Locator>
     {
         await this.getButton("Add a comment").click();

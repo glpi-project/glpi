@@ -759,6 +759,83 @@ class SearchTest extends DbTestCase
         $this->assertSame($expected, $data['data']['totalcount']);
     }
 
+    public function testAllCriterionWithEmptyValue()
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $data = $this->doSearch('Ticket', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'all',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertArrayHasKey('totalcount', $data['data']);
+    }
+
+    public static function allCriterionProvider(): array
+    {
+        $cases = [];
+        foreach (['AND', 'AND NOT', 'OR', 'OR NOT'] as $link) {
+            foreach (['contains', 'notcontains'] as $searchtype) {
+                $cases["$link $searchtype"] = [
+                    'link'       => $link,
+                    'searchtype' => $searchtype,
+                ];
+            }
+        }
+        return $cases;
+    }
+
+    #[DataProvider('allCriterionProvider')]
+    public function testAllCriterionNew(string $link, string $searchtype)
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $this->createItem('Project', [
+            'name'        => 'test_all_search_criterion',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $data = $this->doSearch('Project', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => $link,
+                    'field'      => 'all',
+                    'searchtype' => $searchtype,
+                    'value'      => 'test_all_search_criterion',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        // Search must complete without error
+        $this->assertArrayHasKey('totalcount', $data['data']);
+
+        // For "AND/OR contains" (without NOT), the created project must be found
+        if ($searchtype === 'contains' && !str_contains($link, 'NOT')) {
+            $this->assertGreaterThan(0, $data['data']['totalcount']);
+        }
+    }
 
     public function testSearchOnRelationTable()
     {

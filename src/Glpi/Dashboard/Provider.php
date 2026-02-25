@@ -500,7 +500,9 @@ class Provider
         $ticketUserTable = Ticket_User::getTable();
         $userTable = User::getTable();
 
+        /** @var QueryExpression $ownExceeded */
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
+        /** @var QueryExpression $resolveExceeded */
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
         $slaState = QueryFunction::if(
             condition: [$ownExceeded, $resolveExceeded],

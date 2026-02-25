@@ -9013,15 +9013,14 @@ HTML,
             'expected' => false,
         ];
 
-        // TODO: this case doesn't work anymore after the test was fixed in #23012.
-        // yield [
-        //     'profilerights' => [
-        //         'followup' => 0,
-        //         'ticket'   => 0,
-        //         'document' => CREATE,
-        //     ],
-        //     'expected' => true, // requester can always add docs if the ticket is not modified
-        // ];
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
 
         yield [
             'profilerights' => [
@@ -9041,15 +9040,14 @@ HTML,
             'expected' => true,
         ];
 
-        // TODO: this case doesn't work anymore after the test was fixed in #23012.
-        // yield [
-        //     'profilerights' => [
-        //         'followup' => 0,
-        //         'ticket'   => CREATE,
-        //         'document' => CREATE,
-        //     ],
-        //     'expected' => true, // requester can always add docs if the ticket is not modified
-        // ];
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => CREATE,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
     }
 
     #[DataProvider('canAddDocumentProvider')]
@@ -10205,4 +10203,39 @@ HTML,
             );
         }
     }
+    public function testUpdateActorsDisabledOrDeleted(): void
+    {
+        $this->login();
+
+        // Disabled user as requester
+        $user_id = $this->createItem(User::class, [
+            'name' => $this->getUniqueString(),
+            'is_active' => 0,
+        ])->getID();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket for disabled user',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ]);
+
+        $this->checkActors($ticket, []);
+
+        // Deleted user as requester
+        $user_id = $this->createItem(User::class, [
+            'name' => $this->getUniqueString(),
+            'is_deleted' => 1,
+        ])->getID();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket for deleted user',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ]);
+
+        $this->checkActors($ticket, []);
+    }
+
 }

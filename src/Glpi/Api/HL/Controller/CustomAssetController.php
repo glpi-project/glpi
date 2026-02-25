@@ -453,8 +453,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getCustomAssetTypes']], middlewares: [ResultFormatterMiddleware::class])
-    ]
+        'itemtype' => [self::class, 'getCustomAssetTypes']], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\SearchRoute(
         schema_name: 'CustomAsset_{itemtype}Model',
         description: 'List or search custom asset models of a specific type'

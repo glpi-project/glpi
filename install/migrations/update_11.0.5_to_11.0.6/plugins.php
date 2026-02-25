@@ -32,14 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL;
+/**
+ * @var Migration $migration
+ */
 
-interface PrepareForCloneInterface
-{
-    /**
-     * @param array<int|string, mixed> $data
-     *
-     * @return array<int|string, mixed>
-     */
-    public function prepareInputForClone(array $data): array;
-}
+$migration->addField('glpi_plugins', 'highest_available_version', 'varchar(255)');

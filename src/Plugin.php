@@ -1092,7 +1092,7 @@ class Plugin extends CommonDBTM
      *
      * @return array
      */
-    public function getList(array $fields = [], array $order = ['name', 'directory'])
+    public function getList(array $fields = [], array $order = ['directory'])
     {
         global $DB;
 
@@ -3304,6 +3304,17 @@ class Plugin extends CommonDBTM
             'pages/admin/plugins/list_suspend_banner.html.twig',
             [
                 'execution_suspended' => $this->isPluginsExecutionSuspended(),
+            ]
+        );
+    }
+
+    final public function getPluginsUpdatableAlert(): string
+    {
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/plugins/updatable_alert.html.twig',
+            [
+                'count' => MarketplaceController::countUpdatablePlugins(),
             ]
         );
     }
