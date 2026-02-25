@@ -128,7 +128,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
         $this->setHelp(implode("\n", $help_lines));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $use_default = $input->getOption('use-default');

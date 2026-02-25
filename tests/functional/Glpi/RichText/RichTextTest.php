@@ -44,6 +44,17 @@ class RichTextTest extends GLPITestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {
+        // Native PHP parser is used in PHP 8.4+, and results slightly differ
+        if (\PHP_VERSION_ID < 80400) {
+            $pre_content_separator = "\n";
+            $tbody_opening_tag = "";
+            $tbody_closing_tag = "";
+        } else {
+            $pre_content_separator = "";
+            $tbody_opening_tag = "<tbody>";
+            $tbody_closing_tag = "</tbody>";
+        }
+
         // Empty content would not be altered
         yield [
             'content'                => null,
@@ -328,8 +339,7 @@ HTML,
       bla bla
     </p>
   </blockquote>
-  <pre>
-  public function () {
+  <pre>$pre_content_separator  public function () {
     alert(&#039;Hello world!&#039;);
   }
   </pre>
@@ -342,7 +352,7 @@ HTML,
         yield [
             'content'                => '<table height=100 width=0 align="left" cellspacing=10 style="width: 100%;"><tr><td>Test</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
+            'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;">' . $tbody_opening_tag . '<tr><td>Test</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield 'User mention tag must be preserved' => [
@@ -387,19 +397,19 @@ HTML,
         yield '`border` attribute on table should be preserved' => [
             'content'                => '<table border="1"><tr><td>Cell content</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table border="1"><tr><td>Cell content</td></tr></table>',
+            'expected_result'        => '<table border="1">' . $tbody_opening_tag . '<tr><td>Cell content</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield '`bgcolor` attribute on table elements should be preserved' => [
             'content'                => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
+            'expected_result'        => '<table bgcolor="#f0f0f0">' . $tbody_opening_tag . '<tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield 'table with both `border` and `bgcolor` attributes' => [
             'content'                => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
+            'expected_result'        => '<table border="1" bgcolor="#ffffff">' . $tbody_opening_tag . '<tr><td>Test</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield '`border` attribute should be removed from non-table elements' => [

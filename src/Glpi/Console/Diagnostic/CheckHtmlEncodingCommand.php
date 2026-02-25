@@ -121,7 +121,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->warnAboutExecutionTime();
         $this->findTextFields();

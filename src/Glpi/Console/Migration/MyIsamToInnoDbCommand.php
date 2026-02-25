@@ -67,7 +67,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
         $this->setDescription(__('Migrate MyISAM tables to InnoDB'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $myisam_tables = $this->db->getMyIsamTables();

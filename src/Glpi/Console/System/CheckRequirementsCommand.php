@@ -55,7 +55,7 @@ class CheckRequirementsCommand extends AbstractCommand
         $this->setDescription(__('Check system requirements'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $requirements_manager = new RequirementsManager();

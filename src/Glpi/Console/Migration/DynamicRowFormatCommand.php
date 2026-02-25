@@ -66,7 +66,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         $this->setDescription(__('Convert database tables to "Dynamic" row format (required for "utf8mb4" character support).'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->checkForPrerequisites();
         $this->upgradeRowFormat();

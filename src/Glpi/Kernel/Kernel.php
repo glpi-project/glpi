@@ -38,13 +38,16 @@ use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
 use Override;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -142,16 +145,27 @@ final class Kernel extends BaseKernel
 
         parent::boot();
 
-        // Define synthetic logger service
-        $this->container->set('logger', $this->logger);
+        $container = $this->container;
+
+        if (!($container instanceof ContainerInterface)) {
+            throw new RuntimeException('Services container is expected to be set.');
+        }
+
+        $container->set('logger', $this->logger); // Define synthetic logger service
 
         if (!$already_booted && !$this->in_reboot) {
-            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
+            $event_dispatcher = $container->get('event_dispatcher');
+
+            if (!($event_dispatcher instanceof EventDispatcherInterface)) {
+                throw new RuntimeException('Event dispatcher service is expected to be registered in the services container.');
+            }
+
+            $event_dispatcher->dispatch(new PostBootEvent());
         }
     }
 
     #[Override()]
-    public function reboot(?string $warmupDir)
+    public function reboot(?string $warmupDir): void
     {
         $this->in_reboot = true;
 
@@ -294,9 +308,17 @@ final class Kernel extends BaseKernel
         try {
             $response->send();
         } catch (Throwable $exception) {
-            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
+            $dispatcher = $this->container?->get('event_dispatcher');
 
-            $dispatcher = $this->container->get('event_dispatcher');
+            if (!($dispatcher instanceof EventDispatcherInterface)) {
+                throw new RuntimeException(
+                    'Event dispatcher service is expected to be registered in the services container.',
+                    $exception->getCode(),
+                    $exception
+                );
+            }
+
+            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
             $dispatcher->dispatch($event, KernelEvents::EXCEPTION);
 
             if ($event->hasResponse()) {

@@ -71,7 +71,7 @@ class DebugCommand extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $cache_manager = new CacheManager();

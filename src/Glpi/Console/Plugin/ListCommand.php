@@ -72,7 +72,7 @@ class ListCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $plug     = new Plugin();
         $pluglist = $plug->find([], "name, directory");

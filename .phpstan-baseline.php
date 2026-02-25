@@ -7982,13 +7982,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/ContentTemplates/Parameters/UserParameters.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$dashboard_key of class Glpi\\\\Dashboard\\\\Grid constructor expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$dashboard_key of class Glpi\\\\Dashboard\\\\Grid constructor expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/CentralController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$where of static method Toolbox\\:\\:computeRedirect\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$where of static method Toolbox\\:\\:computeRedirect\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/CentralController.php',
@@ -8052,12 +8052,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, float\\|int\\<min, \\-1\\>\\|int\\<1, max\\>\\|string\\|true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Form/DelegationController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Glpi\\\\Form\\\\Destination\\\\FormDestination\\|false\\.$#',
@@ -8156,25 +8150,25 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:delete\\(\\) expects array\\<string, mixed\\>, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:delete\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:restore\\(\\) expects array\\<string, mixed\\>, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:restore\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:update\\(\\) expects array\\<string, mixed\\>, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:update\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
@@ -8320,24 +8314,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getCurrentEntityId\\(\\) on Glpi\\\\Session\\\\SessionInfo\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:getById\\(\\) expects int\\|null, float\\|int\\<1, max\\>\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$category_id of class Glpi\\\\Form\\\\ServiceCatalog\\\\ItemRequest constructor expects int\\|null, float\\|int\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$sort_strategy of class Glpi\\\\Form\\\\ServiceCatalog\\\\ItemRequest constructor expects Glpi\\\\Form\\\\ServiceCatalog\\\\SortStrategy\\\\SortStrategyEnum, Glpi\\\\Form\\\\ServiceCatalog\\\\SortStrategy\\\\SortStrategyEnum\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
 ];
@@ -12402,12 +12378,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/ItemTranslation/ItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method send\\(\\) on Symfony\\\\Component\\\\HttpFoundation\\\\Response\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$strategy on Glpi\\\\Security\\\\Attribute\\\\SecurityStrategy\\|false\\.$#',

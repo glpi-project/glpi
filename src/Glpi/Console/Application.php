@@ -217,7 +217,7 @@ class Application extends BaseApplication
         return new InputDefinition($definition);
     }
 
-    protected function configureIO(InputInterface $input, OutputInterface $output)
+    protected function configureIO(InputInterface $input, OutputInterface $output): void
     {
 
         global $CFG_GLPI;
@@ -261,7 +261,7 @@ class Application extends BaseApplication
         return $name;
     }
 
-    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
+    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
     {
         $begin_time = microtime(true);
 

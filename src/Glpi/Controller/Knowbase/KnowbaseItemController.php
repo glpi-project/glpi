@@ -60,12 +60,12 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function content(Request $request): Response
     {
-        $id = $request->get('knowbaseitems_id');
+        $id = $request->attributes->getInt('knowbaseitems_id');
         if (!KnowbaseItem::canView()) {
             throw new AccessDeniedHttpException();
         }
         $kbitem = new KnowbaseItem();
-        if (!$kbitem->getFromDB((int) $id)) {
+        if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
@@ -82,12 +82,12 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function full(Request $request): Response
     {
-        $id = $request->get('knowbaseitems_id');
+        $id = $request->attributes->getInt('knowbaseitems_id');
         if (!KnowbaseItem::canView()) {
             throw new AccessDeniedHttpException();
         }
         $kbitem = new KnowbaseItem();
-        if (!$kbitem->getFromDB((int) $id)) {
+        if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
@@ -107,7 +107,7 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function updateAnswer(Request $request): JsonResponse
     {
-        $id = (int) $request->get('knowbaseitems_id');
+        $id = $request->attributes->getInt('knowbaseitems_id');
 
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
@@ -174,10 +174,10 @@ final class KnowbaseItemController extends AbstractController
     {
         global $CFG_GLPI, $DB;
 
-        $itemtype = $request->get('itemtype');
-        $items_id = $request->get('items_id');
-        $start = (int) $request->get('start', 0);
-        $contains = $request->get('contains');
+        $itemtype = $request->attributes->get('itemtype');
+        $items_id = $request->attributes->getInt('items_id');
+        $start = $request->query->getInt('start');
+        $contains = $request->query->get('contains');
 
         // Search a solution
         if (empty($contains)) {
@@ -242,7 +242,7 @@ final class KnowbaseItemController extends AbstractController
             'results' => $results,
             'itemtype' => $itemtype,
             'items_id' => $items_id,
-            'is_ajax' => $request->get('ajax_reload', 0),
+            'is_ajax' => $request->query->getBoolean('ajax_reload'),
             'count' => $total_count,
             'start' => $start,
         ];

@@ -57,7 +57,7 @@ final class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
         $this->setDescription(__('Check database schema consistency.'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $checker = new DatabaseSchemaConsistencyChecker($this->db);

@@ -51,7 +51,7 @@ class MigrateAllCommand extends AbstractCommand implements ConfigurationCommandI
         $this->setDescription(__('Execute all recommended optional migrations.'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $commands = [
             'migration:myisam_to_innodb',
