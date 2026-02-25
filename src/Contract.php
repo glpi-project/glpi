@@ -122,15 +122,15 @@ class Contract extends CommonDBTM implements StateInterface
             ->addImpactTab($ong, $options);
 
         if ($this->canShowSubTabs($options)) {
-            $this->addStandardTab(ContractCost::class, $ong, $options)
-                ->addStandardTab(Contract_Supplier::class, $ong, $options)
-                ->addStandardTab(Contract_Item::class, $ong, $options)
-                ->addStandardTab(Document_Item::class, $ong, $options)
-                ->addStandardTab(ManualLink::class, $ong, $options)
-                ->addStandardTab(Notepad::class, $ong, $options)
-                ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
-                ->addStandardTab(Ticket_Contract::class, $ong, $options)
-                ->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(ContractCost::class, $ong, $options)
+            ->addStandardTab(Contract_Supplier::class, $ong, $options)
+            ->addStandardTab(Contract_Item::class, $ong, $options)
+            ->addStandardTab(Document_Item::class, $ong, $options)
+            ->addStandardTab(ManualLink::class, $ong, $options)
+            ->addStandardTab(Notepad::class, $ong, $options)
+            ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
+            ->addStandardTab(Ticket_Contract::class, $ong, $options)
+            ->addStandardTab(Log::class, $ong, $options);
         }
 
         return $ong;
