@@ -1889,7 +1889,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
-        if ($tt && count($tt->mandatory)) {
+
+        if (!$tt) {
+            return $input;
+        }
+
+        if (isset($input['itilcategories_id'])) {
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+        }
+
+        if (count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
             foreach ($tt->mandatory as $key => $val) {
@@ -2011,19 +2021,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
             $tpl_class = static::getTemplateClass();
             $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
-        }
-
-        // When the category changes, resolve the template from the new category
-        if (
-            isset($input['itilcategories_id'])
-            && (int) $input['itilcategories_id'] !== (int) ($this->fields['itilcategories_id'] ?? 0)
-        ) {
-            $type   = $input['type'] ?? $this->fields['type'];
-            $new_template = $this->getITILTemplateToUse(0, $type, $input['itilcategories_id'], $this->fields['entities_id']);
-            $tpl_fk = static::getTemplateClass()::getForeignKeyField();
-            if ($new_template !== null && $new_template->fields['id'] > 0) {
-                $input[$tpl_fk] = $new_template->fields['id'];
-            }
         }
 
         if ($this->getType() !== Ticket::getType()) {

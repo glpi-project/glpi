@@ -621,4 +621,118 @@ class ITILTemplateTest extends DbTestCase
         // Check that the hidden field is deleted
         $this->assertEmpty($hidden->getFromDB($hidden_id));
     }
+
+    public function testTemplateUpdatesWhenCategoryChanges(): void
+    {
+        $this->login();
+
+        // Create two templates for each ITIL type, and two categories linked to these templates
+        [$tpl_a, $tpl_b] = $this->createItems(\TicketTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+        ]);
+
+        [$cpl_a, $cpl_b] = $this->createItems(\ChangeTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+        ]);
+
+        [$pl_a, $pl_b] = $this->createItems(\ProblemTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+        ]);
+
+        [$cat_a, $cat_b] = $this->createItems(\ITILCategory::class, [
+            [
+                'name'                        => 'Category for template A',
+                'tickettemplates_id_demand'   => $tpl_a->getID(),
+                'tickettemplates_id_incident' => $tpl_a->getID(),
+                'changetemplates_id'          => $cpl_a->getID(),
+                'problemtemplates_id'         => $pl_a->getID(),
+                'is_request'                  => 1,
+                'is_incident'                 => 1,
+            ],
+            [
+                'name'                        => 'Category for template B',
+                'tickettemplates_id_demand'   => $tpl_b->getID(),
+                'tickettemplates_id_incident' => $tpl_b->getID(),
+                'changetemplates_id'          => $cpl_b->getID(),
+                'problemtemplates_id'         => $pl_b->getID(),
+                'is_request'                  => 1,
+                'is_incident'                 => 1,
+            ],
+        ]);
+
+        // Create an item for each ITIL type with category A, and check that template A is used
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'              => 'Ticket',
+            'itilcategories_id' => $cat_a->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'entities_id'       => 0,
+            'tickettemplates_id'  => $tpl_a->getID(),
+        ]);
+
+        $change = $this->createItem(\Change::class, [
+            'name'              => 'Change',
+            'itilcategories_id' => $cat_a->getID(),
+            'entities_id'       => 0,
+            'changetemplates_id'  => $cpl_a->getID(),
+        ]);
+
+        $problem = $this->createItem(\Problem::class, [
+            'name'              => 'Problem',
+            'itilcategories_id' => $cat_a->getID(),
+            'entities_id'       => 0,
+            'problemtemplates_id'  => $pl_a->getID(),
+        ]);
+
+        $this->assertEquals(
+            $tpl_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must reflect Template A after creation with category A'
+        );
+
+        $this->assertEquals(
+            $cpl_a->getID(),
+            (int) $change->fields['changetemplates_id'],
+            'changetemplates_id must reflect Template A after creation with category A'
+        );
+
+        $this->assertEquals(
+            $pl_a->getID(),
+            (int) $problem->fields['problemtemplates_id'],
+            'problemtemplates_id must reflect Template A after creation with category A'
+        );
+
+        // Update the category of each item to category B, and check that template B is now used
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'itilcategories_id' => $cat_b->getID(),
+        ]);
+
+        $change = $this->updateItem(\Change::class, $change->getID(), [
+            'itilcategories_id' => $cat_b->getID(),
+        ]);
+
+        $problem = $this->updateItem(\Problem::class, $problem->getID(), [
+            'itilcategories_id' => $cat_b->getID(),
+        ]);
+
+        $this->assertEquals(
+            $tpl_b->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template B after category change'
+        );
+
+        $this->assertEquals(
+            $cpl_b->getID(),
+            (int) $change->fields['changetemplates_id'],
+            'changetemplates_id must be updated to Template B after category change'
+        );
+
+        $this->assertEquals(
+            $pl_b->getID(),
+            (int) $problem->fields['problemtemplates_id'],
+            'problemtemplates_id must be updated to Template B after category change'
+        );
+    }
 }
