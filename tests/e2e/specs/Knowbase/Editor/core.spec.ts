@@ -47,8 +47,7 @@ test.describe('Knowledge Base Editor - Core', () => {
         });
 
         await kb.goto(id);
-        // eslint-disable-next-line playwright/no-raw-locators
-        await expect(page.locator('[data-glpi-kb-content]')).toContainText('Initial content');
+        await kb.editor.assertContainsText('Initial content');
 
         await kb.editor.enterEditMode();
 
@@ -75,8 +74,7 @@ test.describe('Knowledge Base Editor - Core', () => {
         await kb.editor.assertContainsText('Updated content');
 
         await page.reload();
-        // eslint-disable-next-line playwright/no-raw-locators
-        await expect(page.locator('[data-glpi-kb-content]')).toContainText('Updated content');
+        await kb.editor.assertContainsText('Updated content');
     });
 
     test('Cancel discards changes', async ({ page, profile, api }) => {
@@ -108,28 +106,25 @@ test.describe('Knowledge Base Editor - Core', () => {
         });
 
         await kb.goto(id);
-        // eslint-disable-next-line playwright/no-raw-locators
-        const subject = page.locator('[data-glpi-kb-subject]');
-        await expect(subject).toHaveText('Original Title');
+        await expect(kb.subject).toHaveText('Original Title');
 
         await kb.editor.enterEditMode();
 
         // Title should be contenteditable
-        await expect(subject).toHaveAttribute('contenteditable', 'true');
+        await expect(kb.subject).toHaveAttribute('contenteditable', 'true');
 
         // Clear and type new title
-        await subject.click();
+        await kb.subject.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.type('Updated Title');
 
         await kb.editor.save();
 
-        await expect(subject).toHaveText('Updated Title');
+        await expect(kb.subject).toHaveText('Updated Title');
 
         // Verify persistence after reload
         await page.reload();
-        // eslint-disable-next-line playwright/no-raw-locators
-        await expect(page.locator('[data-glpi-kb-subject]')).toHaveText('Updated Title');
+        await expect(kb.subject).toHaveText('Updated Title');
     });
 
     test('Enter in title moves focus to editor', async ({ page, profile, api }) => {
@@ -145,15 +140,11 @@ test.describe('Knowledge Base Editor - Core', () => {
         await kb.goto(id);
         await kb.editor.enterEditMode();
 
-        // eslint-disable-next-line playwright/no-raw-locators
-        const subject = page.locator('[data-glpi-kb-subject]');
-        await subject.click();
+        await kb.subject.click();
         await page.keyboard.press('Enter');
 
         // The ProseMirror editor should now be focused
-        // eslint-disable-next-line playwright/no-raw-locators
-        const editor = page.locator('[data-glpi-kb-content]').locator('.ProseMirror');
-        await expect(editor).toBeFocused();
+        await expect(kb.editor.getEditor()).toBeFocused();
     });
 
     test('Cancel restores original title', async ({ page, profile, api }) => {
@@ -167,21 +158,19 @@ test.describe('Knowledge Base Editor - Core', () => {
         });
 
         await kb.goto(id);
-        // eslint-disable-next-line playwright/no-raw-locators
-        const subject = page.locator('[data-glpi-kb-subject]');
-        await expect(subject).toHaveText('Title Before Cancel');
+        await expect(kb.subject).toHaveText('Title Before Cancel');
 
         await kb.editor.enterEditMode();
 
         // Modify the title
-        await subject.click();
+        await kb.subject.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.type('Modified Title');
-        await expect(subject).toHaveText('Modified Title');
+        await expect(kb.subject).toHaveText('Modified Title');
 
         // Cancel should restore
         await kb.editor.cancel();
-        await expect(subject).toHaveText('Title Before Cancel');
-        await expect(subject).toHaveAttribute('contenteditable', 'false');
+        await expect(kb.subject).toHaveText('Title Before Cancel');
+        await expect(kb.subject).toHaveAttribute('contenteditable', 'false');
     });
 });

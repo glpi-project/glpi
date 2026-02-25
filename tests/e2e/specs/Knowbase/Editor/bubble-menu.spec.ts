@@ -226,8 +226,7 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await kb.editor.save();
 
             await kb.editor.assertContainsText('Linked text');
-            // eslint-disable-next-line playwright/no-raw-locators
-            const link = page.locator('[data-glpi-kb-content]').locator('a');
+            const link = kb.editor.contentContainer.getByRole('link');
             await link.waitFor({ state: 'hidden', timeout: 5000 });
         });
 

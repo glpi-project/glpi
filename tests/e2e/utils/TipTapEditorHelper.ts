@@ -34,7 +34,7 @@ import { Page, Locator, expect } from '@playwright/test';
 
 export class TipTapEditorHelper {
     private readonly page: Page;
-    private readonly contentContainer: Locator;
+    readonly contentContainer: Locator;
     private editor: Locator | null = null;
 
     constructor(page: Page) {

@@ -71,6 +71,12 @@ export class KnowbaseItemPage extends GlpiPage
         return this._bubbleMenuHelper;
     }
 
+    public get subject(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        return this.page.locator('[data-glpi-kb-subject]');
+    }
+
     public async goto(id: number): Promise<void>
     {
         await this.page.goto(
