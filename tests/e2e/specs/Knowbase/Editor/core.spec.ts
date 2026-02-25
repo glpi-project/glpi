@@ -47,7 +47,8 @@ test.describe('Knowledge Base Editor - Core', () => {
         });
 
         await kb.goto(id);
-        await expect(page.getByTestId('content')).toContainText('Initial content');
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(page.locator('[data-glpi-kb-content]')).toContainText('Initial content');
 
         await kb.editor.enterEditMode();
 
@@ -74,7 +75,8 @@ test.describe('Knowledge Base Editor - Core', () => {
         await kb.editor.assertContainsText('Updated content');
 
         await page.reload();
-        await expect(page.getByTestId('content')).toContainText('Updated content');
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(page.locator('[data-glpi-kb-content]')).toContainText('Updated content');
     });
 
     test('Cancel discards changes', async ({ page, profile, api }) => {
@@ -106,7 +108,8 @@ test.describe('Knowledge Base Editor - Core', () => {
         });
 
         await kb.goto(id);
-        const subject = page.getByTestId('subject');
+        // eslint-disable-next-line playwright/no-raw-locators
+        const subject = page.locator('[data-glpi-kb-subject]');
         await expect(subject).toHaveText('Original Title');
 
         await kb.editor.enterEditMode();
@@ -125,7 +128,8 @@ test.describe('Knowledge Base Editor - Core', () => {
 
         // Verify persistence after reload
         await page.reload();
-        await expect(page.getByTestId('subject')).toHaveText('Updated Title');
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(page.locator('[data-glpi-kb-subject]')).toHaveText('Updated Title');
     });
 
     test('Enter in title moves focus to editor', async ({ page, profile, api }) => {
@@ -141,13 +145,14 @@ test.describe('Knowledge Base Editor - Core', () => {
         await kb.goto(id);
         await kb.editor.enterEditMode();
 
-        const subject = page.getByTestId('subject');
+        // eslint-disable-next-line playwright/no-raw-locators
+        const subject = page.locator('[data-glpi-kb-subject]');
         await subject.click();
         await page.keyboard.press('Enter');
 
         // The ProseMirror editor should now be focused
         // eslint-disable-next-line playwright/no-raw-locators
-        const editor = page.getByTestId('content').locator('.ProseMirror');
+        const editor = page.locator('[data-glpi-kb-content]').locator('.ProseMirror');
         await expect(editor).toBeFocused();
     });
 
@@ -162,7 +167,8 @@ test.describe('Knowledge Base Editor - Core', () => {
         });
 
         await kb.goto(id);
-        const subject = page.getByTestId('subject');
+        // eslint-disable-next-line playwright/no-raw-locators
+        const subject = page.locator('[data-glpi-kb-subject]');
         await expect(subject).toHaveText('Title Before Cancel');
 
         await kb.editor.enterEditMode();

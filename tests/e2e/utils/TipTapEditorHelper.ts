@@ -39,7 +39,8 @@ export class TipTapEditorHelper {
 
     constructor(page: Page) {
         this.page = page;
-        this.contentContainer = page.getByTestId('content');
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.contentContainer = page.locator('[data-glpi-kb-content]');
     }
 
     async enterEditMode(): Promise<Locator> {
