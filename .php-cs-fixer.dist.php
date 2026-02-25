@@ -51,11 +51,14 @@ return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setCacheFile(sys_get_temp_dir() . '/php-cs-fixer.glpi.cache')
     ->setRules([
-        '@PER-CS2.0' => true,
-        '@PHP84Migration' => true,
+        '@PER-CS2x0' => true,
+        '@PHP8x4Migration' => true,
         'no_unused_imports' => true,
         'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
-        'octal_notation' => false, // Prevent conflicts running on both PHP 7.4 and 8.4
+
+        // Rules not compatible with all supported PHP versions
+        'octal_notation' => false,
+        'new_expression_parentheses' => false,
     ])
     ->setFinder($finder)
 ;
