@@ -122,29 +122,26 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addDefaultFormTab($ong)
-             ->addImpactTab($ong, $options);
-
-        if ($this->canShowSubTabs($options)) {
-            $this->addStandardTab(SoftwareVersion::class, $ong, $options)
-                ->addStandardTab(SoftwareLicense::class, $ong, $options)
-                ->addStandardTab(Item_SoftwareVersion::class, $ong, $options)
-                ->addStandardTab(Infocom::class, $ong, $options)
-                ->addStandardTab(Contract_Item::class, $ong, $options)
-                ->addStandardTab(Document_Item::class, $ong, $options)
-                ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
-                ->addStandardTab(Item_Ticket::class, $ong, $options)
-                ->addStandardTab(Item_Problem::class, $ong, $options)
-                ->addStandardTab(Change_Item::class, $ong, $options)
-                ->addStandardTab(Item_Project::class, $ong, $options)
-                ->addStandardTab(ManualLink::class, $ong, $options)
-                ->addStandardTab(Notepad::class, $ong, $options)
-                ->addStandardTab(Reservation::class, $ong, $options)
-                ->addStandardTab(Domain_Item::class, $ong, $options)
-                ->addStandardTab(Appliance_Item::class, $ong, $options)
-                ->addStandardTab(Log::class, $ong, $options)
-                ->addStandardTab(self::class, $ong, $options);
-        }
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab(SoftwareVersion::class, $ong, $options);
+        $this->addStandardTab(SoftwareLicense::class, $ong, $options);
+        $this->addStandardTab(Item_SoftwareVersion::class, $ong, $options);
+        $this->addStandardTab(Infocom::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Item_Ticket::class, $ong, $options);
+        $this->addStandardTab(Item_Problem::class, $ong, $options);
+        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(Item_Project::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Reservation::class, $ong, $options);
+        $this->addStandardTab(Domain_Item::class, $ong, $options);
+        $this->addStandardTab(Appliance_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }

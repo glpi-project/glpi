@@ -300,23 +300,20 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addDefaultFormTab($ong)
-            ->addStandardTab(self::class, $ong, $options);
-
-        if ($this->canShowSubTabs($options)) {
-        $this->addStandardTab(ChangeValidation::class, $ong, $options)
-            ->addStandardTab(ChangeCost::class, $ong, $options)
-            ->addStandardTab(Itil_Project::class, $ong, $options)
-            ->addStandardTab(Change_Problem::class, $ong, $options)
-            ->addStandardTab(Change_Ticket::class, $ong, $options)
-            ->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addDefaultFormTab($ong);
+        $this->addStandardTab(self::class, $ong, $options);
+        $this->addStandardTab(ChangeValidation::class, $ong, $options);
+        $this->addStandardTab(ChangeCost::class, $ong, $options);
+        $this->addStandardTab(Itil_Project::class, $ong, $options);
+        $this->addStandardTab(Change_Problem::class, $ong, $options);
+        $this->addStandardTab(Change_Ticket::class, $ong, $options);
+        $this->addStandardTab(Change_Item::class, $ong, $options);
         if ($this->hasImpactTab()) {
             $this->addStandardTab(Impact::class, $ong, $options);
         }
-        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
-            ->addStandardTab(Notepad::class, $ong, $options)
-            ->addStandardTab(Log::class, $ong, $options);
-        }
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

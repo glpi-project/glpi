@@ -197,32 +197,29 @@ class Group extends CommonTreeDropdown
 
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-
-        if ($this->canShowSubTabs($options)) {
-            $this->addStandardTab(Group::class, $ong, $options);
-            if (
-                isset($this->fields['is_usergroup'])
-                && $this->fields['is_usergroup']
-            ) {
-                $this->addStandardTab(Group_User::class, $ong, $options);
-            }
-            if (
-                isset($this->fields['is_notify'])
-                && $this->fields['is_notify']
-            ) {
-                $this->addStandardTab(NotificationTarget::class, $ong, $options);
-            }
-            if (
-                isset($this->fields['is_requester'])
-                && $this->fields['is_requester']
-            ) {
-                $this->addStandardTab(Ticket::class, $ong, $options);
-            }
-            $this->addStandardTab(Problem::class, $ong, $options)
-                ->addStandardTab(Change::class, $ong, $options)
-                ->addStandardTab(Notepad::class, $ong, $options)
-                ->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(Group::class, $ong, $options);
+        if (
+            isset($this->fields['is_usergroup'])
+            && $this->fields['is_usergroup']
+        ) {
+            $this->addStandardTab(Group_User::class, $ong, $options);
         }
+        if (
+            isset($this->fields['is_notify'])
+            && $this->fields['is_notify']
+        ) {
+            $this->addStandardTab(NotificationTarget::class, $ong, $options);
+        }
+        if (
+            isset($this->fields['is_requester'])
+            && $this->fields['is_requester']
+        ) {
+            $this->addStandardTab(Ticket::class, $ong, $options);
+        }
+        $this->addStandardTab(Problem::class, $ong, $options);
+        $this->addStandardTab(Change::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 

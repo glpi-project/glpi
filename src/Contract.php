@@ -118,20 +118,17 @@ class Contract extends CommonDBTM implements StateInterface
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addDefaultFormTab($ong)
-            ->addImpactTab($ong, $options);
-
-        if ($this->canShowSubTabs($options)) {
-        $this->addStandardTab(ContractCost::class, $ong, $options)
-            ->addStandardTab(Contract_Supplier::class, $ong, $options)
-            ->addStandardTab(Contract_Item::class, $ong, $options)
-            ->addStandardTab(Document_Item::class, $ong, $options)
-            ->addStandardTab(ManualLink::class, $ong, $options)
-            ->addStandardTab(Notepad::class, $ong, $options)
-            ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
-            ->addStandardTab(Ticket_Contract::class, $ong, $options)
-            ->addStandardTab(Log::class, $ong, $options);
-        }
+        $this->addDefaultFormTab($ong);
+        $this->addImpactTab($ong, $options);
+        $this->addStandardTab(ContractCost::class, $ong, $options);
+        $this->addStandardTab(Contract_Supplier::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Ticket_Contract::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
