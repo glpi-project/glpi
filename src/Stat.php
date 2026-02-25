@@ -1781,7 +1781,7 @@ class Stat extends CommonGLPI
                 }
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
-                        $names["/plugins/{$plug}/{$page}"] = [
+                        $names["plugins/{$plug}/{$page}"] = [
                             "name" => $name,
                             "plug" => $plug,
                         ];
