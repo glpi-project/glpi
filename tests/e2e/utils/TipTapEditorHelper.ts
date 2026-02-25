@@ -45,6 +45,8 @@ export class TipTapEditorHelper {
 
     async enterEditMode(): Promise<Locator> {
         const editButton = this.page.getByTestId('edit-button');
+        // Wait for ArticleController to remove pointer-events-none (indicates JS is ready)
+        await expect(editButton).not.toHaveClass(/pointer-events-none/);
         await editButton.click();
 
         // eslint-disable-next-line playwright/no-raw-locators
