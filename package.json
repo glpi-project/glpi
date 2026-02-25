@@ -143,6 +143,8 @@
         "webpack-dev-server": "^5.2.3"
     },
     "overrides": {
-        "minimatch": "^10.2.1"
+        "editorconfig" : {
+            "minimatch": "^9.0.7"
+        }
     }
 }
