@@ -35,17 +35,13 @@
 namespace Glpi\Knowbase\SidePanel;
 
 use Dropdown;
-use Entity;
 use Entity_KnowbaseItem;
-use Group;
 use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Override;
-use Profile;
 use Session;
-use User;
 
 final class PermissionsRenderer implements RendererInterface
 {
@@ -102,7 +98,7 @@ final class PermissionsRenderer implements RendererInterface
      *
      * @param KnowbaseItem $item
      * @param int $owner_id
-     * @return array<int, array{itemtype: string, id: int, type: string, type_label: string, name: string, icon: string, badge_class: string, entity_name: ?string, is_recursive: bool, is_owner: bool}>
+     * @return array<int, array{itemtype: string, id: int, type: string, name: string, icon: string, badge_class: string, entity_name: ?string, is_recursive: bool, users_id: ?int}>
      */
     private function buildEntries(KnowbaseItem $item, int $owner_id): array
     {
@@ -112,17 +108,19 @@ final class PermissionsRenderer implements RendererInterface
         $users = KnowbaseItem_User::getUsers($id);
         foreach ($users as $val) {
             foreach ($val as $data) {
+                if ((int) $data['users_id'] === $owner_id) {
+                    continue; // Owner displayed separately in footer
+                }
                 $entries[] = [
-                    'itemtype'     => 'KnowbaseItem_User',
+                    'itemtype'     => KnowbaseItem_User::class,
                     'id'           => $data['id'],
                     'type'         => 'User',
-                    'type_label'   => User::getTypeName(1),
                     'name'         => getUserName($data['users_id']),
+                    'users_id'     => (int) $data['users_id'],
                     'icon'         => 'ti-user',
                     'badge_class'  => 'bg-azure-lt',
                     'entity_name'  => null,
                     'is_recursive' => false,
-                    'is_owner'     => ((int) $data['users_id'] === $owner_id),
                 ];
             }
         }
@@ -135,16 +133,15 @@ final class PermissionsRenderer implements RendererInterface
                     $entity_name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                 }
                 $entries[] = [
-                    'itemtype'     => 'Group_KnowbaseItem',
+                    'itemtype'     => Group_KnowbaseItem::class,
                     'id'           => $data['id'],
                     'type'         => 'Group',
-                    'type_label'   => Group::getTypeName(1),
                     'name'         => Dropdown::getDropdownName('glpi_groups', $data['groups_id']),
+                    'users_id'     => null,
                     'icon'         => 'ti-users-group',
                     'badge_class'  => 'bg-green-lt',
                     'entity_name'  => $entity_name,
                     'is_recursive' => (bool) $data['is_recursive'],
-                    'is_owner'     => false,
                 ];
             }
         }
@@ -153,16 +150,15 @@ final class PermissionsRenderer implements RendererInterface
         foreach ($entities as $val) {
             foreach ($val as $data) {
                 $entries[] = [
-                    'itemtype'     => 'Entity_KnowbaseItem',
+                    'itemtype'     => Entity_KnowbaseItem::class,
                     'id'           => $data['id'],
                     'type'         => 'Entity',
-                    'type_label'   => Entity::getTypeName(1),
                     'name'         => Dropdown::getDropdownName('glpi_entities', $data['entities_id']),
+                    'users_id'     => null,
                     'icon'         => 'ti-building',
                     'badge_class'  => 'bg-yellow-lt',
                     'entity_name'  => null,
                     'is_recursive' => (bool) $data['is_recursive'],
-                    'is_owner'     => false,
                 ];
             }
         }
@@ -175,16 +171,15 @@ final class PermissionsRenderer implements RendererInterface
                     $entity_name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                 }
                 $entries[] = [
-                    'itemtype'     => 'KnowbaseItem_Profile',
+                    'itemtype'     => KnowbaseItem_Profile::class,
                     'id'           => $data['id'],
                     'type'         => 'Profile',
-                    'type_label'   => Profile::getTypeName(1),
                     'name'         => Dropdown::getDropdownName('glpi_profiles', $data['profiles_id']),
+                    'users_id'     => null,
                     'icon'         => 'ti-id-badge-2',
                     'badge_class'  => 'bg-purple-lt',
                     'entity_name'  => $entity_name,
                     'is_recursive' => (bool) $data['is_recursive'],
-                    'is_owner'     => false,
                 ];
             }
         }
