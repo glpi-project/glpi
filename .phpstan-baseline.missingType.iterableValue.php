@@ -146,12 +146,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Variable \\$result might not be defined\\.$#',
-	'identifier' => 'variable.undefined',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_11.0.x_to_12.0.0/plugs.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var for variable \\$CFG_GLPI has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

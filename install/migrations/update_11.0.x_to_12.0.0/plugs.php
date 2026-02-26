@@ -40,97 +40,87 @@
 $migration->addField(
     'glpi_plugs',
     'custom_name',
-    'varchar(255) DEFAULT NULL',
-    ['after' => 'name']
+    'string'
 );
 
 $migration->addField(
     'glpi_plugs',
     'itemtype_main',
-    'varchar(255) DEFAULT NULL',
-    ['after' => 'custom_name']
+    'string'
 );
 
 $migration->addField(
     'glpi_plugs',
     'items_id_main',
-    'fkey',
-    ['after' => 'itemtype_main']
+    'fkey'
 );
 
 $migration->addField(
     'glpi_plugs',
     'itemtype_asset',
-    'VARCHAR(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT \'\'',
-    ['after' => 'items_id_main']
+    'string',
+    ['value' => '']
 );
 
 $migration->addField(
     'glpi_plugs',
     'items_id_asset',
-    'fkey',
-    ['after' => 'itemtype_asset']
+    'fkey'
 );
 
 $migration->addField(
     'glpi_plugs',
     'entities_id',
-    'fkey',
-    ['after' => 'items_id_asset']
+    'fkey'
 );
 
 $migration->addField(
     'glpi_plugs',
     'is_recursive',
-    'bool',
-    ['after' => 'entities_id']
+    'bool'
 );
 
-
-$migration->addKey('glpi_plugs', ['itemtype_asset', 'items_id_asset'], 'item');
-$migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'mainitem');
-$migration->addKey('glpi_plugs', 'items_id_main');
+$migration->addKey('glpi_plugs', ['itemtype_asset', 'items_id_asset'], 'asset_item');
+$migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'main_item');
 $migration->addKey('glpi_plugs', 'entities_id');
 $migration->addKey('glpi_plugs', 'is_recursive');
+
 $migration->migrationOneTable('glpi_plugs');
 
-$migration->dropKey('glpi_plugs', 'pdus_id');
 // migrate existing plugs linked by glpi_items_plugs to new structure
 if ($DB->tableExists('glpi_items_plugs')) {
-
     $criteria = [
-        'SELECT'    => ["*"],
-        'FROM'      => 'glpi_items_plugs',
+        'FROM' => 'glpi_items_plugs',
     ];
     $iterator = $DB->request($criteria);
 
-    foreach ($iterator as $p) {
+    foreach ($iterator as $plug_item_data) {
         // try to load plug from DB
-        $plug = $DB->request([
+        $plug_data = $DB->request([
             'SELECT' => ["id"],
             'FROM'   => 'glpi_plugs',
-            'WHERE'  => ['id' => $p['plugs_id']],
+            'WHERE'  => ['id' => $plug_item_data['plugs_id']],
         ])->current();
 
         // handle plug migration if exist
-        if ($plug && $DB->numrows($result)) {
-            for ($i = 1; $i <= $p['number_plugs']; $i++) {
+        if ($plug_data !== null) {
+            for ($i = 1; $i <= $plug_item_data['number_plugs']; $i++) {
                 // create dedicated plug
                 $migration->addPostQuery(
                     $DB->buildInsert('glpi_plugs', [
-                        'name'              => $plug['name'] . ' - ' . $i,
-                        'itemtype_asset'    => $p['itemtype'],
-                        'items_id_asset'    => $p['items_id'],
+                        'name'              => $plug_data['name'] . ' - ' . $i,
+                        'itemtype_asset'    => $plug_item_data['itemtype'],
+                        'items_id_asset'    => $plug_item_data['items_id'],
                         'entities_id'       => 0,
                         'is_recursive'      => 1,
-                        'comment'           => $plug['comment'],
+                        'comment'           => $plug_data['comment'],
                     ])
                 );
             }
 
             // remove old plug
             $migration->addPostQuery(
-                $DB->buildDelete("glpi_plugs", ['id' => $p['plugs_id']])
+                $DB->buildDelete("glpi_plugs", ['id' => $plug_item_data['plugs_id']])
             );
         }
     }
