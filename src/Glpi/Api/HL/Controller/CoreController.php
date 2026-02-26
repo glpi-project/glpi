@@ -542,9 +542,6 @@ HTML;
             'id' => $active_profile['id'],
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
-            'helpdesk_hardware' => $active_profile['helpdesk_hardware'] ?? 0,
-            'helpdesk_item_type' => $active_profile['helpdesk_item_type'] ?? '[]',
-            'managed_domainrecordtypes' => $active_profile['managed_domainrecordtypes'] ?? '[]',
         ];
 
         if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
@@ -556,6 +553,12 @@ HTML;
                     $session['active_profile']['rights'][$key] = 0;
                 }
             }
+        }
+
+        if (version_compare($this->getAPIVersion($request), '2.3', '>=')) {
+            $session['active_profile']['helpdesk_hardware'] = $active_profile['helpdesk_hardware'] ?? 0;
+            $session['active_profile']['helpdesk_item_type'] = $active_profile['helpdesk_item_type'] ?? '[]';
+            $session['active_profile']['managed_domainrecordtypes'] = $active_profile['managed_domainrecordtypes'] ?? '[]';
         }
 
         $session['active_entity'] = [
