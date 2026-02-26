@@ -34,7 +34,10 @@
 
 namespace Glpi\Controller\ItemType\Form;
 
+use CommonDBTM;
 use Glpi\Controller\GenericFormController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use Plug;
@@ -46,29 +49,45 @@ class PlugFormController extends GenericFormController
     #[ItemtypeFormRoute(Plug::class)]
     public function __invoke(Request $request): Response
     {
-        $request->attributes->set('class', Plug::class);
-        if (
-            $request->request->has('add_several')
-        ) {
-            $mainitemtype = $request->request->get('itemtype_main');
-            $mainitem = new $mainitemtype();
-            $mainitem->getFromDB($request->request->get('items_id_main'));
+        global $CFG_GLPI;
+
+        if ($request->request->has('add_several')) {
+            $main_itemtype = $request->request->getString('itemtype_main');
+            $main_item_id  = $request->request->getInt('items_id_main');
+
+            if (!\in_array($main_itemtype, $CFG_GLPI['plug_types'], true)) {
+                throw new BadRequestHttpException();
+            }
+
+            $main_item = \getItemForItemtype($main_itemtype);
+            if (!($main_item instanceof CommonDBTM) || !$main_item->getFromDB($main_item_id)) {
+                throw new BadRequestHttpException();
+            }
+
+            $base_input = [
+                'itemtype_main'     => $main_itemtype,
+                'items_id_main'     => $main_item_id,
+                'entities_id'       => $main_item->getEntityID(),
+                'is_recursive'      => $main_item->isRecursive(),
+            ];
 
             $plug = new Plug();
-            $plug->checkGlobal(CREATE);
+            if (!$plug->can(-1, CREATE, $base_input)) {
+                throw new AccessDeniedHttpException();
+            }
 
+            $name = $request->request->get('name');
             for ($i = 0; $i < $request->request->get('number'); $i++) {
-                $input = [
-                    'itemtype_main'     => $request->request->get('itemtype_main'),
-                    'items_id_main'     => $request->request->get('items_id_main'),
-                    'name'              => $request->request->get('name') . " - " . ($i + 1),
-                    'entities_id'       => $mainitem->getEntityID(),
-                    'is_recursive'      => $mainitem->mayBeRecursive() ? ($mainitem->fields['is_recursive'] ?? 0) : 0,
+                $input = $base_input + [
+                    'name' => $name . " - " . ($i + 1),
                 ];
                 $plug->add($input);
             }
-            return new RedirectResponse($mainitem->getLinkURL());
+            return new RedirectResponse($main_item->getLinkURL());
         }
+
+        // Handle action using the generic controller
+        $request->attributes->set('class', Plug::class);
         return parent::__invoke($request);
     }
 }
