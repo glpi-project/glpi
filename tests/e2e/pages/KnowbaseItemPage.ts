@@ -73,7 +73,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public get subject(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators
+        // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by ArticleController.js, not a test ID
         return this.page.locator('[data-glpi-kb-subject]');
     }
 
