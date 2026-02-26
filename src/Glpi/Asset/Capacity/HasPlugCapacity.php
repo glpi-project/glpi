@@ -66,10 +66,10 @@ class HasPlugCapacity extends AbstractCapacity
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPlugs($classname, Plug::class) > 0;
+            && $this->countAssetsHostingPlugs($classname, Plug::class) > 0;
     }
 
-    private function countAssetsLinkedToPlugs(string $asset_classname, string $relation_classname): int
+    private function countAssetsHostingPlugs(string $asset_classname, string $relation_classname): int
     {
         return countDistinctElementsInTable(
             $relation_classname::getTable(),
@@ -83,13 +83,13 @@ class HasPlugCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$s plugs attached to %2$s assets'),
-            $this->countPlugItemsUsage($classname, Plug::class),
-            $this->countAssetsLinkedToPlugs($classname, Plug::class)
+            __('%1$s plugs declared on %2$s assets'),
+            $this->countHostedPlugs($classname, Plug::class),
+            $this->countAssetsHostingPlugs($classname, Plug::class)
         );
     }
 
-    private function countPlugItemsUsage(string $asset_classname, string $relation_classname): int
+    private function countHostedPlugs(string $asset_classname, string $relation_classname): int
     {
         return countElementsInTable(
             $relation_classname::getTable(),
@@ -111,11 +111,11 @@ class HasPlugCapacity extends AbstractCapacity
         // Unregister from types
         $this->unregisterFromTypeConfig('plug_types', $classname);
 
-        //Delete related items
+        // Delete plugs hosted by the current type
         $plug = new Plug();
         $plug->deleteByCriteria(['itemtype_main' => $classname], force: true, history: false);
 
-        // Clean history related items
+        // Clean history related to plugs
         $this->deleteRelationLogs($classname, Plug::class);
     }
 }
