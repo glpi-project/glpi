@@ -80,7 +80,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         return self::isIPAllowed($ip, $allowed_ips);
     }
 
-    public static function isIPAllowed(string $ip, string $allowed_ips): bool
+    private static function isIPAllowed(string $ip, string $allowed_ips): bool
     {
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
         foreach ($allowed_ip_array as $allowed_ip) {
