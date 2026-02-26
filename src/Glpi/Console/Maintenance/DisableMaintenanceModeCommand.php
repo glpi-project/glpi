@@ -52,7 +52,7 @@ class DisableMaintenanceModeCommand extends AbstractCommand
         $this->setDescription(__('Disable maintenance mode'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $config = new Config();

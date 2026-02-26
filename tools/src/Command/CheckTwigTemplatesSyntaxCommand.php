@@ -61,7 +61,7 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
         $this->setName('tools:check_twig_templates_syntax');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $environment = TemplateRenderer::getInstance()->getEnvironment();

@@ -69,7 +69,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
         $this->setDescription(__('Migrate primary/foreign keys to unsigned integers'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $columns = $this->db->getSignedKeysColumns();
 

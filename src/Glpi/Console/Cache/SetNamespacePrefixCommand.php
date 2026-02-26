@@ -78,7 +78,7 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
         $this->addArgument('prefix', InputArgument::REQUIRED, 'Namespace prefix');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $prefix = $input->getArgument('prefix');

@@ -52,7 +52,7 @@ class ListServicesCommand extends AbstractCommand
         $this->setDescription(__('List system services'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $services = array_keys(StatusChecker::getServices());
         $output->writeln(json_encode($services, JSON_PRETTY_PRINT));

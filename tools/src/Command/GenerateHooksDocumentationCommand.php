@@ -51,7 +51,7 @@ final class GenerateHooksDocumentationCommand extends AbstractCommand
         $this->setDescription('Generate plugin hooks documentation');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $hooks_rc = new ReflectionClass(Hooks::class);
         $hook_constants = $hooks_rc->getReflectionConstants();

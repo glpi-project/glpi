@@ -116,7 +116,7 @@ final class RendererController extends AbstractController
 
     private function loadTargetForm(Request $request): Form
     {
-        $forms_id = (int) $request->get("id");
+        $forms_id = $request->attributes->getInt("id");
         if (!$forms_id) {
             throw new BadRequestHttpException();
         }

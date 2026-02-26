@@ -68,7 +68,7 @@ class CheckStatusCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $status = StatusChecker::getServiceStatus($input->getOption('service'), !$input->getOption('private'));
         $output->writeln(json_encode($status, JSON_PRETTY_PRINT));

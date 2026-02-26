@@ -81,6 +81,7 @@ return $config
         'symfony/polyfill-iconv',
         'symfony/polyfill-php83',
         'symfony/polyfill-php84',
+        'symfony/polyfill-php85',
         'symfony/property-access',
         'symfony/polyfill-mbstring',
     ], [ErrorType::UNUSED_DEPENDENCY])

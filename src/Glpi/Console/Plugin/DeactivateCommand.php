@@ -57,7 +57,7 @@ class DeactivateCommand extends AbstractPluginCommand
         $this->setAliases(['plugin:disable']);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->normalizeInput($input);
