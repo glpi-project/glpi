@@ -98,6 +98,7 @@ The present file will list all changes made to the project; according to the
 - `Html::jsGetElementbyID()`
 - `Html::jsSetDropdownValue()`
 - `Html::progressBar()`
+- `Item_Plug` class
 - `ITILFollowup::ADDALLTICKET` constant
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDMYTICKET` constant
