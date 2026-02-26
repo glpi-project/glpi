@@ -1843,6 +1843,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     )
                 ) {
                     $allowed_fields[] = 'global_validation';
+                    $allowed_fields[] = '_validationsteps_id';
                 }
                 // Manage assign and steal right
                 if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
