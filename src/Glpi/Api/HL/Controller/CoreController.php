@@ -559,7 +559,7 @@ HTML;
         if (version_compare($this->getAPIVersion($request), '2.3', '>=')) {
             $session['active_profile']['helpdesk_hardware'] = $active_profile['helpdesk_hardware'] ?? 0;
             $session['active_profile']['helpdesk_item_type'] = json_encode($active_profile['helpdesk_item_type'] ?? []);
-            $session['active_profile']['managed_domainrecordtypes'] = $active_profile['managed_domainrecordtypes'] ?? '[]';
+            $session['active_profile']['managed_domainrecordtypes'] = json_encode($active_profile['managed_domainrecordtypes'] ?? []);
         }
 
         $session['active_entity'] = [
