@@ -3355,16 +3355,15 @@ final class SQLProvider implements SearchProviderInterface
 
         // Specific JOIN
         if ($to_type === Plug::class && in_array($from_type, $CFG_GLPI['plug_types'], true)) {
-            $plugs_table = getTableForItemType($to_type);
-            if (!in_array($plugs_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $plugs_table;
-                $joins['LEFT JOIN']["`" . getTableForItemType($to_type) . "` AS `$plugs_table`"] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN']["`glpi_plugs` AS `$to_table_alias`"] = [
                     'ON' => [
-                        $plugs_table => 'items_id_main',
-                        $from_table => 'id',
+                        $to_table_alias => 'items_id_main',
+                        $from_table     => 'id',
                         [
                             'AND' => [
-                                "$plugs_table.itemtype_main" => $from_type,
+                                "$to_table_alias.itemtype_main" => $from_type,
                             ],
                         ],
                     ],
@@ -3374,13 +3373,12 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         if ($from_type === Plug::class && in_array($to_type, $CFG_GLPI['plug_types'], true)) {
-            $plugs_table = getTableForItemType($to_type);
-            if (!in_array($plugs_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $plugs_table;
-                $joins['LEFT JOIN']["`" . getTableForItemType($to_type) . "` AS `$plugs_table`"] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $from_table => 'items_id_main',
-                        $plugs_table => 'id',
+                        $to_table_alias => 'id',
                         [
                             'AND' => [
                                 "$from_table.itemtype_main" => $to_type,
