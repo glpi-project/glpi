@@ -660,7 +660,8 @@ TWIG, $twig_params);
             </script>
 HTML;
 
-        $url = static::getRulesTestURL(true);
+        $url = $CFG_GLPI["root_doc"];
+        $url .= static::getRulesTestURL();
 
         $twig_params = [
             'rule_class' => $rule::class,
@@ -1574,6 +1575,8 @@ TWIG, $twig_params);
      */
     public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
     {
+        global $CFG_GLPI;
+
         $input = $this->prepareInputDataForTestProcess($condition);
         $rule      = $this->getRuleClass();
         if ($rule === null) {
@@ -1600,7 +1603,7 @@ TWIG, $twig_params);
             'rule_classname' => static::getRuleClassName(),
             'condition' => $condition,
             'params' => [
-                'target' => static::getRulesTestURL(true),
+                'target' => $CFG_GLPI["root_doc"] . static::getRulesTestURL(),
             ],
         ]);
 
@@ -2292,14 +2295,13 @@ TWIG, $twig_params);
         return $dictionnaries;
     }
 
-    public static function getRulesTestURL($full = false): string
+    public static function getRulesTestURL(): string
     {
-        global $CFG_GLPI;
         $url = '';
         if ($plugin = isPluginItemType(static::class)) {
             $url .= "/plugins/" . $plugin['plugin'];
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : '') . $url . "/front/rulesengine.test.php";
+        return $url . "/front/rulesengine.test.php";
     }
 }
