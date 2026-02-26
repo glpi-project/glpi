@@ -50,9 +50,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return;
         }
 
-        $request_ip = $_SERVER['REMOTE_ADDR'];
-
-        if (!self::isClientIPAllowed($client['client_id'], $request_ip)) {
+        if (!self::isClientIPAllowed($client['client_id'], $_SERVER['REMOTE_ADDR'])) {
             // IP doesn't match the allowed IPs
             $input->response = AbstractController::getAccessDeniedErrorResponse();
             return;

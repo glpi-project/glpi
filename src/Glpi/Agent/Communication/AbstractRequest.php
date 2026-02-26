@@ -249,10 +249,6 @@ abstract class AbstractRequest
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
-                if (!IPRestrictionRequestMiddleware::isClientIPAllowed($client['client_id'], $_SERVER['REMOTE_ADDR'])) {
-                    $this->addError('Access denied. Your IP address is not allowed to use this OAuth client.', 403);
-                    return false;
-                }
             } catch (OAuth2KeyException $e) {
                 ErrorHandler::logCaughtException($e);
                 $this->addError($e->getMessage());
