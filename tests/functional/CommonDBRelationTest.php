@@ -365,13 +365,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** Entity with items_id = 0 is valid (root entity) */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \KnowbaseItem::class;
-            public static $items_id_1 = 'knowbaseitems_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \KnowbaseItem::class;
+            public static ?string $items_id_1 = 'knowbaseitems_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = 'itemtype';
-            public static $items_id_2 = 'items_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = 'itemtype';
+            public static ?string $items_id_2 = 'items_id';
+            public static bool $mustBeAttached_2 = true;
 
             public static function getTable($classname = null)
             {
