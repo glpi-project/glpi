@@ -249,17 +249,7 @@ abstract class AbstractRequest
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
-                global $DB;
-                $row = $DB->request([
-                    'SELECT' => ['allowed_ips'],
-                    'FROM'   => 'glpi_oauthclients',
-                    'WHERE'  => ['identifier' => $client['client_id']],
-                ])->current();
-                $allowed_ips = $row['allowed_ips'] ?? null;
-                if (
-                    !empty($allowed_ips)
-                    && !IPRestrictionRequestMiddleware::isIPAllowed($_SERVER['REMOTE_ADDR'], $allowed_ips)
-                ) {
+                if (!IPRestrictionRequestMiddleware::isClientIPAllowed($client['client_id'], $_SERVER['REMOTE_ADDR'])) {
                     $this->addError('Access denied. Your IP address is not allowed to use this OAuth client.', 403);
                     return false;
                 }

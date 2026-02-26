@@ -50,26 +50,9 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return;
         }
 
-        global $DB;
-
         $request_ip = $_SERVER['REMOTE_ADDR'];
 
-        $result = $DB->request([
-            'SELECT' => ['allowed_ips'],
-            'FROM'   => 'glpi_oauthclients',
-            'WHERE'  => [
-                'identifier' => $client['client_id'],
-            ],
-        ])->current();
-        $allowed_ips = $result['allowed_ips'] ?? [];
-
-        if (empty($allowed_ips)) {
-            // No IP restriction
-            $next($input);
-            return;
-        }
-
-        if (!self::isIPAllowed($request_ip, $allowed_ips)) {
+        if (!self::isClientIPAllowed($client['client_id'], $request_ip)) {
             // IP doesn't match the allowed IPs
             $input->response = AbstractController::getAccessDeniedErrorResponse();
             return;
@@ -77,6 +60,24 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 
         // IP was explicitly allowed
         $next($input);
+    }
+
+    public static function isClientIPAllowed(string $client_id, string $ip): bool
+    {
+        global $DB;
+
+        $result = $DB->request([
+            'SELECT' => ['allowed_ips'],
+            'FROM'   => 'glpi_oauthclients',
+            'WHERE'  => ['identifier' => $client_id],
+        ])->current();
+        $allowed_ips = $result['allowed_ips'] ?? [];
+
+        if (empty($allowed_ips)) {
+            return true;
+        }
+
+        return self::isIPAllowed($ip, $allowed_ips);
     }
 
     public static function isIPAllowed(string $ip, string $allowed_ips): bool
