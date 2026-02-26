@@ -338,7 +338,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $onglets = [];
         // Tabs known by the object
-        if ($this->isNewItem()) {
+        if ($this->isNewItem() || (isset($options['withtemplate']) && $options['withtemplate'] == 2)) {
             $this->addDefaultFormTab($onglets);
         } else {
             $onglets = $this->defineTabs($options);
