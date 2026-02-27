@@ -39,7 +39,6 @@ use Config;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
-use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\OAuth2KeyException;
