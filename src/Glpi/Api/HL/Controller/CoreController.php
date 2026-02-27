@@ -63,6 +63,7 @@ use Transfer;
 use User;
 
 use function Safe\file_get_contents;
+use function Safe\json_decode;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -592,17 +593,20 @@ HTML;
         if ($client_id === null) {
             $body = (string) $request->getBody();
             if (!empty($body)) {
-                $data = json_decode($body, true);
-                $client_id = $data['client_id'] ?? null;
+                try {
+                    $data = json_decode($body, true);
+                    $client_id = $data['client_id'] ?? null;
+                } catch (JsonException) {
+                    $client_id = null;
+                }
             }
         }
 
         if (
             $client_id !== null
-            && !IPRestrictionRequestMiddleware::isClientIPAllowed($client_id, $_SERVER['REMOTE_ADDR'])
+            && !IPRestrictionRequestMiddleware::isClientIPAllowed($client_id, $_SERVER['REMOTE_ADDR'] ?? '')
         ) {
-            return OAuthServerException::accessDenied('Your IP address is not allowed to use this OAuth client.')
-                ->generateHttpResponse(new JSONResponse()); // @phpstan-ignore return.type (Response vs ResponseInterface)
+            return OAuthServerException::accessDenied('Your IP address is not allowed to use this OAuth client.')->generateHttpResponse(new JSONResponse()); // @phpstan-ignore return.type (Response vs ResponseInterface)
         }
 
         try {
