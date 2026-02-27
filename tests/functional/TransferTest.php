@@ -1247,8 +1247,8 @@ class TransferTest extends DbTestCase
     {
         $this->login();
 
-        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
-        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
 
         $contract = $this->createItem(\Contract::class, [
             'name' => 'contract for ticket preserve',
@@ -1256,7 +1256,7 @@ class TransferTest extends DbTestCase
         ]);
 
         $ticket = new \Ticket();
-        $ticket_id = (int)$ticket->add([
+        $ticket_id = (int) $ticket->add([
             'name' => 'ticket with contract preserve',
             'content' => 'ticket content',
             'entities_id' => $fentity,
@@ -1287,7 +1287,7 @@ class TransferTest extends DbTestCase
         ]);
 
         $ticket2 = new \Ticket();
-        $ticket2_id = (int)$ticket2->add([
+        $ticket2_id = (int) $ticket2->add([
             'name' => 'ticket for contract delete',
             'content' => 'ticket content',
             'entities_id' => $dentity,
