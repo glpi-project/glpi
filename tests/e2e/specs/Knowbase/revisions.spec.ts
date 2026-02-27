@@ -87,3 +87,37 @@ test('Can view revision history and restore a previous version', async ({ page, 
     await page.getByTitle('More actions').click();
     await expect(page.getByTestId('history-counter')).toHaveText("4");
 });
+
+test('Associated item changes appear in history', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: 'Article with linked items',
+        entities_id: getWorkerEntityId(),
+        answer: 'Some content',
+    });
+
+    // Create a computer and link it to the KB item
+    const computer_id = await api.createItem('Computer', {
+        name: 'Test PC',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem_Item', {
+        knowbaseitems_id: kb_id,
+        itemtype: 'Computer',
+        items_id: computer_id,
+    });
+
+    // Go to article and open history panel
+    await kb.goto(kb_id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // Should show "Item linked" event with Computer type
+    const events = page.getByTestId('history-event');
+    await expect(events.filter({ hasText: 'Item linked' })).toBeVisible();
+    await expect(events.filter({ hasText: 'Computer' })).toBeVisible();
+});
