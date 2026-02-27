@@ -1256,9 +1256,9 @@ class TransferTest extends DbTestCase
         ]);
 
         $ticket = $this->createItem(\Ticket::class, [
-                'name'        => 'ticket with contract preserve',
-                'content'     => 'ticket content',
-                'entities_id' => $entity_source,
+            'name'        => 'ticket with contract preserve',
+            'content'     => 'ticket content',
+            'entities_id' => $entity_source,
         ]);
         $ticket_id = $ticket->getID();
 
