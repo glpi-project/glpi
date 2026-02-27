@@ -119,8 +119,11 @@ class KnowbaseEditor {
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
-                placement: 'top',
-                offset: 8,
+                options: {
+                    placement: 'top',
+                    offset: 8,
+                    shift: {boundary: this.#element},
+                },
             }),
             TiptapTable.configure({
                 resizable: true,
