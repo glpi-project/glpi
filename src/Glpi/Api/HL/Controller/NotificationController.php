@@ -132,7 +132,7 @@ class NotificationController extends AbstractController
                             ],
                         ],
                     ],
-                ]
+                ],
             ],
             'NotificationRecipient' => [
                 'x-version-introduced' => '2.3.0',
@@ -259,8 +259,8 @@ EOT,
                                     'type' => Doc\Schema::TYPE_INTEGER,
                                     'readOnly' => true,
                                 ],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -306,7 +306,7 @@ EOT,
                             - irc: Not used by GLPI core
 EOT,
                         'maxLength' => 20,
-                        'enum' => ['mailing', 'ajax', 'websocket', 'sms', 'xmpp', 'irc']
+                        'enum' => ['mailing', 'ajax', 'websocket', 'sms', 'xmpp', 'irc'],
                     ],
                 ],
             ],
@@ -375,7 +375,7 @@ EOT,
                             - irc: Not used by GLPI core
 EOT,
                         'maxLength' => 20,
-                        'enum' => ['mailing', 'ajax', 'websocket', 'sms', 'xmpp', 'irc']
+                        'enum' => ['mailing', 'ajax', 'websocket', 'sms', 'xmpp', 'irc'],
                     ],
                     'event' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                     'attach_documents' => [
@@ -422,7 +422,7 @@ EOT,
 
     #[Route(path: '/QueuedNotification/{id}/SendRequest', methods: ['POST'])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\Route(description: 'Request to send a queued notification.',)]
+    #[Doc\Route(description: 'Request to send a queued notification')]
     public function requestQueuedNotificationSend(Request $request): Response
     {
         $queued_notification = new QueuedNotification();
