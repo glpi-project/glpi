@@ -66,8 +66,9 @@ if (isset($_REQUEST['action'])) {
             if (!empty($input['mail_server'])) {
                 $input["host"] = Toolbox::constructMailServerConfig($input);
                 // In some case (like oauth imap) provide password is not possible
-                // So, ask for password only if there is one stored in database
-                if (!isset($input['passwd']) && !empty($mailcollector->fields['passwd'])) {
+                // So, ask for password only if there is one stored in database and it's not an OAuth connection
+                $is_oauth = !empty($input['server_type']) && str_contains($input['server_type'], 'oauth');
+                if (!$is_oauth && !isset($input['passwd']) && !empty($mailcollector->fields['passwd'])) {
                     $exception = new AccessDeniedHttpException();
                     $exception->setMessageToDisplay(__('Password is required to list mail folders.'));
                     throw $exception;
