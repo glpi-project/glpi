@@ -273,7 +273,7 @@ class HasPlugCapacityTest extends DbTestCase
     {
         yield [
             'target_classname'   => Plug::class,
-            'expected'           => '%d plugs attached to %d assets',
+            'expected'           => '%d plugs declared on %d assets',
         ];
     }
 
@@ -290,7 +290,7 @@ class HasPlugCapacityTest extends DbTestCase
 
         $capacity = new HasPlugCapacity();
         $this->assertEquals(
-            '0 plugs attached to 0 assets',
+            '0 plugs declared on 0 assets',
             $capacity->getCapacityUsageDescription($class)
         );
 
@@ -313,7 +313,7 @@ class HasPlugCapacityTest extends DbTestCase
         );
 
         $this->assertEquals(
-            '1 plugs attached to 1 assets',
+            '1 plugs declared on 1 assets',
             $capacity->getCapacityUsageDescription($class)
         );
 
@@ -327,7 +327,7 @@ class HasPlugCapacityTest extends DbTestCase
         );
 
         $this->assertEquals(
-            '2 plugs attached to 2 assets',
+            '2 plugs declared on 2 assets',
             $capacity->getCapacityUsageDescription($class)
         );
     }
