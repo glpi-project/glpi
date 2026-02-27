@@ -1236,4 +1236,85 @@ class TransferTest extends DbTestCase
         ]);
         $this->assertCount(0, $docItems);
     }
+
+    /**
+     * Test the transfer of tickets with associated contracts.
+     * Verifies that:
+     * - With keep_contract = 1: The ticket AND contract are transferred to the destination entity
+     * - With keep_contract = 0: The ticket-contract link is removed and the contract is deleted (if orphaned)
+     */
+    public function testTicketWithContractTransfer()
+    {
+        $this->login();
+
+        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+
+        $contract = $this->createItem(\Contract::class, [
+            'name' => 'contract for ticket preserve',
+            'entities_id' => $fentity,
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket_id = (int)$ticket->add([
+            'name' => 'ticket with contract preserve',
+            'content' => 'ticket content',
+            'entities_id' => $fentity,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $this->createItem(\Ticket_Contract::class, [
+            'tickets_id' => $ticket_id,
+            'contracts_id' => $contract->getID(),
+        ]);
+
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $transfer->fields['keep_contract'] = 1;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $transfer->moveItems([\Ticket::class => [$ticket_id => $ticket_id]], $dentity, $transfer->fields);
+
+        $ticket->getFromDB($ticket_id);
+        $this->assertEquals($dentity, $ticket->fields['entities_id']);
+
+        $contract->getFromDB($contract->getID());
+        $this->assertEquals($dentity, $contract->fields['entities_id']);
+
+        $contract2 = $this->createItem(\Contract::class, [
+            'name' => 'contract for ticket delete',
+            'entities_id' => $dentity,
+        ]);
+
+        $ticket2 = new \Ticket();
+        $ticket2_id = (int)$ticket2->add([
+            'name' => 'ticket for contract delete',
+            'content' => 'ticket content',
+            'entities_id' => $dentity,
+        ]);
+        $this->assertGreaterThan(0, $ticket2_id);
+
+        $this->createItem(\Ticket_Contract::class, [
+            'tickets_id' => $ticket2_id,
+            'contracts_id' => $contract2->getID(),
+        ]);
+
+        $contract2_id = $contract2->getID();
+
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $transfer->fields['keep_contract'] = 0;
+        $transfer->fields['clean_contract'] = 0;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $transfer->moveItems([\Ticket::class => [$ticket2_id => $ticket2_id]], $dentity, $transfer->fields);
+
+        $ticket_contracts = new \Ticket_Contract();
+        $this->assertCount(0, $ticket_contracts->find([
+            'tickets_id' => $ticket2_id,
+            'contracts_id' => $contract2_id,
+        ]));
+
+        $this->assertCount(0, $contract2->find(['id' => $contract2_id]));
+    }
 }
