@@ -53,6 +53,7 @@ final class HistoryBuilder
         $this->addCurrentVersionToHistory();
         $this->addRevisionsToHistory();
         $this->addFaqStatusChangesToHistory();
+        $this->addAssociatedItemChangesToHistory();
         $this->history->sort();
         return $this->history;
     }
@@ -163,6 +164,56 @@ final class HistoryBuilder
             $this->history->addEvent(new LogEvent(
                 label: $label,
                 description: __("Updated by"),
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
+    private function addAssociatedItemChangesToHistory(): void
+    {
+        global $DB, $CFG_GLPI;
+
+        $logs = $DB->request([
+            'SELECT' => [
+                'date_mod',
+                'user_name',
+                'linked_action',
+                'itemtype_link',
+                'old_value',
+                'new_value',
+            ],
+            'FROM' => Log::getTable(),
+            'WHERE' => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'itemtype_link' => $CFG_GLPI['kb_types'],
+                'linked_action' => [
+                    Log::HISTORY_ADD_RELATION,
+                    Log::HISTORY_DEL_RELATION,
+                ],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $is_add = $row['linked_action'] == Log::HISTORY_ADD_RELATION;
+            $item_name = $is_add ? $row['new_value'] : $row['old_value'];
+            $type_name = $row['itemtype_link']::getTypeName(1);
+
+            $label = $is_add
+                ? __("Item linked")
+                : __("Item unlinked")
+            ;
+
+            $description = sprintf(
+                $is_add ? __('%s — Linked by') : __('%s — Unlinked by'),
+                $type_name . ': ' . $item_name
+            );
+
+            $this->history->addEvent(new LogEvent(
+                label: $label,
+                description: $description,
                 date: $row['date_mod'],
                 author: $row['user_name'],
             ));
