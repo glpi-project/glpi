@@ -120,6 +120,7 @@
                             <span
                                 class="badge bg-secondary-lt"
                                 data-glpi-form-editor-section-block-badge
+                                data-testid="section-block-badge"
                             >
                                 {% set count_blocks = (section ? section.getBlocks()|length : 1) %}
                                 {{ _n('%d element', '%d elements', count_blocks)|format(count_blocks) }}
