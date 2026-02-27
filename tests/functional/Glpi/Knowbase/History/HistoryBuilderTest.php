@@ -275,6 +275,41 @@ final class HistoryBuilderTest extends DbTestCase
         ], $events);
     }
 
+    public function testNameChangeAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Updated title',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Use array_filter since other events may be present alongside the Renamed event
+        $renamed_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
+        ));
+
+        $this->assertCount(1, $renamed_events);
+        $this->assertEquals(
+            "Original title → Updated title — Updated by",
+            $renamed_events[0]->getDescription()
+        );
+        $this->assertEquals("2026-01-15 11:00:00", $renamed_events[0]->getDate());
+    }
+
     public function testPermissionRemoved(): void
     {
         $this->login();
@@ -323,6 +358,44 @@ final class HistoryBuilderTest extends DbTestCase
                 author: 2,
             ),
         ], $events);
+    }
+
+    public function testMultipleNameChanges(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Title v1',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Title v2',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Title v3',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $renamed_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
+        ));
+
+        $this->assertCount(2, $renamed_events);
+        $this->assertEquals("Title v2 → Title v3 — Updated by", $renamed_events[0]->getDescription());
+        $this->assertEquals("2026-01-15 12:00:00", $renamed_events[0]->getDate());
+        $this->assertEquals("Title v1 → Title v2 — Updated by", $renamed_events[1]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $renamed_events[1]->getDate());
     }
 
     public function testMultiplePermissionTypes(): void
@@ -380,6 +453,46 @@ final class HistoryBuilderTest extends DbTestCase
                 author: 2,
             ),
         ], $events);
+    }
+
+    public function testNameChangeWithContentRevision(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Version 1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'New title',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'answer' => 'Version 2',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Current version (content update at 12:00)
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Current version", $events[0]->getLabel());
+
+        // Verify the Renamed event is present
+        $renamed_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
+        ));
+        $this->assertCount(1, $renamed_events);
+        $this->assertStringContainsString("Original title", $renamed_events[0]->getDescription());
+        $this->assertStringContainsString("New title", $renamed_events[0]->getDescription());
     }
 
     public function testFaqChanges(): void

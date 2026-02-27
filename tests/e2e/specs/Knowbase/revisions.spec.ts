@@ -182,6 +182,30 @@ test('Document attachment changes appear in history', async ({ page, profile, ap
     await expect(events.filter({ hasText: 'test_attachment.pdf' })).toBeVisible();
 });
 
+test('Name changes appear in history', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item and rename it
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Original Title',
+        entities_id: getWorkerEntityId(),
+        answer: 'Some content',
+    });
+    await api.updateItem('KnowbaseItem', id, { name: 'Renamed Title' });
+
+    // Go to article and open history panel
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // Should show "Renamed" event with old and new title
+    const event = page.getByTestId('history-event').filter({ hasText: 'Renamed' });
+    await expect(event).toBeVisible();
+    await expect(event).toContainText('Original Title → Renamed Title');
+});
+
 test('Can compare a revision with the current version', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
