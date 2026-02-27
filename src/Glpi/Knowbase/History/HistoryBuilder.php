@@ -34,6 +34,7 @@
 
 namespace Glpi\Knowbase\History;
 
+use Document;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
 use Log;
@@ -54,6 +55,7 @@ final class HistoryBuilder
         $this->addRevisionsToHistory();
         $this->addFaqStatusChangesToHistory();
         $this->addAssociatedItemChangesToHistory();
+        $this->addDocumentChangesToHistory();
         $this->history->sort();
         return $this->history;
     }
@@ -209,6 +211,54 @@ final class HistoryBuilder
             $description = sprintf(
                 $is_add ? __('%s — Linked by') : __('%s — Unlinked by'),
                 $type_name . ': ' . $item_name
+            );
+
+            $this->history->addEvent(new LogEvent(
+                label: $label,
+                description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
+    private function addDocumentChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => [
+                'date_mod',
+                'user_name',
+                'linked_action',
+                'old_value',
+                'new_value',
+            ],
+            'FROM' => Log::getTable(),
+            'WHERE' => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'itemtype_link' => Document::class,
+                'linked_action' => [
+                    Log::HISTORY_ADD_RELATION,
+                    Log::HISTORY_DEL_RELATION,
+                ],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $is_add = $row['linked_action'] == Log::HISTORY_ADD_RELATION;
+            $document_name = $is_add ? $row['new_value'] : $row['old_value'];
+
+            $label = $is_add
+                ? __("File added")
+                : __("File removed")
+            ;
+
+            $description = sprintf(
+                $is_add ? __('%s — Added by') : __('%s — Removed by'),
+                $document_name
             );
 
             $this->history->addEvent(new LogEvent(

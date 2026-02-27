@@ -35,6 +35,8 @@
 namespace Glpi\Knowbase\History;
 
 use Computer;
+use Document;
+use Document_Item;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -397,6 +399,132 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertInstanceOf(LogEvent::class, $events[1]);
         $this->assertEquals("Item linked", $events[1]->getLabel());
+
+
+        $this->assertInstanceOf(RevisionEvent::class, $events[2]);
+        $this->assertEquals("Version 1", $events[2]->getLabel());
+    }
+
+    public function testDocumentAddedAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $doc = $this->createItem(Document::class, [
+            'name' => 'test_document.pdf',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $doc->getID(),
+            'itemtype' => KnowbaseItem::class,
+            'items_id' => $kb->getID(),
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("File added", $events[0]->getLabel());
+        $this->assertStringContainsString("test_document.pdf", $events[0]->getDescription());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
+    public function testDocumentRemovedAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $doc = $this->createItem(Document::class, [
+            'name' => 'to_remove.pdf',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $doc_item = $this->createItem(Document_Item::class, [
+            'documents_id' => $doc->getID(),
+            'itemtype' => KnowbaseItem::class,
+            'items_id' => $kb->getID(),
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->deleteItem(Document_Item::class, $doc_item->getID(), purge: true);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(3, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("File removed", $events[0]->getLabel());
+        $this->assertStringContainsString("to_remove.pdf", $events[0]->getDescription());
+
+        $this->assertInstanceOf(LogEvent::class, $events[1]);
+        $this->assertEquals("File added", $events[1]->getLabel());
+    }
+
+    public function testDocumentChangesWithContentRevisions(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Version 1',
+        ]);
+
+        // Add a document
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $doc = $this->createItem(Document::class, [
+            'name' => 'attached_file.pdf',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $this->createItem(Document_Item::class, [
+            'documents_id' => $doc->getID(),
+            'itemtype' => KnowbaseItem::class,
+            'items_id' => $kb->getID(),
+        ]);
+
+        // Update content (creates a revision)
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'answer' => 'Version 2',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // 3 events sorted by date DESC: current version, file added, revision 1
+        $this->assertCount(3, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Current version", $events[0]->getLabel());
+
+        $this->assertInstanceOf(LogEvent::class, $events[1]);
+        $this->assertEquals("File added", $events[1]->getLabel());
 
         $this->assertInstanceOf(RevisionEvent::class, $events[2]);
         $this->assertEquals("Version 1", $events[2]->getLabel());

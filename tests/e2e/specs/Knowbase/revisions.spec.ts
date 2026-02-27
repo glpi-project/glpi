@@ -121,3 +121,37 @@ test('Associated item changes appear in history', async ({ page, profile, api })
     await expect(events.filter({ hasText: 'Item linked' })).toBeVisible();
     await expect(events.filter({ hasText: 'Computer' })).toBeVisible();
 });
+
+test('Document attachment changes appear in history', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: 'Article with attachments',
+        entities_id: getWorkerEntityId(),
+        answer: 'Some content',
+    });
+
+    // Create a document and attach it to the KB item
+    const doc_id = await api.createItem('Document', {
+        name: 'test_attachment.pdf',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('Document_Item', {
+        documents_id: doc_id,
+        itemtype: 'KnowbaseItem',
+        items_id: kb_id,
+    });
+
+    // Go to article and open history panel
+    await kb.goto(kb_id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // Should show "File added" event
+    const events = page.getByTestId('history-event');
+    await expect(events.filter({ hasText: 'File added' })).toBeVisible();
+    await expect(events.filter({ hasText: 'test_attachment.pdf' })).toBeVisible();
+});
