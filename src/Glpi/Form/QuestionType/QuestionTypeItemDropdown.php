@@ -45,7 +45,7 @@ use Session;
 
 use function Safe\json_decode;
 
-final class QuestionTypeItemDropdown extends QuestionTypeItem
+class QuestionTypeItemDropdown extends QuestionTypeItem
 {
     public function __construct()
     {
