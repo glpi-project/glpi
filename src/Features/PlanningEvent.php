@@ -295,20 +295,6 @@ trait PlanningEvent
         }
     }
 
-
-    public function pre_updateInDB()
-    {
-        // Set new user if initial user have been deleted
-        if (
-            isset($this->fields['users_id'])
-            && $this->fields['users_id'] == 0
-            && $uid = Session::getLoginUserID()
-        ) {
-            $this->fields['users_id'] = $uid;
-            $this->updates[]          = "users_id";
-        }
-    }
-
     /**
      * Delete a specific instance of a serie
      * Add an exception into the serie
