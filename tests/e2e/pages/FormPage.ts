@@ -144,6 +144,17 @@ export class FormPage extends GlpiPage
         await expect(this.editor_save_success_alert).toBeVisible();
     }
 
+    public async doSaveFormEditorAndReload(): Promise<void>
+    {
+        await this.doSaveFormEditor();
+        await this.page.reload();
+    }
+
+    public async doOpenSubmitButtonConditions(): Promise<void>
+    {
+        await this.getConfigureVisiblityButton().click();
+    }
+
     public async doInitVisibilityConditionsDropdown(
         question_index: number
     ): Promise<void> {
@@ -155,6 +166,72 @@ export class FormPage extends GlpiPage
         await this.page.getByTestId('form-editor-left-panel')
             .getByTitle("Configure visibility")
             .filter({visible: true})
+            .click()
+        ;
+    }
+
+    public async doOpenQuestionConditionEditor(
+        question_index: number
+    ): Promise<void> {
+        const question = this.getNthQuestion(question_index);
+        await question.click();
+        await question.getByTitle('Configure visibility')
+            .filter({ visible: true })
+            .click()
+        ;
+    }
+
+    public async doInitCommentVisibilityConditionsDropdown(
+        comment_index: number
+    ): Promise<void> {
+        const comment = this.getRegion('Comment details').nth(comment_index);
+        await comment.click();
+        await comment.getByRole('button', { name: 'More actions' })
+            .filter({ visible: true })
+            .click()
+        ;
+        await this.getButton('Configure visibility').click();
+    }
+
+    public async doOpenCommentConditionEditor(
+        comment_index: number
+    ): Promise<void> {
+        const comment = this.getRegion('Comment details').nth(comment_index);
+        await comment.click();
+        await comment.getByTitle('Configure visibility')
+            .filter({ visible: true })
+            .click()
+        ;
+    }
+
+    public async doDeleteCondition(index: number): Promise<void>
+    {
+        await this.getVisibleConditions()
+            .nth(index)
+            .getByRole('button', { name: 'Delete criteria' })
+            .click()
+        ;
+    }
+
+    public async doInitSectionVisibilityConditionsDropdown(
+        section_index: number
+    ): Promise<void> {
+        const section = this.getRegion('Section details').nth(section_index);
+        await section.click();
+        await section.getByRole('button', { name: 'More actions' })
+            .filter({ visible: true })
+            .click()
+        ;
+        await this.getButton('Configure visibility').click();
+    }
+
+    public async doOpenSectionConditionEditor(
+        section_index: number
+    ): Promise<void> {
+        const section = this.getRegion('Section details').nth(section_index);
+        await section.click();
+        await section.getByTitle('Configure visibility')
+            .filter({ visible: true })
             .click()
         ;
     }
@@ -290,9 +367,51 @@ export class FormPage extends GlpiPage
         return this.page.getByTestId('visibility-condition');
     }
 
+    public getVisibleConditions(): Locator
+    {
+        return this.getConditions().filter({ visible: true });
+    }
+
+    public getConditionLogicOperator(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel(
+            'Logic operator',
+            condition,
+        );
+    }
+
+    public getConditionTarget(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel(
+            'Item',
+            condition,
+        );
+    }
+
+    public getConditionValueOperator(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel(
+            'Value operator',
+            condition,
+        );
+    }
+
+    public getTextConditionValue(condition: Locator): Locator
+    {
+        return condition.getByRole('textbox', {
+            name: "Value",
+            exact: true,
+        }).filter({visible: true});
+    }
+
     public getLastSection(): Locator
     {
         return this.getRegion("Form section").last();
+    }
+
+    public getNthQuestion(index: number): Locator
+    {
+        return this.getRegion("Question details").nth(index);
     }
 
     public getLastQuestion(): Locator
@@ -303,6 +422,28 @@ export class FormPage extends GlpiPage
     public getLastComment(): Locator
     {
         return this.getRegion("Comment details").last();
+    }
+
+    public getConfigureVisiblityButton(): Locator
+    {
+        return this.getRegion('Form properties accordion')
+            .getByTitle("Configure visibility")
+        ;
+    }
+
+    public getConfigureVisiblityButtonDisplayedValue(): Locator
+    {
+        return this.getConfigureVisiblityButton()
+            .getByTestId("active-visibility-setting")
+            .filter({
+                visible: true
+            })
+        ;
+    }
+
+    public getVisiblityConditionDropdown(question: Locator)
+    {
+        return question.getByTestId('visibility-dropdown');
     }
 
     public async getFormHeader(): Promise<Locator>
@@ -335,5 +476,41 @@ export class FormPage extends GlpiPage
         // Initialize rich text if not done yet
         await this.initRichTextByLabel("Comment description", comment);
         return this.getRichTextByLabel("Comment description", comment);
+    }
+
+    public async gotoDestinationTab(id: number): Promise<void>
+    {
+        const tab = "Glpi\\Form\\Destination\\FormDestination$1";
+        await this.page.goto(
+            `/front/form/form.form.php?id=${id}&forcetab=${tab}`
+        );
+    }
+
+    public async doOpenDestinationConditionEditor(): Promise<void>
+    {
+        await this.page.getByTitle('Configure creation conditions').click();
+    }
+
+    public async doSaveDestination(): Promise<void>
+    {
+        await this.getButton('Update item').click();
+        await expect(
+            this.page.getByRole('alert').filter({ hasText: 'Item successfully updated' })
+        ).toBeVisible();
+        await this.getButton('Close').click();
+    }
+
+    public async doChangeQuestionType(
+        question: Locator,
+        new_type: string,
+    ): Promise<void> {
+        await question.getByRole('textbox', { name: 'Question name' }).click();
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question type', question),
+            new_type,
+            false,
+        );
+        // eslint-disable-next-line playwright/no-raw-locators
+        await question.locator('[data-glpi-loading="true"]').waitFor({ state: 'detached' });
     }
 }

@@ -2,34 +2,51 @@
     "version": 1,
     "forms": [
         {
-            "id": 16,
-            "uuid": "138f41c4-857d-4f3e-98fc-a22a669bdd8c",
-            "name": "Form with validation",
+            "id": 54,
+            "uuid": "ed01a000-0000-0000-0000-000000000001",
+            "name": "Conditions on sections",
             "header": null,
             "description": null,
             "entity_name": "Root entity",
             "is_recursive": true,
             "is_active": false,
-            "submit_button_visibility_strategy": "",
+            "submit_button_visibility_strategy": "always_visible",
             "illustration": "",
             "submit_button_conditions": [],
             "sections": [
                 {
-                    "id": 21,
-                    "uuid": "99412497-f38e-4726-910b-464423131329",
+                    "id": 95,
+                    "uuid": "ed01a000-0000-0000-0001-000000000001",
                     "name": "First section",
                     "description": null,
                     "rank": 0,
-                    "visibility_strategy": "",
+                    "visibility_strategy": "always_visible",
                     "conditions": []
+                },
+                {
+                    "id": 96,
+                    "uuid": "ed01a000-0000-0000-0001-000000000002",
+                    "name": "Second section",
+                    "description": "",
+                    "rank": 1,
+                    "visibility_strategy": "visible_if",
+                    "conditions": [
+                        {
+                            "item_uuid": "ed01a000-0000-0000-0001-000000000001",
+                            "item_type": "section",
+                            "value_operator": "visible",
+                            "logic_operator": "and",
+                            "value": ""
+                        }
+                    ]
                 }
             ],
             "comments": [],
             "questions": [
                 {
-                    "id": 45,
-                    "uuid": "eac2dc6c-20fc-4e50-b459-8c946fda4c18",
-                    "name": "Question with validation constraint",
+                    "id": 352,
+                    "uuid": "ed01a000-0000-0000-0002-000000000001",
+                    "name": "Question 1",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
@@ -37,19 +54,11 @@
                     "description": "",
                     "default_value": "",
                     "extra_data": null,
-                    "section_id": 21,
-                    "visibility_strategy": "",
-                    "validation_strategy": "valid_if",
+                    "section_id": 95,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
                     "conditions": [],
-                    "validation_conditions": [
-                        {
-                            "item_uuid": "eac2dc6c-20fc-4e50-b459-8c946fda4c18",
-                            "item_type": "question",
-                            "value_operator": "length_greater_than",
-                            "logic_operator": "and",
-                            "value": 5
-                        }
-                    ]
+                    "validation_conditions": []
                 }
             ],
             "policies": [
@@ -67,7 +76,7 @@
             ],
             "destinations": [
                 {
-                    "id": 16,
+                    "id": 84,
                     "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
@@ -81,7 +90,9 @@
                     "itemtype": "Entity",
                     "name": "Root entity"
                 }
-            ]
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
         }
     ]
 }

@@ -2,34 +2,42 @@
     "version": 1,
     "forms": [
         {
-            "id": 16,
-            "uuid": "138f41c4-857d-4f3e-98fc-a22a669bdd8c",
-            "name": "Form with validation",
+            "id": 1,
+            "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "name": "Submit button visible if equals",
             "header": null,
             "description": null,
             "entity_name": "Root entity",
             "is_recursive": true,
-            "is_active": false,
-            "submit_button_visibility_strategy": "",
+            "is_active": true,
+            "submit_button_visibility_strategy": "visible_if",
             "illustration": "",
-            "submit_button_conditions": [],
+            "submit_button_conditions": [
+                {
+                    "item_uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "item_type": "question",
+                    "value_operator": "equals",
+                    "logic_operator": "and",
+                    "value": "I love GLPI"
+                }
+            ],
             "sections": [
                 {
-                    "id": 21,
-                    "uuid": "99412497-f38e-4726-910b-464423131329",
+                    "id": 1,
+                    "uuid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
                     "name": "First section",
                     "description": null,
                     "rank": 0,
-                    "visibility_strategy": "",
+                    "visibility_strategy": "always_visible",
                     "conditions": []
                 }
             ],
             "comments": [],
             "questions": [
                 {
-                    "id": 45,
-                    "uuid": "eac2dc6c-20fc-4e50-b459-8c946fda4c18",
-                    "name": "Question with validation constraint",
+                    "id": 1,
+                    "uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "name": "My question used as a criteria",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
                     "is_mandatory": false,
                     "vertical_rank": 0,
@@ -37,19 +45,11 @@
                     "description": "",
                     "default_value": "",
                     "extra_data": null,
-                    "section_id": 21,
-                    "visibility_strategy": "",
-                    "validation_strategy": "valid_if",
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
                     "conditions": [],
-                    "validation_conditions": [
-                        {
-                            "item_uuid": "eac2dc6c-20fc-4e50-b459-8c946fda4c18",
-                            "item_type": "question",
-                            "value_operator": "length_greater_than",
-                            "logic_operator": "and",
-                            "value": 5
-                        }
-                    ]
+                    "validation_conditions": []
                 }
             ],
             "policies": [
@@ -63,11 +63,19 @@
                         "profile_ids": []
                     },
                     "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "6QBh8Y32hHwvuRZWj1wS4YCISshSck5h0Dmi3TVb",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
                 }
             ],
             "destinations": [
                 {
-                    "id": 16,
+                    "id": 1,
                     "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
                     "name": "Ticket",
                     "config": [],
@@ -81,7 +89,9 @@
                     "itemtype": "Entity",
                     "name": "Root entity"
                 }
-            ]
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
         }
     ]
 }

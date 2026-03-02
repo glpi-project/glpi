@@ -79,6 +79,7 @@
         <div
             class="{{ visibility_class }} mt-4"
             data-glpi-conditions-editor
+            data-testid="conditions-editor"
             {% for strategy in enum_cases(strategies) %}
                 {% if strategy.showEditor() %}
                     data-glpi-conditions-editor-display-for-{{ strategy.value }}
