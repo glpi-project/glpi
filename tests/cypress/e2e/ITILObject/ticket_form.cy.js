@@ -177,7 +177,7 @@ describe("Ticket Form", () => {
             cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
             cy.findAllByTitle('Preview').first().click();
-            cy.findByTestId('content').invoke('text').should('not.be.empty').as('content');
+            cy.get('[data-glpi-kb-content]').invoke('text').should('not.be.empty').as('content');
             cy.findAllByRole('listitem').should('have.length', 0);
             cy.findByText('Back to results').click();
 
@@ -198,7 +198,7 @@ describe("Ticket Form", () => {
             cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
             cy.findAllByTitle('Preview').first().click();
-            cy.findByTestId('content').invoke('text').should('not.be.empty').as('content');
+            cy.get('[data-glpi-kb-content]').invoke('text').should('not.be.empty').as('content');
             cy.findAllByRole('listitem').should('have.length', 0);
             cy.findByText('Back to results').click();
 
