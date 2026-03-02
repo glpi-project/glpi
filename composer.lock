@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c31d93148ef3aafe1575079f2b5c98a",
+    "content-hash": "da8b9e8503eb25c218b5158dd4786be0",
     "packages": [
         {
             "name": "altcha-org/altcha",
-            "version": "v1.3.1",
+            "version": "v1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/altcha-org/altcha-lib-php.git",
-                "reference": "9e9e70c864a9db960d071c77c778be0c9ff1a4d0"
+                "reference": "f4bf69e5facf810481c97e3d61ddf779efa4dea6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/9e9e70c864a9db960d071c77c778be0c9ff1a4d0",
-                "reference": "9e9e70c864a9db960d071c77c778be0c9ff1a4d0",
+                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/f4bf69e5facf810481c97e3d61ddf779efa4dea6",
+                "reference": "f4bf69e5facf810481c97e3d61ddf779efa4dea6",
                 "shasum": ""
             },
             "require": {
@@ -29,7 +29,7 @@
                 "phpstan/extension-installer": "^1.4",
                 "phpstan/phpstan": "^2.1",
                 "phpstan/phpstan-phpunit": "^2.0",
-                "phpunit/phpunit": "^11.5"
+                "phpunit/phpunit": "^11.5.50"
             },
             "type": "library",
             "autoload": {
@@ -49,9 +49,9 @@
             ],
             "support": {
                 "issues": "https://github.com/altcha-org/altcha-lib-php/issues",
-                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.3.1"
+                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.3.2"
             },
-            "time": "2025-12-13T10:03:53+00:00"
+            "time": "2026-02-28T00:50:10+00:00"
         },
         {
             "name": "apereo/phpcas",
