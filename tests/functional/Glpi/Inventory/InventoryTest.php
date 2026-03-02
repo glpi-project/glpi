@@ -8334,6 +8334,94 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($result['users_id'], $computer->fields['users_id']);
     }
 
+    public function testRuleAssetWithAutoAndInventoryUsers(): void
+    {
+        global $DB;
+
+        $target_user = $this->createItem(\User::class, [
+            'name' => 'johndoe@email.fr',
+        ]);
+
+        $rule     = new \Rule();
+        $crit     = new \RuleCriteria();
+        $action   = new \RuleAction();
+
+        $rule_id = $rule->add([
+            'is_active'    => 1,
+            'name'         => 'Test _auto lost with _inventory_users',
+            'match'        => 'AND',
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleAsset::ONADD | \RuleAsset::ONUPDATE,
+            'is_recursive' => 1,
+        ]);
+        $this->assertGreaterThan(0, $rule_id);
+
+        $this->assertGreaterThan(0, $crit->add([
+            'rules_id'  => $rule_id,
+            'criteria'  => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'Computer',
+        ]));
+
+        $this->assertGreaterThan(0, $crit->add([
+            'rules_id'  => $rule_id,
+            'criteria'  => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 1,
+        ]));
+
+        $this->assertGreaterThan(0, $crit->add([
+            'rules_id'  => $rule_id,
+            'criteria'  => 'contact',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.*?)@/',
+        ]));
+
+        $this->assertGreaterThan(0, $action->add([
+            'rules_id'    => $rule_id,
+            'action_type' => 'regex_result',
+            'field'       => '_affect_user_by_regex',
+            'value'       => '#0@email.fr',
+        ]));
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>glpixps-rule-auto-test</NAME>
+      <UUID>25C1BB60-RULE-AUTO-TEST-UNIT-000000000000</UUID>
+    </HARDWARE>
+    <BIOS>
+      <MSN>AUTOTEST01</MSN>
+    </BIOS>
+    <USERS>
+      <DOMAIN>test</DOMAIN>
+      <LOGIN>johndoe</LOGIN>
+    </USERS>
+    <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test_rule_asset_auto_with_users</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $agents = $DB->request([
+            'FROM'  => \Agent::getTable(),
+            'WHERE' => ['deviceid' => 'test_rule_asset_auto_with_users'],
+        ]);
+        $this->assertCount(1, $agents);
+        $agent = $agents->current();
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($agent['items_id']));
+
+        $this->assertSame(
+            $target_user->fields['id'],
+            $computer->fields['users_id'],
+        );
+    }
+
     public function testLocationHierarchy()
     {
         global $DB;
