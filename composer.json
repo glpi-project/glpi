@@ -120,6 +120,9 @@
                 "laminas/laminas-mail": "No replacement package found yet",
                 "laminas/laminas-mime": "Used by `laminas/laminas-mail`",
                 "true/punycode": "Replacement done in GLPI 11.0"
+            },
+            "ignore": {
+                "CVE-2025-45769": "Patch has been applied manually."
             }
         }
     },
