@@ -4932,7 +4932,7 @@ class CommonDBTM extends CommonGLPI
                         break;
 
                     case "language":
-                        if (isset($CFG_GLPI['languages'][$value])) {
+                        if (isset($CFG_GLPI['languages'][$value ?? ''])) {
                             return htmlescape($CFG_GLPI['languages'][$value][0]);
                         }
                         return __s('Default value');

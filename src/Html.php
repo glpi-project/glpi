@@ -3345,6 +3345,19 @@ JS;
                                     setupFileUpload(fileupload_config);
                                 });
                         });
+
+                        // Close TinyMCE toolbar dropdowns and blur active buttons when clicking outside editor UI elements
+                        $(document).on('click', function(e) {
+                            const target = $(e.target);
+                            const isEditorElementClicked =
+                                target.closest('.tox-editor-header').length > 0 ||
+                                target.closest('.tox-toolbar__primary').length > 0 ||
+                                target.closest('.tox-menu').length > 0;
+
+                            if (!isEditorElementClicked) {
+                                $('.tox-tbtn.tox-tbtn--enabled').trigger('click').trigger('blur');
+                            }
+                        });
                     }
                 }, {$language_opts});
 
