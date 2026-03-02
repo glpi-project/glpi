@@ -31,7 +31,7 @@
         "@tiptap/extension-placeholder": "^3.19.0",
         "@tiptap/extension-table": "^3.19.0",
         "@tiptap/extension-table-cell": "^3.19.0",
-        "@tiptap/extension-table-header": "^3.19.0",
+        "@tiptap/extension-table-header": "^3.20.0",
         "@tiptap/extension-table-row": "^3.19.0",
         "@tiptap/pm": "^3.19.0",
         "@tiptap/starter-kit": "^3.19.0",
