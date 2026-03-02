@@ -165,6 +165,9 @@ updates:
       fullcalendar:
         patterns:
           - "@fullcalendar/*"
+      tiptap:
+        patterns:
+          - "@tiptap/*"
 
   - package-ecosystem: "composer"
     directory: "/"
