@@ -3566,7 +3566,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DropdownTranslation\\:\\:getTranslationsForAnItem\\(\\) should return string but returns array\\.$#',
+	'message' => '#^Method DropdownTranslation\\:\\:getTranslationsForAnItem\\(\\) should return string but returns array\\<mixed\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DropdownTranslation.php',
@@ -4486,6 +4486,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#7 \\$delete_column of method Item_Devices\\:\\:getTableGroup\\(\\) expects HTMLTableSuperHeader\\|null, HTMLTableHeader\\|null given\\.$#',
 	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Devices.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Variable \\$peer_column might not be defined\\.$#',
+	'identifier' => 'variable.undefined',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
