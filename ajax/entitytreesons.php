@@ -40,5 +40,43 @@ global $CFG_GLPI, $GLPI_CACHE;
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-echo json_encode(Entity::getEntitySelectorTree((int) ($_GET['rand'] ?? 0)));
+//echo json_encode(Entity::getEntitySelectorTree((int) ($_GET['rand'] ?? 0)));
+
+$ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+$entitiestree = [];
+foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+    $default_entity_id = $default_entity['id'];
+    $entitytree = $default_entity['is_recursive'] ? Entity::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
+
+    $adapt_tree = static function (&$entities) use (&$adapt_tree) {
+        foreach ($entities as $entities_id => &$entity) {
+            $entity['key'] = $entities_id;
+            $entity['label'] = $entity['name'];
+            $entity['tree'] ??= [];
+            $entity['children'] = array_values($adapt_tree($entity['tree']));
+            unset($entity['name'], $entity['tree']);
+        }
+        unset($entity);
+        return $entities;
+    };
+    $adapt_tree($entitytree);
+
+    $entitiestree = array_merge($entitiestree, $entitytree);
+}
+$select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
+    foreach ($entities as &$entity) {
+        if (isset($ancestors[$entity['key']])) {
+            $entity['expanded'] = true;
+        }
+        if ((int) $entity['key'] === (int) $_SESSION['glpiactive_entity']) {
+            $entity['selected'] = true;
+        }
+        if (isset($entity['children'])) {
+            $select_tree($entity['children']);
+        }
+    }
+};
+$select_tree($entitiestree);
+
+echo json_encode($entitiestree);
 return;
