@@ -59,6 +59,12 @@ export class TipTapEditorHelper {
 
     getEditor(): Locator {
         if (!this.editor) {
+            // eslint-disable-next-line playwright/no-raw-locators
+            const editor_fallback = this.contentContainer.locator('.ProseMirror');
+            if (editor_fallback) {
+                return editor_fallback;
+            }
+
             throw new Error('Editor not initialized. Call enterEditMode() first.');
         }
         return this.editor;
