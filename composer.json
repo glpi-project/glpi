@@ -97,7 +97,7 @@
         "symfony/routing": "^7.4",
         "symfony/serializer": "^7.4",
         "tecnickcom/tc-lib-barcode": "^2.4",
-        "tecnickcom/tcpdf": "^6.10",
+        "tecnickcom/tcpdf": "^6.11",
         "thecodingmachine/safe": "^3.3",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.23",
