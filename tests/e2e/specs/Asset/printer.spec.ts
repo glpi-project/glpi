@@ -30,29 +30,20 @@
  * ---------------------------------------------------------------------
  */
 
-describe("Impact graph", () => {
-    let computer_id;
-    before(() => {
-        cy.createWithAPI('Computer', { name: 'Impact computer', entities_id: 1 }).then(id => computer_id = id);
+import { test, expect } from '../../fixtures/glpi_fixture';
+import { PrinterPage } from '../../pages/PrinterPage';
+import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
+
+test('Can view pages counter', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const printer_id = await api.createItem('Printer', {
+        name: 'Test printer',
+        entities_id: getWorkerEntityId(),
     });
 
-    beforeEach(() => {
-        cy.login();
-    });
-
-    it('Loads', () => {
-        cy.visit(`/front/computer.form.php?id=${computer_id}`);
-        cy.findByRole('tab', { name: 'Impact analysis' }).click();
-        cy.findByRole('tabpanel').within(() => {
-            cy.get('#impact_graph_view').should('be.visible');
-            cy.get('#impact_list_view').should('not.be.visible');
-            cy.get('.__________cytoscape_container > canvas').should('have.length.at.least', 1);
-            cy.findByTitle('View as list').click();
-            cy.get('#impact_graph_view').should('not.be.visible');
-            cy.get('#impact_list_view').should('be.visible');
-            cy.findByTitle('View graphical representation').click();
-            cy.get('#impact_graph_view').should('be.visible');
-            cy.get('#impact_list_view').should('not.be.visible');
-        });
-    });
+    const printer_page = new PrinterPage(page);
+    await printer_page.goto(printer_id, 'PrinterLog$0');
+    // eslint-disable-next-line playwright/no-raw-locators
+    await expect(page.getByTestId('pages_barchart').locator('canvas')).toBeAttached();
 });

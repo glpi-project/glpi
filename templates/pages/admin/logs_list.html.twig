@@ -93,7 +93,7 @@
                 </div>
                 <div class="list-group list-group-flush">
                     {% for log in logs %}
-                        <span class="list-group-item list-group-item-action d-flex justify-content-between">
+                        <span class="list-group-item list-group-item-action d-flex justify-content-between" data-testid="log-list-item">
                             <a class="text-truncate"
                                href="logviewer.php?filepath={{ log['filepath']|url_encode }}">
                                 <i class="ti ti-file me-1" aria-hidden="true"></i>

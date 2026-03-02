@@ -938,7 +938,7 @@
       {% set container_id = '' %}
    {% endif %}
 
-   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }} {% if options.name is defined and options.name is not empty %}data-testid="form-field-{{ options.name }}"{% endif %}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
       {% set flex_class = options.center ? 'd-flex align-items-center' : (options.inline_add_field_html ? 'd-flex' : '') %}
@@ -974,7 +974,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }} {% if options.name is defined and options.name is not empty %}data-testid="form-field-{{ options.name }}"{% endif %}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       <div class="d-flex align-items-center">
          {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}

@@ -290,7 +290,13 @@
                                                     }
                                                 });
                                             </script>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_password_{{ rand_field }}">
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal_password_{{ rand_field }}"
+                                                aria-label="{{ __('Change password') }}"
+                                            >
                                                 <i class="ti ti-lock"></i>
                                                 {{ __('Change password') }}
                                             </button>
