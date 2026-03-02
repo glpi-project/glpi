@@ -127,5 +127,5 @@ test('Side panel displays normally on large screens', async ({
     await close_button.click();
 
     // Side panel should be reduced after close
-    await expect(side_panel).toHaveCSS('width', '1px');
+    await expect(side_panel).toHaveCSS('width', '0px');
 });
