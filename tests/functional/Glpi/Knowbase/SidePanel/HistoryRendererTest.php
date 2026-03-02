@@ -64,13 +64,19 @@ final class HistoryRendererTest extends DbTestCase
         $revisions = $this->renderRevisions($kb);
 
         $revisionNodes = $revisions->filter('[data-testid=history-event]');
-        $this->assertEquals(2, $revisionNodes->count());
+        $this->assertEquals(3, $revisionNodes->count());
 
-        $currentVersion = $revisionNodes->first();
+        $renamed = $revisionNodes->eq(0);
+        $this->assertStringContainsString('Renamed', $renamed->text());
+        $this->assertStringContainsString('Original title', $renamed->text());
+        $this->assertStringContainsString('Updated title', $renamed->text());
+        $this->assertEquals(0, $renamed->filter('[data-glpi-revert-revision]')->count());
+
+        $currentVersion = $revisionNodes->eq(1);
         $this->assertStringContainsString('Current version', $currentVersion->text());
         $this->assertEquals(0, $currentVersion->filter('[data-glpi-revert-revision]')->count());
 
-        $initialVersion = $revisionNodes->last();
+        $initialVersion = $revisionNodes->eq(2);
         $this->assertStringContainsString('Version 1', $initialVersion->text());
         $this->assertEquals(1, $initialVersion->filter('[data-glpi-revert-revision]')->count());
     }
