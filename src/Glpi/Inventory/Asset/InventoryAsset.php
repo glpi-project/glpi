@@ -517,7 +517,7 @@ abstract class InventoryAsset
     {
         $input = ['_auto' => 1];
         if (property_exists($value, '_inventory_users')) {
-            $input = ['_inventory_users' => $value->_inventory_users];
+            $input['_inventory_users'] = $value->_inventory_users;
         }
 
         $locks = [];
