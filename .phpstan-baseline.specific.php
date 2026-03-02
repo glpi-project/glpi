@@ -9,6 +9,18 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$codepoint of function chr expects int\\<0, 255\\>, int\\<0, 510\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.20_to_10.0.21/tokens.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$codepoint of function chr expects int\\<0, 255\\>, int\\<0, 510\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_11.0.2_to_11.0.3/tokens.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
@@ -211,6 +223,12 @@ $ignoreErrors[] = [
 	'identifier' => 'array.invalidKey',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket_Contract.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$codepoint of function chr expects int\\<0, 255\\>, int\\<\\-25, 280\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<CommonITILTask\\>\\|null\\.$#',
