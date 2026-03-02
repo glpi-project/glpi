@@ -142,8 +142,8 @@ class NetworkEquipment extends MainAsset
                 $stack = clone $val;
                 $stack->firmware = $switch->firmware ?? $switch->version ?? '';
                 $stack->serial = $switch->serial;
-                $stack->model = $switch->model;
-                $stack->$model_field = $switch->model;
+                $stack->model = $switch->model ?? 0;
+                $stack->$model_field = $switch->model ?? 0;
                 $stack->description = $stack->name . ' - ' . $switch_name;
                 $stack->name = $stack->name . ' - ' . $switch_name;
                 if ($switch_name != ($switch->stack_number ?? '')) {

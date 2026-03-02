@@ -293,7 +293,7 @@ abstract class InventoryAsset
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $new_id = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
-                            $value->$key,
+                            $value->$key ?? '',
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
