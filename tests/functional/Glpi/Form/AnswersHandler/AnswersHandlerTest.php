@@ -57,6 +57,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
@@ -513,6 +514,51 @@ class AnswersHandlerTest extends DbTestCase
             'expectedIsValid' => false,
             'expectedErrors' => [
                 'Mandatory Urgency' => 'This field is mandatory',
+            ],
+        ];
+
+        $mandatory_request_type = new FormBuilder("Mandatory Request type form");
+        $mandatory_request_type->addQuestion(
+            name: "Mandatory type",
+            type: QuestionTypeRequestType::class,
+            is_mandatory: true,
+        );
+        yield 'Empty mandatory type field 1 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [
+                'Mandatory type' => 0,
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
+        yield 'Empty mandatory type field 2 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [
+                'Mandatory type' => null,
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
+        yield 'Empty mandatory type field 3 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [
+                'Mandatory type' => "",
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
+        yield 'Empty mandatory type field 4 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
             ],
         ];
     }
