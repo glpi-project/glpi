@@ -85,6 +85,21 @@ export class GlpiKnowbaseArticleController
     };
 
     /**
+     * @type {string|null} Original subject HTML (saved before diff mode)
+     */
+    #originalSubject = null;
+
+    /**
+     * @type {string|null} Original content HTML (saved before diff mode)
+     */
+    #originalContent = null;
+
+    /**
+     * @type {boolean}
+     */
+    #isDiffMode = false;
+
+    /**
      * @param {HTMLElement} container
      * @param {HTMLElement} side_panel_container
      * @param {HTMLElement} offcanvas_container
@@ -101,6 +116,7 @@ export class GlpiKnowbaseArticleController
 
         this.#initEventListeners();
         this.#initEditor();
+        this.#initDiffListeners();
 
         // Enable dots menu once listeners are ready
         const dots = this.#container.querySelector('[data-glpi-kb-dots]');
@@ -132,6 +148,74 @@ export class GlpiKnowbaseArticleController
                 this.#unlinkDocument(button);
             }
         });
+    }
+
+    #initDiffListeners()
+    {
+        this.#container.addEventListener('glpi:kb:compare', (e) => {
+            this.#showDiff(e.detail);
+        });
+
+        this.#container.addEventListener('glpi:kb:compare-off', () => {
+            this.#hideDiff();
+        });
+    }
+
+    /**
+     * @param {{title_diff: string, content_diff: string}} detail
+     */
+    #showDiff({title_diff, content_diff})
+    {
+        const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
+        const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
+
+        if (!subjectEl || !contentEl) {
+            return;
+        }
+
+        // Save original content on first activation
+        if (this.#originalSubject === null) {
+            this.#originalSubject = subjectEl.innerHTML;
+            this.#originalContent = contentEl.innerHTML;
+        }
+
+        // Replace with diff
+        subjectEl.innerHTML = title_diff;
+        contentEl.innerHTML = content_diff;
+
+        // Add diff-mode class for styling
+        const article = this.#container.querySelector('.kb-article');
+        if (article) {
+            article.classList.add('kb-article--diff-mode');
+        }
+
+        this.#isDiffMode = true;
+    }
+
+    #hideDiff()
+    {
+        if (!this.#isDiffMode) {
+            return;
+        }
+
+        const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
+        const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
+
+        if (subjectEl && this.#originalSubject !== null) {
+            subjectEl.innerHTML = this.#originalSubject;
+        }
+        if (contentEl && this.#originalContent !== null) {
+            contentEl.innerHTML = this.#originalContent;
+        }
+
+        const article = this.#container.querySelector('.kb-article');
+        if (article) {
+            article.classList.remove('kb-article--diff-mode');
+        }
+
+        this.#originalSubject = null;
+        this.#originalContent = null;
+        this.#isDiffMode = false;
     }
 
     /**

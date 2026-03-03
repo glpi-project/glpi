@@ -34,12 +34,13 @@ import { Page, Locator, expect } from '@playwright/test';
 
 export class TipTapEditorHelper {
     private readonly page: Page;
-    private readonly contentContainer: Locator;
+    readonly contentContainer: Locator;
     private editor: Locator | null = null;
 
     constructor(page: Page) {
         this.page = page;
-        this.contentContainer = page.getByTestId('content');
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.contentContainer = page.locator('[data-glpi-kb-content]');
     }
 
     async enterEditMode(): Promise<Locator> {

@@ -37,19 +37,20 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\RichText\RichText;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
-use Session;
+use Ssddanbrown\HtmlDiff\Diff;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class RevertRevisionController extends AbstractController
+final class CompareRevisionController extends AbstractController
 {
     #[Route(
-        "/Knowbase/{id}/RevertTo/{revision_id}",
-        name: "knowbase_article_revert_revision",
-        methods: ["POST"],
+        "/Knowbase/{id}/CompareRevision/{revision_id}",
+        name: "knowbase_article_compare_revision",
+        methods: ["GET"],
         requirements: [
             'id' => '\d+',
             'revision_id' => '\d+',
@@ -57,35 +58,45 @@ final class RevertRevisionController extends AbstractController
     )]
     public function __invoke(int $id, int $revision_id): Response
     {
-        // Load the KnowbaseItem
         $kb = KnowbaseItem::getById($id);
         if (!$kb) {
             throw new BadRequestHttpException();
         }
 
-        // Check permissions
-        if (!$kb->can($id, UPDATE)) {
+        if (!$kb->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
 
-        // Verify the revision exists and belongs to this KB item
         $revision = KnowbaseItem_Revision::getById($revision_id);
         if (!$revision || (int) $revision->fields['knowbaseitems_id'] !== $id) {
             throw new BadRequestHttpException();
         }
 
-        // Perform the revert
-        if (!$kb->revertTo($revision_id)) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => __("Failed to restore the revision."),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        // Old = revision content, New = current article content
+        $old_name = $revision->fields['name'];
+        $new_name = $kb->fields['name'];
 
-        Session::addMessageAfterRedirect(__s("Article restored successfully."));
+        $old_answer = RichText::getEnhancedHtml($revision->fields['answer'], ['text_maxsize' => 0]);
+        $new_answer = RichText::getEnhancedHtml($kb->fields['answer'], ['text_maxsize' => 0]);
+
+        // Normalize non-breaking spaces (same as the former JS normalizeHtml)
+        $old_name   = $this->normalizeHtml($old_name);
+        $new_name   = $this->normalizeHtml($new_name);
+        $old_answer = $this->normalizeHtml($old_answer);
+        $new_answer = $this->normalizeHtml($new_answer);
+
+        $title_diff   = (new Diff($old_name, $new_name))->build();
+        $content_diff = (new Diff($old_answer, $new_answer))->build();
 
         return new JsonResponse([
-            'success' => true,
+            'title_diff'   => $title_diff,
+            'content_diff' => $content_diff,
         ]);
+    }
+
+    private function normalizeHtml(string $html): string
+    {
+        // Replace UTF-8 non-breaking space (0xC2 0xA0) and HTML entity
+        return str_replace(["\xC2\xA0", '&nbsp;'], ' ', $html);
     }
 }

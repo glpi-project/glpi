@@ -33,6 +33,12 @@
 <li
     class="step-item {{ first ? 'active' : '' }}"
     data-testid="history-event"
+    {% if first %}
+        data-glpi-current-version
+    {% elseif is_revision %}
+        data-glpi-revision-id="{{ event.getRevisionId() }}"
+        data-glpi-kb-id="{{ id }}"
+    {% endif %}
 >
     <div class="d-flex align-items-start justify-content-between">
         <div>

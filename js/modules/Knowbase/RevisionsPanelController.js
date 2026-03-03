@@ -33,6 +33,8 @@
 /* global glpi_toast_error, glpi_toast_info, glpi_html_dialog, getAjaxCsrfToken */
 
 const revert_selector = "[data-glpi-revert-revision]";
+const revision_selector = "[data-glpi-revision-id]";
+const current_version_selector = "[data-glpi-current-version]";
 
 export class GlpiKnowbaseRevisionsPanelController
 {
@@ -40,6 +42,11 @@ export class GlpiKnowbaseRevisionsPanelController
      * @type {HTMLElement}
      */
     #container;
+
+    /**
+     * @type {string|null}
+     */
+    #activeRevisionId = null;
 
     constructor(container)
     {
@@ -50,12 +57,108 @@ export class GlpiKnowbaseRevisionsPanelController
     #initEventListeners()
     {
         this.#container.addEventListener('click', (e) => {
+            // Revert button takes priority — stop propagation to avoid triggering compare
             const revertButton = e.target.closest(revert_selector);
             if (revertButton) {
                 e.preventDefault();
+                e.stopPropagation();
                 this.#handleRevert(revertButton);
+                return;
+            }
+
+            // Click on a revision item → toggle comparison
+            const revisionItem = e.target.closest(revision_selector);
+            if (revisionItem) {
+                e.preventDefault();
+                this.#handleCompareToggle(revisionItem);
+                return;
+            }
+
+            // Click on current version item → deactivate comparison
+            const currentVersionItem = e.target.closest(current_version_selector);
+            if (currentVersionItem && this.#activeRevisionId !== null) {
+                e.preventDefault();
+                this.#deactivateComparison();
             }
         });
+    }
+
+    /**
+     * @param {HTMLElement} revisionItem
+     */
+    async #handleCompareToggle(revisionItem)
+    {
+        const revisionId = revisionItem.dataset.glpiRevisionId;
+        const kbId = revisionItem.dataset.glpiKbId;
+
+        // Toggle off if clicking the already-active revision
+        if (this.#activeRevisionId === revisionId) {
+            this.#deactivateComparison();
+            return;
+        }
+
+        // Activate comparison
+        await this.#activateComparison(kbId, revisionId);
+    }
+
+    /**
+     * @param {string} kbId
+     * @param {string} revisionId
+     */
+    async #activateComparison(kbId, revisionId)
+    {
+        // Restore original DOM before computing new diff
+        if (this.#activeRevisionId !== null) {
+            this.#deactivateComparison();
+        }
+
+        try {
+            const base_url = CFG_GLPI.root_doc;
+            const response = await fetch(
+                `${base_url}/Knowbase/${kbId}/CompareRevision/${revisionId}`,
+                {headers: {'X-Requested-With': 'XMLHttpRequest'}}
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to load revision diff');
+            }
+
+            const {title_diff, content_diff} = await response.json();
+
+            // Dispatch event to ArticleController
+            this.#container.dispatchEvent(new CustomEvent('glpi:kb:compare', {
+                bubbles: true,
+                detail: {revisionId, title_diff, content_diff},
+            }));
+
+            // Update state
+            this.#activeRevisionId = revisionId;
+            this.#updateRevisionItemsState();
+
+        } catch {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
+    }
+
+    #deactivateComparison()
+    {
+        this.#container.dispatchEvent(new CustomEvent('glpi:kb:compare-off', {
+            bubbles: true,
+        }));
+
+        this.#activeRevisionId = null;
+        this.#updateRevisionItemsState();
+    }
+
+    #updateRevisionItemsState()
+    {
+        const items = this.#container.querySelectorAll(revision_selector);
+        for (const item of items) {
+            item.classList.toggle(
+                'kb-revision--comparing',
+                item.dataset.glpiRevisionId === this.#activeRevisionId
+            );
+        }
     }
 
     #handleRevert(button)

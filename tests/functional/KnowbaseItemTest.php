@@ -1764,7 +1764,7 @@ HTML,
 
         // Act: render article and get its title
         $html = $this->renderArticleAdmin($article->getID());
-        $subject = $html->filter('[data-testid=subject]')->text();
+        $subject = $html->filter('[data-glpi-kb-subject]')->text();
 
         // Assert: title should be as configured
         $this->assertEquals("My article", $subject);

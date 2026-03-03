@@ -44,7 +44,7 @@
         left: -1.5rem;
         width: calc(100% + 3rem);
         margin-left: 0;
-        padding-right: 0.5rem;
+        padding-right: 1.25rem;
         border-left: none;
     }
 
@@ -143,6 +143,44 @@
         .kb-unlink-document {
             opacity: 1;
         }
+    }
+}
+
+// KB revision diff - inline highlights
+.kb-article--diff-mode {
+    ins.diffins {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffdel {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+
+    ins.diffmod {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffmod {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+}
+
+// KB revision comparison - side panel state
+.kb-sidepanel [data-glpi-revision-id] {
+    cursor: pointer;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    &.kb-revision--comparing {
+        background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+        box-shadow: inset -3px 0 0 var(--tblr-primary);
     }
 }
 
