@@ -1451,7 +1451,7 @@ final class SQLProvider implements SearchProviderInterface
                         'OR' => [],
                     ];
                     if (in_array($searchtype, ['equals', 'notequals'])) {
-                        $append_criterion_with_search($criteria['OR'], "$table.id");
+                        $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.id"));
 
                         if ($searchtype === 'notequals') {
                             $nott = !$nott;
@@ -1479,7 +1479,7 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 } elseif ($searchtype === 'empty') {
                     $criteria = [];
-                    $append_criterion_with_search($criteria, "$table.id");
+                    $append_criterion_with_search($criteria, $DB::quoteName("$table.id"));
                     return $criteria;
                 }
                 $toadd   = '';
@@ -1522,9 +1522,9 @@ final class SQLProvider implements SearchProviderInterface
                             $name2 => $SEARCH,
                             'RAW'  => [
                                 (string) QueryFunction::concat([
-                                    new QueryExpression("`$name1`"),
-                                    new QueryExpression(new QueryExpression($DB::quoteValue(' '))),
-                                    new QueryExpression("`$name2`"),
+                                    new QueryExpression($DB::quoteName($name1)),
+                                    new QueryExpression($DB::quoteValue(' ')),
+                                    new QueryExpression($DB::quoteName($name2)),
                                 ]) => $SEARCH,
                             ],
                         ],
@@ -1537,15 +1537,15 @@ final class SQLProvider implements SearchProviderInterface
                     $criteria = [
                         $tmplink => [],
                     ];
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$field");
+                    $append_criterion_with_search($criteria[$tmplink], $DB::quoteName("$table.$name1"));
+                    $append_criterion_with_search($criteria[$tmplink], $DB::quoteName("$table.$name2"));
+                    $append_criterion_with_search($criteria[$tmplink], $DB::quoteName("$table.$field"));
                     $append_criterion_with_search(
                         $criteria[$tmplink],
                         QueryFunction::concat([
-                            "$table.$name1",
+                            $DB::quoteName("$table.$name1"),
                             new QueryExpression($DB::quoteValue(' ')),
-                            "$table.$name2",
+                            $DB::quoteName("$table.$name2"),
                         ])
                     );
 
@@ -1621,7 +1621,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         case 'empty':
                             $criteria = [];
-                            $append_criterion_with_search($criteria, "$table.id");
+                            $append_criterion_with_search($criteria, $DB::quoteName("$table.id"));
                             return $criteria;
                     }
                 }
@@ -1637,7 +1637,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
                     $regs[1] .= $regs[2];
-                    return [new QueryExpression("(INET_ATON(`$table`.`$field`) " . $regs[1] . " INET_ATON('" . $regs[3] . "'))")];
+                    return [new QueryExpression("(INET_ATON(" . $DB::quoteName("$table.$field") . ") " . $regs[1] . " INET_ATON(" . $DB::quoteValue($regs[3]) . "))")];
                 }
                 break;
 
@@ -1819,10 +1819,11 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        $tocompute      = "`$table`.`$field`";
-        $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
+        $tocompute      = $DB::quoteName("$table.$field");
+        $tocomputetrans = $DB::quoteName($table . "_trans_" . $field . ".value");
         if (isset($opt["computation"])) {
             $is_query_exp = is_a($opt["computation"], QueryExpression::class);
+            /** @var string|QueryExpression $tocompute */
             $tocompute = $opt["computation"];
             $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
             $tocompute = str_replace("TABLE", $DB::quoteName("$table"), $tocompute);
@@ -1835,14 +1836,14 @@ final class SQLProvider implements SearchProviderInterface
         if (isset($opt["datatype"])) {
             if ($opt["datatype"] === "mio") {
                 // Parse value as it may contain a few different formats
-                $val = Toolbox::getMioSizeFromString($val);
+                $val = Toolbox::getMioSizeFromString((string) $val);
             }
 
             switch ($opt["datatype"]) {
                 case "itemtypename":
                     if (in_array($searchtype, ['equals', 'notequals'])) {
                         $criteria = [];
-                        $append_criterion_with_search($criteria, "$table.$field");
+                        $append_criterion_with_search($criteria, $DB::quoteName("$table.$field"));
                         return $criteria;
                     }
                     break;
@@ -1854,6 +1855,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
                         if ($searchtype === 'empty' && $opt["field"] === 'name') {
+                            /** @var string $tocompute */
                             $l = $nott ? 'AND' : 'OR';
                             $criteria = [
                                 $l => [
@@ -1865,7 +1867,7 @@ final class SQLProvider implements SearchProviderInterface
                             $append_criterion_with_search($criteria[$l], $tocompute);
                         } else {
                             $criteria = [];
-                            $append_criterion_with_search($criteria, "$table.id");
+                            $append_criterion_with_search($criteria, $DB::quoteName("$table.id"));
                         }
                         return $criteria;
                     }
@@ -1895,7 +1897,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
-                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"])) {
+                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"]) && $date_computation !== null) {
                         // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
@@ -1955,7 +1957,13 @@ final class SQLProvider implements SearchProviderInterface
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                            $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
+                            $ret .= sprintf(
+                                "%s %s%s %s",
+                                $date_computation,
+                                $regs[1],
+                                $regs[2],
+                                $DB::quoteValue($regs[3])
+                            );
                             if ($nott) {
                                 $ret .= ")";
                             }
@@ -1979,6 +1987,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype == 'notequals') {
                         $nott = !$nott;
                     }
+                    /** @var string $tocompute */
                     $criteria = [$tocompute => ['&', $val]];
                     return $nott ? ['NOT' => $criteria] : $criteria;
 
@@ -2013,7 +2022,16 @@ final class SQLProvider implements SearchProviderInterface
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return [new QueryExpression("$tocompute {$regs[1]} {$regs[3]}{$regs[4]}")];
+                        return [
+                            new QueryExpression(
+                                sprintf(
+                                    "%s %s %s",
+                                    $tocompute,
+                                    $regs[1],
+                                    $DB::quoteValue($regs[3] . $regs[4])
+                                )
+                            ),
+                        ];
                     }
 
                     if (is_numeric($val) && !$decimal_contains) {
@@ -2031,8 +2049,8 @@ final class SQLProvider implements SearchProviderInterface
                             ) {
                                 $ADD = [new QueryExpression("$tocompute IS NULL")];
                             }
-                            $val1 = $numeric_val - $searchopt[$ID]["width"];
-                            $val2 = $numeric_val + $searchopt[$ID]["width"];
+                            $val1 = floatval($numeric_val - $searchopt[$ID]["width"]);
+                            $val2 = floatval($numeric_val + $searchopt[$ID]["width"]);
                             if ($nott) {
                                 return [
                                     'OR' => array_merge(
@@ -2075,6 +2093,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'text':
                     if ($searchtype === 'empty') {
+                        /** @var string $tocompute */
                         $l = $nott ? 'AND' : 'OR';
                         $criteria = [
                             $l => [
@@ -2190,7 +2209,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $append_criterion_with_search(
                         $sub_query_criteria['WHERE'],
-                        "$linked_fk"
+                        $DB::quoteName($linked_fk)
                     );
 
                     $criteria = [
@@ -2222,7 +2241,7 @@ final class SQLProvider implements SearchProviderInterface
                     ];
                     $append_criterion_with_search(
                         $inner_subquery_criteria['WHERE']['OR'],
-                        "$field"
+                        $DB::quoteName($field)
                     );
                     $subquery_criteria_where = [
                         'OR' => [
@@ -2255,7 +2274,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $append_criterion_with_search(
                         $inner_subquery_criteria['WHERE'],
-                        "$field"
+                        $DB::quoteName($field)
                     );
                     $subquery_criteria_where = [
                         "$linked_fk" => new QuerySubQuery($inner_subquery_criteria),
@@ -2287,9 +2306,9 @@ final class SQLProvider implements SearchProviderInterface
                 && ($itemtype == AllAssets::getType()
                     || $table != $itemtype::getTable())
             ) {
-                $append_criterion_with_search($criteria['OR'], "$table.id");
+                $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.id"));
             } else {
-                $append_criterion_with_search($criteria['OR'], "$table.$field");
+                $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.$field"));
             }
             if ($searchtype == 'notequals') {
                 $nott = !$nott;
@@ -2688,6 +2707,8 @@ final class SQLProvider implements SearchProviderInterface
      */
     private static function parseJoinString(string $raw_joins): array
     {
+        global $DB;
+
         $joins = [];
         $raw_joins = trim($raw_joins);
         if (empty($raw_joins)) {
@@ -3152,7 +3173,7 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $nt => 'itemtype',
-                                        new QueryExpression("'$used_itemtype'"),
+                                        new QueryExpression($DB::quoteValue($used_itemtype)),
                                     ],
                                 ],
                             ],
@@ -3822,6 +3843,8 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
+        global $DB;
+
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return [];
@@ -3965,7 +3988,7 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [new QueryExpression(self::makeTextCriteria("`$NAME`", $val, $NOT, ''))];
+        return [new QueryExpression(self::makeTextCriteria($DB::quoteName($NAME), $val, $NOT, ''))];
     }
 
 
@@ -4139,7 +4162,11 @@ final class SQLProvider implements SearchProviderInterface
 
                         $add_minus = '';
                         if (isset($searchopt[$ID]["datafields"][3])) {
-                            $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
+                            $add_minus = sprintf(
+                                "- %s.%s",
+                                $DB::quoteName($table . $addtable),
+                                $DB::quoteName($searchopt[$ID]["datafields"][3]),
+                            );
                         }
                         $criterion = QueryFunction::dateAdd(
                             date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
