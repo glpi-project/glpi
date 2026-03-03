@@ -92,6 +92,12 @@
 
 [data-glpi-knowbase-side-panel-offcanvas] {
     width: min(400px, 85vw);
+
+    .steps-vertical {
+        --tblr-steps-padding: 1.5rem;
+
+        margin-left: 0;
+    }
 }
 
 // KB Documents footer section

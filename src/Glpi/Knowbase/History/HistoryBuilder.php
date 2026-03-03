@@ -35,9 +35,13 @@
 namespace Glpi\Knowbase\History;
 
 use Document;
+use Entity;
+use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
 use Log;
+use Profile;
+use User;
 
 final class HistoryBuilder
 {
@@ -56,6 +60,7 @@ final class HistoryBuilder
         $this->addFaqStatusChangesToHistory();
         $this->addAssociatedItemChangesToHistory();
         $this->addDocumentChangesToHistory();
+        $this->addPermissionChangesToHistory();
         $this->history->sort();
         return $this->history;
     }
@@ -136,6 +141,45 @@ final class HistoryBuilder
         ));
     }
 
+    private function addPermissionChangesToHistory(): void
+    {
+        global $DB;
+
+        $target_types = [
+            Entity::class,
+            Group::class,
+            Profile::class,
+            User::class,
+        ];
+
+        $logs = $DB->request([
+            'SELECT' => ['date_mod', 'user_name', 'linked_action', 'old_value', 'new_value'],
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'linked_action' => [Log::HISTORY_ADD_RELATION, Log::HISTORY_DEL_RELATION],
+                'itemtype_link' => $target_types,
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $is_add = (int) $row['linked_action'] === Log::HISTORY_ADD_RELATION;
+            $target_name = $is_add ? $row['new_value'] : $row['old_value'];
+            $description = $is_add
+                ? sprintf(__("Access granted to %s by"), $target_name)
+                : sprintf(__("Access revoked from %s by"), $target_name);
+
+            $this->history->addEvent(new LogEvent(
+                label: __("Permissions updated"),
+                description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
     private function addFaqStatusChangesToHistory(): void
     {
         global $DB;
@@ -156,7 +200,6 @@ final class HistoryBuilder
             'ORDER' => 'id DESC',
         ]);
 
-
         foreach ($logs as $row) {
             $label = $row['new_value']
                 ? __("Added to the FAQ")
@@ -176,6 +219,16 @@ final class HistoryBuilder
     {
         global $DB, $CFG_GLPI;
 
+        // Exclude permission types (Entity, Group, Profile, User) as they
+        // are handled separately by addPermissionChangesToHistory().
+        $permission_types = [
+            Entity::class,
+            Group::class,
+            Profile::class,
+            User::class,
+        ];
+        $item_types = array_values(array_diff($CFG_GLPI['kb_types'], $permission_types));
+
         $logs = $DB->request([
             'SELECT' => [
                 'date_mod',
@@ -189,7 +242,7 @@ final class HistoryBuilder
             'WHERE' => [
                 'itemtype'      => KnowbaseItem::class,
                 'items_id'      => $this->kb->getID(),
-                'itemtype_link' => $CFG_GLPI['kb_types'],
+                'itemtype_link' => $item_types,
                 'linked_action' => [
                     Log::HISTORY_ADD_RELATION,
                     Log::HISTORY_DEL_RELATION,
