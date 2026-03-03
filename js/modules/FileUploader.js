@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, glpi_toast_error, uniqid */
+/* global _, getAjaxCsrfToken, glpi_toast_error, uniqid */
 
 /**
  * Generic file uploader with drag & drop support.
