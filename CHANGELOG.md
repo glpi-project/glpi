@@ -813,7 +813,7 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.24] unreleased
+## [10.0.24] 2026-03-03
 
 ### Added
 
