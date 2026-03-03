@@ -53,7 +53,7 @@ if (!is_a($itemtype, CommonDBTM::class, true)) {
 
 // Validate id
 $item = $itemtype::getById($id);
-if (!$item || !$item->canViewItem()) {
+if (!$item || !$item->can($id, READ)) {
     Response::sendError(400, "No item found for given id", Response::CONTENT_TYPE_TEXT_PLAIN);
 }
 
