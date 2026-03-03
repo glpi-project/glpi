@@ -4767,7 +4767,7 @@ msgstr "Enter"
 #: templates/stencil/editor.html.twig
 #: templates/pages/setup/general/performance.html.twig
 msgid "Reset"
-msgstr "Reinicializar"
+msgstr "Reset"
 
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
@@ -7423,8 +7423,8 @@ msgid ""
 "\"upload_max_filesize\" and \"post_max_size\" PHP settings. The setting "
 "below is to further restrict the uploads for just GLPI."
 msgstr ""
-" tamanho máximo do envio é determinado principalmente pelas configurações do"
-" PHP \"upload_max_filesize\" e \"post_max_size\". A configuração abaixo "
+"O tamanho máximo do envio é determinado principalmente pelas configurações "
+"do PHP \"upload_max_filesize\" e \"post_max_size\". A configuração abaixo "
 "serve para restringir ainda mais os envios somente para o GLPI."
 
 #: templates/pages/setup/general/management_setup.html.twig
@@ -7842,7 +7842,7 @@ msgstr ""
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Default heading when adding a document to a ticket"
-msgstr "Cabeçalho padrão quando se está adicionando um documento a um chamado"
+msgstr "Categoria padrão quando se está adicionando um documento a um chamado"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "By default, a software may be linked to a ticket"
@@ -9610,7 +9610,7 @@ msgstr "SHA1"
 #: src/NotificationTargetCommonITILObject.php:2348 src/Document.php:898
 #: src/NotificationTargetProjectTask.php:645
 msgid "Web link"
-msgstr "Link web"
+msgstr "Link da Web"
 
 #: templates/pages/management/document.html.twig src/Document_Item.php:630
 #: src/Document.php:906 src/DocumentType.php:64 src/DocumentType.php:102
@@ -10393,7 +10393,7 @@ msgstr "Nenhum valor padrão"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Translation row for %s"
-msgstr ""
+msgstr "Linha de tradução para %s"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10416,7 +10416,7 @@ msgstr "Valor padrão"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation actions"
-msgstr ""
+msgstr "Ações de tradução"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10477,7 +10477,7 @@ msgstr "Digitar tradução"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Copy default value to translation"
-msgstr ""
+msgstr "Copiar valor padrão para a tradução"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
@@ -11421,7 +11421,7 @@ msgstr "Pré-visualização e seleção de ilustração personalizada"
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Recommended size: %s"
-msgstr ""
+msgstr "Tamanho recomendado: %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited illustration preview"
@@ -16125,7 +16125,7 @@ msgstr "Você não pode excluir uma entidade que contém subentidades."
 
 #: src/Entity.php:377
 msgid "You do not have rights for this entity."
-msgstr ""
+msgstr "Você não possui permissão sobre esta entidade."
 
 #: src/Entity.php:396
 msgid "You can't add an entity without name"
@@ -16366,7 +16366,7 @@ msgstr "Atualizar parâmetros"
 
 #: src/Entity.php:2911
 msgid "Update helpdesk parameters"
-msgstr "Atualizar parâmetros de helpdesk"
+msgstr "Atualizar parâmetros de Helpdesk"
 
 #: src/Entity.php:2946
 msgid "Value inherited from a parent entity"
@@ -20827,13 +20827,15 @@ msgstr "Caminho de arquivo de chave privada do certificado TLS está incorreto"
 
 #: src/CommonGLPI.php:730
 msgid "Creating from template"
-msgstr ""
+msgstr "Criando a partir do modelo"
 
 #: src/CommonGLPI.php:731
 msgid ""
 "You are currently creating an object from a template. You need to save it, "
 "in the main tab, before editing data in other tabs."
 msgstr ""
+"Você está criando um objeto a partir de um modelo. É necessário salvá-lo na "
+"aba principal antes de editar os dados em outras abas."
 
 #: src/CommonGLPI.php:1160
 msgid "First"
@@ -22967,9 +22969,9 @@ msgstr "Entrada/Saída"
 #: src/NotificationTargetKnowbaseItem.php:199
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] "Cabeçalho de documento"
-msgstr[1] "Cabeçalhos de documento"
-msgstr[2] "Cabeçalhos de documento"
+msgstr[0] "Categoria de documento"
+msgstr[1] "Categorias de documentos"
+msgstr[2] "Categorias de documentos"
 
 #: src/DevicePciModel.php:44
 msgid "Other component model"
@@ -23631,15 +23633,15 @@ msgstr "Ocorreu um erro durante a atualização. O erro foi: %s"
 
 #: src/Update.php:292
 msgid "Creating default forms and helpdesk tiles if needed…"
-msgstr ""
+msgstr "Criando formulários padrão e ícones de Helpdesk, se necessário…"
 
 #: src/Update.php:297
 msgid "Default forms and helpdesk tiles created."
-msgstr ""
+msgstr "Formulários padrão e blocos de Helpdesk criados."
 
 #: src/Update.php:301
 msgid "Initializing default rules if needed…"
-msgstr ""
+msgstr "Inicializando as regras padrão, se necessário…"
 
 #: src/Update.php:305 src/Toolbox.php:2295
 msgid "Default rules initialized."
@@ -23655,7 +23657,7 @@ msgstr "Finalizando a atualização..."
 
 #: src/Update.php:390
 msgid "Generating security keys if needed…"
-msgstr ""
+msgstr "Gerando chaves de segurança, se necessário…"
 
 #: src/Update.php:398
 #, php-format

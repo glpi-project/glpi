@@ -7116,7 +7116,7 @@ msgstr "增加此项"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1228
 msgid "Delete the item"
-msgstr "删除物品"
+msgstr "删除此项"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1240
 msgid "Restore the item"

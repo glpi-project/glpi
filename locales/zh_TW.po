@@ -12,8 +12,8 @@
 # akong <akong@aspa.idv.tw>, 2026
 # Cédric Anne, 2026
 # ShaoPin Cheng <cjt74392@ms10.hinet.net>, 2026
-# DWXXX, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
+# DWXXX, 2026
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-22 07:57+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2026\n"
+"Last-Translator: DWXXX, 2026\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/glpi/teams/1637/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -5085,28 +5085,28 @@ msgstr "處理中的待辦事項"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter the code from your authenticator app"
-msgstr ""
+msgstr "请输入认证APP上的代码"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Backup code"
-msgstr ""
+msgstr "备份代码"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Use a backup code"
-msgstr ""
+msgstr "使用一个备份代码"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Use a code from your authenticator app"
-msgstr ""
+msgstr "使用认证APP上的代码"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter a backup code"
-msgstr ""
+msgstr "请输入一个备份代码"
 
 #: templates/pages/2fa/2fa_request.html.twig
 #: templates/pages/2fa/macros.html.twig
 msgid "Verify"
-msgstr ""
+msgstr "验证"
 
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/security_setup.html.twig
@@ -5159,28 +5159,28 @@ msgstr ""
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:73
 msgid "Mandatory"
-msgstr ""
+msgstr "强制"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Optional"
-msgstr ""
+msgstr "可选"
 
 #: templates/pages/2fa/2fa_status.html.twig
 #: templates/pages/admin/user/user.html.twig
 msgid "2FA enabled"
-msgstr ""
+msgstr "已启用2FA"
 
 #: templates/pages/2fa/2fa_status.html.twig src/User.php:3075
 msgid "Disable 2FA"
-msgstr ""
+msgstr "禁用2FA"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Reset 2FA"
-msgstr ""
+msgstr "重置2FA"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Regenerate backup codes"
-msgstr ""
+msgstr "重新生成备份代码"
 
 #: templates/pages/2fa/macros.html.twig
 #, php-format
@@ -5209,11 +5209,11 @@ msgstr ""
 
 #: templates/pages/2fa/macros.html.twig
 msgid "QR Code"
-msgstr ""
+msgstr "QR Code"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA secret"
-msgstr ""
+msgstr "2FA 密钥"
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
@@ -5230,7 +5230,7 @@ msgstr ""
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Skip"
-msgstr ""
+msgstr "跳过"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Backup codes (This is the only time these will be shown)"
@@ -5243,15 +5243,15 @@ msgstr ""
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Copied"
-msgstr ""
+msgstr "已复制"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "An error occurred"
-msgstr ""
+msgstr "产生一个错误"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Copy backup codes"
-msgstr ""
+msgstr "复制备份代码"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: src/Glpi/Form/Category.php:57
@@ -5910,7 +5910,7 @@ msgstr "IP"
 
 #: templates/pages/assets/unmanaged.html.twig
 msgid "Approved device"
-msgstr ""
+msgstr "批准的设备"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:151
 msgid "Network hub"

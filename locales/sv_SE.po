@@ -1787,14 +1787,14 @@ msgstr "Högtalare"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:122
 msgid "Inventory information"
-msgstr "Information om inventering"
+msgstr "Inventeringsinformation"
 
 #. TRANS: parameter is the name of the asset
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:139
 #, php-format
 msgid "Download \"%1$s\" inventory file"
-msgstr "Ladda ner \"%1$s\" inventeringsfil"
+msgstr "Ladda ned inventeringsfil för %1$s"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:160
@@ -10833,7 +10833,7 @@ msgstr "Etikett (TAG)"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Agent configuration"
-msgstr "Agent-konfiguration"
+msgstr "Agentkonfiguration"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
@@ -10973,7 +10973,7 @@ msgid ""
 "Child locations will not be transferred with the parent to avoid visibility "
 "and hierarchy issues."
 msgstr ""
-"Underliggande platser kommer inte att överföras tillsammans med den "
+"Underordnade platser kommer inte att överföras tillsammans med den "
 "överordnade platsen för att undvika problem med synlighet och hierarki."
 
 #: templates/pages/admin/transfer.html.twig
@@ -18285,7 +18285,7 @@ msgstr "%2$s agerar som %1$s"
 #: src/Log.php:471
 #, php-format
 msgid "%1$s by %2$s"
-msgstr "%1$s efter %2$s"
+msgstr "från %1$s till %2$s"
 
 #: src/Log.php:684
 #, php-format
@@ -18493,7 +18493,7 @@ msgstr "Faktisk kapacitet (mWh)"
 
 #: src/Item_DeviceBattery.php:63
 msgid "Real capacity"
-msgstr "Faktisk kapacitet"
+msgstr "Verklig kapacitet"
 
 #: src/DeviceFirmware.php:57 src/DeviceFirmware.php:82
 #: src/DeviceFirmware.php:262
@@ -22402,7 +22402,7 @@ msgstr "Regler för att tilldela en kategori till mjukvara"
 
 #: src/RuleSoftwareCategory.php:75 src/RuleDictionnarySoftware.php:79
 msgid "Category from inventory tool"
-msgstr "Kategori från agentverktyg"
+msgstr "Kategori från inventeringsagent"
 
 #: src/RuleSoftwareCategory.php:89
 msgid "Import category from inventory tool"
@@ -25710,7 +25710,7 @@ msgstr "Omvänd alfabetisk"
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/PopularitySort.php:86
 #: src/Glpi/Marketplace/View.php:436
 msgid "Most popular"
-msgstr "Mest populär"
+msgstr "Populäraste"
 
 #: src/Glpi/Form/Destination/FormDestinationManager.php:139
 msgid "This form is invalid, it must create at least one item."
@@ -27494,23 +27494,23 @@ msgstr "Annars behöver du ladda ner och packa upp tilläggsarkiven manuellt."
 
 #: src/Glpi/Marketplace/View.php:426
 msgid "Alpha ASC"
-msgstr "Alpha ASC"
+msgstr "Stigande alfabetisk"
 
 #: src/Glpi/Marketplace/View.php:431
 msgid "Alpha DESC"
-msgstr "Alpha DESC"
+msgstr "Fallande alfabetisk"
 
 #: src/Glpi/Marketplace/View.php:441
 msgid "Last updated"
-msgstr "Senast uppdaterad"
+msgstr "Senast uppdaterade"
 
 #: src/Glpi/Marketplace/View.php:446
 msgid "Most recent"
-msgstr "Senaste"
+msgstr "Senast tillagda"
 
 #: src/Glpi/Marketplace/View.php:451
 msgid "Best notes"
-msgstr "Bästa anteckningarna"
+msgstr "Högsta betyg"
 
 #: src/Glpi/Marketplace/View.php:456
 msgid "Your plugin here? Contact us."
@@ -27577,8 +27577,7 @@ msgstr "En ny version (%s) är tillgänglig, uppdatera?"
 #, php-format
 msgid "You need a superior GLPI-Network offer to access to this plugin (%s)"
 msgstr ""
-"Du behöver ett bättre GLPI-nätverkserbjudande för att få tillgång till detta"
-" tillägg (%s)"
+"Du behöver en utökad GLPI-licens för att få tillgång till detta tillägg (%s)"
 
 #: src/Glpi/Marketplace/View.php:772 src/Plugin.php:3180
 msgid "Install"

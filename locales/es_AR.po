@@ -15,7 +15,6 @@
 # Juan Fortuna <jfortuna@antel.com.uy>, 2023
 # luciana cabrera, 2024
 # Pablo Nazar <pablo.e.nazar@gmail.com>, 2025
-# Joaquin Etchegaray, 2025
 # Michael Manganiello, 2025
 # Juan Gabriel Queirolo, 2025
 # Juan Sueiro, 2025
@@ -27,9 +26,10 @@
 # Dario, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
-# Alan Lehoux, 2026
 # Nicolás Gaviola, 2026
 # Fernando Toledo <ftoledo@docksud.com.ar>, 2026
+# Joaquin Etchegaray, 2026
+# Alan Lehoux, 2026
 # 
 #, fuzzy
 msgid ""
@@ -38,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-22 07:57+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Fernando Toledo <ftoledo@docksud.com.ar>, 2026\n"
+"Last-Translator: Alan Lehoux, 2026\n"
 "Language-Team: Spanish (Argentina) (https://app.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10409,7 +10409,7 @@ msgstr "Sin valor por defecto"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Translation row for %s"
-msgstr ""
+msgstr "Fila de traducción para%s"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10432,7 +10432,7 @@ msgstr "Valor por defecto"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation actions"
-msgstr ""
+msgstr "Acciones de traducción"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10493,7 +10493,7 @@ msgstr "Ingresar traducción"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Copy default value to translation"
-msgstr ""
+msgstr "Copiar valor por defecto a la traducción"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
@@ -11443,7 +11443,7 @@ msgstr "Vista previa y selección de ilustraciones personalizadas"
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Recommended size: %s"
-msgstr ""
+msgstr "Peso recomendado: %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited illustration preview"
@@ -16159,7 +16159,7 @@ msgstr "No podés eliminar una entidad que contiene subentidades."
 
 #: src/Entity.php:377
 msgid "You do not have rights for this entity."
-msgstr ""
+msgstr "No tienes permisos desde esta entidad."
 
 #: src/Entity.php:396
 msgid "You can't add an entity without name"
@@ -20866,13 +20866,16 @@ msgstr "La ruta del archivo de clave TLS es incorrecta"
 
 #: src/CommonGLPI.php:730
 msgid "Creating from template"
-msgstr ""
+msgstr "Creando desde plantilla"
 
 #: src/CommonGLPI.php:731
 msgid ""
 "You are currently creating an object from a template. You need to save it, "
 "in the main tab, before editing data in other tabs."
 msgstr ""
+"Actualmente estás creando un objeto desde una plantilla. Necesitas "
+"guardarlo, en la pestaña principal, antes de editar la información en otras "
+"pestañas."
 
 #: src/CommonGLPI.php:1160
 msgid "First"
@@ -23668,14 +23671,17 @@ msgstr "Ocurrió un error durante la actualización. El error fue: %s"
 #: src/Update.php:292
 msgid "Creating default forms and helpdesk tiles if needed…"
 msgstr ""
+"Creando los formularios por defecto y los mosaicos de la mesa de ayuda si es"
+" necesario..."
 
 #: src/Update.php:297
 msgid "Default forms and helpdesk tiles created."
 msgstr ""
+"Se crearon los formularios por defecto y los mosaicos de la mesa de ayuda."
 
 #: src/Update.php:301
 msgid "Initializing default rules if needed…"
-msgstr ""
+msgstr "Inicializando reglas por defecto si se necesitan..."
 
 #: src/Update.php:305 src/Toolbox.php:2295
 msgid "Default rules initialized."
@@ -23691,7 +23697,7 @@ msgstr "Finalizando la actualización..."
 
 #: src/Update.php:390
 msgid "Generating security keys if needed…"
-msgstr ""
+msgstr "Generando claves de seguridad si se necesitan..."
 
 #: src/Update.php:398
 #, php-format
