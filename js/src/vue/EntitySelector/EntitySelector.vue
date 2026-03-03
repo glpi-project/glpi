@@ -293,12 +293,13 @@
             <div class="input-group">
                 <input ref="entsearchtext" type="text" class="form-control" name="entsearchtext" :placeholder="__('Search entities')"
                        autocomplete="off" v-model="search_filter">
-                <a class="btn btn-icon btn-outline-secondary" href="#"
-                   :title="__('Clear search')" data-bs-toggle="tooltip" data-bs-placement="top"
+                <button class="btn btn-icon btn-outline-secondary" :title="__('Clear search')" :aria-label="__('Clear search')"
+                   data-bs-toggle="tooltip" data-bs-placement="top"
                    @click="search_filter = ''">
                     <i class="ti ti-x"></i>
-                </a>
-                <button class="btn btn-secondary" :title="__('Select all')" data-bs-toggle="tooltip" data-bs-placement="top" @click="changeFullStructure">
+                </button>
+                <button class="btn btn-secondary" :title="__('Select all')" :aria-label="__('Select all')"
+                        data-bs-toggle="tooltip" data-bs-placement="top" @click="changeFullStructure">
                     <i class="ti ti-eye"></i>
                 </button>
             </div>
@@ -308,7 +309,10 @@
                     <ul class="w-100 list-group" @wheel.prevent.stop="onListScroll">
                         <li v-for="node in visible_in_dom" :key="node.key" :class="`list-group-item p-0 border-0 cursor-pointer`" :style="`${node.selected ? 'background-color: var(--tblr-primary)' : ''}`">
                             <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-center">
-                                <button v-if="node.children.length" class="btn btn-ghost-secondary btn-sm btn-icon p-1 me-1 cursor-pointer collapse-item" @click.prevent.stop="onExpandToggleClick(node)">
+                                <button v-if="node.children.length" :title="node.expanded ? __('Collapse') : __('Expand')"
+                                        :aria-label="node.expanded ? __('Collapse') : __('Expand')"
+                                        class="btn btn-ghost-secondary btn-sm btn-icon p-1 me-1 cursor-pointer collapse-item"
+                                        @click.prevent.stop="onExpandToggleClick(node)">
                                     <i :class="node.expanded ? 'ti ti-chevron-down' : 'ti ti-chevron-right'"></i>
                                 </button>
                                 <div v-else style="width: 25px"></div>
@@ -318,6 +322,7 @@
                                 </div>
                                 <button v-if="node.children.length" class="btn btn-outline-secondary btn-sm btn-icon p-1 ms-1"
                                         :title="__('Select this entity and all its children')"
+                                        :aria-label="__('Select this entity and all its children')"
                                         @click.prevent.stop="changeEntity(node.key, true)" data-bs-toggle="tooltip" data-bs-placement="top">
                                     <i class="ti ti-chevrons-down"></i>
                                 </button>
