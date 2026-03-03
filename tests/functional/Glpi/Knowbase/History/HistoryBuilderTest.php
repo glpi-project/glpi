@@ -296,17 +296,17 @@ final class HistoryBuilderTest extends DbTestCase
         $history = (new HistoryBuilder($kb))->buildHistory();
         $events = $history->getEvents();
 
-        // Use array_filter since other events may be present alongside the Renamed event
-        $renamed_events = array_values(array_filter(
-            $events,
-            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
-        ));
+        // Name-only change should not create a revision, just a Renamed event
+        $this->assertCount(2, $events);
 
-        $this->assertCount(1, $renamed_events);
-        $this->assertEquals("Updated by", $renamed_events[0]->getDescription());
-        $this->assertEquals("Original title", $renamed_events[0]->getOldValue());
-        $this->assertEquals("Updated title", $renamed_events[0]->getNewValue());
-        $this->assertEquals("2026-01-15 11:00:00", $renamed_events[0]->getDate());
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Renamed", $events[0]->getLabel());
+        $this->assertEquals("Updated by", $events[0]->getDescription());
+        $this->assertEquals("Original title", $events[0]->getOldValue());
+        $this->assertEquals("Updated title", $events[0]->getNewValue());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
     }
 
     public function testPermissionRemoved(): void
@@ -384,6 +384,9 @@ final class HistoryBuilderTest extends DbTestCase
         $kb->getFromDB($kb->getID());
         $history = (new HistoryBuilder($kb))->buildHistory();
         $events = $history->getEvents();
+
+        // 3 events: 2 Renamed + Creation (no revisions for name-only changes)
+        $this->assertCount(3, $events);
 
         $renamed_events = array_values(array_filter(
             $events,
@@ -484,18 +487,18 @@ final class HistoryBuilderTest extends DbTestCase
         $history = (new HistoryBuilder($kb))->buildHistory();
         $events = $history->getEvents();
 
-        // Current version (content update at 12:00)
+        // 3 events: Current version (content), Renamed, Creation
+        $this->assertCount(3, $events);
+
         $this->assertInstanceOf(LogEvent::class, $events[0]);
         $this->assertEquals("Current version", $events[0]->getLabel());
 
-        // Verify the Renamed event is present
-        $renamed_events = array_values(array_filter(
-            $events,
-            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
-        ));
-        $this->assertCount(1, $renamed_events);
-        $this->assertEquals("Original title", $renamed_events[0]->getOldValue());
-        $this->assertEquals("New title", $renamed_events[0]->getNewValue());
+        $this->assertInstanceOf(LogEvent::class, $events[1]);
+        $this->assertEquals("Renamed", $events[1]->getLabel());
+        $this->assertEquals("Original title", $events[1]->getOldValue());
+        $this->assertEquals("New title", $events[1]->getNewValue());
+
+        $this->assertInstanceOf(RevisionEvent::class, $events[2]);
     }
 
     public function testFaqChanges(): void
