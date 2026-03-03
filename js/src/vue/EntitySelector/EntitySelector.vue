@@ -1,5 +1,5 @@
 <script setup>
-    import {onMounted, useTemplateRef, useId, ref, computed, watch} from "vue";
+    import {onMounted, useTemplateRef, ref, computed, watch} from "vue";
 
     const props = defineProps({
         current_entity: {
@@ -18,7 +18,6 @@
 
     const search_input = useTemplateRef('entsearchtext');
     const entity_dropdown_toggle = useTemplateRef('entity_dropdown_toggle');
-    const form_id = useId();
     const form_target = `${window.CFG_GLPI.root_doc}/Session/ChangeEntity`;
     const search_filter = ref('');
     const loading = ref(false);
@@ -236,6 +235,49 @@
     onMounted(() => {
         entity_dropdown_toggle.value.addEventListener('show.bs.dropdown', onShowSelector);
     });
+
+    function changeFullStructure() {
+        fetch(form_target, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': props.csrf_token,
+            },
+            body: new URLSearchParams({
+                full_structure: 'true',
+                _glpi_csrf_token: props.csrf_token,
+            }),
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                window.glpi_toast_error(__('An error occurred while changing the entity. Please try again.'));
+            }
+        });
+    }
+
+    function changeEntity(entity_id, is_recursive) {
+        fetch(form_target, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': props.csrf_token,
+            },
+            body: new URLSearchParams({
+                id: entity_id,
+                is_recursive: is_recursive,
+                _glpi_csrf_token: props.csrf_token,
+            }),
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                window.glpi_toast_error(__('An error occurred while changing the entity. Please try again.'));
+            }
+        });
+    }
 </script>
 
 <template>
@@ -248,11 +290,6 @@
         <div class="dropdown-menu p-3">
             <h3>{{ __('Select the desired entity') }}</h3>
             <div class="alert alert-info d-block" v-html="shortcut_message"></div>
-
-            <form :id="form_id" method="post" :action="form_target">
-                <input type="hidden" name="full_structure" value="true">
-                <input type="hidden" name="_glpi_csrf_token" :value="csrf_token" />
-            </form>
             <div class="input-group">
                 <input ref="entsearchtext" type="text" class="form-control" name="entsearchtext" :placeholder="__('Search entities')"
                        autocomplete="off" v-model="search_filter">
@@ -261,8 +298,7 @@
                    @click="search_filter = ''">
                     <i class="ti ti-x"></i>
                 </a>
-                <button class="btn btn-secondary" :title="__('Select all')" data-bs-toggle="tooltip" data-bs-placement="top"
-                        :form="form_id" type="submit">
+                <button class="btn btn-secondary" :title="__('Select all')" data-bs-toggle="tooltip" data-bs-placement="top" @click="changeFullStructure">
                     <i class="ti ti-eye"></i>
                 </button>
             </div>
@@ -271,13 +307,19 @@
                 <div class="w-100 h-100 overflow-x-auto overflow-y-hidden">
                     <ul class="w-100 list-group" @wheel.prevent.stop="onListScroll">
                         <li v-for="node in visible_in_dom" :key="node.key" :class="`list-group-item p-0 border-0 cursor-pointer`" :style="`${node.selected ? 'background-color: var(--tblr-primary)' : ''}`">
-                            <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-end">
-                                <span v-if="node.children.length" class="me-1 cursor-pointer collapse-item" @click.prevent.stop="onExpandToggleClick(node)">
+                            <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-center">
+                                <button v-if="node.children.length" class="btn btn-ghost-secondary btn-sm btn-icon p-1 me-1 cursor-pointer collapse-item" @click.prevent.stop="onExpandToggleClick(node)">
                                     <i :class="node.expanded ? 'ti ti-chevron-down' : 'ti ti-chevron-right'"></i>
-                                </span>
-                                <span :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''">{{ node.label }}</span>
-                                <button class="btn btn-outline-secondary p-1 ms-1" :title="__('Select this entity and all its children')">
-                                    <i v-if="node.children.length" class="ti ti-chevrons-down"></i>
+                                </button>
+                                <div v-else style="width: 25px"></div>
+                                <div role="button" :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" @click.prevent.stop="changeEntity(node.key, false)" class="d-flex align-items-center">
+                                    <i :class="node.children.length ? 'ti ti-stack-2' : 'ti ti-stack'" aria-hidden="true"></i>
+                                    {{ node.label }}
+                                </div>
+                                <button v-if="node.children.length" class="btn btn-outline-secondary btn-sm btn-icon p-1 ms-1"
+                                        :title="__('Select this entity and all its children')"
+                                        @click.prevent.stop="changeEntity(node.key, true)" data-bs-toggle="tooltip" data-bs-placement="top">
+                                    <i class="ti ti-chevrons-down"></i>
                                 </button>
                             </div>
                         </li>
