@@ -4640,7 +4640,7 @@ final class SQLProvider implements SearchProviderInterface
                         empty($ORDER) // No sort clause is defined
                         && $data['search']['start'] == 0 // First page of results
                     ) {
-                        $tmpquery .= " LIMIT " . $data['search']['list_limit'];
+                        $tmpquery .= " LIMIT " . (int) $data['search']['list_limit'];
                     }
 
                     // Wrap inner union queries to support potential limit clause
