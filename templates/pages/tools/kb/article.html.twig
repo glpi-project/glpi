@@ -286,6 +286,8 @@
                                                 {# File uploader component #}
                                                 {{ include('components/form/file_uploader.html.twig', {
                                                     'input_id': 'kb-document-input',
+                                                    'input_name': 'files[]',
+                                                    'multiple': true,
                                                 }, with_context = false) }}
 
                                                 {# KB-specific: Description #}
@@ -398,7 +400,7 @@
                 const uploadPane = uploadModal.querySelector('#kb-modal-upload-pane');
                 if (uploadPane && !uploadPane.dataset.initialized) {
                     const uploadModule = await import(
-                        "{{ js_path('js/modules/Document/UploadController.js') }}"
+                        "/js/modules/Knowbase/UploadController.js"
                     );
                     new uploadModule.DocumentUploadController(uploadPane, uploadModal);
                     uploadPane.dataset.initialized = 'true';

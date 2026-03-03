@@ -88,8 +88,7 @@ export class FileUploader
         this.maxFileSize = (options.maxFileSize ?? CFG_GLPI?.document_max_size ?? 50) * 1024 * 1024;
 
         if (!this.#dropZone || !this.#fileInput) {
-            console.error('FileUploader: Required elements not found (dropzone or input)');
-            return;
+            throw new Error('FileUploader: Required elements not found (dropzone or input)');
         }
 
         this.#bindEvents();
@@ -137,10 +136,6 @@ export class FileUploader
         this.reset();
         this.#abortController.abort();
     }
-
-    // -----------------------------------------------------------------------
-    // Private methods
-    // -----------------------------------------------------------------------
 
     #bindEvents()
     {
@@ -342,10 +337,6 @@ export class FileUploader
         xhr.send(formData);
     }
 
-    // -----------------------------------------------------------------------
-    // UI rendering
-    // -----------------------------------------------------------------------
-
     #renderFileList()
     {
         if (!this.#previewContainer || !this.#listContainer) {
@@ -369,17 +360,17 @@ export class FileUploader
                 : '';
 
             return `
-            <div class="file-uploader-item d-flex align-items-center p-2 border rounded mb-2 ${errorClass}" role="listitem" data-file-index="${index}">
-                <i class="ti ${this.#getFileIcon(file.name)} me-2 text-muted"></i>
+            <div class="file-uploader-item d-flex align-items-center p-2 border rounded mb-2 ${errorClass}" role="listitem" data-file-index="${_.escape(index)}">
+                <i class="ti ${_.escape(this.#getFileIcon(file.name))} me-2 text-muted"></i>
                 <div class="flex-grow-1 min-width-0">
-                    <div class="fw-medium text-truncate">${this.#escapeHtml(file.name)}</div>
-                    <small class="text-muted">${this.#formatFileSize(file.size)}</small>
-                    ${isError ? `<div class="text-danger small mt-1">${this.#escapeHtml(entry.error)}</div>` : ''}
+                    <div class="fw-medium text-truncate">${_.escape(file.name)}</div>
+                    <small class="text-muted">${_.escape(this.#formatFileSize(file.size))}</small>
+                    ${isError ? `<div class="text-danger small mt-1">${_.escape(entry.error)}</div>` : ''}
                 </div>
                 ${statusIcon}
                 <button type="button"
                         class="btn btn-sm btn-ghost-danger file-uploader-remove ms-2"
-                        data-index="${index}"
+                        data-index="${_.escape(index)}"
                         title="${__('Remove')}">
                     <i class="ti ti-x"></i>
                 </button>
@@ -398,7 +389,7 @@ export class FileUploader
             return;
         }
 
-        const fileItem = this.#previewContainer.querySelector(`[data-file-index="${index}"]`);
+        const fileItem = this.#previewContainer.querySelector(`[data-file-index="${CSS.escape(index)}"]`);
         if (!fileItem || fileItem.querySelector('.text-danger')) {
             return;
         }
@@ -422,7 +413,7 @@ export class FileUploader
             return;
         }
 
-        const fileItem = this.#previewContainer.querySelector(`[data-file-index="${index}"]`);
+        const fileItem = this.#previewContainer.querySelector(`[data-file-index="${CSS.escape(index)}"]`);
         if (!fileItem) {
             return;
         }
@@ -458,10 +449,6 @@ export class FileUploader
             },
         }));
     }
-
-    // -----------------------------------------------------------------------
-    // Utilities
-    // -----------------------------------------------------------------------
 
     /**
      * @param {string} filename
@@ -515,16 +502,5 @@ export class FileUploader
         const sizes = ['B', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
-    }
-
-    /**
-     * @param {string} text
-     * @returns {string}
-     */
-    #escapeHtml(text)
-    {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 }

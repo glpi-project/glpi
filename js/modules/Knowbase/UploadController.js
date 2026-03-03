@@ -32,7 +32,7 @@
 
 /* global getAjaxCsrfToken, bootstrap, glpi_toast_error, glpi_toast_info */
 
-import { FileUploader } from '../FileUploader.js';
+import { FileUploader } from '/js/modules/FileUploader.js';
 
 /**
  * KB-specific document upload controller.
@@ -69,8 +69,7 @@ export class DocumentUploadController
         this.#uploadBtn = container.querySelector('[data-glpi-kb-upload-submit]');
 
         if (!this.#form) {
-            console.error('DocumentUploadController: form element not found');
-            return;
+            throw new Error('DocumentUploadController: form element not found');
         }
 
         this.#uploader = new FileUploader(container);
