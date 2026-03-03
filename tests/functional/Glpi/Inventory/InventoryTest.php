@@ -9815,6 +9815,54 @@ JSON;
         $this->assertNotEquals(0, $computer->fields['manufacturers_id']);
         $this->assertTrue($manufacturer->getFromDB($computer->fields['manufacturers_id']));
         $this->assertSame('AnotherManufacturer', $manufacturer->fields['name']);
+    }
 
+    public function testMetadata(): void
+    {
+        $json_source = <<<JSON
+{
+    "content": {
+        "bios": {
+            "assettag": "COMP1",
+            "bdate": "2016-01-03",
+            "bmanufacturer": "%manufacturer%",
+            "bversion": "1.3.3",
+            "mmanufacturer": "%manufacturer%",
+            "mmodel": "07TYC2",
+            "msn": "\/2FAGP34\/CN124536460043\/",
+            "skunumber": "0704",
+            "smanufacturer": "%manufacturer%",
+            "smodel": "XPS 13 9350",
+            "ssn": "2FAGP34"
+        },
+        "hardware": {
+            "name": "Test manufacturer PC",
+            "uuid": "4BDRGGFE-0046-4710-8047-B2C04F503732"
+        },
+        "versionclient": "GLPI-Agent_v1.10-dev"
+    },
+    "deviceid": "acomputer-2021-01-26-14-32-36",
+    "tag": "<img src=x onerror=\"alert('XSS Spotted!');\">",
+    "action": "inventory",
+    "itemtype": "Computer"
+}
+JSON;
+
+        $inv = $this->doInventory(json_decode($json_source));
+
+        //check created computer
+        $computer = $inv->getItem();
+
+        $agent = new \Agent();
+        $this->assertTrue(
+            $agent->getFromDBByCrit(
+                [
+                    'itemtype' => $computer::class,
+                    'items_id' => $computer->getID(),
+                ]
+            )
+        );
+
+        $this->assertSame('', $agent->fields['tag']);
     }
 }
