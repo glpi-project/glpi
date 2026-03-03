@@ -18,6 +18,7 @@
 # Mauricio Loaiza, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Sistemas Tecnologia, 2026
 # 
 #, fuzzy
 msgid ""
@@ -26,7 +27,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Sistemas Tecnologia, 2026\n"
 "Language-Team: Spanish (Colombia) (https://app.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1051,6 +1052,8 @@ msgstr "Cerrar"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y algunas CORRECCIONES DE SEGURIDAD pueden no "
+"estar incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -3637,11 +3640,11 @@ msgstr "Recolectar datos"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Verificando el acceso de escritura a los archivos de configuración"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Acceso de escritura denegado para los archivos de configuración"
 
 #: templates/install/step1.html.twig src/Console/Application.php:564
 #, php-format
@@ -3653,6 +3656,8 @@ msgstr ""
 msgid ""
 "Write access to these files can be removed once the operation is finished."
 msgstr ""
+"El acceso de escritura a estos archivos puede eliminarse una vez finalizada "
+"la operación."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -4935,7 +4940,7 @@ msgstr ""
 #: install/update.php:163 src/Console/Database/UpdateCommand.php:247
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
-msgstr ""
+msgstr "Se recomienda ejecutar el comando \" 1%s \" para ver las diferencias."
 
 #: install/update.php:186
 msgid "Missing security key file"
@@ -6972,6 +6977,8 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
+"El código fuente de GLPI ha sido actualizado. Es necesario actualizar la "
+"base de datos de GLPI."
 
 #: inc/config.php:216
 msgid "Update needed"
@@ -19687,11 +19694,11 @@ msgstr "A la derecha"
 
 #: src/Features/DCBreadcrumb.php:86 src/PDU_Rack.php:451
 msgid "On top"
-msgstr ""
+msgstr "Arriba"
 
 #: src/Features/DCBreadcrumb.php:89 src/PDU_Rack.php:455
 msgid "On bottom"
-msgstr ""
+msgstr "Parte inferior"
 
 #: src/Features/DCBreadcrumb.php:210 src/Features/DCBreadcrumb.php:236
 #, php-format

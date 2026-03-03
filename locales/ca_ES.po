@@ -15,12 +15,12 @@
 # Oriol Lladó, 2023
 # Lluís Forns Puigmartí, 2024
 # Joan F, 2024
-# Ivan Fustero, 2025
 # David Marti, 2025
 # Jordi Domene, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Nuria Costa <nuria.costa@uvic.cat>, 2025
+# Ivan Fustero, 2026
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Nuria Costa <nuria.costa@uvic.cat>, 2025\n"
+"Last-Translator: Ivan Fustero, 2026\n"
 "Language-Team: Catalan (Spain) (https://app.transifex.com/glpi/teams/1637/ca_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -687,7 +687,7 @@ msgstr "Número d'inventari"
 
 #: templates/generic_show_form.html.twig src/Unmanaged.php:176
 msgid "Sysdescr"
-msgstr ""
+msgstr "Descripció del sistema"
 
 #: templates/generic_show_form.html.twig src/RuleDictionnaryPrinter.php:101
 msgid "Management type"
@@ -1045,6 +1045,8 @@ msgstr "Tanca"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Aquesta versió és INESTABLE i és possible que no s'hi incloguin algunes "
+"SOLUCIONS DE SEGURETAT."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -2205,7 +2207,7 @@ msgstr "Sense membres d'equip"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "Open full form"
-msgstr ""
+msgstr "Obre el formulari complet"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
@@ -3004,7 +3006,7 @@ msgstr "Veure altres accions"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
-msgstr ""
+msgstr "Activa/desactiva l'amplada dels panells"
 
 #: templates/components/itilobject/fields/global_validation.html.twig
 #: src/ITILTemplate.php:337 src/Ticket.php:2644
@@ -3857,6 +3859,8 @@ msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"Disculpeu les molèsties, però estem fent tasques de manteniment en aquest "
+"moment. Tornarem a estar en línia en breu!"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
@@ -4692,7 +4696,7 @@ msgstr "Dispositiu aprovat"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:135
 msgid "Network hub"
-msgstr ""
+msgstr "Concentrador"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:527
 msgid "Initial page counter"
@@ -4737,7 +4741,7 @@ msgstr "Empresa"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Propietari"
 
 #: templates/pages/assets/operatingsystem.html.twig src/Software.php:517
 #: src/Item_OperatingSystem.php:459 src/Lock.php:543
@@ -4826,7 +4830,7 @@ msgstr "Posició"
 #: src/Socket.php:518 src/Socket.php:804 src/Socket.php:938 src/Socket.php:977
 #: src/Socket.php:1037
 msgid "Wiring side"
-msgstr ""
+msgstr "Banda de cablejat "
 
 #: templates/pages/assets/socket.html.twig src/Transfer.php:3967
 #: src/Socket.php:805 src/NetworkPort.php:179
@@ -4843,7 +4847,7 @@ msgstr "Quantitat de línies"
 #: templates/pages/assets/cable.html.twig
 #, php-format
 msgid "Endpoint %s"
-msgstr ""
+msgstr "Endpoint %s"
 
 #: templates/pages/assets/cable.html.twig src/Event.php:171
 #: src/RuleImportAsset.php:115 src/RuleImportAsset.php:121
@@ -7970,7 +7974,7 @@ msgstr "Només esdeveniments de fons"
 #: src/RSSFeed.php:785 src/RSSFeed.php:852
 #, php-format
 msgid "URL \"%s\" is not allowed by your administrator."
-msgstr ""
+msgstr "L'administrador no permet l'URL \"%s\"."
 
 #: src/Planning.php:1187
 msgid "Ical"
@@ -8853,8 +8857,8 @@ msgstr "Associa a un grup"
 #: src/Project.php:2587 src/Group.php:592
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gerent"
+msgstr[1] "Gerents"
 
 #: src/Group_User.php:220 src/Group_User.php:258 src/Group_User.php:300
 #: src/Group_User.php:356 src/Group_User.php:524 src/Group_User.php:618
@@ -15616,7 +15620,7 @@ msgstr "Amunt"
 
 #: src/NetworkPort.php:1055
 msgid "Down"
-msgstr ""
+msgstr "Avall"
 
 #: src/NetworkPort.php:1059
 msgid "Test"
@@ -15651,7 +15655,7 @@ msgstr "Provant"
 
 #: src/NetworkPort.php:1265
 msgid "Dormant"
-msgstr ""
+msgstr "Inactiu"
 
 #: src/NetworkPort.php:1481 src/NetworkPort.php:1831
 msgid "Alias"
@@ -15680,7 +15684,7 @@ msgstr ""
 
 #: src/NetworkPort.php:1737
 msgid "MTU"
-msgstr ""
+msgstr "MTU"
 
 #: src/NetworkPort.php:1744 src/DeviceDrive.php:57 src/DeviceDrive.php:89
 #: src/DeviceDrive.php:131
@@ -19080,12 +19084,12 @@ msgstr "Utilitza la configuració del servidor"
 
 #: src/User.php:2784 src/User.php:3272 src/Config.php:1352
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "L'ús de la zona horària no s'ha activat."
 
 #: src/User.php:2786 src/User.php:3274 src/Config.php:1354
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
-msgstr ""
+msgstr "Executeu l'ordre \"%1$s\" per activar-lo."
 
 #: src/User.php:2801
 msgid "Not enough rights to change this field"
@@ -22065,7 +22069,7 @@ msgstr "Les meves tasques"
 
 #: src/Project.php:637 src/Project.php:1668
 msgid "Show on global Gantt"
-msgstr ""
+msgstr "Mostrar a Gantt global"
 
 #: src/Project.php:1081
 msgid "Planned Duration"
@@ -25253,10 +25257,14 @@ msgstr "Ves a l'element després de crear-lo"
 #: src/Config.php:1155
 msgid "Display the tree dropdown complete name in dropdown inputs"
 msgstr ""
+"Mostra el nom complet del menú desplegable de l'arbre a les entrades del "
+"menú desplegable"
 
 #: src/Config.php:1159
 msgid "Display the complete name of tree dropdown in search results"
 msgstr ""
+"Mostra el nom complet de l'arbre al menú desplegable als resultats de la "
+"cerca"
 
 #: src/Config.php:1170
 msgid "Display counters"
@@ -25370,7 +25378,7 @@ msgstr "Pre-seleccionem a mi com a sol·licitant quan es crea un tiquet"
 
 #: src/Config.php:1431
 msgid "Action button layout"
-msgstr ""
+msgstr "Disseny del botó d'acció"
 
 #: src/Config.php:1434
 msgid "Merged"
@@ -25386,11 +25394,11 @@ msgstr "Visualització de la data de la cronologia"
 
 #: src/Config.php:1446
 msgid "Relative"
-msgstr ""
+msgstr "Relatiu"
 
 #: src/Config.php:1447
 msgid "Precise"
-msgstr ""
+msgstr "Precís"
 
 #: src/Config.php:1455
 msgid "Priority colors"

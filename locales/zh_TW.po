@@ -4616,7 +4616,7 @@ msgstr "IP"
 
 #: templates/pages/assets/unmanaged.html.twig
 msgid "Approved device"
-msgstr ""
+msgstr "批准的设备"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:135
 msgid "Network hub"

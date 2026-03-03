@@ -3012,7 +3012,7 @@ msgstr[2] "%1$s elementos no guardados"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Display all items"
-msgstr "Presentar todos los elementos"
+msgstr "Mostrar todos los elementos"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
@@ -4181,7 +4181,7 @@ msgstr "Traducción de recordatorios"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Dynamic display"
-msgstr "AJAX"
+msgstr "Vista dinámica"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Page size for dropdown (paging using scroll)"
@@ -23633,7 +23633,7 @@ msgstr "Hacer bajar"
 #. TRANS: short for : Search result user display
 #: src/DisplayPreference.php:806
 msgid "User display"
-msgstr "Mostrar usuario"
+msgstr "Vista de usuario"
 
 #. TRANS: short for : Search result default display
 #: src/DisplayPreference.php:810
