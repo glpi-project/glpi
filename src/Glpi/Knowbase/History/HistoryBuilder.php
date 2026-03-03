@@ -201,17 +201,13 @@ final class HistoryBuilder
         ]);
 
         foreach ($logs as $row) {
-            $description = sprintf(
-                __('%s → %s — Updated by'),
-                $row['old_value'],
-                $row['new_value']
-            );
-
             $this->history->addEvent(new LogEvent(
                 label: __("Renamed"),
-                description: $description,
+                description: __("Updated by"),
                 date: $row['date_mod'],
                 author: $row['user_name'],
+                old_value: $row['old_value'],
+                new_value: $row['new_value'],
             ));
         }
     }

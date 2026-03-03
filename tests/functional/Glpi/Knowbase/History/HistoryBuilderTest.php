@@ -303,10 +303,9 @@ final class HistoryBuilderTest extends DbTestCase
         ));
 
         $this->assertCount(1, $renamed_events);
-        $this->assertEquals(
-            "Original title → Updated title — Updated by",
-            $renamed_events[0]->getDescription()
-        );
+        $this->assertEquals("Updated by", $renamed_events[0]->getDescription());
+        $this->assertEquals("Original title", $renamed_events[0]->getOldValue());
+        $this->assertEquals("Updated title", $renamed_events[0]->getNewValue());
         $this->assertEquals("2026-01-15 11:00:00", $renamed_events[0]->getDate());
     }
 
@@ -392,9 +391,13 @@ final class HistoryBuilderTest extends DbTestCase
         ));
 
         $this->assertCount(2, $renamed_events);
-        $this->assertEquals("Title v2 → Title v3 — Updated by", $renamed_events[0]->getDescription());
+        $this->assertEquals("Updated by", $renamed_events[0]->getDescription());
+        $this->assertEquals("Title v2", $renamed_events[0]->getOldValue());
+        $this->assertEquals("Title v3", $renamed_events[0]->getNewValue());
         $this->assertEquals("2026-01-15 12:00:00", $renamed_events[0]->getDate());
-        $this->assertEquals("Title v1 → Title v2 — Updated by", $renamed_events[1]->getDescription());
+        $this->assertEquals("Updated by", $renamed_events[1]->getDescription());
+        $this->assertEquals("Title v1", $renamed_events[1]->getOldValue());
+        $this->assertEquals("Title v2", $renamed_events[1]->getNewValue());
         $this->assertEquals("2026-01-15 11:00:00", $renamed_events[1]->getDate());
     }
 
@@ -491,8 +494,8 @@ final class HistoryBuilderTest extends DbTestCase
             static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
         ));
         $this->assertCount(1, $renamed_events);
-        $this->assertStringContainsString("Original title", $renamed_events[0]->getDescription());
-        $this->assertStringContainsString("New title", $renamed_events[0]->getDescription());
+        $this->assertEquals("Original title", $renamed_events[0]->getOldValue());
+        $this->assertEquals("New title", $renamed_events[0]->getNewValue());
     }
 
     public function testFaqChanges(): void
