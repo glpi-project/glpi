@@ -34,6 +34,8 @@
  */
 
 use Glpi\Features\AssetImage;
+use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\URL;
 
 /**
  * Supplier class (suppliers)
@@ -391,9 +393,16 @@ class Supplier extends CommonDBTM
         }
 
         if (!empty($this->fields['website'])) {
-            $ret .= "<a href='" . Toolbox::formatOutputWebLink($this->fields['website']) . "' target='_blank'>
-                  <img src='" . $CFG_GLPI["root_doc"] . "/pics/web.png' class='middle' alt=\"" .
-                   __s('Web') . "\" title=\"" . __s('Web') . "\"></a>&nbsp;&nbsp;";
+            $website_url = URL::sanitizeURL(
+                Toolbox::formatOutputWebLink(
+                    Sanitizer::unsanitize($this->fields['website'])
+                )
+            );
+            if ($website_url !== '') {
+                $ret .= "<a href='" . htmlspecialchars($website_url) . "' target='_blank'>
+                      <img src='" . $CFG_GLPI["root_doc"] . "/pics/web.png' class='middle' alt=\"" .
+                       __s('Web') . "\" title=\"" . __s('Web') . "\"></a>&nbsp;&nbsp;";
+            }
         }
 
         if ($this->can($this->fields['id'], READ)) {

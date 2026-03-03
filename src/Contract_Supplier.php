@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+use Glpi\Toolbox\URL;
+
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
 {
@@ -318,13 +321,19 @@ class Contract_Supplier extends CommonDBRelation
 
         foreach ($suppliers as $data) {
             $assocID = $data['linkid'];
-            $website = $data['website'];
-            if (!empty($website)) {
-                if (!preg_match("?https*://?", $website)) {
-                    $website = "http://" . $website;
-                }
-                $website = "<a target=_blank href='$website'>" . $data['website'] . "</a>";
+
+            $website = '';
+            if (!empty($data["website"])) {
+                $website_url = URL::sanitizeURL(
+                    Toolbox::formatOutputWebLink(
+                        Sanitizer::unsanitize($data["website"])
+                    )
+                );
+                $website = $website_url !== ''
+                    ? "<a target=_blank href='" . htmlspecialchars($website_url) . "'>" . $data["website"] . "</a>"
+                    : $data["website"];
             }
+
             $entID         = $data['id'];
             $entity        = $data['entity'];
             $entname       = Dropdown::getDropdownName("glpi_suppliers", $entID);

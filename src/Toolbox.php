@@ -3208,6 +3208,10 @@ class Toolbox
      **/
     public static function formatOutputWebLink($link)
     {
+        if (empty($link)) {
+            return $link;
+        }
+
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
         }

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 /**
  * NotificationTargetTicket Class
  *
@@ -537,8 +539,7 @@ class NotificationTargetProject extends NotificationTarget
             $tmp                       = [];
             $tmp['##document.id##']    = $data['id'];
             $tmp['##document.name##']  = $data['name'];
-            $tmp['##document.weblink##']
-                                    = $data['link'];
+            $tmp['##document.weblink##'] = URL::sanitizeURL($data['link']);
 
             $tmp['##document.url##']   = $this->formatURL(
                 $options['additionnaloption']['usertype'],

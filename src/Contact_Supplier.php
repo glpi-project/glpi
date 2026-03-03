@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+use Glpi\Toolbox\Sanitizer;
+
 class Contact_Supplier extends CommonDBRelation
 {
     // From CommonDBRelation
@@ -190,15 +193,17 @@ class Contact_Supplier extends CommonDBRelation
             foreach ($suppliers as $data) {
                 $assocID = $data["linkid"];
                 Session::addToNavigateListItems('Supplier', $data["id"]);
-                $website           = $data["website"];
 
-                if (!empty($website)) {
-                    $website = $data["website"];
-
-                    if (!preg_match("?https*://?", $website)) {
-                        $website = "http://" . $website;
-                    }
-                    $website = "<a target=_blank href='$website'>" . $data["website"] . "</a>";
+                $website = '';
+                if (!empty($data["website"])) {
+                    $website_url = URL::sanitizeURL(
+                        Toolbox::formatOutputWebLink(
+                            Sanitizer::unsanitize($data["website"])
+                        )
+                    );
+                    $website = $website_url !== ''
+                        ? "<a target=_blank href='" . htmlspecialchars($website_url) . "'>" . $data["website"] . "</a>"
+                        : $data["website"];
                 }
 
                 echo "<tr class='tab_bg_1" . ($data["is_deleted"] ? "_2" : "") . "'>";

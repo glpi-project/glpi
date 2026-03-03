@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
     public $private_profiles = [];
@@ -1134,7 +1136,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.shortentity##"]     = $entity->getField('name');
             $data["##$objettype.entity.phone##"]    = $entity->getField('phonenumber');
             $data["##$objettype.entity.fax##"]      = $entity->getField('fax');
-            $data["##$objettype.entity.website##"]  = $entity->getField('website');
+            $data["##$objettype.entity.website##"]  = URL::sanitizeURL(
+                Toolbox::formatOutputWebLink(
+                    $entity->fields['website']
+                )
+            ) ?: NOT_AVAILABLE;
             $data["##$objettype.entity.email##"]    = $entity->getField('email');
             $data["##$objettype.entity.address##"]  = $entity->getField('address');
             $data["##$objettype.entity.postcode##"] = $entity->getField('postcode');
@@ -1459,8 +1465,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmp                      = [];
                 $tmp['##document.id##']   = $row['id'];
                 $tmp['##document.name##'] = $row['name'];
-                $tmp['##document.weblink##']
-                                       = $row['link'];
+                $tmp['##document.weblink##'] = URL::sanitizeURL($row['link']);
 
                 $tmp['##document.url##']  = $this->formatURL(
                     $options['additionnaloption']['usertype'],
@@ -1714,7 +1719,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getField('email');
                 $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phonenumber');
                 $data[sprintf('##%s.fax##', $key_prefix)]        = $actor->getField('fax');
-                $data[sprintf('##%s.website##', $key_prefix)]    = $actor->getField('website');
+                $data[sprintf('##%s.website##', $key_prefix)]    = URL::sanitizeURL(
+                    Toolbox::formatOutputWebLink(
+                        $actor->fields['website']
+                    )
+                ) ?: NOT_AVAILABLE;
                 $data[sprintf('##%s.address##', $key_prefix)]    = $actor->getField('address');
                 $data[sprintf('##%s.postcode##', $key_prefix)]   = $actor->getField('postcode');
                 $data[sprintf('##%s.town##', $key_prefix)]       = $actor->getField('town');
