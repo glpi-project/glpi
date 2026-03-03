@@ -34,6 +34,7 @@
  */
 
 use function Safe\define;
+use function Safe\hash_file;
 use function Safe\preg_replace;
 use function Safe\sha1_file;
 

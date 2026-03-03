@@ -6734,12 +6734,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/ImportMapGenerator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Application\\\\ImportMapGenerator\\:\\:generateVersionParam\\(\\) should return string but returns string\\|false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/ImportMapGenerator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type array\\|false supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
