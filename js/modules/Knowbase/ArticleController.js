@@ -122,6 +122,16 @@ export class GlpiKnowbaseArticleController
                 }
             });
         }
+
+        // Delegated listener for document unlink buttons
+        this.#container.addEventListener("click", (e) => {
+            const button = e.target.closest("[data-glpi-kb-unlink-document]");
+            if (button) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.#unlinkDocument(button);
+            }
+        });
     }
 
     /**
@@ -227,6 +237,70 @@ export class GlpiKnowbaseArticleController
             title: title || '',
             dialogclass: 'modal-lg',
         });
+    }
+
+    /**
+     * Unlink a document from the KB article
+     * @param {HTMLElement} button
+     */
+    async #unlinkDocument(button)
+    {
+        const assoc_id = button.dataset.glpiKbUnlinkDocument;
+
+        const confirmed = await glpi_confirm_danger({
+            title: __('Unlink document'),
+            message: __('Are you sure you want to unlink this document from the article?'),
+            confirm_label: __('Unlink'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        await post(`Knowbase/UnlinkDocument/${assoc_id}`);
+
+        // Remove badge from DOM
+        const badge = this.#container.querySelector(
+            `[data-glpi-document-assoc-id="${assoc_id}"]`
+        );
+        if (badge) {
+            badge.remove();
+        }
+
+        this.#updateDocumentCount(-1);
+        glpi_toast_info(__('Document unlinked successfully'));
+    }
+
+    /**
+     * Update document count in the metadata bar and tab badge
+     * @param {number} delta
+     */
+    #updateDocumentCount(delta)
+    {
+        // Tab badge count
+        const tab_badge = this.#container.querySelector(
+            '#kb-documents-tab-btn .badge'
+        );
+        if (tab_badge) {
+            const current = parseInt(tab_badge.textContent, 10) || 0;
+            const updated = Math.max(0, current + delta);
+            tab_badge.textContent = updated;
+        }
+
+        // Metadata bar count
+        const meta_link = this.#container.querySelector(
+            '[data-testid="documents-count"]'
+        );
+        if (meta_link) {
+            const current = parseInt(meta_link.textContent, 10) || 0;
+            const updated = Math.max(0, current + delta);
+            if (updated === 0) {
+                // Hide the entire metadata entry when no documents remain
+                meta_link.closest('.d-flex')?.remove();
+            } else {
+                const label = _n('%s document', '%s documents', updated).replace('%s', updated);
+                meta_link.textContent = label;
+            }
+        }
     }
 
     /**

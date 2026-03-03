@@ -218,13 +218,23 @@
                     {% if documents|length > 0 %}
                     <div class="d-flex flex-wrap gap-2 mb-2">
                         {% for doc in documents %}
-                        <a href="{{ doc.download_url }}"
-                           class="kb-document-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
-                           target="_blank"
-                           data-testid="document-chip">
-                            <i class="ti {{ doc.icon_class }} {{ doc.color_class }}"></i>
-                            <span>{{ doc.filename }}</span>
-                        </a>
+                        <span class="kb-document-badge badge bg-light text-dark d-flex align-items-center gap-2"
+                              data-glpi-document-assoc-id="{{ doc.assoc_id }}"
+                              data-testid="document-chip">
+                            <a href="{{ doc.download_url }}"
+                               class="d-flex align-items-center gap-2 text-decoration-none"
+                               target="_blank">
+                                <i class="ti {{ doc.icon_class }} {{ doc.color_class }}"></i>
+                                <span>{{ doc.filename }}</span>
+                            </a>
+                            {% if can_edit %}
+                            <button type="button"
+                                    class="kb-unlink-document btn-close btn-close-white"
+                                    data-glpi-kb-unlink-document="{{ doc.assoc_id }}"
+                                    title="{{ __('Unlink document') }}"
+                                    aria-label="{{ __('Unlink document') }}"></button>
+                            {% endif %}
+                        </span>
                         {% endfor %}
                     </div>
                     {% endif %}
