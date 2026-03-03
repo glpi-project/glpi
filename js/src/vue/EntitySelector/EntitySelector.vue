@@ -317,7 +317,7 @@
                                 </button>
                                 <div v-else style="width: 25px"></div>
                                 <div role="button" :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" @click.prevent.stop="changeEntity(node.key, false)" class="d-flex align-items-center">
-                                    <i :class="node.children.length ? 'ti ti-stack-2' : 'ti ti-stack'" aria-hidden="true"></i>
+                                    <i :hidden="node.children.length === 0" class="ti ti-stack-2 me-1" aria-hidden="true"></i>
                                     {{ node.label }}
                                 </div>
                                 <button v-if="node.children.length" class="btn btn-outline-secondary btn-sm btn-icon p-1 ms-1"
