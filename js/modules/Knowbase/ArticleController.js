@@ -129,9 +129,7 @@ export class GlpiKnowbaseArticleController
             if (button) {
                 e.stopPropagation();
                 e.preventDefault();
-                this.#unlinkDocument(button).catch((err) => {
-                    console.error(err);
-                });
+                this.#unlinkDocument(button);
             }
         });
     }
