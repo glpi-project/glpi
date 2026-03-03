@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class MFAController extends AbstractController
@@ -59,9 +60,16 @@ final class MFAController extends AbstractController
         if (!isset($_SESSION['mfa_pre_auth'])) {
             return new RedirectResponse($request->getBasePath() . '/front/login.php');
         }
-        return new StreamedResponse(static function () {
-            $totp = new TOTPManager();
-            $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user_id']);
+
+        $user_id = (int) $_SESSION['mfa_pre_auth']['user_id'];
+
+        $totp = new TOTPManager();
+        if ($totp->is2FAEnabled($user_id)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return new StreamedResponse(static function () use ($totp, $user_id) {
+            $totp->showTOTPSetupForm($user_id);
         });
     }
 
