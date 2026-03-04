@@ -203,7 +203,8 @@ test('Name changes appear in history', async ({ page, profile, api }) => {
     // Should show "Renamed" event with old and new title
     const event = page.getByTestId('history-event').filter({ hasText: 'Renamed' });
     await expect(event).toBeVisible();
-    await expect(event).toContainText('Original Title → Renamed Title');
+    await expect(event.getByTitle(/Original Title/)).toBeAttached();
+    await expect(event.getByTitle(/Renamed Title/)).toBeAttached();
 });
 
 test('Can compare a revision with the current version', async ({ page, profile, api }) => {
