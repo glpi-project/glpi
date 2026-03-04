@@ -1501,7 +1501,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again ticket to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            $trigger = $this->input['_solution'] ?? null;
+            $trigger = $this->input['_solution'] ?? $this->input['_followup'] ?? null;
             NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 

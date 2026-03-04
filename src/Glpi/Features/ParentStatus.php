@@ -38,6 +38,7 @@ namespace Glpi\Features;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
+use ITILFollowup;
 use PendingReason_Item;
 use Session;
 
@@ -88,6 +89,10 @@ trait ParentStatus
                 'closedate' => $_SESSION["glpi_currenttime"],
                 '_accepted' => true,
             ];
+
+            if ($this instanceof ITILFollowup) {
+                $update['_followup'] = $this;
+            }
 
             // Use update method for history
             $parentitem->update($update);
@@ -169,6 +174,10 @@ trait ParentStatus
 
             if ($needupdateparent) {
                 $update['id'] = $parentitem->fields['id'];
+
+                if ($this instanceof ITILFollowup) {
+                    $update['_followup'] = $this;
+                }
 
                 // Use update method for history
                 $parentitem->update($update);
