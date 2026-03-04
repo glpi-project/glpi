@@ -30,10 +30,9 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-<form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}">
+<form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}" class="kb-link-item-form">
     {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
     {% if get_class(item) == 'KnowbaseItem' %}
         {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
@@ -41,24 +40,21 @@
         {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
-    <div class="d-flex">
-        <div class="col-auto">
-        {% if get_class(item) == 'KnowbaseItem' %}
-            {# TODO pass used array to restrict visible items in list #}
-            {% set dropdown %}
-                {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
-            {% endset %}
-            {{ fields.htmlField('', dropdown, __('Add a linked item')) }}
-        {% else %}
-            {{ 'KnowbaseItem'|itemtype_dropdown({
-                'entity': item.getEntityID(),
-                'used': used_knowbase_items,
-                'condition': visibility_condition
-            }) }}
-        {% endif %}
+
+    {% if get_class(item) == 'KnowbaseItem' %}
+        <label class="form-label">{{ __('Add a linked item') }}</label>
+        <div class="kb-link-item-dropdowns">
+            {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_items]) %}
         </div>
-        <div class="col-auto">
-            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link'}) }}
-        </div>
+    {% else %}
+        {{ 'KnowbaseItem'|itemtype_dropdown({
+            'entity': item.getEntityID(),
+            'used': used_knowbase_items,
+            'condition': visibility_condition
+        }) }}
+    {% endif %}
+
+    <div class="kb-link-item-footer">
+        {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
     </div>
 </form>

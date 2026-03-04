@@ -59,19 +59,45 @@ class KnowbaseItem_Item extends CommonDBRelation
         return _n('Knowledge base item', 'Knowledge base items', $nb);
     }
 
+    public function prepareInputForAdd($input)
+    {
+        // Avoid duplicate entry
+        if (
+            static::$items_id_1 !== null
+            && static::$itemtype_2 !== null
+            && static::$items_id_2 !== null
+            && countElementsInTable(
+                static::getTable(),
+                [
+                    'WHERE' => [
+                        static::$items_id_1 => $input[static::$items_id_1],
+                        static::$itemtype_2 => $input[static::$itemtype_2],
+                        static::$items_id_2 => $input[static::$items_id_2],
+                    ],
+                    'LIMIT' => 1,
+                ]
+            ) > 0
+        ) {
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (static::canView() && $item instanceof CommonDBTM) {
+            // Do not display tab for KnowbaseItem (handled in main article view)
+            if ($item::class === KnowbaseItem::class) {
+                return '';
+            }
+
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getCountForItem($item);
             }
 
-            if ($item::class === KnowbaseItem::class) {
-                $type_name = _n('Associated element', 'Associated elements', $nb);
-            } else {
-                $type_name = __('Knowledge base');
-            }
+            $type_name = __('Knowledge base');
 
             return self::createTabEntry($type_name, $nb, $item::class);
         }
@@ -120,7 +146,12 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $rand = mt_rand();
         if ($canedit && $ok_state && $withtemplate != 2) {
-            if ($item::class !== KnowbaseItem::class) {
+            if ($item::class === KnowbaseItem::class) {
+                $used_items = [];
+                foreach (self::getItems($item, 0, 0) as $data) {
+                    $used_items[$data['itemtype']][] = $data['items_id'];
+                }
+            } else {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
                 $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
                 $used_knowbase_items = self::getItems($item, 0, 0, true);
@@ -129,6 +160,7 @@ class KnowbaseItem_Item extends CommonDBRelation
                 'item' => $item,
                 'visibility_condition' => $condition ?? [],
                 'used_knowbase_items' => $used_knowbase_items ?? [],
+                'used_items' => $used_items ?? [],
             ]);
         }
 
@@ -188,13 +220,14 @@ class KnowbaseItem_Item extends CommonDBRelation
     /**
      * Displays linked dropdowns to add linked items
      *
-     * @param CommonDBTM $item Item instance
-     * @param string     $name Field name
+     * @param CommonDBTM               $item Item instance
+     * @param string                   $name Field name
+     * @param array<string, array<int>> $used Already linked items, keyed by itemtype
      *
      * @return string
      * @used-by 'templates/tools/kb/knowbaseitem_item.html.twig'
      */
-    public static function dropdownAllTypes(CommonDBTM $item, $name)
+    public static function dropdownAllTypes(CommonDBTM $item, $name, array $used = [])
     {
         global $CFG_GLPI;
 
@@ -208,6 +241,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             'itemtypes'       => $CFG_GLPI['kb_types'],
             'onlyglobal'      => $onlyglobal,
             'checkright'      => $checkright,
+            'used'            => $used,
         ]);
     }
 
