@@ -644,6 +644,264 @@ HTML,
         $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
     }
 
+    public function testFollowupDocumentsAttachedToClosedNotification(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Arrange - Configure notifications
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+
+        $closed_notif = new \Notification();
+        $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'closed']));
+
+        $this->assertTrue($DB->update(
+            \Notification::getTable(),
+            ['is_active' => false],
+            ['id' => ['<>', $closed_notif->getID()]]
+        ));
+        $this->updateItem(\Notification::class, $closed_notif->getID(), [
+            'is_active'        => 1,
+            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+        ]);
+
+        $notification_notificationtemplate_it = $DB->request([
+            'FROM' => 'glpi_notifications_notificationtemplates',
+            'WHERE' => ['notifications_id' => $closed_notif->getID()],
+        ]);
+        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
+            $notificationtemplate_it = $DB->request([
+                'FROM' => 'glpi_notificationtemplates',
+                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
+            ]);
+            foreach ($notificationtemplate_it as $notificationtemplate_data) {
+                $template_updated = $DB->update(
+                    'glpi_notificationtemplatetranslations',
+                    ['content_html' => null],
+                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
+                );
+                $this->assertTrue($template_updated);
+            }
+        }
+
+        // Arrange - Create ticket with a solution, then a followup accepting it, and attach a document to the followup
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => '<p>Test ticket</p>',
+            'entities_id' => $entity,
+        ]);
+
+        $this->createItem(\ITILSolution::class, [
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => '<p>Solution</p>',
+        ]);
+
+        $followup_doc = $this->createTxtDocument();
+
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0, 'event' => 'closed']));
+
+        $followup = new \ITILFollowup();
+        $followup_id = $followup->add([
+            'itemtype'  => \Ticket::class,
+            'items_id'  => $ticket->getID(),
+            'content'   => 'Approving solution',
+            'add_close' => 1,
+        ]);
+        $this->assertGreaterThan(0, $followup_id);
+        $followup->getFromDB($followup_id);
+
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $followup_doc->getID(),
+            'itemtype'     => $followup->getType(),
+            'items_id'     => $followup->getID(),
+        ]);
+
+        // Act - Retrieve queued notification
+        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
+            'is_deleted' => 0,
+            'event'      => 'closed',
+        ]);
+
+        // Assert - Followup is the trigger for the notification
+        $this->assertCount(1, $queued_notifications);
+
+        $queued = reset($queued_notifications);
+        $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
+        $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
+
+        $transport = new class extends AbstractTransport {
+            public $sent_email;
+
+            protected function doSend(SentMessage $message): void
+            {
+                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
+                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
+            }
+
+            public function __toString(): string
+            {
+                return 'test://';
+            }
+        };
+
+        // Act - Send queued notification
+        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::send($queued_notifications);
+        \NotificationEventMailing::setMailer(null);
+
+        // Assert - Followup document is attached to the sent email
+        $attachments = $transport->sent_email->getAttachments();
+        $this->assertCount(1, $attachments);
+        $this->assertInstanceOf(DataPart::class, $attachments[0]);
+        $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
+    }
+
+    public function testFollowupDocumentsAttachedToRejectSolutionNotification(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Arrange - Configure notifications
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+
+        $this->assertTrue($DB->update(
+            \Notification::getTable(),
+            ['is_active' => false],
+            [new \Glpi\DBAL\QueryExpression('true')]
+        ));
+
+        $closed_notif = new \Notification();
+        $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'closed']));
+        $closed_template_link = $DB->request([
+            'FROM'  => 'glpi_notifications_notificationtemplates',
+            'WHERE' => ['notifications_id' => $closed_notif->getID()],
+        ])->current();
+
+        $rejectsolution_notif = $this->createItem(\Notification::class, [
+            'name'             => 'Solution rejected test',
+            'itemtype'         => \Ticket::class,
+            'event'            => 'rejectsolution',
+            'is_active'        => 1,
+            'is_recursive'     => 1,
+            'entities_id'      => 0,
+            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $rejectsolution_notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $closed_template_link['notificationtemplates_id'],
+        ]);
+        $this->createItem(\NotificationTarget::class, [
+            'notifications_id' => $rejectsolution_notif->getID(),
+            'type'             => \Notification::USER_TYPE,
+            'items_id'         => \Notification::GLOBAL_ADMINISTRATOR,
+        ]);
+
+        $notification_notificationtemplate_it = $DB->request([
+            'FROM' => 'glpi_notifications_notificationtemplates',
+            'WHERE' => ['notifications_id' => $rejectsolution_notif->getID()],
+        ]);
+        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
+            $notificationtemplate_it = $DB->request([
+                'FROM' => 'glpi_notificationtemplates',
+                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
+            ]);
+            foreach ($notificationtemplate_it as $notificationtemplate_data) {
+                $template_updated = $DB->update(
+                    'glpi_notificationtemplatetranslations',
+                    ['content_html' => null],
+                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
+                );
+                $this->assertTrue($template_updated);
+            }
+        }
+
+        // Arrange - Create ticket with a solution, then a followup rejecting it, and attach a document to the followup
+        $this->updateItem(\Entity::class, $entity, ['autoclose_delay' => \Entity::CONFIG_NEVER]);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => '<p>Test ticket</p>',
+            'entities_id' => $entity,
+        ]);
+
+        $this->createItem(\ITILSolution::class, [
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => '<p>Solution</p>',
+        ]);
+
+        $followup_doc = $this->createTxtDocument();
+
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0, 'event' => 'rejectsolution']));
+
+        $followup = new \ITILFollowup();
+        $followup_id = $followup->add([
+            'itemtype'   => \Ticket::class,
+            'items_id'   => $ticket->getID(),
+            'content'    => 'Rejecting solution',
+            'add_reopen' => 1,
+        ]);
+        $this->assertGreaterThan(0, $followup_id);
+        $followup->getFromDB($followup_id);
+
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $followup_doc->getID(),
+            'itemtype'     => $followup->getType(),
+            'items_id'     => $followup->getID(),
+        ]);
+
+        // Act - Retrieve queued notification
+        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
+            'is_deleted' => 0,
+            'event'      => 'rejectsolution',
+        ]);
+
+        // Assert - Followup is the trigger for the notification
+        $this->assertCount(1, $queued_notifications);
+
+        $queued = reset($queued_notifications);
+        $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
+        $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
+
+        $transport = new class extends AbstractTransport {
+            public $sent_email;
+
+            protected function doSend(SentMessage $message): void
+            {
+                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
+                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
+            }
+
+            public function __toString(): string
+            {
+                return 'test://';
+            }
+        };
+
+        // Act - Send queued notification
+        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::send($queued_notifications);
+        \NotificationEventMailing::setMailer(null);
+
+        // Assert - Followup document is attached to the sent email
+        $attachments = $transport->sent_email->getAttachments();
+        $this->assertCount(1, $attachments);
+        $this->assertInstanceOf(DataPart::class, $attachments[0]);
+        $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
+    }
+
     /**
      * Simulates upload of a random PNG image and return its filename.
      */
