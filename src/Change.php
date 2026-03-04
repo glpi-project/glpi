@@ -387,7 +387,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again change to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_solution'] ?? $this->input['_followup'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
