@@ -551,11 +551,11 @@ HTML,
         $solved_notif = new \Notification();
         $this->assertTrue($solved_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'solved']));
 
-        $DB->update(
+        $this->assertTrue($DB->update(
             \Notification::getTable(),
             ['is_active' => false],
             ['id' => ['<>', $solved_notif->getID()]]
-        );
+        ));
         $this->updateItem(\Notification::class, $solved_notif->getID(), [
             'is_active'        => 1,
             'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
@@ -617,7 +617,7 @@ HTML,
         $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
         $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
 
-        // Assert - Solution document is attached to the sent email
+        // Act - Send queued notification
         $transport = new class extends AbstractTransport {
             public $sent_email;
 
@@ -637,6 +637,7 @@ HTML,
         \NotificationEventMailing::send($queued_notifications);
         \NotificationEventMailing::setMailer(null);
 
+        // Assert - Solution document is attached to the sent email
         $attachments = $transport->sent_email->getAttachments();
         $this->assertCount(1, $attachments);
         $this->assertInstanceOf(DataPart::class, $attachments[0]);
