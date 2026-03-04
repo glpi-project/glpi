@@ -532,7 +532,7 @@ class UploadHandler
             case 'image_resize':
                 return __('Failed to resize image');
 
-	        case 'invalid_file_type':
+            case 'invalid_file_type':
                 return __('Invalid file type');
         }
 
