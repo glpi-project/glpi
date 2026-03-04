@@ -669,21 +669,21 @@ class ITILTemplateTest extends DbTestCase
             'itilcategories_id' => $cat_a->getID(),
             'type'              => \Ticket::DEMAND_TYPE,
             'entities_id'       => 0,
-            'tickettemplates_id'  => $tpl_a->getID(),
+            \Ticket::getTemplateClass()::getForeignKeyField()  => $tpl_a->getID(),
         ]);
 
         $change = $this->createItem(\Change::class, [
             'name'              => 'Change',
             'itilcategories_id' => $cat_a->getID(),
             'entities_id'       => 0,
-            'changetemplates_id'  => $cpl_a->getID(),
+            \Change::getTemplateClass()::getForeignKeyField()  => $cpl_a->getID(),
         ]);
 
         $problem = $this->createItem(\Problem::class, [
             'name'              => 'Problem',
             'itilcategories_id' => $cat_a->getID(),
             'entities_id'       => 0,
-            'problemtemplates_id'  => $pl_a->getID(),
+            \Problem::getTemplateClass()::getForeignKeyField()  => $pl_a->getID(),
         ]);
 
         $this->assertEquals(
@@ -733,6 +733,37 @@ class ITILTemplateTest extends DbTestCase
             $pl_b->getID(),
             (int) $problem->fields['problemtemplates_id'],
             'problemtemplates_id must be updated to Template B after category change'
+        );
+
+        // Update the category of each item to category A, but force template B, and check that template A is still used as category has precedence on template
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'itilcategories_id' => $cat_a->getID(),
+            \Ticket::getTemplateFormFieldName() => $tpl_b->getID(),
+        ]);
+
+        $change = $this->updateItem(\Change::class, $change->getID(), [
+            'itilcategories_id' => $cat_a->getID(),
+            \Change::getTemplateFormFieldName() => $cpl_b->getID(),
+        ]);
+
+        $problem = $this->updateItem(\Problem::class, $problem->getID(), [
+            'itilcategories_id' => $cat_a->getID(),
+            \Problem::getTemplateFormFieldName() => $pl_b->getID(),
+        ]);
+
+        $this->assertEquals(
+            $tpl_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+        );
+
+        $this->assertEquals(
+            $cpl_a->getID(),
+            (int) $change->fields['changetemplates_id'],
+        );
+
+        $this->assertEquals(
+            $pl_a->getID(),
+            (int) $problem->fields['problemtemplates_id'],
         );
     }
 }

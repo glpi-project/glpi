@@ -2016,15 +2016,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
 
-        // Map unique template field to template foreign key
-        // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
-        if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
-            $tpl_class = static::getTemplateClass();
-            $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
-        }
-
         if ($this->getType() !== Ticket::getType()) {
             //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
+
+            // Map unique template field to template foreign key
+            // Leave original field. The new field is stored in the DB, while the original is used for everything else (left for BC)
+            if (isset($input[static::getTemplateFormFieldName()]) && (int) $input[static::getTemplateFormFieldName()] > 0) {
+                $tpl_class = static::getTemplateClass();
+                $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
+            }
             $input = $this->handleTemplateFields($input);
             if ($input === false) {
                 return false;
