@@ -89,8 +89,9 @@ class KnowbaseEditor {
         this.#element.innerHTML = '';
 
         // Create bubble menu element for text formatting
+        // Not appended to DOM here — the BubbleMenu plugin manages
+        // insertion/removal via show()/hide() to avoid ghost appearances on scroll
         this.#bubbleMenuElement = this.#createBubbleMenu();
-        document.body.appendChild(this.#bubbleMenuElement);
 
         // Get SlashCommands extension
         const slashCommandsExt = SlashCommands;
@@ -119,8 +120,12 @@ class KnowbaseEditor {
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
-                placement: 'top',
-                offset: 8,
+                appendTo: () => document.body,
+                options: {
+                    placement: 'top',
+                    offset: 8,
+                    shift: {boundary: this.#element},
+                },
             }),
             TiptapTable.configure({
                 resizable: true,
