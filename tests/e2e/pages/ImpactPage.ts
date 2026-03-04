@@ -30,21 +30,31 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Log viewer', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-    });
-    it('List Accessibility', () => {
-        cy.visit('/front/logs.php');
-        cy.get('#page > .container').within(() => {
-            cy.get('.list-group .list-group-item').should('have.length.greaterThan', 0);
-            cy.injectAndCheckA11y();
-        });
-    });
-    it('Viewer Accessibility', () => {
-        cy.visit('/front/logviewer.php?filepath=php-errors.log');
-        cy.get('.log_entry').should('have.length.greaterThan', 0);
-        cy.get('.log-entries').injectAndCheckA11y();
-    });
-});
+import { Locator, Page } from "@playwright/test";
+import { GlpiPage } from "./GlpiPage";
+
+export class ImpactPage extends GlpiPage
+{
+    public readonly graph_view: Locator;
+    public readonly list_view: Locator;
+    public readonly canvas_elements: Locator;
+    public readonly view_as_list_button: Locator;
+    public readonly view_as_graph_button: Locator;
+
+    public constructor(page: Page)
+    {
+        super(page);
+
+        this.graph_view = page.getByTestId('impact-graph-view');
+        this.list_view = page.getByTestId('impact-list-view');
+        // eslint-disable-next-line playwright/no-raw-locators
+        this.canvas_elements = page.locator('.__________cytoscape_container > canvas');
+        this.view_as_list_button = page.getByTitle('View as list');
+        this.view_as_graph_button = page.getByTitle('View graphical representation');
+    }
+
+    public async gotoComputerImpact(computer_id: number): Promise<void>
+    {
+        await this.page.goto(`/front/computer.form.php?id=${computer_id}&forcetab=Impact$1`);
+    }
+}

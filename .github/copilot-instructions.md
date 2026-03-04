@@ -15,3 +15,92 @@ Do not ask clarification questions, except when a real choice between two techni
 Do not generate tests unless requested.
 When generating code, always ensure it is secure and free from vulnerabilities.
 When importing libraries or packages, prefer already imported ones; if using new ones, they must be compatible with GLPI GPLv3+ License.
+
+## End-to-end tests (Playwright)
+
+Before writing or modifying any e2e test, read existing tests in `tests/e2e/specs/` and page objects in `tests/e2e/pages/` to understand established patterns and conventions.
+
+Update these instructions if you learn new information.
+
+### Page Object Model
+
+Always use the Page Object Model pattern. Locators and reusable interactions must live in page classes under `tests/e2e/pages/`, not in spec files.
+
+- Every page class extends `GlpiPage` (defined in `tests/e2e/pages/GlpiPage.ts`), which provides helper methods such as `getButton()`, `getLink()`, `getCheckbox()`, `getTextbox()`, `getTab()`, `getRegion()`, `getHeading()`, `getRadio()`, `getSpinButton()`, `getDropdownByLabel()`, `getRichTextByLabel()`, and common actions like `doSetDropdownValue()`, `doAddNote()`, `doLogout()`, etc.
+- Declare locators as public readonly properties initialized in the constructor.
+- Expose user-facing actions as `async do*()` methods on the page object.
+- Spec files should only contain test logic; all element access goes through page objects.
+
+### Selectors
+
+Use Playwright's semantic locators exclusively — prefer `getByRole()`, `getByLabel()`, `getByTestId()`, `getByText()`, `getByTitle()`, `getByAltText()`, and the helper methods inherited from `GlpiPage`.
+
+- **Never use raw CSS or XPath selectors** (`page.locator(...)`) unless there is absolutely no semantic alternative. When a raw locator is unavoidable, add `// eslint-disable-next-line playwright/no-raw-locators` on the line above.
+- Before adding a raw locator, first check if the element can be targeted using `data-testid`, `aria-label`, `title`, `alt`, or `role` attributes. When no semantic attribute exists, add a `data-testid` attribute to the element in the Twig template or source code.
+- If a button or interactive element cannot be located by its accessible name (e.g., because an icon replaces the text), **add an `aria-label` attribute** to the element in the Twig template or source code so it can be targeted with `getByRole()`.
+- Acceptable uses of raw locators (with eslint-disable):
+  - Third-party library elements (Select2, Cytoscape, fileupload) that cannot receive `data-testid` attributes.
+  - Hidden `<input>` elements used only for value verification (e.g., `input[name="field_options[...]"]`).
+  - XPath ancestor traversals needed to find a parent container from a semantic child locator.
+- Toast notification links: use `page.getByRole('alert').getByRole('link')` instead of raw `div.toast-container .toast-body a`.
+- For file uploads, use `GlpiPage.doAddFileToUploadArea(file, parent)` instead of manually locating `input[type="file"]`.
+- For file upload removal buttons, use `getByTitle('Delete')` (the jQuery fileupload plugin adds `title="Delete"`).
+
+### Tab navigation
+
+Use the `forcetab` URL parameter to navigate directly to a specific tab instead of clicking tab elements:
+
+```typescript
+await page.goto(`/front/computer.form.php?id=${id}&forcetab=ItemVirtualMachine$1`);
+```
+
+To find forcetab IDs, check `getTabNameForItem()` and `defineTabs()` in the relevant PHP class. The default form tab uses `ClassName$main`; numbered tabs follow the keys defined in `getTabNameForItem()` (e.g., `User$1`, `Glpi\Asset\AssetDefinition$2`).
+
+Page objects should accept an optional `tab` parameter in navigation methods:
+
+```typescript
+public async goto(id: number, tab?: string): Promise<void> {
+    let url = `/front/computer.form.php?id=${id}`;
+    if (tab) {
+        url += `&forcetab=${tab}`;
+    }
+    await this.page.goto(url);
+}
+```
+
+Only click tabs directly when you need to set up `page.route()` intercepts before the tab content loads.
+
+### Accessibility testing
+
+Use `@axe-core/playwright` (`AxeBuilder`) for accessibility checks, scoped to the relevant page section:
+
+```typescript
+import AxeBuilder from '@axe-core/playwright';
+
+const a11y_results = await new AxeBuilder({ page })
+    .include('[data-testid="my-component"]')
+    .analyze();
+expect(a11y_results.violations).toEqual([]);
+```
+
+### Linting
+
+All e2e test code must pass lint checks. Run the following command and fix any errors before considering the work done:
+
+```sh
+make lint-playwright lint-js
+```
+
+### Running tests
+
+Always run the relevant tests to validate changes. Use the following command with the correct path to the spec file:
+
+```sh
+make playwright c=tests/e2e/specs/<path-to-spec-file>
+```
+
+Do not skip this step — tests must pass before the task is complete.
+
+### Test fixtures and utilities
+
+Use the custom GLPI fixture (`tests/e2e/fixtures/glpi_fixture.ts`) which provides `page`, `profile`, `entity`, `csrf`, `formImporter`, and `api` helpers. Use the `api` fixture to create test data instead of navigating the UI for setup.

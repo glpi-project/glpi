@@ -252,7 +252,7 @@ JS);
     {
         self::loadLibs();
 
-        echo '<div id="impact_graph_view">';
+        echo '<div id="impact_graph_view" data-testid="impact-graph-view">';
         self::prepareImpactNetwork($item);
         echo '</div>';
     }
@@ -279,7 +279,7 @@ JS);
             $max_depth = $impact_context->fields['max_depth'];
         }
 
-        echo '<div id="impact_list_view">';
+        echo '<div id="impact_list_view" data-testid="impact-list-view">';
         echo '<div class="impact-list-container">';
 
         // One table will be printed for each direction

@@ -30,17 +30,30 @@
  * ---------------------------------------------------------------------
  */
 
-describe("Printer", () => {
-    beforeEach(() => {
-        cy.login();
+import { test, expect } from '../../fixtures/glpi_fixture';
+import { ImpactPage } from '../../pages/ImpactPage';
+import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
+
+test('Impact graph loads', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const computer_id = await api.createItem('Computer', {
+        name: 'Impact computer',
+        entities_id: getWorkerEntityId(),
     });
 
-    it('can view pages counter', () => {
-        cy.createWithAPI("Printer", {
-            name: 'Test printer',
-        }).then((id) => {
-            cy.visit(`/front/printer.form.php?id=${id}&forcetab=PrinterLog$0`);
-            cy.findByTestId('pages_barchart').find('canvas').should('exist');
-        });
-    });
+    const impact_page = new ImpactPage(page);
+    await impact_page.gotoComputerImpact(computer_id);
+
+    await expect(impact_page.graph_view).toBeVisible();
+    await expect(impact_page.list_view).toBeHidden();
+    expect(await impact_page.canvas_elements.count()).toBeGreaterThanOrEqual(1);
+
+    await impact_page.view_as_list_button.click();
+    await expect(impact_page.graph_view).toBeHidden();
+    await expect(impact_page.list_view).toBeVisible();
+
+    await impact_page.view_as_graph_button.click();
+    await expect(impact_page.graph_view).toBeVisible();
+    await expect(impact_page.list_view).toBeHidden();
 });
