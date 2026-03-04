@@ -144,7 +144,7 @@
     <script>
         (async function() {
             const module = await import(
-                "js/modules/Helpdesk/IndexController.js"
+                "{{ js_path('js/modules/Helpdesk/IndexController.js') }}"
             );
             new module.GlpiHelpdeskIndexController();
         })();
