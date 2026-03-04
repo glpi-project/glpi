@@ -306,21 +306,22 @@
 
             <div v-if="!loading" class="flexbox-item-grow mt-2 position-relative" :style="`height: calc(30px + ${32 * max_items}px)`">
                 <div class="w-100 h-100 overflow-x-auto overflow-y-hidden">
-                    <ul class="w-100 list-group" @wheel.prevent.stop="onListScroll">
+                    <ul class="w-100 list-group rounded-0" @wheel.prevent.stop="onListScroll">
                         <li v-for="node in visible_in_dom" :key="node.key" :class="`list-group-item p-0 border-0 cursor-pointer`" :style="`${node.selected ? 'background-color: var(--tblr-primary)' : ''}`">
-                            <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-center">
+                            <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-center pt-1">
                                 <button v-if="node.children.length" :title="node.expanded ? __('Collapse') : __('Expand')"
                                         :aria-label="node.expanded ? __('Collapse') : __('Expand')"
-                                        class="btn btn-ghost-secondary btn-sm btn-icon p-1 me-1 cursor-pointer collapse-item"
+                                        class="btn btn-ghost-secondary btn-sm btn-icon p-1 cursor-pointer collapse-item"
                                         @click.prevent.stop="onExpandToggleClick(node)">
                                     <i :class="node.expanded ? 'ti ti-chevron-down' : 'ti ti-chevron-right'"></i>
                                 </button>
                                 <div v-else style="width: 25px"></div>
                                 <div role="button" :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" @click.prevent.stop="changeEntity(node.key, false)" class="d-flex align-items-center">
-                                    <i :hidden="node.children.length === 0" class="ti ti-stack-2 me-1" aria-hidden="true"></i>
+                                    <i :hidden="node.children.length === 0" aria-hidden="true"
+                                       class="ti me-1" :class="node.expanded ? 'ti-folder-open' : 'ti-folder'"></i>
                                     {{ node.label }}
                                 </div>
-                                <button v-if="node.children.length" class="btn btn-outline-secondary btn-sm btn-icon p-1 ms-1"
+                                <button v-if="node.children.length" class="btn btn-ghost-secondary btn-sm btn-icon p-1"
                                         :title="__('Select this entity and all its children')"
                                         :aria-label="__('Select this entity and all its children')"
                                         @click.prevent.stop="changeEntity(node.key, true)" data-bs-toggle="tooltip" data-bs-placement="top">
