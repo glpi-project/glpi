@@ -104,7 +104,7 @@
     <script defer type="module">
         (async () => {
             const module = await import(
-                "{{ js_path('js/modules/IllustrationPicker/Controller.js') }}"
+                "/js/modules/IllustrationPicker/Controller.js"
             );
             new module.GlpiIllustrationPickerController(
                 document.getElementById('{{ container_id|e('js') }}'),
