@@ -84,7 +84,7 @@
             {{ __("No items will be created for this form.") }}
         </p>
     {% else %}
-        <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
+        <section class="accordion mt-4 pe-none" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
                 {% set is_expanded = active_destination == destination.getID() %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}

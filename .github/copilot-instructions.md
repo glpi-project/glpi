@@ -36,15 +36,13 @@ Always use the Page Object Model pattern. Locators and reusable interactions mus
 Use Playwright's semantic locators exclusively — prefer `getByRole()`, `getByLabel()`, `getByTestId()`, `getByText()`, `getByTitle()`, `getByAltText()`, and the helper methods inherited from `GlpiPage`.
 
 - **Never use raw CSS or XPath selectors** (`page.locator(...)`) unless there is absolutely no semantic alternative. When a raw locator is unavoidable, add `// eslint-disable-next-line playwright/no-raw-locators` on the line above.
-- Before adding a raw locator, first check if the element can be targeted using `data-testid`, `aria-label`, `title`, `alt`, or `role` attributes. When no semantic attribute exists, add a `data-testid` attribute to the element in the Twig template or source code.
-- If a button or interactive element cannot be located by its accessible name (e.g., because an icon replaces the text), **add an `aria-label` attribute** to the element in the Twig template or source code so it can be targeted with `getByRole()`.
-- Acceptable uses of raw locators (with eslint-disable):
-  - Third-party library elements (Select2, Cytoscape, fileupload) that cannot receive `data-testid` attributes.
-  - Hidden `<input>` elements used only for value verification (e.g., `input[name="field_options[...]"]`).
-  - XPath ancestor traversals needed to find a parent container from a semantic child locator.
-- Toast notification links: use `page.getByRole('alert').getByRole('link')` instead of raw `div.toast-container .toast-body a`.
-- For file uploads, use `GlpiPage.doAddFileToUploadArea(file, parent)` instead of manually locating `input[type="file"]`.
-- For file upload removal buttons, use `getByTitle('Delete')` (the jQuery fileupload plugin adds `title="Delete"`).
+- Before adding a raw locator, **you MUST first attempt all of the following alternatives** in order:
+  1. Use existing semantic attributes (`role`, `aria-label`, `title`, `alt`, `data-testid`).
+  2. Add an `aria-label` attribute so the element can be targeted with `getByRole()`.
+  3. Add a `data-testid` attribute to the element in the Twig template, PHP source, or JavaScript that generates it.
+  4. Only after exhausting options 1–3 may you use a raw locator with the eslint-disable comment.
+- Targeting elements by `data-glpi-*` attributes with `page.locator('[data-glpi-...]')` **is a raw locator** and is **not allowed**. Add a `data-testid` attribute instead and use `getByTestId()`.
+
 
 ### Tab navigation
 
@@ -100,6 +98,10 @@ make playwright c=tests/e2e/specs/<path-to-spec-file>
 ```
 
 Do not skip this step — tests must pass before the task is complete.
+
+### CRITICAL: Always use Makefile commands
+
+**NEVER** run `npx`, `node`, `npm`, `eslint`, `tsc`, or any Node.js tool directly. All commands **MUST** go through `make` targets because the tooling runs inside Docker containers. Direct invocations will fail.
 
 ### Test fixtures and utilities
 

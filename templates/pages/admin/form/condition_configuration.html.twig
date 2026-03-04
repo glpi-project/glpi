@@ -67,6 +67,7 @@
                     for="strategy_{{ rand }}"
                     class="btn btn-outline-secondary"
                     aria-label="{{ strategy.getLabel() }}"
+                    data-testid="strategy-label-{{ strategy.value }}"
                 >
                     <i class="{{ strategy.getIcon() }} me-2"></i>
                     {{ strategy.getLabel() }}
