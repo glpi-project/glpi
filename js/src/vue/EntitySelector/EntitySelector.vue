@@ -1,5 +1,5 @@
 <script setup>
-    import {onMounted, useTemplateRef, ref, computed, watch} from "vue";
+    import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
 
     const props = defineProps({
         current_entity: {
@@ -46,7 +46,9 @@
     function walkTree(data, level, parent, visit_node) {
         for (let i = 0; i < data.length; i++) {
             const node = data[i];
-            visit_node(node, level, parent);
+            if (visit_node(node, level, parent) === false) {
+                return;
+            }
             if (node.children.length) {
                 walkTree(node.children, level + 1, node, visit_node);
             }
@@ -60,46 +62,25 @@
     const visible_tree_data = computed(() => {
         const visible = [];
 
-        const start_time = performance.now();
-
-        const start_walk_time = performance.now();
         walkTree(tree_data.value, 0, null, (node) => {
-            if (node.hidden) {
-                return;
-            }
-            visible.push(node);
-        });
-        console.log(`Walking tree to find visible nodes took ${performance.now() - start_walk_time} ms`);
-        console.log(`Found ${visible.length} visible nodes before sorting and filtering`);
-
-        const start_sort_time = performance.now();
-        // Sort the visible nodes by their universal order
-        visible.sort((a, b) => a.universal_order - b.universal_order);
-        console.log(`Sorting visible nodes took ${performance.now() - start_sort_time} ms`);
-
-        const start_filter_time = performance.now();
-        const visible_filtered = [];
-        // Remove hidden nodes
-        for (let i = 0; i < visible.length; i++) {
-            // If node is hidden or any of its parents are collapsed, we don't want it in the visible array.
-            // We are using a temporary array to store the new visible nodes because splicing the original array to make deletions is very expensive
-            let hidden = visible[i].hidden;
+            let hidden = node.hidden;
             if (!hidden) {
-                for (let j = 0; j < visible[i].parents.length; j++) {
-                    const p = visible[i].parents[j];
+                for (let j = 0; j < node.parents.length; j++) {
+                    const p = node.parents[j];
                     if (p.children.length && !p.expanded) {
                         hidden = true;
                         break;
                     }
                 }
+                if (!hidden) {
+                    visible.push(node);
+                }
             }
-            if (!hidden) {
-                visible_filtered.push(visible[i]);
-            }
-        }
-        console.log(`Filtering visible nodes based on expanded/collapsed state took ${performance.now() - start_filter_time} ms`);
-        console.log(`Calculating visible tree data took ${performance.now() - start_time} ms`);
-        return visible_filtered;
+        });
+
+        // Sort the visible nodes by their universal order
+        visible.sort((a, b) => a.universal_order - b.universal_order);
+        return visible;
     });
 
     watch(visible_tree_data, (new_value) => {
@@ -171,16 +152,14 @@
     }
 
     const selected_nodes = computed(() => {
-        const start = performance.now();
         let selected = null;
         walkTree(tree_data.value, 0, null, (node) => {
             if (node.selected) {
                 selected = node;
+                return false;
             }
         });
-        const result = [selected.key, ...selected.parents.map((parent) => parent.key)];
-        console.log(`Calculating selected nodes took ${performance.now() - start} ms`);
-        return result;
+        return [selected.key, ...selected.parents.map((parent) => parent.key)];
     });
 
 
@@ -223,9 +202,7 @@
                         }
                     });
                 }
-                const start_time = performance.now();
                 preprocess(data);
-                console.log(`Preprocessing took ${performance.now() - start_time} ms`);
                 tree_data.value = data;
                 loading.value = false;
             });
