@@ -1000,7 +1000,7 @@ HTML;
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
