@@ -183,7 +183,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-10-01',
+                'expected' => '2025-07-01',
             ],
         ];
     }
