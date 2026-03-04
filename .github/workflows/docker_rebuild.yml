@@ -1,0 +1,115 @@
+name: "Docker nightly and security rebuild"
+
+permissions:
+  contents: "read"
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Nightly builds (daily)
+    - cron: '0 3 * * 0'   # Security rebuild of living tags
+  workflow_dispatch:
+    inputs:
+      security-rebuild:
+        description: "Run security rebuild (re-pulls base images with no-cache) instead of nightly builds"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  resolve:
+    name: "Resolve build matrix"
+    runs-on: "ubuntu-latest"
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+    steps:
+      - name: "Resolve versions and build matrix"
+        id: "resolve"
+        uses: "actions/github-script@v8"
+        with:
+          script: |
+            const isSecurityRebuild =
+              context.payload.schedule === '0 3 * * 0' ||
+              context.payload.inputs?.['security-rebuild'] === 'true';
+
+            // Fetch all non-prerelease releases
+            const releases = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            const stableTags = releases.data
+              .filter(r => !r.prerelease && !r.draft)
+              .map(r => r.tag_name)
+              .filter(t => /^\d+\.\d+\.\d+$/.test(t));
+
+            // Group by major version, pick latest per major, sort descending, take latest 2
+            const byMajor = {};
+            for (const tag of stableTags) {
+              const major = tag.split('.')[0];
+              // sorted by publish date
+              if (!byMajor[major]) byMajor[major] = tag;
+            }
+            const topMajors = Object.entries(byMajor)
+              .sort(([a], [b]) => Number(b) - Number(a))
+              .slice(0, 2);
+
+            if (topMajors.length === 0) {
+              core.setFailed('No stable releases found.');
+              return;
+            } else {
+              core.info(`Found ${topMajors.length} stable releases: ${topMajors.map(([major, version]) => version).join(', ')}`);
+            }
+
+            let matrix;
+
+            if (isSecurityRebuild) {
+              // Security rebuild: latest stable tag per major, no-cache
+              matrix = topMajors.map(([major, version]) => ({
+                'glpi-version': version,
+                'image-tag': '',
+                'no-cache': true,
+                'use-legacy-marketplace-path': Number(major) < 11,
+              }));
+            } else {
+              // Nightly: main + bugfix branches for the 2 latest majors
+              const minor = (tag) => tag.split('.').slice(0, 2).join('.');
+              matrix = [
+                {
+                  'glpi-version': 'main',
+                  'image-tag': 'dev-nightly',
+                  'no-cache': false,
+                  'use-legacy-marketplace-path': false,
+                },
+                ...topMajors.map(([major, version]) => ({
+                  'glpi-version': `${minor(version)}/bugfixes`,
+                  'image-tag': `${minor(version)}-nightly`,
+                  'no-cache': false,
+                  'use-legacy-marketplace-path': Number(major) < 11,
+                })),
+              ];
+            }
+
+            core.setOutput('matrix', JSON.stringify({ include: matrix }));
+
+            // Job summary
+            const mode = isSecurityRebuild ? 'Security Rebuild' : 'Nightly Build';
+            await core.summary
+              .addHeading(`${mode} Matrix`)
+              .addCodeBlock(JSON.stringify(matrix, null, 2), 'json')
+              .write();
+
+  build:
+    name: "Build ${{ matrix.image-tag || matrix.glpi-version }}"
+    needs: [resolve]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.resolve.outputs.matrix) }}
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    secrets: inherit
+    with:
+      push: true
+      glpi-version: ${{ matrix.glpi-version }}
+      image-tag: ${{ matrix.image-tag }}
+      no-cache: ${{ matrix.no-cache }}
+      use-legacy-marketplace-path: ${{ matrix.use-legacy-marketplace-path }}
