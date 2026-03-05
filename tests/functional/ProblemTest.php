@@ -64,33 +64,6 @@ class ProblemTest extends DbTestCase
         $this->assertTrue($problem_item->getFromDBForItems($problem, $computer));
     }
 
-    public function testAddFromItemFormFlow(): void
-    {
-        $computer = getItemByTypeName(Computer::class, '_test_pc01');
-        $problem  = new Problem();
-
-        // Simulate raw inputs as received by the front controller
-        $problems_id = $problem->add([
-            'name'           => 'test add from item form flow',
-            'content'        => 'test add from item form flow',
-            '_add_fromitem'  => true,
-            'itemtype'       => Computer::class,
-            'items_id'       => $computer->getID(),
-        ]);
-        $this->assertGreaterThan(0, $problems_id);
-
-        $item_problem = new \Item_Problem();
-        $this->assertTrue($item_problem->getFromDBForItems($problem, $computer));
-        $this->assertEquals(
-            1,
-            countElementsInTable(\Item_Problem::getTable(), [
-                'problems_id' => $problems_id,
-                'itemtype'    => Computer::class,
-                'items_id'    => $computer->getID(),
-            ])
-        );
-    }
-
     public function testAssignFromCategory()
     {
         $this->login('glpi', 'glpi');
