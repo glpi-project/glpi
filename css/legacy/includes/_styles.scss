@@ -834,11 +834,26 @@
    }
 
    .planning_on_central .fc-view-container * {
-      min-height: 2em;
+      min-height: 1em;
 
       /** Ensure no event message is displayed well */
       &::before, &::after {
          min-height: 1em;
+      }
+   }
+
+   /* Prop open the FullCalendar scroller (the gray box) so the empty message doesn't overflow */
+   .planning_on_central .fc-view-container .fc-scroller {
+      min-height: 3.5em; 
+   }
+
+   /* Apply the height safely to the empty wrappers and text */
+   .planning_on_central .fc-view-container .fc-list-empty-wrap2,
+   .planning_on_central .fc-view-container .fc-list-empty-wrap2 * {
+      min-height: 2em;
+
+      &::before, &::after {
+         min-height: 2em;
       }
    }
 
