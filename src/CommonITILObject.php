@@ -52,6 +52,7 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Team\Team;
 use Glpi\Urgency;
 use Safe\Exceptions\DatetimeException;
@@ -9777,6 +9778,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * Check if input contains a valid actor for given itemtype / actortype.
+     *
+     * @param array<string, mixed> $input
+     * @param class-string<CommonDBTM> $itemtype
+     * @param CommonITILActor::REQUESTER|CommonITILActor::ASSIGN|CommonITILActor::OBSERVER $actortype
      */
     private function hasValidActorInInput(array $input, string $itemtype, int $actortype): bool
     {
@@ -9890,9 +9895,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $WHERE += $criteria;
         $WHERE += getEntitiesRestrictCriteria();
         // visibility check hack so we don't have to load the complete DB info for every item
-        $visiblity_criteria = Search::addDefaultWhere(static::class);
-        if (!empty($visiblity_criteria)) {
-            $WHERE[] = new QueryExpression(Search::addDefaultWhere(static::class));
+        $visiblity_criteria = SQLProvider::getDefaultWhereCriteria($itemtype);
+        if ($visiblity_criteria !== []) {
+            $WHERE[] = SQLProvider::getDefaultWhereCriteria($itemtype);
         }
         $base_common_itil_query = [
             'SELECT' => [static::getTableField('id')],
@@ -9902,13 +9907,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // Add JOIN
         $linked_tables = [];
-        $default_joint = Search::addDefaultJoin(
-            $itemtype,
-            getTableForItemType($itemtype),
-            $linked_tables, // Passed by reference, must be a defined variable even if empty
-        );
-        if (!empty($default_joint)) {
-            $base_common_itil_query['LEFT JOIN'] = [new QueryExpression($default_joint)];
+        $default_join = SQLProvider::getDefaultJoinCriteria($itemtype, getTableForItemType($itemtype), $linked_tables);
+        if ($default_join !== []) {
+            $base_common_itil_query = array_merge_recursive($base_common_itil_query, $default_join);
         }
 
         // Load common_itil

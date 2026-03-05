@@ -2343,7 +2343,7 @@ final class SQLProvider implements SearchProviderInterface
      * Generic Function to add Default left join to a request
      *
      * @param class-string<CommonDBTM> $itemtype   Reference item type
-     * @param class-string<CommonDBTM> $ref_table  Reference table
+     * @param string $ref_table  Reference table
      * @param array &$already_link_tables  Array of tables already joined
      *
      * @return array Left join criteria array
