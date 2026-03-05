@@ -2852,11 +2852,11 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         $this->createItem(
             Group_User::class,
-                [
-                    'groups_id' => $group->getID(),
-                    'users_id' => $manager->getID(),
-                    'is_manager' => 1,
-                ]
+            [
+                'groups_id' => $group->getID(),
+                'users_id' => $manager->getID(),
+                'is_manager' => 1,
+            ]
         );
 
         // rule to create an approval for the manager of the requester group
@@ -2906,11 +2906,11 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         $this->createItem(
             Group_User::class,
-                [
-                    'groups_id' => $group->getID(),
-                    'users_id' => $manager->getID(),
-                    'is_manager' => 1,
-                ]
+            [
+                'groups_id' => $group->getID(),
+                'users_id' => $manager->getID(),
+                'is_manager' => 1,
+            ]
         );
 
         // rule to create an approval for the manager of the tech group
