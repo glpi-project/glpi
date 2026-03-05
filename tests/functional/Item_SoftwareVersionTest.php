@@ -41,9 +41,6 @@ use Glpi\Tests\DbTestCase;
 use Item_SoftwareVersion;
 use Toolbox;
 
-/**
- * @engine isolate
- */
 class Item_SoftwareVersionTest extends DbTestCase
 {
     public function testRelatedItemHasTab()

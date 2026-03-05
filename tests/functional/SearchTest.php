@@ -59,11 +59,6 @@ use TaskCategory;
 use Ticket;
 use User;
 
-/* Test for inc/search.class.php */
-
-/**
- * @engine isolate
- */
 class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
