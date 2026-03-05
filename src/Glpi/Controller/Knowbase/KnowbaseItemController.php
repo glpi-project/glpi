@@ -277,8 +277,8 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function deletePermission(Request $request): JsonResponse
     {
-        $itemtype = $request->get('itemtype');
-        $permission_id = (int) $request->get('permission_id');
+        $itemtype = $request->attributes->get('itemtype');
+        $permission_id = (int) $request->attributes->get('permission_id');
 
         if (!isset(self::ALLOWED_PERMISSION_TYPES[$itemtype])) {
             throw new NotFoundHttpException();
