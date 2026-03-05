@@ -57,7 +57,7 @@ jobs:
               });
 
               // Tags are ordered by creation (newest first), only keep stable tags (i.e: 11.0.6, not 11.0.6-rc1)
-              const stableTags = tags
+              const stableTags = tags.data
                 .map(t => t.name)
                 .filter(name => /^\d+\.\d+\.\d+$/.test(name));
 
