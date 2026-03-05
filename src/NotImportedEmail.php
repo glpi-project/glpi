@@ -212,7 +212,7 @@ class NotImportedEmail extends CommonDBTM
     {
         global $DB;
 
-        $DB->delete('glpi_notimportedemails', [new QueryExpression(true)]);
+        $DB->delete('glpi_notimportedemails', [new QueryExpression('true')]);
     }
 
 
