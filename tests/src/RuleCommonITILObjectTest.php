@@ -577,6 +577,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals(\CommonITILObject::SOLVED, (int) $itil->getField('status'));
     }
 
+    /**
+     * Action is already tested
+     * Test not removed, maybe it also tests criterias
+     */
     public function testAssignGroup()
     {
         $this->login();
@@ -688,90 +692,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             ])
         );
     }
-
-    public function testGroupRequesterAssignFromDefaultUserOnCreate()
-    {
-        $this->login();
-
-        // Create rule
-        $rule_itil = $this->getRuleInstance();
-        $rulecrit   = new RuleCriteria();
-        $ruleaction = new RuleAction();
-
-        $ruletid = $rule_itil->add($ruletinput = [
-            'name'         => 'test group requester criterion',
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'sub_type'     => $this->getTestedClass(),
-            'condition'    => RuleCommonITILObject::ONADD,
-            'is_recursive' => 1,
-        ]);
-        $this->checkInput($rule_itil, $ruletid, $ruletinput);
-
-        //create criteria to check if group requester already define
-        $crit_id = $rulecrit->add($crit_input = [
-            'rules_id'  => $ruletid,
-            'criteria'  => '_groups_id_requester',
-            'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-            'pattern'   => 1,
-        ]);
-        $this->checkInput($rulecrit, $crit_id, $crit_input);
-
-        //create action to put default user group as group requester
-        $action_id = $ruleaction->add($action_input = [
-            'rules_id'    => $ruletid,
-            'action_type' => 'defaultfromuser',
-            'field'       => '_groups_id_requester',
-            'value'       => 1,
-        ]);
-        $this->checkInput($ruleaction, $action_id, $action_input);
-
-        //create new group
-        $group = new Group();
-        $group_id = $group->add($group_input = [
-            "name" => "group1",
-            "is_requester" => true,
-        ]);
-        $this->checkInput($group, $group_id, $group_input);
-
-        //Load user tech
-        $user = new User();
-        $user->getFromDB(getItemByTypeName('User', 'tech', true));
-
-        //add user to group
-        $group_user = new Group_User();
-        $group_user_id = $group_user->add($group_user_input = [
-            "groups_id" => $group_id,
-            "users_id"  => $user->fields['id'],
-        ]);
-        $this->checkInput($group_user, $group_user_id, $group_user_input);
-
-        //add default group to user
-        $user->fields['groups_id'] = $group_id;
-        $this->assertTrue($user->update($user->fields));
-
-        // Check ITIL Object that trigger rule on creation
-        $itil = $this->getITILObjectInstance();
-        $itil_id = $itil->add($itil_input = [
-            'name'             => 'Add group requester if requester have default group',
-            'content'          => 'test',
-            '_users_id_requester' => $user->fields['id'],
-        ]);
-        unset($itil_input['_users_id_requester']); // _users_id_requester is stored in glpi_*_users table, so remove it
-        $this->checkInput($itil, $itil_id, $itil_input);
-
-        //load ITILGroup
-        $itil_group = $this->getITILLinkInstance('Group');
-        $itil_fk = $this->getITILObjectClass()::getForeignKeyField();
-        $this->assertTrue(
-            $itil_group->getFromDBByCrit([
-                $itil_fk    => $itil_id,
-                'groups_id' => $group_id,
-                'type'      => CommonITILActor::REQUESTER,
-            ])
-        );
-    }
-
 
     public function testTaskTemplateAssignFromRule()
     {
@@ -1035,6 +955,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals('<p>test testFollowupTemplateAssignFromRule</p>', $itil_followups_data['content']);
     }
 
+    /**
+     * @todo May be removed after analysis.
+     * We don't really know what is tested here.
+     */
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateITILContent()
     {
         $this->login();
@@ -1064,6 +988,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create action to put the groups that match the criteria
+        // already tested in separe test
         $action_id = $ruleaction->add($action_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'regex_result',
@@ -1225,6 +1150,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create action to put group matching on criteria
+        // already tested in a separe test
         $action_id = $ruleaction->add($action_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'regex_result',
@@ -1322,6 +1248,9 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         );
     }
 
+    /**
+     * @todo analyse what is really tested here then split in explicit tests
+     */
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdate()
     {
         $this->login();
@@ -2475,69 +2404,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'groups_id' => $root_requester_group_completename->fields['id'],
         ]);
 
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type'    => 'regex_result',
-                'field'          => '_groups_id_requester_by_completename',
-                'value'          => '#0',
-                'field_specific' => function ($ticket) {
-                    // Can't read '_groups_id_requester' from group field, need
-                    // to fetch it from the Group_Ticket table
-                    $groups = (new Group_Ticket())->find([
-                        'type' => CommonITILActor::REQUESTER,
-                        'tickets_id' => $ticket->fields['id'],
-                    ]);
-                    if (count($groups) == 1) {
-                        return array_pop($groups)['groups_id'];
-                    } else {
-                        return 0;
-                    }
-                },
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Requester group root > Requester group sub',
-            'expected_value'     => $sub_requester_group_completename->fields['id'],
-        ];
-
-        // Test 'regex_result' action on the ticket requester group
-        $requester_group = $this->createItem(Group::getType(), [
-            'name' => 'Requester group from regex',
-        ]);
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type'    => 'regex_result',
-                'field'          => '_groups_id_requester',
-                'value'          => '#0',
-                'field_specific' => function ($ticket) {
-                    // Can't read '_groups_id_requester' from group field, need
-                    // to fetch it from the Group_Ticket table
-                    $groups = (new Group_Ticket())->find([
-                        'type' => CommonITILActor::REQUESTER,
-                        'tickets_id' => $ticket->fields['id'],
-                    ]);
-                    if (count($groups) == 1) {
-                        return array_pop($groups)['groups_id'];
-                    } else {
-                        return 0;
-                    }
-                },
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Requester group from regex',
-            'expected_value'     => $requester_group->fields['id'],
-        ];
-
-
         // Test 'regex_result' action on the ticket observer group by completename
         $root_observer_group_completename = $this->createItem(Group::getType(), [
             'name' => 'Observer group root',
@@ -2654,34 +2520,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $tech_group = $this->createItem(Group::getType(), [
             'name' => 'Tech group from regex',
         ]);
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type'    => 'regex_result',
-                'field'          => '_groups_id_assign',
-                'value'          => '#0',
-                'field_specific' => function ($ticket) {
-                    // Can't read '_groups_id_requester' from group field, need
-                    // to fetch it from the Group_Ticket table
-                    $groups = (new Group_Ticket())->find([
-                        'type' => CommonITILActor::ASSIGN,
-                        'tickets_id' => $ticket->fields['id'],
-                    ]);
-                    if (count($groups) == 1) {
-                        return array_pop($groups)['groups_id'];
-                    } else {
-                        return 0;
-                    }
-                },
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Tech group from regex',
-            'expected_value'     => $tech_group->fields['id'],
-        ];
     }
 
     /**
@@ -2709,9 +2547,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Test a given ticket rule
      *
-     * @return void
+     * @todo Delete this test and create more specific tests by action type.
+     * This test is too generic and therefore not precise enough,
+     * making it difficult to maintain and to give usefull information without painfull investigations.
      */
-
     public function testAction(): void
     {
         global $DB;
@@ -3485,7 +3324,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $group = $this->createItem(Group::class, [
             'name'         => 'regex requester group',
             'is_requester' => true,
-//            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true), // @todo remove
         ]);
 
         $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
