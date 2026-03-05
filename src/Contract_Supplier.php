@@ -194,7 +194,14 @@ TWIG, $twig_params);
             $duration = sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
 
             if (!empty($data["begin_date"])) {
-                $duration .= " -> " . Infocom::getWarrantyExpir($data["begin_date"], $data["duration"], 0, true);
+                $duration .= " -> " . Infocom::getWarrantyExpir(
+                    $data["begin_date"],
+                    $data["duration"],
+                    0,
+                    true,
+                    (int)$data['renewal'] === Contract::RENEWAL_TACIT,
+                    $data['periodicity']
+                );
             }
             $entry['duration'] = $duration;
             $entries[] = $entry;
@@ -215,6 +222,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

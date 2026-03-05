@@ -1,4 +1,4 @@
-<?php
+m<?php
 
 /**
  * ---------------------------------------------------------------------
@@ -199,7 +199,9 @@ TWIG, $twig_params);
                     $contract->fields["begin_date"],
                     $contract->fields["duration"],
                     0,
-                    true
+                    true,
+                    (int)$contract->fields['renewal'] === Contract::RENEWAL_TACIT,
+                    $contract->fields['periodicity']
                 );
             }
             $entry['duration'] = $duration;
@@ -223,6 +225,7 @@ TWIG, $twig_params);
                 'name' => 'raw_html',
                 'supplier' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

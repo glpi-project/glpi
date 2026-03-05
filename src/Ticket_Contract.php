@@ -159,7 +159,8 @@ TWIG, $twig_params);
             ];
             $formatters = [
                 'name' => 'raw_html',
-                'begin_date' => 'date', // No formatter for end_date as Infocom::getWarrantyExpir() already returns a formatted date
+                'begin_date' => 'date',
+                'end_date' => 'raw_html',
             ];
 
             $entries = [];
@@ -188,7 +189,14 @@ TWIG, $twig_params);
                     $type_cache[$item->fields['contracttypes_id']] = Dropdown::getDropdownName(ContractType::getTable(), $item->fields['contracttypes_id']);
                 }
                 $entry['type'] = $type_cache[$item->fields['contracttypes_id']];
-                $entry['end_date'] = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
+                $entry['end_date'] = Infocom::getWarrantyExpir(
+                    $item->fields['begin_date'],
+                    $item->fields['duration'],
+                    0,
+                    true,
+                    (int)$item->fields['renewal'] === Contract::RENEWAL_TACIT,
+                    $item->fields['periodicity']
+                );
                 $entries[] = $entry;
             }
         }
