@@ -240,7 +240,7 @@
       })) }}
    {% else %}
       {% set tz_not_config = __('Timezone usage has not been activated.') ~ ' ' ~ __('Run the "%1$s" command to activate it.')|format('php bin/console database:enable_timezones') %}
-      {{ fields.htmlField('', tz_not_config, __('Timezone'), field_options) }}
+      {{ fields.htmlField('', tz_not_config|e, __('Timezone'), field_options) }}
    {% endif %}
 
    {{ fields.dropdownArrayField('default_central_tab', config['default_central_tab'], central_tabs, __('Default central tab'), field_options) }}
@@ -259,7 +259,7 @@
       {% if has_profile_right('ticket', constant('Ticket::READMY')) or has_profile_right('ticket', constant('Ticket::READALL')) or has_profile_right('ticket', constant('Ticket::READASSIGN')) %}
          {{ fields.dropdownYesNo('show_jobs_at_login', config['show_jobs_at_login'], __('Show new tickets on the home page'), field_options) }}
       {% else %}
-         {{ fields.htmlField('', __('No'), __('Show new tickets on the home page'), field_options) }}
+         {{ fields.htmlField('', __('No')|e, __('Show new tickets on the home page'), field_options) }}
       {% endif %}
 
       {{ fields.dropdownYesNo('task_private', config['task_private'], __('Private tasks by default'), field_options) }}
@@ -298,22 +298,22 @@
    {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
       {{ fields.dropdownYesNo('set_default_tech', config['set_default_tech'], __('Pre-select me as a technician when creating a ticket'), field_options) }}
    {% else %}
-      {{ fields.htmlField('', __('No'), __('Pre-select me as a technician when creating a ticket'), field_options) }}
+      {{ fields.htmlField('', __('No')|e, __('Pre-select me as a technician when creating a ticket'), field_options) }}
    {% endif %}
    {% if has_profile_right('ticket', constant('CREATE')) %}
       {{ fields.dropdownYesNo('set_default_requester', config['set_default_requester'], __('Pre-select me as a requester when creating a ticket'), field_options) }}
    {% else %}
-      {{ fields.htmlField('', __('No'), __('Pre-select me as a requester when creating a ticket'), field_options) }}
+      {{ fields.htmlField('', __('No')|e, __('Pre-select me as a requester when creating a ticket'), field_options) }}
    {% endif %}
    {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
       {{ fields.dropdownYesNo('set_followup_tech', config['set_followup_tech'], __('Add me as a technician when adding a ticket follow-up'), field_options) }}
    {% else %}
-      {{ fields.htmlField('', __('No'), __('Add me as a technician when adding a ticket follow-up'), field_options) }}
+      {{ fields.htmlField('', __('No')|e, __('Add me as a technician when adding a ticket follow-up'), field_options) }}
    {% endif %}
    {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
       {{ fields.dropdownYesNo('set_solution_tech', config['set_solution_tech'], __('Add me as a technician when adding a ticket solution'), field_options) }}
    {% else %}
-      {{ fields.htmlField('', __('No'), __('Add me as a technician when adding a ticket solution'), field_options) }}
+      {{ fields.htmlField('', __('No')|e, __('Add me as a technician when adding a ticket solution'), field_options) }}
    {% endif %}
 
    {{ fields.dropdownArrayField('timeline_action_btn_layout', config['timeline_action_btn_layout'], {

@@ -591,7 +591,7 @@ class Html
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
@@ -4897,7 +4897,7 @@ HTML;
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -4909,7 +4909,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png)$/i"
+            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),

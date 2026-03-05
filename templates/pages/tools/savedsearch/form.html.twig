@@ -67,7 +67,7 @@
          {{ fields.dropdownField('Entity', 'entities_id', item.fields['entities_id'], 'Entity'|itemtype_name(1)) }}
          {{ fields.dropdownYesNo('is_recursive', item.fields['is_recursive'], __('Child entities')) }}
       {% else %}
-         {{ fields.htmlField('', item.fields['is_private']|default(1) ? __('Private') : __('Public'), __('Visibility')) }}
+         {{ fields.htmlField('', (item.fields['is_private']|default(1) ? __('Private') : __('Public'))|e, __('Visibility')) }}
       {% endif %}
    {% endblock %}
 {% endblock %}

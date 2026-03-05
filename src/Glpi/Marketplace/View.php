@@ -530,7 +530,9 @@ JS;
     {
         $plugin_key   = $plugin['key'];
         $plugin_inst  = new Plugin();
-        $plugin_inst->getFromDBbyDir($plugin_key);
+        $exist = $plugin_inst->getFromDBbyDir($plugin_key);
+
+        $must_be_cleaned   = !$exist || !$plugin_inst->isLoadable($plugin_key);
 
         $plugin_info = [
             'key'           => $plugin['key'],
@@ -551,7 +553,7 @@ JS;
             'buttons'       => self::getButtons($plugin_key),
             'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
             'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
-            'updatable'     => version_compare($plugin['version'], $plugin['highest_available_version'] ?? '0', '<'),
+            'updatable'     => !$must_be_cleaned && version_compare($plugin['version'], $plugin['highest_available_version'] ?? '0', '<'),
         ];
         return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
             'tab'    => $tab,

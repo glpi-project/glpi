@@ -79,12 +79,14 @@ export class GlpiPage
         this.notes_content = page.getByTestId('note-content');
     }
 
-    public async doSetDropdownValue(
+    public async doSearchAndClickDropdownValue(
         dropdown: Locator,
         value: string,
-        exact: boolean = true,
+        exact: boolean = true
     ):  Promise<void> {
         await dropdown.click();
+        await this.page.keyboard.type(value);
+
         // Select2 roles are different if the dropdown group some values
         const simple_dropdown = this.page
             .getByRole('listbox')
@@ -98,6 +100,40 @@ export class GlpiPage
 
         await simple_dropdown.or(dropdown_with_groups).click();
         await expect(dropdown).toContainText(value);
+    }
+
+    public async doSetDropdownValue(
+        dropdown: Locator,
+        value: string,
+        exact: boolean = true,
+    ):  Promise<void> {
+        await dropdown.click();
+
+        // Select2 roles are different if the dropdown group some values
+        const simple_dropdown = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': value, exact: exact})
+        ;
+        const dropdown_with_groups = this.page
+            .getByRole('listbox')
+            .getByRole('listitem', {'name': value, exact: exact})
+        ;
+
+        await simple_dropdown.or(dropdown_with_groups).click();
+        await expect(dropdown).toContainText(value);
+    }
+
+    public async doClearDropdownValue(
+        dropdown: Locator,
+        value: string,
+    ): Promise<void> {
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await dropdown.getByText(value)
+            .locator('..')
+            .locator('.select2-selection__choice__remove')
+            .click()
+        ;
     }
 
     public async doLogout(): Promise<void>

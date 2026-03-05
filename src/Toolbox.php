@@ -2812,12 +2812,16 @@ class Toolbox
     /**
      * Format a web link adding http:// if missing
      *
-     * @param string $link link to format
+     * @param ?string $link link to format
      *
      * @return string formatted link.
      **/
     public static function formatOutputWebLink($link)
     {
+        if (empty($link)) {
+            return (string) $link;
+        }
+
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
         }

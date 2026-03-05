@@ -99,6 +99,7 @@
         "vue:gettext:extract": "vue-gettext-extract --config .gettext.config.js"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.11.1",
         "@babel/plugin-transform-modules-commonjs": "^7.27.1",
         "@babel/preset-env": "^7.29.0",
         "@eslint/eslintrc": "^3.3.4",

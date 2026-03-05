@@ -50,7 +50,14 @@ if (!isset($_REQUEST['action'])) {
 
 $answer = [];
 if (($_GET['action'] ?? null) === 'show_pdu_form') {
-    PDU_Rack::showFirstForm((int) $_GET['racks_id']);
+    $rack_id = (int) $_GET['racks_id'];
+
+    $rack = new Rack();
+    if (!$rack->can($rack_id, READ)) {
+        throw new AccessDeniedHttpException();
+    }
+
+    PDU_Rack::showFirstForm($rack_id);
 } elseif (($_GET['action'] ?? null) === 'show_rack_form' && isset($_GET['racks_id'])) {
     $rack = new Rack();
     if (isset($_GET['room']) && Rack::isNewID((int) $_GET['racks_id']) && $rack->can(-1, CREATE)) {
@@ -71,29 +78,44 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
     header("Content-Type: application/json; charset=UTF-8", true);
     switch ($_POST['action']) {
         case 'move_item':
+            $id = (int) $_POST['id'];
+
             $item_rack = new Item_Rack();
-            $item_rack->getFromDB((int) $_POST['id']);
+            if (!$item_rack->getFromDB($id) || !$item_rack->can($id, UPDATE)) {
+                throw new AccessDeniedHttpException();
+            }
+
             $answer['status'] = $item_rack->update([
-                'id'       => (int) $_POST['id'],
+                'id'       => $id,
                 'position' => (int) $_POST['position'],
                 'hpos'     => (int) $_POST['hpos'],
             ]);
             break;
 
         case 'move_pdu':
+            $id = (int) $_POST['id'];
+
             $pdu_rack = new PDU_Rack();
-            $pdu_rack->getFromDB((int) $_POST['id']);
+            if (!$pdu_rack->getFromDB($id) || !$pdu_rack->can($id, UPDATE)) {
+                throw new AccessDeniedHttpException();
+            }
+
             $answer['status'] = $pdu_rack->update([
-                'id'       => (int) $_POST['id'],
+                'id'       => $id,
                 'position' => (int) $_POST['position'],
             ]);
             break;
 
         case 'move_rack':
+            $id = (int) $_POST['id'];
+
             $rack = new Rack();
-            $rack->getFromDB((int) $_POST['id']);
+            if (!$rack->getFromDB($id) || !$rack->can($id, UPDATE)) {
+                throw new AccessDeniedHttpException();
+            }
+
             $answer['status'] = $rack->update([
-                'id'         => (int) $_POST['id'],
+                'id'         => $id,
                 'dcrooms_id' => (int) $_POST['dcrooms_id'],
                 'position'   => (int) $_POST['x'] . "," . (int) $_POST['y'],
             ]);

@@ -65,9 +65,6 @@ use TicketTemplate;
 use TicketTemplateMandatoryField;
 use User;
 
-/**
- * @engine isolate
- */
 class APIRestTest extends TestCase
 {
     protected $session_token;

@@ -215,7 +215,7 @@
                 {% else %}
                     {{ fields.htmlField(
                        '',
-                       subitem.fields['actiontime']|formatted_duration,
+                       subitem.fields['actiontime']|formatted_duration|e,
                        task_actiontime_lbl,
                        {
                           label_class: "col-2",

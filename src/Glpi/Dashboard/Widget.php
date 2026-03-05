@@ -437,6 +437,7 @@ HTML;
             'icon'         => '',
             'limit'        => 99999,
             'use_gradient' => false,
+            'palette'      => '',
             'class'        => "multiple-numbers",
             'filters'      => [],
             'rand'         => mt_rand(),
