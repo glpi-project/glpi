@@ -3225,11 +3225,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         // --- arrange ---
         $this->login();
 
-        // only relevant for Ticket atm -> @todo fix code
-        if ($this->getITILObjectClass() !== Ticket::class) {
-            $this->markTestSkipped('fromitem action is only available for Ticket');
-        }
-
         $itil_class = $this->getITILObjectClass();
         $itil_fk = $itil_class::getForeignKeyField();
         $itil_group_link_class = $this->getITILLinkClass(Group::class);
@@ -3267,7 +3262,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 ['items_id', 'name']
             );
         } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
-            $this->markTestSkipped('Currently failing + tested as a user : need a code fix');
             $itil_item = $this->createItem(
                 $itil_class,
                 $this->getMinimalCreationInput($itil_class)
