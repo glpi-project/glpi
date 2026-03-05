@@ -36,14 +36,12 @@ namespace tests\units;
 
 use Change;
 use CommonITILActor;
-use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
-use Search;
 use Ticket;
 use Ticket_User;
 use User;
@@ -738,7 +736,7 @@ HTML,
                 CoreITILFollowup::class,
                 CoreITILFollowup::getTable(),
                 $already_linked_tables
-            ),
+            )['LEFT JOIN'],
             'WHERE' => SQLProvider::getDefaultWhereCriteria(CoreITILFollowup::class),
         ]);
 
