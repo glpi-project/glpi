@@ -242,7 +242,6 @@ final class ITILController extends AbstractController
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'time_to_resolve',
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -437,7 +436,6 @@ final class ITILController extends AbstractController
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'takeintoaccountdate',
                 ];
                 $schemas[$itil_type]['properties']['take_into_account_duration'] = [
@@ -481,14 +479,12 @@ final class ITILController extends AbstractController
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'internal_time_to_resolve',
                 ];
                 $schemas[$itil_type]['properties']['internal_take_into_account_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'internal_time_to_own',
                 ];
             }
