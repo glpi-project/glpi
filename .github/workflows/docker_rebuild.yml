@@ -15,6 +15,9 @@ on:
         type: boolean
         default: false
 
+env:
+  SUPPORTED_VERSIONS: "11.0, 10.0"
+
 jobs:
   resolve:
     name: "Resolve build matrix"
@@ -31,49 +34,63 @@ jobs:
               context.payload.schedule === '0 3 * * 0' ||
               context.payload.inputs?.['security-rebuild'] === 'true';
 
-            // Fetch all non-prerelease releases
-            const releases = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100,
-            });
+            // Parse supported active major/minor versions from env
+            const supportedVersions = process.env.SUPPORTED_VERSIONS
+              .split(',')
+              .map(v => v.trim())
+              .filter(Boolean);
 
-            const stableTags = releases.data
-              .filter(r => !r.prerelease && !r.draft)
-              .map(r => r.tag_name)
-              .filter(t => /^\d+\.\d+\.\d+$/.test(t));
-
-            // Group by major version, pick latest per major, sort descending, take latest 2
-            const byMajor = {};
-            for (const tag of stableTags) {
-              const major = tag.split('.')[0];
-              // sorted by publish date
-              if (!byMajor[major]) byMajor[major] = tag;
-            }
-            const topMajors = Object.entries(byMajor)
-              .sort(([a], [b]) => Number(b) - Number(a))
-              .slice(0, 2);
-
-            if (topMajors.length === 0) {
-              core.setFailed('No stable releases found.');
+            if (supportedVersions.length === 0) {
+              core.setFailed('SUPPORTED_VERSIONS environment variable is empty. Matrix cannot be built.');
               return;
-            } else {
-              core.info(`Found ${topMajors.length} stable releases: ${topMajors.map(([major, version]) => version).join(', ')}`);
             }
 
-            let matrix;
+            core.info(`Supported versions: ${supportedVersions.join(', ')}`);
+
+            let matrix = [];
 
             if (isSecurityRebuild) {
-              // Security rebuild: latest stable tag per major, no-cache
-              matrix = topMajors.map(([major, version]) => ({
-                'glpi-version': version,
-                'image-tag': '',
-                'no-cache': true,
-                'use-legacy-marketplace-path': Number(major) < 11,
-              }));
+              const tags = await github.rest.repos.listTags({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              });
+
+              // Tags are ordered by creation (newest first), only keep stable tags (i.e: 11.0.6, not 11.0.6-rc1)
+              const stableTags = tags
+                .map(t => t.name)
+                .filter(name => /^\d+\.\d+\.\d+$/.test(name));
+
+              const latestPerMinorVersion = [];
+              for (const supportedVersion of supportedVersions) {
+                // Find the first stable tag that begins with the Major.Minor prefix (i.e: 11.0)
+                const latestVersionTag = stableTags.find(t => t.startsWith(`${supportedVersion}.`));
+                if (latestVersionTag) {
+                  latestPerMinorVersion.push({ supportedVersion, version: latestVersionTag });
+                } else {
+                  core.warning(`No stable tags found for supported version: ${supportedVersion}`);
+                }
+              }
+
+              if (latestPerMinorVersion.length === 0) {
+                core.setFailed('No stable releases found for any supported versions.');
+                return;
+              }
+
+              core.info(`Security rebuild targets: ${latestPerMinorVersion.map(m => m.version).join(', ')}`);
+
+              matrix = latestPerMinorVersion.map(({ supportedVersion, version }) => {
+                const major = supportedVersion.split('.')[0];
+                return {
+                  'glpi-version': version,
+                  'image-tag': '',
+                  'no-cache': true,
+                  'use-legacy-marketplace-path': Number(major) < 11,
+                };
+              });
+
             } else {
-              // Nightly: main + bugfix branches for the 2 latest majors
-              const minor = (tag) => tag.split('.').slice(0, 2).join('.');
+              // Nightly Rebuild Matrix
               matrix = [
                 {
                   'glpi-version': 'main',
@@ -81,12 +98,15 @@ jobs:
                   'no-cache': false,
                   'use-legacy-marketplace-path': false,
                 },
-                ...topMajors.map(([major, version]) => ({
-                  'glpi-version': `${minor(version)}/bugfixes`,
-                  'image-tag': `${minor(version)}-nightly`,
-                  'no-cache': false,
-                  'use-legacy-marketplace-path': Number(major) < 11,
-                })),
+                ...supportedVersions.map(supportedVersion => {
+                  const major = supportedVersion.split('.')[0];
+                  return {
+                    'glpi-version': `${supportedVersion}/bugfixes`,
+                    'image-tag': `${supportedVersion}-nightly`,
+                    'no-cache': false,
+                    'use-legacy-marketplace-path': Number(major) < 11,
+                  };
+                })
               ];
             }
 
