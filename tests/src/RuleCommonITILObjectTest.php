@@ -2848,23 +2848,15 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         // --- arrange : set a manager in the requester's group
         $this->login();
         $group = getItemByTypeName(Group::class, '_test_group_1');
-        $requester = getItemByTypeName(User::class, 'tech');
         $manager = getItemByTypeName(User::class, 'glpi');
 
-        $this->createItems(
+        $this->createItem(
             Group_User::class,
-            [
                 [
                     'groups_id' => $group->getID(),
                     'users_id' => $manager->getID(),
                     'is_manager' => 1,
-                ],
-                [
-                    'groups_id' => $group->getID(),
-                    'users_id' => $requester->getID(),
-                    'is_manager' => 0,
-                ],
-            ]
+                ]
         );
 
         // rule to create an approval for the manager of the requester group
@@ -2893,15 +2885,14 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         );
 
         $this->assertCount(1, $validations, 'Approval to manager not created by rule');
-        $this->markTestIncomplete('et avec plusieurs groups ?');
     }
 
     /**
-     * Add approvals to the managers of the tech's groups
+     * Add approvals to the managers of the assignees' groups
      *
      * Tested action : 'add_validation' with 'users_id_validate_requester_supervisor' field to set the approval to the requester group manager
      */
-    public function testApprovalRequestToTechGroupManager(): void
+    public function testApprovalRequestToAssignedGroupManager(): void
     {
         // no validation for problems
         if ($this->getITILObjectClass() === \Problem::class) {
@@ -2911,23 +2902,15 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         // --- arrange : set a manager in the tech's group
         $this->login();
         $group = getItemByTypeName(Group::class, '_test_group_1');
-        $tech = getItemByTypeName(User::class, 'tech');
         $manager = getItemByTypeName(User::class, 'glpi');
 
-        $this->createItems(
+        $this->createItem(
             Group_User::class,
-            [
                 [
                     'groups_id' => $group->getID(),
                     'users_id' => $manager->getID(),
                     'is_manager' => 1,
-                ],
-                [
-                    'groups_id' => $group->getID(),
-                    'users_id' => $tech->getID(),
-                    'is_manager' => 0,
-                ],
-            ]
+                ]
         );
 
         // rule to create an approval for the manager of the tech group
