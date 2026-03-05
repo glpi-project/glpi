@@ -1897,6 +1897,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (isset($input['itilcategories_id'])) {
             $tpl_class = static::getTemplateClass();
             $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+            $input[static::getTemplateFormFieldName()] = $tt->getID();
         }
 
         if (count($tt->mandatory)) {
