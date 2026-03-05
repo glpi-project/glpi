@@ -632,6 +632,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -640,6 +641,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -991,6 +993,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1005,6 +1008,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
