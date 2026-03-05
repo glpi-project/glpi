@@ -129,7 +129,6 @@ export class GlpiFormEditorController
         this.#adjustContainerHeight();
         this.#initEventHandlers();
         this.#refreshUX();
-        this.#initRadioUncheck();
 
         // These computations are only needed if the form will be edited.
         if (!this.#is_readonly) {
@@ -157,26 +156,6 @@ export class GlpiFormEditorController
         // This is fixed by re-checking them after the state has been computed.
         // Not sure if there is a better solution for this, it doesn't feel great.
         this.#refreshCheckedInputs();
-    }
-
-    #initRadioUncheck() {
-        $(this.#target).on('mousedown', '[data-glpi-form-radio-uncheckable]', function() {
-            const $this = $(this);
-            if ($this.is(':checked')) {
-                $this.data('was-checked', true);
-            } else {
-                $this.data('was-checked', false);
-            }
-        });
-
-        $(this.#target).on('click', '[data-glpi-form-radio-uncheckable]', function() {
-            const $this = $(this);
-            if ($this.data('was-checked')) {
-                $this.prop('checked', false);
-                $this.data('was-checked', false);
-                $this.trigger('change');
-            }
-        });
     }
 
     /**
@@ -312,9 +291,7 @@ export class GlpiFormEditorController
         // Handle conditions count changes
         document.addEventListener('conditions_count_changed', (e) => {
             this.#updateConditionsCount(
-                $(e.detail.container).closest(
-                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
-                ),
+                $(e.detail.container).closest('[data-glpi-form-editor-question-extra-details]'),
                 e.detail.conditions_count
             );
         });
@@ -744,22 +721,6 @@ export class GlpiFormEditorController
                 "name",
                 `${base_input_index}[${field}]${postfix}`
             );
-
-            // If the input is for fileupload, we need to escape the name
-            if ($(input).attr('data-form-data')) {
-                // Retrieve the input name
-                const input_name = $(input).attr('name');
-
-                // Update the fileupload formData name too if needed
-                if ($(input).data('blueimp-fileupload') !== undefined) {
-                    $(input).fileupload('option', 'formData').name = input_name;
-                }
-
-                // Update the name object attribute in the data-form-data attribute
-                const form_data = JSON.parse($(input).attr('data-form-data'));
-                form_data.name = input_name;
-                $(input).attr('data-form-data', JSON.stringify(form_data));
-            }
         });
     }
 
@@ -956,7 +917,7 @@ export class GlpiFormEditorController
 
                     return item_container === null
                         || (!$(element).is(item_container)
-                        && $(element).has(item_container).length === 0);
+                            && $(element).has(item_container).length === 0);
                 })
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
@@ -1194,7 +1155,7 @@ export class GlpiFormEditorController
 
                 return true;
             })
-        ;
+            ;
 
         // Find destinations using this item in their conditions
         const destinationsUsingItem = Object.values(this.#destination_conditions)
@@ -1555,19 +1516,7 @@ export class GlpiFormEditorController
             // Rename id to ensure it is unique
             const uid = getUUID();
             $(this).attr("id", `_tinymce_${uid}`);
-
-            // Update id in fileupload configs if needed
-            for (const fileupload_config_id in window.fileupload_configs) {
-                const fileupload_config = window.fileupload_configs[fileupload_config_id];
-                if (fileupload_config.editor_id === id) {
-                    // Update editor_id to match the new textarea ID
-                    fileupload_config.editor_id = `_tinymce_${uid}`;
-                    window.fileupload_configs[fileupload_config_id] = fileupload_config;
-                }
-            }
-
-            // Reload ID
-            id = $(this).attr("id");
+            id = $(this).attr("id"); // Reload ID
 
             // Push config into init queue, needed because we can't init
             // the rich text editor until the template is inserted into
@@ -1684,23 +1633,6 @@ export class GlpiFormEditorController
             });
         });
 
-        copy.find('div.fileupload > input[id][data-form-data]').each(function() {
-            const id = $(this).attr('id');
-            const rand = getUUID();
-            const new_id = `${id}_${rand}`;
-
-            // Update input id to make it unique
-            $(this).attr('id', new_id);
-
-            // Add new fileupload config if needed
-            const config = window.fileupload_configs[id];
-            if (config !== undefined) {
-                // Update fileupload config to use the new ID
-                window.fileupload_configs[new_id] = config;
-                window.fileupload_configs[new_id].field_id = new_id;
-            }
-        });
-
         // Insert the new question
         switch (action) {
             case "append":
@@ -1755,11 +1687,15 @@ export class GlpiFormEditorController
         // Init popovers
         const popover_trigger_list = copy.find('[data-bs-toggle="popover"]');
         [...popover_trigger_list].map(
-            popover_trigger_el => new bootstrap.Popover(popover_trigger_el)
+            popover_trigger_el => new bootstrap.Popover(popover_trigger_el, {
+                trigger: 'manual'
+            })
         );
 
-        // Compute state to update inputs names
-        this.computeState();
+        if (is_from_duplicate_action) {
+            // Compute state to update inputs names
+            this.computeState();
+        }
 
         return copy;
     }
@@ -1795,7 +1731,7 @@ export class GlpiFormEditorController
             const is_map = name.indexOf("[") !== -1
                 && name.indexOf("]") !== -1
                 && name.indexOf("[]") === -1
-            ;
+                ;
 
             if (is_map) {
                 // Handle complex arrays with key and values
@@ -2831,7 +2767,7 @@ export class GlpiFormEditorController
             .each((index, question) => {
                 this.#setItemInput($(question), "uuid", '');
             })
-        ;
+            ;
 
         this.#setActiveItem(new_section);
         this.#enableSortable(new_section);
@@ -2953,12 +2889,12 @@ export class GlpiFormEditorController
         container
             .find('[data-glpi-form-editor-visibility-dropdown-container]')
             .removeClass('d-none')
-        ;
+            ;
 
         const dropdown = container
             .find('[data-glpi-form-editor-visibility-dropdown-container]')
             .find('[data-glpi-form-editor-visibility-dropdown]')
-        ;
+            ;
         bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
 
@@ -2991,12 +2927,12 @@ export class GlpiFormEditorController
         container
             .find('[data-glpi-form-editor-validation-dropdown-container]')
             .removeClass('d-none')
-        ;
+            ;
 
         const dropdown = container
             .find('[data-glpi-form-editor-validation-dropdown-container]')
             .find('[data-glpi-form-editor-validation-dropdown]')
-        ;
+            ;
         bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
 
@@ -3019,7 +2955,7 @@ export class GlpiFormEditorController
                     'name': this.#getItemInput($(section), "name"),
                 });
             })
-        ;
+            ;
 
         return sections;
     }
@@ -3048,7 +2984,7 @@ export class GlpiFormEditorController
                     'extra_data': this.#getQuestionExtraData(question),
                 });
             })
-        ;
+            ;
 
         return questions;
     }
@@ -3072,7 +3008,7 @@ export class GlpiFormEditorController
                     'name': this.#getItemInput($(comment), "name"),
                 });
             })
-        ;
+            ;
 
         return comments;
     }
@@ -3166,11 +3102,11 @@ export class GlpiFormEditorController
         $(this.#target)
             .find('[data-glpi-editor-refresh-checked]')
             .removeProp('checked')
-        ;
+            ;
         $(this.#target)
             .find('[data-glpi-editor-refresh-checked]')
             .prop('checked', true)
-        ;
+            ;
     }
 
     #addHorizontalLayout(target) {

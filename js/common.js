@@ -44,6 +44,7 @@
 /* global uploaded_images */
 
 var timeoutglobalvar;
+var popoverHideTimeout;
 
 // Store configuration of tinymce editors
 // This is needed if an editor need to be destroyed and recreated as tinymce
@@ -583,6 +584,49 @@ $(function() {
     // toggle debug panel
     $(document).on('click', '.see_debug', function() {
         $('body > .debug-panel').toggle();
+    });
+
+    // Zombie process fix for popovers
+    $(document).on('mouseenter', '[data-bs-toggle="popover"]', function () {
+        clearTimeout(popoverHideTimeout);
+        const popoverInstance = bootstrap.Popover.getOrCreateInstance(this);
+        popoverInstance.show();
+    });
+
+    $(document).on('mouseleave', '[data-bs-toggle="popover"]', function () {
+        const _this = this;
+        popoverHideTimeout = setTimeout(function () {
+            const popoverInstance = bootstrap.Popover.getInstance(_this);
+            if (popoverInstance) {
+                popoverInstance.hide();
+            }
+        }, 250);
+    });
+
+    $(document).on('mouseenter', '.popover', function () {
+        clearTimeout(popoverHideTimeout);
+    });
+
+    $(document).on('mouseleave', '.popover', function () {
+        const popoverId = $(this).attr('id');
+        const triggerEl = $(`[aria-describedby="${popoverId}"]`);
+        if (triggerEl.length) {
+            const popoverInstance = bootstrap.Popover.getInstance(triggerEl[0]);
+            if (popoverInstance) {
+                popoverInstance.hide();
+            }
+        }
+    });
+
+    $(document).on('click', function (e) {
+        if ($(e.target).data('bs-toggle') !== 'popover' && $(e.target).parents('.popover').length === 0) {
+            $('[data-bs-toggle="popover"]').each(function () {
+                const popoverInstance = bootstrap.Popover.getInstance(this);
+                if (popoverInstance) {
+                    popoverInstance.hide();
+                }
+            });
+        }
     });
 });
 
@@ -1719,6 +1763,7 @@ function setupAjaxDropdown(config) {
         placeholder: config.placeholder,
         allowClear: config.allowclear,
         minimumInputLength: 0,
+        quietMillis: 100,
         dropdownAutoWidth: true,
         dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         minimumResultsForSearch: config.ajax_limit_count,
@@ -1726,7 +1771,6 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
-            delay: 250,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {
@@ -1825,7 +1869,7 @@ function setupAdaptDropdown(config)
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,
         matcher: function (params, data) {
@@ -1929,97 +1973,6 @@ function setupAdaptDropdown(config)
     return select2_el;
 }
 
-function setupFileUpload(config) {
-    // Field ID is used as a selector, so we need to escape special characters
-    // to avoid issues with jQuery.
-    const field_id = CSS.escape(config.field_id);
-
-    $(function() {
-        $('#' + field_id).fileupload({
-            dataType: 'json',
-            pasteZone: config.pasteZone,
-            dropZone: config.dropZone,
-            acceptFileTypes: config.acceptFileTypes,
-            maxFileSize: config.maxFileSize,
-            maxChunkSize: config.maxChunkSize,
-            add: function (e, data) {
-                // disable submit button during upload
-                $(this).closest('form').find(':submit').prop('disabled', true);
-                // randomize filename
-                for (var i = 0; i < data.files.length; i++) {
-                    data.files[i].uploadName = uniqid('', true) + data.files[i].name;
-                }
-                // call default handler
-                $.blueimp.fileupload.prototype.options.add.call(this, e, data);
-            },
-            done: function (event, data) {
-                const uploader_name = $('#' + field_id).fileupload('option', 'formData').name;
-                // eslint-disable-next-line no-undef
-                handleUploadedFile(
-                    data.files, // files as blob
-                    data.result[uploader_name], // response from '/ajax/fileupload.php'
-                    config.name,
-                    $('#' + CSS.escape(config.filecontainer)),
-                    config.editor_id
-                );
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-                // remove required
-                $('#' + field_id).removeAttr('required');
-            },
-            fail: function (e, data) {
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-                const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
-                    ? data.jqXHR.responseText
-                    : data.jqXHR.statusText;
-                alert(err);
-            },
-            processfail: function (e, data) {
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-                $.each(data.files, function(index, file) {
-                    if (file.error) {
-                        $('#progress' + CSS.escape(config.rand_id)).show();
-                        $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
-                            .text(file.error)
-                            .css('width', '100%')
-                            .show();
-
-                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
-                        if (config.editor_id && typeof tinyMCE !== 'undefined') {
-                            const editor = tinyMCE.get(config.editor_id);
-                            if (editor) {
-                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                                if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
-                                    if (img.length > 0) {
-                                        editor.dom.remove(img);
-                                    }
-                                    const index = uploaded_images.findIndex((entry) => entry.upload_id === uploaded_image.upload_id);
-                                    if (index !== -1) {
-                                        uploaded_images.splice(index, 1);
-                                    }
-                                }
-                            }
-                        }
-                        return;
-                    }
-                });
-            },
-            messages: config.messages,
-            progressall: function(event, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress' + CSS.escape(config.rand_id)).show();
-                $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
-                    .text(progress + '%')
-                    .css('width', progress + '%')
-                    .show();
-            }
-        });
-    });
-}
-
 window.displaySessionMessages = () => {
     $.ajax({
         method: 'GET',
@@ -2064,19 +2017,11 @@ document.addEventListener('hidden.bs.modal', (e) => {
 });
 
 // Tinymce on click loading
-$(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
-    const $container = $(this);
-    const $textarea = $("#" + CSS.escape($container.attr('data-glpi-tinymce-init-on-demand-render')));
-    initTinyMCEOnDemand($textarea, $container);
-});
-
-/**
- * Initialize TinyMCE editor on demand
- * @param {string} textarea_id The ID of the textarea to initialize
- * @param {HTMLElement} container The container element that triggered the initialization
- */
-function initTinyMCEOnDemand($textarea, $container) {
-    $container.removeAttr('data-glpi-tinymce-init-on-demand-render');
+$(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function () {
+    const div = $(this);
+    const textarea_id = div.attr('data-glpi-tinymce-init-on-demand-render');
+    div.removeAttr('data-glpi-tinymce-init-on-demand-render');
+    const textarea = $("#" + textarea_id);
 
     const loadingOverlay = $(`
         <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
@@ -2086,16 +2031,13 @@ function initTinyMCEOnDemand($textarea, $container) {
         </div>
     `);
 
-    $textarea.show();
-    $container.css('position', 'relative').append(loadingOverlay);
-    const promise = tinyMCE.init(tinymce_editor_configs[$textarea.attr('id')]);
-    promise.then((editors) => {
+    textarea.show();
+    div.css('position', 'relative').append(loadingOverlay);
+    tinyMCE.init(tinymce_editor_configs[textarea_id]).then((editors) => {
         editors[0].focus();
-        $container.remove();
+        div.remove();
     });
-
-    return promise;
-}
+});
 
 // Prevent Bootstrap dialog from blocking focusin
 // See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
@@ -2105,23 +2047,3 @@ document.addEventListener('focusin', (e) => {
     }
 });
 
-/* eslint-disable no-undef */
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        markCheckboxes,
-        unMarkCheckboxes,
-        checkAsCheckboxes,
-        selectAll,
-        deselectAll,
-        isImage,
-        getExtIcon,
-        getSize,
-        getBijectiveIndex,
-        getUuidV4,
-        setHasUnsavedChanges,
-        hasUnsavedChanges,
-        getFlatPickerLocale,
-        getAjaxCsrfToken,
-        tableToDetails,
-    };
-}
