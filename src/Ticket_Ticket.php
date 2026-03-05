@@ -152,7 +152,6 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
             $unused_ref = [];
             $default_join = SQLProvider::getDefaultJoinCriteria(Ticket::class, Ticket::getTable(), $unused_ref);
             if ($default_join !== []) {
-                $db_it = new DBmysqlIterator($DB);
                 $criteria['LEFT JOIN'] += $default_join['LEFT JOIN'];
             }
             $criteria['WHERE'][] = SQLProvider::getDefaultWhereCriteria(Ticket::class);

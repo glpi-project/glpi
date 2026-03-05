@@ -3588,9 +3588,9 @@ HTML;
                     $itemtype_class = $post['itemtype'];
                     if (!Session::haveRight($itemtype_class::$rightname, $itemtype_class::READALL)) {
                         $unused_ref = [];
-                        $default_joint = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
-                        if ($default_joint !== []) {
-                            $criteria['LEFT JOIN'] = $default_joint;
+                        $default_join = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
+                        if ($default_join !== []) {
+                            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'] ?? [], $default_join['LEFT JOIN']);
                         }
                         $where[] = SQLProvider::getDefaultWhereCriteria($itemtype_class);
                     }
