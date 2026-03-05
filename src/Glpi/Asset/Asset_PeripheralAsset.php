@@ -991,42 +991,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * Returns used peripherals.
-     *
-     * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
-     *
-     * @return DBmysqlIterator
-    */
-    private static function getUsedPeripherals(string $itemtype): DBmysqlIterator
-    {
-        global $DB;
-
-        $peripheral = getItemForItemtype($itemtype);
-
-        return $DB->request([
-            'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
-            'FROM'   => $peripheral::getTable(),
-            'LEFT JOIN' => [
-                self::getTable() => [
-                    'FKEY' => [
-                        self::getTable()      => 'items_id_peripheral',
-                        $peripheral::getTable() => 'id',
-                        [
-                            'AND' => [
-                                self::getTable() . '.itemtype_peripheral' => $itemtype,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            'WHERE' => [
-                self::getTable() . '.is_deleted'     => 0,
-            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
-            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
-        ]);
-    }
-
-    /**
      * Returns linked main assets data for given peripheral asset.
      *
      * @param CommonDBTM               $peripheral Peripheral asset.
