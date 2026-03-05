@@ -42,6 +42,7 @@ use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\SocketModel;
 
 use function Safe\json_encode;
@@ -3587,11 +3588,11 @@ HTML;
                     $itemtype_class = $post['itemtype'];
                     if (!Session::haveRight($itemtype_class::$rightname, $itemtype_class::READALL)) {
                         $unused_ref = [];
-                        $joins_str = Search::addDefaultJoin($itemtype_class, $itemtype_class::getTable(), $unused_ref);
-                        if (!empty($joins_str)) {
-                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        $default_joint = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
+                        if ($default_joint !== []) {
+                            $criteria['LEFT JOIN'] = $default_joint;
                         }
-                        $where[] = new QueryExpression(Search::addDefaultWhere($itemtype_class));
+                        $where[] = SQLProvider::getDefaultWhereCriteria($itemtype_class);
                     }
                     break;
 

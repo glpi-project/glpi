@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\Search\Provider\SQLProvider;
 
 /// Class Ticket links
 class Ticket_Ticket extends CommonITILObject_CommonITILObject
@@ -149,12 +150,12 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
                 ],
             ];
             $unused_ref = [];
-            $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
-            if (!empty($joins_str)) {
+            $default_joint = SQLProvider::getDefaultJoinCriteria(Ticket::class, Ticket::getTable(), $unused_ref);
+            if ($default_joint !== []) {
                 $db_it = new DBmysqlIterator($DB);
-                $criteria['LEFT JOIN'] = [new QueryExpression($db_it->analyseJoins(['LEFT JOIN' => $criteria['LEFT JOIN']]) . ' ' . $joins_str)];
+                $criteria['LEFT JOIN'] += $default_joint;
             }
-            $criteria['WHERE'][] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
+            $criteria['WHERE'][] = SQLProvider::getDefaultWhereCriteria(Ticket::class);
         }
         $iterator = $DB->request($criteria);
         $tickets = [];

@@ -37,6 +37,7 @@ namespace tests\units;
 use Change;
 use CommonITILActor;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
@@ -733,20 +734,12 @@ HTML,
         $results = $DB->request([
             'COUNT' => 'number_of_followups',
             'FROM' => CoreITILFollowup::getTable(),
-            'JOIN' => [
-                new QueryExpression(
-                    Search::addDefaultJoin(
-                        CoreITILFollowup::class,
-                        CoreITILFollowup::getTable(),
-                        $already_linked_tables
-                    )
-                ),
-            ],
-            'WHERE' => [
-                new QueryExpression(
-                    Search::addDefaultWhere(CoreITILFollowup::class)
-                ),
-            ],
+            'JOIN' => SQLProvider::getDefaultJoinCriteria(
+                CoreITILFollowup::class,
+                CoreITILFollowup::getTable(),
+                $already_linked_tables
+            ),
+            'WHERE' => SQLProvider::getDefaultWhereCriteria(CoreITILFollowup::class),
         ]);
 
         return (int) iterator_to_array($results)[0]['number_of_followups'];
