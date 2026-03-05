@@ -46,7 +46,23 @@
                 {{ event.getLabel() }}
             </div>
             <div class="text-secondary small">
-                {{ event.getDescription() }}
+                <span
+                    {% if is_log and (event.getOldValue() is not null or event.getNewValue() is not null) %}
+                        {% set tooltip_parts = [] %}
+                        {% if event.getOldValue() is not null %}
+                            {% set tooltip_parts = tooltip_parts|merge([__('Before: %s')|format(event.getOldValue())]) %}
+                        {% endif %}
+                        {% if event.getNewValue() is not null %}
+                            {% set tooltip_parts = tooltip_parts|merge([__('After: %s')|format(event.getNewValue())]) %}
+                        {% endif %}
+
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{{ tooltip_parts|join(' → ') }}"
+                    {% endif %}
+                >
+                    {{ event.getDescription() }}
+                </span>
 
                 {% set user = users.getUser(event.getAuthor()) %}
                 {% if user %}

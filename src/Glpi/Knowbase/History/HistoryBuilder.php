@@ -40,6 +40,7 @@ use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
 use Log;
+use LogicException;
 use Profile;
 use User;
 
@@ -58,9 +59,11 @@ final class HistoryBuilder
         $this->addCurrentVersionToHistory();
         $this->addRevisionsToHistory();
         $this->addFaqStatusChangesToHistory();
+        $this->addServiceCatalogChangesToHistory();
         $this->addAssociatedItemChangesToHistory();
         $this->addDocumentChangesToHistory();
         $this->addPermissionChangesToHistory();
+
         $this->history->sort();
         return $this->history;
     }
@@ -319,6 +322,61 @@ final class HistoryBuilder
                 description: $description,
                 date: $row['date_mod'],
                 author: $row['user_name'],
+            ));
+        }
+    }
+
+    private function addServiceCatalogChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => [
+                'date_mod',
+                'user_name',
+                'new_value',
+                'old_value',
+                'id_search_option',
+            ],
+            'FROM' => Log::getTable(),
+            'WHERE' => [
+                'itemtype'         => KnowbaseItem::class,
+                'items_id'         => $this->kb->getID(),
+                'linked_action'    => 0, // Update
+                'id_search_option' => [
+                    84, // show_in_service_catalog
+                    85, // is_pinned
+                    86, // description
+                    87, // forms_categories_id
+                ],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $description = match ($row['id_search_option']) {
+                84 => $row['new_value']
+                    ? __("Added to the service catalog by")
+                    : __("Removed from the service catalog by")
+                ,
+                85 => $row['new_value']
+                    ? __("Pinned to the top by")
+                    : __("Unpinned from the top by")
+                ,
+                86 => __("Description updated by"),
+                87 => __("Category updated by"),
+                default => throw new LogicException("Impossible"),
+            };
+
+            $add_values = in_array($row['id_search_option'], [86, 87]);
+
+            $this->history->addEvent(new LogEvent(
+                label: __("Service catalog updated"),
+                description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+                new_value: $add_values ? $row['new_value'] : null,
+                old_value: $add_values ? $row['old_value'] : null,
             ));
         }
     }
