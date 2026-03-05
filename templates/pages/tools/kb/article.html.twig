@@ -39,6 +39,14 @@
         data-glpi-knowbase-article-content
     >
         <div class="d-flex align-items-center mb-3">
+            <div class="me-3 flex-shrink-0" data-glpi-kb-illustration-container>
+                {{ include('components/illustration/icon_picker.html.twig', {
+                    'value': illustration,
+                    'size': 48,
+                    'preview_css_classes': "kb-illustration-preview d-flex align-items-center justify-content-center rounded cursor-pointer",
+                    'preview_inner_css_classes': "",
+                }, with_context: false) }}
+            </div>
             <h1 class="fw-bold mb-0 kb-title-editable"
                 data-glpi-kb-subject
                 data-field="name"
