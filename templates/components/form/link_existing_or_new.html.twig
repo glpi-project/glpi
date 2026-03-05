@@ -39,6 +39,9 @@
       {% if generic_source ?? false %}
           {{ fields.hiddenField('itemtype', source_itemtype) }}
           {{ fields.hiddenField('items_id', source_items_id) }}
+      {% elseif asset_target ?? false %}
+          {{ fields.hiddenField('itemtype_asset', source_itemtype) }}
+          {{ fields.hiddenField('items_id_asset', source_items_id) }}
       {% else %}
           {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id) }}
       {% endif %}
@@ -51,6 +54,17 @@
               width: 'auto',
               mb: '',
               no_label: true,
+          }|merge(dropdown_options)) }}
+      {% elseif asset_target ?? false %}
+          {{ fields.dropdownItemsFromItemtypes('items_id_peripheral', '', {
+              itemtypes: link_types,
+              used: used ?? [],
+              field_class: 'd-flex',
+              width: 'auto',
+              mb: '',
+              no_label: true,
+              itemtype_name : 'itemtype_peripheral',
+              items_id_name : 'items_id_peripheral',
           }|merge(dropdown_options)) }}
       {% else %}
           {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
