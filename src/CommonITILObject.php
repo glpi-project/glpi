@@ -9906,7 +9906,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $linked_tables = [];
         $default_join = SQLProvider::getDefaultJoinCriteria($itemtype, getTableForItemType($itemtype), $linked_tables);
         if ($default_join !== []) {
-            $base_common_itil_query += $default_join;
+            $base_common_itil_query = array_merge_recursive($base_common_itil_query, $default_join);
         }
 
         // Load common_itil

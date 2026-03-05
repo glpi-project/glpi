@@ -2998,7 +2998,7 @@ HTML;
                         // Prevent overriding criteria groups sharing the same key
                         $where[] = [$key => $value];
                     } else {
-                        // Keep the criteria key at the rrot level to be able to override defaults.
+                        // Keep the criteria key at the root level to be able to override defaults.
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
@@ -3590,7 +3590,7 @@ HTML;
                         $unused_ref = [];
                         $default_join = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
                         if ($default_join !== []) {
-                            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'] ?? [], $default_join['LEFT JOIN']);
+                            $criteria = array_merge_recursive($criteria, $ljoin, $default_join);
                         }
                         $where[] = SQLProvider::getDefaultWhereCriteria($itemtype_class);
                     }
