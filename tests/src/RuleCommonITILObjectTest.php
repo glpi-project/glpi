@@ -1346,9 +1346,9 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         );
         // check the computer is correctly linked to the group
         assert(countElementsInTable(
-                \Group_Item::getTable(),
-                ['groups_id' => $group->getID(), 'items_id' => $computer->getID(), 'itemtype' => \Computer::class]
-            ) === 1, "The computer should be linked to the group");
+            \Group_Item::getTable(),
+            ['groups_id' => $group->getID(), 'items_id' => $computer->getID(), 'itemtype' => \Computer::class]
+        ) === 1, "The computer should be linked to the group");
 
         $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
         $rule_builder
@@ -1387,9 +1387,9 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             throw new \InvalidArgumentException("Condition $condition not expected");
         }
         assert(countElementsInTable(
-                ($this->getITILLinkClass('Item'))::getTable(),
-                [$itil_fk => $itil_item->getID(), 'itemtype' => \Computer::class, 'items_id' => $computer->getID()]
-            ) === 1, "The computer should be linked to the ticket");
+            ($this->getITILLinkClass('Item'))::getTable(),
+            [$itil_fk => $itil_item->getID(), 'itemtype' => \Computer::class, 'items_id' => $computer->getID()]
+        ) === 1, "The computer should be linked to the ticket");
 
         // --- assert the group of the linked item is set as requester group ---
 

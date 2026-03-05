@@ -8889,6 +8889,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ];
     }
 
+    /**
+     * Add associated items in database
+     */
     public function handleItemsIdInput(): void
     {
         if (!empty($this->input['items_id'])) {
@@ -10788,6 +10791,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
                     $input['profiles_id'] = $user->fields['profiles_id']; //default profile
+                }
+            }
+        }
+
+        // set groups of associated items - $input['_groups_id_of_item']
+        if (isset($input["items_id"])) {
+            $items = is_array($input["items_id"]) ? $input["items_id"] : [$input["items_id"]];
+            foreach ($items as $itemtype => $items_ids) {
+                if (!is_array($items_ids)) {
+                    continue;
+                }
+
+                $item_classname = getItemForItemtype($itemtype);
+                if (false === $item_classname || !is_subclass_of($item_classname, CommonDBTM::class, true)) {
+                    continue;
+                }
+                $item = new $item_classname(); // @phpstan-ignore glpi.forbidDynamicInstantiation (Type is checked just above with is_subclass_of)
+
+                foreach ($items_ids as $id) {
+                    $item->getFromDB($id);
+                    if (isset($item->fields['groups_id'])) {
+                        $input['_groups_id_of_item'] = $item->fields['groups_id'];
+                    }
                 }
             }
         }
