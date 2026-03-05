@@ -311,7 +311,7 @@
          position: initial;
       }
 
-       .fc-scroller:has(.fc-list-empty) {
+      .fc-scroller:has(.fc-list-empty) {
          display: flex;
          align-items: center;
          justify-content: center;
