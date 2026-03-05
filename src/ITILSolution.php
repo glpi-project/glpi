@@ -334,7 +334,7 @@ class ITILSolution extends CommonDBChild
             $this->item->update([
                 'id'         => $this->item->getID(),
                 'status'     => $status,
-                '_solution'  => $this,
+                '_trigger'   => $this,
             ]);
         }
 
