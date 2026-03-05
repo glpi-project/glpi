@@ -4574,6 +4574,7 @@ class CommonDBTM extends CommonGLPI
                             $entities = getSonsOf('glpi_entities', $fields['entities_id']);
                         }
                         $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
+                        $where[] = static::getSystemSQLCriteria(static::getTable());
 
                         $tmp = clone $this;
                         if ($tmp->maybeTemplate()) {
