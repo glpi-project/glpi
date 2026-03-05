@@ -10000,9 +10000,8 @@ HTML,
      * Test that documents attached to followups, tasks and solutions are included
      * in notification emails, even when there is no active session (cron context).
      * Tests various scenarios with different timeline item types, visibility, and user rights.
-     *
-     * @dataProvider associatedDocumentsWithoutSessionProvider
      */
+    #[DataProvider('associatedDocumentsWithoutSessionProvider')]
     public function testGetAssociatedDocumentsWithoutActiveSession(
         string $parent_itil_itemtype,
         string $timeline_item_type,
