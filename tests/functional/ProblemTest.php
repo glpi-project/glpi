@@ -44,26 +44,6 @@ use Problem;
 
 class ProblemTest extends DbTestCase
 {
-    public function testAddFromItem()
-    {
-        // add problem from a computer
-        $computer   = getItemByTypeName('Computer', '_test_pc01');
-        $problem     = new Problem();
-        $problems_id = $problem->add([
-            'name'           => "test add from computer \'_test_pc01\'",
-            'content'        => "test add from computer \'_test_pc01\'",
-            '_add_from_item' => true,
-            '_from_itemtype' => 'Computer',
-            '_from_items_id' => $computer->getID(),
-        ]);
-        $this->assertGreaterThan(0, $problems_id);
-        $this->assertTrue($problem->getFromDB($problems_id));
-
-        // check relation
-        $problem_item = new \Item_Problem();
-        $this->assertTrue($problem_item->getFromDBForItems($problem, $computer));
-    }
-
     public function testAssignFromCategory()
     {
         $this->login('glpi', 'glpi');

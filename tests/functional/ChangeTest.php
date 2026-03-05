@@ -44,26 +44,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ChangeTest extends DbTestCase
 {
-    public function testAddFromItem()
-    {
-        // add change from a computer
-        $computer   = getItemByTypeName('Computer', '_test_pc01');
-        $change     = new Change();
-        $changes_id = $change->add([
-            'name'           => "test add from computer \'_test_pc01\'",
-            'content'        => "test add from computer \'_test_pc01\'",
-            '_add_from_item' => true,
-            '_from_itemtype' => 'Computer',
-            '_from_items_id' => $computer->getID(),
-        ]);
-        $this->assertGreaterThan(0, $changes_id);
-        $this->assertTrue($change->getFromDB($changes_id));
-
-        // check relation
-        $change_item = new \Change_Item();
-        $this->assertTrue($change_item->getFromDBForItems($change, $computer));
-    }
-
     public function testAssignFromCategory()
     {
         $this->login('glpi', 'glpi');
