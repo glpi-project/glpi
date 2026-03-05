@@ -38,7 +38,6 @@ namespace Glpi\Features;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILTask;
-use ITILFollowup;
 use PendingReason_Item;
 use Session;
 
@@ -90,9 +89,7 @@ trait ParentStatus
                 '_accepted' => true,
             ];
 
-            if ($this instanceof ITILFollowup) {
-                $update['_followup'] = $this;
-            }
+            $update['_trigger'] = $this;
 
             // Use update method for history
             $parentitem->update($update);
@@ -175,9 +172,7 @@ trait ParentStatus
             if ($needupdateparent) {
                 $update['id'] = $parentitem->fields['id'];
 
-                if ($this instanceof ITILFollowup) {
-                    $update['_followup'] = $this;
-                }
+                $update['_trigger'] = $this;
 
                 // Use update method for history
                 $parentitem->update($update);
