@@ -10,7 +10,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "php-64bit": "*",
         "ext-bcmath": "*",
         "ext-ctype": "*",
@@ -90,7 +90,6 @@
         "symfony/polyfill-ctype": "^1.33",
         "symfony/polyfill-iconv": "^1.33",
         "symfony/polyfill-mbstring": "^1.33",
-        "symfony/polyfill-php83": "^1.33",
         "symfony/polyfill-php84": "^1.33",
         "symfony/polyfill-php85": "^1.33",
         "symfony/property-access": "^7.4",
@@ -147,7 +146,8 @@
         "symfony/polyfill-php74": "*",
         "symfony/polyfill-php80": "*",
         "symfony/polyfill-php81": "*",
-        "symfony/polyfill-php82": "*"
+        "symfony/polyfill-php82": "*",
+        "symfony/polyfill-php83": "*"
     },
     "suggest": {
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
@@ -158,7 +158,7 @@
     "config": {
         "optimize-autoloader": true,
         "platform": {
-            "php": "8.2.99"
+            "php": "8.3.99"
         },
         "sort-packages": true,
         "audit": {
