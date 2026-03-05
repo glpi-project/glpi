@@ -9895,7 +9895,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $WHERE += $criteria;
         $WHERE += getEntitiesRestrictCriteria();
         // visibility check hack so we don't have to load the complete DB info for every item
-        $WHERE += SQLProvider::getDefaultWhereCriteria($itemtype);
+        $WHERE[] = SQLProvider::getDefaultWhereCriteria($itemtype);
         $base_common_itil_query = [
             'SELECT' => [static::getTableField('id')],
             'FROM'   => static::getTable(),
