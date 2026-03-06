@@ -46,6 +46,7 @@ use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Location;
+use PHPUnit\Framework\Attributes\TestWith;
 use Rule;
 use RuleAction;
 use RuleCommonITILObject;
@@ -1494,6 +1495,77 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 'groups_id'          => $group_id3,
                 'type'               => CommonITILActor::REQUESTER,
             ])
+        );
+    }
+
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignActionDefaultFromUser(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $user_default_group = getItemByTypeName(Group::class, '_test_group_1');
+
+        assert(1 === $user_default_group->fields['is_assign']);
+
+        // set technician user's default group
+        $tech_user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(Group_User::class, [
+            'users_id'  => $tech_user->getID(),
+            'groups_id' => $user_default_group->getID(),
+        ]);
+        $tech_user = $this->updateItem(User::class, $tech_user->getID(), ['groups_id' => $user_default_group->getID()]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('defaultfromuser', '_groups_id_assign', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            //            $this->markTestSkipped('Currently failing + tested as a user : need a code fix');
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_assign' => $tech_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            //            $this->markTestSkipped('Currently failing + tested as a user : need a code fix');
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_assign' => $tech_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the default group of the assigned user is set as technician group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $user_default_group->getID(),
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
         );
     }
 
