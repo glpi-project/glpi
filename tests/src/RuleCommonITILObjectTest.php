@@ -2991,6 +2991,79 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         }
     }
 
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverActionFromItem(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $group = getItemByTypeName(Group::class, '_test_group_1');
+
+        // create a computer linked to that group
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                '_groups_id' => [$group->getID()],
+            ] + $this->getMinimalCreationInput(\Computer::class)
+        );
+        assert(countElementsInTable(
+            \Group_Item::getTable(),
+            ['groups_id' => $group->getID(), 'items_id' => $computer->getID(), 'itemtype' => \Computer::class]
+        ) === 1, "The computer should be linked to the group");
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('fromitem', '_groups_id_observer', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ] + $this->getMinimalCreationInput($itil_class),
+                ['items_id']
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $itil_item = $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ],
+                ['items_id']
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the group of the linked item is set as observer group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
     /**
      * Add approvals to the managers of the requester's groups
      *
