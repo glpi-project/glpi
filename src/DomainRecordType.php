@@ -380,7 +380,7 @@ class DomainRecordType extends CommonDropdown
      */
     public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
     {
-        $fields = json_decode($this->fields['fields'] ?? '[]', true);
+        $fields = json_decode($this->fields['fields'] ?: '[]', true);
         if (empty($fields)) {
             $fields = [
                 [
