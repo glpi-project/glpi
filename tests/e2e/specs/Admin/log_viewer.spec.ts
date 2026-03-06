@@ -51,7 +51,7 @@ test('Log list has items', async ({ page, profile }) => {
 test('Log viewer has entries', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
     const log_viewer_page = new LogViewerPage(page);
-    await log_viewer_page.gotoLogViewer('php-errors.log');
+    await log_viewer_page.gotoLogViewer('event.log');
     await expect(log_viewer_page.log_entries.first()).toBeVisible();
 
     const a11y_results = await new AxeBuilder({ page })
