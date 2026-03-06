@@ -1,5 +1,6 @@
 <script setup>
     import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
+    import {useEntitySelector} from "./useEntitySelector.js";
 
     const props = defineProps({
         current_entity: {
@@ -18,15 +19,12 @@
 
     const search_input = useTemplateRef('entsearchtext');
     const entity_dropdown_toggle = useTemplateRef('entity_dropdown_toggle');
-    const form_target = `${window.CFG_GLPI.root_doc}/Session/ChangeEntity`;
     const search_filter = ref('');
-    const loading = ref(false);
     const keyboard_shortcut = navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? __('⌥ (option) + ⌘ (command) + E') : __('Ctrl + Alt + E');
     const shortcut_message = __("Tip: You can call this modal with %s keys combination").replace('%s', '<kbd>' + keyboard_shortcut + '</kbd>');
     const max_items = 15;
     const indent_size = 20;
 
-    const tree_data = ref([]);
     /** The start index of the visible items in the tree */
     const start = ref(0);
     const fake_scrollbar = useTemplateRef('fake_scrollbar');
@@ -35,6 +33,16 @@
      * This is NOT the number of entries which are actually in the DOM currently.
      */
     let total_filtered = ref(0);
+
+    const {
+        loading,
+        tree_data,
+        loadTreeData,
+        changeFullStructure: doChangeFullStructure,
+        changeEntity: doChangeEntity
+    } = useEntitySelector({
+        csrf_token: props.csrf_token,
+    });
 
     /**
      * Function for enumerating tree data and performing an action on each node.
@@ -176,37 +184,8 @@
         if (loading.value || tree_data.value.length > 0) {
             return;
         }
-        loading.value = true;
         search_input.value.focus();
-        fetch(`${window.CFG_GLPI.root_doc}/ajax/entitytreesons.php`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': window.getAjaxCsrfToken(),
-            }
-        }).then(response => {
-            response.json().then(data => {
-                let universal_order_i = 0;
-                function preprocess(data, level = 0, parents = []) {
-                    data.forEach((item) => {
-                        item.level = level;
-                        // Save array of parent objects (will be references rather than copies)
-                        item.parents = parents;
-                        item.universal_order = universal_order_i++;
-                        if (item.children.length) {
-                            preprocess(item.children, level + 1, [...parents, item]);
-                        }
-                        if (item.children.length && item.expanded === undefined) {
-                            item.expanded = false;
-                        }
-                    });
-                }
-                preprocess(data);
-                tree_data.value = data;
-                loading.value = false;
-            });
-        });
+        loadTreeData();
     }
 
     onMounted(() => {
@@ -214,18 +193,7 @@
     });
 
     function changeFullStructure() {
-        fetch(form_target, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': props.csrf_token,
-            },
-            body: new URLSearchParams({
-                full_structure: 'true',
-                _glpi_csrf_token: props.csrf_token,
-            }),
-        }).then(response => {
+        doChangeFullStructure().then(response => {
             if (response.ok) {
                 window.location.reload();
             } else {
@@ -235,19 +203,7 @@
     }
 
     function changeEntity(entity_id, is_recursive) {
-        fetch(form_target, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': props.csrf_token,
-            },
-            body: new URLSearchParams({
-                id: entity_id,
-                is_recursive: is_recursive,
-                _glpi_csrf_token: props.csrf_token,
-            }),
-        }).then(response => {
+        doChangeEntity(entity_id, is_recursive).then(response => {
             if (response.ok) {
                 window.location.reload();
             } else {
