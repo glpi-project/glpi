@@ -10767,20 +10767,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         $user = new User();
-        if (isset($input["_users_id_requester"])) {
-            if (
-                !is_array($input["_users_id_requester"])
-                && $user->getFromDB($input["_users_id_requester"])
-            ) {
+        foreach (['_users_id_requester', '_users_id_assign'] as $user_field) {
+            if (!isset($input[$user_field])) {
+                continue;
+            }
+
+            $user_id = is_array($input[$user_field])
+                ? reset($input[$user_field])
+                : $input[$user_field];
+
+            if ($user_id !== false && $user->getFromDB($user_id)) {
                 $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                 $input['users_default_groups'] = $user->fields['groups_id'];
                 $input['profiles_id'] = $user->fields['profiles_id']; //default profile
-            } elseif (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
-                if ($user->getFromDB($user_id)) {
-                    $input['_locations_id_of_requester'] = $user->fields['locations_id'];
-                    $input['users_default_groups'] = $user->fields['groups_id'];
-                    $input['profiles_id'] = $user->fields['profiles_id']; //default profile
-                }
             }
         }
 
