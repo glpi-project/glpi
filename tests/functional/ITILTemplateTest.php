@@ -622,22 +622,26 @@ class ITILTemplateTest extends DbTestCase
         $this->assertEmpty($hidden->getFromDB($hidden_id));
     }
 
-    public function testTemplateUpdatesWhenCategoryChanges(): void
+    /**
+     * Check that when category or type of an itilobject is changed, the template is updated accordingly
+     */
+    public function testTemplateUpdatesWhenCategoryAndTypeChanges(): void
     {
         $this->login();
 
         // Create two templates for each ITIL type, and two categories linked to these templates
-        [$tpl_a, $tpl_b] = $this->createItems(\TicketTemplate::class, [
+        [$ticket_template_a, $ticket_template_b, $ticket_template_c] = $this->createItems(\TicketTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+            ['name' => 'Template C'],
+        ]);
+
+        [$change_template_a, $change_template_b] = $this->createItems(\ChangeTemplate::class, [
             ['name' => 'Template A'],
             ['name' => 'Template B'],
         ]);
 
-        [$cpl_a, $cpl_b] = $this->createItems(\ChangeTemplate::class, [
-            ['name' => 'Template A'],
-            ['name' => 'Template B'],
-        ]);
-
-        [$pl_a, $pl_b] = $this->createItems(\ProblemTemplate::class, [
+        [$problem_template_a, $problem_template_b] = $this->createItems(\ProblemTemplate::class, [
             ['name' => 'Template A'],
             ['name' => 'Template B'],
         ]);
@@ -645,19 +649,19 @@ class ITILTemplateTest extends DbTestCase
         [$cat_a, $cat_b] = $this->createItems(\ITILCategory::class, [
             [
                 'name'                        => 'Category for template A',
-                'tickettemplates_id_demand'   => $tpl_a->getID(),
-                'tickettemplates_id_incident' => $tpl_a->getID(),
-                'changetemplates_id'          => $cpl_a->getID(),
-                'problemtemplates_id'         => $pl_a->getID(),
+                'tickettemplates_id_demand'   => $ticket_template_a->getID(),
+                'tickettemplates_id_incident' => $ticket_template_c->getID(),
+                'changetemplates_id'          => $change_template_a->getID(),
+                'problemtemplates_id'         => $problem_template_a->getID(),
                 'is_request'                  => 1,
                 'is_incident'                 => 1,
             ],
             [
                 'name'                        => 'Category for template B',
-                'tickettemplates_id_demand'   => $tpl_b->getID(),
-                'tickettemplates_id_incident' => $tpl_b->getID(),
-                'changetemplates_id'          => $cpl_b->getID(),
-                'problemtemplates_id'         => $pl_b->getID(),
+                'tickettemplates_id_demand'   => $ticket_template_b->getID(),
+                'tickettemplates_id_incident' => $ticket_template_b->getID(),
+                'changetemplates_id'          => $change_template_b->getID(),
+                'problemtemplates_id'         => $problem_template_b->getID(),
                 'is_request'                  => 1,
                 'is_incident'                 => 1,
             ],
@@ -669,37 +673,37 @@ class ITILTemplateTest extends DbTestCase
             'itilcategories_id' => $cat_a->getID(),
             'type'              => \Ticket::DEMAND_TYPE,
             'entities_id'       => 0,
-            \Ticket::getTemplateClass()::getForeignKeyField()  => $tpl_a->getID(),
+            \Ticket::getTemplateClass()::getForeignKeyField()  => $ticket_template_a->getID(),
         ]);
 
         $change = $this->createItem(\Change::class, [
             'name'              => 'Change',
             'itilcategories_id' => $cat_a->getID(),
             'entities_id'       => 0,
-            \Change::getTemplateClass()::getForeignKeyField()  => $cpl_a->getID(),
+            \Change::getTemplateClass()::getForeignKeyField()  => $change_template_a->getID(),
         ]);
 
         $problem = $this->createItem(\Problem::class, [
             'name'              => 'Problem',
             'itilcategories_id' => $cat_a->getID(),
             'entities_id'       => 0,
-            \Problem::getTemplateClass()::getForeignKeyField()  => $pl_a->getID(),
+            \Problem::getTemplateClass()::getForeignKeyField()  => $problem_template_a->getID(),
         ]);
 
         $this->assertEquals(
-            $tpl_a->getID(),
+            $ticket_template_a->getID(),
             (int) $ticket->fields['tickettemplates_id'],
             'tickettemplates_id must reflect Template A after creation with category A'
         );
 
         $this->assertEquals(
-            $cpl_a->getID(),
+            $change_template_a->getID(),
             (int) $change->fields['changetemplates_id'],
             'changetemplates_id must reflect Template A after creation with category A'
         );
 
         $this->assertEquals(
-            $pl_a->getID(),
+            $problem_template_a->getID(),
             (int) $problem->fields['problemtemplates_id'],
             'problemtemplates_id must reflect Template A after creation with category A'
         );
@@ -718,52 +722,89 @@ class ITILTemplateTest extends DbTestCase
         ]);
 
         $this->assertEquals(
-            $tpl_b->getID(),
+            $ticket_template_b->getID(),
             (int) $ticket->fields['tickettemplates_id'],
             'tickettemplates_id must be updated to Template B after category change'
         );
 
         $this->assertEquals(
-            $cpl_b->getID(),
+            $change_template_b->getID(),
             (int) $change->fields['changetemplates_id'],
             'changetemplates_id must be updated to Template B after category change'
         );
 
         $this->assertEquals(
-            $pl_b->getID(),
+            $problem_template_b->getID(),
             (int) $problem->fields['problemtemplates_id'],
             'problemtemplates_id must be updated to Template B after category change'
         );
 
-        // Update the category of each item to category A, but force template B, and check that template A is still used as category has precedence on template
+        // Update the category of each item to category A, specifying the old model B, and verify that template A is applied.
         $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
             'itilcategories_id' => $cat_a->getID(),
-            \Ticket::getTemplateFormFieldName() => $tpl_b->getID(),
+            \Ticket::getTemplateFormFieldName() => $ticket_template_b->getID(),
         ]);
 
         $change = $this->updateItem(\Change::class, $change->getID(), [
             'itilcategories_id' => $cat_a->getID(),
-            \Change::getTemplateFormFieldName() => $cpl_b->getID(),
+            \Change::getTemplateFormFieldName() => $change_template_b->getID(),
         ]);
 
         $problem = $this->updateItem(\Problem::class, $problem->getID(), [
             'itilcategories_id' => $cat_a->getID(),
-            \Problem::getTemplateFormFieldName() => $pl_b->getID(),
+            \Problem::getTemplateFormFieldName() => $problem_template_b->getID(),
         ]);
 
         $this->assertEquals(
-            $tpl_a->getID(),
+            $ticket_template_a->getID(),
             (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template A after category change'
         );
 
         $this->assertEquals(
-            $cpl_a->getID(),
+            $change_template_a->getID(),
             (int) $change->fields['changetemplates_id'],
+            'changetemplates_id must be updated to Template A after category change'
         );
 
         $this->assertEquals(
-            $pl_a->getID(),
+            $problem_template_a->getID(),
             (int) $problem->fields['problemtemplates_id'],
+            'problemtemplates_id must be updated to Template A after category change'
+        );
+
+        // Update the type of the ticket to incident, and check that template C is now used
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'type' => \Ticket::INCIDENT_TYPE,
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_c->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template C after type change'
+        );
+
+        // Update the type of the ticket back to demand, specifying the old model C, and verify that template A is applied.
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'type' => \Ticket::DEMAND_TYPE,
+            \Ticket::getTemplateFormFieldName() => $ticket_template_c->getID(),
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template A after type change'
+        );
+
+        // Check that the template is not changed when the category or type is not updated.
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'name' => 'Ticket updated',
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must not be updated if category or type is not updated'
         );
     }
 }
