@@ -70,7 +70,7 @@ TWIG, $twig_params);
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
             throw new InvalidArgumentException('The value must be in the format YYYY-MM-DD');
         }
-        return gmdate('Y-m-d', strtotime($value));
+        return $value;
     }
 
     public function formatValueFromDB(mixed $value): ?string
@@ -78,7 +78,12 @@ TWIG, $twig_params);
         if (empty($value)) {
             return null;
         }
-        return date('Y-m-d', strtotime($value . ' UTC'));
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return $value;
+        }
+
+        // Backward compatibility: old persisted values may contain a datetime part.
+        return date('Y-m-d', strtotime((string) $value));
     }
 
     public function getSearchOption(): ?array
