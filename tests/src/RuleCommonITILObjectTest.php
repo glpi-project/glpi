@@ -4430,7 +4430,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         // --- act ---
         if ($condition === RuleCommonITILObject::ONADD) {
-            $this->markTestSkipped('Currently failing + tested as a user : need a code fix');
             $itil_item = $this->createItem(
                 $itil_class,
                 [
@@ -4439,7 +4438,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 ] + $this->getMinimalCreationInput($itil_class)
             );
         } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
-            $this->markTestSkipped('Currently failing + tested as a user : need a code fix');
             $itil_item = $this->createItem(
                 $itil_class,
                 $this->getMinimalCreationInput($itil_class)
