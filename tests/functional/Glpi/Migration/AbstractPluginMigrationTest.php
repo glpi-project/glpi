@@ -1049,7 +1049,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
         $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true); // this one will not be migrated
 
-        $DB->delete(Infocom::getTable(), [new QueryExpression(true)]);
+        $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
         $this->createItems(
             Infocom::class,
             [
@@ -1096,7 +1096,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
         );
 
-        $DB->delete(Contract_Item::getTable(), [new QueryExpression(true)]);
+        $DB->delete(Contract_Item::getTable(), [new QueryExpression('true')]);
         $this->createItems(
             Contract_Item::class,
             [
