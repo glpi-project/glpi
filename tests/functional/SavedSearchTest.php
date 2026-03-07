@@ -37,6 +37,7 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use MassiveAction;
 use SavedSearch;
+use Ticket;
 
 /* Test for inc/savedsearch.class.php */
 
@@ -286,5 +287,66 @@ class SavedSearchTest extends DbTestCase
             'Change visibility',
             'Change entity',
         ], array_values($actions));
+    }
+
+    public function testCannotChangeVisibilityMA()
+    {
+        $this->login();
+        $private_savedsearch = $this->createItem(SavedSearch::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => $_SESSION['glpiID'],
+            'itemtype' => Ticket::class,
+            'is_private' => 1,
+            'type' => 1,
+            'url' => '/front/ticket.php',
+        ], ['url']);
+
+        $ma = new MassiveAction([
+            'is_private' => 0,
+            'action' => 'change_visibility',
+            'action_name' => 'change_visibility',
+            'processor' => 'SavedSearch',
+            'initial_item' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()]
+            ],
+            'items' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()]
+            ],
+        ], [
+            '_single_item' => [
+                'itemtype' => SavedSearch::class,
+                'id' => 1
+            ],
+        ], 'process', null);
+        SavedSearch::processMassiveActionsForOneItemtype($ma, new SavedSearch(), [$private_savedsearch->getID()]);
+        $this->assertEquals(0, $ma->results['noright']);
+        $this->assertEquals(1, $ma->results['ok']);
+
+        $_SESSION['glpiactiveprofile'][SavedSearch::$rightname] = 0;
+
+        $actions = MassiveAction::getAllMassiveActions(SavedSearch::class);
+        $this->assertNotContains('Change visibility', $actions);
+
+        $ma = new MassiveAction([
+            'is_private' => 0,
+            'action' => 'change_visibility',
+            'action_name' => 'change_visibility',
+            'processor' => 'SavedSearch',
+            'initial_item' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()]
+            ],
+            'items' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()]
+            ],
+        ], [
+            '_single_item' => [
+                'itemtype' => SavedSearch::class,
+                'id' => 1
+            ],
+        ], 'process', null);
+        SavedSearch::processMassiveActionsForOneItemtype($ma, new SavedSearch(), [$private_savedsearch->getID()]);
+        $this->assertEquals(1, $ma->results['noright']);
+        $this->assertEquals(0, $ma->results['ok']);
     }
 }
