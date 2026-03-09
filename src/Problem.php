@@ -317,7 +317,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again problem to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            $trigger = $this->input['_solution'] ?? $this->input['_trigger'] ?? null;
+            $trigger = $this->input['_trigger'] ?? null;
             NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
     }
