@@ -742,7 +742,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         global $DB;
 
-        if (Session::isCron()) {
+        if (
+            Session::isRightChecksDisabled()
+            || Session::isCron()
+        ) {
             return true;
         }
         if (count($IDs) === 0) {

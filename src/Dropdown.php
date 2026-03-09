@@ -3034,8 +3034,10 @@ HTML;
                             "$table.completename" => ['LIKE', $search],
                         ],
                     ];
-                    if ($item->isField('code')) {
-                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    if (Session::getCurrentInterface() === 'central') {
+                        if ($item->isField('code')) {
+                            $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                        }
                     }
                     if ($item->isField('alias')) {
                         $swhere["OR"]["$table.alias"] = ['LIKE', $search];
@@ -3349,9 +3351,9 @@ HTML;
                             $outputval = $data['alias'];
                             $title     = $data['alias'];
                         }
-                        if (isset($data['code']) && !empty($data['code'])) {
+                        if ((Session::getCurrentInterface() === 'central') && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
-                            $title     .= ' - ' . $data['code'];
+                            $title .= ' - ' . $data['code'];
                         }
 
                         $selection_text = $title;

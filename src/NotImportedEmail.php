@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * NotImportedEmail Class
  **/
@@ -210,7 +212,7 @@ class NotImportedEmail extends CommonDBTM
     {
         global $DB;
 
-        $DB->delete('glpi_notimportedemails', [1]);
+        $DB->delete('glpi_notimportedemails', [new QueryExpression('true')]);
     }
 
 
