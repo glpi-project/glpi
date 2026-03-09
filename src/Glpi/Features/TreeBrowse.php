@@ -281,7 +281,7 @@ JAVASCRIPT;
                 }
             }
             if (($category['items_count'] > 0) || (in_array($category['id'], $parents))) {
-                $parents[] = $category[$cat_fk];
+                $parents[] = $category[$cat_fk] ?? 0;
                 $categories[] = $category;
             }
         }
