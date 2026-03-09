@@ -37,6 +37,8 @@ namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
+use Glpi\Application\Environment;
+use League\OAuth2\Server\Exception\OAuthServerException;
 
 use function Safe\inet_pton;
 
@@ -44,23 +46,41 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        $client = Router::getInstance()->getCurrentClient();
-        if (!$client || isCommandLine()) {
+        if (isCommandLine() && Environment::get() !== Environment::TESTING) {
             $next($input);
             return;
         }
 
-        if (!self::isClientIPAllowed($client['client_id'], $_SERVER['REMOTE_ADDR'])) {
-            // IP doesn't match the allowed IPs
-            $input->response = AbstractController::getAccessDeniedErrorResponse();
+        $client = Router::getInstance()->getCurrentClient();
+        if ($client !== null) {
+            // A client is already authenticated. Check its IP restriction.
+            if (!self::isClientIPAllowed($client['client_id'], $_SERVER['REMOTE_ADDR'])) {
+                $input->response = AbstractController::getAccessDeniedErrorResponse();
+                return;
+            }
+            $next($input);
             return;
         }
 
-        // IP was explicitly allowed
+        // No authenticated client yet. If the route is an unauthenticated endpoint, check the client_id parameter for IP restriction.
+        $route_path = $input->route_path->getRoutePath();
+        if (in_array(strtolower($route_path), ['/token'], true)) {
+            $client_id = $input->request->getParameter('client_id');
+            if (
+                $client_id !== null
+                && !self::isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'] ?? '')
+            ) {
+                $input->response = OAuthServerException::accessDenied( // @phpstan-ignore assign.propertyType (Response vs ResponseInterface)
+                    'Your IP address is not allowed to use this OAuth client.'
+                )->generateHttpResponse(new \Glpi\Http\JSONResponse());
+                return;
+            }
+        }
+
         $next($input);
     }
 
-    public static function isClientIPAllowed(string $client_id, string $ip): bool
+    private static function isClientIPAllowed(string $client_id, string $ip): bool
     {
         global $DB;
 

@@ -38,7 +38,6 @@ namespace Glpi\Api\HL\Controller;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
-use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
@@ -63,7 +62,6 @@ use Transfer;
 use User;
 
 use function Safe\file_get_contents;
-use function Safe\json_decode;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -588,27 +586,6 @@ HTML;
     #[Doc\Route(description: 'Get an OAuth 2.0 token')]
     public function token(Request $request): Response
     {
-        $client_id = $request->getQueryParams()['client_id'] ?? null;
-
-        if ($client_id === null) {
-            $body = (string) $request->getBody();
-            if (!empty($body)) {
-                try {
-                    $data = json_decode($body, true);
-                    $client_id = $data['client_id'] ?? null;
-                } catch (JsonException) {
-                    $client_id = null;
-                }
-            }
-        }
-
-        if (
-            $client_id !== null
-            && !IPRestrictionRequestMiddleware::isClientIPAllowed($client_id, $_SERVER['REMOTE_ADDR'] ?? '')
-        ) {
-            return OAuthServerException::accessDenied('Your IP address is not allowed to use this OAuth client.')->generateHttpResponse(new JSONResponse()); // @phpstan-ignore return.type (Response vs ResponseInterface)
-        }
-
         try {
             /** @var JSONResponse $response */
             $response = Server::getAuthorizationServer()->respondToAccessTokenRequest($request, new JSONResponse());

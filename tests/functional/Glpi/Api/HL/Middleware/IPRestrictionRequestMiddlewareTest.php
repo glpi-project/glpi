@@ -35,10 +35,15 @@
 namespace tests\units\Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Api\HL\Middleware\MiddlewareInput;
+use Glpi\Api\HL\Route;
+use Glpi\Api\HL\Router;
+use Glpi\Api\HL\RoutePath;
+use Glpi\Http\Request;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class IPRestrictionRequestMiddlewareTest extends GLPITestCase
+class IPRestrictionRequestMiddlewareTest extends DbTestCase
 {
     public static function isIPAllowedProvider()
     {
@@ -83,5 +88,135 @@ class IPRestrictionRequestMiddlewareTest extends GLPITestCase
     {
         $middleware = new IPRestrictionRequestMiddleware();
         $this->assertEquals($expected, $this->callPrivateMethod($middleware, 'isCidrMatch', $ip, $range));
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function processProvider(): array
+    {
+        return [
+            'token_endpoint_no_ip_restriction' => [
+                'allowed_ips'            => null,
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/token',
+                'authenticated_client'   => false,
+                'expected_next_called'   => true,
+                'expected_status_code'   => null,
+            ],
+            'token_endpoint_authorized_ip' => [
+                'allowed_ips'            => '127.0.0.1',
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/token',
+                'authenticated_client'   => false,
+                'expected_next_called'   => true,
+                'expected_status_code'   => null,
+            ],
+            'token_endpoint_unauthorized_ip' => [
+                'allowed_ips'            => '192.168.99.99',
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/token',
+                'authenticated_client'   => false,
+                'expected_next_called'   => false,
+                'expected_status_code'   => 401,
+            ],
+            'api_request_no_ip_restriction' => [
+                'allowed_ips'            => null,
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/Ticket',
+                'authenticated_client'   => true,
+                'expected_next_called'   => true,
+                'expected_status_code'   => null,
+            ],
+            'api_request_authorized_ip' => [
+                'allowed_ips'            => '127.0.0.1',
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/Ticket',
+                'authenticated_client'   => true,
+                'expected_next_called'   => true,
+                'expected_status_code'   => null,
+            ],
+            'api_request_unauthorized_ip' => [
+                'allowed_ips'            => '127.0.0.1',
+                'remote_addr'            => '192.168.99.1',
+                'route_path'             => '/Ticket',
+                'authenticated_client'   => true,
+                'expected_next_called'   => false,
+                'expected_status_code'   => 403,
+            ],
+            'status_all_no_ip_restriction_unauthenticated' => [
+                'allowed_ips'            => null,
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/status/all',
+                'authenticated_client'   => false,
+                'expected_next_called'   => true,
+                'expected_status_code'   => null,
+            ],
+            'status_all_unauthorized_ip_unauthenticated' => [
+                'allowed_ips'            => '192.168.99.99',
+                'remote_addr'            => '127.0.0.1',
+                'route_path'             => '/status/all',
+                'authenticated_client'   => false,
+                'expected_next_called'   => true,
+                'expected_status_code'   => null,
+            ],
+            'status_all_unauthorized_ip_authenticated' => [
+                'allowed_ips'            => '127.0.0.1',
+                'remote_addr'            => '192.168.99.1',
+                'route_path'             => '/status/all',
+                'authenticated_client'   => true,
+                'expected_next_called'   => false,
+                'expected_status_code'   => 403,
+            ],
+        ];
+    }
+
+    #[DataProvider('processProvider')]
+    public function testProcess(
+        ?string $allowed_ips,
+        string $remote_addr,
+        string $route_path,
+        bool $authenticated_client,
+        bool $expected_next_called,
+        ?int $expected_status_code,
+    ): void {
+        $client_oauth = $this->createItem(\OAuthClient::class, [
+            'name' => __FUNCTION__ . '_client',
+            'is_active'       => 1,
+            'is_confidential' => 1,
+            'grants'          => ['client_credentials'],
+            'scopes'          => ['api'],
+            'allowed_ips'     => $allowed_ips,
+        ]);
+
+        $identifier = $client_oauth->getField('identifier');
+
+        $_SERVER['REMOTE_ADDR'] = $remote_addr;
+
+        $router = Router::getInstance();
+        $this->setPrivateProperty(
+            $router,
+            'current_client',
+            $authenticated_client ? ['client_id' => $identifier] : null
+        );
+
+        $request = new Request('POST', $route_path);
+        if (!$authenticated_client) {
+            $request->setParameter('client_id', $identifier);
+        }
+
+        $route = new RoutePath(\Glpi\Api\HL\Controller\CoreController::class, 'token', $route_path, ['POST'], 1, Route::SECURITY_NONE, '');
+        $input = new MiddlewareInput($request, $route, null);
+
+        $next_called = false;
+        $middleware = new IPRestrictionRequestMiddleware();
+        $middleware->process($input, function () use (&$next_called): void {
+            $next_called = true;
+        });
+
+        $this->assertEquals($expected_next_called, $next_called);
+        if (!$expected_next_called) {
+            $this->assertEquals($expected_status_code, $input->response->getStatusCode());
+        }
     }
 }
