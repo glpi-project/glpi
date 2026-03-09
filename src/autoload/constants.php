@@ -55,7 +55,7 @@ define(
     GLPI_VERSION . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
 );
 
-define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
+define('GLPI_MIN_PHP', '8.3'); // Must also be changed in top of public/index.php
 define('GLPI_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
 define('GLPI_YEAR', '2026');
 

@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "8.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
+          - {php-version: "8.3"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.5"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
@@ -131,7 +131,7 @@ jobs:
               {
                 "include": [
                   {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": true},
-                  {"php-version": "8.2", "db-image": "mariadb:10.6", "run-js-tests": false},
+                  {"php-version": "8.3", "db-image": "mariadb:10.6", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:8.4", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:8.0", "run-js-tests": false}
                 ]
@@ -142,7 +142,7 @@ jobs:
               {
                 "include": [
                   {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": true},
-                  {"php-version": "8.2", "db-image": "mysql:8.4", "run-js-tests": false}
+                  {"php-version": "8.3", "db-image": "mysql:8.4", "run-js-tests": false}
                 ]
               }
             '
