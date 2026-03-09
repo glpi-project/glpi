@@ -561,26 +561,6 @@ HTML,
             'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
         ]);
 
-        // Set notification template to plain text (no HTML content)
-        $notification_notificationtemplate_it = $DB->request([
-            'FROM' => 'glpi_notifications_notificationtemplates',
-            'WHERE' => ['notifications_id' => $solved_notif->getID()],
-        ]);
-        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
-            $notificationtemplate_it = $DB->request([
-                'FROM' => 'glpi_notificationtemplates',
-                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
-            ]);
-            foreach ($notificationtemplate_it as $notificationtemplate_data) {
-                $template_updated = $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => null],
-                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
-                );
-                $this->assertTrue($template_updated);
-            }
-        }
-
         // Arrange - Create ticket with a solution and attach a document to it
         $ticket = $this->createItem(\Ticket::class, [
             'name'        => __FUNCTION__,
@@ -669,25 +649,6 @@ HTML,
             'is_active'        => 1,
             'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
         ]);
-
-        $notification_notificationtemplate_it = $DB->request([
-            'FROM' => 'glpi_notifications_notificationtemplates',
-            'WHERE' => ['notifications_id' => $closed_notif->getID()],
-        ]);
-        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
-            $notificationtemplate_it = $DB->request([
-                'FROM' => 'glpi_notificationtemplates',
-                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
-            ]);
-            foreach ($notificationtemplate_it as $notificationtemplate_data) {
-                $template_updated = $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => null],
-                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
-                );
-                $this->assertTrue($template_updated);
-            }
-        }
 
         // Arrange - Create ticket with a solution, then a followup accepting it, and attach a document to the followup
         $ticket = $this->createItem(\Ticket::class, [
@@ -807,25 +768,6 @@ HTML,
             'type'             => \Notification::USER_TYPE,
             'items_id'         => \Notification::GLOBAL_ADMINISTRATOR,
         ]);
-
-        $notification_notificationtemplate_it = $DB->request([
-            'FROM' => 'glpi_notifications_notificationtemplates',
-            'WHERE' => ['notifications_id' => $rejectsolution_notif->getID()],
-        ]);
-        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
-            $notificationtemplate_it = $DB->request([
-                'FROM' => 'glpi_notificationtemplates',
-                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
-            ]);
-            foreach ($notificationtemplate_it as $notificationtemplate_data) {
-                $template_updated = $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => null],
-                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
-                );
-                $this->assertTrue($template_updated);
-            }
-        }
 
         // Arrange - Create ticket with a solution, then a followup rejecting it, and attach a document to the followup
         $this->updateItem(\Entity::class, $entity, ['autoclose_delay' => \Entity::CONFIG_NEVER]);
