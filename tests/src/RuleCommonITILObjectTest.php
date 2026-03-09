@@ -1529,7 +1529,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         // --- act ---
         if ($condition === RuleCommonITILObject::ONADD) {
-            //            $this->markTestSkipped('Currently failing + tested as a user : need a code fix');
             $itil_item = $this->createItem(
                 $itil_class,
                 [
