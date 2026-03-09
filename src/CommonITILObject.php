@@ -8001,23 +8001,30 @@ abstract class CommonITILObject extends CommonDBTM
             ITILFollowup::canView() ||
             (
                 $user !== null &&
+                !$user->isNewItem() &&
                 $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
                 $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC, $this->fields['entities_id'])
-            )
+            ) ||
+            ($user !== null && $user->isNewItem()) // anonymous user
         ) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
             if (!$bypass_rights) {
-                $can_seeprivate = ($user === null)
-                    ? Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)
-                    : $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE, $this->fields['entities_id']);
+                if ($user !== null && $user->isNewItem()) {
+                    // Anonymous user: can only see public followups
+                    $fup_crits[] = ['is_private' => 0];
+                } else {
+                    $can_seeprivate = ($user === null)
+                        ? Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)
+                        : $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE, $this->fields['entities_id']);
 
-                if (!$can_seeprivate) {
-                    $fup_crits[] = [
-                        'OR' => ['is_private' => 0, 'users_id' => $user_id],
-                    ];
+                    if (!$can_seeprivate) {
+                        $fup_crits[] = [
+                            'OR' => ['is_private' => 0, 'users_id' => $user_id],
+                        ];
+                    }
                 }
             }
 
@@ -8042,8 +8049,10 @@ abstract class CommonITILObject extends CommonDBTM
             ITILSolution::canView() ||
             (
                 $user !== null &&
+                !$user->isNewItem() &&
                 $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
-            )
+            ) ||
+            ($user !== null && $user->isNewItem()) // anonymous user
         ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
@@ -8108,22 +8117,29 @@ abstract class CommonITILObject extends CommonDBTM
             $task_class::canView() ||
             (
                 $user !== null &&
+                !$user->isNewItem() &&
                 $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
                 $user->hasRight($task_class::$rightname, $task_class::SEEPUBLIC, $this->fields['entities_id'])
-            )
+            ) ||
+            ($user !== null && $user->isNewItem()) // anonymous user
         ) {
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
             if (!$bypass_rights) {
-                $can_seeprivate = ($user === null)
-                    ? Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)
-                    : $user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE, $this->fields['entities_id']);
+                if ($user !== null && $user->isNewItem()) {
+                    // Anonymous user: can only see public tasks
+                    $tasks_crit[] = ['is_private' => 0];
+                } else {
+                    $can_seeprivate = ($user === null)
+                        ? Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)
+                        : $user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE, $this->fields['entities_id']);
 
-                if (!$can_seeprivate) {
-                    $tasks_crit[] = [
-                        'OR' => ['is_private' => 0, 'users_id' => $user_id],
-                    ];
+                    if (!$can_seeprivate) {
+                        $tasks_crit[] = [
+                            'OR' => ['is_private' => 0, 'users_id' => $user_id],
+                        ];
+                    }
                 }
             }
             // Run the subquery separately. It's better for huge databases
