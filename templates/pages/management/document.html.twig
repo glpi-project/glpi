@@ -70,4 +70,9 @@
     {{ fields.fileField('filename', null, null, {
         no_label: true,
     }) }}
+    {% if item.isNewItem %}
+        {{ fields.nullField() }}
+    {% else %}
+        {{ fields.htmlField('', call("Toolbox::getSize", [item.fields['filesize']]), __('Size')) }}
+    {% endif %}
 {% endblock %}
