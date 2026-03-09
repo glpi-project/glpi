@@ -54,7 +54,7 @@
         {% endif %}
 
         {{ fields.textField('name', item.fields['name'], __('Name')) }}
-        {{ fields.htmlField('itemtype', params['itemtype']|default(item.fields['itemtype'])|itemtype_name(1), __('Itemtype')) }}
+        {{ fields.htmlField('itemtype', params['itemtype']|default(item.fields['itemtype'])|itemtype_name(1)|e, __('Itemtype')) }}
         {{ fields.dropdownArrayField('do_count', item.fields['do_count'], {
             (constant('SavedSearch::COUNT_AUTO')): __('Auto'),
             (constant('SavedSearch::COUNT_YES')): __('Yes'),
