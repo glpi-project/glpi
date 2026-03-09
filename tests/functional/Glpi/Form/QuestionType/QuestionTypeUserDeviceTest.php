@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -66,5 +67,23 @@ final class QuestionTypeUserDeviceTest extends DbTestCase
             "1) Computer: My computer",
             strip_tags($ticket->fields['content']),
         );
+    }
+
+    public function testMandatoryValidationAcceptsNamespacedDeviceKey(): void
+    {
+        $this->login();
+
+        $builder = new FormBuilder();
+        $builder->addQuestion("Device", QuestionTypeUserDevice::class, is_mandatory: true);
+        $form = $this->createForm($builder);
+
+        $question_id = $this->getQuestionId($form, "Device");
+
+        $result = AnswersHandler::getInstance()->validateAnswers(
+            $form,
+            [$question_id => 'Glpi\Asset\CustomAsset_32']
+        );
+
+        $this->assertTrue($result->isValid());
     }
 }
