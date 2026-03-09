@@ -34,11 +34,12 @@
 
 namespace tests\units\Glpi\Api\HL\Middleware;
 
+use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Route;
-use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RoutePath;
+use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -157,8 +158,8 @@ class IPRestrictionRequestMiddlewareTest extends DbTestCase
                 'remote_addr'            => '127.0.0.1',
                 'route_path'             => '/status/all',
                 'authenticated_client'   => false,
-                'expected_next_called'   => true,
-                'expected_status_code'   => null,
+                'expected_next_called'   => false,
+                'expected_status_code'   => 401,
             ],
             'status_all_unauthorized_ip_authenticated' => [
                 'allowed_ips'            => '127.0.0.1',
@@ -205,7 +206,7 @@ class IPRestrictionRequestMiddlewareTest extends DbTestCase
             $request->setParameter('client_id', $identifier);
         }
 
-        $route = new RoutePath(\Glpi\Api\HL\Controller\CoreController::class, 'token', $route_path, ['POST'], 1, Route::SECURITY_NONE, '');
+        $route = new RoutePath(CoreController::class, 'token', $route_path, ['POST'], 1, Route::SECURITY_NONE, '');
         $input = new MiddlewareInput($request, $route, null);
 
         $next_called = false;

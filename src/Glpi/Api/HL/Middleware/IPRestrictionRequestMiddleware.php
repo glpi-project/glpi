@@ -38,6 +38,7 @@ namespace Glpi\Api\HL\Middleware;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
+use Glpi\Http\JSONResponse;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
 use function Safe\inet_pton;
@@ -51,36 +52,32 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return;
         }
 
+        // Determine client_id from current route or request parameters
         $client = Router::getInstance()->getCurrentClient();
         if ($client !== null) {
-            // A client is already authenticated. Check its IP restriction.
-            if (!self::isClientIPAllowed($client['client_id'], $_SERVER['REMOTE_ADDR'])) {
-                $input->response = AbstractController::getAccessDeniedErrorResponse();
-                return;
-            }
-            $next($input);
-            return;
+            $client_id = $client['client_id'];
+        } elseif ($input->request->hasParameter('client_id')) {
+            $client_id = $input->request->getParameter('client_id');
+        } else {
+            $client_id = null;
         }
 
-        // No authenticated client yet. If the route is an unauthenticated endpoint, check the client_id parameter for IP restriction.
-        $route_path = $input->route_path->getRoutePath();
-        if (in_array(strtolower($route_path), ['/token'], true)) {
-            $client_id = $input->request->getParameter('client_id');
-            if (
-                $client_id !== null
-                && !self::isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'] ?? '')
-            ) {
+        // Check if client_id is set and if client's allowed IPs restrict the request IP
+        if ($client_id !== null && !$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'] ?? '')) {
+            if ($client !== null) {
+                $input->response = AbstractController::getAccessDeniedErrorResponse();
+            } else {
                 $input->response = OAuthServerException::accessDenied( // @phpstan-ignore assign.propertyType (Response vs ResponseInterface)
                     'Your IP address is not allowed to use this OAuth client.'
-                )->generateHttpResponse(new \Glpi\Http\JSONResponse());
-                return;
+                )->generateHttpResponse(new JSONResponse());
             }
+            return;
         }
 
         $next($input);
     }
 
-    private static function isClientIPAllowed(string $client_id, string $ip): bool
+    private function isClientIPAllowed(string $client_id, string $ip): bool
     {
         global $DB;
 
@@ -95,15 +92,15 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return true;
         }
 
-        return self::isIPAllowed($ip, $allowed_ips);
+        return $this->isIPAllowed($ip, $allowed_ips);
     }
 
-    private static function isIPAllowed(string $ip, string $allowed_ips): bool
+    private function isIPAllowed(string $ip, string $allowed_ips): bool
     {
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
         foreach ($allowed_ip_array as $allowed_ip) {
             if (str_contains($allowed_ip, '/')) {
-                if (self::isCidrMatch($ip, $allowed_ip)) {
+                if ($this->isCidrMatch($ip, $allowed_ip)) {
                     return true;
                 }
             } elseif ($ip === $allowed_ip) {
@@ -119,7 +116,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
      * @param string $range The CIDR notation range
      * @return bool
      */
-    private static function isCidrMatch(string $ip, string $range): bool
+    private function isCidrMatch(string $ip, string $range): bool
     {
         $ipv6 = str_contains($ip, ':');
         $max_mask = $ipv6 ? 128 : 32;
