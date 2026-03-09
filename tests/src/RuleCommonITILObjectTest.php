@@ -3143,7 +3143,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Test _groups_id_requester action with 'defaultfromuser'
-     * Rule with 'defaultfromuser' should set the requester group to the default group of the requester user.
+     * Set an itil's requester group, the group is the requester default's group.
      */
     #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
     #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
@@ -3200,7 +3200,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             throw new \InvalidArgumentException("Condition $condition not expected");
         }
 
-        // --- assert the default group of the requester is set as requester group ---
+        // --- assert the itil requester group is set to requester group ---
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -4397,7 +4397,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Test _groups_id_assign action with 'defaultfromuser'
-     * Rule with 'defaultfromuser' should set the technician group to the default group of the assigned user.
+     * Set an itil's assigned group, the group is the requester default's group.
      */
     #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
     #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
@@ -4409,17 +4409,17 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $itil_class = $this->getITILObjectClass();
         $itil_fk = $itil_class::getForeignKeyField();
         $itil_group_link_class = $this->getITILLinkClass(Group::class);
-        $user_default_group = getItemByTypeName(Group::class, '_test_group_1');
+        $requester_default_group = getItemByTypeName(Group::class, '_test_group_1');
 
-        assert(1 === $user_default_group->fields['is_assign']);
+        assert(1 === $requester_default_group->fields['is_assign']);
 
-        // set technician user's default group
-        $tech_user = getItemByTypeName(User::class, 'tech');
+        // set requester default group
+        $requester = getItemByTypeName(User::class, 'post-only');
         $this->createItem(Group_User::class, [
-            'users_id'  => $tech_user->getID(),
-            'groups_id' => $user_default_group->getID(),
+            'users_id'  => $requester->getID(),
+            'groups_id' => $requester_default_group->getID(),
         ]);
-        $tech_user = $this->updateItem(User::class, $tech_user->getID(), ['groups_id' => $user_default_group->getID()]);
+        $requester = $this->updateItem(User::class, $requester->getID(), ['groups_id' => $requester_default_group->getID()]);
 
         $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
         $rule_builder
@@ -4434,7 +4434,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 $itil_class,
                 [
                     'priority' => 5,
-                    '_users_id_assign' => $tech_user->getID(),
+                    '_users_id_requester' => $requester->getID(),
                 ] + $this->getMinimalCreationInput($itil_class)
             );
         } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
@@ -4447,21 +4447,21 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 $itil_item->getID(),
                 [
                     'priority' => 5,
-                    '_users_id_assign' => $tech_user->getID(),
+                    '_users_id_requester' => $requester->getID(),
                 ] + $this->getMinimalCreationInput($itil_class)
             );
         } else {
             throw new \InvalidArgumentException("Condition $condition not expected");
         }
 
-        // --- assert the default group of the assigned user is set as technician group ---
+        // --- assert the itil assignees' group is the requester default group ---
         $this->assertEquals(
             1,
             countElementsInTable(
                 $itil_group_link_class::getTable(),
                 [
                     $itil_fk    => $itil_item->getID(),
-                    'groups_id' => $user_default_group->getID(),
+                    'groups_id' => $requester_default_group->getID(),
                     'type'      => CommonITILActor::ASSIGN,
                 ]
             )
@@ -4844,7 +4844,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Test _groups_id_observer action with 'defaultfromuser'
-     * Rule with 'defaultfromuser' should set the observer group to the default group of the requester user.
+     * Set the observer group to the default group of the requester user.
      */
     #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
     #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
