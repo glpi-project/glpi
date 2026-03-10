@@ -1748,14 +1748,13 @@ final class SQLProvider implements SearchProviderInterface
                             "$table.$field" => [$compare, $val],
                         ];
                     }
+                    $compare = ($nott ? '<' : '>=');
                     if ($val < 0) {
-                        $compare = ($nott ? '<' : '>=');
                         return [
                             "$table.$field" => [$compare, abs($val)],
                         ];
                     }
                     // Show all
-                    $compare = ($nott ? '<' : '>=');
                     return [
                         "$table.$field" => [$compare, 0],
                     ];
@@ -2243,19 +2242,6 @@ final class SQLProvider implements SearchProviderInterface
                             $subquery_specific_username_anonymous,
                         ],
                     ];
-                    if (!empty($addcondition)) {
-                        $subquery_criteria_where[] = $addcondition;
-                    }
-                    $criteria = [
-                        "$main_table.id" => [
-                            $subquery_operator,
-                            new QuerySubQuery([
-                                'SELECT' => $fk,
-                                'FROM'   => $link_table,
-                                'WHERE'  => $subquery_criteria_where,
-                            ]),
-                        ],
-                    ];
 
                 } else {
                     $inner_subquery_criteria = [
@@ -2273,20 +2259,20 @@ final class SQLProvider implements SearchProviderInterface
                     $subquery_criteria_where = [
                         "$linked_fk" => new QuerySubQuery($inner_subquery_criteria),
                     ];
-                    if (!empty($addcondition)) {
-                        $subquery_criteria_where[] = $addcondition;
-                    }
-                    $criteria = [
-                        "$main_table.id" => [
-                            $subquery_operator,
-                            new QuerySubQuery([
-                                'SELECT' => $fk,
-                                'FROM'   => $link_table,
-                                'WHERE'  => $subquery_criteria_where,
-                            ]),
-                        ],
-                    ];
                 }
+                if (!empty($addcondition)) {
+                    $subquery_criteria_where[] = $addcondition;
+                }
+                $criteria = [
+                    "$main_table.id" => [
+                        $subquery_operator,
+                        new QuerySubQuery([
+                            'SELECT' => $fk,
+                            'FROM'   => $link_table,
+                            'WHERE'  => $subquery_criteria_where,
+                        ]),
+                    ],
+                ];
             }
             return ['OR' => [$criteria]];
         }
@@ -5708,11 +5694,10 @@ final class SQLProvider implements SearchProviderInterface
                                             }
                                         }
 
-                                        $count_display++;
                                     } else {
                                         $out .= getUserLink($data[$ID][$k]['name']);
-                                        $count_display++;
                                     }
+                                    $count_display++;
                                 }
 
                                 // Manage alternative_email for tickets_users
