@@ -113,7 +113,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_NEVER,
                     'periodicity' => 0,
                 ],
-                'expected' => "<span class='red'>2020-06-30</span>", // NEVER : avec -1 jour
+                'expected' => "<span class='red'>2020-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -133,7 +133,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 0,
                 ],
-                'expected' => "<span class='red'>2020-06-30</span>", // EXPRESS : avec -1 jour
+                'expected' => "<span class='red'>2020-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -143,7 +143,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_NEVER,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-06-30', // NEVER : avec -1 jour
+                'expected' => '2025-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -153,7 +153,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01', // TACIT : SANS -1 jour
+                'expected' => '2025-07-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -163,7 +163,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-09-30', // EXPRESS : duration + periodicity - 1 jour
+                'expected' => '2025-09-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -173,7 +173,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2029-01-01', // TACIT : renouvellement tous les 60 mois, SANS -1 jour
+                'expected' => '2029-01-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -183,7 +183,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-09-30', // EXPRESS : duration + periodicity - 1 jour
+                'expected' => '2025-09-30',
             ],
         ];
     }
