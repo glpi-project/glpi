@@ -1258,7 +1258,6 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        $SEARCH = [];
         switch ($searchtype) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case "notcontains":
@@ -2549,7 +2548,6 @@ final class SQLProvider implements SearchProviderInterface
                 }
 
                 // Same structure in addDefaultWhere
-                $out = [];
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
@@ -4892,12 +4890,10 @@ final class SQLProvider implements SearchProviderInterface
                     switch ($criterion['link']) {
                         case "AND":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' AND ' : ' OR ';
-                            $globallink = " AND ";
                             break;
                         case "AND NOT":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' OR ' : ' AND ';
                             $NOT        = true;
-                            $globallink = " AND ";
                             break;
                         case "OR":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' AND ' : ' OR ';
@@ -4909,8 +4905,6 @@ final class SQLProvider implements SearchProviderInterface
                             $globallink = " OR ";
                             break;
                     }
-                } else {
-                    $tmplink = " AND ";
                 }
                 // Manage Link if not first item
                 if (!empty($sql) && !$is_having) {
@@ -6941,7 +6935,6 @@ final class SQLProvider implements SearchProviderInterface
         }
         // Manage items with need group by / group_concat
         $out           = "";
-        $count_display = 0;
 
         $aggregate = (isset($so['aggregate']) && $so['aggregate']);
 
