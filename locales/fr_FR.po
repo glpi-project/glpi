@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # operon, 2022
 # Stanislas <skita@teclib.com>, 2024
@@ -23,7 +23,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Cédric Anne, 2026
 # Legastelois François <flegastelois@teclib.com>, 2026
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -9424,6 +9424,10 @@ msgstr "Prochaine date de renouvellement"
 #: src/Contract_Supplier.php:214 src/Contract_User.php:220
 msgid "Initial contract period"
 msgstr "Durée initiale du contrat"
+
+#: templates/pages/management/contract.html.twig
+msgid "Start date of notice period"
+msgstr "Date du début de préavis"
 
 #: templates/pages/management/contract.html.twig src/Entity.php:1930
 #: src/Contract.php:338 src/Contract.php:583 src/Contract.php:1593
