@@ -1231,7 +1231,7 @@ final class SQLProvider implements SearchProviderInterface
         $use_subquery_on_id_search = false;
         // Special case for "contains" or "not contains" search type
         $use_subquery_on_text_search = false;
-        // Special case when searching for an user (need to compare with login, firstname, ...)
+        // Special case when searching for a user (need to compare with login, firstname, ...)
         $subquery_specific_username = false;
         // The subquery operator will be "IN" or "NOT IN" depending on the context and criteria
         $subquery_operator = "";
@@ -4386,7 +4386,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($data['itemtype'] == Entity::class) {
                 $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-                // Will be replace below in Union/Recursivity Hack
+                // Will be replaced below in Union/Recursivity Hack
                 $COMMONWHERE .= $LINK . " ADDDEFAULTWHERE ENTITYRESTRICT ";
             } else {
                 $COMMONWHERE .= getEntitiesRestrictRequest(
@@ -4771,9 +4771,9 @@ final class SQLProvider implements SearchProviderInterface
      *                            contains all the search part (sql, criteria, params, itemtype etc)
      *                            TODO: should be a property of the class
      * @param  array   $searchopt Search options for the current itemtype
-     * @param  bool $is_having Do we construct sql WHERE or HAVING part
+     * @param  bool $is_having Do we construct SQL WHERE or HAVING part
      *
-     * @return string             the sql sub string
+     * @return string             the SQL sub string
      */
     public static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false): string
     {
@@ -4966,7 +4966,7 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Construct additional SQL (select, joins, etc) for meta-criteria
+     * Construct additional SQL (select, joins, etc.) for meta-criteria
      **
      * @param  array  $criteria             list of search criterion
      * @param  string &$SELECT              TODO: should be a class property (output parameter)
