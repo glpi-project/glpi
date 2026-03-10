@@ -47,7 +47,7 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('migration:compute_documents_size');
-        $this->setDescription('Computes the missing file sizes in the database.');
+        $this->setDescription(__('Computes the missing file sizes in the database.'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
