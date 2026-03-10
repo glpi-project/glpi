@@ -2793,7 +2793,7 @@ HTML;
                             'text'     => 'Test user and group Laptop - LAP789 - INV999',
                             'itemtype' => Computer::class,
                             'items_id' => $computer_3->getID(),
-                        ]
+                        ],
                     ],
                 ],
                 [
