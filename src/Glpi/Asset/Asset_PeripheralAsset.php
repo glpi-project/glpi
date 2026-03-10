@@ -310,10 +310,14 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
                 $iterator = self::getPeripheralAssets($asset, $itemtype);
+                $usediterator = self::getUsedPeripherals($itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
                     $datas[]           = $data;
+                }
+
+                foreach ($usediterator as $data) {
                     $used[$itemtype][] = $data['id'];
                 }
             }
@@ -334,7 +338,10 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'source_itemtype' => $asset::class,
                 'source_items_id' => $asset->getID(),
                 'link_types' => $CFG_GLPI['directconnect_types'],
-                'asset_target' => true,
+                'generic_source' => true,
+                'generic_target' => true,
+                'source_suffix' => '_asset',
+                'target_suffix' => '_peripheral',
                 'dropdown_options' => [
                     'entity'      => $asset->getEntityID(),
                     'entity_sons' => $asset->isRecursive(),
@@ -985,6 +992,42 @@ TWIG, $twig_params);
                 self::getTable() . '.is_deleted'     => 0,
                 self::getTable() . '.itemtype_asset' => $asset::class,
                 self::getTable() . '.items_id_asset' => $asset->getID(),
+            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
+            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
+        ]);
+    }
+
+        /**
+     * Returns used peripherals.
+     *
+     * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
+     *
+     * @return DBmysqlIterator
+    */
+    private static function getUsedPeripherals(string $itemtype): DBmysqlIterator
+    {
+        global $DB;
+
+        $peripheral = getItemForItemtype($itemtype);
+
+        return $DB->request([
+            'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
+            'FROM'   => $peripheral::getTable(),
+            'LEFT JOIN' => [
+                self::getTable() => [
+                    'FKEY' => [
+                        self::getTable()      => 'items_id_peripheral',
+                        $peripheral::getTable() => 'id',
+                        [
+                            'AND' => [
+                                self::getTable() . '.itemtype_peripheral' => $itemtype,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                self::getTable() . '.is_deleted'     => 0,
             ] + getEntitiesRestrictCriteria($peripheral::getTable()),
             'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);
