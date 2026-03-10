@@ -275,6 +275,11 @@ $(function() {
       timeline_item.find('.timeline-item-buttons').removeClass('d-none');
       timeline_item.find('.close-edit-content').addClass('d-none');
 
+      // Dispose of the TinyMCE editor if any exists
+       timeline_item.find('.ajax-content').find('textarea').each(function() {
+         window.tinymce?.get($(this).attr('id'))?.destroy();
+      });
+
       timeline_item.find('.ajax-content').html('');
       timeline_item.find('.read-only-content').show();
 
