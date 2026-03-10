@@ -60,7 +60,7 @@ $refused = new RefusedEquipment();
 $handle = true;
 $contents = '';
 if (isset($_GET['refused'])) {
-    Session::checkRight("config", READ);
+    Session::checkRight("config", UPDATE);
     if ($refused->getFromDB($_GET['refused']) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
         $contents = file_get_contents($inventory_file);
     } else {
