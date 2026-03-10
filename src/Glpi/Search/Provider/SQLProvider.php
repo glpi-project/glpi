@@ -4231,22 +4231,21 @@ final class SQLProvider implements SearchProviderInterface
 
             // Preformat items
             if ($criterion === null && isset($searchopt[$ID]["datatype"])) {
-                switch ($searchopt[$ID]["datatype"]) {
-                    case "date_delay":
-                        $interval = "MONTH";
-                        if (isset($searchopt[$ID]['delayunit'])) {
-                            $interval = $searchopt[$ID]['delayunit'];
-                        }
+                if ($searchopt[$ID]["datatype"] == "date_delay") {
+                    $interval = "MONTH";
+                    if (isset($searchopt[$ID]['delayunit'])) {
+                        $interval = $searchopt[$ID]['delayunit'];
+                    }
 
-                        $add_minus = '';
-                        if (isset($searchopt[$ID]["datafields"][3])) {
-                            $add_minus = sprintf(
-                                "- %s.%s",
-                                $DB::quoteName($table . $addtable),
-                                $DB::quoteName($searchopt[$ID]["datafields"][3]),
-                            );
-                        }
-                        $criterion = QueryFunction::dateAdd(
+                    $add_minus = '';
+                    if (isset($searchopt[$ID]["datafields"][3])) {
+                        $add_minus = sprintf(
+                            "- %s.%s",
+                            $DB::quoteName($table . $addtable),
+                            $DB::quoteName($searchopt[$ID]["datafields"][3]),
+                        );
+                    }
+                    $criterion = QueryFunction::dateAdd(
                             date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
                             interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
                             interval_unit: $interval,
