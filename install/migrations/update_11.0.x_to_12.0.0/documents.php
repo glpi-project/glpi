@@ -33,6 +33,7 @@
  */
 
 /**
+ * @var DBmysql $DB
  * @var Migration $migration
  */
 
