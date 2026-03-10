@@ -3095,24 +3095,21 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $used_itemtype = $itemtype;
                         if (
-                            isset($joinparams['specific_itemtype'])
-                            && !empty($joinparams['specific_itemtype'])
+                            !empty($joinparams['specific_itemtype'])
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
 
                         $items_id_column = 'items_id';
                         if (
-                            isset($joinparams['specific_items_id_column'])
-                            && !empty($joinparams['specific_items_id_column'])
+                            !empty($joinparams['specific_items_id_column'])
                         ) {
                             $items_id_column = $joinparams['specific_items_id_column'];
                         }
 
                         $itemtype_column = 'itemtype';
                         if (
-                            isset($joinparams['specific_itemtype_column'])
-                            && !empty($joinparams['specific_itemtype_column'])
+                            !empty($joinparams['specific_itemtype_column'])
                         ) {
                             $itemtype_column = $joinparams['specific_itemtype_column'];
                         }
@@ -3182,8 +3179,7 @@ final class SQLProvider implements SearchProviderInterface
                     case "itemtype_item_revert":
                         $used_itemtype = $itemtype;
                         if (
-                            isset($joinparams['specific_itemtype'])
-                            && !empty($joinparams['specific_itemtype'])
+                            !empty($joinparams['specific_itemtype'])
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
@@ -3210,8 +3206,7 @@ final class SQLProvider implements SearchProviderInterface
                     case "itemtypeonly":
                         $used_itemtype = $itemtype;
                         if (
-                            isset($joinparams['specific_itemtype'])
-                            && !empty($joinparams['specific_itemtype'])
+                            !empty($joinparams['specific_itemtype'])
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
@@ -5011,8 +5006,7 @@ final class SQLProvider implements SearchProviderInterface
 
             // parse only criterion with meta flag
             if (
-                !isset($criterion['itemtype'])
-                || empty($criterion['itemtype'])
+                empty($criterion['itemtype'])
                 || !isset($criterion['meta'])
                 || !$criterion['meta']
                 || !isset($criterion['value'])
@@ -5181,7 +5175,7 @@ final class SQLProvider implements SearchProviderInterface
             if (count($data['search']['metacriteria'])) {
                 foreach ($data['search']['metacriteria'] as $metacriteria) {
                     if (
-                        isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
+                        !empty($metacriteria['itemtype'])
                         && isset($metacriteria['value']) && ((string) $metacriteria['value']) !== ''
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
@@ -6966,12 +6960,12 @@ final class SQLProvider implements SearchProviderInterface
                     $out .= \htmlescape($so['toadd'][$field_data['name']]);
                 } else {
                     // Trans field exists
-                    if (isset($field_data['trans']) && !empty($field_data['trans'])) {
+                    if (!empty($field_data['trans'])) {
                         $out .= \htmlescape($field_data['trans']);
-                    } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
+                    } elseif (!empty($field_data['trans_completename'])) {
                         $value = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($field_data['trans_completename']);
                         $out .= \htmlescape($value);
-                    } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
+                    } elseif (!empty($field_data['trans_name'])) {
                         $out .= \htmlescape($field_data['trans_name']);
                     } else {
                         $out .= \htmlescape($field_data['name'] ?: '');
