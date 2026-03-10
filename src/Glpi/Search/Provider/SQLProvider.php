@@ -4817,7 +4817,7 @@ final class SQLProvider implements SearchProviderInterface
                     isset($criterion['link'])
                     && in_array($criterion['link'], array_keys(SearchEngine::getLogicalOperators()))
                 ) {
-                    if (strstr($criterion['link'], "NOT")) {
+                    if (str_contains($criterion['link'], "NOT")) {
                         $tmplink = " " . str_replace(" NOT", "", $criterion['link']);
                         $NOT     = true;
                     } else {
