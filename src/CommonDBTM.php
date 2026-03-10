@@ -6532,6 +6532,9 @@ class CommonDBTM extends CommonGLPI
             }
 
             if (!$item->can($id, READ)) {
+                // maybe the lack of right is due to re-authentication.
+                (new static())->checkReAuthenticationOrRedirect();
+
                 throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
             }
 

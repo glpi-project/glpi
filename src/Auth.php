@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
-use Glpi\Security\ReAuthManager;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\TOTPManager;
 use Safe\Exceptions\LdapException;
 

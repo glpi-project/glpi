@@ -6723,6 +6723,7 @@ HTML;
         return count($errors) === 0;
     }
 
+    #[Override]
     public static function isReauthenticationRequired(): bool
     {
         return true;

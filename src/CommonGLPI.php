@@ -41,7 +41,7 @@ use Glpi\Exception\RedirectException;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
-use Glpi\Security\ReAuthManager;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
@@ -244,10 +244,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public static function canView(): bool
     {
-        if (static::$rightname) {
-            return Session::haveRight(static::$rightname, READ);
-        }
-        return false;
+        return static::$rightname
+            && Session::haveRight(static::$rightname, READ)
+            && static::isUserReauthenticated();
     }
 
     /**

@@ -41,7 +41,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\RedirectException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Glpi\Security\ReAuthManager;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -52,12 +52,15 @@ class ReAuthController extends AbstractController
     private ReAuthManager $reAuthManager;
 
     public function __construct(
-        private readonly ?UrlGeneratorInterface $router = null
+        private readonly ?UrlGeneratorInterface $router = null // @todo initialiser dans le coeur pour cohérence ?
     ) {
         $this->reAuthManager = new ReAuthManager();
     }
 
 
+    /**
+     * // @todo strategy auth ?
+     */
     #[Route(
         path: "/ReAuth/Prompt",
         name: "reauth_prompt",
@@ -66,31 +69,51 @@ class ReAuthController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function prompt(Request $request): Response
     {
-        return new Response(TemplateRenderer::getInstance()->render('pages/2fa/2fa_request.html.twig', [
-            'redirect' => $this->reAuthManager->getRedirectSuccessURL(),
-            'action' => $this->router->generate('reauth_verify'),
-        ]));
+        return new Response(
+            TemplateRenderer::getInstance()->render('pages/reauth/prompt.html.twig', $this->buildTemplateContext())
+        );
     }
 
+    // // @todo strategy de fw à def aussi
     #[Route(
         path: "/ReAuth/Verify",
         name: "reauth_verify",
         methods: ['POST']
     )]
-    public function verify(Request $request): void
+    public function verify(Request $request): Response
     {
-        $totp_code = $request->get('totp_code');
-        if (is_array($totp_code)) {
-            $totp_code = implode('', $totp_code);
+        $user_input = $request->get('user_input');
+        if (is_array($user_input)) {
+            $user_input = implode('', $user_input);
         }
-        if ($this->reAuthManager->verify((string) $totp_code)) { // @todo refacto gestion de l'array dans verify ?
+
+        if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
 
-            // @todo pour la conservation des données POST (si la le réauth n'est plus valable au moment de la soumission du form),
-            // il faut afficher un form qui contient les données post stockées ($this->reAuthManager->getPostDataForRedirect())
             throw new RedirectException($this->reAuthManager->getRedirectSuccessURL());
         }
 
-        throw new \Exception('Vérif ratée : Rediriger vers ? petit bloc avec message d\'erreur et bouton pour revenir à la page précédente ?');
+        return new Response(
+            TemplateRenderer::getInstance()->render( // @todo utiliser $this->prompt() ?
+                'pages/reauth/prompt.html.twig',
+                [
+                    ...$this->buildTemplateContext(),
+                    'error' => __('Verification failed. Please try again.'),
+                ]
+            )
+        );
+    }
+
+    /**
+     * @return array{redirect: string, action: string, label: string, template: string}
+     */
+    private function buildTemplateContext(): array
+    {
+        return [
+            'redirect' => $this->reAuthManager->getRedirectSuccessURL(),
+            'action'   => $this->router->generate('reauth_verify'),
+            'label'    => $this->reAuthManager->getLabel(),
+            'template' => $this->reAuthManager->getPromptTemplate(),
+        ];
     }
 }
