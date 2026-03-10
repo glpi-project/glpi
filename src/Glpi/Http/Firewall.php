@@ -36,7 +36,6 @@ namespace Glpi\Http;
 
 use Config;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Security\ReAuthManager;
 use LogicException;
 use Plugin;
 use Session;
@@ -65,12 +64,6 @@ final class Firewall
      * Check that user is authenticated and has administration rights.
      */
     public const STRATEGY_ADMIN_ACCESS = 'admin_access';
-
-    /**
-    * Check that user is authenticated and re-authenticated since a little time to access critical features (e.g. change password, access security settings, etc.).
-     * Re-authentication (e.g. sudo mode) consist of asking user to authenticate again (password/totp verification) to ensure that the user is still present.
-    */
-    public const STRATEGY_REAUTHENTICATE = 'reauthenticate';
 
     /**
      * Check that user is authenticated and is using a profile based on central interface.
@@ -156,10 +149,6 @@ final class Firewall
                     throw new AccessDeniedHttpException('Missing administration rights.');
                 }
                 break;
-            case self::STRATEGY_REAUTHENTICATE:
-                Session::checkLoginUser();
-                (new ReAuthManager())->checkReAuthenticated();
-                break;
             case self::STRATEGY_CENTRAL_ACCESS:
                 Session::checkCentralAccess();
                 break;
@@ -203,12 +192,7 @@ final class Firewall
     {
         if (!file_exists($this->glpi_root . $path)) {
             // Modern controllers
-            return match ($path) {
-                (new \Computer())->getFormURL(full: false), // maybe prefere hardcoded version ? '/front/computer.php'
-                'another_route'
-                => self::STRATEGY_REAUTHENTICATE,
-                default => self::FALLBACK_STRATEGY
-            };
+            return self::FALLBACK_STRATEGY;
         }
 
         $paths = [
@@ -227,9 +211,6 @@ final class Firewall
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
-
-            // urls requiring reauth
-            '/front/user.form.php' => self::STRATEGY_REAUTHENTICATE,
         ];
 
         if (Config::allowUnauthenticatedUploads()) {
