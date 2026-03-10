@@ -8844,10 +8844,6 @@ msgid "Initial contract period"
 msgstr "Initial contract period"
 
 #: templates/pages/management/contract.html.twig
-msgid "Start date of notice period"
-msgstr "Start date of notice period"
-
-#: templates/pages/management/contract.html.twig
 #: src/NotificationTargetContract.php:48 src/Contract.php:338
 #: src/Contract.php:583 src/Contract.php:1593 src/Entity.php:1931
 msgid "Notice"
