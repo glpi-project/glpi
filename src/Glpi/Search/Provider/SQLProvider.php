@@ -6829,14 +6829,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $out .= $separate;
                             }
                             $count_display++;
-                            if (
-                                isset($so['toadd'])
-                                && isset($so['toadd'][$data[$ID][$k]['name']])
-                            ) {
-                                $out .= $so['toadd'][$data[$ID][$k]['name']];
-                            } else {
-                                $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
-                            }
+                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
                         }
                     }
                     $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
@@ -6851,14 +6844,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $out .= $separate;
                             }
                             $count_display++;
-                            if (
-                                isset($so['toadd'])
-                                && isset($so['toadd'][$data[$ID][$k]['name']])
-                            ) {
-                                $out .= $so['toadd'][$data[$ID][$k]['name']];
-                            } else {
-                                $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $CFG_GLPI["decimal_number"]);
-                            }
+                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $CFG_GLPI["decimal_number"]);
                         }
                     }
                     $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
