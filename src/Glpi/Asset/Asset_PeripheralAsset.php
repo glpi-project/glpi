@@ -997,7 +997,7 @@ TWIG, $twig_params);
         ]);
     }
 
-        /**
+    /**
      * Returns used peripherals.
      *
      * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
