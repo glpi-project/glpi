@@ -78,12 +78,7 @@ TWIG, $twig_params);
         if (empty($value)) {
             return null;
         }
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
-            return $value;
-        }
-
-        // Backward compatibility: old persisted values may contain a datetime part.
-        return date('Y-m-d', strtotime((string) $value));
+        return $value;
     }
 
     public function getSearchOption(): ?array
