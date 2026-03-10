@@ -48,5 +48,7 @@ $migration->dropKey('glpi_documents_items', 'entities_id');
 $migration->dropField('glpi_documents_items', 'entities_id');
 $migration->dropField('glpi_documents_items', 'is_recursive');
 
+$migration->migrationOneTable('glpi_documents_items');
+
 // Recreate the item index without entities_id and is_recursive
 $migration->addKey('glpi_documents_items', ['itemtype', 'items_id'], 'item');
