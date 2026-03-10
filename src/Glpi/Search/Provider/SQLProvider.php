@@ -4246,10 +4246,10 @@ final class SQLProvider implements SearchProviderInterface
                         );
                     }
                     $criterion = QueryFunction::dateAdd(
-                            date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
-                            interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
-                            interval_unit: $interval,
-                        ) . " $order";
+                        date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
+                        interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
+                        interval_unit: $interval,
+                    ) . " $order";
                 }
             }
 
