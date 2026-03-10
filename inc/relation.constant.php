@@ -577,7 +577,6 @@ $RELATION = [
         'glpi_devicesimcards'              => 'entities_id',
         'glpi_devicesoundcards'            => 'entities_id',
         'glpi_documents'                   => 'entities_id',
-        '_glpi_documents_items'            => 'entities_id',
         'glpi_domainrelations'             => 'entities_id',
         'glpi_domainrecords'               => 'entities_id',
         'glpi_domainrecordtypes'           => 'entities_id',

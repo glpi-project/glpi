@@ -818,8 +818,8 @@ TWIG, $twig_params);
             $params = parent::getListForItemParams($item);
         } else {
             $params = parent::getListForItemParams($item, true);
-            // Anonymous access from FAQ
-            $params['WHERE'][static::getTable() . '.entities_id'] = 0;
+            // Anonymous access from FAQ: restrict to documents in root entity
+            $params['WHERE']['glpi_documents.entities_id'] = 0;
         }
 
         return $params;

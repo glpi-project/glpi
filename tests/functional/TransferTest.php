@@ -892,9 +892,12 @@ class TransferTest extends DbTestCase
         $docid = $mdoc->add($input);
         $this->assertGreaterThan(0, $docid);
 
+        $doc = new \Document();
+        $this->assertTrue($doc->getFromDB($docid));
+        $this->assertSame($fentity, $doc->fields['entities_id']);
+
         $doc_item = new \Document_Item();
         $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
-        $this->assertSame($fentity, $doc_item->fields['entities_id']);
 
         //transfer to another entity
         $transfer = new \Transfer();
@@ -909,9 +912,16 @@ class TransferTest extends DbTestCase
 
         //reload ticket
         $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertSame($dentity, $ticket->fields['entities_id']);
+
+        // The document itself should have been transferred to the destination entity
+        $doc = new \Document();
+        $this->assertTrue($doc->getFromDB($docid));
+        $this->assertSame($dentity, $doc->fields['entities_id']);
+
+        // The relation between the document and the ticket must still exist
         $doc_item = new \Document_Item();
-        $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
-        $this->assertSame($dentity, $doc_item->fields['entities_id']);
+        $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid, 'itemtype' => \Ticket::class, 'items_id' => $ticket_id]));
     }
 
     public function testComputerWithContractTransfer()
@@ -1146,7 +1156,6 @@ class TransferTest extends DbTestCase
             'documents_id' => $docId,
             'itemtype' => \Ticket::class,
             'items_id' => $ticketSourceId,
-            'entities_id' => $sourceEntity,
         ]);
         $this->assertGreaterThan(0, $docItemSourceId);
 
@@ -1155,7 +1164,6 @@ class TransferTest extends DbTestCase
             'documents_id' => $docId,
             'itemtype' => \Ticket::class,
             'items_id' => $ticketDestinationId,
-            'entities_id' => $destinationEntity,
         ]);
         $this->assertGreaterThan(0, $docItemDestinationId);
 
@@ -1217,7 +1225,6 @@ class TransferTest extends DbTestCase
             'documents_id' => $docId,
             'itemtype' => \Ticket::class,
             'items_id' => $ticketId,
-            'entities_id' => $sourceEntity,
         ]);
         $this->assertGreaterThan(0, $docItemId);
 
