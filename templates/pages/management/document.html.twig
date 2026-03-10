@@ -73,6 +73,6 @@
     {% if item.isNewItem %}
         {{ fields.nullField() }}
     {% else %}
-        {{ fields.htmlField('', call("Toolbox::getSize", [item.fields['filesize']]), __('Size')) }}
+        {{ fields.htmlField('', item.fields['filesize']|formatted_size|e, __('Size')) }}
     {% endif %}
 {% endblock %}

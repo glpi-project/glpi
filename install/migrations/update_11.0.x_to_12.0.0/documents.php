@@ -35,4 +35,13 @@
 /**
  * @var Migration $migration
  */
-$migration->addField('glpi_documents', 'filesize', 'int');
+$migration->addField('glpi_documents', 'filesize', 'int DEFAULT NULL');
+
+$to_compute = countElementsInTable('glpi_documents', ['filesize' => null]);
+if ($to_compute > 0) {
+    $migration->addWarningMessage(
+        sprintf(__('%d documents do not have their size recorded in the database.'), $to_compute)
+        . ' '
+        . sprintf(__('Run the "%1$s" command to compute them.'), 'php bin/console migration:compute_documents_size')
+    );
+}

@@ -32,35 +32,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Command;
+namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class FileSizeCommand extends AbstractCommand
+final class ComputeDocumentsSizeCommand extends AbstractCommand
 {
     protected function configure()
     {
         parent::configure();
 
-        $this->setName('tools:file_size');
-        $this->setDescription('Records the size of files in the database');
+        $this->setName('migration:compute_documents_size');
+        $this->setDescription('Computes the missing file sizes in the database.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $doc_class = new \Document();
         $documents = $doc_class->find([
-            'filesize' => 0,
+            'filesize' => null,
         ]);
         foreach ($documents as $document) {
             $filepath = GLPI_DOC_DIR . "/" . $document['filepath'];
             if (is_file($filepath)) {
-                $doc_class->update([
-                    'id' => $document['id'],
-                    'filesize' => filesize($filepath),
-                ]);
+                $filesize = filesize($filepath);
+                if ($filesize > 0) {
+                    $doc_class->update([
+                        'id' => $document['id'],
+                        'filesize' => $filesize,
+                    ]);
+                }
             }
         }
         return 0; // Success
