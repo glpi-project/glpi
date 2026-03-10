@@ -158,7 +158,7 @@ final class SQLProvider implements SearchProviderInterface
         $itemtable = SearchEngine::getOrigTableName($itemtype);
         $item      = null;
         $mayberecursive = false;
-        if ($itemtype != AllAssets::class) {
+        if ($itemtype !== AllAssets::class) {
             $item           = getItemForItemtype($itemtype);
             $mayberecursive = $item->maybeRecursive();
         }
@@ -2282,7 +2282,7 @@ final class SQLProvider implements SearchProviderInterface
             if (
                 (!isset($opt['searchequalsonfield'])
                     || !$opt['searchequalsonfield'])
-                && ($itemtype == AllAssets::class
+                && ($itemtype === AllAssets::class
                     || $table != $itemtype::getTable())
             ) {
                 $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.id"));
@@ -4160,7 +4160,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($criterion === null) {
                 switch ($table . "." . $field) {
                     case "glpi_users.name":
-                        if ($itemtype != User::class) {
+                        if ($itemtype !== User::class) {
                             if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                                 $name1 = 'firstname';
                                 $name2 = 'realname';
