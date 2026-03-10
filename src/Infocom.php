@@ -1993,7 +1993,7 @@ HTML;
      * @return string Expiration date automatically converted to the user's preferred date format.
      *                The returned value is a safe HTML string.
      **/
-    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
+    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0): string
     {
 
         // Life warranty
@@ -2015,8 +2015,8 @@ HTML;
             $current_time = strtotime($_SESSION['glpi_currenttime']);
 
             // Calculate the number of months elapsed since the beginning
-            $current = new \DateTime($_SESSION['glpi_currenttime']);
-            $start = new \DateTime($from);
+            $current = new DateTime($_SESSION['glpi_currenttime']);
+            $start = new DateTime($from);
             $interval = $start->diff($current);
             $months_elapsed = ($interval->y * 12) + $interval->m;
 
@@ -2062,7 +2062,7 @@ HTML;
                 if ($auto_renew && $periodicity > 0) {
                     $current_time = strtotime($_SESSION['glpi_currenttime']);
 
-                    $start_date = new \DateTime($from);
+                    $start_date = new DateTime($from);
                     $first_notice_date = clone $start_date;
                     $first_notice_date->modify("+{$addwarranty} month");
                     $first_notice_date->modify("-{$deletenotice} month");
@@ -2107,6 +2107,12 @@ HTML;
         }
 
         $date = Html::convDate(date("Y-m-d", $timestamp));
+
+        // Ensure we never return null, fallback to empty string if convDate returns null
+        if ($date === null) {
+            $date = '';
+        }
+
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
             return "<span class='red'>" . $date . "</span>";
         }
