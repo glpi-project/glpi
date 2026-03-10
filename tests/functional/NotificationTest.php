@@ -428,21 +428,17 @@ HTML,
         }
     }
 
-    public function testAttachedDocuments(): void
+    /**
+     * Create a mock mail transport that captures sent emails.
+     */
+    private function createCapturingTransport(): AbstractTransport
     {
-        global $CFG_GLPI, $DB;
-
-        $this->login();
-
-        // Mock mailer transport
-        $transport = new class extends AbstractTransport {
+        return new class extends AbstractTransport {
             public $sent_email;
 
             protected function doSend(SentMessage $message): void
             {
-                // Extract message from envelope
                 $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                /* @var \Symfony\Component\Mime\Email $email */
                 $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
             }
 
@@ -451,6 +447,53 @@ HTML,
                 return 'test://';
             }
         };
+    }
+
+    /**
+     * Send queued notifications and return the email attachments.
+     *
+     * @return DataPart[]
+     */
+    private function sendAndGetAttachments(array $queued_notifications): array
+    {
+        $transport = $this->createCapturingTransport();
+
+        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::send($queued_notifications);
+        \NotificationEventMailing::setMailer(null);
+
+        return $transport->sent_email->getAttachments();
+    }
+
+    /**
+     * Activate only the notification matching the given itemtype and event,
+     * deactivating all others and resetting attach_documents to INHERIT.
+     */
+    private function activateOnlyNotification(string $itemtype, string $event): void
+    {
+        global $DB;
+
+        $notification = new \Notification();
+        $this->assertTrue($notification->getFromDBByCrit(['itemtype' => $itemtype, 'event' => $event]));
+
+        $this->assertTrue($DB->update(
+            \Notification::getTable(),
+            ['is_active' => false],
+            ['id' => ['<>', $notification->getID()]]
+        ));
+        $this->updateItem(\Notification::class, $notification->getID(), [
+            'is_active'        => 1,
+            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+        ]);
+    }
+
+    public function testAttachedDocuments(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $transport = $this->createCapturingTransport();
 
         $provider = $this->attachedDocumentsProvider();
         foreach ($provider as $row) {
@@ -537,96 +580,67 @@ HTML,
 
     public function testSolutionDocumentsAttachedToSolvedNotification(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
 
         $this->login();
 
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        // Arrange - Configure notifications
-        $CFG_GLPI['use_notifications'] = true;
-        $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+        foreach ([\Ticket::class, \Change::class, \Problem::class] as $itemtype) {
+            // Arrange - Configure notifications
+            $CFG_GLPI['use_notifications'] = true;
+            $CFG_GLPI['notifications_mailing'] = true;
+            $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
-        $solved_notif = new \Notification();
-        $this->assertTrue($solved_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'solved']));
+            $this->activateOnlyNotification($itemtype, 'solved');
 
-        $this->assertTrue($DB->update(
-            \Notification::getTable(),
-            ['is_active' => false],
-            ['id' => ['<>', $solved_notif->getID()]]
-        ));
-        $this->updateItem(\Notification::class, $solved_notif->getID(), [
-            'is_active'        => 1,
-            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
-        ]);
+            // Arrange - Create ITIL item with a solution and attach a document to it
+            $itil_item = $this->createItem($itemtype, [
+                'name'        => __FUNCTION__,
+                'content'     => '<p>Test ' . $itemtype . '</p>',
+                'entities_id' => $entity,
+            ]);
 
-        // Arrange - Create ticket with a solution and attach a document to it
-        $ticket = $this->createItem(\Ticket::class, [
-            'name'        => __FUNCTION__,
-            'content'     => '<p>Test ticket</p>',
-            'entities_id' => $entity,
-        ]);
+            $solution_doc = $this->createTxtDocument();
 
-        $solution_doc = $this->createTxtDocument();
+            $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
 
-        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
+            $solution = $this->createItem(\ITILSolution::class, [
+                'itemtype' => $itemtype,
+                'items_id' => $itil_item->getID(),
+                'content'  => '<p>Solution with attachment</p>',
+            ]);
 
-        $solution = $this->createItem(\ITILSolution::class, [
-            'itemtype'   => \Ticket::class,
-            'items_id'   => $ticket->getID(),
-            'content'    => '<p>Solution with attachment</p>',
-        ]);
+            $this->createItem(\Document_Item::class, [
+                'documents_id' => $solution_doc->getID(),
+                'itemtype'     => $solution->getType(),
+                'items_id'     => $solution->getID(),
+            ]);
 
-        $this->createItem(\Document_Item::class, [
-            'documents_id' => $solution_doc->getID(),
-            'itemtype'     => $solution->getType(),
-            'items_id'     => $solution->getID(),
-        ]);
+            // Act - Retrieve queued notification
+            $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
+                'is_deleted' => 0,
+                'event'      => 'solved',
+            ]);
 
-        // Act - Retrieve queued notification
-        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
-            'is_deleted' => 0,
-            'event'      => 'solved',
-        ]);
+            // Assert - Solution is the trigger for the notification
+            $this->assertCount(1, $queued_notifications);
 
-        // Assert - Solution is the trigger for the notification
-        $this->assertCount(1, $queued_notifications);
+            $queued = reset($queued_notifications);
+            $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
+            $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
 
-        $queued = reset($queued_notifications);
-        $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
-        $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
-
-        // Act - Send queued notification
-        $transport = new class extends AbstractTransport {
-            public $sent_email;
-
-            protected function doSend(SentMessage $message): void
-            {
-                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
-            }
-
-            public function __toString(): string
-            {
-                return 'test://';
-            }
-        };
-
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
-
-        // Assert - Solution document is attached to the sent email
-        $attachments = $transport->sent_email->getAttachments();
-        $this->assertCount(1, $attachments);
-        $this->assertInstanceOf(DataPart::class, $attachments[0]);
-        $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
+            // Act - Send queued notification and assert document is attached
+            $attachments = $this->sendAndGetAttachments($queued_notifications);
+            $this->assertCount(1, $attachments);
+            $this->assertInstanceOf(DataPart::class, $attachments[0]);
+            $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
+        }
     }
 
     public function testFollowupDocumentsAttachedToClosedNotification(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
 
         $this->login();
 
@@ -637,18 +651,7 @@ HTML,
         $CFG_GLPI['notifications_mailing'] = true;
         $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
 
-        $closed_notif = new \Notification();
-        $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'closed']));
-
-        $this->assertTrue($DB->update(
-            \Notification::getTable(),
-            ['is_active' => false],
-            ['id' => ['<>', $closed_notif->getID()]]
-        ));
-        $this->updateItem(\Notification::class, $closed_notif->getID(), [
-            'is_active'        => 1,
-            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
-        ]);
+        $this->activateOnlyNotification(\Ticket::class, 'closed');
 
         // Arrange - Create ticket with a solution, then a followup accepting it, and attach a document to the followup
         $ticket = $this->createItem(\Ticket::class, [
@@ -696,28 +699,8 @@ HTML,
         $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
         $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
 
-        $transport = new class extends AbstractTransport {
-            public $sent_email;
-
-            protected function doSend(SentMessage $message): void
-            {
-                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
-            }
-
-            public function __toString(): string
-            {
-                return 'test://';
-            }
-        };
-
-        // Act - Send queued notification
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
-
-        // Assert - Followup document is attached to the sent email
-        $attachments = $transport->sent_email->getAttachments();
+        // Act - Send queued notification and assert followup document is attached
+        $attachments = $this->sendAndGetAttachments($queued_notifications);
         $this->assertCount(1, $attachments);
         $this->assertInstanceOf(DataPart::class, $attachments[0]);
         $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
@@ -817,249 +800,11 @@ HTML,
         $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
         $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
 
-        $transport = new class extends AbstractTransport {
-            public $sent_email;
-
-            protected function doSend(SentMessage $message): void
-            {
-                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
-            }
-
-            public function __toString(): string
-            {
-                return 'test://';
-            }
-        };
-
-        // Act - Send queued notification
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
-
-        // Assert - Followup document is attached to the sent email
-        $attachments = $transport->sent_email->getAttachments();
+        // Act - Send queued notification and assert followup document is attached
+        $attachments = $this->sendAndGetAttachments($queued_notifications);
         $this->assertCount(1, $attachments);
         $this->assertInstanceOf(DataPart::class, $attachments[0]);
         $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
-    }
-
-    public function testSolutionDocumentsAttachedToSolvedChangeNotification(): void
-    {
-        global $CFG_GLPI, $DB;
-
-        $this->login();
-
-        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // Arrange - Configure notifications
-        $CFG_GLPI['use_notifications'] = true;
-        $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
-
-        $solved_notif = new \Notification();
-        $this->assertTrue($solved_notif->getFromDBByCrit(['itemtype' => \Change::class, 'event' => 'solved']));
-
-        $this->assertTrue($DB->update(
-            \Notification::getTable(),
-            ['is_active' => false],
-            ['id' => ['<>', $solved_notif->getID()]]
-        ));
-        $this->updateItem(\Notification::class, $solved_notif->getID(), [
-            'is_active'        => 1,
-            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
-        ]);
-
-        // Set notification template to plain text (no HTML content)
-        $notification_notificationtemplate_it = $DB->request([
-            'FROM' => 'glpi_notifications_notificationtemplates',
-            'WHERE' => ['notifications_id' => $solved_notif->getID()],
-        ]);
-        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
-            $notificationtemplate_it = $DB->request([
-                'FROM' => 'glpi_notificationtemplates',
-                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
-            ]);
-            foreach ($notificationtemplate_it as $notificationtemplate_data) {
-                $template_updated = $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => null],
-                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
-                );
-                $this->assertTrue($template_updated);
-            }
-        }
-
-        // Arrange - Create change with a solution and attach a document to it
-        $change = $this->createItem(\Change::class, [
-            'name'        => __FUNCTION__,
-            'content'     => '<p>Test change</p>',
-            'entities_id' => $entity,
-        ]);
-
-        $solution_doc = $this->createTxtDocument();
-
-        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
-
-        $solution = $this->createItem(\ITILSolution::class, [
-            'itemtype' => \Change::class,
-            'items_id' => $change->getID(),
-            'content'  => '<p>Solution with attachment</p>',
-        ]);
-
-        $this->createItem(\Document_Item::class, [
-            'documents_id' => $solution_doc->getID(),
-            'itemtype'     => $solution->getType(),
-            'items_id'     => $solution->getID(),
-        ]);
-
-        // Act - Retrieve queued notification
-        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
-            'is_deleted' => 0,
-            'event'      => 'solved',
-        ]);
-
-        // Assert - Solution is the trigger for the notification
-        $this->assertCount(1, $queued_notifications);
-
-        $queued = reset($queued_notifications);
-        $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
-        $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
-
-        // Act - Send queued notification
-        $transport = new class extends AbstractTransport {
-            public $sent_email;
-
-            protected function doSend(SentMessage $message): void
-            {
-                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
-            }
-
-            public function __toString(): string
-            {
-                return 'test://';
-            }
-        };
-
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
-
-        // Assert - Solution document is attached to the sent email
-        $attachments = $transport->sent_email->getAttachments();
-        $this->assertCount(1, $attachments);
-        $this->assertInstanceOf(DataPart::class, $attachments[0]);
-        $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
-    }
-
-    public function testSolutionDocumentsAttachedToSolvedProblemNotification(): void
-    {
-        global $CFG_GLPI, $DB;
-
-        $this->login();
-
-        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // Arrange - Configure notifications
-        $CFG_GLPI['use_notifications'] = true;
-        $CFG_GLPI['notifications_mailing'] = true;
-        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
-
-        $solved_notif = new \Notification();
-        $this->assertTrue($solved_notif->getFromDBByCrit(['itemtype' => \Problem::class, 'event' => 'solved']));
-
-        $this->assertTrue($DB->update(
-            \Notification::getTable(),
-            ['is_active' => false],
-            ['id' => ['<>', $solved_notif->getID()]]
-        ));
-        $this->updateItem(\Notification::class, $solved_notif->getID(), [
-            'is_active'        => 1,
-            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
-        ]);
-
-        // Set notification template to plain text (no HTML content)
-        $notification_notificationtemplate_it = $DB->request([
-            'FROM' => 'glpi_notifications_notificationtemplates',
-            'WHERE' => ['notifications_id' => $solved_notif->getID()],
-        ]);
-        foreach ($notification_notificationtemplate_it as $notification_notificationtemplate_data) {
-            $notificationtemplate_it = $DB->request([
-                'FROM' => 'glpi_notificationtemplates',
-                'WHERE' => ['id' => $notification_notificationtemplate_data['notificationtemplates_id']],
-            ]);
-            foreach ($notificationtemplate_it as $notificationtemplate_data) {
-                $template_updated = $DB->update(
-                    'glpi_notificationtemplatetranslations',
-                    ['content_html' => null],
-                    ['notificationtemplates_id' => $notificationtemplate_data['id']]
-                );
-                $this->assertTrue($template_updated);
-            }
-        }
-
-        // Arrange - Create problem with a solution and attach a document to it
-        $problem = $this->createItem(\Problem::class, [
-            'name'        => __FUNCTION__,
-            'content'     => '<p>Test problem</p>',
-            'entities_id' => $entity,
-        ]);
-
-        $solution_doc = $this->createTxtDocument();
-
-        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
-
-        $solution = $this->createItem(\ITILSolution::class, [
-            'itemtype' => \Problem::class,
-            'items_id' => $problem->getID(),
-            'content'  => '<p>Solution with attachment</p>',
-        ]);
-
-        $this->createItem(\Document_Item::class, [
-            'documents_id' => $solution_doc->getID(),
-            'itemtype'     => $solution->getType(),
-            'items_id'     => $solution->getID(),
-        ]);
-
-        // Act - Retrieve queued notification
-        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), [
-            'is_deleted' => 0,
-            'event'      => 'solved',
-        ]);
-
-        // Assert - Solution is the trigger for the notification
-        $this->assertCount(1, $queued_notifications);
-
-        $queued = reset($queued_notifications);
-        $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
-        $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
-
-        // Act - Send queued notification
-        $transport = new class extends AbstractTransport {
-            public $sent_email;
-
-            protected function doSend(SentMessage $message): void
-            {
-                $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
-            }
-
-            public function __toString(): string
-            {
-                return 'test://';
-            }
-        };
-
-        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
-        \NotificationEventMailing::send($queued_notifications);
-        \NotificationEventMailing::setMailer(null);
-
-        // Assert - Solution document is attached to the sent email
-        $attachments = $transport->sent_email->getAttachments();
-        $this->assertCount(1, $attachments);
-        $this->assertInstanceOf(DataPart::class, $attachments[0]);
-        $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
     }
 
     /**
