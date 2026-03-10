@@ -48,6 +48,7 @@ $action = $_REQUEST['action'] ?? null;
 
 switch ($action) {
     case 'valide_cra_challenge':
+        Session::checkRight('config', UPDATE);
         $webhook = new Webhook();
         if ($webhook->getFromDB($_POST['webhook_id'])) {
             $response = Webhook::validateCRAChallenge($webhook->fields['url'], 'validate_cra_challenge', $_POST['secret']);
@@ -163,6 +164,7 @@ switch ($action) {
         }
         return;
     case 'resend':
+        Session::checkRight('config', UPDATE);
         $result = QueuedWebhook::sendById($_POST['id']);
         if (!$result) {
             throw new BadRequestHttpException();

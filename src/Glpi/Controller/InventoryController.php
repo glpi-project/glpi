@@ -128,7 +128,7 @@ final class InventoryController extends AbstractController
         $refused = new RefusedEquipment();
 
         try {
-            Session::checkRight("config", READ);
+            Session::checkRight("config", UPDATE);
             if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
                 $contents = file_get_contents($inventory_file);
             } else {
