@@ -3857,7 +3857,7 @@ final class SQLProvider implements SearchProviderInterface
                 if (isset($tab['table'])) {
                     $complexjoin .= $tab['table'];
                 }
-                if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
+                if (isset($tab['joinparams']['condition'])) {
                     if (!is_array($tab['joinparams']['condition'])) {
                         $complexjoin .= $tab['joinparams']['condition'];
                     } else {
@@ -6946,8 +6946,7 @@ final class SQLProvider implements SearchProviderInterface
                 return;
             } else {
                 if (
-                    isset($so['toadd'])
-                    && isset($so['toadd'][$field_data['name']])
+                    isset($so['toadd'][$field_data['name']])
                 ) {
                     $out .= \htmlescape($so['toadd'][$field_data['name']]);
                 } else {
