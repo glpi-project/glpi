@@ -38,6 +38,8 @@ use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\filesize;
+
 final class ComputeDocumentsSizeCommand extends AbstractCommand
 {
     protected function configure()

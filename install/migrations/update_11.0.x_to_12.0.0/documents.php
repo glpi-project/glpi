@@ -35,9 +35,14 @@
 /**
  * @var Migration $migration
  */
-$migration->addField('glpi_documents', 'filesize', 'int DEFAULT NULL');
 
-$to_compute = countElementsInTable('glpi_documents', ['filesize' => null]);
+if (!$DB->fieldExists('glpi_documents', 'filesize', false)) {
+    $migration->addField('glpi_documents', 'filesize', 'int DEFAULT NULL');
+    $to_compute = countElementsInTable('glpi_documents');
+} else {
+    $to_compute = countElementsInTable('glpi_documents', ['filesize' => null]);
+}
+
 if ($to_compute > 0) {
     $migration->addWarningMessage(
         sprintf(__('%d documents do not have their size recorded in the database.'), $to_compute)
