@@ -4332,17 +4332,17 @@ final class SQLProvider implements SearchProviderInterface
             foreach ($searchopt as $key => $val) {
                 // Do not search on Group Name
                 if (is_array($val) && isset($val['table'])) {
-                    if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
+                    if (!in_array($val["table"], $blacklist_tables)) {
                         $FROM .= Search::addLeftJoin(
                             $data['itemtype'],
                             $itemtable,
                             $already_link_tables,
-                            $searchopt[$key]["table"],
-                            $searchopt[$key]["linkfield"],
+                            $val["table"],
+                            $val["linkfield"],
                             false,
                             '',
-                            $searchopt[$key]["joinparams"],
-                            $searchopt[$key]["field"]
+                            $val["joinparams"],
+                            $val["field"]
                         );
                     }
                 }
