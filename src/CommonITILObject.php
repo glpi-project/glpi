@@ -10803,15 +10803,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     continue;
                 }
 
-                $item_classname = getItemForItemtype($itemtype);
-                if (false === $item_classname || !is_subclass_of($item_classname, CommonDBTM::class, true)) {
+                $item = getItemForItemtype($itemtype);
+                if (false === $item || !($item instanceof CommonDBTM)) {
                     continue;
                 }
-                $item = new $item_classname(); // @phpstan-ignore glpi.forbidDynamicInstantiation (Type is checked just above with is_subclass_of)
 
                 foreach ($items_ids as $id) {
-                    $item->getFromDB($id);
-                    if (isset($item->fields['groups_id'])) {
+                    if ($item->getFromDB($id) && isset($item->fields['groups_id'])) {
                         $input['_groups_id_of_item'] = $item->fields['groups_id'];
                     }
                 }
