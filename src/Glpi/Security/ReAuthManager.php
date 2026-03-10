@@ -68,26 +68,26 @@ class ReAuthManager
     public const REAUTH_DELAY_SECONDS = 1 * MINUTE_TIMESTAMP; // 1 for debuging, 15 * MINUTE_TIMESTAMP for production
 
     /**
-     * Redirect to re-authentication form if the user is not re-authenticated and store the current URL to redirect after successful re-authentication.
+     * Trigger redirect to re-authentication form if needed
      *
+     * + store data to do the proper redirect after sucessfull reauthentication
      *
-     * @return void
      * @throws RedirectException
      */
-    public function checkReAuthenticated(): void
+    public function checkReAuthenticationOrRedirect(): void
     {
         if (!$this->isReAuthenticated()) {
             $this->setSuccessRedirectURL(($_SERVER['REDIRECT_URL'] ?? '') . '?' . ($_SERVER['REDIRECT_QUERY_STRING'] ?? ''));// @todo maybe not the best way to retrieve the url + remove ? when no query string
             $this->setPostDataForRedirect($_POST);
-            // also maybe it's better to store the url in get parameter
-            throw new RedirectException("/ReAuth/Prompt"); // @todo éventuellement utilise le router pour générer l'url, mais ça peut alourdir inutilement le code.
+            // @todo maybe it's better to store the url in get parameter ?
+            throw new RedirectException("/ReAuth/Prompt"); // @todo éventuellement utilise le router pour générer l'url, mais ça peut alourdir inutilement le code. cf Manager
         }
     }
 
     /**
      * Check if datetime limit for re-authentication is still valid
      */
-    private function isReAuthenticated(): bool
+    public function isReAuthenticated(): bool
     {
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
         $calculated_limit_timestamp = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp();

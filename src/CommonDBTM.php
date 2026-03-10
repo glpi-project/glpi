@@ -42,6 +42,7 @@ use Glpi\Event;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Exception\TooManyResultsException;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
@@ -3070,6 +3071,10 @@ class CommonDBTM extends CommonGLPI
      * @param ?array<string,mixed> $input array of input data (used for adding item) (default NULL)
      *
      * @return void
+     *
+     * @throws RedirectException
+     * @throws AccessDeniedHttpException
+     * @throws NotFoundHttpException
      **/
     public function check($ID, int $right, ?array &$input = null): void
     {
@@ -3078,6 +3083,9 @@ class CommonDBTM extends CommonGLPI
             throw new NotFoundHttpException();
         } else {
             if (!$this->can($ID, $right, $input)) {
+                // maybe the lack of right is due to re-authentication.
+                $this->checkReAuthenticationOrRedirect();
+
                 /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = static::class;
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);

@@ -37,9 +37,11 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
+use Glpi\Security\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
@@ -168,6 +170,39 @@ class CommonGLPI implements CommonGLPIInterface
         return static::class;
     }
 
+    final public static function isUserReauthenticated(): bool
+    {
+        // reauthentication only for front requests, not for API or CLI
+        if (isAPI() || isCommandLine()) {
+            return true;
+        }
+
+        // Itemtype does not need re-authentication
+        if (!static::isReauthenticationRequired()) {
+            return true;
+        }
+
+        // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
+        return (new ReAuthManager())->isReAuthenticated();
+    }
+
+    /**
+     * @throws RedirectException
+     */
+    public function checkReAuthenticationOrRedirect(): void
+    {
+        (new ReAuthManager())->checkReAuthenticationOrRedirect();
+    }
+
+    /**
+     * Override this method to return true in itemtypes that need re-authentication
+     * @return bool
+     */
+    protected static function isReauthenticationRequired(): bool
+    {
+        return false;
+    }
+
     /**
      * Check right on an item.
      *
@@ -217,41 +252,32 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "update" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canUpdate(): bool
     {
-        if (static::$rightname) {
-            return Session::haveRight(static::$rightname, UPDATE);
-        }
-        return false;
+        return static::$rightname
+            && Session::haveRight(static::$rightname, UPDATE)
+            && static::isUserReauthenticated();
     }
 
     /**
      * Check the global "delete" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canDelete(): bool
     {
-        if (static::$rightname) {
-            return Session::haveRight(static::$rightname, DELETE);
-        }
-        return false;
+        return static::$rightname
+            && Session::haveRight(static::$rightname, DELETE)
+            && static::isUserReauthenticated();
     }
 
     /**
      * Check the global "purge" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canPurge(): bool
     {
-        if (static::$rightname) {
-            return Session::haveRight(static::$rightname, PURGE);
-        }
-        return false;
+        return static::$rightname
+            && Session::haveRight(static::$rightname, PURGE)
+            && static::isUserReauthenticated();
     }
 
     /**
