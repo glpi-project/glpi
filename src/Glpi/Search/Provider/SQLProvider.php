@@ -632,7 +632,7 @@ final class SQLProvider implements SearchProviderInterface
                             $SELECT[] = $TRANS;
                         }
                         return array_merge($SELECT, $ADDITONALFIELDS);
-                    };
+                    }
                     $SELECT = [
                         $tocompute . ' AS ' . $DB::quoteName($NAME),
                         $DB::quoteName("{$table}{$addtable}.id AS {$NAME}_id"),
@@ -840,8 +840,6 @@ final class SQLProvider implements SearchProviderInterface
                         . self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
 
-                    $condition = "(";
-
                     $criteria = [
                         'OR' => [],
                     ];
@@ -930,7 +928,6 @@ final class SQLProvider implements SearchProviderInterface
                     $groupetable = "`glpi_groups_problems_";
                 }
                 // Same structure in addDefaultJoin
-                $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $criteria = [
                         'OR' => [],
@@ -2705,8 +2702,6 @@ final class SQLProvider implements SearchProviderInterface
      */
     private static function parseJoinString(string $raw_joins): array
     {
-        global $DB;
-
         $joins = [];
         $raw_joins = trim($raw_joins);
         if (empty($raw_joins)) {
@@ -2944,7 +2939,6 @@ final class SQLProvider implements SearchProviderInterface
                 }
             }
 
-            $addcondition = '';
             $add_criteria = $joinparams['condition'] ?? [];
             if (!is_array($add_criteria)) {
                 if (empty($add_criteria)) {
@@ -3950,8 +3944,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
-        global $DB;
-
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return [];
@@ -5666,7 +5658,6 @@ final class SQLProvider implements SearchProviderInterface
         if (isset($so["table"])) {
             $table        = $so["table"];
             $field        = $so["field"];
-            $linkfield    = $so["linkfield"];
 
             /// TODO try to clean all specific cases using SpecificToDisplay
 
@@ -5679,7 +5670,6 @@ final class SQLProvider implements SearchProviderInterface
                     ) {
                         $out           = "";
                         $count_display = 0;
-                        $added         = [];
 
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
                             if (
