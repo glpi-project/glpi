@@ -377,8 +377,8 @@ final class SQLProvider implements SearchProviderInterface
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_dynamic",
                             ]),
-                            distinct: true,
                             separator: Search::LONGSEP,
+                            distinct: true,
                             alias: $NAME
                         ),
                     ];
@@ -403,8 +403,8 @@ final class SQLProvider implements SearchProviderInterface
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_dynamic",
                             ]),
-                            distinct: true,
                             separator: Search::LONGSEP,
+                            distinct: true,
                             alias: $NAME
                         ),
                     ];
