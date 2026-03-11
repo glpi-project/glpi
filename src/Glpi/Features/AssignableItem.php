@@ -47,7 +47,7 @@ use Session;
 trait AssignableItem
 {
     /** @see AssignableItemInterface::canView() */
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
     }

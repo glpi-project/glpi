@@ -53,7 +53,7 @@ abstract class Dropdown extends CommonTreeDropdown
      */
     protected static string $definition_system_name;
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         if (!parent::canView()) {
             return false;

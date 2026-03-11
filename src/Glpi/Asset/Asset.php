@@ -93,7 +93,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         }
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         if (!static::canViewFromAssignableItem()) {
             return false;

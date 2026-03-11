@@ -102,7 +102,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return 'ti ti-list-check';
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return (Session::haveRightsOr('project', [Project::READALL, Project::READMY])
               || Session::haveRight(self::$rightname, self::READMY));

@@ -94,7 +94,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     #[Override]
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }

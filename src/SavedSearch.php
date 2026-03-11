@@ -269,7 +269,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::canCreateItem();
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         // Always allow access, as user should always be able to see its private searches.
         return true;

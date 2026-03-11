@@ -49,7 +49,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         return _n('Knowledge base category', 'Knowledge base categories', $nb);
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         if (Session::getCurrentInterface() == "helpdesk") {
             return true;

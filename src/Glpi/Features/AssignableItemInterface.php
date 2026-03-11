@@ -41,7 +41,7 @@ use CommonDBTM;
  */
 interface AssignableItemInterface
 {
-    public static function canView(): bool;
+    public static function canView(bool $require_reauth = false): bool;
 
     public function canViewItem(): bool;
 

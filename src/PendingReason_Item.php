@@ -575,7 +575,7 @@ class PendingReason_Item extends CommonDBRelation
         return ITILFollowup::canUpdate() || TicketTask::canUpdate() || ChangeTask::canUpdate() || ProblemTask::canUpdate();
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return ITILFollowup::canView() || TicketTask::canView() || ChangeTask::canView() || ProblemTask::canView();
     }
