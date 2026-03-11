@@ -60,14 +60,12 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
             $filepath = GLPI_DOC_DIR . "/" . $document['filepath'];
             if (is_file($filepath)) {
                 $filesize = filesize($filepath);
-                if ($filesize > 0) {
-                    $doc_class->update([
-                        'id' => $document['id'],
-                        'filesize' => $filesize,
-                    ]);
-                }
+                $doc_class->update([
+                    'id' => $document['id'],
+                    'filesize' => $filesize,
+                ]);
             }
         }
-        return 0; // Success
+        return self::SUCCESS;
     }
 }

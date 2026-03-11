@@ -73,6 +73,6 @@
     {% if item.isNewItem %}
         {{ fields.nullField() }}
     {% else %}
-        {{ fields.htmlField('', item.fields['filesize']|formatted_size|e, __('Size')) }}
+        {{ fields.htmlField('', item.fields['filesize'] is not null ? item.fields['filesize']|formatted_size|e : '-', __('Size')) }}
     {% endif %}
 {% endblock %}

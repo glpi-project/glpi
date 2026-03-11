@@ -1021,7 +1021,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             $values = [$field => $values];
         }
 
-        if ($field == 'filesize' && !empty($values[$field])) {
+        if ($field == 'filesize' && $values[$field] !== null) {
             return htmlescape(Toolbox::getSize($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
