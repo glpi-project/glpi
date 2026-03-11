@@ -61,7 +61,7 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (isset($input["host"]) && ((string) trim($input["host"]) === '')) {
+        if (isset($input["host"]) && trim((string) $input["host"]) === '') {
             Session::addMessageAfterRedirect(
                 htmlescape(
                     sprintf(
