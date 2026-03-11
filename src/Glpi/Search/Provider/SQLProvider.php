@@ -158,7 +158,7 @@ final class SQLProvider implements SearchProviderInterface
         $itemtable = SearchEngine::getOrigTableName($itemtype);
         $item      = null;
         $mayberecursive = false;
-        if ($itemtype != AllAssets::class) {
+        if ($itemtype !== AllAssets::class) {
             $item           = getItemForItemtype($itemtype);
             $mayberecursive = $item->maybeRecursive();
         }
@@ -377,8 +377,8 @@ final class SQLProvider implements SearchProviderInterface
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_dynamic",
                             ]),
-                            distinct: true,
                             separator: Search::LONGSEP,
+                            distinct: true,
                             alias: $NAME
                         ),
                     ];
@@ -403,8 +403,8 @@ final class SQLProvider implements SearchProviderInterface
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_dynamic",
                             ]),
-                            distinct: true,
                             separator: Search::LONGSEP,
+                            distinct: true,
                             alias: $NAME
                         ),
                     ];
@@ -632,7 +632,7 @@ final class SQLProvider implements SearchProviderInterface
                             $SELECT[] = $TRANS;
                         }
                         return array_merge($SELECT, $ADDITONALFIELDS);
-                    };
+                    }
                     $SELECT = [
                         $tocompute . ' AS ' . $DB::quoteName($NAME),
                         $DB::quoteName("{$table}{$addtable}.id AS {$NAME}_id"),
@@ -840,8 +840,6 @@ final class SQLProvider implements SearchProviderInterface
                         . self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
 
-                    $condition = "(";
-
                     $criteria = [
                         'OR' => [],
                     ];
@@ -930,7 +928,6 @@ final class SQLProvider implements SearchProviderInterface
                     $groupetable = "`glpi_groups_problems_";
                 }
                 // Same structure in addDefaultJoin
-                $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $criteria = [
                         'OR' => [],
@@ -1234,7 +1231,7 @@ final class SQLProvider implements SearchProviderInterface
         $use_subquery_on_id_search = false;
         // Special case for "contains" or "not contains" search type
         $use_subquery_on_text_search = false;
-        // Special case when searching for an user (need to compare with login, firstname, ...)
+        // Special case when searching for a user (need to compare with login, firstname, ...)
         $subquery_specific_username = false;
         // The subquery operator will be "IN" or "NOT IN" depending on the context and criteria
         $subquery_operator = "";
@@ -1261,7 +1258,6 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        $SEARCH = [];
         switch ($searchtype) {
             /** @noinspection PhpMissingBreakStatementInspection */
             case "notcontains":
@@ -1751,14 +1747,13 @@ final class SQLProvider implements SearchProviderInterface
                             "$table.$field" => [$compare, $val],
                         ];
                     }
+                    $compare = ($nott ? '<' : '>=');
                     if ($val < 0) {
-                        $compare = ($nott ? '<' : '>=');
                         return [
                             "$table.$field" => [$compare, abs($val)],
                         ];
                     }
                     // Show all
-                    $compare = ($nott ? '<' : '>=');
                     return [
                         "$table.$field" => [$compare, 0],
                     ];
@@ -2246,19 +2241,6 @@ final class SQLProvider implements SearchProviderInterface
                             $subquery_specific_username_anonymous,
                         ],
                     ];
-                    if (!empty($addcondition)) {
-                        $subquery_criteria_where[] = $addcondition;
-                    }
-                    $criteria = [
-                        "$main_table.id" => [
-                            $subquery_operator,
-                            new QuerySubQuery([
-                                'SELECT' => $fk,
-                                'FROM'   => $link_table,
-                                'WHERE'  => $subquery_criteria_where,
-                            ]),
-                        ],
-                    ];
 
                 } else {
                     $inner_subquery_criteria = [
@@ -2276,20 +2258,20 @@ final class SQLProvider implements SearchProviderInterface
                     $subquery_criteria_where = [
                         "$linked_fk" => new QuerySubQuery($inner_subquery_criteria),
                     ];
-                    if (!empty($addcondition)) {
-                        $subquery_criteria_where[] = $addcondition;
-                    }
-                    $criteria = [
-                        "$main_table.id" => [
-                            $subquery_operator,
-                            new QuerySubQuery([
-                                'SELECT' => $fk,
-                                'FROM'   => $link_table,
-                                'WHERE'  => $subquery_criteria_where,
-                            ]),
-                        ],
-                    ];
                 }
+                if (!empty($addcondition)) {
+                    $subquery_criteria_where[] = $addcondition;
+                }
+                $criteria = [
+                    "$main_table.id" => [
+                        $subquery_operator,
+                        new QuerySubQuery([
+                            'SELECT' => $fk,
+                            'FROM'   => $link_table,
+                            'WHERE'  => $subquery_criteria_where,
+                        ]),
+                    ],
+                ];
             }
             return ['OR' => [$criteria]];
         }
@@ -2300,7 +2282,7 @@ final class SQLProvider implements SearchProviderInterface
             if (
                 (!isset($opt['searchequalsonfield'])
                     || !$opt['searchequalsonfield'])
-                && ($itemtype == AllAssets::class
+                && ($itemtype === AllAssets::class
                     || $table != $itemtype::getTable())
             ) {
                 $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.id"));
@@ -2566,7 +2548,6 @@ final class SQLProvider implements SearchProviderInterface
                 }
 
                 // Same structure in addDefaultWhere
-                $out = [];
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
@@ -2705,8 +2686,6 @@ final class SQLProvider implements SearchProviderInterface
      */
     private static function parseJoinString(string $raw_joins): array
     {
-        global $DB;
-
         $joins = [];
         $raw_joins = trim($raw_joins);
         if (empty($raw_joins)) {
@@ -2944,7 +2923,6 @@ final class SQLProvider implements SearchProviderInterface
                 }
             }
 
-            $addcondition = '';
             $add_criteria = $joinparams['condition'] ?? [];
             if (!is_array($add_criteria)) {
                 if (empty($add_criteria)) {
@@ -3115,24 +3093,21 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $used_itemtype = $itemtype;
                         if (
-                            isset($joinparams['specific_itemtype'])
-                            && !empty($joinparams['specific_itemtype'])
+                            !empty($joinparams['specific_itemtype'])
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
 
                         $items_id_column = 'items_id';
                         if (
-                            isset($joinparams['specific_items_id_column'])
-                            && !empty($joinparams['specific_items_id_column'])
+                            !empty($joinparams['specific_items_id_column'])
                         ) {
                             $items_id_column = $joinparams['specific_items_id_column'];
                         }
 
                         $itemtype_column = 'itemtype';
                         if (
-                            isset($joinparams['specific_itemtype_column'])
-                            && !empty($joinparams['specific_itemtype_column'])
+                            !empty($joinparams['specific_itemtype_column'])
                         ) {
                             $itemtype_column = $joinparams['specific_itemtype_column'];
                         }
@@ -3202,8 +3177,7 @@ final class SQLProvider implements SearchProviderInterface
                     case "itemtype_item_revert":
                         $used_itemtype = $itemtype;
                         if (
-                            isset($joinparams['specific_itemtype'])
-                            && !empty($joinparams['specific_itemtype'])
+                            !empty($joinparams['specific_itemtype'])
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
@@ -3230,8 +3204,7 @@ final class SQLProvider implements SearchProviderInterface
                     case "itemtypeonly":
                         $used_itemtype = $itemtype;
                         if (
-                            isset($joinparams['specific_itemtype'])
-                            && !empty($joinparams['specific_itemtype'])
+                            !empty($joinparams['specific_itemtype'])
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
@@ -3884,7 +3857,7 @@ final class SQLProvider implements SearchProviderInterface
                 if (isset($tab['table'])) {
                     $complexjoin .= $tab['table'];
                 }
-                if (isset($tab['joinparams']) && isset($tab['joinparams']['condition'])) {
+                if (isset($tab['joinparams']['condition'])) {
                     if (!is_array($tab['joinparams']['condition'])) {
                         $complexjoin .= $tab['joinparams']['condition'];
                     } else {
@@ -3950,8 +3923,6 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
-        global $DB;
-
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return [];
@@ -4189,7 +4160,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($criterion === null) {
                 switch ($table . "." . $field) {
                     case "glpi_users.name":
-                        if ($itemtype != User::class) {
+                        if ($itemtype !== User::class) {
                             if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
                                 $name1 = 'firstname';
                                 $name2 = 'realname';
@@ -4260,26 +4231,25 @@ final class SQLProvider implements SearchProviderInterface
 
             // Preformat items
             if ($criterion === null && isset($searchopt[$ID]["datatype"])) {
-                switch ($searchopt[$ID]["datatype"]) {
-                    case "date_delay":
-                        $interval = "MONTH";
-                        if (isset($searchopt[$ID]['delayunit'])) {
-                            $interval = $searchopt[$ID]['delayunit'];
-                        }
+                if ($searchopt[$ID]["datatype"] == "date_delay") {
+                    $interval = "MONTH";
+                    if (isset($searchopt[$ID]['delayunit'])) {
+                        $interval = $searchopt[$ID]['delayunit'];
+                    }
 
-                        $add_minus = '';
-                        if (isset($searchopt[$ID]["datafields"][3])) {
-                            $add_minus = sprintf(
-                                "- %s.%s",
-                                $DB::quoteName($table . $addtable),
-                                $DB::quoteName($searchopt[$ID]["datafields"][3]),
-                            );
-                        }
-                        $criterion = QueryFunction::dateAdd(
-                            date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
-                            interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
-                            interval_unit: $interval,
-                        ) . " $order";
+                    $add_minus = '';
+                    if (isset($searchopt[$ID]["datafields"][3])) {
+                        $add_minus = sprintf(
+                            "- %s.%s",
+                            $DB::quoteName($table . $addtable),
+                            $DB::quoteName($searchopt[$ID]["datafields"][3]),
+                        );
+                    }
+                    $criterion = QueryFunction::dateAdd(
+                        date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
+                        interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$searchopt[$ID]['datafields'][2]}") . " $add_minus"),
+                        interval_unit: $interval,
+                    ) . " $order";
                 }
             }
 
@@ -4362,17 +4332,17 @@ final class SQLProvider implements SearchProviderInterface
             foreach ($searchopt as $key => $val) {
                 // Do not search on Group Name
                 if (is_array($val) && isset($val['table'])) {
-                    if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
+                    if (!in_array($val["table"], $blacklist_tables)) {
                         $FROM .= Search::addLeftJoin(
                             $data['itemtype'],
                             $itemtable,
                             $already_link_tables,
-                            $searchopt[$key]["table"],
-                            $searchopt[$key]["linkfield"],
+                            $val["table"],
+                            $val["linkfield"],
                             false,
                             '',
-                            $searchopt[$key]["joinparams"],
-                            $searchopt[$key]["field"]
+                            $val["joinparams"],
+                            $val["field"]
                         );
                     }
                 }
@@ -4416,7 +4386,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($data['itemtype'] == Entity::class) {
                 $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-                // Will be replace below in Union/Recursivity Hack
+                // Will be replaced below in Union/Recursivity Hack
                 $COMMONWHERE .= $LINK . " ADDDEFAULTWHERE ENTITYRESTRICT ";
             } else {
                 $COMMONWHERE .= getEntitiesRestrictRequest(
@@ -4801,9 +4771,9 @@ final class SQLProvider implements SearchProviderInterface
      *                            contains all the search part (sql, criteria, params, itemtype etc)
      *                            TODO: should be a property of the class
      * @param  array   $searchopt Search options for the current itemtype
-     * @param  bool $is_having Do we construct sql WHERE or HAVING part
+     * @param  bool $is_having Do we construct SQL WHERE or HAVING part
      *
-     * @return string             the sql sub string
+     * @return string             the SQL sub string
      */
     public static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false): string
     {
@@ -4847,7 +4817,7 @@ final class SQLProvider implements SearchProviderInterface
                     isset($criterion['link'])
                     && in_array($criterion['link'], array_keys(SearchEngine::getLogicalOperators()))
                 ) {
-                    if (strstr($criterion['link'], "NOT")) {
+                    if (str_contains($criterion['link'], "NOT")) {
                         $tmplink = " " . str_replace(" NOT", "", $criterion['link']);
                         $NOT     = true;
                     } else {
@@ -4919,12 +4889,10 @@ final class SQLProvider implements SearchProviderInterface
                     switch ($criterion['link']) {
                         case "AND":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' AND ' : ' OR ';
-                            $globallink = " AND ";
                             break;
                         case "AND NOT":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' OR ' : ' AND ';
                             $NOT        = true;
-                            $globallink = " AND ";
                             break;
                         case "OR":
                             $LINK       = ($criterion['searchtype'] == 'notcontains') ? ' AND ' : ' OR ';
@@ -4936,8 +4904,6 @@ final class SQLProvider implements SearchProviderInterface
                             $globallink = " OR ";
                             break;
                     }
-                } else {
-                    $tmplink = " AND ";
                 }
                 // Manage Link if not first item
                 if (!empty($sql) && !$is_having) {
@@ -5000,7 +4966,7 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Construct additional SQL (select, joins, etc) for meta-criteria
+     * Construct additional SQL (select, joins, etc.) for meta-criteria
      **
      * @param  array  $criteria             list of search criterion
      * @param  string &$SELECT              TODO: should be a class property (output parameter)
@@ -5033,8 +4999,7 @@ final class SQLProvider implements SearchProviderInterface
 
             // parse only criterion with meta flag
             if (
-                !isset($criterion['itemtype'])
-                || empty($criterion['itemtype'])
+                empty($criterion['itemtype'])
                 || !isset($criterion['meta'])
                 || !$criterion['meta']
                 || !isset($criterion['value'])
@@ -5203,7 +5168,7 @@ final class SQLProvider implements SearchProviderInterface
             if (count($data['search']['metacriteria'])) {
                 foreach ($data['search']['metacriteria'] as $metacriteria) {
                     if (
-                        isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
+                        !empty($metacriteria['itemtype'])
                         && isset($metacriteria['value']) && ((string) $metacriteria['value']) !== ''
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
@@ -5666,7 +5631,6 @@ final class SQLProvider implements SearchProviderInterface
         if (isset($so["table"])) {
             $table        = $so["table"];
             $field        = $so["field"];
-            $linkfield    = $so["linkfield"];
 
             /// TODO try to clean all specific cases using SpecificToDisplay
 
@@ -5679,7 +5643,6 @@ final class SQLProvider implements SearchProviderInterface
                     ) {
                         $out           = "";
                         $count_display = 0;
-                        $added         = [];
 
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
                             if (
@@ -5718,11 +5681,10 @@ final class SQLProvider implements SearchProviderInterface
                                             }
                                         }
 
-                                        $count_display++;
                                     } else {
                                         $out .= getUserLink($data[$ID][$k]['name']);
-                                        $count_display++;
                                     }
+                                    $count_display++;
                                 }
 
                                 // Manage alternative_email for tickets_users
@@ -6867,14 +6829,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $out .= $separate;
                             }
                             $count_display++;
-                            if (
-                                isset($so['toadd'])
-                                && isset($so['toadd'][$data[$ID][$k]['name']])
-                            ) {
-                                $out .= $so['toadd'][$data[$ID][$k]['name']];
-                            } else {
-                                $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
-                            }
+                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit);
                         }
                     }
                     $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
@@ -6889,14 +6844,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $out .= $separate;
                             }
                             $count_display++;
-                            if (
-                                isset($so['toadd'])
-                                && isset($so['toadd'][$data[$ID][$k]['name']])
-                            ) {
-                                $out .= $so['toadd'][$data[$ID][$k]['name']];
-                            } else {
-                                $out .= Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $CFG_GLPI["decimal_number"]);
-                            }
+                            $out .= $so['toadd'][$data[$ID][$k]['name']] ?? Dropdown::getValueWithUnit($data[$ID][$k]['name'], $unit, $CFG_GLPI["decimal_number"]);
                         }
                     }
                     $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
@@ -6972,7 +6920,6 @@ final class SQLProvider implements SearchProviderInterface
         }
         // Manage items with need group by / group_concat
         $out           = "";
-        $count_display = 0;
 
         $aggregate = (isset($so['aggregate']) && $so['aggregate']);
 
@@ -6985,18 +6932,17 @@ final class SQLProvider implements SearchProviderInterface
                 return;
             } else {
                 if (
-                    isset($so['toadd'])
-                    && isset($so['toadd'][$field_data['name']])
+                    isset($so['toadd'][$field_data['name']])
                 ) {
                     $out .= \htmlescape($so['toadd'][$field_data['name']]);
                 } else {
                     // Trans field exists
-                    if (isset($field_data['trans']) && !empty($field_data['trans'])) {
+                    if (!empty($field_data['trans'])) {
                         $out .= \htmlescape($field_data['trans']);
-                    } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
+                    } elseif (!empty($field_data['trans_completename'])) {
                         $value = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($field_data['trans_completename']);
                         $out .= \htmlescape($value);
-                    } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
+                    } elseif (!empty($field_data['trans_name'])) {
                         $out .= \htmlescape($field_data['trans_name']);
                     } else {
                         $out .= \htmlescape($field_data['name'] ?: '');
