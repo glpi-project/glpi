@@ -35,6 +35,7 @@
 namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Progress\ConsoleProgressIndicator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -54,16 +55,26 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
     {
         $doc_class = new \Document();
         $documents = $doc_class->find([
+            'NOT' => ['filepath' => null],
             'filesize' => null,
         ]);
-        foreach ($documents as $document) {
-            $filepath = GLPI_DOC_DIR . "/" . $document['filepath'];
-            if (is_file($filepath)) {
-                $filesize = filesize($filepath);
-                $doc_class->update([
-                    'id' => $document['id'],
-                    'filesize' => $filesize,
-                ]);
+        $counter = count($documents);
+        if ($counter === 0) {
+            $output->writeln('<comment>' . __('No elements found.') . '</comment>');
+        } elseif ($counter > 0) {
+            $output->writeln('<comment>' . sprintf(__('Computing %s files...'), $counter) . '</comment>');
+            $progress_indicator = new ConsoleProgressIndicator($output);
+            $progress_indicator->setMaxSteps($counter);
+            foreach ($documents as $document) {
+                $filepath = GLPI_DOC_DIR . "/" . $document['filepath'];
+                if (is_file($filepath)) {
+                    $filesize = filesize($filepath);
+                    $doc_class->update([
+                        'id' => $document['id'],
+                        'filesize' => $filesize,
+                    ]);
+                }
+                $progress_indicator->advance();
             }
         }
         return self::SUCCESS;

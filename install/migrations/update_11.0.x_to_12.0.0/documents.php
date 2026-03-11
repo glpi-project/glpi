@@ -37,12 +37,14 @@
  * @var Migration $migration
  */
 
+$condition = ['NOT' => ['filepath' => null]];
 if (!$DB->fieldExists('glpi_documents', 'filesize', false)) {
     $migration->addField('glpi_documents', 'filesize', 'int DEFAULT NULL');
-    $to_compute = countElementsInTable('glpi_documents');
 } else {
-    $to_compute = countElementsInTable('glpi_documents', ['filesize' => null]);
+    $condition['filesize'] = null;
 }
+
+$to_compute = countElementsInTable('glpi_documents', $condition);
 
 if ($to_compute > 0) {
     $migration->addWarningMessage(
