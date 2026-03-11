@@ -323,6 +323,12 @@
       .fc-list-empty-wrap2 {
          position: initial;
       }
+
+      .fc-scroller:has(.fc-list-empty) {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
    }
 
 }
