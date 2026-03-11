@@ -53,7 +53,7 @@ final class GraphQLController extends AbstractController
     public function index(Request $request): Response
     {
         $result = GraphQL::processRequest($request);
-        if (empty($result)) {
+        if ($result === []) {
             return new JSONResponse([]);
         }
         $response_data = $result['result']->toArray();

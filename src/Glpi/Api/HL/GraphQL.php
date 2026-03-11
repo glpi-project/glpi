@@ -83,9 +83,7 @@ final class GraphQL
                 contextValue: $context,
                 fieldResolver: self::getFieldResolver($api_version),
                 validationRules: self::getValidationRules(),
-            )->setErrorsHandler(function (array $errors, callable $formatter) {
-                return array_map($formatter, $errors);
-            });
+            )->setErrorsHandler(fn(array $errors, callable $formatter) => array_map($formatter, $errors));
 
             Profiler::getInstance()->stop('GraphQL::executeQuery');
         } catch (Throwable $e) {

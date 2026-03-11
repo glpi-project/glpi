@@ -147,7 +147,7 @@ final class ObjectCache
             } else {
                 // Object cached, check for missing fields
                 $missing_fields = array_diff($fields, $cached_object->getFields());
-                if (!empty($missing_fields)) {
+                if ($missing_fields !== []) {
                     $needed[$id] = $missing_fields;
                 }
             }

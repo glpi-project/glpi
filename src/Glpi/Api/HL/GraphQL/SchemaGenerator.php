@@ -55,11 +55,9 @@ final readonly class SchemaGenerator
         Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval', Profiler::CATEGORY_HLAPI);
         $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
         Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
-        foreach ($component_schemas as $schema_name => $schema) {
+        foreach (array_keys($component_schemas) as $schema_name) {
             $query_type_config['fields'][$schema_name] = [
-                'type' => Type::listOf(function () use ($schema_name): Type {
-                    return Types::load($schema_name, $this->api_version);
-                }),
+                'type' => Type::listOf(fn(): Type => Types::load($schema_name, $this->api_version)),
                 'args' => [
                     'id' => ['type' => Type::int()],
                     'filter' => ['type' => Type::string()],

@@ -160,7 +160,7 @@ class DefaultResolvers
         return new Deferred(function () use ($schema_name, $schema, $id, &$args) {
             Profiler::getInstance()->start('GraphQL2::resolveObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
-            if (empty($to_load)) {
+            if ($to_load === []) {
                 $r = $this->object_cache->get($schema_name, $id)?->data;
                 Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
                 return $r;
@@ -212,7 +212,7 @@ class DefaultResolvers
         $executor = function () use (&$context, $source, $schema_name, $schema, $ids, &$args, $info) {
             Profiler::getInstance()->start('GraphQL2::resolveListField::executor::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
-            if (empty($to_load)) {
+            if ($to_load === []) {
                 $results = [];
                 foreach ($ids as $id) {
                     $cached_object = $this->object_cache->get($schema_name, (int) $id);
@@ -341,9 +341,7 @@ class DefaultResolvers
         }
 
         // remove all fields not in the schema (maybe they requested a field from the full schema which they cannot see) and write-only fields from selection
-        $field_selection = array_filter($field_selection, static function ($field_name) use ($schema) {
-            return array_key_exists($field_name, $schema['properties']) && !($schema['properties'][$field_name]['writeOnly'] ?? false);
-        });
+        $field_selection = array_filter($field_selection, static fn($field_name) => array_key_exists($field_name, $schema['properties']) && !($schema['properties'][$field_name]['writeOnly'] ?? false));
 
         // if any selected fields are mapped, ensure their source fields are also selected
         foreach ($field_selection as $field_name) {
@@ -365,7 +363,7 @@ class DefaultResolvers
                 if (array_key_exists('id', $schema['properties'][$field_name]['properties'])) {
                     $criteria['SELECT'][] = $search->getSelectCriteriaForProperty("{$field_name}.id", true);
                 } else {
-                    foreach ($schema['properties'][$field_name]['properties'] as $sub_field_name => $sub_field_schema) {
+                    foreach (array_keys($schema['properties'][$field_name]['properties']) as $sub_field_name) {
                         $criteria['SELECT'][] = $search->getSelectCriteriaForProperty("{$field_name}.{$sub_field_name}");
                     }
                 }
