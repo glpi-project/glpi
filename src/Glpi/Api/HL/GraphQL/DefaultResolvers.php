@@ -34,23 +34,14 @@
 
 namespace Glpi\Api\HL\GraphQL;
 
-use CartridgeItem;
-use CommonDBChild;
 use CommonDBTM;
 use DBConnection;
-use Entity;
-use ExtraVisibilityCriteria;
-use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\OpenAPIGenerator;
-use Glpi\Api\HL\RSQL\Lexer;
-use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
-use Glpi\Api\HL\Doc as Doc;
-use RuntimeException;
 
 /**
  * Default GraphQL field resolvers that use the OpenAPI schema to fetch data from the database.
@@ -63,8 +54,7 @@ class DefaultResolvers
 
     public function __construct(
         private string $api_version
-    )
-    {
+    ) {
         $this->db = DBConnection::getReadConnection();
         $this->object_cache = new ObjectCache();
     }
@@ -95,8 +85,7 @@ class DefaultResolvers
             return [$info->parentType->name . '.' . $field_name, $schema_partial];
         }
         if (!array_key_exists($schema_name, $this->schema_cache)) {
-            $this->schema_cache[$schema_name] =
-                $this->getSchemaForObjectName($schema_name);
+            $this->schema_cache[$schema_name] = $this->getSchemaForObjectName($schema_name);
         }
         $schema = $this->schema_cache[$schema_name];
 
@@ -142,11 +131,7 @@ class DefaultResolvers
             }
 
             $args['id'] = $to_load['id'];
-            $it = $this->db->request(
-                $this->getCriteriaForObject(
-                    $schema, $to_load['fields'], $args
-                )
-            );
+            $it = $this->db->request($this->getCriteriaForObject($schema, $to_load['fields'], $args));
             foreach ($it as $data) {
                 $this->object_cache->set($schema_name, $data['id'], $data);
             }
@@ -196,9 +181,7 @@ class DefaultResolvers
             } else {
                 $ids = [];
             }
-            $criteria = $this->getCriteriaForObject(
-                $schema, $to_load['fields'], $args
-            );
+            $criteria = $this->getCriteriaForObject($schema, $to_load['fields'], $args);
             $it = $this->db->request($criteria);
             foreach ($it as $data) {
                 // decode all array fields so that parsing can continue as expected

@@ -34,8 +34,6 @@
 
 namespace Glpi\Api\HL\GraphQL;
 
-use GraphQL\Deferred;
-
 /**
  * Cache for loaded objects during a GraphQL request to avoid multiple database queries for the same object.
  * If a query requests the same object but with different fields, the cached object will be merged to include all requested fields.

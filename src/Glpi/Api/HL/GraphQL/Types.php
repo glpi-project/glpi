@@ -86,7 +86,7 @@ class Types
             if (($property['format'] ?? $property['type']) === Doc\Schema::FORMAT_STRING_DATE_TIME) {
                 return [
                     'type' => $graphql_type,
-                    'resolve' => static fn ($value) => isset($value[$name]) ? date(DATE_RFC3339, strtotime($value[$name])) : null
+                    'resolve' => static fn($value) => isset($value[$name]) ? date(DATE_RFC3339, strtotime($value[$name])) : null,
                 ];
             }
             return ['type' => $graphql_type];
@@ -108,14 +108,14 @@ class Types
             if (isset($property['x-full-schema'])) {
                 $full_schema_name = $property['x-full-schema'];
                 return [
-                    'type' => static fn() => self::load($full_schema_name, $api_version)
+                    'type' => static fn() => self::load($full_schema_name, $api_version),
                 ];
             }
             return [
                 'type' => new ObjectType([
                     'name' => "_{$prefix}_{$name}",
                     'fields' => $fields,
-                ])
+                ]),
             ];
         }
         return null;

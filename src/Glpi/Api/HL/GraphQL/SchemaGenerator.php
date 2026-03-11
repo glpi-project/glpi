@@ -44,15 +44,13 @@ final class SchemaGenerator
 {
     public function __construct(
         private string $api_version
-    )
-    {
-    }
+    ) {}
 
     public function getSchema(): Schema
     {
         $query_type_config = [
             'name' => 'Query',
-            'fields' => []
+            'fields' => [],
         ];
         Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval', Profiler::CATEGORY_HLAPI);
         $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
@@ -69,7 +67,7 @@ final class SchemaGenerator
                     'limit' => ['type' => Type::int()],
                     'sort' => ['type' => Type::string()],
                     'order' => ['type' => Type::string()],
-                ]
+                ],
             ];
         }
         return new Schema([

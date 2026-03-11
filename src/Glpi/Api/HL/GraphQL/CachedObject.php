@@ -42,8 +42,7 @@ class CachedObject
 {
     public function __construct(
         public array $data = []
-    ) {
-    }
+    ) {}
 
     public function getFields(): array
     {
