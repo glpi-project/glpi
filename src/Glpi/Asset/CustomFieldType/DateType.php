@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 use InvalidArgumentException;
 
 use function Safe\preg_match;
-use function Safe\strtotime;
 
 class DateType extends AbstractType
 {
