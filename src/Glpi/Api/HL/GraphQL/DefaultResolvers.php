@@ -186,7 +186,7 @@ class DefaultResolvers
      * @return array<int, mixed>|Deferred
      * @throws Error
      */
-    public function resolveListField(mixed $source, array $args, stdClass $context, ResolveInfo $info): array|Deferred
+    public function resolveListField(mixed $source, array $args, stdClass $context, ResolveInfo $info): array|Deferred|null
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
