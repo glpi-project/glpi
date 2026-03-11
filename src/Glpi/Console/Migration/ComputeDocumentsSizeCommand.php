@@ -36,7 +36,9 @@ namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Progress\ConsoleProgressIndicator;
+use LogicException;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\filesize;
@@ -53,15 +55,17 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        if (!$output instanceof ConsoleOutputInterface) {
+            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+        }
+
         $doc_class = new \Document();
         $documents = $doc_class->find([
             'NOT' => ['filepath' => null],
             'filesize' => null,
         ]);
         $counter = count($documents);
-        if ($counter === 0) {
-            $output->writeln('<comment>' . __('No elements found.') . '</comment>');
-        } elseif ($counter > 0) {
+        if ($counter > 0) {
             $output->writeln('<comment>' . sprintf(__('Computing %s files...'), $counter) . '</comment>');
             $progress_indicator = new ConsoleProgressIndicator($output);
             $progress_indicator->setMaxSteps($counter);
@@ -76,6 +80,8 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
                 }
                 $progress_indicator->advance();
             }
+        } else {
+            $output->writeln('<comment>' . __('No elements found.') . '</comment>');
         }
         return self::SUCCESS;
     }
