@@ -10191,5 +10191,4 @@ HTML,
 
         $this->checkActors($ticket, []);
     }
-
 }
