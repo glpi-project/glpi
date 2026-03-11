@@ -7956,16 +7956,22 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Returns criteria that can be used to get documents related to current instance.
      *
-     * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
-     * @FIXME uncomment @param User|null $user           User for rights checking (default: null = current session rights)
+     * @param bool      $bypass_rights                  Whether to bypass rights checks (default: false)
+     * @FIXME uncomment @param User|null $user          User for rights checking (default: null = current session rights)
+     * @FIXME uncomment @param bool $for_anonymous_user Whether the user is an anonymous requester (default: false)
      *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false/*, ?User $user = null*/): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false/*, ?User $user = null, bool $for_anonymous_user = false*/): array
     {
         $user = null;
-        if (func_num_args() == 2) {
+        if (func_num_args() >= 2) {
             $user = func_get_arg(1);
+        }
+
+        $for_anonymous_user = false;
+        if (func_num_args() >= 3) {
+            $for_anonymous_user = (bool) func_get_arg(2);
         }
 
         $user_id = $user ? $user->getID() : Session::getLoginUserID();
@@ -8000,19 +8006,19 @@ abstract class CommonITILObject extends CommonDBTM
             $bypass_rights ||
             ITILFollowup::canView() ||
             (
+                !$for_anonymous_user &&
                 $user !== null &&
-                !$user->isNewItem() &&
                 $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
                 $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC, $this->fields['entities_id'])
             ) ||
-            ($user !== null && $user->isNewItem()) // anonymous user
+            $for_anonymous_user // anonymous user
         ) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
             if (!$bypass_rights) {
-                if ($user !== null && $user->isNewItem()) {
+                if ($for_anonymous_user) {
                     // Anonymous user: can only see public followups
                     $fup_crits[] = ['is_private' => 0];
                 } else {
@@ -8048,11 +8054,11 @@ abstract class CommonITILObject extends CommonDBTM
             $bypass_rights ||
             ITILSolution::canView() ||
             (
+                !$for_anonymous_user &&
                 $user !== null &&
-                !$user->isNewItem() &&
                 $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
             ) ||
-            ($user !== null && $user->isNewItem()) // anonymous user
+            $for_anonymous_user // anonymous user
         ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
@@ -8116,18 +8122,18 @@ abstract class CommonITILObject extends CommonDBTM
             $bypass_rights ||
             $task_class::canView() ||
             (
+                !$for_anonymous_user &&
                 $user !== null &&
-                !$user->isNewItem() &&
                 $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
                 $user->hasRight($task_class::$rightname, $task_class::SEEPUBLIC, $this->fields['entities_id'])
             ) ||
-            ($user !== null && $user->isNewItem()) // anonymous user
+            $for_anonymous_user // anonymous user
         ) {
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
             if (!$bypass_rights) {
-                if ($user !== null && $user->isNewItem()) {
+                if ($for_anonymous_user) {
                     // Anonymous user: can only see public tasks
                     $tasks_crit[] = ['is_private' => 0];
                 } else {

@@ -8555,7 +8555,7 @@ HTML,
         $this->assertNotContains($doc3->getID(), $found_docs);
 
         // Anonymous user can't see documents linked to private followups
-        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, new User());
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, null, true);
         $doc_crit[] = [
             'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
         ];
@@ -8722,17 +8722,14 @@ HTML,
         $this->login();
 
         // Get the test user (or anonymous)
-        if ($test_user !== null) {
-            $user = getItemByTypeName(User::class, $test_user, false);
-        } else {
-            $user = new User(); // anonymous user (not in DB)
-        }
+        $user = $test_user !== null ? getItemByTypeName(User::class, $test_user, false) : null;
+        $is_anonymous = ($test_user === null);
 
         $parent_item = $this->createItem($parent_itil_itemtype, [
             'name'               => 'ITIL Object test',
             'content'            => 'test',
             'entities_id'        => $this->getTestRootEntity(true),
-            '_users_id_requester' => $user->isNewItem() ? 0 : $user->getID(),
+            '_users_id_requester' => $is_anonymous ? 0 : $user->getID(),
         ]);
 
         // Create a document linked directly to the parent item (ticket/change/problem)
@@ -8784,7 +8781,7 @@ HTML,
             $timeline_item = $this->createItem($timeline_item_type, [
                 $fk_field            => $parent_item->getID(),
                 'comment_submission' => 'Validation request with document',
-                'users_id_validate'  => $user->isNewItem() ? Session::getLoginUserID() : $user->getID(),
+                'users_id_validate'  => $is_anonymous ? Session::getLoginUserID() : $user->getID(),
             ]);
             $doc_timeline = $this->createItem(\Document::class, [
                 'name' => 'Doc: linked to ticket validation',
@@ -8800,7 +8797,7 @@ HTML,
         ]);
 
         // First verify with active session
-        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $is_anonymous ? null : $user, $is_anonymous);
         $doc_items_iterator = $DB->request([
             'SELECT' => ['documents_id'],
             'FROM'   => \Document_Item::getTable(),
@@ -8838,7 +8835,7 @@ HTML,
         $parent_item->getFromDB($parent_item->getID());
 
         // Test that documents visibility is consistent without session
-        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $is_anonymous ? null : $user, $is_anonymous);
         $doc_items_iterator = $DB->request([
             'SELECT' => ['documents_id'],
             'FROM'   => \Document_Item::getTable(),
