@@ -38,6 +38,9 @@ use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Search;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
@@ -162,7 +165,7 @@ class DefaultResolvers
             $this->object_cache->add($schema_name, (int) $id, $fields_requested);
         }
 
-        $executor = function () use ($source, $schema_name, $schema, $ids, &$args) {
+        $executor = function () use (&$context, $source, $schema_name, $schema, $ids, &$args, $info) {
             Profiler::getInstance()->start('GraphQL2::resolveListField::executor::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
             if (empty($to_load)) {
@@ -199,6 +202,20 @@ class DefaultResolvers
                 if ($source === null) {
                     $ids[] = $data['id'];
                 }
+            }
+
+            if ($source === null) {
+                // Add total count to the context for pagination purposes
+                $count_it = $this->db->request($this->getCountCriteriaFromCriteria($criteria));
+                $total_count = $count_it->current()['count'] ?? 0;
+                if (!isset($context->pagination)) {
+                    $context->pagination = [];
+                }
+                $context->pagination[$info->path[0]] = [
+                    'start' => $args['start'] ?? 0,
+                    'limit' => $args['limit'] ?? count($ids),
+                    'total_count' => $total_count
+                ];
             }
 
             $results = [];
@@ -322,5 +339,24 @@ class DefaultResolvers
         Profiler::getInstance()->stop('GraphQL2::getCriteriaForObject');
 
         return $criteria;
+    }
+
+    private function getCountCriteriaFromCriteria(array $criteria): array
+    {
+        $count_criteria = $criteria;
+        if (!array_key_exists('HAVING', $count_criteria) || empty($count_criteria['HAVING'])) {
+            $table_alias = '_';
+            unset($count_criteria['GROUPBY'], $count_criteria['ORDERBY']);
+        } else {
+            // Some queries may use HAVING to filter on computed fields so the main query must be done as a subquery and then count that
+            $table_alias = 'subquery_count';
+            $subquery_criteria = new QuerySubQuery($count_criteria, 'subquery_count');
+            $count_criteria = [
+                'FROM' => $subquery_criteria,
+            ];
+        }
+        $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+        $count_criteria['SELECT'] = $count_select;
+        return $count_criteria;
     }
 }

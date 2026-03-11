@@ -83,7 +83,6 @@ final class ObjectCache
      */
     public function get(string $schema_name, int $id): ?CachedObject
     {
-        //TODO What if only some fields are requested for this specific case?
         return $this->objects[$schema_name][$id] ?? null;
     }
 

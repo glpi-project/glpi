@@ -39,6 +39,7 @@ use Glpi\Api\HL\GraphQL\DefaultResolvers;
 use Glpi\Api\HL\GraphQL\SchemaGenerator;
 use Glpi\Debug\Profiler;
 use Glpi\Http\Request;
+use GraphQL\Executor\ExecutionResult;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -46,6 +47,7 @@ use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\QueryComplexity;
 use GraphQL\Validator\Rules\QueryDepth;
 use Throwable;
+use stdClass;
 
 use function Safe\json_decode;
 
@@ -55,8 +57,11 @@ final class GraphQL
      * Maximum depth of fields in the query that will be recognized.
      */
     public const MAX_QUERY_FIELD_DEPTH = 15;
-    private static $resolver_time = 0;
 
+    /**
+     * @param Request $request
+     * @return array{result: ExecutionResult, context: stdClass}
+     */
     public static function processRequest(Request $request): array
     {
         $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
@@ -71,9 +76,11 @@ final class GraphQL
             $schema = $schema_generator->getSchema();
             Profiler::getInstance()->stop('GraphQL::getSchema');
             //TODO Need to re-add pagination response headers
+            $context = new stdClass();
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: $schema,
                 source: $query,
+                contextValue: $context,
                 fieldResolver: self::getFieldResolver($api_version),
                 validationRules: self::getValidationRules(),
             )->setErrorsHandler(function (array $errors, callable $formatter) {
@@ -92,7 +99,7 @@ final class GraphQL
         } finally {
             Profiler::getInstance()->stop('GraphQL::processRequest');
         }
-        return $result->toArray();
+        return ['result' => $result, 'context' => $context];
     }
 
     private static function getFieldResolver(string $api_version): ?callable
@@ -110,7 +117,6 @@ final class GraphQL
             } else {
                 $resolved = $default_resolvers->resolveObjectField($source, $args, $context, $info);
             }
-            self::$resolver_time += microtime(true) - $start_time;
             return $resolved;
         };
     }
