@@ -259,4 +259,184 @@ class RuleRightTest extends DbTestCase
         $user->getFromDBByName(TU_USER);
         $this->assertEquals('fr_FR', $user->getField('language'));
     }
+
+    public function testAssignGroupByRegexResult()
+    {
+        $group = $this->createItem(\Group::class, [
+            'name' => '_test_user_group_rule',
+            'entities_id' => 0,
+        ]);
+
+        $rule = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/(.*)/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => '#0_group_rule',
+        ]);
+
+        $user = new \User();
+        $user->getFromDBByName(TU_USER);
+        $users_id = $user->getID();
+
+        $group_user = new \Group_User();
+        $this->assertFalse(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group->getID(),
+            ])
+        );
+
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        $this->assertTrue(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group->getID(),
+                'is_dynamic' => 1,
+            ])
+        );
+    }
+
+    public function testAssignMultipleGroupsByRegexResult()
+    {
+        $group1 = $this->createItem(\Group::class, [
+            'name' => '_test_user_group_rule_alpha',
+            'entities_id' => 0,
+        ]);
+        $group2 = $this->createItem(\Group::class, [
+            'name' => '_test_user_group_rule_beta',
+            'entities_id' => 0,
+        ]);
+
+        $rule1 = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__ . '_alpha',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule1->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.+)$/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule1->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => '#0_group_rule_alpha',
+        ]);
+
+        $rule2 = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__ . '_beta',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule2->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.+)$/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule2->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => '#0_group_rule_beta',
+        ]);
+
+        $user = new \User();
+        $user->getFromDBByName(TU_USER);
+        $users_id = $user->getID();
+
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        $group_user = new \Group_User();
+        $this->assertTrue(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group1->getID(),
+                'is_dynamic' => 1,
+            ])
+        );
+        $this->assertTrue(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group2->getID(),
+                'is_dynamic' => 1,
+            ])
+        );
+    }
+
+    public function testAssignGroupByRegexResultNoMatch()
+    {
+        $rule = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.+)$/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => 'nonexistent_group_#0',
+        ]);
+
+        $user = new \User();
+        $user->getFromDBByName(TU_USER);
+        $users_id = $user->getID();
+
+        $groups_before = countElementsInTable(\Group_User::getTable(), [
+            'users_id'   => $users_id,
+            'is_dynamic' => 1,
+        ]);
+
+        \SingletonRuleList::getInstance("RuleRight", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleRight", 0)->list = [];
+
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        $groups_after = countElementsInTable(\Group_User::getTable(), [
+            'users_id'   => $users_id,
+            'is_dynamic' => 1,
+        ]);
+
+        $this->assertEquals($groups_before, $groups_after);
+    }
 }
