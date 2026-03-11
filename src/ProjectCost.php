@@ -380,7 +380,7 @@ class ProjectCost extends CommonDBChild
                 printf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
-                    Html::showToolTip(htmlescape($data['comment']), ['display' => false])
+                    !empty($data['comment']) ? Html::showToolTip(htmlescape($data['comment']), ['display' => false]) : ''
                 );
                 if ($canedit) {
                     $js = "function viewEditCost" . $project_id . "_" . $cost_id . "_$rand() {";
