@@ -305,6 +305,8 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'toobserve' => "dropdown_projects_id$rand",
                     'toupdate' => [
                         "id" => "results_projects$rand",
+                        "itemtype" => ProjectTask::class,
+                        "params" => [],
                     ],
                     'url' => $CFG_GLPI["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
                     'params' => $p,
