@@ -40,11 +40,14 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
+use function Safe\strtotime;
+
 class Types
 {
+    /** @var array<string, Type> */
     private static array $types = [];
 
-    public static function load(string $type_name, string $api_version)
+    public static function load(string $type_name, string $api_version): Type
     {
         if (!isset(self::$types[$type_name])) {
             $schemas = OpenAPIGenerator::getComponentSchemas($api_version);
@@ -53,6 +56,12 @@ class Types
         return self::$types[$type_name];
     }
 
+    /**
+     * @param string $schema_name
+     * @param array<string, mixed> $schema
+     * @param string $api_version
+     * @return ObjectType
+     */
     private static function convertRESTSchemaToGraphQLSchema(string $schema_name, array $schema, string $api_version): ObjectType
     {
         $fields = [];
@@ -66,7 +75,7 @@ class Types
     }
 
     /**
-     * @param array $property
+     * @param array<string, mixed> $property
      * @param string|null $name
      * @param string $prefix
      * @param string $api_version
@@ -96,6 +105,9 @@ class Types
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
             $graphql_type = self::convertRESTPropertyToGraphQLType($items, $name, $prefix, $api_version);
+            if ($graphql_type === null) {
+                return null;
+            }
             return ['type' => new ListOfType($graphql_type['type'])];
         }
 

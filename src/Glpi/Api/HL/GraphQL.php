@@ -46,8 +46,9 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Validator\DocumentValidator;
 use GraphQL\Validator\Rules\QueryComplexity;
 use GraphQL\Validator\Rules\QueryDepth;
-use Throwable;
+use GraphQL\Validator\Rules\ValidationRule;
 use stdClass;
+use Throwable;
 
 use function Safe\json_decode;
 
@@ -60,7 +61,7 @@ final class GraphQL
 
     /**
      * @param Request $request
-     * @return array{result: ExecutionResult, context: stdClass}
+     * @return array{result: ExecutionResult, context: stdClass}|array{}
      */
     public static function processRequest(Request $request): array
     {
@@ -102,11 +103,10 @@ final class GraphQL
         return ['result' => $result, 'context' => $context];
     }
 
-    private static function getFieldResolver(string $api_version): ?callable
+    private static function getFieldResolver(string $api_version): callable
     {
         $default_resolvers = new DefaultResolvers($api_version);
         return static function ($source, $args, $context, ResolveInfo $info) use ($default_resolvers) {
-            $start_time = microtime(true);
             $field_type = $info->returnType;
             $is_scalar = !($field_type instanceof ObjectType || $field_type instanceof ListOfType);
 
@@ -121,6 +121,9 @@ final class GraphQL
         };
     }
 
+    /**
+     * @return ValidationRule[]
+     */
     private static function getValidationRules(): array
     {
         $rules = [

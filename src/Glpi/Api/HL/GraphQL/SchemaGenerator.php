@@ -40,7 +40,7 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
-final class SchemaGenerator
+final readonly class SchemaGenerator
 {
     public function __construct(
         private string $api_version
@@ -57,7 +57,7 @@ final class SchemaGenerator
         Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
         foreach ($component_schemas as $schema_name => $schema) {
             $query_type_config['fields'][$schema_name] = [
-                'type' => Type::listOf(function () use ($schema_name) {
+                'type' => Type::listOf(function () use ($schema_name): Type {
                     return Types::load($schema_name, $this->api_version);
                 }),
                 'args' => [

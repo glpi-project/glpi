@@ -38,13 +38,15 @@ use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Search;
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
+use stdClass;
+
+use function Safe\json_decode;
 
 /**
  * Default GraphQL field resolvers that use the OpenAPI schema to fetch data from the database.
@@ -53,6 +55,7 @@ class DefaultResolvers
 {
     private \DBmysql $db;
     private ObjectCache $object_cache;
+    /** @var array<string, array<string, mixed>> */
     private array $schema_cache = [];
 
     public function __construct(
@@ -62,7 +65,11 @@ class DefaultResolvers
         $this->object_cache = new ObjectCache();
     }
 
-    private function getSchemaForObjectName($name)
+    /**
+     * @param string $name
+     * @return array<string, mixed>|null
+     */
+    private function getSchemaForObjectName(string $name): ?array
     {
         return OpenAPIGenerator::getComponentSchemas($this->api_version)[$name] ?? null;
     }
@@ -70,12 +77,16 @@ class DefaultResolvers
     /**
      * @param string $field_name
      * @param ResolveInfo $info
-     * @return array{0: string, 1: array} Tuple of schema name and schema array
+     * @return array{0: string, 1: array<string, mixed>|null} Tuple of schema name and schema array
      */
     private function getSchemaNameAndSchemaForField(string $field_name, ResolveInfo $info): array
     {
         if (!array_key_exists($info->parentType->name, $this->schema_cache)) {
-            $this->schema_cache[$info->parentType->name] = $this->getSchemaForObjectName($info->parentType->name);
+            $schema = $this->getSchemaForObjectName($info->parentType->name);
+             if ($schema === null) {
+                return [$info->parentType->name, null];
+            }
+            $this->schema_cache[$info->parentType->name] = $schema;
         }
         $parent_schema = $this->schema_cache[$info->parentType->name];
         $schema_partial = $parent_schema['properties'][$field_name]['items'] ?? $parent_schema['properties'][$field_name];
@@ -88,14 +99,25 @@ class DefaultResolvers
             return [$info->parentType->name . '.' . $field_name, $schema_partial];
         }
         if (!array_key_exists($schema_name, $this->schema_cache)) {
-            $this->schema_cache[$schema_name] = $this->getSchemaForObjectName($schema_name);
+            $schema = $this->getSchemaForObjectName($schema_name);
+            if ($schema === null) {
+                return [$schema_name, null];
+            }
+            $this->schema_cache[$schema_name] = $schema;
         }
         $schema = $this->schema_cache[$schema_name];
 
         return [$schema_name, $schema];
     }
 
-    public function resolveObjectField($source, $args, $context, ResolveInfo $info)
+    /**
+     * @param mixed $source
+     * @param array<string, mixed> $args
+     * @param object $context
+     * @param ResolveInfo $info
+     * @return array<string, mixed>|Deferred|null
+     */
+    public function resolveObjectField(mixed $source, array $args, object $context, ResolveInfo $info): array|Deferred|null
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
@@ -103,6 +125,10 @@ class DefaultResolvers
         if (!is_numeric($id)) {
             //See State Visibilities for example why this can happen
             $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
+            if ($parent_schema === null) {
+                // no parent schema, return as is and let GraphQL handle it
+                return $source[$field_name] ?? null;
+            }
             $joined_values = [];
             if (!array_key_exists('x-itemtype', $parent_schema['properties'][$field_name])) {
                 foreach ($source as $source_field_name => $source_field_value) {
@@ -114,12 +140,16 @@ class DefaultResolvers
             }
             return $joined_values ?: null;
         }
+        $id = (int) $id;
 
         [$schema_name, $schema] = $this->getSchemaNameAndSchemaForField($field_name, $info);
+        if ($schema === null) {
+            throw new Error('Unable to resolve field "' . $field_name . '": schema not found');
+        }
         $needed = $this->object_cache->getNeeded($schema_name, [$id], $fields_requested);
         if ($needed === []) {
             // Object is already cached with all requested fields
-            return $this->object_cache->get($schema_name, $id)->data;
+            return $this->object_cache->get($schema_name, $id)?->data;
         }
         $fields_requested = $needed[$id];
 
@@ -128,7 +158,7 @@ class DefaultResolvers
             Profiler::getInstance()->start('GraphQL2::resolveObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
             $to_load = $this->object_cache->getPending($schema_name);
             if (empty($to_load)) {
-                $r = $this->object_cache->get($schema_name, $id)?->data ?? null;
+                $r = $this->object_cache->get($schema_name, $id)?->data;
                 Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
                 return $r;
             }
@@ -139,13 +169,21 @@ class DefaultResolvers
                 $this->object_cache->set($schema_name, $data['id'], $data);
             }
 
-            $r = $this->object_cache->get($schema_name, $id)?->data ?? null;
+            $r = $this->object_cache->get($schema_name, $id)?->data;
             Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
             return $r;
         });
     }
 
-    public function resolveListField($source, $args, $context, ResolveInfo $info)
+    /**
+     * @param mixed $source
+     * @param array<string, mixed> $args
+     * @param stdClass $context
+     * @param ResolveInfo $info
+     * @return array<int, mixed>|Deferred
+     * @throws Error
+     */
+    public function resolveListField(mixed $source, array $args, stdClass $context, ResolveInfo $info): array|Deferred
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
@@ -156,6 +194,9 @@ class DefaultResolvers
             $schema = $this->getSchemaForObjectName($schema_name);
         } else {
             [$schema_name, $schema] = $this->getSchemaNameAndSchemaForField($field_name, $info);
+        }
+        if ($schema === null) {
+            throw new Error('Unable to resolve field "' . $field_name . '": schema not found');
         }
         if (array_key_exists('x-mapper', $schema)) {
             return $source[$field_name];
@@ -208,13 +249,13 @@ class DefaultResolvers
                 // Add total count to the context for pagination purposes
                 $count_it = $this->db->request($this->getCountCriteriaFromCriteria($criteria));
                 $total_count = $count_it->current()['count'] ?? 0;
-                if (!isset($context->pagination)) {
+                if (!property_exists($context, 'pagination')) {
                     $context->pagination = [];
                 }
                 $context->pagination[$info->path[0]] = [
                     'start' => $args['start'] ?? 0,
                     'limit' => $args['limit'] ?? count($ids),
-                    'total_count' => $total_count
+                    'total_count' => $total_count,
                 ];
             }
 
@@ -235,10 +276,21 @@ class DefaultResolvers
         return $executor();
     }
 
-    public function resolveScalarField($source, $args, $context, ResolveInfo $info)
+    /**
+     * @param mixed $source
+     * @param array<string, mixed> $args
+     * @param object $context
+     * @param ResolveInfo $info
+     * @return mixed
+     */
+    public function resolveScalarField(mixed $source, array $args, object $context, ResolveInfo $info): mixed
     {
         $field_name = $info->fieldName;
         $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
+        if ($parent_schema === null) {
+            // no parent schema, return as is and let GraphQL handle it
+            return $source[$field_name] ?? null;
+        }
 
         // handle mapped fields
         if ($parent_schema['properties'][$field_name]['x-mapper'] ?? false) {
@@ -255,6 +307,16 @@ class DefaultResolvers
         return $source[$field_name];
     }
 
+    /**
+     * @param array<string, mixed> $schema
+     * @param string[] $field_selection
+     * @param array<string, mixed> $request_params
+     * @return array<string, mixed>
+     * @throws Error
+     * @throws \Glpi\Api\HL\APIException
+     * @throws \Glpi\Api\HL\RSQL\RSQLException
+     * @throws \Glpi\Api\HL\RightConditionNotMetException
+     */
     private function getCriteriaForObject(array $schema, array $field_selection, array $request_params): array
     {
         Profiler::getInstance()->start('GraphQL2::getCriteriaForObject', Profiler::CATEGORY_HLAPI);
@@ -341,6 +403,10 @@ class DefaultResolvers
         return $criteria;
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     * @return array<string, mixed>|QuerySubQuery[]
+     */
     private function getCountCriteriaFromCriteria(array $criteria): array
     {
         $count_criteria = $criteria;

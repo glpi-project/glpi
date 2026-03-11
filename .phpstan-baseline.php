@@ -6812,18 +6812,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Glpi\\\\Api\\\\HL\\\\GraphQL\\:\\:hideOrRemoveProperty\\(\\) expects class\\-string\\<CommonDBTM\\>\\|null, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_subclass_of expects object\\|string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method withHeader\\(\\) on Glpi\\\\Http\\\\Response\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -7078,12 +7066,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method maybeRecursive\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Search\\:\\:getSearchCriteria\\(\\) should return array\\<array\\> but returns array\\<array\\|int\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];

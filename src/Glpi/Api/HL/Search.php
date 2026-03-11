@@ -91,6 +91,7 @@ final class Search
     private Parser $rsql_parser;
     private SearchContext $context;
     private DBmysql $db_read;
+    /** @var array<string, string> */
     private array $sql_field_cache = [];
 
     public function __construct(array $schema, array $request_params)
@@ -277,8 +278,8 @@ final class Search
     /**
      * Get all JOIN clauses for the specified join definition
      * @param string $join_alias The alias/name for the join
-     * @param array $join_definition The join definition
-     * @return array JOIN clauses in array format used bt {@link \DBmysqlIterator}
+     * @param array{type?: string, 'ref-join'?: array<string, mixed>, table: string, join_parent?: string, field?: string, fkey?: string, condition?: array<string, mixed>} $join_definition The join definition
+     * @return array<string, mixed> JOIN clauses in array format used bt {@link \DBmysqlIterator}
      */
     public function getJoins(string $join_alias, array $join_definition): array
     {
@@ -379,6 +380,10 @@ final class Search
         return $criteria;
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     * @return void
+     */
     public function addJoinsCriteria(array &$criteria): void
     {
         foreach ($this->context->getJoins() as $join_alias => $join_definition) {
@@ -392,7 +397,12 @@ final class Search
         }
     }
 
-    public function addRSQLCriteria(&$criteria): void
+    /**
+     * @param array<string, mixed> $criteria
+     * @return void
+     * @throws RSQLException
+     */
+    public function addRSQLCriteria(array &$criteria): void
     {
         if (!empty($this->context->getRequestParameter('filter'))) {
             $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->context->getRequestParameter('filter')));
@@ -408,6 +418,10 @@ final class Search
         }
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     * @return void
+     */
     public function addVisibilityCriteria(array &$criteria): void
     {
         if (!$this->context->isUnionSearchMode()) {
@@ -504,6 +518,10 @@ final class Search
         }
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     * @return void
+     */
     public function addPaginationCriteria(array &$criteria): void
     {
         $start = $this->context->getRequestParameter('start');
@@ -516,6 +534,11 @@ final class Search
         }
     }
 
+    /**
+     * @param array<string, mixed> $criteria
+     * @return void
+     * @throws APIException
+     */
     public function addSortingCriteria(array &$criteria): void
     {
         $sort = $this->context->getRequestParameter('sort');

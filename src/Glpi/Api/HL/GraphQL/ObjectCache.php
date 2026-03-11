@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\GraphQL;
 /**
  * Cache for loaded objects during a GraphQL request to avoid multiple database queries for the same object.
  * If a query requests the same object but with different fields, the cached object will be merged to include all requested fields.
+ * @phpstan-type RequestedObjects array{id: int[], fields: string[]}
  */
 final class ObjectCache
 {
@@ -46,10 +47,20 @@ final class ObjectCache
     private array $objects = [];
 
     /**
-     * @var array<string, array{id: int[], fields: array}> Queue of pending requests for objects
+     * @var array<string, RequestedObjects> Queue of pending requests for objects
      */
     private array $request_queue = [];
 
+    /**
+     * Add a request for an object to the queue.
+     * If the same object ID is requested multiple times with different fields, the fields will be merged to include all requested fields.
+     *
+     * @param string    $schema_name The schema name
+     * @param int       $id          The object ID
+     * @param string[]  $fields      The list of fields requested for this object
+     *
+     * @return void
+     */
     public function add(string $schema_name, int $id, array $fields): void
     {
         if (!isset($this->request_queue[$schema_name])) {
@@ -64,6 +75,15 @@ final class ObjectCache
         ));
     }
 
+    /**
+     * Get the pending requests for a given schema name.
+     *
+     * @param string $schema_name The schema name
+     * @param bool   $clear       Whether to clear the pending requests after retrieving them (default: true)
+     *
+     * @return array The pending requests for the given schema name
+     * @phpstan-return RequestedObjects|array{}
+     */
     public function getPending(string $schema_name, bool $clear = true): array
     {
         $result = $this->request_queue[$schema_name] ?? [];
@@ -90,9 +110,9 @@ final class ObjectCache
      * Store a cached object.
      * If the object already exists in the cache, merge the data to include all fields.
      *
-     * @param string       $schema_name The schema name
-     * @param int          $id          The object ID
-     * @param array        $data        The object data to cache
+     * @param string                $schema_name The schema name
+     * @param int                   $id          The object ID
+     * @param array<string, mixed>  $data        The object data to cache
      *
      * @return void
      */
@@ -114,9 +134,9 @@ final class ObjectCache
      * @param string $schema_name The schema name
      * @param array<int> $ids     The list of object IDs to check
      * @param array<string> $fields The list of fields requested
-     * @return array<int, array> An array where the keys are object IDs that need to be loaded, and the values are arrays of additional fields needed (if not cached, all fields returned).
+     * @return array<int, string[]> An array where the keys are object IDs that need to be loaded, and the values are arrays of additional fields needed (if not cached, all fields returned).
      */
-    public function getNeeded(string $schema_name, array $ids, array $fields)
+    public function getNeeded(string $schema_name, array $ids, array $fields): array
     {
         $needed = [];
         foreach ($ids as $id) {

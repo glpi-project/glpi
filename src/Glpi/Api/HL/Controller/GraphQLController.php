@@ -53,6 +53,9 @@ final class GraphQLController extends AbstractController
     public function index(Request $request): Response
     {
         $result = GraphQL::processRequest($request);
+        if (empty($result)) {
+            return new Response(500, [], 'An error occurred while processing the GraphQL request.');
+        }
         $response_data = $result['result']->toArray();
         $headers = [];
         if (isset($result['context']->pagination)) {
