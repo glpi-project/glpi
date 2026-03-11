@@ -67,7 +67,7 @@ $break_tablet: 1400px;
     }
 }
 
-@container miniDashboardGrid (min-width: 100px) {
+@container mini-dashboard-grid (min-width: 100px) {
     .grid-stack {
         min-height: calc((100cqw / var(--gs-col-count)) * (var(--gs-row-count) + 1));
     }
@@ -90,7 +90,7 @@ $break_tablet: 1400px;
         margin-bottom: -45px !important;
         z-index: 1;
         box-sizing: content-box;
-        container-name: miniDashboardGrid;
+        container-name: mini-dashboard-grid;
         container-type: inline-size;
 
         & + .search_page {
