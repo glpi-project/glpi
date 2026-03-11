@@ -9543,6 +9543,25 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             // Search for added/updated actors
             $existings = $this->getActorsForType($actor_type_value);
+
+            // When a business rule uses the "assign" action on a group actor field, the rule
+            // engine flags the field in $this->input["_rule_replace_actor_groups"]. When that
+            // flag is present we delete existing Group actors of this type before adding the new
+            // one, so the assignment REPLACES rather than APPENDS.
+            // See: https://github.com/glpi-project/glpi/issues/17739
+            if (
+                isset($this->input["_rule_replace_actor_groups"])
+                && in_array("_groups_id_" . $actor_type, $this->input["_rule_replace_actor_groups"])
+            ) {
+                foreach ($existings as $existing) {
+                    if ($existing["itemtype"] === Group::class) {
+                        $actor_obj = $this->getActorObjectForItem(Group::class);
+                        $actor_obj->delete(["id" => $existing["id"]]);
+                    }
+                }
+                $existings = $this->getActorsForType($actor_type_value); // reload after deletion
+            }
+
             $added     = [];
             $updated   = [];
 
