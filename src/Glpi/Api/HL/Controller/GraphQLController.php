@@ -54,7 +54,7 @@ final class GraphQLController extends AbstractController
     {
         $result = GraphQL::processRequest($request);
         if (empty($result)) {
-            return new Response(500, [], 'An error occurred while processing the GraphQL request.');
+            return new JSONResponse([]);
         }
         $response_data = $result['result']->toArray();
         $headers = [];

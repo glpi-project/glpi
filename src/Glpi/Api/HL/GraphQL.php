@@ -76,7 +76,6 @@ final class GraphQL
             $schema_generator = new SchemaGenerator($api_version);
             $schema = $schema_generator->getSchema();
             Profiler::getInstance()->stop('GraphQL::getSchema');
-            //TODO Need to re-add pagination response headers
             $context = new stdClass();
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: $schema,

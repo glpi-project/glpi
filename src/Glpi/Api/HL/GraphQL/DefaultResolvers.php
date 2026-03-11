@@ -36,7 +36,10 @@ namespace Glpi\Api\HL\GraphQL;
 
 use CommonDBTM;
 use DBConnection;
+use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\RightConditionNotMetException;
+use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
@@ -83,7 +86,7 @@ class DefaultResolvers
     {
         if (!array_key_exists($info->parentType->name, $this->schema_cache)) {
             $schema = $this->getSchemaForObjectName($info->parentType->name);
-             if ($schema === null) {
+            if ($schema === null) {
                 return [$info->parentType->name, null];
             }
             $this->schema_cache[$info->parentType->name] = $schema;
@@ -313,9 +316,9 @@ class DefaultResolvers
      * @param array<string, mixed> $request_params
      * @return array<string, mixed>
      * @throws Error
-     * @throws \Glpi\Api\HL\APIException
-     * @throws \Glpi\Api\HL\RSQL\RSQLException
-     * @throws \Glpi\Api\HL\RightConditionNotMetException
+     * @throws APIException
+     * @throws RSQLException
+     * @throws RightConditionNotMetException
      */
     private function getCriteriaForObject(array $schema, array $field_selection, array $request_params): array
     {
