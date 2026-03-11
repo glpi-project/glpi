@@ -98,6 +98,18 @@
       'id': '%id%'
    }|merge(options) %}
 
+   {% if name in ['name'] %}
+        {% set current_attrs = options.additional_attributes|default({}) %}
+
+         {% if current_attrs.autocomplete is not defined %}
+            {% set options = options|merge({
+                  'additional_attributes': current_attrs|merge({
+                     'autocomplete': 'off'
+                  })
+            }) %}
+         {% endif %}
+   {% endif %}
+
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.text(name, value, options) }}

@@ -402,6 +402,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'id' => $itilobject->getID(),
             'global_validation' => static::computeValidationStatus($itilobject),
             '_from_itilvalidation' => true,
+            '_trigger' => $this,
         ];
 
         // to fix lastupdater
@@ -558,6 +559,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 'id'                    => $item->getID(),
                 'global_validation'     => static::computeValidationStatus($item),
                 '_from_itilvalidation'  => true,
+                '_trigger'              => $this,
             ];
 
             if (!$item->update($input)) {
@@ -2149,6 +2151,7 @@ HTML;
                 'id' => $itil_object->getID(),
                 'global_validation' => self::computeValidationStatus($itil_object),
                 '_from_itilvalidation' => true,
+                '_trigger' => $this,
                 '_validationsteps_id' => $validationstep_id ?? null,
             ]
         );

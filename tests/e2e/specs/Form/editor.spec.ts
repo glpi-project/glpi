@@ -155,6 +155,7 @@ test('Can create an item question', async ({ page, profile, api }) => {
     // Change question type to "Item"
     const question_type_dropdown = form.getDropdownByLabel('Question type', question);
     await form.doSetDropdownValue(question_type_dropdown, 'Item', false);
+    await expect(form.getDropdownByLabel('Select an itemtype')).toHaveText('Assets - Computers');
 
     // Save form and reload page
     await form.doSaveFormEditorAndReload();

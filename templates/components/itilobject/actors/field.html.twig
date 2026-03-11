@@ -52,7 +52,7 @@
 {% endif %}
 
 {% if not is_actor_hidden %}
-   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}"
+   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}" data-testid="select-{{ actortype }}"
         {{ required ? 'required' : '' }}>
    {% for actor in actors %}
       {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}

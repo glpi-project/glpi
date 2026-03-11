@@ -52,6 +52,7 @@ phpstan.neon
 /phpunit/files/*
 /.dump/
 /tests/js/coverage/
+.DS_Store
 
 # Playwright
 /tests/e2e/results/

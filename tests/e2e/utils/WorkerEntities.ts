@@ -40,3 +40,13 @@ export function getWorkerEntityId(): number
     // some performances).
     return test.info().parallelIndex + 2;
 }
+
+export function getWorkerUserId(): number
+{
+    return test.info().parallelIndex + 8;
+}
+
+export function getWorkerIndex(): number
+{
+    return test.info().parallelIndex + 1;
+}

@@ -59,7 +59,6 @@ export class FormImporter
         const response = await this.request.post('/Form/Import/Execute', {
             form: {
                 json: readFileSync(file_path).toString(),
-                // _glpi_csrf_token: this.cache.getCsrfToken(),
                 'replacements[0][itemtype]'      : "Entity",
                 'replacements[0][original_name]' : "Root entity",
                 'replacements[0][replacement_id]': getWorkerEntityId(),
@@ -70,22 +69,33 @@ export class FormImporter
             }
         });
 
-        // Read some informations about the imported form using the raw html
-        // response.
-        const dom = new JSDOM(await response.text());
+        const body = await response.text();
+        if (!response.ok()) {
+            throw new Error(
+                `Form import failed with status ${response.status()}: ${body.substring(0, 500)}`
+            );
+        }
+
+        const dom = new JSDOM(body);
         const link = dom.window.document.querySelector(
             'a[href^="/front/form/form.form.php?id="]'
         ) as HTMLAnchorElement;
 
+        if (link === null) {
+            throw new Error(
+                `Failed to locate link to form in response: ${body.substring(0, 500)}`
+            );
+        }
+
         const href = link.getAttribute('href');
         if (href === null) {
-            throw new Error("Failed to locate link to form");
+            throw new Error("Failed to locate href attribute on form link");
         }
 
         const url = new URL(href, 'http://localhost');
         const id = url.searchParams.get('id');
         if (id === null) {
-            throw new Error("Failed to get form id");
+            throw new Error("Failed to get form id from URL");
         }
 
         return new ImportedFormInfo(parseInt(id), href, link.text);

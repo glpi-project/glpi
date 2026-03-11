@@ -1042,7 +1042,23 @@ TWIG, $avatar_params) . $username;
                 case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = self::countForItem($item);
+                            $count = $DB->request([
+                                'COUNT'     => 'cpt',
+                                'FROM'      => self::getTable(),
+                                'LEFT JOIN' => [
+                                    User::getTable() => [
+                                        'FKEY' => [
+                                            self::getTable() => 'users_id',
+                                            User::getTable()  => 'id',
+                                        ],
+                                    ],
+                                ],
+                                'WHERE'     => [
+                                    User::getTable() . '.is_deleted'    => 0,
+                                    self::getTable() . '.profiles_id'  => $item->getID(),
+                                ],
+                            ])->current();
+                            $nb        = $count['cpt'];
                         }
                         return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }

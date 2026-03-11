@@ -1891,7 +1891,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
-        if ($tt && count($tt->mandatory)) {
+
+        if (!$tt) {
+            return $input;
+        }
+
+        $tpl_class = static::getTemplateClass();
+        $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+        $input[static::getTemplateFormFieldName()] = $tt->getID();
+
+        if (count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
             foreach ($tt->mandatory as $key => $val) {
@@ -5231,7 +5240,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
             self::ASSIGNED, self::SOLVED, Change::EVALUATION => 'circle',
             self::PLANNED => 'calendar',
-            self::ACCEPTED => 'check-circle-filled',
+            self::ACCEPTED => 'circle-check-filled',
             self::OBSERVED => 'eye',
             self::APPROVAL, Change::TEST => 'help',
             Change::QUALIFICATION => 'circle',
