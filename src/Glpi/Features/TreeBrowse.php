@@ -77,7 +77,7 @@ trait TreeBrowse
                             ? (int) $params['unpublished']
                             : 1;
 
-        $cat_item = static::getCategoryItem($itemtype);
+        $cat_item = static::getCategoryItem($itemtype); // @phpstan-ignore argument.type
         $cat_fk = $cat_item ? $cat_item::getForeignKeyField() : null;
         $initial_cat_id = ($cat_fk && isset($params[$cat_fk])) ? (int) $params[$cat_fk] : -1;
 
