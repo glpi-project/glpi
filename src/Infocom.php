@@ -2116,7 +2116,7 @@ HTML;
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
             return "<span class='red'>" . $date . "</span>";
         }
-        return $date;
+        return htmlescape($date);
     }
 
 
