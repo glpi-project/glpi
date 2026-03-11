@@ -61,17 +61,9 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (isset($input["host"]) && trim((string) $input["host"]) === '') {
-            Session::addMessageAfterRedirect(
-                htmlescape(
-                    sprintf(
-                        __('Mandatory fields are not filled. Please correct: %s'),
-                        __('Server')
-                    )
-                ),
-                false,
-                ERROR
-            );
+        // For creation: host must exist AND not be empty
+        if (!isset($input["host"]) || trim((string)$input["host"]) === '') {
+            $this->sendMandatoryMessage();
             return false;
         }
         return $input;
@@ -79,7 +71,29 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        return $this->prepareInputForAdd($input);
+        // For update: host is only validated IF it is being changed
+        if (isset($input["host"]) && trim((string)$input["host"]) === '') {
+            $this->sendMandatoryMessage();
+            return false;
+        }
+        return $input;
+    }
+
+    /**
+     * Helper to centralize the error message
+     */
+    private function sendMandatoryMessage(): void
+    {
+        Session::addMessageAfterRedirect(
+            htmlescape(
+                sprintf(
+                    __('Mandatory fields are not filled. Please correct: %s'),
+                    __('Server')
+                )
+            ),
+            false,
+            ERROR
+        );
     }
 
     /**
