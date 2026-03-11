@@ -178,7 +178,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         // Itemtype does not need re-authentication
-        if (!static::isReauthenticationRequired()) {
+        if (!static::itemTypeRequiresReauthentication()) {
             return true;
         }
 
@@ -189,16 +189,18 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * @throws RedirectException
      */
-    public function checkReAuthenticationOrRedirect(): void
+    final public static function checkReAuthenticationOrRedirect(): true
     {
-        (new ReAuthManager())->checkReAuthenticationOrRedirect();
+        static::itemTypeRequiresReauthentication() && (new ReAuthManager())->checkReAuthenticationOrRedirect();
+
+        return true;
     }
 
     /**
      * Override this method to return true in itemtypes that need re-authentication
      * @return bool
      */
-    protected static function isReauthenticationRequired(): bool
+    protected static function itemTypeRequiresReauthentication(): bool
     {
         return false;
     }
@@ -209,10 +211,11 @@ class CommonGLPI implements CommonGLPIInterface
      * @param int                  $ID    ID of the item (-1 if new item)
      * @param int                  $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
      * @param ?array<string,mixed> $input array of input data (used for adding item)
+     * @param bool                 $require_reauth set to true if re-authentication is required, false otherwise.
      *
      * @return bool
      */
-    public function can($ID, int $right, ?array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null, bool $require_reauth = false): bool
     {
         return match ($right) {
             READ => static::canView(),
@@ -240,13 +243,25 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "view" right on the itemtype.
      *
+     * Warning : a redirection try will be trigger if $require_reauth param is true a reauthentication is needed
+     *
+     * @param bool $require_reauth set to true if re-authentication is required.
+     * @throws \Glpi\Exception\RedirectException
      * @return bool
      */
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
-        return static::$rightname
-            && Session::haveRight(static::$rightname, READ)
-            && static::isUserReauthenticated();
+        $allowed = static::$rightname
+            && Session::haveRight(static::$rightname, READ);
+
+        if(!$allowed) {
+            return false;
+        }
+
+        // user is allowed to view but a reauth may be needed (may trigger a redirection)
+        $require_reauth && static::checkReAuthenticationOrRedirect();
+
+        return true;
     }
 
     /**

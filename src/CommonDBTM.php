@@ -2940,7 +2940,7 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-    public function can($ID, int $right, ?array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null, bool $require_reauth = false): bool
     {
         if (Session::isInventory()) {
             return true;
@@ -2997,11 +2997,20 @@ class CommonDBTM extends CommonGLPI
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
                 ) {
-                    return true;
+                    return true; // @todo reauth ?
                 }
-                return (static::canView() && $this->canViewItem());
+
+                $allowed = (static::canView() && $this->canViewItem());
+                if(!$allowed) {
+                    return false;
+                }
+                // redirect to re-authentication if required for this item and action
+                $require_reauth && static::checkReAuthenticationOrRedirect();
+
+                return true;
 
             case UPDATE:
+                // @todo reauth
                 // Personal item
                 if (
                     $this->isPrivate()
@@ -3012,6 +3021,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canUpdate() && $this->canUpdateItem());
 
             case DELETE:
+                // @todo reauth
                 // Personal item
                 if (
                     $this->isPrivate()
@@ -3022,6 +3032,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canDelete() && $this->canDeleteItem());
 
             case PURGE:
+                // @todo reauth
                 // Personal item
                 if (
                     $this->isPrivate()
@@ -3083,11 +3094,8 @@ class CommonDBTM extends CommonGLPI
             throw new NotFoundHttpException();
         } else {
             if (!$this->can($ID, $right, $input)) {
-                // maybe the lack of right is due to re-authentication.
-                $this->checkReAuthenticationOrRedirect();
-
                 /** @var class-string<CommonDBTM> $itemtype */
-                $itemtype = static::class;
+                $itemtype = static::getType();
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
                 $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
                 throw new AccessDeniedHttpException($info);
@@ -6531,10 +6539,7 @@ class CommonDBTM extends CommonGLPI
                 throw new NotFoundHttpException();
             }
 
-            if (!$item->can($id, READ)) {
-                // maybe the lack of right is due to re-authentication.
-                (new static())->checkReAuthenticationOrRedirect();
-
+            if (!$item->can($id, READ, require_reauth: true)) {
                 throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
             }
 

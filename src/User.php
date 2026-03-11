@@ -6724,7 +6724,7 @@ HTML;
     }
 
     #[Override]
-    public static function isReauthenticationRequired(): bool
+    public static function itemTypeRequiresReauthentication(): bool
     {
         return true;
     }
