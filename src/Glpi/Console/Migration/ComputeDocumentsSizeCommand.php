@@ -72,7 +72,16 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
             foreach ($documents as $document) {
                 $filepath = GLPI_DOC_DIR . "/" . $document['filepath'];
                 if (is_file($filepath)) {
-                    $filesize = filesize($filepath);
+                    try {
+                        $filesize = filesize($filepath);
+                    } catch (\Safe\Exceptions\FilesystemException $e) {
+                        $progress_indicator->addMessage(
+                            \Glpi\Message\MessageType::Error,
+                            sprintf(__('Unable to read the file `%s` size.'), $document['filepath'])
+                        );
+                        $progress_indicator->advance();
+                        continue;
+                    }
                     $doc_class->update([
                         'id' => $document['id'],
                         'filesize' => $filesize,
@@ -80,6 +89,8 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
                 }
                 $progress_indicator->advance();
             }
+
+            $progress_indicator->finish();
         } else {
             $output->writeln('<comment>' . __('No elements found.') . '</comment>');
         }
