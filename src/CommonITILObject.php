@@ -5240,7 +5240,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
             self::ASSIGNED, self::SOLVED, Change::EVALUATION => 'circle',
             self::PLANNED => 'calendar',
-            self::ACCEPTED => 'check-circle-filled',
+            self::ACCEPTED => 'circle-check-filled',
             self::OBSERVED => 'eye',
             self::APPROVAL, Change::TEST => 'help',
             Change::QUALIFICATION => 'circle',
