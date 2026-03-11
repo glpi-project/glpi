@@ -34,9 +34,12 @@
 
 namespace Glpi\Console\Migration;
 
+use Document;
 use Glpi\Console\AbstractCommand;
+use Glpi\Message\MessageType;
 use Glpi\Progress\ConsoleProgressIndicator;
 use LogicException;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,7 +62,7 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
             throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
 
-        $doc_class = new \Document();
+        $doc_class = new Document();
         $documents = $doc_class->find([
             'NOT' => ['filepath' => null],
             'filesize' => null,
@@ -74,9 +77,9 @@ final class ComputeDocumentsSizeCommand extends AbstractCommand
                 if (is_file($filepath)) {
                     try {
                         $filesize = filesize($filepath);
-                    } catch (\Safe\Exceptions\FilesystemException $e) {
+                    } catch (FilesystemException $e) {
                         $progress_indicator->addMessage(
-                            \Glpi\Message\MessageType::Error,
+                            MessageType::Error,
                             sprintf(__('Unable to read the file `%s` size.'), $document['filepath'])
                         );
                         $progress_indicator->advance();
