@@ -448,6 +448,7 @@ TWIG, $params);
             'rand' => $rand,
             'grid_cols' => $this->grid_cols,
             'grid_rows' => $this->grid_rows,
+            'cell_margin'   => $this->cell_margin,
             'js_params' => [
                 'mini'          => $mini,
                 'current'       => $this->current,
@@ -472,8 +473,7 @@ TWIG, $params);
                 <div class='card mb-4 d-none d-md-block dashboard-card'>
                     <div class='card-body p-2'>
             {% endif %}
-            <div class="dashboard {{ embed_class }} {{ mini_class }}" id="dashboard-{{ rand }}"
-                style="{{  mini ? 'min-height: ' ~ ((grid_rows + 1) * 40) ~ 'px;' : '' }}">
+            <div class="dashboard {{ embed_class }} {{ mini_class }}" id="dashboard-{{ rand }}">
                 <span class='glpi_logo'></span>
                 {{ toolbars|raw }}
                 {{ filters|raw }}
@@ -481,7 +481,7 @@ TWIG, $params);
                 id="grid-stack-{{ rand }}"
                 gs-column="{{ grid_cols }}"
                 gs-min-row="{{ grid_rows }}"
-                style="width: 100%">
+                style="width: 100%; --gs-col-count: {{ grid_cols }}; --gs-row-count: {{ grid_rows }}; --gs-cell-margin: {{ cell_margin }}px;">
                     {{ grid_guide|raw }}
                     {{ gridstack_items|raw }}
                 </div>

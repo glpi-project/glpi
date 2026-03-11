@@ -163,10 +163,6 @@ class GLPIDashboard {
             // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
             // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
         };
-        if (params.mini && this.context === 'core') {
-            // Force a known height so we can have a min-height on the dashboard grid to try to avoid layout shifts on the ticket search page.
-            gridstack_options.cellHeight = 40;
-        }
         this.grid = GridStack.init(gridstack_options, `#grid-stack-${options.rand}`);
 
         // set grid in static to prevent edition (unless user click on edit button)
