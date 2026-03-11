@@ -41,9 +41,9 @@ use Glpi\Application\View\TemplateRenderer;
 class AuthMail extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function getTypeName($nb = 0)
     {
@@ -184,14 +184,6 @@ class AuthMail extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * Print the auth mail form
-     *
-     * @param int $ID      ID of the item
-     * @param array   $options Options
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
     public function showForm($ID, array $options = [])
     {
         if (!$this->can($ID, UPDATE)) {
@@ -208,6 +200,7 @@ class AuthMail extends CommonDBTM
             'params'           => $options,
             'protocol_choices' => $protocol_choices,
         ]);
+        return true;
     }
 
     /**

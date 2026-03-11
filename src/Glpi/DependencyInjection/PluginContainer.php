@@ -41,7 +41,6 @@ use Plugin;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionObject;
 use RuntimeException;
-use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -190,7 +189,7 @@ class PluginContainer implements ContainerInterface
         $env = $this->kernel->getEnvironment();
         $locator = new FileLocator($this->kernel);
         $resolver = new LoaderResolver([
-            new PhpFileLoader($container, $locator, $env, class_exists(ConfigBuilderGenerator::class) ? new ConfigBuilderGenerator($this->kernel->getBuildDir()) : null),
+            new PhpFileLoader($container, $locator, $env),
             new Psr4DirectoryLoader($locator),
         ]);
 

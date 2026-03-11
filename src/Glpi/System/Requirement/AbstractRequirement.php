@@ -43,58 +43,51 @@ abstract class AbstractRequirement implements RequirementInterface
     /**
      * Flag that indicates if requirement check has already been done.
      *
-     * @var bool
      */
-    private $has_been_checked = false;
+    private bool $has_been_checked = false;
 
     /**
      * Flag that indicates if requirement is considered as optional.
      *
-     * @var bool|null
      */
-    protected $optional;
+    protected ?bool $optional = null;
 
     /**
      * Flag that indicates if requirement is recommended for security reasons.
      *
-     * @var bool|null
      */
     protected ?bool $recommended_for_security;
 
     /**
      * Flag that indicates if requirement is considered as out of context.
      *
-     * @var bool|null
      */
-    protected $out_of_context;
+    protected ?bool $out_of_context = null;
 
     /**
      * Requirement title.
      *
-     * @var string|null
      */
-    protected $title;
+    protected ?string $title = null;
 
     /**
      * Requirement description.
      *
-     * @var string|null
      */
-    protected $description;
+    protected ?string $description = null;
 
     /**
      * Flag that indicates if requirement is validated on system.
      *
-     * @var bool
      */
-    protected $validated;
+    protected bool $validated;
 
     /**
      * Requirement validation message.
      *
      * @var string[]
      */
-    protected $validation_messages = [];
+    protected array $validation_messages = [];
 
     public function __construct(
         ?string $title,

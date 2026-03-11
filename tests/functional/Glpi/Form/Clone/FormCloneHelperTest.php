@@ -107,7 +107,6 @@ use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
-use Glpi\Form\Tag\Tag;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -154,7 +153,7 @@ final class FormCloneHelperTest extends DbTestCase
 
         // Assert: the form should be cloned succesfully
         $this->assertTrue((bool) $clone->fields['is_recursive']);
-        $this->assertTrue((bool) $clone->fields['is_active']);
+        $this->assertFalse((bool) $clone->fields['is_active']);
         $this->assertTrue((bool) $clone->fields['is_deleted']);
         $this->assertTrue((bool) $clone->fields['is_draft']);
         $this->assertTrue((bool) $clone->fields['is_pinned']);

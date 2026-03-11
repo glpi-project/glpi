@@ -46,24 +46,18 @@ use function Safe\json_decode;
 
 class Dashboard extends CommonDBTM
 {
-    /** @var int */
-    protected $id      = 0;
-    /** @var string */
-    protected $key     = "";
-    /** @var string */
-    protected $title   = "";
-    /** @var bool */
-    protected $embed   = false;
+    protected int $id      = 0;
+    protected string $key     = "";
+    protected string $title   = "";
+    protected bool $embed   = false;
     /** @var ?array  */
-    protected $items   = null;
+    protected ?array $items   = null;
     /** @var ?array */
-    protected $rights  = null;
-    /** @var string */
-    protected $filters  = "";
+    protected ?array $rights  = null;
+    protected string $filters  = "";
 
-    /** @var array */
-    public static $all_dashboards = [];
-    public static $rightname = 'dashboard';
+    public static array $all_dashboards = [];
+    public static string $rightname = 'dashboard';
 
 
     public function __construct(string $dashboard_key = "")
@@ -92,9 +86,9 @@ class Dashboard extends CommonDBTM
         $loaded = true;
         if (
             $force
-            || count($this->fields) == 0
-            || $this->fields['id'] == 0
-            || strlen($this->fields['name']) == 0
+            || count($this->fields) === 0
+            || (int) $this->fields['id'] === 0
+            || $this->fields['name'] == ''
         ) {
             $loaded = $this->getFromDB($this->key);
         }

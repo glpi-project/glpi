@@ -68,8 +68,12 @@ if (isset($_POST["add"])) {
     $redirect = $track->getFormURLWithID($fup->getField('items_id'));
     $handled = true;
 } elseif (
-    isset($_POST['add_close'])
-           || isset($_POST['add_reopen'])
+    (
+        isset($_POST['add_close'])
+        || isset($_POST['add_reopen'])
+    )
+    && !isset($_POST['update'])
+    && empty($_POST['id'])
 ) {
     if ($track->getFromDB($_POST['items_id']) && (method_exists($track, 'canApprove') && $track->canApprove())) {
         $fup->add($_POST);

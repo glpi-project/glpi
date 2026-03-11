@@ -207,25 +207,32 @@ export class GlpiFormRendererController
                 }
 
                 // Find the input field within the question
+                let has_input_field = true;
                 const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
                 if (!inputFields.length) {
-                    return;
+                    has_input_field = false;
                 }
 
                 // Generate a unique ID for the error message
                 const errorId = `error-${error.question_id}`;
 
                 // Add validation classes and accessibility attributes to all inputs
-                inputFields
-                    .addClass('is-invalid')
-                    .attr('aria-invalid', 'true')
-                    .attr('aria-errormessage', errorId);
+                if (has_input_field) {
+                    inputFields
+                        .addClass('is-invalid')
+                        .attr('aria-invalid', 'true')
+                        .attr('aria-errormessage', errorId);
+                }
 
                 // Add a tooltip with the error message
                 let targetElement;
                 let position = "append";
                 let extra_class = "";
-                if (inputFields.filter('.is-flatpicker').length > 0) {
+                if (!has_input_field) {
+                    // Specific instructions for file upload
+                    targetElement = question;
+                    extra_class = "d-block";
+                } else if (inputFields.filter('.is-flatpicker').length > 0) {
                     // Specifics instructions for flatpicker.
                     // This is needed because it has an extra div that wrap the
                     // input, we want the tooltip to be right after that wrappper

@@ -627,6 +627,10 @@ CREATE TABLE `glpi_changecosts` (
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `changes_id` (`changes_id`),
@@ -634,7 +638,11 @@ CREATE TABLE `glpi_changecosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1279,7 +1287,7 @@ CREATE TABLE `glpi_impactitems` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `parent_id` int unsigned NOT NULL DEFAULT '0',
   `impactcontexts_id` int unsigned NOT NULL DEFAULT '0',
-  `is_slave` tinyint NOT NULL DEFAULT '1',
+  `is_dependent` tinyint NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `source` (`itemtype`,`items_id`),
@@ -1466,6 +1474,10 @@ CREATE TABLE `glpi_contractcosts` (
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `contracts_id` (`contracts_id`),
@@ -1473,7 +1485,11 @@ CREATE TABLE `glpi_contractcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2766,7 +2782,7 @@ CREATE TABLE `glpi_dropdowntranslations` (
 
 DROP TABLE IF EXISTS `glpi_entities`;
 CREATE TABLE `glpi_entities` (
-  `id` int unsigned NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int unsigned DEFAULT '0',
   `completename` text,
@@ -5117,8 +5133,8 @@ CREATE TABLE `glpi_notificationtargets` (
   `notifications_id` int unsigned NOT NULL DEFAULT '0',
   `is_exclusion` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`notifications_id`,`items_id`,`type`),
   KEY `items` (`type`,`items_id`),
-  KEY `notifications_id` (`notifications_id`),
   KEY `is_exclusion` (`is_exclusion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -5580,6 +5596,7 @@ CREATE TABLE `glpi_plugins` (
   `version` varchar(255) NOT NULL,
   `state` int NOT NULL DEFAULT '0',
   `author` varchar(255) DEFAULT NULL,
+  `highest_available_version` varchar(255),
   `homepage` varchar(255) DEFAULT NULL,
   `license` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -5711,13 +5728,21 @@ CREATE TABLE `glpi_problemcosts` (
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `problems_id` (`problems_id`),
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -5985,6 +6010,10 @@ CREATE TABLE `glpi_projectcosts` (
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `projects_id` (`projects_id`),
@@ -5992,7 +6021,11 @@ CREATE TABLE `glpi_projectcosts` (
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7253,13 +7286,21 @@ CREATE TABLE `glpi_ticketcosts` (
   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
   `budgets_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_lastupdater` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `tickets_id` (`tickets_id`),
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `entities_id` (`entities_id`),
-  KEY `budgets_id` (`budgets_id`)
+  KEY `budgets_id` (`budgets_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `users_id` (`users_id`),
+  KEY `users_id_lastupdater` (`users_id_lastupdater`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7602,7 +7643,7 @@ CREATE TABLE `glpi_tickettemplatepredefinedfields` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
-  `value` text,
+  `value` longtext,
   PRIMARY KEY (`id`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7614,7 +7655,7 @@ CREATE TABLE `glpi_changetemplatepredefinedfields` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `changetemplates_id` int unsigned NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
-  `value` text,
+  `value` longtext,
   PRIMARY KEY (`id`),
   KEY `changetemplates_id` (`changetemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -7626,7 +7667,7 @@ CREATE TABLE `glpi_problemtemplatepredefinedfields` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `num` int NOT NULL DEFAULT '0',
-  `value` text,
+  `value` longtext,
   PRIMARY KEY (`id`),
   KEY `problemtemplates_id` (`problemtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
+use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -224,10 +226,7 @@ class AdministrationControllerTest extends HLAPITestCase
         $request->setParameter('filter', 'username==' . TU_USER . '_other');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
-            $call->response->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertEquals(TU_USER, $content['username']);
-                });
+            $call->response->isNotFoundError();
         });
     }
 
@@ -714,5 +713,90 @@ class AdministrationControllerTest extends HLAPITestCase
                     $this->assertEquals('fr_FR', $content['language']);
                 });
         });
+    }
+
+    public function testSearchEventLogs()
+    {
+        $this->loginWeb();
+
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->api->call(new Request('GET', '/Administration/EventLog'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertNotEmpty($content);
+                    $first = $content[0];
+                    $this->assertArrayHasKey('id', $first);
+                    $this->assertArrayHasKey('items_id', $first);
+                    $this->assertArrayHasKey('type', $first);
+                    $this->assertArrayHasKey('date', $first);
+                    $this->assertArrayHasKey('service', $first);
+                    $this->assertArrayHasKey('level', $first);
+                    $this->assertArrayHasKey('message', $first);
+                });
+        });
+
+        $_SESSION['glpiactiveprofile']['system_logs'] = 0;
+
+        $this->api->call(new Request('GET', '/Administration/EventLog'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+    }
+
+    public function testGetEventLogByID()
+    {
+        // find an existing event log ID
+        global $DB;
+        $eventlog_id = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Event::getTable(),
+            'LIMIT'  => 1,
+        ])->current()['id'];
+
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->api->call(new Request('GET', '/Administration/EventLog/' . $eventlog_id), function ($call) use ($eventlog_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($eventlog_id) {
+                    $this->assertIsArray($content);
+                    $this->assertEquals($eventlog_id, $content['id']);
+                });
+        });
+
+        $_SESSION['glpiactiveprofile']['system_logs'] = 0;
+        $this->api->call(new Request('GET', '/Administration/EventLog/' . $eventlog_id), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+    }
+
+    public static function crud22Provider()
+    {
+        return [
+            ['UserCategory'],
+            ['UserTitle'],
+            ['ApprovalSubstitute'],
+        ];
+    }
+
+    #[DataProvider('crud22Provider')]
+    public function testCRUD22(string $itemtype)
+    {
+        $create_params = [];
+        if ($itemtype === 'ApprovalSubstitute') {
+            $create_params = [
+                'user' => getItemByTypeName('User', TU_USER, true),
+                'substitute' => getItemByTypeName('User', 'tech', true),
+            ];
+        }
+        $this->api->autoTestCRUD(
+            endpoint: '/Administration/' . $itemtype,
+            create_params: $create_params,
+            extra_options: ['skip_update_test' => $itemtype === 'ApprovalSubstitute']
+        );
     }
 }

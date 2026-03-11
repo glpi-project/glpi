@@ -41,7 +41,10 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Comment;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -67,14 +70,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     use ParentStatus;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Document_Item'];
+    protected static array $forward_entity_to = ['Document_Item'];
 
-    public static $rightname                   = 'document';
-    /** @var string */
-    public static $tag_prefix                  = '#';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'document';
+    public static string $tag_prefix                  = '#';
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName($nb = 0)
@@ -484,6 +486,21 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $out;
     }
 
+    public function getDownloadUrl(?CommonDBTM $linked_item = null): string
+    {
+        $params = [
+            'docid' => $this->fields['id'],
+        ];
+
+        if ($linked_item) {
+            $params['itemtype'] = $linked_item::class;
+            $params['items_id'] = $linked_item->getID();
+        }
+
+        $params = http_build_query($params);
+        return Html::getPrefixedUrl("/front/document.send.php?$params");
+    }
+
     /**
      * find a document with a file attached
      *
@@ -575,7 +592,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return true;
         }
 
-        if ($itemtype === Form::class && $this->canViewFileFromForm($items_id)) {
+        if (
+            $itemtype !== null
+            && is_numeric($items_id)
+            && $this->canViewFileFromForm($itemtype, (int) $items_id)
+        ) {
             return true;
         }
 
@@ -1387,7 +1408,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *    - used : array / Already used items ID: not to display in dropdown (default empty)
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
-     * @param array $options Array of possible options
+     * @param array<string,mixed> $options Array of possible options
      *
      * @return int|string|void
      *    integer if option display=true (random part of elements id)
@@ -1742,19 +1763,42 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return file_exists($file) && is_readable($file);
     }
 
-    private function canViewFileFromForm(int $form_id): bool
+    private function canViewFileFromForm(string $itemtype, int $items_id): bool
     {
+        if ($itemtype === Form::class) {
+            $form = Form::getById($items_id);
+            if (!$form) {
+                return false;
+            }
+        } elseif ($itemtype === Section::class) {
+            $section = Section::getById($items_id);
+            if (!$section) {
+                return false;
+            }
+            $form = $section->getForm();
+        } elseif ($itemtype === Question::class) {
+            $question = Question::getById($items_id);
+            if (!$question) {
+                return false;
+            }
+            $section = $question->getSection();
+            $form = $section->getForm();
+        } elseif ($itemtype === Comment::class) {
+            $comment = Comment::getById($items_id);
+            if (!$comment) {
+                return false;
+            }
+            $section = $comment->getSection();
+            $form = $section->getForm();
+        } else {
+            return false;
+        }
+
         $control_manager = FormAccessControlManager::getInstance();
         $parameters = new FormAccessParameters(
             session_info: Session::getCurrentSessionInfo(),
             url_parameters: [],
         );
-
-        $form = Form::getById($form_id);
-        if (!$form) {
-            return false;
-        }
-
         return $control_manager->canAnswerForm($form, $parameters);
     }
 }

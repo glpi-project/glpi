@@ -55,7 +55,7 @@ class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlew
         if ($specific_item) {
             $items_id = $input->request->getAttribute('id');
 
-            if (!$item->getFromDB($items_id)) {
+            if ($item && !$item->getFromDB($items_id)) {
                 $input->response = AbstractController::getNotFoundErrorResponse();
                 return;
             }

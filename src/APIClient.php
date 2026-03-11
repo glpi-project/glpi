@@ -45,13 +45,13 @@ class APIClient extends CommonDBTM
     public const DOLOG_LOGS       = 1;
     public const DOLOG_HISTORICAL = 2;
 
-    public static $rightname = 'config';
-    protected $displaylist = false;
+    public static string $rightname = 'config';
+    protected bool $displaylist = false;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'app_token',
     ];
 

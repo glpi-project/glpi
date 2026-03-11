@@ -62,7 +62,7 @@ final class ApiController extends AbstractController
     )]
     public function __invoke(SymfonyRequest $request): SymfonyResponse
     {
-        $_SERVER['PATH_INFO'] = $request->get('request_parameters');
+        $_SERVER['PATH_INFO'] = $request->attributes->get('request_parameters');
 
         $method = $_SERVER['REQUEST_METHOD'];
         $relative_uri = $_SERVER['PATH_INFO'] ?? '';

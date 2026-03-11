@@ -35,18 +35,14 @@
 
 namespace Glpi\Api\HL;
 
-use Closure;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Debug\Profiler;
-use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
-use Throwable;
 
+/**
+ * Class to convert the OpenAPI schemas to a GraphQL schema
+ */
 final class GraphQLGenerator
 {
-    private array $types = [];
-
     private string $api_version;
 
     public function __construct(string $api_version)
@@ -54,178 +50,123 @@ final class GraphQLGenerator
         $this->api_version = $api_version;
     }
 
-    private function normalizeTypeName(string $type_name): string
+    public function getSchema(): string
     {
-        return str_replace([' ', '-'], ['', '_'], $type_name);
+        /** @var array<string, string> $types */
+        $types = [];
+        Profiler::getInstance()->start('OpenAPIGenerator::getComponentSchemas', Profiler::CATEGORY_HLAPI);
+        $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
+        Profiler::getInstance()->stop('OpenAPIGenerator::getComponentSchemas');
+        foreach ($component_schemas as $schema_name => $schema) {
+            $this->writeType($schema_name, $schema, $types);
+        }
+
+        $schema = '';
+        $queries = "type Query {\n";
+        foreach ($types as $type_name => $type_def) {
+            $schema .= $type_def . "\n";
+            if (!str_starts_with($type_name, '_')) {
+                $queries .= "  $type_name(id: Int, filter: String, start: Int, limit: Int, sort: String, order: String): [$type_name]\n";
+            }
+        }
+        $queries .= "}\n";
+        $schema .= $queries;
+        return $schema;
     }
 
     /**
+     * @param string $schema_name Schema name
+     * @param array<string, mixed> $schema Schema definition
+     * @param array<string, string> $types GraphQL types collected
+     * @return void
+     */
+    private function writeType(string $schema_name, array $schema, array &$types): void
+    {
+        if (array_key_exists($schema_name, $types)) {
+            return;
+        }
+
+        $type_def = "type $schema_name {\n";
+        if (isset($schema['properties']) && is_array($schema['properties'])) {
+            foreach ($schema['properties'] as $prop_name => $prop_schema) {
+                $prop_type = $this->getGraphQLType($prop_name, $prop_schema, $types, $schema_name);
+                if ($prop_type !== null) {
+                    $type_def .= "  $prop_name: $prop_type\n";
+                }
+            }
+        }
+        $type_def .= "}\n";
+
+        $types[$schema_name] = $type_def;
+    }
+
+    /**
+     * @param string $name Property name
+     * @param array<string, mixed> $schema Property schema
+     * @param array<string, string> $types GraphQL types collected
+     * @param string|null $parent_name Parent property name
+     * @return string|null
+     */
+    private function getGraphQLType(string $name, array $schema, array &$types, ?string $parent_name = null): ?string
+    {
+        if (isset($schema['type'])) {
+            switch ($schema['type']) {
+                case Doc\Schema::TYPE_STRING:
+                    return 'String';
+                case Doc\Schema::TYPE_INTEGER:
+                    return 'Int';
+                case Doc\Schema::TYPE_BOOLEAN:
+                    return 'Boolean';
+                case Doc\Schema::TYPE_ARRAY:
+                    if (isset($schema['items'])) {
+                        $item_type = $this->getGraphQLType($name, $schema['items'], $types, $parent_name);
+                        if ($item_type === null) {
+                            return null;
+                        }
+                        return "[$item_type]";
+                    }
+                    break;
+                case Doc\Schema::TYPE_OBJECT:
+                    // if the object has x-full-schema, use the value as the type. otherwise create an inline type matching
+                    if (isset($schema['x-full-schema']) && is_string($schema['x-full-schema'])) {
+                        return $schema['x-full-schema'];
+                    } else {
+                        if (empty($schema['properties']) || !is_array($schema['properties'])) {
+                            return null;
+                        }
+                        return $this->handleInlineObject($name, $schema, $types, $parent_name);
+                    }
+            }
+        }
+
+        return 'String'; // Default fallback type
+    }
+
+    /**
+     * @param string $name Property name
+     * @param array<string, mixed> $schema Property schema
+     * @param array<string, string> $types GraphQL types collected
+     * @param string|null $parent_name Parent property name
      * @return string
      */
-    public function getSchema()
+    private function handleInlineObject(string $name, array $schema, array &$types, ?string $parent_name = null): string
     {
-        Profiler::getInstance()->start('GraphQLGenerator::loadTypes', Profiler::CATEGORY_HLAPI);
-        $this->loadTypes();
-        Profiler::getInstance()->stop('GraphQLGenerator::loadTypes');
-        $schema_str = '';
-        Profiler::getInstance()->start('GraphQLGenerator::writeTypes', Profiler::CATEGORY_HLAPI);
-        foreach ($this->types as $type_name => $type) {
-            $schema_str .= $this->writeType($type_name, $type);
+        // inline types start with '_' and named with parent name + field name
+        if (($parent_name !== null)) {
+            $parent_name = ltrim($parent_name, '_');
         }
-        Profiler::getInstance()->stop('GraphQLGenerator::writeTypes');
-
-        Profiler::getInstance()->start('GraphQLGenerator::normalizeTypeNames', Profiler::CATEGORY_HLAPI);
-        // Write Query
-        $schema_str .= "type Query {\n";
-        foreach (array_keys($this->types) as $type_name) {
-            if (str_starts_with($type_name, '_')) {
-                continue;
-            }
-            $type_name = $this->normalizeTypeName($type_name);
-            $args_str = '(id: Int, filter: String, start: Int, limit: Int, sort: String, order: String)';
-
-            $schema_str .= "  {$type_name}{$args_str}: [$type_name]\n";
-        }
-        $schema_str .= "}\n";
-        Profiler::getInstance()->stop('GraphQLGenerator::normalizeTypeNames');
-
-        return $schema_str;
-    }
-
-    private function writeType(string $type_name, ObjectType|callable $type): string
-    {
-        $type_name = $this->normalizeTypeName($type_name);
-        $type_str = "type $type_name {\n";
-        if (is_callable($type)) {
-            $type = $type();
-        }
-        // Ignore types with no fields (For example, maybe a custom asset from a definition without any custom fields generates an invalid type like "_CustomAsset_Car_custom_fields")
-        if (empty($type->getFields())) {
-            return '';
-        }
-        foreach ($type->getFields() as $field_name => $field) {
-            $field_type = $field->config['type'];
-            if ($field_type instanceof ObjectType && empty($field->config['type']->getFields())) {
-                // Ignore properties that would like to types with no fields
-                continue;
-            }
-            try {
-                $type_str .= "  $field_name: {$field->getType()}\n";
-            } catch (Throwable $e) {
-                global $PHPLOGGER;
-                $PHPLOGGER->error(
-                    "Error writing field $field_name for type $type_name: {$e->getMessage()}",
-                    ['exception' => $e]
-                );
-            }
-        }
-        $type_str .= "}\n";
-        return $type_str;
-    }
-
-    private function loadTypes(): void
-    {
-        $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
-        foreach ($component_schemas as $schema_name => $schema) {
-            $new_types = $this->getTypesForSchema($schema_name, $schema);
-            foreach ($new_types as $type_name => $type) {
-                $this->types[$type_name] = $type;
-            }
-        }
-    }
-
-    private function getTypesForSchema(string $schema_name, array $schema): array
-    {
-        $types = [];
-        if (in_array($schema_name, ['EntityTransferRecord'])) {
-            return [];
-        }
-        //Names cannot have spaces or dashes
-        $schema_name = $this->normalizeTypeName($schema_name);
-        $types[$schema_name] = $this->convertRESTSchemaToGraphQLSchema($schema_name, $schema);
-
-        // Handle "internal" types that are used for object properties
-        foreach ($schema['properties'] as $prop_name => $prop) {
-            if ($prop['type'] === Doc\Schema::TYPE_OBJECT) {
-                if (isset($prop['x-full-schema'])) {
-                    continue;
-                }
-                $namespaced_type = "{$schema_name}_{$prop_name}";
-                $types['_' . $namespaced_type] = $this->convertRESTPropertyToGraphQLType($prop, $namespaced_type);
-            } elseif ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
-                if (isset($prop['items']['x-full-schema'])) {
-                    continue;
-                }
-                $items = $prop['items'];
-                if ($items['type'] === Doc\Schema::TYPE_OBJECT) {
-                    $namespaced_type = "{$schema_name}_{$prop_name}";
-                    $types['_' . $namespaced_type] = $this->convertRESTPropertyToGraphQLType($items, $namespaced_type);
+        $inline_type_name = '_' . ($parent_name ? ($parent_name . '_') : '') . $name;
+        $type_def = "type $inline_type_name {\n";
+        if (isset($schema['properties']) && is_array($schema['properties'])) {
+            foreach ($schema['properties'] as $prop_name => $prop_schema) {
+                $prop_type = $this->getGraphQLType($prop_name, $prop_schema, $types, $inline_type_name);
+                if ($prop_type !== null) {
+                    $type_def .= "  $prop_name: $prop_type\n";
                 }
             }
         }
-        return $types;
-    }
-
-    private function convertRESTSchemaToGraphQLSchema(string $schema_name, array $schema): ObjectType
-    {
-        $fields = [];
-        foreach ($schema['properties'] as $name => $property) {
-            $fields[$name] = [
-                'type' => $this->convertRESTPropertyToGraphQLType($property, $name, $schema_name),
-                'resolve' => fn() => '',
-            ];
-        }
-        return new ObjectType([
-            'name' => $schema_name,
-            'fields' => $fields,
-        ]);
-    }
-
-    /**
-     * @param array $property
-     * @param string|null $name
-     * @param string $prefix
-     *
-     * @return Type|ListOfType<Type|Closure>|Closure|null
-     */
-    private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = '')
-    {
-        $type = $property['type'] ?? 'string';
-        $graphql_type = match ($type) {
-            Doc\Schema::TYPE_STRING => Type::string(),
-            Doc\Schema::TYPE_INTEGER => Type::int(),
-            Doc\Schema::TYPE_NUMBER => Type::float(),
-            Doc\Schema::TYPE_BOOLEAN => Type::boolean(),
-            default => null,
-        };
-        if ($graphql_type !== null) {
-            return $graphql_type;
-        }
-
-        // Handle array and object types
-        if ($type === Doc\Schema::TYPE_ARRAY) {
-            $items = $property['items'];
-            $graphql_type = $this->convertRESTPropertyToGraphQLType($items, $name, $prefix);
-            return new ListOfType($graphql_type);
-        }
-
-        if ($type === Doc\Schema::TYPE_OBJECT) {
-            $properties = $property['properties'];
-            $fields = [];
-            foreach ($properties as $prop_name => $prop_value) {
-                $fields[$prop_name] = [
-                    'type' => $this->convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix),
-                    'resolve' => fn() => '',
-                ];
-            }
-            if (isset($property['x-full-schema'])) {
-                return fn() => $this->types[$property['x-full-schema']];
-            }
-            return new ObjectType([
-                'name' => "_{$prefix}_{$name}",
-                'fields' => $fields,
-            ]);
-        }
-        return null;
+        $type_def .= "}\n";
+        $types[$inline_type_name] = $type_def;
+        return $inline_type_name;
     }
 }

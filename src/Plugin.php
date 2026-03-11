@@ -142,28 +142,27 @@ class Plugin extends CommonDBTM
      */
     private const PLUGIN_KEY_PATTERN = '/^[a-z0-9]+$/i';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * Indicates whether plugins have been initialized.
      *
-     * @var bool
      */
-    private static $plugins_initialized = false;
+    private static bool $plugins_initialized = false;
 
     /**
      * Booted plugin list
      *
      * @var string[]
      */
-    private static $booted_plugins = [];
+    private static array $booted_plugins = [];
 
     /**
      * Activated plugin list
      *
      * @var string[]
      */
-    private static $activated_plugins = [];
+    private static array $activated_plugins = [];
 
 
     /**
@@ -171,14 +170,14 @@ class Plugin extends CommonDBTM
      *
      * @var string[]
      */
-    private static $autoloaded_plugins = [];
+    private static array $autoloaded_plugins = [];
 
     /**
      * Loaded plugin list
      *
      * @var string[]
      */
-    private static $loaded_plugins = [];
+    private static array $loaded_plugins = [];
 
     /**
      * Indicates whether the plugins execution is forced.
@@ -188,7 +187,6 @@ class Plugin extends CommonDBTM
     /**
      * Store additional infos for each plugins
      *
-     * @var array
      */
     private array $plugins_information = [];
 
@@ -1094,7 +1092,7 @@ class Plugin extends CommonDBTM
      *
      * @return array
      */
-    public function getList(array $fields = [], array $order = ['name', 'directory'])
+    public function getList(array $fields = [], array $order = ['directory'])
     {
         global $DB;
 
@@ -1643,7 +1641,7 @@ class Plugin extends CommonDBTM
         $content = '';
 
         $plug     = new Plugin();
-        $pluglist = $plug->find([], "name, directory");
+        $pluglist = $plug->find([], "state, name, directory");
         foreach ($pluglist as $plugin) {
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
@@ -1654,7 +1652,7 @@ class Plugin extends CommonDBTM
 
             $msg  = substr(str_pad($plugin['directory'], 30), 0, 20)
                  . " Name: " . Toolbox::substr(str_pad($name, 40), 0, 30)
-                 . " Version: " . str_pad($version, 10)
+                 . " Version: " . str_pad($version, 12)
                  . " State: " . str_pad($state, 40)
                  . " Install Method: " . $install_method;
             $content .= "\n" . $msg;
@@ -3202,12 +3200,12 @@ class Plugin extends CommonDBTM
                     if (!$plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->install($id);
                         if ($plugin->isInstalled($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3217,12 +3215,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->uninstall($id);
                         if (!$plugin->isInstalled($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3232,12 +3230,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->activate($id);
                         if ($plugin->isActivated($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3247,12 +3245,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->unactivate($id);
                         if (!$plugin->isActivated($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3261,9 +3259,9 @@ class Plugin extends CommonDBTM
                     $plugin->getFromDB($id);
                     if (!$plugin->isLoadable($plugin->fields['directory'])) {
                         $plugin->clean($id);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3306,6 +3304,17 @@ class Plugin extends CommonDBTM
             'pages/admin/plugins/list_suspend_banner.html.twig',
             [
                 'execution_suspended' => $this->isPluginsExecutionSuspended(),
+            ]
+        );
+    }
+
+    final public function getPluginsUpdatableAlert(): string
+    {
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/plugins/updatable_alert.html.twig',
+            [
+                'count' => MarketplaceController::countUpdatablePlugins(),
             ]
         );
     }

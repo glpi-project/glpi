@@ -172,12 +172,12 @@ describe("Ticket Form", () => {
         cy.get('.itilsolution').within(() => {
             cy.findByLabelText('Search in the knowledge base').click();
         });
-        cy.get('#modal_search_knowbaseitem').within(() => {
+        cy.get('#modal_search_knowbaseitem').should('have.attr', 'data-cy-shown', 'true').within(() => {
             cy.findByLabelText('Search…').should('have.value', 'Test search solution');
             cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
             cy.findAllByTitle('Preview').first().click();
-            cy.findByTestId('content').invoke('text').should('not.be.empty').as('content');
+            cy.get('[data-glpi-kb-content]').invoke('text').should('not.be.empty').as('content');
             cy.findAllByRole('listitem').should('have.length', 0);
             cy.findByText('Back to results').click();
 
@@ -193,12 +193,12 @@ describe("Ticket Form", () => {
         cy.get('.itilfollowup').within(() => {
             cy.findByLabelText('Search in the knowledge base').click();
         });
-        cy.get('#modal_search_knowbaseitem').within(() => {
+        cy.get('#modal_search_knowbaseitem').should('have.attr', 'data-cy-shown', 'true').within(() => {
             cy.findByLabelText('Search…').should('have.value', 'Test search solution');
             cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
             cy.findAllByTitle('Preview').first().click();
-            cy.findByTestId('content').invoke('text').should('not.be.empty').as('content');
+            cy.get('[data-glpi-kb-content]').invoke('text').should('not.be.empty').as('content');
             cy.findAllByRole('listitem').should('have.length', 0);
             cy.findByText('Back to results').click();
 

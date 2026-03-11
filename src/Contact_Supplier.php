@@ -34,17 +34,16 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-
-use function Safe\preg_match;
+use Glpi\Toolbox\URL;
 
 class Contact_Supplier extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Contact::class;
-    public static $items_id_1 = 'contacts_id';
+    public static ?string $itemtype_1 = Contact::class;
+    public static ?string $items_id_1 = 'contacts_id';
 
-    public static $itemtype_2 = Supplier::class;
-    public static $items_id_2 = 'suppliers_id';
+    public static ?string $itemtype_2 = Supplier::class;
+    public static ?string $items_id_2 = 'suppliers_id';
 
 
     public static function getTypeName($nb = 0)
@@ -68,18 +67,18 @@ class Contact_Supplier extends CommonDBRelation
 
         if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'Supplier':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  self::countForItem($item);
                     }
-                    return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case 'Contact':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
@@ -141,16 +140,18 @@ class Contact_Supplier extends CommonDBRelation
         $supplier = new Supplier();
 
         foreach ($suppliers as $data) {
-            $website           = $data["website"];
-
-            if (!empty($website)) {
-                $website = $data["website"];
-
-                if (!preg_match("?https*://?", $website)) {
-                    $website = "http://" . $website;
-                }
-                $website = "<a target=_blank href='" . htmlescape($website) . "'>" . htmlescape($data["website"]) . "</a>";
+            $website = '';
+            if (!empty($data["website"])) {
+                $website_url = URL::sanitizeURL(
+                    Toolbox::formatOutputWebLink(
+                        $data["website"]
+                    )
+                );
+                $website = $website_url !== ''
+                    ? "<a target=_blank href='" . htmlescape($website_url) . "'>" . htmlescape($data["website"]) . "</a>"
+                    : $data["website"];
             }
+
             $supplier->getFromDB($data["id"]);
             if (!isset($suppliertype_cache[$data["suppliertypes_id"]])) {
                 $suppliertype_cache[$data["suppliertypes_id"]] = Dropdown::getDropdownName(

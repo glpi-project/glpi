@@ -63,19 +63,18 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBChild
-    public static $itemtype = Project::class;
-    public static $items_id     = 'projects_id';
+    public static string $itemtype = Project::class;
+    public static string $items_id     = 'projects_id';
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
-    protected $team             = [];
-    public static $rightname    = 'projecttask';
-    protected $usenotepad       = true;
+    protected array $team             = [];
+    public static string $rightname    = 'projecttask';
+    protected bool $usenotepad       = true;
 
-    /** @var bool */
-    public $can_be_translated   = true;
+    public bool $can_be_translated   = true;
 
     public const READMY      = 1;
     public const UPDATEMY    = 1024;
@@ -256,12 +255,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $users = [];
             foreach ($team as $type => $actors) {
                 switch ($type) {
-                    case User::getType():
+                    case User::class:
                         foreach ($actors as $actor) {
                             $users[$actor['items_id']] = $actor['items_id'];
                         }
                         break;
-                    case Group::getType():
+                    case Group::class:
                         foreach ($actors as $actor) {
                             $group_iterator = $DB->request([
                                 'SELECT' => 'users_id',
@@ -273,8 +272,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                             }
                         }
                         break;
-                    case Supplier::getType():
-                    case Contact::getType():
+                    case Supplier::class:
+                    case Contact::class:
                         //only Users can be checked for planning conflicts
                         break;
                     default:
@@ -447,7 +446,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function getTeamCount()
     {
         $nb = 0;
-        if (is_array($this->team) && count($this->team)) {
+        if (count($this->team)) {
             foreach ($this->team as $val) {
                 $nb += count($val);
             }
@@ -760,16 +759,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return $tasks;
     }
 
-    /**
-     * Print the Project task form
-     *
-     * @param int $ID Id of the project task
-     * @param array $options of possible options:
-     *     - target form target
-     *     - projects_id ID of the software for add process
-     *
-     * @return bool True if displayed, false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {

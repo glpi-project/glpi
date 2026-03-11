@@ -277,7 +277,7 @@
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
-            'additional_attributes': {'data-input': ''},
+            'additional_attributes': (options.additional_attributes ?? {})|merge({'data-input': ''}),
             'input_addclass': options.input_addclass ~ final_expiration_class,
             'clearable': false
         })) }}

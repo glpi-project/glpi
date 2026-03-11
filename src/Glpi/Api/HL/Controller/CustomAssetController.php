@@ -285,11 +285,13 @@ final class CustomAssetController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_front',
                         'x-mapper' => static fn($v) => Toolbox::getPictureUrl($v, true) ?? '',
+                        'readOnly' => true,
                     ],
                     'picture_rear' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_back',
                         'x-mapper' => static fn($v) => Toolbox::getPictureUrl($v, true) ?? '',
+                        'readOnly' => true,
                     ],
                     'pictures' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
@@ -300,6 +302,7 @@ final class CustomAssetController extends AbstractController
                                 $pictures = importArrayFromDB($v);
                                 return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
                             },
+                            'readOnly' => true,
                         ],
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -450,8 +453,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getCustomAssetTypes']], middlewares: [ResultFormatterMiddleware::class])
-    ]
+        'itemtype' => [self::class, 'getCustomAssetTypes']], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\SearchRoute(
         schema_name: 'CustomAsset_{itemtype}Model',
         description: 'List or search custom asset models of a specific type'

@@ -53,9 +53,8 @@ abstract class Spreadsheet extends ExportSearchOutput
     protected BaseWriter|IWriter $writer;
     /**
      * FIXME: remove in GLPI 12, seems not used
-     * @var int
      */
-    protected $count;
+    protected int $count;
 
     public function __construct()
     {
@@ -76,6 +75,9 @@ abstract class Spreadsheet extends ExportSearchOutput
 
         $spread = $this->getSpreasheet();
         $writer = $this->getWriter();
+
+        // Set custom value binder to prevent values starting with "=" to be interpreted as formulas
+        $spread->setValueBinder(new SpreadsheetValueBinder());
 
         //set styles
         $style = $spread->getDefaultStyle();

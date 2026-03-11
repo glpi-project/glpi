@@ -43,30 +43,26 @@ abstract class CommonDBVisible extends CommonDBTM
     /**
      * Entities on which item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $entities = [];
+    protected array $entities = [];
 
     /**
      * Groups for whom item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $groups = [];
+    protected array $groups = [];
 
     /**
      * Profiles for whom item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $profiles = [];
+    protected array $profiles = [];
 
     /**
      * Users for whom item is visible.
      * Keys are ID, values are DB fields values.
-     * @var array
      */
-    protected $users = [];
+    protected array $users = [];
 
     /**
      * Is the login user have access to item based on visibility configuration
@@ -329,13 +325,13 @@ abstract class CommonDBVisible extends CommonDBTM
     /**
      * Get dropdown parameters from showVisibility method
      *
-     * @return array
+     * @return array{type: string, right: string, entity?: int, is_recursive?: bool}
      */
     protected function getShowVisibilityDropdownParams()
     {
         $params = [
             'type'          => '__VALUE__',
-            'right'         => strtolower($this::getType()) . '_public',
+            'right'         => strtolower(static::class) . '_public',
         ];
         if (isset($this->fields['entities_id'])) {
             $params['entity'] = $this->fields['entities_id'];

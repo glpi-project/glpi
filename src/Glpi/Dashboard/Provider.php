@@ -500,7 +500,9 @@ class Provider
         $ticketUserTable = Ticket_User::getTable();
         $userTable = User::getTable();
 
+        /** @var QueryExpression $ownExceeded */
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
+        /** @var QueryExpression $resolveExceeded */
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
         $slaState = QueryFunction::if(
             condition: [$ownExceeded, $resolveExceeded],
@@ -829,7 +831,7 @@ class Provider
 
         $c_table     = $item::getTable();
         $fk_table    = $fk_item::getTable();
-        $fk_itemtype = $fk_item::getType();
+        $fk_itemtype = $fk_item::class;
 
         // try to autodetect searchoption id
         $searchoptions = $item->rawSearchOptions();

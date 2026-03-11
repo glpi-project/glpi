@@ -39,9 +39,9 @@ use function Safe\preg_match;
 class RuleMailCollectorCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = true;
-    public static $rightname           = 'rule_mailcollector';
-    public $menu_option         = 'mailcollector';
+    public bool $stop_on_first_match = true;
+    public static string $rightname           = 'rule_mailcollector';
+    public string $menu_option         = 'mailcollector';
 
 
     public function getTitle()
@@ -129,7 +129,7 @@ class RuleMailCollectorCollection extends RuleCollection
         }
 
         if (in_array('known_domain', $fields, true)) {
-            if (preg_match("/@(.*)/", $input['from'], $results)) {
+            if (preg_match("/@(.*)/", $input['from'] ?? '', $results)) {
                 if (Entity::getEntityIDByDomain($results[1]) !== -1) {
                     $input['KNOWN_DOMAIN'] = 1;
                 } else {

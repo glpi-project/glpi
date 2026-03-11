@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
+use Glpi\Exception\Database\StatementException;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\Toolbox\SanitizedStringsDecoder;
 use Safe\DateTime;
@@ -82,16 +83,15 @@ class DBmysql
 
     /**
      * The database handler
-     * @var mysqli
      */
-    protected $dbh;
+    protected mysqli $dbh;
 
     /**
-     * Slave management
+     * Replica management
      *
      * @var bool
      */
-    public $slave              = false;
+    public $replica            = false;
 
     /**
      * Defines if connection must use SSL.
@@ -103,24 +103,24 @@ class DBmysql
     /**
      * The path name to the key file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslkey           = null;
 
     /**
      * The path name to the certificate file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslcert          = null;
 
     /**
      * The path name to the certificate authority file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslca            = null;
 
@@ -128,16 +128,16 @@ class DBmysql
      * The pathname to a directory that contains trusted SSL CA certificates in PEM format
      * (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslcapath        = null;
 
     /**
      * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
-     * @var string|null
      */
     public $dbsslcacipher      = null;
 
@@ -188,14 +188,12 @@ class DBmysql
      *
      * @var bool
      */
-    public $first_connection   = true;
+    public bool $first_connection   = true;
     // Is connected to the DB ?
-    /** @var bool */
-    public $connected          = false;
+    public bool $connected          = false;
 
     //to calculate execution time
-    /** @var bool|float */
-    public $execution_time          = false;
+    public bool|float $execution_time          = false;
 
     private bool $cache_disabled = false;
 
@@ -206,18 +204,16 @@ class DBmysql
     /**
      * Cached list fo tables.
      *
-     * @var array
      * @see self::tableExists()
      */
-    private $table_cache = [];
+    private array $table_cache = [];
 
     /**
      * Cached list of fields.
      *
-     * @var array
      * @see self::listFields()
      */
-    private $field_cache = [];
+    private array $field_cache = [];
 
     private int $transaction_level = 0;
 
@@ -235,6 +231,16 @@ class DBmysql
      */
     public function __construct($choice = null)
     {
+        // Handle separate DB instances per worker for unit tests (when enabled)
+        // First runner will use the existing `glpi` database
+        // Second runner will use `glpi_2`
+        // Third runner will use `glpi_3`
+        // And so on...
+        $test_token = getenv('TEST_TOKEN');
+        if ($test_token !== false && $test_token !== '' && $test_token > 1) {
+            $this->dbdefault = $this->dbdefault . '_' . $test_token;
+        }
+
         $this->connect($choice);
     }
 
@@ -294,6 +300,7 @@ class DBmysql
             // force mysqlnd to return int and float types correctly (not as strings)
             $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
 
+            // Remove ONLY_FULL_GROUP_BY from SQL mode
             $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
             $this->connected = true;
@@ -369,7 +376,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|bool Query result handler
+     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      */
     public function doQuery($query)
     {
@@ -495,7 +502,7 @@ class DBmysql
      */
     public function numrows($result)
     {
-        return $result->num_rows;
+        return (int) $result->num_rows;
     }
 
     /**
@@ -573,7 +580,11 @@ class DBmysql
             // See https://www.php.net/manual/en/mysqli.insert-id.php
             // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
             // We have to retrieve it manually via `LAST_INSERT_ID()`.
-            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+            /** @var mysqli_result $request */
+            $request = $this->dbh->query('SELECT LAST_INSERT_ID()');
+            /** @var array<int,mixed> $row */
+            $row = $request->fetch_row();
+            $insert_id = $row[0];
         }
         return $insert_id;
     }
@@ -873,18 +884,16 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
+        /** @var mysqli_result $result */
         $result = $this->doQuery(sprintf("SHOW COLUMNS FROM %s", self::quoteName($table)));
-        if ($result) {
-            if ($this->numrows($result) > 0) {
-                $this->field_cache[$table] = [];
-                while ($data = $this->fetchAssoc($result)) {
-                    $this->field_cache[$table][$data["Field"]] = $data;
-                }
-                return $this->field_cache[$table];
+        if ($this->numrows($result) > 0) {
+            $this->field_cache[$table] = [];
+            while ($data = $this->fetchAssoc($result)) {
+                $this->field_cache[$table][$data["Field"]] = $data;
             }
-            return [];
+            return $this->field_cache[$table];
         }
-        return false;
+        return [];
     }
 
     /**
@@ -910,7 +919,7 @@ class DBmysql
      */
     public function affectedRows()
     {
-        return $this->dbh->affected_rows;
+        return (int) $this->dbh->affected_rows;
     }
 
     /**
@@ -953,20 +962,36 @@ class DBmysql
      */
     public function close()
     {
-        if ($this->connected && $this->dbh) {
+        if ($this->connected && isset($this->dbh)) {
             return $this->dbh->close();
         }
         return false;
     }
 
     /**
-     * is a slave database ?
+     * is a replica database?
      *
      * @return bool
      */
+    public function isReplica(): bool
+    {
+        //To remove in v13
+        if (property_exists($this, 'slave')) {
+            return $this->isSlave(); //@phpstan-ignore method.deprecated
+        }
+        return $this->replica;
+    }
+
+    /**
+     * is a slave database ?
+     *
+     * @return bool
+     * @deprecated 12 Use $this->isReplica instead.
+     */
     public function isSlave()
     {
-        return $this->slave;
+        Toolbox::deprecated('Use isReplica()');
+        return $this->slave ?? false;
     }
 
     /**
@@ -974,7 +999,7 @@ class DBmysql
      *
      * @param string $path with file full path
      *
-     * @return bool true if all query are successfull
+     * @return true
      */
     public function runFile($path)
     {
@@ -995,10 +1020,11 @@ class DBmysql
     public function getQueriesFromFile(string $path): array
     {
         $script = fopen($path, 'r');
-        if (!$script) {
+        $filesize = filesize($path);
+        if (!$script || $filesize === 0) {
             return [];
         }
-        $sql_query = @fread($script, @filesize($path)) . "\n";
+        $sql_query = fread($script, $filesize) . "\n";
 
         $sql_query = $this->removeSqlRemarks($sql_query);
 
@@ -1037,6 +1063,7 @@ class DBmysql
     {
         // No translation, used in sysinfo
         $ret = [];
+        /** @var mysqli_result $req */
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
         if (($data = $req->fetch_array())) {
@@ -1073,6 +1100,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1092,6 +1120,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1180,7 +1209,7 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $name of field to quote (or table.field)
+     * @param string|QueryExpression $name
      *
      * @return string
      *
@@ -1188,42 +1217,39 @@ class DBmysql
      */
     public static function quoteName($name)
     {
-        //handle verbatim names
+        // handle verbatim names
         if ($name instanceof QueryExpression) {
             return $name->getValue();
         }
 
-        //handle aliases
-        $names = preg_split('/\s+AS\s+/i', $name);
-        if (count($names) > 2) {
-            throw new RuntimeException(
-                'Invalid field name ' . $name
-            );
+        // handle aliases
+        $name_matches = [];
+        if (preg_match('/^(?<name>.+[\s|`])AS(?<alias>[\s|`].+)$/i', $name, $name_matches) === 1) {
+            $name = rtrim($name_matches['name']);
+            $alias = ltrim($name_matches['alias']);
+            return self::quoteName($name) . ' AS ' . self::quoteName($alias);
         }
 
-        if (count($names) == 2) {
-            $name = self::quoteName($names[0]);
-            $name .= ' AS ' . self::quoteName($names[1]);
-            return $name;
-        }
-
+        // handle names with multiple chunks (e.g. db.table.field or table.field)
         if (strpos($name, '.')) {
-            $n = explode('.', $name, 2);
-            $table = self::quoteName($n[0]);
-            $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
-            return "$table.$field";
+            $names = explode('.', $name);
+            return implode('.', array_map([self::class, 'quoteName'], $names));
         }
 
-        if (
-            $name === '*'
-            || preg_match('/^`[^`]+`$/', $name) === 1
-        ) {
+        // do not quote wildcard (*)
+        if ($name === '*') {
             return $name;
         }
 
+        // do not quote alreay quoted names
+        if (preg_match('/^`[^`]+`$/', $name) === 1) {
+            return $name;
+        }
+
+        // escape backticks by doubling them
         return sprintf(
             '`%s`',
-            str_replace('`', '``', $name) // escape backticks by doubling them
+            str_replace('`', '``', $name)
         );
     }
 
@@ -1306,14 +1332,14 @@ class DBmysql
      * @param string $table  Table name
      * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function insert($table, $params)
     {
-        $result = $this->doQuery(
+        $this->doQuery(
             $this->buildInsert($table, $params)
         );
-        return $result;
+        return true;
     }
 
     /**
@@ -1404,13 +1430,13 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1423,12 +1449,13 @@ class DBmysql
      * @param array   $where   WHERE clause
      * @param bool $onlyone Do the update only one element, defaults to true
      *
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
-        return $this->doQuery($query);
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1490,13 +1517,13 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1505,18 +1532,18 @@ class DBmysql
      * @param string $name   Table name
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return bool|mysqli_result
+     * @return true
      */
     public function dropTable(string $name, bool $exists = false)
     {
-        $res = $this->doQuery(
+        $this->doQuery(
             $this->buildDrop(
                 $name,
                 'TABLE',
                 $exists
             )
         );
-        return $res;
+        return true;
     }
 
     /**
@@ -1525,18 +1552,18 @@ class DBmysql
      * @param string $name   View name
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return bool|mysqli_result
+     * @return true
      */
     public function dropView(string $name, bool $exists = false)
     {
-        $res = $this->doQuery(
+        $this->doQuery(
             $this->buildDrop(
                 $name,
                 'VIEW',
                 $exists
             )
         );
-        return $res;
+        return true;
     }
 
     /**
@@ -1580,7 +1607,9 @@ class DBmysql
      */
     public function getVersion()
     {
+        /** @var mysqli_result $res */
         $res = $this->doQuery('SELECT version()');
+        /** @var array<string,mixed> $req */
         $req = $res->fetch_array();
         $raw = $req['version()'];
         return $raw;
@@ -1915,11 +1944,12 @@ class DBmysql
                 $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
             }
             if (!$this->log_deprecation_warnings) {
-                // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+                // Mute deprecations related to elements that are heavily used in old migrations and in plugins
                 // as it may require a lot of work to fix them.
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }
 
+            /** @var mysqli_result $warnings_result */
             while ($warning = $warnings_result->fetch_assoc()) {
                 if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                     continue;
@@ -1942,22 +1972,64 @@ class DBmysql
     }
 
     /**
-     * Executes a prepared statement
+     * Binds parameters to a prepared statement
      *
-     * @param mysqli_stmt $stmt Statement to execute
+     * @param mysqli_stmt $stmt   Statement to bind parameters to
+     * @param array<int|string, mixed> $params Parameters to bind
+     * @param list<'i'|'d'|'s'>|null $types  Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt): void
+    private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
+        if (count($params) === 0) {
+            return;
+        }
+        $params = array_values($params); //no need for the keys
+
+        if ($types === null) {
+            //no types specified, assume all strings
+            $types = str_pad('', count($params), 's');
+        } elseif (is_array($types)) {
+            $types = implode('', $types);
+        }
+
+        if (false === $stmt->bind_param($types, ...$params)) {
+            throw new StatementException(
+                sprintf(
+                    'Error binding params in SQL query "%s": %s (%d).',
+                    $this->current_query,
+                    $stmt->error,
+                    $stmt->errno
+                ),
+                $stmt->errno
+            );
+        }
+    }
+
+    /**
+     * Executes a prepared statement
+     *
+     * @param mysqli_stmt $stmt Statement to execute
+     * @param ?array<int|string, mixed> $params Parameters to bind
+     * @param list<'i'|'d'|'s'>|null $types Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
+     *
+     * @return void
+     */
+    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
+    {
+        if ($params !== null) {
+            $this->bindStatementParams($stmt, $params, $types);
+        }
         if (!$stmt->execute()) {
-            throw new RuntimeException(
+            throw new StatementException(
                 sprintf(
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,
                     $stmt->errno,
                     $this->current_query
-                )
+                ),
+                $stmt->errno
             );
         }
     }
@@ -2124,6 +2196,7 @@ class DBmysql
             static::quoteName('Variable_name'),
             implode(', ', array_map([$this, 'quote'], $variables))
         );
+        /** @var mysqli_result $result */
         $result = $this->doQuery($query);
         $values = [];
         while ($row = $result->fetch_assoc()) {

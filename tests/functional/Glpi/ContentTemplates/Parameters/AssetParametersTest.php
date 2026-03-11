@@ -59,6 +59,7 @@ class AssetParametersTest extends AbstractParametersTest
             'computermodels_id'  => $test_model_id,
             'computertypes_id'   => $test_type_id,
             'states_id'          => $test_state_id,
+            'comment'            => 'This is a test computer.',
         ]);
 
         $parameters = new AssetParameters();
@@ -77,6 +78,7 @@ class AssetParametersTest extends AbstractParametersTest
                     'name'         => '_test_child_2',
                     'completename' => 'Root entity > _test_root_entity > _test_child_2',
                 ],
+                'comment'     => 'This is a test computer.',
             ],
             $values
         );

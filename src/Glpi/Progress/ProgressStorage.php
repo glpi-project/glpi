@@ -36,7 +36,6 @@ namespace Glpi\Progress;
 
 use Glpi\Message\MessageType;
 use LogicException;
-use RuntimeException;
 
 use function Safe\fclose;
 use function Safe\fflush;
@@ -45,6 +44,7 @@ use function Safe\fopen;
 use function Safe\fread;
 use function Safe\ftruncate;
 use function Safe\fwrite;
+use function Safe\json_encode;
 use function Safe\session_id;
 
 /**
@@ -142,11 +142,7 @@ class ProgressStorage
 
         fclose($handle);
 
-        $progress = \unserialize($file_contents);
-
-        if (!$progress instanceof StoredProgressIndicator) {
-            throw new RuntimeException(\sprintf('Invalid data stored for key `%s`.', $storage_key));
-        }
+        $progress = StoredProgressIndicator::fromJsonString($file_contents);
 
         return $progress;
     }
@@ -166,7 +162,7 @@ class ProgressStorage
         flock($handle, LOCK_EX); // lock the file
 
         ftruncate($handle, 0);
-        fwrite($handle, \serialize($progress_indicator));
+        fwrite($handle, json_encode($progress_indicator));
         fflush($handle);
 
         flock($handle, LOCK_UN); // unlock the file

@@ -37,11 +37,9 @@ namespace Glpi\Csv;
 
 class StatCsvExport implements ExportToCsvInterface
 {
-    /** @var array */
-    protected $headers;
+    protected array $headers;
 
-    /** @var array */
-    protected $content;
+    protected array $content;
 
     public function __construct(array $series, array $options = [])
     {

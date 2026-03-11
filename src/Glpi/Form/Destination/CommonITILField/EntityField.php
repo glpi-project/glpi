@@ -140,7 +140,7 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
             $form->getQuestionsByType(
                 QuestionTypeItem::class
             ),
-            fn($question) => (new QuestionTypeItem())->getDefaultValueItemtype($question) === Entity::getType()
+            fn($question) => (new QuestionTypeItem())->getDefaultValueItemtype($question) === Entity::class
         );
 
         if (count($valid_answers) == 0) {
@@ -170,7 +170,7 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
 
         foreach ($questions as $question) {
             // Only keep questions that are Entity
-            if ((new QuestionTypeItem())->getDefaultValueItemtype($question) !== Entity::getType()) {
+            if ((new QuestionTypeItem())->getDefaultValueItemtype($question) !== Entity::class) {
                 continue;
             }
 
@@ -258,7 +258,8 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
         // Try to load entity
         $entity = Entity::getById($entity_id);
         if (!$entity) {
-            return $fallback;
+            $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = 0;
+            return new DynamicExportDataField($config, []);
         }
 
         // Insert entity name and requirement

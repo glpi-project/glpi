@@ -303,8 +303,13 @@ final class HLAPIHelper
         return $this;
     }
 
-    public function autoTestCRUD(string $endpoint, array $create_params = [], array $update_params = []): self
+    public function autoTestCRUD(string $endpoint, array $create_params = [], array $update_params = [], array $extra_options = []): self
     {
+        $extra_options = array_merge([
+            // Expect the new location to be a singleton (i.e. /endpoint instead of /endpoint/{id})
+            'new_location_singleton' => false,
+            'skip_update_test' => false,
+        ], $extra_options);
         $this->test->resetSession();
         $this->test->login();
         $unique_id = __FUNCTION__;
@@ -315,7 +320,10 @@ final class HLAPIHelper
         foreach ($routes as $route) {
             $all_methods = [...$all_methods, ...$route->getRouteMethods()];
         }
-        $required_methods = ['POST', 'GET', 'PATCH', 'DELETE'];
+        $required_methods = ['POST', 'GET', 'DELETE'];
+        if (!$extra_options['skip_update_test']) {
+            $required_methods[] = 'PATCH';
+        }
         $missing_methods = array_diff($required_methods, $all_methods);
         $this->test->assertEmpty($missing_methods, 'The endpoint "' . $endpoint . '" does not support the following CRUD methods: ' . implode(', ', $missing_methods));
 
@@ -375,15 +383,19 @@ final class HLAPIHelper
         }, false);
 
         $new_item_location = null;
-        $this->call($request, function ($call) use (&$new_item_location, $endpoint) {
+        $this->call($request, function ($call) use ($extra_options, &$new_item_location, $endpoint) {
             /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($endpoint) {
+                ->jsonContent(function ($content) use ($extra_options, $endpoint) {
                     $this->test->assertArrayHasKey('id', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "id" field');
                     $this->test->assertGreaterThan(0, $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "id" field that is not valid');
                     $this->test->assertArrayHasKey('href', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "href" field');
-                    $this->test->assertEqualsIgnoringCase($content['href'], $endpoint . '/' . $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    if ($extra_options['new_location_singleton']) {
+                        $this->test->assertEqualsIgnoringCase($content['href'], $endpoint, 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    } else {
+                        $this->test->assertEqualsIgnoringCase($content['href'], $endpoint . '/' . $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    }
                 })
                 ->headers(function ($headers) use (&$new_item_location) {
                     $this->test->assertNotEmpty($headers['Location']);
@@ -391,10 +403,12 @@ final class HLAPIHelper
                 });
         });
 
-        $this->call(new Request('PATCH', $new_item_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response->isUnauthorizedError();
-        }, false);
+        if (!$extra_options['skip_update_test']) {
+            $this->call(new Request('PATCH', $new_item_location), function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response->isUnauthorizedError();
+            }, false);
+        }
         $this->call(new Request('GET', $new_item_location), function ($call) {
             /** @var HLAPICallAsserter $call */
             $call->response->isUnauthorizedError();
@@ -421,33 +435,35 @@ final class HLAPIHelper
                 });
         });
 
-        // Update the new item
-        $request = new Request('PATCH', $new_item_location);
-        foreach ($update_params as $key => $value) {
-            $request->setParameter($key, $value);
-        }
-        $this->call($request, function ($call) use ($schema, $endpoint) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->matchesSchema($schema, 'The response for the PATCH route path of endpoint "' . $endpoint . '" does not match the schema', 'read');
-        });
+        if (!$extra_options['skip_update_test']) {
+            // Update the new item
+            $request = new Request('PATCH', $new_item_location);
+            foreach ($update_params as $key => $value) {
+                $request->setParameter($key, $value);
+            }
+            $this->call($request, function ($call) use ($schema, $endpoint) {
+                /** @var HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->matchesSchema($schema, 'The response for the PATCH route path of endpoint "' . $endpoint . '" does not match the schema', 'read');
+            });
 
-        // Get the new item again and verify that the name has been updated
-        $this->call(new Request('GET', $new_item_location), function ($call) use ($update_params) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($update_params) {
-                    foreach ($update_params as $key => $value) {
-                        if (is_array($content[$key]) && isset($content[$key]['id'])) {
-                            $this->test->assertEquals($value, $content[$key]['id']);
-                        } else {
-                            $this->test->assertEquals($value, $content[$key]);
+            // Get the new item again and verify that the name has been updated
+            $this->call(new Request('GET', $new_item_location), function ($call) use ($update_params) {
+                /** @var HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($update_params) {
+                        foreach ($update_params as $key => $value) {
+                            if (is_array($content[$key]) && isset($content[$key]['id'])) {
+                                $this->test->assertEquals($value, $content[$key]['id']);
+                            } else {
+                                $this->test->assertEquals($value, $content[$key]);
+                            }
                         }
-                    }
-                });
-        });
+                    });
+            });
+        }
 
         // Delete the new item
         $this->call(new Request('DELETE', $new_item_location), function ($call) {
@@ -460,7 +476,7 @@ final class HLAPIHelper
         $itemtype = $schema['x-itemtype'];
         if (is_subclass_of($itemtype, CommonDBTM::class)) {
             $item = new $itemtype();
-            if ($item->maybeDeleted()) {
+            if ($item->maybeDeleted() && !$item->useDeletedToLockIfDynamic()) {
                 // Try getting the new item again. It should still exist.
                 $this->call(new Request('GET', $new_item_location), function ($call) use ($update_params) {
                     /** @var HLAPICallAsserter $call */

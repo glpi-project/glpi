@@ -40,12 +40,12 @@
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = CartridgeItem::class;
-    public static $items_id_1          = 'cartridgeitems_id';
+    public static ?string $itemtype_1 = CartridgeItem::class;
+    public static ?string $items_id_1          = 'cartridgeitems_id';
 
-    public static $itemtype_2 = PrinterModel::class;
-    public static $items_id_2          = 'printermodels_id';
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_2 = PrinterModel::class;
+    public static ?string $items_id_2          = 'printermodels_id';
+    public static int $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
 
 
@@ -77,12 +77,12 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
 
         if (!$withtemplate && Printer::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'CartridgeItem':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';

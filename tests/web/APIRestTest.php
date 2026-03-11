@@ -65,14 +65,10 @@ use TicketTemplate;
 use TicketTemplateMandatoryField;
 use User;
 
-/**
- * @engine isolate
- */
 class APIRestTest extends TestCase
 {
     protected $session_token;
-    /** @var GuzzleHttp\Client */
-    protected $http_client;
+    protected GuzzleHttp\Client $http_client;
     protected $base_uri = "";
     protected $last_error;
 

@@ -41,10 +41,13 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
 use KnowbaseItem;
 use Session;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+
+use function Safe\json_decode;
 
 final class KnowbaseItemController extends AbstractController
 {
@@ -57,12 +60,12 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function content(Request $request): Response
     {
-        $id = $request->get('knowbaseitems_id');
+        $id = $request->attributes->getInt('knowbaseitems_id');
         if (!KnowbaseItem::canView()) {
             throw new AccessDeniedHttpException();
         }
         $kbitem = new KnowbaseItem();
-        if (!$kbitem->getFromDB((int) $id)) {
+        if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
@@ -79,12 +82,12 @@ final class KnowbaseItemController extends AbstractController
     )]
     public function full(Request $request): Response
     {
-        $id = $request->get('knowbaseitems_id');
+        $id = $request->attributes->getInt('knowbaseitems_id');
         if (!KnowbaseItem::canView()) {
             throw new AccessDeniedHttpException();
         }
         $kbitem = new KnowbaseItem();
-        if (!$kbitem->getFromDB((int) $id)) {
+        if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
@@ -92,6 +95,72 @@ final class KnowbaseItemController extends AbstractController
         return new StreamedResponse(static function () use ($kbitem) {
             $kbitem->showFull();
         });
+    }
+
+    #[Route(
+        "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Answer",
+        name: "knowbaseitem_update_answer",
+        methods: ["POST"],
+        requirements: [
+            'knowbaseitems_id' => '\d+',
+        ]
+    )]
+    public function updateAnswer(Request $request): JsonResponse
+    {
+        $id = $request->attributes->getInt('knowbaseitems_id');
+
+        $kbitem = new KnowbaseItem();
+        if (!$kbitem->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$kbitem->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $answer = $data['answer'] ?? null;
+
+        if ($answer === null) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __('Missing answer content'),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Sanitize HTML content to prevent XSS
+        $answer = RichText::getSafeHtml($answer);
+
+        $update_data = [
+            'id' => $id,
+            'answer' => $answer,
+        ];
+
+        // Handle optional title update
+        if (isset($data['name'])) {
+            $name = strip_tags(trim($data['name']));
+            if ($name === '') {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => __('Title cannot be empty'),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+            $update_data['name'] = $name;
+        }
+
+        $success = $kbitem->update($update_data);
+
+        if ($success) {
+            return new JsonResponse([
+                'success' => true,
+                'message' => __('Article saved successfully'),
+            ]);
+        }
+
+        return new JsonResponse([
+            'success' => false,
+            'message' => __('Failed to save the article'),
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     #[Route(
@@ -105,10 +174,10 @@ final class KnowbaseItemController extends AbstractController
     {
         global $CFG_GLPI, $DB;
 
-        $itemtype = $request->get('itemtype');
-        $items_id = $request->get('items_id');
-        $start = (int) $request->get('start', 0);
-        $contains = $request->get('contains');
+        $itemtype = $request->attributes->get('itemtype');
+        $items_id = $request->attributes->getInt('items_id');
+        $start = $request->query->getInt('start');
+        $contains = $request->query->get('contains');
 
         // Search a solution
         if (empty($contains)) {
@@ -173,7 +242,7 @@ final class KnowbaseItemController extends AbstractController
             'results' => $results,
             'itemtype' => $itemtype,
             'items_id' => $items_id,
-            'is_ajax' => $request->get('ajax_reload', 0),
+            'is_ajax' => $request->query->getBoolean('ajax_reload'),
             'count' => $total_count,
             'start' => $start,
         ];

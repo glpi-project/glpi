@@ -105,11 +105,11 @@ final class Form extends CommonDBTM implements
     public const TRANSLATION_KEY_HEADER = 'form_header';
     public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
 
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'date_mod',
     ];
 
@@ -387,6 +387,12 @@ final class Form extends CommonDBTM implements
     {
         global $DB;
 
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'header',
+            'content_field' => 'header',
+            'force_update'  => true,
+        ]);
+
         $DB->beginTransaction();
         try {
             // Update questions and sections
@@ -453,7 +459,7 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = __('Form properties');
         $handlers = [];
         $handlers[$key][] = new TranslationHandler(

@@ -116,3 +116,17 @@
     // if it is still unsuported when we are ready to release the 12.0 version.
     field-sizing: content;
 }
+
+.max-width-unset {
+    max-width: unset !important;
+}
+
+@media (hover: hover) {
+    .opacity-0-hoverable {
+        opacity: 0 !important;
+    }
+
+    .opacity-100-hoverable {
+        opacity: 100 !important;
+    }
+}

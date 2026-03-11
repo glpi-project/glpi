@@ -59,14 +59,14 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'printer';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'printer';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -213,7 +213,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
                         'SELECT' => 'id',
                         'FROM'   => 'glpi_networkports',
                         'WHERE'  => [
-                            'itemtype'  => $this->getType(),
+                            'itemtype'  => static::class,
                             'items_id'  => $ID,
                         ],
                     ]),
@@ -341,7 +341,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_peripheral' => $this->getType(),
+                'itemtype_peripheral' => static::class,
                 'items_id_peripheral' => $this->fields['id'],
             ],
         ]);

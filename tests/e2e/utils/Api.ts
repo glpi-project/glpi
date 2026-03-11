@@ -38,6 +38,7 @@ import { Config } from "./Config";
 import { WorkerSessionCache } from "./WorkerSessionCache";
 
 const ENTITY_LOCK_FILE = join(tmpdir(), 'glpi-e2e-entity-creation.lock');
+const ASSET_DEFINITION_LOCK_FILE = join(tmpdir(), 'glpi-e2e-asset-definition-creation.lock');
 
 type Tile = {
     title: string,
@@ -66,13 +67,31 @@ export class Api
         return response.data;
     }
 
+    public async getSubItems(itemtype: string, id: number, subitemtype: string): Promise<any[]>
+    {
+        const response = await this.doCrudRequest(
+            'GET',
+            `${itemtype}/${id}/${subitemtype}`
+        );
+        return response.data;
+    }
+
     public async createItem(itemtype: string, fields: object): Promise<number>
     {
         if (itemtype === 'Entity') {
             // Hack for entities to prevent the issue described here:
             // https://github.com/glpi-project/glpi/issues/22625
             // Can be removed once the issue is resolved.
-            return this.createItemWithLock(itemtype, fields);
+            return this.createItemWithLock(ENTITY_LOCK_FILE, itemtype, fields);
+        }
+
+        if (itemtype === 'Glpi\\Asset\\AssetDefinition') {
+            // AssetDefinition creation triggers syncProfilesRights() which
+            // calls fillProfileRights(). This method collects right names from
+            // ALL profiles and inserts missing rows into glpi_profilerights.
+            // When two definitions are created concurrently, both see the same
+            // missing rows and try to INSERT them, causing a duplicate-key error.
+            return this.createItemWithLock(ASSET_DEFINITION_LOCK_FILE, itemtype, fields);
         }
 
         return this.doCreateItem(itemtype, fields);
@@ -145,40 +164,40 @@ export class Api
         return Number(response.data.id);
     }
 
-    private async createItemWithLock(itemtype: string, fields: object): Promise<number>
+    private async createItemWithLock(lockFile: string, itemtype: string, fields: object): Promise<number>
     {
-        const lock = await this.acquireLock();
+        const lock = await this.acquireLock(lockFile);
         try {
             return await this.doCreateItem(itemtype, fields);
         } finally {
-            this.releaseLock(lock);
+            this.releaseLock(lockFile, lock);
         }
     }
 
-    private async acquireLock(): Promise<number>
+    private async acquireLock(lockFile: string): Promise<number>
     {
         const maxAttempts = 100;
         const retryDelay = 50;
 
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
             try {
-                const fd = openSync(ENTITY_LOCK_FILE, 'wx');
+                const fd = openSync(lockFile, 'wx');
                 return fd;
             } catch {
                 await new Promise(resolve => setTimeout(resolve, retryDelay));
             }
         }
 
-        throw new Error('Failed to acquire lock for Entity creation');
+        throw new Error(`Failed to acquire lock for ${lockFile}`);
     }
 
-    private releaseLock(fd: number): void
+    private releaseLock(lockFile: string, fd: number): void
     {
         try {
             closeSync(fd);
         } finally {
-            if (existsSync(ENTITY_LOCK_FILE)) {
-                unlinkSync(ENTITY_LOCK_FILE);
+            if (existsSync(lockFile)) {
+                unlinkSync(lockFile);
             }
         }
     }

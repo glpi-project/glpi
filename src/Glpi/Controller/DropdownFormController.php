@@ -70,8 +70,8 @@ class DropdownFormController extends AbstractController
         }
 
         $input = $request->request->all();
-        $id = (int) ($request->get('id') ?? -1);
-        $in_modal = (bool) $request->get('_in_modal');
+        $id = $request->isMethod('GET') ? $request->query->getInt('id', -1) : $request->request->getInt('id', -1);
+        $in_modal = (bool) $request->query->get('_in_modal');
 
         if (isset($input["add"])) {
             $dropdown->check(-1, CREATE, $input);

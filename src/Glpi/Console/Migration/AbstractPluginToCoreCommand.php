@@ -67,17 +67,15 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Target items mapping.
      *
-     * @var array
      */
-    private $target_items_mapping = [];
+    private array $target_items_mapping = [];
 
     /**
      * Matching items mapping.
      * Acts as a local cache to prevent DB queries when matching was found earlier for same criteria.
      *
-     * @var array
      */
-    private $matching_items_mapping = [];
+    private array $matching_items_mapping = [];
 
     protected function configure()
     {
@@ -98,7 +96,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         $this->checkPlugin();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $no_interaction = $input->getOption('no-interaction');
         if (!$no_interaction) {
@@ -382,7 +380,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
 
         $exists = $infocom->getFromDBByCrit(
             [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
             ]
         );
@@ -393,7 +391,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             $success = $infocom->update($infocom_input);
         } else {
             $infocom_input += [
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->getID(),
                 'entities_id'  => $item->fields['entities_id'] ?? 0,
                 'is_recursive' => $item->fields['is_recursive'] ?? 0,
@@ -405,7 +403,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             $this->handleImportError(
                 sprintf(
                     __('Unable to financial and administrative information for %s "%s" (%d).'),
-                    $item->getType(),
+                    $item::class,
                     $item->getName(),
                     $item->getID()
                 ),

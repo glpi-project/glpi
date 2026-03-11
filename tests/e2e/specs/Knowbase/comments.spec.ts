@@ -56,8 +56,8 @@ test('Can view and add comments', async ({ page, profile, api }) => {
 
     // Toggle comments panel
     await expect(kb.getHeading('Comments')).not.toBeAttached();
-    await page.getByTitle('More actions').click();
-    await kb.getButton('Comments').click();
+    await kb.doOpenCommentsPanel();
+    await expect(kb.getCommentsCounter()).toHaveText("1");
     await expect(kb.getHeading('Comments')).toBeVisible();
 
     // Existing comment should be shown
@@ -66,15 +66,16 @@ test('Can view and add comments', async ({ page, profile, api }) => {
 
     // Add a new comment
     await expect(kb.getButton("Add comment")).toBeHidden();
-    await page.getByPlaceholder("Add a comment...").fill("My second comment");
+    await kb.getNewCommentTextarea().fill("My second comment");
     await expect(kb.getButton("Add comment")).toBeVisible();
     await kb.getButton("Add comment").click();
 
     // New comment should be added
     await expect(kb.getButton("Add comment")).toBeHidden();
-    await expect(page.getByPlaceholder("Add a comment...")).toBeEmpty();
+    await expect(kb.getNewCommentTextarea()).toBeEmpty();
     await expect(page.getByText(/E2E worker account \d+\s+·\s+Now/)).toBeVisible();
     await expect(kb.getCommentByContent('My second comment')).toBeVisible();
+    await expect(kb.getCommentsCounter()).toHaveText("2");
 });
 
 test('Can edit a comment', async ({ page, profile, api }) => {
@@ -94,17 +95,16 @@ test('Can edit a comment', async ({ page, profile, api }) => {
 
     // Go to article and open comments panel
     await kb.goto(id);
-    await page.getByTitle('More actions').click();
-    await kb.getButton('Comments').click();
+    await kb.doOpenCommentsPanel();
     await expect(kb.getHeading('Comments')).toBeVisible();
 
     // Original comment should be visible
     await expect(kb.getCommentByContent('Original comment')).toBeVisible();
 
     // Open the edit form via the dropdown menu
-    const comment = page.getByTestId('comment').filter({ hasText: 'Original comment' });
+    const comment = kb.getComment('Original comment');
     await comment.getByTitle('More actions').click();
-    await comment.getByText('Edit comment').click();
+    await kb.getButton('Edit comment').click();
 
     // Edit form should be visible with original content
     const textarea = comment.getByTestId('comment-edit-textarea');
@@ -121,4 +121,100 @@ test('Can edit a comment', async ({ page, profile, api }) => {
 
     // Edit form should be hidden
     await expect(textarea).toBeHidden();
+});
+
+test('Can delete a comment', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item with a comment
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'My kb entry for delete test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+    await api.createItem('KnowbaseItem_Comment', {
+        knowbaseitems_id: id,
+        comment: "Comment to delete",
+    });
+
+    // Go to article and open comments panel
+    await kb.goto(id);
+    await kb.doOpenCommentsPanel();
+    await expect(kb.getCommentsCounter()).toHaveText("1");
+    await expect(kb.getHeading('Comments')).toBeVisible();
+    await expect(kb.getNoCommentsMessage()).toBeHidden();
+
+    // Comment should be visible
+    const comment = kb.getComment('Comment to delete');
+    await expect(comment).toBeVisible();
+
+    // Click delete button in the dropdown menu
+    await comment.getByTitle('More actions').click();
+    await kb.getButton('Delete comment').click();
+
+    // Confirmation modal should appear
+    const modal = kb.getDialog("Delete comment");;
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Delete comment')).toBeVisible();
+    await expect(modal.getByText('Are you sure you want to delete this comment?')).toBeVisible();
+
+    // Confirm deletion
+    await modal.getByRole('button', { name: 'Delete' }).click();
+
+    // Comment should be removed
+    await expect(comment).not.toBeAttached();
+    await expect(kb.getCommentsCounter()).toHaveText("0");
+    await expect(kb.getNoCommentsMessage()).toBeVisible();
+});
+
+test('Can reply to a comment thread', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item with a root comment
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'My kb entry for reply test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+    await api.createItem('KnowbaseItem_Comment', {
+        knowbaseitems_id: id,
+        comment: "Root comment for thread",
+    });
+
+    // Go to article and open comments panel
+    await kb.goto(id);
+    await kb.doOpenCommentsPanel();
+    await expect(kb.getHeading('Comments')).toBeVisible();
+    await expect(kb.getCommentsCounter()).toHaveText("1");
+
+    // Root comment should be visible
+    await expect(kb.getCommentByContent('Root comment for thread')).toBeVisible();
+
+    // Hover over the thread to show the reply trigger
+    const thread = page.getByText('Root comment for thread').filter({
+        visible: true
+    });
+    await thread.hover({ position: {x: 5, y: 5}});
+
+    // Click the reply button
+    await kb.getButton('Reply...').click();
+
+    // Reply form should be visible
+    const reply_textarea = page.getByPlaceholder('Write a reply...').filter({
+        visible: true
+    });
+    await expect(reply_textarea).toBeVisible();
+
+    // Fill in and submit the reply
+    await reply_textarea.fill('This is my reply');
+    await kb.getButton('Reply').click();
+
+    // Reply should be visible in the thread
+    await expect(kb.getCommentByContent('This is my reply')).toBeVisible();
+    await expect(kb.getCommentsCounter()).toHaveText("2");
+
+    // Reply form should be hidden after submission
+    await expect(reply_textarea).toBeHidden();
 });

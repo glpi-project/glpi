@@ -154,7 +154,7 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
 
         foreach ($questions as $question) {
             // Only keep questions that are Location
-            if ((new QuestionTypeItemDropdown())->getDefaultValueItemtype($question) !== Location::getType()) {
+            if ((new QuestionTypeItemDropdown())->getDefaultValueItemtype($question) !== Location::class) {
                 continue;
             }
 
@@ -230,7 +230,8 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
         // Try to load location
         $location = Location::getById($location_id);
         if (!$location) {
-            return $fallback;
+            $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] = 0;
+            return new DynamicExportDataField($config, []);
         }
 
         // Insert location name and requirement

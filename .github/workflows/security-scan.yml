@@ -1,5 +1,8 @@
 name: "Security scan"
 
+permissions:
+  contents: "read"
+
 on:
   push:
     branches:
@@ -13,8 +16,6 @@ concurrency:
 
 jobs:
   security-scan:
-    permissions:
-      contents: "read"
     name: "Security scan"
     runs-on: "ubuntu-latest"
     env:

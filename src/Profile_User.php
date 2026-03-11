@@ -42,18 +42,18 @@ use Glpi\DBAL\QuerySubQuery;
 class Profile_User extends CommonDBRelation
 {
     // From CommonDBTM
-    public $auto_message_on_action               = false;
+    public bool $auto_message_on_action               = false;
 
     // From CommonDBRelation
-    public static $itemtype_1                    = User::class;
-    public static $items_id_1                    = 'users_id';
+    public static ?string $itemtype_1                    = User::class;
+    public static ?string $items_id_1                    = 'users_id';
 
-    public static $itemtype_2                    = Profile::class;
-    public static $items_id_2                    = 'profiles_id';
-    public static $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_2                    = Profile::class;
+    public static ?string $items_id_2                    = 'profiles_id';
+    public static int $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
 
     // Manage Entity properties forwarding
-    public static $disableAutoEntityForwarding   = true;
+    public static bool $disableAutoEntityForwarding   = true;
 
     /**
      * @since 0.84
@@ -1035,7 +1035,7 @@ TWIG, $avatar_params) . $username;
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class, User::getIcon());
                     }
                     break;
 
@@ -1044,7 +1044,7 @@ TWIG, $avatar_params) . $username;
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
                     break;
 
@@ -1056,7 +1056,7 @@ TWIG, $avatar_params) . $username;
                         'Authorization',
                         'Authorizations',
                         Session::getPluralNumber()
-                    ), $nb, $item::getType());
+                    ), $nb, $item::class);
             }
         }
         return '';
@@ -1237,9 +1237,9 @@ TWIG, $avatar_params) . $username;
         $profile = Profile::getById($this->fields['profiles_id']);
         $entity  = Entity::getById($this->fields['entities_id']);
 
-        $username    = $user->getNameID(['forceid' => true, 'complete' => 1]);
-        $profilename = $profile->getNameID(['forceid' => true, 'complete' => 1]);
-        $entityname  = $entity->getNameID(['forceid' => true, 'complete' => 1]);
+        $username    = $user->getNameID(['forceid' => true, 'complete' => true]);
+        $profilename = $profile->getNameID(['forceid' => true, 'complete' => true]);
+        $entityname  = $entity->getNameID(['forceid' => true, 'complete' => true]);
 
         // Log on user
         if ($user->dohistory) {
@@ -1254,9 +1254,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $user->getID(),
-                $user->getType(),
+                $user::class,
                 $changes,
-                $profile->getType(),
+                $profile::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }
@@ -1274,9 +1274,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $profile->getID(),
-                $profile->getType(),
+                $profile::class,
                 $changes,
-                $user->getType(),
+                $user::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }
@@ -1294,9 +1294,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $entity->getID(),
-                $entity->getType(),
+                $entity::class,
                 $changes,
-                $user->getType(),
+                $user::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }

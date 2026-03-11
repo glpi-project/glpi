@@ -51,7 +51,9 @@ var Reservations = function() {
 
     my.init = function(config) {
         my.id           = config.id || 0;
+        // FIXME The use of '||' means you cannot specify 'false' values. It should be '??' operator
         my.is_all       = config.is_all || true;
+        //FIXME 'rand' should not default to true, but to a unique value
         my.rand         = config.rand || true;
         my.is_tab       = config.is_tab || false;
         my.dom_id       = `reservations_planning_${my.rand}`;
@@ -306,3 +308,10 @@ var Reservations = function() {
           && date1.getDate() === date2.getDate();
     };
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        Reservations,
+    };
+}

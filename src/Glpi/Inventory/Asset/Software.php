@@ -72,7 +72,7 @@ class Software extends InventoryAsset
     /** @var array<int, mixed> */
     private array $deleted_versions = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         OperatingSystem::class => null,
     ];
 
@@ -317,7 +317,7 @@ class Software extends InventoryAsset
                 $item_os = new Item_OperatingSystem();
                 $os_list = $item_os->find([
                     'items_id' => $this->main_asset->item->fields['id'],
-                    'itemtype' => $this->main_asset->item->getType(),
+                    'itemtype' => $this->main_asset->item::class,
                 ]);
                 if (count($os_list) == 1) {
                     $operatingsystems_id = current($os_list)['operatingsystems_id'];
@@ -375,7 +375,7 @@ class Software extends InventoryAsset
             ],
             'WHERE'     => [
                 'glpi_items_softwareversions.items_id' => $this->item->fields['id'],
-                'glpi_items_softwareversions.itemtype'    => $this->item->getType(),
+                'glpi_items_softwareversions.itemtype'    => $this->item::class,
                 'glpi_items_softwareversions.is_dynamic'  => 1,
             ],
         ]);
@@ -636,14 +636,15 @@ class Software extends InventoryAsset
                 'manufacturers_id' => $this->known_links[$mkey] ?? 0,
             ];
 
-            $stmt->bind_param(
-                'ssss',
-                $this->entities_id,
-                $this->is_recursive,
-                $input['name'],
-                $input['manufacturers_id']
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $this->entities_id,
+                    $this->is_recursive,
+                    $input['name'],
+                    $input['manufacturers_id'],
+                ]
             );
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             while ($row = $results->fetch_object()) {
@@ -713,15 +714,16 @@ class Software extends InventoryAsset
                 'osid'         => $this->getOsForKey($val),
             ];
 
-            $stmt->bind_param(
-                'sssss',
-                $this->entities_id,
-                $input['version'],
-                $input['arch'],
-                $input['softwares_id'],
-                $input['osid']
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $this->entities_id,
+                    $input['version'],
+                    $input['arch'],
+                    $input['softwares_id'],
+                    $input['osid'],
+                ]
             );
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             while ($row = $results->fetch_object()) {
@@ -757,7 +759,6 @@ class Software extends InventoryAsset
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
 
                 if ($stmt === null) {
-                    $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),
                         new QueryParam()
@@ -769,9 +770,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns);
-                $stmt->bind_param($stmt_types, ...$stmt_values);
-                $DB->executeStatement($stmt);
+                $DB->executeStatement($stmt, $stmt_columns);
                 $softwares_id = $DB->insertId();
                 Log::history(
                     $softwares_id,
@@ -824,7 +823,6 @@ class Software extends InventoryAsset
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 if ($stmt === null) {
-                    $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),
                         new QueryParam()
@@ -836,9 +834,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns); //@phpstan-ignore argument.templateType (I have no idea how to solve this one.)
-                $stmt->bind_param($stmt_types, ...$stmt_values);
-                $DB->executeStatement($stmt);
+                $DB->executeStatement($stmt, $stmt_columns);
                 $versions_id = $DB->insertId();
                 Log::history(
                     $softwares_id,
@@ -932,17 +928,18 @@ class Software extends InventoryAsset
                 'date_install'          => $val->date_install ?? null,
             ];
 
-            $itemtype = $this->item->getType();
-            $stmt->bind_param(
-                'ssssss',
-                $itemtype,
-                $this->item->fields['id'],
-                $input['softwareversions_id'],
-                $input['is_dynamic'],
-                $input['entities_id'],
-                $input['date_install']
+            $itemtype = $this->item::class;
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $itemtype,
+                    $this->item->fields['id'],
+                    $input['softwareversions_id'],
+                    $input['is_dynamic'],
+                    $input['entities_id'],
+                    $input['date_install'],
+                ]
             );
-            $DB->executeStatement($stmt);
 
             //store link
             $this->items_versions[$this->item->fields['id'] . '-' . $versions_id] = true;
@@ -979,7 +976,7 @@ class Software extends InventoryAsset
         foreach ($this->added_versions as $software_data) {
             Log::history(
                 $this->item->fields['id'],
-                $this->item->getType(),
+                $this->item::class,
                 [0, '', sprintf(__('%1$s - %2$s'), $software_data['name'], $software_data['version'])],
                 'Software',
                 Log::HISTORY_ADD_SUBITEM
@@ -989,7 +986,7 @@ class Software extends InventoryAsset
         foreach ($this->updated_versions as $software_data) {
             Log::history(
                 $this->item->fields['id'],
-                $this->item->getType(),
+                $this->item::class,
                 [
                     0,
                     '',
@@ -1010,7 +1007,7 @@ class Software extends InventoryAsset
             // log into asset
             Log::history(
                 $this->item->fields['id'],
-                $this->item->getType(),
+                $this->item::class,
                 [0, sprintf(__('%1$s - %2$s'), $software_name, $version_name), ''],
                 'Software',
                 Log::HISTORY_DELETE_SUBITEM

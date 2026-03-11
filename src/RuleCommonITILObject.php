@@ -303,7 +303,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Appliance::getType()][] = $action->fields["value"];
+                            $output["items_id"][Appliance::class][] = $action->fields["value"];
                         }
 
                         // Remove values that may have been added by any "append" rule action on same actor field.
@@ -337,7 +337,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Appliance::getType()][] = $value;
+                            $output["items_id"][Appliance::class][] = $value;
                         } else {
                             $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         }
@@ -606,7 +606,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                 }
 
                                 foreach ($target_appliances as $value) {
-                                    $output["items_id"][Appliance::getType()][] = $value['id'];
+                                    $output["items_id"][Appliance::class][] = $value['id'];
                                 }
                             }
                         } elseif ($field == "itilcategories_id") {
@@ -654,11 +654,14 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
 
     public function getCriterias()
     {
-        static $criterias = [];
+        static $criterias_by_class = [];
 
-        if (count($criterias)) {
-            return $criterias;
+        $rule_class = static::class;
+        if (isset($criterias_by_class[$rule_class])) {
+            return $criterias_by_class[$rule_class];
         }
+
+        $criterias = [];
 
         $itemtype = static::getItemtype();
         $itil_table = $itemtype::getTable();
@@ -805,9 +808,17 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $criterias['_contract_types']['name']                 = ContractType::getTypeName(1);
         $criterias['_contract_types']['type']                 = 'dropdown';
 
+        // Itil object supporting validation/approval
         if ($itemtype::getValidationClassInstance() !== null) {
+            // validation status
             $criterias['global_validation']['name'] = CommonITILValidation::getTypeName(1);
             $criterias['global_validation']['type'] = 'dropdown_validation_status';
+
+            // validation step name
+            $criterias['_validationsteps_id']['name'] = ValidationStep::getTypeName(1);
+            $criterias['_validationsteps_id']['type'] = 'dropdown';
+            $criterias['_validationsteps_id']['table'] = ValidationStep::getTable();
+            $criterias['_validationsteps_id']['field'] = 'name';
         }
 
         $criterias['_date_creation_calendars_id'] = [
@@ -817,6 +828,8 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             'linkfield'       => '_date_creation_calendars_id',
             'type'            => 'dropdown',
         ];
+
+        $criterias_by_class[$rule_class] = $criterias;
 
         return $criterias;
     }
@@ -906,7 +919,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_suppliers_id_assign']['appendtoarray']           = ['use_notification' => 1];
         $actions['_suppliers_id_assign']['appendtoarrayfield']      = 'suppliers_id';
 
-        // set a observer
+        // set an observer
         $actions['_users_id_observer']['name']                      = _n('Observer', 'Observers', 1);
         $actions['_users_id_observer']['type']                      = 'dropdown_users';
         $actions['_users_id_observer']['force_actions']             = ['assign', 'append'];
@@ -915,7 +928,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_observer']['appendtoarray']             = ['use_notification' => 1];
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
-        // set a observer group
+        // set an observer group
         $actions['_groups_id_observer']['table']                    = 'glpi_groups';
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
@@ -924,7 +937,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 
-        // set a observer by regexp
+        // set an observer by regexp
         $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
         $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Observer group', 'Observer groups', 1), __('by completename'));
         $actions['_groups_id_observer_by_completename']['type']               = 'dropdown';
@@ -1005,11 +1018,11 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
             // Approval request to requester group manager
-            $actions['users_id_validate_requester_supervisor']['name']  = __('Approval request to requester group manager');
+            $actions['users_id_validate_requester_supervisor']['name']  = __('Send an approval request to requester group manager');
             $actions['users_id_validate_requester_supervisor']['type']  = 'yesno';
             $actions['users_id_validate_requester_supervisor']['force_actions'] = ['add_validation'];
 
-            $actions['users_id_validate_assign_supervisor']['name']     = __('Approval request to technician group manager');
+            $actions['users_id_validate_assign_supervisor']['name']     = __('Send an approval request to technician group manager');
             $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
             $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
 

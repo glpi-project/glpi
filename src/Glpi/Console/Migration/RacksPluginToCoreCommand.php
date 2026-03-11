@@ -136,23 +136,20 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Datacenter on which rooms will be created.
      *
-     * @var int
      */
-    private $datacenter_id;
+    private ?int $datacenter_id = null;
 
     /**
      * Room on which racks will be placed if no corresponding room found.
      *
-     * @var int
      */
-    private $fallback_room_id;
+    private ?int $fallback_room_id = null;
 
     /**
      * Imported elements mapping.
      *
-     * @var array
      */
-    private $elements_mapping;
+    private array $elements_mapping;
 
     protected function configure()
     {
@@ -203,7 +200,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->elements_mapping = []; // Clear elements mapping
@@ -1288,7 +1285,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $item_input = [
-                    'itemtype' => $item->getType(),
+                    'itemtype' => $item::class,
                     'items_id' => $item->fields['id'],
                 ];
 
@@ -1308,7 +1305,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 $required_units = 1;
-                $modeltype = $item->getType() . 'Model';
+                $modeltype = $item::class . 'Model';
                 if (class_exists($modeltype)) {
                     $model_fkey = getForeignKeyFieldForTable($modeltype::getTable());
                     if (
@@ -1438,19 +1435,17 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 'vis_rows'       => 10,
             ];
 
-            if (
-                !($room_id = $room->getFromDBByCrit($room_fields))
-                && !($room_id = $room->add($room_fields))
-            ) {
+            if ($room->getFromDBByCrit($room_fields)) {
+                $room_id = $room->fields['id'];
+            } elseif (!($room_id = $room->add($room_fields))) {
                 $this->outputImportError(__('Unable to create default room.'));
-
                 $room_id = 0;
             }
 
             $this->fallback_room_id = $room_id;
         }
 
-        return $this->fallback_room_id;
+        return $this->fallback_room_id ?? 0;
     }
 
     /**

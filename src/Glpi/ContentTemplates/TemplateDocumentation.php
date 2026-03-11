@@ -47,25 +47,22 @@ class TemplateDocumentation
     /**
      * Documentation summary, keep link to all the sections
      *
-     * @var array
      */
-    protected $summary;
+    protected array $summary;
 
     /**
      * Sections of the documentations.
      * The first section contains the available parameters, the followings
      * sections contains any extra references needed to work on this parameters
      *
-     * @var array
      */
-    protected $sections;
+    protected array $sections;
 
     /**
      * Context of the displayed variables
      *
-     * @var string
      */
-    protected $context;
+    protected string $context;
 
     public function __construct(string $context)
     {

@@ -46,16 +46,16 @@ use Glpi\Search\DefaultSearchRequestInterface;
 class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory = true;
-    protected static $forward_entity_to = ['ProblemCost'];
+    public bool $dohistory = true;
+    protected static array $forward_entity_to = ['ProblemCost'];
 
     // From CommonITIL
-    public $userlinkclass        = 'Problem_User';
-    public $grouplinkclass       = 'Group_Problem';
-    public $supplierlinkclass    = 'Problem_Supplier';
+    public string $userlinkclass        = 'Problem_User';
+    public string $grouplinkclass       = 'Group_Problem';
+    public string $supplierlinkclass    = 'Problem_Supplier';
 
-    public static $rightname            = 'problem';
-    protected $usenotepad        = true;
+    public static string $rightname            = 'problem';
+    protected bool $usenotepad        = true;
 
 
     public const MATRIX_FIELD         = 'priority_matrix';
@@ -189,7 +189,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
 
                 case Group::class:
                     $nb = 0;
@@ -204,7 +204,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
             }
         }
         return '';
@@ -328,6 +328,13 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         $input =  parent::prepareInputForAdd($input);
         if ($input === false) {
             return false;
+        }
+
+        // Normalize inputs from "add from item" form
+        if (isset($input['_add_fromitem'], $input['itemtype'], $input['items_id']) && !is_array($input['items_id'])) {
+            $input['_from_itemtype'] = $input['itemtype'];
+            $input['_from_items_id'] = $input['items_id'];
+            $input['items_id'] = [$input['itemtype'] => [$input['items_id']]];
         }
 
         $this->processRules(RuleCommonITILObject::ONADD, $input);
@@ -1414,7 +1421,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
             default:
                 $restrict['glpi_items_problems.items_id'] = $item->getID();
-                $restrict['glpi_items_problems.itemtype'] = $item->getType();
+                $restrict['glpi_items_problems.itemtype'] = $item::class;
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [

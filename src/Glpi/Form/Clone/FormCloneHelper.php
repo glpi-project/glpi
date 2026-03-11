@@ -100,6 +100,9 @@ final class FormCloneHelper
         // Reset counters
         $input['usage_count'] = 0;
 
+        // Disable the form
+        $input['is_active'] = false;
+
         // Disable default data creation
         $input['_init_sections'] = false;
         $input['_init_destinations'] = false;

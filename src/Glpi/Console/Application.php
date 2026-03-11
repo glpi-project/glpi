@@ -95,16 +95,12 @@ class Application extends BaseApplication
 
     /**
      * Pointer to $CFG_GLPI.
-     * @var array
      */
-    private $config;
+    private array $config;
 
     private ?DBmysql $db = null;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public function __construct(private Kernel $kernel)
     {
@@ -221,7 +217,7 @@ class Application extends BaseApplication
         return new InputDefinition($definition);
     }
 
-    protected function configureIO(InputInterface $input, OutputInterface $output)
+    protected function configureIO(InputInterface $input, OutputInterface $output): void
     {
 
         global $CFG_GLPI;
@@ -265,7 +261,7 @@ class Application extends BaseApplication
         return $name;
     }
 
-    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
+    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
     {
         $begin_time = microtime(true);
 
@@ -399,8 +395,7 @@ class Application extends BaseApplication
      */
     private function isLanguageValid($language)
     {
-        return is_array($this->config)
-         && array_key_exists('languages', $this->config)
+        return array_key_exists('languages', $this->config)
          && array_key_exists($language, $this->config['languages']);
     }
 

@@ -45,13 +45,13 @@ class CommonDBRelationTest extends DbTestCase
     {
         /** both specific, both attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         //nothing in input
@@ -63,7 +63,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_1, $instance::$items_id_2])
                 ),
                 $e->getMessage()
@@ -89,7 +89,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_1, $instance::$items_id_2])
                 ),
                 $e->getMessage()
@@ -115,7 +115,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_2])
                 ),
                 $e->getMessage()
@@ -141,7 +141,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_1])
                 ),
                 $e->getMessage()
@@ -187,13 +187,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** both specific, first attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = false;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = false;
         };
 
         $exception_thrown = false;
@@ -204,7 +204,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_1])
                 ),
                 $e->getMessage()
@@ -224,13 +224,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** both specific, second attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = false;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = false;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         $exception_thrown = false;
@@ -241,7 +241,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_2])
                 ),
                 $e->getMessage()
@@ -261,13 +261,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** both specific, none attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = false;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = false;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = false;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = false;
         };
 
         //nothing in input is OK
@@ -291,13 +291,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** first only specific, all attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = 'itemtype';
-            public static $items_id_2 = 'items_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = 'itemtype';
+            public static ?string $items_id_2 = 'items_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         $exception_thrown = false;
@@ -308,7 +308,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_1, $instance::$items_id_2])
                 ),
                 $e->getMessage()
@@ -328,13 +328,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** first only specific, second suffixed, all attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = 'itemtype_peripheral';
-            public static $items_id_2 = 'items_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = 'itemtype_peripheral';
+            public static ?string $items_id_2 = 'items_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         $exception_thrown = false;
@@ -345,7 +345,7 @@ class CommonDBRelationTest extends DbTestCase
             $exception_thrown = true;
             $this->assertEquals(
                 sprintf(
-                    'Post data must contain (greater than 0): %1$s',
+                    'Post data must contain a valid value for: %1$s',
                     implode(', ', [$instance::$items_id_1, $instance::$items_id_2])
                 ),
                 $e->getMessage()
@@ -362,5 +362,56 @@ class CommonDBRelationTest extends DbTestCase
             ]
         );
         /** /first only specific, second suffixed, all attached */
+
+        /** Entity with items_id = 0 is valid (root entity) */
+        $instance = new class extends CommonDBRelation {
+            public static ?string $itemtype_1 = \KnowbaseItem::class;
+            public static ?string $items_id_1 = 'knowbaseitems_id';
+            public static bool $mustBeAttached_1 = true;
+
+            public static ?string $itemtype_2 = 'itemtype';
+            public static ?string $items_id_2 = 'items_id';
+            public static bool $mustBeAttached_2 = true;
+
+            public static function getTable($classname = null)
+            {
+                return 'glpi_knowbaseitems_items'; // ensure using a table with expected fields, some backend code rely on table columns
+            }
+        };
+
+        // items_id = 0 with Entity itemtype should pass validation
+        $input = ['knowbaseitems_id' => 42, 'itemtype' => \Entity::class, 'items_id' => 0];
+        try {
+            $instance->check(-1, CREATE, $input);
+        } catch (AccessDeniedHttpException $e) {
+            // no session is set up, so rights check fails after validation; this is expected
+        }
+
+        // items_id = 0 with non-Entity itemtype should fail validation
+        $exception_thrown = false;
+        try {
+            $input = ['knowbaseitems_id' => 42, 'itemtype' => \Computer::class, 'items_id' => 0];
+            $instance->check(-1, CREATE, $input);
+        } catch (ItemLinkException $e) {
+            $exception_thrown = true;
+            $this->assertEquals(
+                sprintf(
+                    'Post data must contain a valid value for: %1$s',
+                    'items_id'
+                ),
+                $e->getMessage()
+            );
+        }
+        $this->assertTrue($exception_thrown);
+        $this->hasSessionMessages(
+            ERROR,
+            [
+                sprintf(
+                    'Mandatory fields are not filled. Please correct: %1$s',
+                    'itemtype'
+                ),
+            ]
+        );
+        /** /Entity with items_id = 0 is valid (root entity) */
     }
 }

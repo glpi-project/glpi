@@ -43,10 +43,10 @@ use Glpi\RichText\RichText;
  **/
 class DropdownTranslation extends CommonDBChild
 {
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = true;
-    public static $rightname       = 'dropdown';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = true;
+    public static string $rightname       = 'dropdown';
 
 
     public static function getTypeName($nb = 0)
@@ -201,7 +201,7 @@ class DropdownTranslation extends CommonDBChild
         return countElementsInTable(
             getTableForItemType(self::class),
             [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->getID(),
                 'NOT'      => ['field' => 'completename' ],
             ]
@@ -385,7 +385,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'FROM'   => getTableForItemType(self::class),
             'WHERE'  => [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
                 'field'     => ['<>', 'completename'],
             ],
@@ -433,12 +433,6 @@ TWIG, $twig_params);
         ]);
     }
 
-    /**
-     * Display translation form
-     *
-     * @param int $ID       field (default -1)
-     * @param array   $options
-     */
     public function showForm($ID = -1, array $options = [])
     {
         if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {

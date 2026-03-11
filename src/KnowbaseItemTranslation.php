@@ -44,12 +44,12 @@ use Glpi\RichText\RichText;
  **/
 class KnowbaseItemTranslation extends CommonDBChild
 {
-    public static $itemtype = KnowbaseItem::class;
-    public static $items_id = 'knowbaseitems_id';
-    public $dohistory       = true;
-    public static $logs_for_parent = false;
+    public static string $itemtype = KnowbaseItem::class;
+    public static string $items_id = 'knowbaseitems_id';
+    public bool $dohistory       = true;
+    public static bool $logs_for_parent = false;
 
-    public static $rightname       = 'knowbase';
+    public static string $rightname       = 'knowbase';
 
 
     public static function getTypeName($nb = 0)
@@ -67,8 +67,6 @@ class KnowbaseItemTranslation extends CommonDBChild
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
-        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
-        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }
@@ -239,12 +237,6 @@ TWIG, $twig_params);
         return true;
     }
 
-    /**
-     * Display translation form
-     *
-     * @param int $ID
-     * @param array   $options
-     */
     public function showForm($ID = -1, array $options = [])
     {
         if (($ID <= 0 && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {

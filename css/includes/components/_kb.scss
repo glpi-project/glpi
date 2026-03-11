@@ -30,13 +30,485 @@
  * ---------------------------------------------------------------------
  */
 
+.article-container {
+    max-width: 1320px !important;
+}
+
 .kb-sidepanel {
     background-color: var(--tblr-card-cap-bg);
     border-left: 1px solid #e1e4e8;
     height: calc(100vh - 150px);
+
+    .steps-vertical {
+        position: relative;
+        left: -1.5rem;
+        width: calc(100% + 3rem);
+        margin-left: 0;
+        padding-right: 1.25rem;
+        border-left: none;
+    }
+
+    &.closed {
+        border-left: 0;
+        width: 0;
+        overflow: hidden;
+        padding: 0 !important;
+    }
+}
+
+.kb-title-editable {
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+
+    &.is-editing {
+        outline: none;
+        padding: 2px 6px;
+        margin: 0 -6px;
+
+        &:focus {
+            background-color: rgb(var(--tblr-primary-rgb) / 4%);
+        }
+
+        &:empty::before {
+            content: attr(data-placeholder);
+            color: var(--tblr-muted);
+            pointer-events: none;
+        }
+    }
 }
 
 .kb-article {
     max-height: calc(100vh - 150px);
     overflow: auto;
+
+    // Allow bubble menu to overflow when editor is active
+    &:has(.is-editing) {
+        overflow: visible;
+        max-height: none;
+    }
+
+    transition: width 0.35s ease-in-out;
+}
+
+[data-glpi-knowbase-side-panel-offcanvas] {
+    width: min(400px, 85vw);
+
+    .steps-vertical {
+        --tblr-steps-padding: 1.5rem;
+
+        margin-left: 0;
+    }
+}
+
+// KB Documents footer section
+
+.kb-documents-footer {
+    scroll-margin-top: 1rem;
+}
+
+// Document badge styling (matches mockup)
+.kb-document-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    .kb-unlink-document {
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
+        font-size: 0.5rem;
+        padding: 0.25rem;
+
+        &:hover {
+            color: var(--tblr-danger) !important;
+            opacity: 1 !important;
+        }
+    }
+
+    &:focus-within {
+        .kb-unlink-document {
+            opacity: 1;
+        }
+    }
+
+    &:hover {
+        background-color: var(--tblr-primary) !important;
+        color: var(--tblr-bg-surface) !important;
+        border-color: var(--tblr-primary);
+        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+
+        a {
+            color: inherit;
+        }
+
+        i {
+            color: var(--tblr-bg-surface) !important;
+        }
+
+        .kb-unlink-document {
+            opacity: 1;
+        }
+    }
+}
+
+// KB revision diff - inline highlights
+.kb-article--diff-mode {
+    ins.diffins {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffdel {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+
+    ins.diffmod {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffmod {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+}
+
+// KB revision comparison - side panel state
+.kb-sidepanel [data-glpi-revision-id] {
+    cursor: pointer;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    &.kb-revision--comparing {
+        background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+        box-shadow: inset -3px 0 0 var(--tblr-primary);
+    }
+}
+
+// Related item badge styling
+.kb-related-item-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--tblr-primary) !important;
+        color: var(--tblr-bg-surface) !important;
+        border-color: var(--tblr-primary);
+        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+
+        i {
+            color: var(--tblr-bg-surface) !important;
+        }
+    }
+}
+
+
+// KB modal tabs navigation
+.kb-modal-nav {
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent !important;
+    }
+}
+
+// KB documents footer tabs navigation
+#kb-documents {
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent !important;
+    }
+}
+
+// KB comment thread reply trigger
+.kb-comment-thread {
+    .kb-reply-trigger {
+        transition: opacity 0.15s ease-in-out;
+    }
+
+    &:hover .kb-reply-trigger {
+        opacity: 1 !important;
+    }
+}
+
+// Handle shared borders for comments in the same thread.
+.kb-comment-card {
+    border-radius: 0 !important;
+    border-bottom-width: 0 !important;
+}
+
+// Re-add top border radius for first comment of a thread
+.kb-comment:first-child {
+    .kb-comment-card {
+        border-top-left-radius: var(--tblr-border-radius) !important;
+        border-top-right-radius: var(--tblr-border-radius) !important;
+    }
+}
+
+// Re-add bottom border radius + border bottom for last comment of a thread.
+// This must only be done if the "reply form" is not displayed.
+.kb-comment-thread:not(.reply-shown) {
+    .kb-comment:nth-last-child(-n + 3) {
+        .kb-comment-card {
+            border-bottom-left-radius: var(--tblr-border-radius) !important;
+            border-bottom-right-radius: var(--tblr-border-radius) !important;
+            border-bottom-width: 1px !important;
+        }
+    }
+}
+
+// Re-add bottom border radius + border bottom for the "reply form".
+.kb-reply-form {
+    .kb-comment-card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-width: 1px !important;
+    }
+}
+
+// Tiptap Editor styles for KB articles
+.kb-editor-wrapper {
+    .ProseMirror {
+        outline: none;
+        min-height: 200px;
+
+        &:focus {
+            outline: none;
+        }
+
+        // Placeholder
+        p.is-editor-empty:first-child::before {
+            content: attr(data-placeholder);
+            float: inline-start;
+            color: var(--tblr-muted);
+            pointer-events: none;
+            height: 0;
+        }
+
+        // Typography
+        h1, h2, h3, h4, h5, h6 {
+            margin-block: 1.5rem 0.75rem;
+
+            &:first-child {
+                margin-block-start: 0;
+            }
+        }
+
+        p {
+            margin-block-end: 0.75rem;
+        }
+
+        ul, ol {
+            padding-inline-start: 1.5rem;
+            margin-block-end: 0.75rem;
+        }
+
+        blockquote {
+            border-inline-start: 3px solid var(--tblr-border-color);
+            padding-inline-start: 1rem;
+            margin-inline-start: 0;
+            margin-block-end: 0.75rem;
+            color: var(--tblr-muted);
+        }
+
+        code {
+            background: var(--tblr-bg-surface-secondary);
+            padding: 0.125rem 0.25rem;
+            border-radius: var(--tblr-border-radius-sm);
+            font-size: 0.875em;
+        }
+
+        pre {
+            background: var(--tblr-bg-surface-secondary);
+            padding: 1rem;
+            border-radius: var(--tblr-border-radius);
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+
+            code {
+                background: none;
+                padding: 0;
+            }
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--tblr-border-color);
+            margin: 1.5rem 0;
+        }
+
+        // Tables
+        table {
+            border-collapse: collapse;
+            margin-bottom: 0.75rem;
+            width: 100%;
+
+            td, th {
+                border: 1px solid var(--tblr-border-color);
+                padding: 0.5rem;
+                min-width: 100px;
+            }
+
+            th {
+                background: var(--tblr-bg-surface-secondary);
+                font-weight: 600;
+            }
+        }
+
+        // Images
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--tblr-border-radius);
+
+            &.ProseMirror-selectednode {
+                outline: 2px solid var(--tblr-primary);
+            }
+        }
+
+        // Links
+        a {
+            color: var(--tblr-primary);
+            text-decoration: underline;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+// Slash commands menu
+.slash-menu {
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.5rem;
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1050;
+
+    .slash-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: none;
+        background: none;
+        text-align: left;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius);
+        color: var(--tblr-body-color);
+        font-size: 0.875rem;
+
+        i {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        &:hover,
+        &.is-selected {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+
+    .slash-menu-empty {
+        padding: 0.5rem 0.75rem;
+        color: var(--tblr-muted);
+        font-size: 0.875rem;
+    }
+}
+
+// Bubble menu (text selection toolbar)
+.bubble-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.25rem;
+    z-index: 1060;
+
+    .bubble-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius-sm);
+        color: var(--tblr-body-color);
+
+        i {
+            font-size: 1rem;
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        &.is-active {
+            background: var(--tblr-primary);
+            color: var(--tblr-primary-fg);
+        }
+    }
+
+    .bubble-menu-divider {
+        width: 1px;
+        height: 1.25rem;
+        background: var(--tblr-border-color);
+        margin: 0 0.25rem;
+    }
+}
+
+// KB link item modal form
+.kb-link-item-form {
+    .kb-link-item-dropdowns {
+        display: flex;
+        gap: 0.5rem;
+        align-items: start;
+
+        br {
+            display: none;
+        }
+
+        // Override inline style="width: 80%" set by PHP/select2
+        select,
+        .select2-container {
+            width: 100% !important;
+        }
+
+        > .select2-container,
+        > span[id^="show_items_id"] {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    // Mimic modal-footer: break out of modal-body padding
+    .kb-link-item-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+        padding: 0.75rem var(--tblr-modal-padding);
+        border-top: var(--tblr-border-width) solid var(--tblr-border-color);
+    }
 }

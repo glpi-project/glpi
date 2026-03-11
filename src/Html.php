@@ -591,7 +591,7 @@ class Html
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
@@ -737,8 +737,8 @@ TWIG,
                 Html::requireJs('marketplace');
             }
 
-            if (in_array('kb', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/kb.scss'];
+            if (in_array('tiptap', $jslibs)) {
+                Html::requireJs('tiptap');
             }
 
             if (in_array('rack', $jslibs)) {
@@ -1253,10 +1253,10 @@ TWIG,
         TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
         if (
-            $DB->isSlave()
+            $DB->isReplica()
             && !$DB->first_connection
         ) {
-            echo "<div id='dbslave-float'>";
+            echo "<div id='dbreplica-float'>";
             echo "<a href='#see_debug'>" . __s('SQL replica: read only') . "</a>";
             echo "</div>";
         }
@@ -2034,7 +2034,7 @@ TWIG,
             $p['extraparams']['add_actions'] = $p['add_actions'];
         }
         if ($p['item'] instanceof CommonDBTM) {
-            $p['extraparams']['item_itemtype'] = $p['item']->getType();
+            $p['extraparams']['item_itemtype'] = $p['item']::class;
             $p['extraparams']['item_items_id'] = $p['item']->getID();
         }
 
@@ -3335,6 +3335,28 @@ JS;
                         editor.addShortcut('ctrl+13', 'submit', function() {
                             editor.save();
                             submitparentForm($('#$id'));
+                        });
+
+                        editor.on('init', function(e) {
+                            $(editor.container).siblings('.fileupload').find('input[data-form-data]')
+                                .filter((_index, el) => $(el).data('blueimp-fileupload') === undefined)
+                                .each((_index, el) => {
+                                    const fileupload_config = fileupload_configs[el.id];
+                                    setupFileUpload(fileupload_config);
+                                });
+                        });
+
+                        // Close TinyMCE toolbar dropdowns and blur active buttons when clicking outside editor UI elements
+                        $(document).on('click', function(e) {
+                            const target = $(e.target);
+                            const isEditorElementClicked =
+                                target.closest('.tox-editor-header').length > 0 ||
+                                target.closest('.tox-toolbar__primary').length > 0 ||
+                                target.closest('.tox-menu').length > 0;
+
+                            if (!isEditorElementClicked) {
+                                $('.tox-tbtn.tox-tbtn--enabled').trigger('click').trigger('blur');
+                            }
                         });
                     }
                 }, {$language_opts});
@@ -4790,6 +4812,7 @@ HTML;
      *    - only_uploaded_files boolean  show only the uploaded files block, i.e. no title, no dropzone
      *                                   (should be false when upload has to be enable only from rich text editor)
      *    - required            boolean  display a required mark
+     *    - init                boolean  init the fileupload (default true)
      *
      * @return void|string   the html if display parameter is false
      **/
@@ -4815,6 +4838,7 @@ HTML;
         $p['editor_id']           = null;
         $p['only_uploaded_files'] = false;
         $p['required']            = false;
+        $p['init']                = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -4873,108 +4897,46 @@ HTML;
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
-        $progressall_js = "
-        progressall: function(event, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress{$rand_id}').show();
-            $('#progress{$rand_id} .uploadbar')
-                .text(progress + '%')
-                .css('width', progress + '%')
-                .show();
-        },
-        ";
 
-        $display .= Html::scriptBlock("
-      $(function() {
-         var fileindex{$rand_id} = 0;
-         $('#fileupload{$rand_id}').fileupload({
-            dataType: 'json',
-            pasteZone: " . ($p['pasteZone'] !== false
-                           ? "$('#" . jsescape($p['pasteZone']) . "')"
-                           : "false") . ",
-            dropZone:  " . ($p['dropZone'] !== false
-                           ? "$('#" . jsescape($p['dropZone']) . "')"
-                           : "false") . ",
-            acceptFileTypes: " . ($p['onlyimages']
-                                    ? "/(\.|\/)(gif|jpe?g|png)$/i"
-                                 : DocumentType::getUploadableFilePattern()) . ",
-            maxFileSize: {$max_file_size},
-            maxChunkSize: {$max_chunk_size},
-            add: function (e, data) {
-               // disable submit button during upload
-               $(this).closest('form').find(':submit').prop('disabled', true);
-               // randomize filename
-               for (var i = 0; i < data.files.length; i++) {
-                  data.files[i].uploadName = uniqid('', true) + data.files[i].name;
-               }
-               // call default handler
-               $.blueimp.fileupload.prototype.options.add.call(this, e, data);
-            },
-            done: function (event, data) {
-               handleUploadedFile(
-                  data.files, // files as blob
-                  data.result._uploader_{$name}, // response from '/ajax/fileupload.php'
-                  \"{$name}\",
-                  $('#" . jsescape($p['filecontainer']) . "'),
-                  '" . jsescape($p['editor_id']) . "'
-               );
-               // enable submit button after upload
-               $(this).closest('form').find(':submit').prop('disabled', false);
-               // remove required
-                $('#fileupload{$rand_id}').removeAttr('required');
-            },
-            fail: function (e, data) {
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-               const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
-                  ? data.jqXHR.responseText
-                  : data.jqXHR.statusText;
-               alert(err);
-            },
-            processfail: function (e, data) {
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-               $.each(
-                  data.files,
-                  function(index, file) {
-                     if (file.error) {
-                        $('#progress{$rand_id}').show();
-                        $('#progress{$rand_id} .uploadbar')
-                           .text(file.error)
-                           .css('width', '100%')
-                           .show();
+        $pasteZone = $p['pasteZone'] !== false
+            ? "$('#" . jsescape($p['pasteZone']) . "')"
+            : "false";
+        $dropZone = $p['dropZone'] !== false
+            ? "$('#" . jsescape($p['dropZone']) . "')"
+            : "false";
+        $acceptFileTypes = $p['onlyimages']
+            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
+            : DocumentType::getUploadableFilePattern();
+        $messages = json_encode([
+            'acceptFileTypes' => __('Filetype not allowed'),
+            'maxFileSize'     => __('File is too big'),
+        ]);
 
-                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
-                        const editor_id = '" . jsescape($p['editor_id']) . "';
-                        if (editor_id && typeof tinyMCE !== 'undefined') {
-                            const editor = tinyMCE.get(editor_id);
-                            if (editor) {
-                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                                if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id=\"' + uploaded_image.upload_id + '\"]');
-                                    if (img.length > 0) {
-                                        editor.dom.remove(img);
-                                    }
-                                    uploaded_images = uploaded_images.filter((entry) => entry.upload_id !== uploaded_image.upload_id);
-                                }
-                            }
-                        }
-                        return;
-                     }
-                  }
-               );
-            },
-            messages: {
-              acceptFileTypes: '" . jsescape(__('Filetype not allowed')) . "',
-              maxFileSize: '" . jsescape(__('File is too big')) . "',
-            },
-            $progressall_js
-         });
-      });");
+        $js = <<<JS
+            fileupload_configs['fileupload{$rand_id}'] = {
+                field_id       : 'fileupload{$rand_id}',
+                pasteZone      : {$pasteZone},
+                dropZone       : {$dropZone},
+                acceptFileTypes: {$acceptFileTypes},
+                maxFileSize    : {$max_file_size},
+                maxChunkSize   : {$max_chunk_size},
+                name           : '{$name}',
+                filecontainer  : '{$p['filecontainer']}',
+                editor_id      : '{$p['editor_id']}',
+                rand_id        : {$rand_id},
+                messages       : {$messages},
+            };
+JS;
+
+        if ($p['init']) {
+            $js .= "setupFileUpload(fileupload_configs['fileupload{$rand_id}']);";
+        }
+
+        $display .= Html::scriptBlock($js);
 
         $display .= "</div>"; // .fileupload
 
@@ -5611,6 +5573,9 @@ JS);
             case 'altcha':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
                 break;
+            case 'tiptap':
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/tiptap.js';
+                break;
             default:
                 $found = false;
                 if (isset($PLUGIN_HOOKS[Hooks::JAVASCRIPT][$name])) {
@@ -6206,6 +6171,8 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
+        $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
+
         return self::getScssCompileDir($root_dir) . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
@@ -6218,7 +6185,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return $root_dir . '/public/css_compiled';
+        return str_replace(DIRECTORY_SEPARATOR, '/', $root_dir) . '/public/css_compiled';
     }
 
     /**

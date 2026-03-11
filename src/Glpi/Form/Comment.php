@@ -67,10 +67,10 @@ final class Comment extends CommonDBChild implements
     public const TRANSLATION_KEY_NAME = 'comment_name';
     public const TRANSLATION_KEY_DESCRIPTION = 'comment_description';
 
-    public static $itemtype = Section::class;
-    public static $items_id = 'forms_sections_id';
+    public static string $itemtype = Section::class;
+    public static string $items_id = 'forms_sections_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     private ?Section $section = null;
 
@@ -89,6 +89,15 @@ final class Comment extends CommonDBChild implements
     #[Override]
     public function post_addItem()
     {
+        parent::post_addItem();
+
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+
         // Report logs to the parent form
         $this->logCreationInParentForm();
     }
@@ -96,6 +105,15 @@ final class Comment extends CommonDBChild implements
     #[Override]
     public function post_updateItem($history = true)
     {
+        parent::post_updateItem($history);
+
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);
     }
@@ -177,7 +195,7 @@ final class Comment extends CommonDBChild implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
 
@@ -296,9 +314,9 @@ final class Comment extends CommonDBChild implements
         // Report logs to the parent form
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
-            $this->getType(),
+            self::class,
             static::$log_history_add
         );
 
@@ -335,9 +353,9 @@ final class Comment extends CommonDBChild implements
 
             Log::history(
                 $form->getID(),
-                $form->getType(),
+                $form::class,
                 $changes,
-                $this->getType(),
+                self::class,
                 static::$log_history_update
             );
         }
@@ -365,9 +383,9 @@ final class Comment extends CommonDBChild implements
 
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
-            $this->getType(),
+            self::class,
             static::$log_history_delete
         );
 

@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Line extends CommonDBRelation
 {
-    public static $itemtype_1 = Line::class;
-    public static $items_id_1 = 'lines_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_1 = Line::class;
+    public static ?string $items_id_1 = 'lines_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -58,12 +58,12 @@ class Item_Line extends CommonDBRelation
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForMainItem($item) + self::countSimcardItemsForLine($item);
             }
-            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
         } else {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item) + self::countSimcardLinesForItem($item);
             }
-            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Line::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
     }
 
@@ -135,7 +135,7 @@ class Item_Line extends CommonDBRelation
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
             'items_id' => $item->getID(),
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'NOT'   => [
                 'lines_id' => 0,
             ],
@@ -165,7 +165,7 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showItemsForLine(Line $line)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $ID = $line->fields['id'];
 
@@ -239,11 +239,20 @@ class Item_Line extends CommonDBRelation
                 $used[$row['itemtype']][$row['items_id']] = $row['items_id'];
             }
 
-            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
-                'from_line' => true,
-                'peer_id' => $line->getID(),
-                'used' => $used,
-                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID(),
+            $rand = mt_rand();
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => self::class,
+                'source_itemtype' => $line::class,
+                'source_items_id' => $ID,
+                'link_types' => $CFG_GLPI['line_types'],
+                'generic_target' => true,
+                'dropdown_options' => [
+                    'entity'      => $line->getEntityID(),
+                    'entity_sons' => $line->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Add an item'),
             ]);
         }
 
@@ -297,7 +306,7 @@ class Item_Line extends CommonDBRelation
     {
         global $DB;
 
-        $itemtype = $item::getType();
+        $itemtype = $item::class;
         $ID = $item->fields['id'];
 
         if (
@@ -375,12 +384,19 @@ class Item_Line extends CommonDBRelation
                 $used[] = $row['lines_id'];
             }
 
-            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
-                'from_line' => false,
-                'peer_itemtype' => $itemtype,
-                'peer_id' => $ID,
-                'used' => $used,
-                'entity_restrict' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => mt_rand(),
+                'link_itemtype' => self::class,
+                'generic_source' => true,
+                'source_itemtype' => $item::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Line::class,
+                'dropdown_options' => [
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Add a phone line'),
             ]);
         }
 

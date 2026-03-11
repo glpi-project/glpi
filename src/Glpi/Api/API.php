@@ -96,35 +96,20 @@ use function Safe\session_write_close;
 abstract class API
 {
     // permit writing to $_SESSION
-    /** @var bool  */
-    protected $session_write = false;
-    /** @var string  */
-
-    public static $api_url = "";
-    /** @var string  */
-    public static $content_type = "application/json";
-    /** @var string  */
-    protected $format          = "json";
-    /** @var string  */
-    protected $iptxt           = "";
-    /** @var string  */
-    protected $ipnum           = "";
-    /** @var array  */
-    protected $app_tokens      = [];
-    /** @var int  */
-    protected $apiclients_id   = 0;
-    /** @var ?DeprecatedInterface  */
-    protected $deprecated_item = null;
-    /** @var string */
-    protected $request_uri;
-    /** @var array */
-    protected $url_elements;
-    /** @var string */
-    protected $verb;
-    /** @var array */
-    protected $parameters;
-    /** @var bool */
-    protected $debug = false;
+    protected bool $session_write = false;
+    public static string $api_url = "";
+    public static string $content_type = "application/json";
+    protected string $format          = "json";
+    protected string $iptxt           = "";
+    protected string $ipnum           = "";
+    protected array $app_tokens      = [];
+    protected int $apiclients_id   = 0;
+    protected ?DeprecatedInterface $deprecated_item = null;
+    protected string $request_uri;
+    protected array $url_elements;
+    protected string $verb;
+    protected array $parameters;
+    protected bool $debug = false;
 
     /**
      * @param int $nb Unused value
@@ -669,12 +654,12 @@ abstract class API
             && in_array($itemtype, Item_Devices::getConcernedItems())
         ) {
             $all_devices = [];
-            foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
+            foreach (Item_Devices::getItemAffinities($item::class) as $device_type) {
                 $found_devices = getAllDataFromTable(
                     $device_type::getTable(),
                     [
                         'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
+                        'itemtype'     => $item::class,
                         'is_deleted'   => 0,
                     ],
                     true
@@ -1033,7 +1018,7 @@ abstract class API
                     "glpi_logs",
                     [
                         'items_id'  => $item->getID(),
-                        'itemtype'  => $item->getType(),
+                        'itemtype'  => $item::class,
                     ]
                 );
             }
@@ -1280,7 +1265,7 @@ abstract class API
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!$DB->fieldExists($table, $filter_field)) {
                     $this->returnError(
-                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType()),
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item::class),
                         400,
                         "ERROR_FIELD_NOT_FOUND"
                     );
@@ -1811,7 +1796,7 @@ abstract class API
             }
 
             // if all asset, provide type in returned data
-            if ($itemtype == AllAssets::getType()) {
+            if ($itemtype == AllAssets::class) {
                 $current_line['id']       = $raw['id'];
                 $current_line['itemtype'] = $raw['TYPE'];
             }
@@ -3294,7 +3279,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     {
         // Return massive actions for a given item
         $actions = MassiveAction::getAllMassiveActions(
-            $item::getType(),
+            $item::class,
             $item->isDeleted(),
             $item,
             $item->getID()

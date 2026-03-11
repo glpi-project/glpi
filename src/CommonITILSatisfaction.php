@@ -42,8 +42,8 @@ use function Safe\strtotime;
 
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
-    public $dohistory         = true;
-    public $history_blacklist = ['date_answered'];
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_answered'];
 
     /**
      * Survey is done internally
@@ -165,7 +165,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 'url' => $url,
             ]);
         } else { // for internal inquest => form
-            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item->getType()));
+            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
 
             if ($add_form_header) {
                 $this->showFormHeader($options);

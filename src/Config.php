@@ -80,15 +80,15 @@ class Config extends CommonDBTM
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
     // From CommonGLPI
-    protected $displaylist         = false;
+    protected bool $displaylist         = false;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
-    public $showdebug              = true;
+    public bool $auto_message_on_action = false;
+    public bool $showdebug              = true;
 
-    public static $rightname              = 'config';
+    public static string $rightname              = 'config';
 
-    public static $undisclosedFields      = [
+    public static array $undisclosedFields      = [
         'proxy_passwd',
         'smtp_passwd',
         'smtp_oauth_client_id',
@@ -100,13 +100,12 @@ class Config extends CommonDBTM
     ];
 
     /** @var string[] */
-    public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+    public static array $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
-     * @var bool
      */
-    private static $loaded = false;
+    private static bool $loaded = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -221,19 +220,19 @@ class Config extends CommonDBTM
             $input['proxy_passwd'] = '';
         }
 
-        // Manage DB Slave process
-        if (isset($input['_dbslave_status'])) {
-            $already_active = DBConnection::isDBSlaveActive();
+        // Manage DB replica process
+        if (isset($input['_dbreplica_status'])) {
+            $already_active = DBConnection::isDBReplicaActive();
 
-            if ($input['_dbslave_status']) {
+            if ($input['_dbreplica_status']) {
                 DBConnection::changeCronTaskStatus(true);
 
                 if (!$already_active) {
-                    // Activate Slave from the "system" tab
-                    DBConnection::createDBSlaveConfig();
+                    // Activate replica from the "system" tab
+                    DBConnection::createDBReplicaConfig();
                 } elseif (isset($input["_dbreplicate_dbhost"])) {
                     // Change parameter from the "replicate" tab
-                    DBConnection::saveDBSlaveConf(
+                    DBConnection::saveDBReplicaConf(
                         $input["_dbreplicate_dbhost"],
                         $input["_dbreplicate_dbuser"],
                         $input["_dbreplicate_dbpassword"],
@@ -242,8 +241,8 @@ class Config extends CommonDBTM
                 }
             }
 
-            if (!$input['_dbslave_status'] && $already_active) {
-                DBConnection::deleteDBSlaveConfig();
+            if (!$input['_dbreplica_status'] && $already_active) {
+                DBConnection::deleteDBReplicaConfig();
                 DBConnection::changeCronTaskStatus(false);
             }
         }
@@ -372,7 +371,7 @@ class Config extends CommonDBTM
 
         // Prevent some input values to be saved in DB
         $values_to_filter = [
-            '_dbslave_status',
+            '_dbreplica_status',
             '_dbreplicate_dbhost',
             '_dbreplicate_dbuser',
             '_dbreplicate_dbpassword',
@@ -541,11 +540,11 @@ class Config extends CommonDBTM
 
 
     /**
-     * Print the config form for slave DB
+     * Print the config form for replica DB
      *
      * @return void
-     **/
-    public function showFormDBSlave()
+     */
+    private function showFormDBReplica(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -553,15 +552,15 @@ class Config extends CommonDBTM
             return;
         }
 
-        $DBslave = DBConnection::getDBSlaveConf();
+        $DBReplica = DBConnection::getDBReplicaConf();
         $replica_config = [
-            'host' => is_array($DBslave->dbhost) ? implode(' ', $DBslave->dbhost) : $DBslave->dbhost,
-            'default' => $DBslave->dbdefault,
-            'user' => $DBslave->dbuser,
-            'password' => rawurldecode($DBslave->dbpassword),
+            'host' => is_array($DBReplica->dbhost) ? implode(' ', $DBReplica->dbhost) : $DBReplica->dbhost,
+            'default' => $DBReplica->dbdefault,
+            'user' => $DBReplica->dbuser,
+            'password' => rawurldecode($DBReplica->dbpassword),
         ];
 
-        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $hosts = is_array($DBReplica->dbhost) ? $DBReplica->dbhost : [$DBReplica->dbhost];
         $replication_delay = [];
         foreach (array_keys($hosts) as $host_num) {
             $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
@@ -1017,31 +1016,31 @@ class Config extends CommonDBTM
                 $tabs = [
                     1 => self::createTabEntry(__('General setup')),  // Display
                     2 => self::createTabEntry(__('Default values')), // Prefs
-                    3 => self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
-                    4 => self::createTabEntry(__('Assistance'), 0, $item::getType(), 'ti ti-headset'),
-                    12 => self::createTabEntry(__('Management'), 0, $item::getType(), 'ti ti-wallet'),
+                    3 => self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package'),
+                    4 => self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset'),
+                    12 => self::createTabEntry(__('Management'), 0, $item::class, 'ti ti-wallet'),
                 ];
                 if (Config::canUpdate()) {
-                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::getType(), Event::getIcon());
+                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::class, Event::getIcon());
                     $tabs[5]  = self::createTabEntry(__('System'));
-                    $tabs[10] = self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock');
-                    $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::getType(), 'ti ti-dashboard');
-                    $tabs[8]  = self::createTabEntry(__('API'), 0, $item::getType(), 'ti ti-api-app');
-                    $tabs[11] = self::createTabEntry(Impact::getTypeName(), 0, $item::getType(), Impact::getIcon());
+                    $tabs[10] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                    $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::class, 'ti ti-dashboard');
+                    $tabs[8]  = self::createTabEntry(__('API'), 0, $item::class, 'ti ti-api-app');
+                    $tabs[11] = self::createTabEntry(Impact::getTypeName(), 0, $item::class, Impact::getIcon());
                 }
 
                 if (
-                    DBConnection::isDBSlaveActive()
+                    DBConnection::isDBReplicaActive()
                     && Config::canUpdate()
                 ) {
-                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-database');  // Slave
+                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::class, 'ti ti-database');  // replica
                 }
                 return $tabs;
 
             case 'GLPINetwork':
-                return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::getType(), GLPINetwork::getIcon());
+                return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::class, GLPINetwork::getIcon());
 
-            case Impact::getType():
+            case Impact::class:
                 return self::createTabEntry(Impact::getTypeName());
         }
         return '';
@@ -1086,7 +1085,7 @@ class Config extends CommonDBTM
                     break;
 
                 case 6:
-                    $item->showFormDBSlave();
+                    $item->showFormDBReplica();
                     break;
 
                 case 7:
@@ -1735,7 +1734,7 @@ class Config extends CommonDBTM
 
     public function getLogTypeID()
     {
-        return [$this->getType(), 1];
+        return [static::class, 1];
     }
 
     public function post_addItem()

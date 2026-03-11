@@ -44,8 +44,12 @@
             padding: 0.5rem 0.75rem;
         }
 
-        td:not(:first-child) {
+        td:not(:first-child, :nth-child(3)) {
             width: 35%;
+        }
+
+        td:has(> .btn-actions) {
+            width: 0;
         }
     }
 

@@ -45,11 +45,11 @@ use Glpi\Event;
 class Group_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = User::class;
-    public static $items_id_1                 = 'users_id';
+    public static ?string $itemtype_1 = User::class;
+    public static ?string $items_id_1                 = 'users_id';
 
-    public static $itemtype_2 = Group::class;
-    public static $items_id_2                 = 'groups_id';
+    public static ?string $itemtype_2 = Group::class;
+    public static ?string $items_id_2                 = 'groups_id';
 
     /**
      * Check if a user belongs to a group
@@ -116,7 +116,7 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.84
      *
-     * @param int $groups_id Group ID
+     * @param int|int[] $groups_id Group ID
      * @param array   $condition Query extra condition (default [])
      *
      * @return array
@@ -817,8 +817,7 @@ class Group_User extends CommonDBRelation
 
             // save the planning completed to db
             $json_plannings = exportArrayToDB($plannings);
-            $stmt->bind_param('si', $json_plannings, $users_id);
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, [$json_plannings, $users_id], ['s', 'i']);
         }
 
         $DB->commit();
@@ -893,8 +892,7 @@ class Group_User extends CommonDBRelation
 
             // save the planning completed to db
             $json_plannings = exportArrayToDB($plannings);
-            $stmt->bind_param('si', $json_plannings, $users_id);
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, [$json_plannings, $users_id], ['s', 'i']);
         }
 
         $DB->commit();

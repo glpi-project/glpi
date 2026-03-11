@@ -77,11 +77,9 @@ class Log extends CommonDBTM
     // Plugin must use value starting from
     public const HISTORY_PLUGIN             = 1000;
 
-    public static $rightname = 'logs';
+    public static string $rightname = 'logs';
 
-    /** @var array  */
     public static array $queue = [];
-    /** @var bool  */
     public static bool $use_queue = false;
 
 
@@ -108,12 +106,12 @@ class Log extends CommonDBTM
         ) {
             $nb = countElementsInTable(
                 'glpi_logs',
-                ['itemtype' => $item->getType(),
+                ['itemtype' => $item::class,
                     'items_id' => $item->getID(),
                 ]
             );
         }
-        return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
+        return self::createTabEntry(self::getTypeName(1), $nb, $item::class);
     }
 
 
@@ -172,7 +170,7 @@ class Log extends CommonDBTM
                         $changes          =  [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     }
                 } elseif (
-                    ($val2['linkfield'] == $key && $real_type === $item->getType())
+                    ($val2['linkfield'] == $key && $real_type === $item::class)
                        || ($key == $val2['field'] && $val2['table'] == $item->getTable())
                        || ($val2['linkfield'] == $key && $item instanceof Infocom)
                 ) {
@@ -320,7 +318,7 @@ class Log extends CommonDBTM
             return;
         }
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $start       = intval(($_GET["start"] ?? 0));
@@ -355,7 +353,7 @@ class Log extends CommonDBTM
             : [],
             'csv_url'           => $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
                 'filter'   => $filters,
-                'itemtype' => $item::getType(),
+                'itemtype' => $item::class,
                 'id'       => $item->getId(),
             ]),
         ]);
@@ -382,7 +380,7 @@ class Log extends CommonDBTM
     {
         $DBread = DBConnection::getReadConnection();
 
-        $itemtype  = $item->getType();
+        $itemtype  = $item::class;
         $items_id  = $item->getField('id');
         $itemtable = $item->getTable();
 
@@ -938,7 +936,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
@@ -979,7 +977,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $affected_fields = ['linked_action', 'itemtype_link', 'id_search_option'];
@@ -1153,7 +1151,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
@@ -1349,11 +1347,15 @@ class Log extends CommonDBTM
         if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
             $affected_field_crit = [];
             foreach ($filters['affected_fields'] as $index => $affected_field) {
+                $index = (int) $index;
                 $affected_field_crit[$index] = [];
                 foreach (explode(";", $affected_field) as $var) {
                     if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
                         $key = $matches['key'];
                         $operator = $matches['operator'];
+                        if (!empty($operator) && $operator != 'NOT') {
+                            throw new RuntimeException('Invalid operator: ' . $operator);
+                        }
                         // Each field can have multiple values for a given filter
                         $values = explode(',', $matches['values']);
 
@@ -1458,11 +1460,7 @@ class Log extends CommonDBTM
         $stmt = $DB->prepare($update);
 
         foreach (static::$queue as $input) {
-            $stmt->bind_param(
-                str_pad('', count($input), 's'),
-                ...array_values($input)
-            );
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, array_values($input));
         }
         $stmt->close();
         static::resetQueue();

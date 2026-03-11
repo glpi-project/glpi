@@ -119,6 +119,48 @@ class RouterTest extends GLPITestCase
     }
 
     /**
+     * Ensure all schemas have the expected readonly properties where applicable.
+     * - Mapped properties can only be read currently.
+     * @return void
+     */
+    public function testAllSchemasHaveExpectedReadonlyProps(): void
+    {
+        $router = Router::getInstance();
+        $controllers = $router->getControllers();
+
+        $schemas_errors = [];
+
+        $fn_check_properties = static function ($parent_path, $properties, $schema_name, $controller) use (&$schemas_errors, &$fn_check_properties) {
+            foreach ($properties as $prop_name => $prop) {
+                $full_prop_name = $parent_path !== '' ? ($parent_path . '.' . $prop_name) : $prop_name;
+                if (isset($prop['x-mapper'])) {
+                    if (!isset($prop['readOnly']) || $prop['readOnly'] !== true) {
+                        $schemas_errors[] = "Property '$full_prop_name' in schema $schema_name in " . $controller::class . " is mapped but is not marked as readOnly";
+                    }
+                }
+                if (isset($prop['type'], $prop['properties']) && $prop['type'] === 'object' && is_array($prop['properties'])) {
+                    $fn_check_properties($full_prop_name, $prop['properties'], $schema_name, $controller);
+                }
+                if (isset($prop['items']['properties'], $prop['type']) && $prop['type'] === 'array' && is_array($prop['items']['properties'])) {
+                    $fn_check_properties($full_prop_name, $prop['items']['properties'], $schema_name, $controller);
+                }
+            }
+        };
+
+        foreach ($controllers as $controller) {
+            $schemas = $controller::getKnownSchemas(null);
+            foreach ($schemas as $schema_name => $schema) {
+                if (!isset($schema['properties']) || !is_array($schema['properties'])) {
+                    continue;
+                }
+                $fn_check_properties('', $schema['properties'], $schema_name, $controller);
+            }
+        }
+
+        $this->assertEmpty($schemas_errors, "Schemas with readonly property errors: \n" . implode("\n", $schemas_errors));
+    }
+
+    /**
      * Ensure there are not multiple schemas for the same itemtype (identified by x-itemtype).
      * In some cases, like user preferences, we may have multiple schemas for the same itemtype, but those extra schemas
      * should use x-table instead to point to the table directly.

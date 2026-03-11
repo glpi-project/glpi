@@ -49,11 +49,11 @@ use function Safe\json_encode;
 abstract class CommonITILValidation extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action    = false;
+    public bool $auto_message_on_action    = false;
 
-    public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
     public const VALIDATE               = 1024;
 
@@ -305,7 +305,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
                 $nb = countElementsInTable(static::getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -997,17 +997,17 @@ abstract class CommonITILValidation extends CommonDBChild
                                 }
                             }
                             if ($ok) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -2127,7 +2127,7 @@ HTML;
         $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
         if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
             throw new RuntimeException('Failed to delete unused approval step.');
-        };
+        }
     }
 
     public function recomputeItilStatus(): void
@@ -2135,12 +2135,23 @@ HTML;
         $itil_object = $this->getItem();
         $this->checkIsAnItilObject($itil_object);
 
+        // find validation_step name from $this->fields['itils_validationsteps_id']
+
+        $itil_validationstep = static::getValidationStepInstance();
+
+        if ($itil_validationstep && $itil_validationstep->getFromDB($this->fields['itils_validationsteps_id'])) {
+            $validationstep_id = $itil_validationstep->fields['validationsteps_id'];
+        }
+
         // update result not checked, there can be legit reasons to fails (e.g. ticket is closed)
-        $itil_object->update([
-            'id' => $itil_object->getID(),
-            'global_validation' => self::computeValidationStatus($itil_object),
-            '_from_itilvalidation' => true,
-        ]);
+        $itil_object->update(
+            [
+                'id' => $itil_object->getID(),
+                'global_validation' => self::computeValidationStatus($itil_object),
+                '_from_itilvalidation' => true,
+                '_validationsteps_id' => $validationstep_id ?? null,
+            ]
+        );
     }
 
     /**

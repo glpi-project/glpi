@@ -106,7 +106,7 @@ class TestUpdatedDataCommand extends Command
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $host = $input->getOption('host');
         $port = $input->getOption('port');

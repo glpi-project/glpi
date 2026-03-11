@@ -64,8 +64,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public const TRANSLATION_KEY_NAME = 'section_name';
     public const TRANSLATION_KEY_DESCRIPTION = 'section_description';
 
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
+    public static string $itemtype = Form::class;
+    public static string $items_id = 'forms_forms_id';
 
     /**
      * Lazy loaded array of questions
@@ -100,6 +100,12 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     {
         // Clear any lazy loaded data
         $this->clearLazyLoadedData();
+    }
+
+    #[Override]
+    public function isEntityAssign()
+    {
+        return false;
     }
 
     #[Override]
@@ -150,6 +156,32 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+    }
+
+    #[Override]
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+    }
+
+    #[Override]
     public function listTranslationsHandlers(): array
     {
         $form = $this->getItem();
@@ -158,7 +190,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (count($form->getSections()) > 1) {
             $handlers[$key][] = new TranslationHandler(

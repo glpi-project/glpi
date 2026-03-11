@@ -71,7 +71,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
         $this->setDescription(__('Convert "datetime" fields to "timestamp" to use timezones.'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         //convert db
 

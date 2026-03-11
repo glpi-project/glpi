@@ -43,7 +43,7 @@ abstract class AbstractProgressIndicator
     /**
      * Operation start datetime.
      */
-    protected readonly DateTimeInterface $started_at;
+    protected DateTimeInterface $started_at;
 
     /**
      * Operation last update datetime.

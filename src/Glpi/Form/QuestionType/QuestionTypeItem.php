@@ -407,6 +407,11 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return '';
         }
 
+        // If the object is a user, use getFriendlyName()
+        if ($item instanceof User) {
+            return $item->getFriendlyName();
+        }
+
         return $item->fields['name'];
     }
 

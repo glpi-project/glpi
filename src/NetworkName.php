@@ -50,19 +50,19 @@ use Glpi\DBAL\QueryExpression;
 class NetworkName extends FQDNLabel
 {
     // From CommonDBChild
-    public static $itemtype              = 'itemtype';
-    public static $items_id              = 'items_id';
-    public $dohistory                    = true;
+    public static string $itemtype              = 'itemtype';
+    public static string $items_id              = 'items_id';
+    public bool $dohistory                    = true;
 
-    protected static $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
+    protected static array $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
 
-    public static $canDeleteOnItemClean  = false;
+    public static bool $canDeleteOnItemClean  = false;
 
-    public static $checkParentRights     = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkParentRights     = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
-    public static $mustBeAttached        = false;
+    public static bool $mustBeAttached        = false;
 
-    public static $rightname                   = 'internet';
+    public static string $rightname                   = 'internet';
 
 
     public static function getTypeName($nb = 0)
@@ -843,7 +843,7 @@ TWIG, $twig_params);
             case NetworkPort::class:
                 return countElementsInTable(
                     'glpi_networknames',
-                    ['itemtype'   => $item->getType(),
+                    ['itemtype'   => $item::class,
                         'items_id'   => $item->getID(),
                         'is_deleted' => 0,
                     ]
@@ -866,7 +866,7 @@ TWIG, $twig_params);
                         ],
                     ],
                     'WHERE'           => [
-                        'glpi_networkports.itemtype'     => $item->getType(),
+                        'glpi_networkports.itemtype'     => $item::class,
                         'glpi_networkports.items_id'     => $item->getID(),
                         'glpi_networkports.is_deleted'   => 0,
                         'glpi_networknames.is_deleted'   => 0,

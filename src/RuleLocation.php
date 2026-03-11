@@ -36,7 +36,7 @@
 
 class RuleLocation extends Rule
 {
-    public static $rightname = 'rule_location';
+    public static string $rightname = 'rule_location';
 
     public function getTitle()
     {

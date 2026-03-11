@@ -47,11 +47,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 
-/**
- * Project Class
- *
- * @since 0.85
- **/
 class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface, TeamworkInterface
 {
     use Kanban;
@@ -60,16 +55,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
-    public static $rightname                   = 'project';
-    protected $usenotepad               = true;
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ProjectCost', 'ProjectTask'];
+    public static string $rightname                   = 'project';
+    protected bool $usenotepad               = true;
 
     public const READMY                        = 1;
     public const READALL                       = 1024;
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
-    protected $team                     = [];
+    protected array $team                     = [];
 
     public function getCloneRelations(): array
     {
@@ -127,7 +122,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      **/
     public function canCreateItem(): bool
     {
-        if (!Session::haveAccessToEntity($this->getEntityID())) {
+        if (!Session::haveAccessToEntity($this->getEntityID(), $this->isTemplate() && $this->isRecursive())) {
             return false;
         }
         return Session::haveRight(self::$rightname, CREATE);
@@ -484,7 +479,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     public function getTeamCount()
     {
         $nb = 0;
-        if (is_array($this->team) && count($this->team)) {
+        if (count($this->team)) {
             foreach ($this->team as $val) {
                 $nb += count($val);
             }
@@ -637,6 +632,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -645,6 +641,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -996,6 +993,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1010,6 +1008,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1364,16 +1363,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         ]);
     }
 
-    /**
-     * Print the Project form
-     *
-     * @param int $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -1582,14 +1571,14 @@ TWIG, $twig_params);
 
             $addselect = [];
             $ljoin = [];
-            if (Session::haveTranslations(ProjectState::getType(), 'name')) {
+            if (Session::haveTranslations(ProjectState::class, 'name')) {
                 $addselect[] = "namet2.value AS transname";
                 $ljoin['glpi_dropdowntranslations AS namet2'] = [
                     'ON' => [
                         'namet2' => 'items_id',
                         ProjectState::getTable()   => 'id', [
                             'AND' => [
-                                'namet2.itemtype' => ProjectState::getType(),
+                                'namet2.itemtype' => ProjectState::class,
                                 'namet2.language' => $_SESSION['glpilanguage'],
                                 'namet2.field'    => 'name',
                             ],
@@ -2151,7 +2140,7 @@ TWIG, $twig_params);
                     'description' => _x('filters', 'A contact in the team of the item'),
                     'supported_prefixes' => ['!'],
                 ],
-            ] + self::getKanbanPluginFilters(static::getType()),
+            ] + self::getKanbanPluginFilters(static::class),
         ]);
     }
 

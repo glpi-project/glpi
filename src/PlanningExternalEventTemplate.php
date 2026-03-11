@@ -48,8 +48,8 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
 
     public static function getTypeName($nb = 0)
@@ -108,7 +108,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
             case 'plan':
                 Planning::showAddEventClassicForm([
                     'duration'       => $this->fields['duration'],
-                    'itemtype'       => self::getType(),
+                    'itemtype'       => static::class,
                     'items_id'       => $this->fields['id'],
                     '_display_dates' => false,
                 ]);

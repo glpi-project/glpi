@@ -89,7 +89,7 @@
                 full_width: true,
             }) }}
 
-            {{ fields.htmlField('', __('From %1$s to %2$s')|format(informations['subscription']['begin_date']|formatted_date, informations['subscription']['end_date']|formatted_date)|e, __('Period'), {
+            {{ fields.htmlField('', __('From %1$s to %2$s')|format(informations['subscription']['begin_date']|formatted_date|e, informations['subscription']['end_date']|formatted_date)|e, __('Period'), {
                 full_width: true,
             }) }}
 
@@ -116,7 +116,7 @@
         }
     ) }}
 
-    {{ fields.htmlField('', '<a href="' ~ path('/front/marketplace.php') ~ '" class="btn btn-primary">' ~ __('Access GLPI Network Marketplace') ~ '</a>', null, {
+    {{ fields.htmlField('', '<a href="' ~ path('/front/marketplace.php')|e ~ '" class="btn btn-primary">' ~ __('Access GLPI Network Marketplace')|e ~ '</a>', null, {
         full_width: true,
     }) }}
 

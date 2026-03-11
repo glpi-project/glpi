@@ -101,6 +101,9 @@ class MailCollectorTest extends DbTestCase
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
                 'expected'  => "Subject with \n character",
+            ], [
+                'raw'       => str_repeat('A', 300),
+                'expected'  => str_repeat('A', 255),
             ],
         ];
     }
@@ -832,6 +835,8 @@ class MailCollectorTest extends DbTestCase
         $this->assertSame($not_imported_specs, $not_imported_values);
 
         // Check created tickets and their actors
+        $long_subject = 'This email subject is designed to test how inboxes handle very long text. It contains exactly three hundred characters to check whether everything displays correctly, whether the text is truncated, or if the mail client handles maximum length properly 12345678901234567890';
+        $long_subject_expected = substr($long_subject, 0, 255);
         $actors_specs = [
             // Mails having "tech" user as requester
             [
@@ -889,6 +894,7 @@ class MailCollectorTest extends DbTestCase
                     '44 - Hebrew encoding issue',
                     '47 - Missing charset parameter',
                     '49 - Message with invalid CC email address',
+                    $long_subject_expected,
                 ],
             ],
             // Mails having "normal" user as observer
@@ -1534,5 +1540,75 @@ PLAINTEXT,
         $mailcollector = new \MailCollector();
         $result = $mailcollector->cleanContent($original);
         $this->assertEquals($expected, $result);
+    }
+
+    public function testBlacklistedDocumentNotImportedFromMail()
+    {
+        // Use existing test fixture files
+        $png_file = GLPI_ROOT . '/tests/fixtures/uploads/foo.png';
+
+        // Calculate SHA1 from existing files
+        $png_sha1 = sha1_file($png_file);
+
+        // Create blacklisted documents with matching SHA1
+        $this->createItem(
+            \Document::class,
+            [
+                'entities_id' => 0,
+                'name' => 'Blacklisted PNG Document',
+                'filename' => 'blacklisted.png',
+                'sha1sum' => $png_sha1,
+                'is_blacklisted' => 1,
+            ]
+        );
+
+        // Test 1: Auto-import (mail collector) should be blocked
+        \Safe\copy($png_file, GLPI_TMP_DIR . '/foo.png');
+
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name' => 'Test ticket with blacklisted document',
+                'content' => 'Test content',
+                '_users_id_requester' => 2,
+                'entities_id' => 0,
+                '_auto_import' => 1,
+                '_filename' => ['foo.png'],
+            ]
+        );
+
+        // Verify no Document_Item created for blacklisted documents
+        $doc_items_auto = getAllDataFromTable(\Document_Item::getTable(), [
+            'itemtype' => Ticket::getType(),
+            'items_id' => $ticket->getID(),
+        ]);
+        $this->assertCount(0, $doc_items_auto, 'No documents should be attached when auto-imported');
+
+        // Test 2: Manual upload should work (not blocked)
+        $png_file_manual = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+
+        \Safe\copy($png_file_manual, GLPI_TMP_DIR . '/bar.png');
+
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name' => 'Test ticket with no blacklisted document',
+                'content' => 'Test content',
+                '_users_id_requester' => 2,
+                'entities_id' => 0,
+                '_filename' => ['bar.png'],
+            ]
+        );
+
+        // Verify documents are attached when manually uploaded
+        $doc_items_manual = getAllDataFromTable(\Document_Item::getTable(), [
+            'itemtype' => Ticket::getType(),
+            'items_id' => $ticket->getID(),
+        ]);
+        $this->assertCount(1, $doc_items_manual, 'Documents should be attached when manually uploaded');
+
+        // Cleanup temporary copies only
+        \Safe\unlink(GLPI_TMP_DIR . '/foo.png');
+        \Safe\unlink(GLPI_TMP_DIR . '/bar.png');
     }
 }

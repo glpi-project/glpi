@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use SingletonRuleList;
 
 /* Test for inc/ruledictionnarysoftwarecollection.class.php */
 
@@ -125,8 +126,8 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             )
         );
 
-        $this->assertFalse($collection->moveLicenses('100', $new_software->getID()));
-        $this->assertFalse($collection->moveLicenses($old_software->getID(), '100'));
+        $this->assertFalse($collection->moveLicenses(99999999, $new_software->getID()));
+        $this->assertFalse($collection->moveLicenses($old_software->getID(), 99999999));
     }
 
     public function testPutOldSoftsInTrash()
@@ -284,7 +285,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             '_system_category' => 'web',
         ];
 
-        $collection->RuleList = new \stdClass();
+        $collection->RuleList = new SingletonRuleList();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = ['version' => '52', '_ruleid' => $rules_id];
@@ -343,7 +344,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             '_system_category' => 'web',
         ];
 
-        $collection->RuleList = new \stdClass();
+        $collection->RuleList = new SingletonRuleList();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = [
@@ -408,7 +409,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             '_system_category' => 'web',
         ];
 
-        $collection->RuleList = new \stdClass();
+        $collection->RuleList = new SingletonRuleList();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = [
@@ -463,7 +464,7 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             '_system_category' => 'web',
         ];
 
-        $collection->RuleList = new \stdClass();
+        $collection->RuleList = new SingletonRuleList();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = ['manufacturers_id' => "$manufacturers_id",
@@ -510,14 +511,14 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         );
 
         $input = ['name'             => 'Soft something'];
-        $collection->RuleList = new \stdClass();
+        $collection->RuleList = new SingletonRuleList();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = ['version_append' => 'something', 'version' => 'something', '_ruleid' => $rules_id];
         $this->assertSame($expected, $result);
 
         $input = ['name'             => 'Soft else'];
-        $collection->RuleList = new \stdClass();
+        $collection->RuleList = new SingletonRuleList();
         $collection->RuleList->load = true;
         $result   = $collection->processAllRules($input);
         $expected = ['version_append' => 'else', 'version' => 'else', '_ruleid' => $rules_id];

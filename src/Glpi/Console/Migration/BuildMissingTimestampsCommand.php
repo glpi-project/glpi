@@ -51,7 +51,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
         $this->setHidden(true); // Hide this command as it is when migrating from really old GLPI version
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $tables_iterator = $this->db->request(

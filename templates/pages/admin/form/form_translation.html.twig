@@ -85,6 +85,50 @@
     </div>
 {% endmacro %}
 
+{% macro getActions(handler) %}
+    {% set rand = random() %}
+
+    <div class="btn-actions">
+        <a data-translation-action-copy-default-value="{{ rand }}"
+            class="btn btn-action"
+            title="{{ __('Copy default value to translation') }}"
+            role="button"
+            aria-label="{{ __('Copy default value to translation') }}">
+            <i class="ti ti-arrow-big-right"></i>
+        </a>
+    </div>
+
+    <script>
+        $(function() {
+            $('[data-translation-action-copy-default-value="{{ rand }}"]')
+                .on('click', (event) => {
+                    event.preventDefault();
+                    const row = $(event.currentTarget).closest('tr');
+                    const translationInput = row.find('> td').eq(3).find('input, textarea').filter(':not([type="hidden"])').first();
+
+                    {% if handler.isRichText() %}
+                        if (translationInput.siblings('.tox-tinymce').length === 0) {
+                            initTinyMCEOnDemand(
+                                translationInput,
+                                $('[data-glpi-tinymce-init-on-demand-render="' + CSS.escape(translationInput.attr('id')) + '"]')
+                            ).then((editors) => {
+                                editors[0].setContent('{{ handler.getValue()|e('js') }}');
+                            });
+                        } else {
+                            const editorId = translationInput.attr('id');
+                            const editor = tinymce.get(editorId);
+                            if (editor) {
+                                editor.setContent('{{ handler.getValue()|e('js') }}');
+                            }
+                        }
+                    {% else %}
+                        translationInput.val('{{ handler.getValue()|e('js') }}');
+                    {% endif %}
+                });
+        });
+    </script>
+{% endmacro %}
+
 {% set entries = [] %}
 {% for handlers in form.listTranslationsHandlers() %}
     {% set group_entries = [] %}
@@ -104,13 +148,16 @@
             {% set group_entries = group_entries|merge([{
                 'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
                 'default': default_value,
+                'actions': _self.getActions(handler),
                 'translation': _self.getTranslationInput(
                     handler,
                     item_translation,
                     form_translation.getCldrLanguage().getPluralKey(1)
                 ),
+                'row_aria_label': __('Translation row for %s')|format(handler.getName()),
                 'type_aria_label': __('Translation name'),
                 'default_aria_label': __('Default value'),
+                'actions_aria_label': __('Translation actions'),
                 'translation_aria_label': __('Translated value')
             }]) %}
         {% endif %}
@@ -119,7 +166,7 @@
     {% if group_entries is not empty %}
         {% set entries = entries|merge([{
             'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
-            'type_colspan': 3,
+            'type_colspan': 4,
             'type_aria_label': _n('Category', 'Categories', 1)
         }]) %}
         {% set entries = entries|merge(group_entries) %}
@@ -155,11 +202,13 @@
                     'columns': {
                         'type': '',
                         'default': __('Default (%s)')|format(call('Dropdown::getLanguageName', [config('language')])),
+                        'actions': __('Actions'),
                         'translation': call('Dropdown::getLanguageName', [form_translation.fields['language']]),
                     },
                     'formatters': {
                         'type': 'raw_html',
                         'default': 'raw_html',
+                        'actions': 'raw_html',
                         'translation': 'raw_html',
                     },
                     'entries': entries,

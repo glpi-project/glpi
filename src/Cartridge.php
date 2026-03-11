@@ -50,18 +50,18 @@ class Cartridge extends CommonDBRelation
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Infocom'];
-    public $dohistory                   = true;
-    public $no_form_page                = true;
+    protected static array $forward_entity_to = ['Infocom'];
+    public bool $dohistory                   = true;
+    public bool $no_form_page                = true;
 
-    public static $rightname = 'cartridge';
+    public static string $rightname = 'cartridge';
 
-    public static $itemtype_1 = CartridgeItem::class;
-    public static $items_id_1 = 'cartridgeitems_id';
+    public static ?string $itemtype_1 = CartridgeItem::class;
+    public static ?string $items_id_1 = 'cartridgeitems_id';
 
-    public static $itemtype_2 = Printer::class;
-    public static $items_id_2 = 'printers_id';
-    public static $mustBeAttached_2 = false;
+    public static ?string $itemtype_2 = Printer::class;
+    public static ?string $items_id_2 = 'printers_id';
+    public static bool $mustBeAttached_2 = false;
 
     public function getCloneRelations(): array
     {
@@ -1221,16 +1221,6 @@ TWIG, ['printer_id' => $printer->getID()]);
         ]);
     }
 
-    /**
-     * Show form for Cartridge
-     * @since 0.84
-     *
-     * @param int $ID       Id of the cartridge
-     * @param array   $options  Array of possible options:
-     *     - parent Object : the printers where the cartridge is used
-     *
-     * @return bool False if there was a rights issue. Otherwise, returns true.
-     */
     public function showForm($ID, array $options = [])
     {
         $printer = new Printer();

@@ -44,7 +44,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 abstract class CommonITILCost extends CommonDBChild
 {
-    public $dohistory        = true;
+    public bool $dohistory        = true;
 
 
     public static function getTypeName($nb = 0)
@@ -80,7 +80,7 @@ abstract class CommonITILCost extends CommonDBChild
                     [$item::getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -403,12 +403,6 @@ abstract class CommonITILCost extends CommonDBChild
         return $result;
     }
 
-    /**
-     * Print the item cost form
-     *
-     * @param int $ID ID of the item
-     * @param array $options options used
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
@@ -487,6 +481,7 @@ abstract class CommonITILCost extends CommonDBChild
             'SELECT' => [
                 static::$items_id, 'id', 'name', 'begin_date', 'end_date', 'actiontime',
                 'budgets_id', 'cost_time', 'cost_fixed', 'cost_material', 'comment',
+                'date_creation', 'date_mod', 'users_id', 'users_id_lastupdater',
             ],
             'FROM'   => static::getTable(),
             'WHERE'  => [
@@ -508,7 +503,7 @@ abstract class CommonITILCost extends CommonDBChild
             $twig_params = [
                 'id'        => $ID,
                 'rand'      => $rand,
-                'type'      => static::getType(),
+                'type'      => static::class,
                 'parenttype' => static::$itemtype,
                 'items_id'  => static::$items_id,
             ];
@@ -558,6 +553,7 @@ TWIG, $twig_params);
         $budget = new Budget();
         $ticket_links = [];
         $budget_links = [];
+        $user_links = [];
         foreach ($iterator as $data) {
             $name = (empty($data['name']) ? sprintf(__('%1$s (%2$s)'), $data['name'], $data['id']) : $data['name']);
 
@@ -576,8 +572,18 @@ TWIG, $twig_params);
                 $budget->getFromDB($data['budgets_id']);
                 $budget_links[$data['budgets_id']] = $budget->getLink();
             }
+            if (!array_key_exists($data['users_id'], $user_links)) {
+                $user = new User();
+                $user->getFromDB($data['users_id']);
+                $user_links[$data['users_id']] = $user->getLink();
+            }
+            if (!array_key_exists($data['users_id_lastupdater'], $user_links)) {
+                $user = new User();
+                $user->getFromDB($data['users_id_lastupdater']);
+                $user_links[$data['users_id_lastupdater']] = $user->getLink();
+            }
             $entry = [
-                'itemtype' => static::getType(),
+                'itemtype' => static::class,
                 'id'       => $data['id'],
                 'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip($data['comment'], ['display' => false])),
                 'begin_date' => $data['begin_date'],
@@ -588,6 +594,10 @@ TWIG, $twig_params);
                 'cost_fixed' => $data['cost_fixed'],
                 'cost_material' => $data['cost_material'],
                 'totalcost' => $cost,
+                'date_creation' => $data['date_creation'],
+                'date_mod' => $data['date_mod'],
+                'users_id' => $user_links[$data['users_id']],
+                'users_id_lastupdater' => $user_links[$data['users_id_lastupdater']],
             ];
             if ($forproject) {
                 if (!array_key_exists($data[static::$items_id], $ticket_links)) {
@@ -601,6 +611,10 @@ TWIG, $twig_params);
 
         $columns = [
             'name' => __('Name'),
+            'date_creation' => __('Creation date'),
+            'users_id' => User::getTypeName(1),
+            'date_mod' => __('Modification date'),
+            'users_id_lastupdater' => User::getTypeName(1) . ' (' . __('Last updater') . ')',
             'begin_date' => __('Begin date'),
             'end_date' => __('End date'),
             'budget' => Budget::getTypeName(1),
@@ -612,6 +626,10 @@ TWIG, $twig_params);
         ];
         $footer = [
             'name' => '',
+            'date_creation' => '',
+            'users_id' => '',
+            'date_mod' => '',
+            'users_id_lastupdater' => '',
             'begin_date' => '',
             'end_date' => '',
             'budget' => '',
@@ -638,6 +656,10 @@ TWIG, $twig_params);
             'formatters' => [
                 'ticket' => 'raw_html',
                 'name' => 'raw_html',
+                'date_creation' => 'datetime',
+                'users_id' => 'raw_html',
+                'date_mod' => 'datetime',
+                'users_id_lastupdater' => 'raw_html',
                 'begin_date' => 'date',
                 'end_date' => 'date',
                 'budget' => 'raw_html',
@@ -747,5 +769,35 @@ TWIG, $twig_params);
     {
         $cost = ($actiontime * $cost_time / HOUR_TIMESTAMP) + $cost_fixed + $cost_material;
         return Html::formatNumber($cost, $edit);
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if ($input === false) {
+            return false;
+        }
+
+        if (Session::getLoginUserID()) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if ($input === false) {
+            return false;
+        }
+
+        if (Session::getLoginUserID()) {
+            $input['users_id_lastupdater'] = Session::getLoginUserID();
+        }
+
+        return $input;
     }
 }

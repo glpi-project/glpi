@@ -194,6 +194,10 @@ TWIG;
     #[Override]
     public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): string
     {
+        if (empty($value)) {
+            return '';
+        }
+
         return strval($value);
     }
 

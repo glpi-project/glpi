@@ -22,6 +22,7 @@ phpunit.xml
 /tests/cypress/downloads/
 /tests/cypress/videos/
 /tests/files/
+/tests/files-*/
 /tests/.env
 /nbproject
 .composer.hash
@@ -50,6 +51,7 @@ phpstan.neon
 /resources/.illustrations_translations.php
 /phpunit/files/*
 /.dump/
+/tests/js/coverage/
 
 # Playwright
 /tests/e2e/results/

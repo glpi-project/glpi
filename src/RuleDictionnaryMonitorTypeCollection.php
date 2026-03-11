@@ -35,8 +35,8 @@
 
 class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_monitortypes";
-    public $menu_option = "type.monitor";
+    public string $item_table  = "glpi_monitortypes";
+    public string $menu_option = "type.monitor";
 
     public function getTitle()
     {

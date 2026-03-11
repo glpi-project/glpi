@@ -348,16 +348,17 @@ class CommonDBTMTest extends DbTestCase
         global $DB;
 
         //insert case
-        $res = (int) $DB->updateOrInsert(
-            Computer::getTable(),
-            [
-                'serial' => 'serial-one',
-            ],
-            [
-                'name'   => 'serial-to-change',
-            ]
+        $this->assertTrue(
+            $DB->updateOrInsert(
+                Computer::getTable(),
+                [
+                    'serial' => 'serial-one',
+                ],
+                [
+                    'name'   => 'serial-to-change',
+                ]
+            )
         );
-        $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
             'FROM'   => Computer::getTable(),
@@ -1560,6 +1561,145 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals('bar.txt', $document->fields['filename']);
     }
 
+    public function testAddFilesSkipsFileWhenTagNotInContent()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = $this->createItem(Computer::class, [
+            'name' => 'Test computer for skipped upload',
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        $filename_txt = '65292dc32d6a87.46654965' . 'image_paste12345678.png';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $tag = '0bf32119-761764d0-65292dc0770083.87619309';
+
+        $input = [
+            'name' => 'Test upload with deleted image',
+            'content' => 'Some text without the image tag',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => $tag,
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ],
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        // Temporary file should be cleaned up by the fix
+        $this->assertFileDoesNotExist(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // No document should be created since tag is not in content
+        $document_item = new Document_Item();
+        $this->assertFalse(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        );
+    }
+
+    /**
+     * Test that files are processed normally when their tag is present in content.
+     * This is a non-regression test for the fix of issue #22276.
+     *
+     * @see https://github.com/glpi-project/glpi/issues/22276
+     *
+     * @return void
+     */
+    public function testAddFilesProcessesFileWhenTagInContent()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = $this->createItem(Computer::class, [
+            'name' => 'Test computer for valid upload',
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        $filename_txt = '65292dc32d6a87.46654965' . 'image_paste87654321.png';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $tag = '0bf32119-761764d0-65292dc0770083.87619309';
+
+        $input = [
+            'name' => 'Test upload with valid image',
+            'content' => 'Some text with the image tag ' . $tag . ' present',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => $tag,
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ],
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // Document should be created and linked since tag is in content
+        $document_item = new Document_Item();
+        $this->assertTrue(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        );
+        $document = new Document();
+        $this->assertTrue(
+            $document->getFromDB($document_item->fields['documents_id'])
+        );
+        $this->assertEquals('image_paste87654321.png', $document->fields['filename']);
+    }
+
+    public function testAddFilesAttachesFilePickerFileWithoutTagInContent()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = $this->createItem(Computer::class, [
+            'name' => 'Test computer for file picker upload',
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        // File picker files do NOT have the image_paste pattern
+        $filename_txt = '65292dc32d6a87.46654965' . 'user_document.pdf';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $tag = '0bf32119-761764d0-65292dc0770083.87619309';
+
+        $input = [
+            'name' => 'Test upload with file picker',
+            // Tag is NOT in content - but file should still be attached
+            'content' => 'Some text without the file tag',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => $tag,
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ],
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // Document should be created and linked even though tag is not in content
+        // because this is a file picker upload, not a pasted image
+        $document_item = new Document_Item();
+        $this->assertTrue(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        );
+        $document = new Document();
+        $this->assertTrue(
+            $document->getFromDB($document_item->fields['documents_id'])
+        );
+        $this->assertEquals('user_document.pdf', $document->fields['filename']);
+    }
+
     public static function updatedInputProvider(): iterable
     {
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
@@ -2263,5 +2403,132 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals("Computer A2", $items[1]->getName());
         $this->assertEquals("Computer A3", $items[2]->getName());
         $this->assertEquals("Computer A4", $items[3]->getName());
+    }
+
+    public static function getTemplateProvider(): iterable
+    {
+        $itemtypes = [
+            \Budget::class,
+            \Cable::class,
+            \Certificate::class,
+            Computer::class,
+            \Contract::class,
+            \Domain::class,
+            \Enclosure::class,
+            \Monitor::class,
+            \NetworkEquipment::class,
+            \PDU::class,
+            \PassiveDCEquipment::class,
+            \Peripheral::class,
+            \Phone::class,
+            \Printer::class,
+            \Project::class,
+            \Rack::class,
+            \Software::class,
+            \SoftwareLicense::class,
+        ];
+
+        foreach ($itemtypes as $itemtype) {
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 1",
+                    'name' => "Test $itemtype 1",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 2",
+                    'name' => "Test $itemtype 2",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 3",
+                    'name' => "Test $itemtype 3",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 4",
+                    'name' => "Test $itemtype 4",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 5",
+                    'name' => "Test $itemtype 5",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_child_2', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 6",
+                    'name' => "Test $itemtype 6",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_child_2', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+        }
+    }
+
+    #[DataProvider('getTemplateProvider')]
+    public function testCanCreateFromTemplate(
+        string $itemtype,
+        array $template_input,
+        int $target_entities_id,
+        bool $expected_result
+    ): void {
+        $this->login();
+
+        $template_input['is_template'] = true;
+
+        if ($itemtype == \SoftwareLicense::class) {
+            $software_id = $this->createItem(\Software::class, [
+                'name' => 'Test Software for Template',
+                'entities_id' => $template_input['entities_id'],
+                'is_recursive' => $template_input['is_recursive'],
+            ])->getID();
+            $template_input['softwares_id'] = $software_id;
+        }
+
+        $template = $this->createItem($itemtype, $template_input);
+
+        $input = $template->fields;
+        $input['entities_id'] = $target_entities_id;
+        $this->setEntity($target_entities_id, false);
+
+        $this->assertEquals($expected_result, $template->can($template->getID(), CREATE, $input));
     }
 }

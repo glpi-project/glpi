@@ -183,6 +183,24 @@ class EntityTest extends DbTestCase
     }
 
     /**
+     * Test that entity creation generates sequential IDs.
+     */
+    public function testEntityCreationGeneratesSequentialIds(): void
+    {
+        $this->login();
+
+        $id = 0;
+        for ($i = 1; $i <= 5; $i++) {
+            $entity = $this->createItem(Entity::class, [
+                'name' => "Test Entity AutoIncrement $i",
+                'entities_id' => 0,
+            ]);
+            $this->assertGreaterThan($id, $entity->getID());
+            $id = $entity->getID();
+        }
+    }
+
+    /**
      * Run getSonsOf tests
      *
      * @param bool $cache Is cache enabled?

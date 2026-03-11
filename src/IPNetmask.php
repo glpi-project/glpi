@@ -37,7 +37,7 @@
 /// since version 0.84
 class IPNetmask extends IPAddress
 {
-    protected static $notable = true;
+    protected static bool $notable = true;
 
 
     /**

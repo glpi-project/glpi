@@ -38,6 +38,7 @@ use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\EmptyCurlContentException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -394,13 +395,11 @@ class Toolbox
     /**
      * Generate a Backtrace
      *
-     * @param string $log  Log file name (default php-errors) if false, return the string
+     * @param string $log  Log file name (default php-errors) no file loggin if falsy
      * @param string $hide Call to hide (but display script/line)
      * @param array  $skip Calls to not display at all
      *
-     * @return string
-     *
-     * @since 0.85
+     * @return string backtrace or script filename ($_SERVER["SCRIPT_FILENAME"])
      **/
     public static function backtrace($log = 'php-errors', $hide = '', array $skip = [])
     {
@@ -523,14 +522,12 @@ class Toolbox
     /**
      * Switch error mode for GLPI
      *
-     * @param int|null $mode       From Session::*_MODE
+     * @param Session::*_MODE|null $mode
      * @param bool|null $removed_param No longer used (Used to be $debug_sql)
      * @param bool|null $removed_param_2 No longer used (Used to be $debug_vars)
      * @param bool|null $log_in_files
      *
      * @return void
-     *
-     * @since 0.84
      **/
     public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
     {
@@ -2137,33 +2134,52 @@ class Toolbox
         $progress_indicator?->setProgressBarMessage(__('Importing default data…'));
 
         foreach ($tables as $table => $data) {
-            $reference = array_replace(
-                $data[0],
-                array_fill_keys(
-                    array_keys($data[0]),
-                    new QueryParam()
-                )
-            );
+            // Enable NO_AUTO_VALUE_ON_ZERO for glpi_entities insertion (needed for id=0 root entity)
+            $original_sql_mode = null;
+            if ($table === 'glpi_entities') {
+                /** @var mysqli_result $request */
+                $request = $database->doQuery(
+                    sprintf('SELECT @@sql_mode as %s', $database->quoteName('sql_mode'))
+                );
+                $original_sql_mode = $request->fetch_assoc()['sql_mode'] ?? '';
+                $new_sql_mode = $original_sql_mode !== ''
+                    ? $original_sql_mode . ',NO_AUTO_VALUE_ON_ZERO'
+                    : 'NO_AUTO_VALUE_ON_ZERO';
+                $database->doQuery(
+                    sprintf('SET SESSION sql_mode = %s', $database->quote($new_sql_mode))
+                );
+            }
 
-            $stmt = $database->prepare($database->buildInsert($table, $reference));
+            try {
+                $reference = array_replace(
+                    $data[0],
+                    array_fill_keys(
+                        array_keys($data[0]),
+                        new QueryParam()
+                    )
+                );
 
-            $types = str_repeat('s', count($data[0]));
-            foreach ($data as $row) {
-                $res = $stmt->bind_param($types, ...array_values($row));
-                if (false === $res) {
-                    $msg = "Error binding params in table $table\n";
-                    $msg .= json_encode($row);
-                    throw new RuntimeException($msg);
+                $stmt = $database->prepare($database->buildInsert($table, $reference));
+
+                foreach ($data as $row) {
+                    try {
+                        $database->executeStatement($stmt, $row);
+                    } catch (StatementException $e) {
+                        $msg = $stmt->error;
+                        $msg .= "\nError execution statement in table $table\n";
+                        $msg .= json_encode($row);
+                        throw new RuntimeException($msg, 0, $e);
+                    }
+
+                    $progress_indicator?->advance();
                 }
-                $res = $stmt->execute();
-                if (false === $res) {
-                    $msg = $stmt->error;
-                    $msg .= "\nError execution statement in table $table\n";
-                    $msg .= json_encode($row);
-                    throw new RuntimeException($msg);
+            } finally {
+                // Restore original SQL mode after glpi_entities insertion
+                if ($original_sql_mode !== null) {
+                    $database->doQuery(
+                        sprintf('SET SESSION sql_mode = %s', $database->quote($original_sql_mode))
+                    );
                 }
-
-                $progress_indicator?->advance();
             }
         }
         $progress_indicator?->addMessage(MessageType::Success, __('Default data imported.'));
@@ -2394,18 +2410,34 @@ class Toolbox
      */
     public static function getDocumentsFromTag(string $content_text): array
     {
+        $all_tags = [];
+
         preg_match_all(
             '/' . Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)') . '/',
             $content_text,
             $matches,
             PREG_PATTERN_ORDER
         );
-        if (!isset($matches[1]) || count($matches[1]) == 0) {
+        if (isset($matches[1]) && count($matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $matches[1]);
+        }
+
+        preg_match_all(
+            '/<img[^>]+id=["\']([a-z0-9\.\-]+)["\'][^>]*>/i',
+            $content_text,
+            $img_matches,
+            PREG_PATTERN_ORDER
+        );
+        if (count($img_matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $img_matches[1]);
+        }
+
+        if (count($all_tags) === 0) {
             return [];
         }
 
         $document = new Document();
-        return $document->find(['tag' => array_unique($matches[1])]);
+        return $document->find(['tag' => array_unique($all_tags)]);
     }
 
     /**
@@ -2535,7 +2567,7 @@ class Toolbox
                             $docitem->add(['documents_id'  => $image['id'],
                                 '_do_notif'     => false,
                                 '_disablenotif' => true,
-                                'itemtype'      => $item->getType(),
+                                'itemtype'      => $item::class,
                                 'items_id'      => $item->fields['id'],
                             ]);
                         }
@@ -2780,12 +2812,16 @@ class Toolbox
     /**
      * Format a web link adding http:// if missing
      *
-     * @param string $link link to format
+     * @param ?string $link link to format
      *
      * @return string formatted link.
      **/
     public static function formatOutputWebLink($link)
     {
+        if (empty($link)) {
+            return (string) $link;
+        }
+
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
         }

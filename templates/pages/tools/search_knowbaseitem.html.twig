@@ -162,6 +162,8 @@
             }).then((html) => {
                 $('#{{ container_id }}').html(html);
                 hideLoading();
+                $('button.use-knowbaseitem').removeClass('pointer-events-none');
+                $('button.view-knowbaseitem').removeClass('pointer-events-none');
             }, () => {
                 window.glpi_toast_error('{{ __('An error occurred while searching in the knowledge base')|e('js') }}');
                 hideLoading();

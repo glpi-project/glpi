@@ -59,9 +59,9 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Item_Disk','ItemVirtualMachine',
+    protected static array $forward_entity_to = ['Item_Disk','ItemVirtualMachine',
         'Item_SoftwareVersion', 'Infocom',
         'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem',
@@ -70,12 +70,11 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     /**
      * Device container - format $device = array(ID,"device type","ID in device table","specificity value")
      *
-     * @var array
      */
-    public $devices                     = [];
+    public array $devices                     = [];
 
-    public static $rightname                   = 'computer';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'computer';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -250,7 +249,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
                         'FROM'   => Asset_PeripheralAsset::getTable(),
                         'WHERE'  => [
                             'itemtype_peripheral' => $type,
-                            'itemtype_asset'      => self::getType(),
+                            'itemtype_asset'      => static::class,
                             'items_id_asset'      => $this->fields["id"],
                             'is_deleted'          => 0,
                         ],
@@ -292,7 +291,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
                             'SELECT' => ['id'],
                             'FROM'   => $item::getTable(),
                             'WHERE'  => [
-                                'itemtype'     => self::getType(),
+                                'itemtype'     => static::class,
                                 'items_id'     => $this->fields["id"],
                                 'is_deleted'   => 0,
                             ],
@@ -382,7 +381,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_asset' => self::getType(),
+                'itemtype_asset' => static::class,
                 'items_id_asset' => $this->getID(),
             ],
         ]);

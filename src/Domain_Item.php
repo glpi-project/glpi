@@ -39,11 +39,11 @@ use Glpi\DBAL\QueryFunction;
 class Domain_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Domain::class;
-    public static $items_id_1 = 'domains_id';
+    public static ?string $itemtype_1 = Domain::class;
+    public static ?string $items_id_1 = 'domains_id';
 
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -59,7 +59,7 @@ class Domain_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(
-            ['itemtype' => $item->getType(),
+            ['itemtype' => $item::class,
                 'items_id' => $item->getField('id'),
             ]
         );
@@ -76,7 +76,7 @@ class Domain_Item extends CommonDBRelation
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForDomain($item);
             }
-            return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+            return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
         }
 
         if (
@@ -87,7 +87,7 @@ class Domain_Item extends CommonDBRelation
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Domain::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }

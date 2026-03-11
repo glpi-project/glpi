@@ -37,7 +37,7 @@ use Glpi\DBAL\QueryFunction;
 
 class PurgeLogs extends CommonDBTM
 {
-    protected static $notable = true;
+    protected static bool $notable = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -201,7 +201,6 @@ class PurgeLogs extends CommonDBTM
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_profile_user']);
         if ($month) {
-            //Delete software version association
             $DB->delete(
                 'glpi_logs',
                 [
@@ -218,7 +217,6 @@ class PurgeLogs extends CommonDBTM
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_group_user']);
         if ($month) {
-            //Delete software version association
             $DB->delete(
                 'glpi_logs',
                 [
@@ -235,7 +233,6 @@ class PurgeLogs extends CommonDBTM
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_userdeletedfromldap']);
         if ($month) {
-            //Delete software version association
             $DB->delete(
                 'glpi_logs',
                 [
@@ -247,7 +244,6 @@ class PurgeLogs extends CommonDBTM
 
         $month = self::getDateModRestriction($CFG_GLPI['purge_user_auth_changes']);
         if ($month) {
-            //Delete software version association
             $DB->delete(
                 'glpi_logs',
                 [

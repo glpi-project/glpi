@@ -417,6 +417,9 @@ final class LinkedITILObjectsField extends AbstractConfigField implements Destin
                         $requirement = DataRequirementSpecification::fromItem($item);
                         $requirements[] = $requirement;
                         $strategy_config[LinkedITILObjectsFieldStrategyConfig::SPECIFIC_ITILOBJECT]['items_id'] = $requirement->name;
+                    } else {
+                        // Set to 0 if the linked object is deleted
+                        $strategy_config[LinkedITILObjectsFieldStrategyConfig::SPECIFIC_ITILOBJECT]['items_id'] = 0;
                     }
                 }
             }

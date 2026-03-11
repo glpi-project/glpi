@@ -72,6 +72,8 @@ use Ticket;
 use Ticket_Contract;
 use Ticket_User;
 use TicketSatisfaction;
+use TicketTemplate;
+use TicketTemplateMandatoryField;
 use TicketValidation;
 use User;
 
@@ -1034,7 +1036,7 @@ class TicketTest extends DbTestCase
         $this->assertFalse($tasktemplate->isNewItem());
 
         // 3 - create a ticket template with the task templates in predefined fields
-        $itiltemplate    = new \TicketTemplate();
+        $itiltemplate    = new TicketTemplate();
         $itiltemplate_id = $itiltemplate->add([
             'name' => 'my ticket template',
         ]);
@@ -5064,11 +5066,11 @@ HTML,
                 ],
                 'expected' => <<<HTML
 Here is the screenshot:
-<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+<img id="9faff0a6-f37490bd-60e2af9721f420.96500246">
 blabla
 HTML,
             ];
-            // `img` of embedded image that has multiple attributes.
+            // `img` of embedded image that has multiple attributes including width/height.
             yield [
                 'content'  => <<<HTML
 Here is the screenshot:
@@ -5083,7 +5085,7 @@ HTML,
                 ],
                 'expected' => <<<HTML
 Here is the screenshot:
-<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+<img id="9faff0a6-f37490bd-60e2af9721f420.96500246" width="100" height="150">
 blabla
 HTML,
             ];
@@ -5105,7 +5107,7 @@ HTML,
                 'expected' => <<<HTML
 <img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
 Here is the screenshot:
-<p>#3eaff0a6-f37490bd-60e2a59721f420.96500246#</p>
+<img id="3eaff0a6-f37490bd-60e2a59721f420.96500246">
 blabla
 HTML,
             ];
@@ -7831,6 +7833,85 @@ HTML,
     }
 
     /**
+     * Check that timeline items with NULL document dates don't cause strtotime errors
+     * @return void
+     * @see https://github.com/glpi-project/glpi/issues/22134
+     */
+    public function testTimelineSortingWithNullDocumentDates(): void
+    {
+        $this->login();
+
+        $ticket_id = $this->createItem('Ticket', [
+            'name' => 'Test timeline with null document dates',
+            'content' => 'Testing bug #22134',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        // Create separate documents to avoid unicity constraint on (documents_id, itemtype, items_id, timeline_position)
+        $document1 = $this->createItem('Document', [
+            'name' => 'Test document 1 - null dates',
+            'entities_id' => 0,
+        ]);
+        $document2 = $this->createItem('Document', [
+            'name' => 'Test document 2 - partial null',
+            'entities_id' => 0,
+        ]);
+        $document3 = $this->createItem('Document', [
+            'name' => 'Test document 3 - valid dates',
+            'entities_id' => 0,
+        ]);
+
+        global $DB;
+
+        // Document with both dates NULL (bug #22134 scenario)
+        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+            'documents_id' => $document1->getID(),
+            'items_id' => $ticket_id,
+            'itemtype' => 'Ticket',
+            'entities_id' => 0,
+            'timeline_position' => 1,
+            'date_creation' => null,
+            'date' => null,
+        ]));
+
+        // Document with date_creation NULL but date valid (fallback scenario)
+        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+            'documents_id' => $document2->getID(),
+            'items_id' => $ticket_id,
+            'itemtype' => 'Ticket',
+            'entities_id' => 0,
+            'timeline_position' => 1,
+            'date_creation' => null,
+            'date' => '2024-01-15 10:00:00',
+        ]));
+
+        // Document with valid dates (regression check)
+        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+            'documents_id' => $document3->getID(),
+            'items_id' => $ticket_id,
+            'itemtype' => 'Ticket',
+            'entities_id' => 0,
+            'timeline_position' => 1,
+            'date_creation' => '2024-01-20 14:00:00',
+            'date' => '2024-01-20 14:00:00',
+        ]));
+
+        $ticket = new Ticket();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        // Should not throw "strtotime(): Argument #1 must be of type string, null given"
+        $timeline = $ticket->getTimelineItems();
+        $this->assertIsArray($timeline);
+
+        // Verify documents are in the timeline
+        $document_items = array_filter(
+            $timeline,
+            static fn($entry) => $entry['type'] === \Document_Item::class
+        );
+        $this->assertCount(3, $document_items);
+    }
+
+    /**
      * Data provider for the testCountActors function
      *
      * @return iterable
@@ -8938,7 +9019,7 @@ HTML,
                 'ticket'   => 0,
                 'document' => CREATE,
             ],
-            'expected' => true, // requester can always add docs if the ticket is not modified
+            'expected' => false,
         ];
 
         yield [
@@ -8965,7 +9046,7 @@ HTML,
                 'ticket'   => CREATE,
                 'document' => CREATE,
             ],
-            'expected' => true, // requester can always add docs if the ticket is not modified
+            'expected' => false,
         ];
     }
 
@@ -8987,7 +9068,7 @@ HTML,
 
         $this->login();
 
-        $ticket = $this->createItem(\Change::class, [
+        $ticket = $this->createItem(Ticket::class, [
             'name' => 'Ticket Test',
             'content' => 'Ticket content',
             '_actors' => [
@@ -9729,6 +9810,431 @@ HTML,
             $this->assertFalse($result);
             $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Description']);
         }
+    }
+
+    /**
+     * Test that validates the fix for TypeError when mandatory fields receive array input.
+     */
+    public static function mandatoryFieldsWithArrayInputProvider(): iterable
+    {
+        yield 'actor field with array value should not trigger TypeError' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => 'Valid content',
+                '_users_id_requester' => ['_actors_350' => 350],
+            ],
+            'mandatory_field' => '_users_id_requester',
+            'should_succeed' => true,
+        ];
+
+        yield 'content as empty paragraph with spaces should be rejected' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p>   </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => false,
+        ];
+
+        yield 'content as empty paragraph with nbsp should be rejected' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p> </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => false,
+        ];
+
+        yield 'content with actual text should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p>Real content here</p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with text followed by empty paragraph should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p>Real content here</p><p> </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with empty paragraph followed by text should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p> </p><p>Real content here</p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with multiple empty paragraphs should be rejected' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p> </p><p> </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => false,
+        ];
+
+        yield 'content with image only should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<img src="image.jpg" />',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with image inside paragraph should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p><img src="image.jpg" /></p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+    }
+
+    #[DataProvider('mandatoryFieldsWithArrayInputProvider')]
+    public function testMandatoryFieldsWithArrayInput(array $input, string $mandatory_field, bool $should_succeed): void
+    {
+        $this->login();
+
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Test template with mandatory field: ' . $mandatory_field,
+        ]);
+
+        $search_option_id = match ($mandatory_field) {
+            'content' => (new Ticket())->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
+            '_users_id_requester' => 4,
+            '_groups_id_requester' => 71,
+            '_users_id_assign' => 5,
+            '_groups_id_assign' => 8,
+            '_users_id_observer' => 66,
+            default => 0,
+        };
+
+        $this->createItem(TicketTemplateMandatoryField::class, [
+            'tickettemplates_id' => $template->getID(),
+            'num' => $search_option_id,
+        ]);
+
+        $input[Ticket::getTemplateFormFieldName()] = $template->getID();
+
+        $ticket = new Ticket();
+        $result = $ticket->add($input);
+
+        if ($should_succeed) {
+            $this->assertGreaterThan(0, $result, 'Ticket creation should succeed');
+        } else {
+            $this->assertFalse($result, 'Ticket creation should fail due to mandatory field validation');
+            if ($mandatory_field === 'content') {
+                $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Description']);
+            } else {
+                $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled']);
+            }
+        }
+    }
+
+    /**
+     * Data provider for testGetAssociatedDocumentsWithoutActiveSession
+     * Returns different scenarios with timeline items (followup/task/solution) with various visibility and user rights
+     */
+    public static function associatedDocumentsWithoutSessionProvider(): iterable
+    {
+        foreach ([Ticket::class, \Change::class, \Problem::class] as $itil_itemtype) {
+
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => ITILFollowup::class,
+                'is_private' => false,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => ITILFollowup::class,
+                'is_private' => true,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => $itil_itemtype . 'Task',
+                'is_private' => false,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => $itil_itemtype . 'Task',
+                'is_private' => true,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => ITILSolution::class,
+                'is_private' => false,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            if ($itil_itemtype !== \Problem::class) {
+                yield [
+                    'parent_itil_itemtype' => $itil_itemtype,
+                    'timeline_item_type' => $itil_itemtype . 'Validation',
+                    'is_private' => false,
+                    'test_user' => 'tech',
+                    'expected' => true,
+                ];
+                yield [
+                    'parent_itil_itemtype' => $itil_itemtype,
+                    'timeline_item_type' => $itil_itemtype . 'Validation',
+                    'is_private' => true,
+                    'test_user' => 'tech',
+                    'expected' => true,
+                ];
+            }
+        }
+        // Tests for helpdesk user (post-only)
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILFollowup::class,
+            'is_private' => true,
+            'test_user' => 'post-only',
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILFollowup::class,
+            'is_private' => false,
+            'test_user' => 'post-only',
+            'expected' => true,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \TicketTask::class,
+            'is_private' => true,
+            'test_user' => 'post-only',
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \TicketTask::class,
+            'is_private' => false,
+            'test_user' => 'post-only',
+            'expected' => true,
+        ];
+    }
+
+    /**
+     * Test that documents attached to followups, tasks and solutions are included
+     * in notification emails, even when there is no active session (cron context).
+     * Tests various scenarios with different timeline item types, visibility, and user rights.
+     */
+    #[DataProvider('associatedDocumentsWithoutSessionProvider')]
+    public function testGetAssociatedDocumentsWithoutActiveSession(
+        string $parent_itil_itemtype,
+        string $timeline_item_type,
+        bool $is_private,
+        string $test_user,
+        bool $expected
+    ): void {
+        global $DB;
+
+        $this->login();
+
+        // Get the test user
+        $user = getItemByTypeName(User::class, $test_user, false);
+
+        $parent_item = $this->createItem($parent_itil_itemtype, [
+            'name'               => 'ITIL Object test',
+            'content'            => 'test',
+            'entities_id'        => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user->getID(),
+        ]);
+
+        // Create a document linked directly to the parent item (ticket/change/problem)
+        $doc_ticket = $this->createItem(\Document::class, [
+            'name' => 'Doc',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'          => $parent_item->getID(),
+            'itemtype'          => $parent_itil_itemtype,
+            'documents_id'      => $doc_ticket->getID(),
+            'timeline_position' => CommonITILObject::TIMELINE_LEFT,
+        ]);
+
+        // Create the timeline item with document
+        $timeline_item = null;
+        $doc_timeline = null;
+
+        if ($timeline_item_type === ITILFollowup::class) {
+            $timeline_item = $this->createItem(ITILFollowup::class, [
+                'itemtype'   => $parent_itil_itemtype,
+                'items_id'   => $parent_item->getID(),
+                'content'    => 'Followup with document',
+                'is_private' => $is_private ? 1 : 0,
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to ' . ($is_private ? 'private' : 'public') . ' followup',
+            ]);
+        } elseif (strpos($timeline_item_type, 'Task') !== false) {
+            $fk_field = strtolower(str_replace('\\', '', $parent_itil_itemtype)) . 's_id';
+            $timeline_item = $this->createItem($timeline_item_type, [
+                $fk_field    => $parent_item->getID(),
+                'content'    => 'Task with document',
+                'is_private' => $is_private ? 1 : 0,
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to ' . ($is_private ? 'private' : 'public') . ' task',
+            ]);
+        } elseif ($timeline_item_type === ITILSolution::class) {
+            $timeline_item = $this->createItem(ITILSolution::class, [
+                'itemtype' => $parent_itil_itemtype,
+                'items_id' => $parent_item->getID(),
+                'content'  => 'Solution with document',
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to solution',
+            ]);
+        } elseif (strpos($timeline_item_type, 'Validation') !== false) {
+            $fk_field = strtolower(str_replace('\\', '', $parent_itil_itemtype)) . 's_id';
+            $timeline_item = $this->createItem($timeline_item_type, [
+                $fk_field            => $parent_item->getID(),
+                'comment_submission' => 'Validation request with document',
+                'itemtype_target'    => User::class,
+                'items_id_target'    => $user->getID(),
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to ticket validation',
+            ]);
+        }
+
+        // Link document to timeline item
+        $this->createItem(\Document_Item::class, [
+            'items_id'          => $timeline_item->getID(),
+            'itemtype'          => $timeline_item_type,
+            'documents_id'      => $doc_timeline->getID(),
+            'timeline_position' => CommonITILObject::TIMELINE_LEFT,
+        ]);
+
+        // First verify with active session
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs_with_session = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs_with_session[] = $doc_item['documents_id'];
+        }
+
+        // Document linked to parent item (ticket/change/problem)
+        $this->assertContains(
+            $doc_ticket->getID(),
+            $found_docs_with_session,
+        );
+
+        // Check timeline document visibility with session
+        if ($expected) {
+            $this->assertContains(
+                $doc_timeline->getID(),
+                $found_docs_with_session,
+            );
+        } else {
+            $this->assertNotContains(
+                $doc_timeline->getID(),
+                $found_docs_with_session,
+            );
+        }
+
+        // Simulate cron context: logout to clear session rights
+        Session::destroy();
+        $_SESSION['glpiactiveprofile'] = [];
+
+        // Reload parent item from DB
+        $parent_item->getFromDB($parent_item->getID());
+
+        // Test that documents visibility is consistent without session
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs_without_session = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs_without_session[] = $doc_item['documents_id'];
+        }
+
+        // Document linked to parent item (ticket/change/problem)
+        $this->assertContains(
+            $doc_ticket->getID(),
+            $found_docs_without_session,
+        );
+
+        // Check timeline document visibility without session
+        if ($expected) {
+            $this->assertContains(
+                $doc_timeline->getID(),
+                $found_docs_without_session,
+            );
+        } else {
+            $this->assertNotContains(
+                $doc_timeline->getID(),
+                $found_docs_without_session,
+            );
+        }
+    }
+    public function testUpdateActorsDisabledOrDeleted(): void
+    {
+        $this->login();
+
+        // Disabled user as requester
+        $user_id = $this->createItem(User::class, [
+            'name' => $this->getUniqueString(),
+            'is_active' => 0,
+        ])->getID();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket for disabled user',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ]);
+
+        $this->checkActors($ticket, []);
+
+        // Deleted user as requester
+        $user_id = $this->createItem(User::class, [
+            'name' => $this->getUniqueString(),
+            'is_deleted' => 1,
+        ])->getID();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket for deleted user',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ]);
+
+        $this->checkActors($ticket, []);
     }
 
 }

@@ -63,12 +63,10 @@ use function Safe\session_write_close;
  */
 class Controller extends CommonGLPI
 {
-    /** @var string */
-    protected $plugin_key = "";
+    protected string $plugin_key = "";
 
-    public static $rightname = 'config';
-    /** @var ?PluginsApi */
-    public static $api       = null;
+    public static string $rightname = 'config';
+    public static ?PluginsApi $api       = null;
 
     /**
      * Prompt to replace the classic plugins page with the Marketplace
@@ -391,7 +389,15 @@ class Controller extends CommonGLPI
         $api_version   = $api_plugin['version'] ?? "";
         $local_version = $local_plugin['version'] ?? "";
 
-        if (strlen($api_version) && $api_version !== $local_version) {
+        if ($plugin_inst === null) {
+            $plugin_inst = new Plugin();
+        }
+        $plugin_inst->update([
+            'id'                        => $local_plugin['id'],
+            'highest_available_version' => $api_version,
+        ]);
+
+        if (strlen($api_version) && version_compare($api_version, $local_version, '>')) {
             return $api_version;
         }
 
@@ -704,5 +710,20 @@ class Controller extends CommonGLPI
         $config = Config::getConfigurationValues('core', ['marketplace_replace_plugins']);
 
         return (int) ($config['marketplace_replace_plugins'] ?? self::MP_REPLACE_ASK);
+    }
+
+    public static function countUpdatablePlugins(): int
+    {
+        $count = 0;
+        $plugin_inst = new Plugin();
+        $installed   = $plugin_inst->getList();
+
+        foreach ($installed as $plugin) {
+            if (isset($plugin['highest_available_version']) && version_compare($plugin['version'], $plugin['highest_available_version'], '<')) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }

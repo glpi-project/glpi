@@ -34,8 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Features\Clonable;
@@ -49,6 +47,7 @@ use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\realpath;
 
 /**
@@ -60,11 +59,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     use Clonable;
     use MapGeolocation;
 
-    public $must_be_replace             = true;
-    public $dohistory                   = true;
+    public bool $must_be_replace             = true;
+    public bool $dohistory                   = true;
 
-    public static $rightname            = 'entity';
-    protected $usenotepad               = true;
+    public static string $rightname            = 'entity';
+    protected bool $usenotepad               = true;
 
     public const READHELPDESK       = 1024;
     public const UPDATEHELPDESK     = 2048;
@@ -408,14 +407,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         $input = $this->handleConfigStrategyFields($input);
-
-        $result = $DB->request([
-            'SELECT' => [
-                new QueryExpression(QueryFunction::max('id') . '+1', 'newID'),
-            ],
-            'FROM'   => static::getTable(),
-        ])->current();
-        $input['id'] = $result['newID'];
 
         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
@@ -2287,13 +2278,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     public static function generateLinkSatisfaction($item)
     {
-        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::getType()));
+        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
         $url = self::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_URL' . $config_suffix);
 
-        $tag_prefix = strtoupper($item::getType());
+        $tag_prefix = strtoupper($item::class);
 
         if (strstr($url, "[ITEMTYPE]")) {
-            $url = str_replace("[ITEMTYPE]", $item::getType(), $url);
+            $url = str_replace("[ITEMTYPE]", $item::class, $url);
         }
         if (strstr($url, "[ITEMTYPE_NAME]")) {
             $url = str_replace("[ITEMTYPE_NAME]", $item::getTypeName(1), $url);
@@ -3155,7 +3146,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return null;
     }
 
-    private static function getEntityTree(int $entities_id_root): array
+    public static function getEntityTree(int $entities_id_root): array
     {
         global $DB;
 
@@ -3206,9 +3197,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         ];
     }
 
-    public static function getEntitySelectorTree(): array
+    /**
+     * @param int $rand
+     * @return array
+     */
+    public static function getEntitySelectorTree($rand = 0): array
     {
-        $token = Session::getNewCSRFToken();
         $twig = TemplateRenderer::getInstance();
 
         $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
@@ -3219,7 +3213,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $default_entity_id = $default_entity['id'];
             $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
-            $adapt_tree = static function (&$entities) use (&$adapt_tree, $token, $twig) {
+            $adapt_tree = static function (&$entities) use (&$adapt_tree, $twig, $rand) {
                 foreach ($entities as $entities_id => &$entity) {
                     $entity['key']   = $entities_id;
 
@@ -3233,15 +3227,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                         $is_recursive = false;
                     }
 
-                    $entity['title'] = $twig->render('layout/parts/profile_selector_form.html.twig', [
+                    $title = $twig->render('layout/parts/profile_selector_form.html.twig', [
                         'id' => $entities_id,
                         'name' => $entity['name'],
                         'is_recursive' => $is_recursive,
-                        // To avoid generating one token per entity (which may
-                        // make us reach our token limit too fast), we reuse a
-                        // common one.
-                        'csrf_token' => $token,
+                        'rand' => $rand,
                     ]);
+                    $title = preg_replace('/\s+/', ' ', $title); // compact spaces to reduce output size
+                    $entity['title'] = $title;
                 }
 
                 unset($entity);
@@ -3449,7 +3442,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', static::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if ($this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT) {
             $handlers[$key][] = new TranslationHandler(

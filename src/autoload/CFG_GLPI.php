@@ -151,7 +151,7 @@ $CFG_GLPI['main_languages'] = [
     'nn' => 'nn_NO',
     'fa' => 'fa_IR',
     'pl' => 'pl_PL',
-    'pt' => 'pt_PT',
+    'pt' => 'pt_BR',
     'ro' => 'ro_RO',
     'ru' => 'ru_RU',
     'sk' => 'sk_SK',
@@ -338,7 +338,7 @@ $CFG_GLPI['contract_types']               = [
     Peripheral::class, Phone::class, Printer::class, Project::class, Line::class,
     Software::class, SoftwareLicense::class, Certificate::class,
     DCRoom::class, Rack::class, Enclosure::class, Cluster::class, PDU::class, Appliance::class, Domain::class,
-    DatabaseInstance::class,
+    DatabaseInstance::class, PassiveDCEquipment::class,
 ];
 
 $CFG_GLPI['device_types']                 = [DeviceMotherboard::class, DeviceFirmware::class, DeviceProcessor::class,
@@ -598,8 +598,8 @@ $CFG_GLPI['javascript'] = [
     ],
     'tools'     => [
         'project'                 => ['sortable'],
-        'knowbaseitem'            => ['kb'],
-        'knowbaseitemtranslation' => ['kb'],
+        'knowbaseitem'            => ['tiptap'],
+        'knowbaseitemtranslation' => [],
         'report'                  => ['dashboard'],
         'reservationitem'         => $reservations_libs,
     ],

@@ -43,9 +43,9 @@ use function Safe\file_get_contents;
 class RuleImportAssetCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = true;
-    public static $rightname           = 'rule_import';
-    public $menu_option         = 'linkcomputer';
+    public bool $stop_on_first_match = true;
+    public static string $rightname           = 'rule_import';
+    public string $menu_option         = 'linkcomputer';
 
     public function defineTabs($options = [])
     {
@@ -91,7 +91,7 @@ class RuleImportAssetCollection extends RuleCollection
     public function collectionFilter($criteria, $options = [])
     {
         // current tab
-        $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
+        $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab(static::class);
         $current_tab = str_replace(self::class . '$', '', $active_tab);
         $tabs = $this->getTabNameForItem($this);
 

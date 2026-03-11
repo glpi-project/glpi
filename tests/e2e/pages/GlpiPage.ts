@@ -79,12 +79,36 @@ export class GlpiPage
         this.notes_content = page.getByTestId('note-content');
     }
 
+    public async doSearchAndClickDropdownValue(
+        dropdown: Locator,
+        value: string,
+        exact: boolean = true
+    ):  Promise<void> {
+        await dropdown.click();
+        await this.page.keyboard.type(value);
+
+        // Select2 roles are different if the dropdown group some values
+        const simple_dropdown = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': value, exact: exact})
+            .first()
+        ;
+        const dropdown_with_groups = this.page
+            .getByRole('listbox')
+            .getByRole('listitem', {'name': value, exact: exact})
+        ;
+
+        await simple_dropdown.or(dropdown_with_groups).click();
+        await expect(dropdown).toContainText(value);
+    }
+
     public async doSetDropdownValue(
         dropdown: Locator,
         value: string,
         exact: boolean = true,
     ):  Promise<void> {
         await dropdown.click();
+
         // Select2 roles are different if the dropdown group some values
         const simple_dropdown = this.page
             .getByRole('listbox')
@@ -97,6 +121,19 @@ export class GlpiPage
 
         await simple_dropdown.or(dropdown_with_groups).click();
         await expect(dropdown).toContainText(value);
+    }
+
+    public async doClearDropdownValue(
+        dropdown: Locator,
+        value: string,
+    ): Promise<void> {
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await dropdown.getByText(value)
+            .locator('..')
+            .locator('.select2-selection__choice__remove')
+            .click()
+        ;
     }
 
     public async doLogout(): Promise<void>
@@ -148,11 +185,6 @@ export class GlpiPage
         await this.getButton(entity_name).click();
     }
 
-    public async doFocusNote(index: number): Promise<void>
-    {
-        await this.notes.nth(index).click();
-    }
-
     public async doAddNote(content: string): Promise<void>
     {
         await this.add_note_button.click();
@@ -164,9 +196,6 @@ export class GlpiPage
         index: number,
         content: string,
     ): Promise<void> {
-        // Select the target note
-        await this.doFocusNote(index);
-
         // Update content
         await this.getButton("Edit").click();
         await this.note_content_input.fill(content);
@@ -177,21 +206,13 @@ export class GlpiPage
         index: number,
         file: string,
     ): Promise<void> {
-        // Select the target note
-        await this.doFocusNote(index);
-
         // Add file to note
         await this.getButton("Edit").click();
         await this.doAddFileToUploadArea(file, this.page.getByRole('dialog'));
         await this.getButton("Update").click();
     }
 
-    public async doDeleteNote(
-        index: number,
-    ): Promise<void> {
-        // Select the target note
-        await this.doFocusNote(index);
-
+    public async doDeleteNote(): Promise<void> {
         // Prepare to confirm delete dialog
         this.page.once('dialog', dialog => dialog.accept());
 
@@ -264,16 +285,26 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string): Locator
+    public getRichTextByLabel(label: string, base?: Locator): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators
-        return this.page
+        return (base ?? this.page)
             .getByLabel(label)
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
             .locator('body')
         ;
+    }
+
+    /**
+     * Initialize a rich text editor by clicking on it, then return its body locator.
+     */
+    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        await (base ?? this.page).getByLabel(label).locator('+ div').click();
+        return this.getRichTextByLabel(label, base);
     }
 
     /**
@@ -381,6 +412,16 @@ export class GlpiPage
             .filter({
                 visible: true,
                 hasText: title,
+            })
+        ;
+    }
+
+    public getDialog(text: string): Locator
+    {
+        return this.page.getByRole('dialog')
+            .filter({
+                visible: true,
+                hasText: text,
             })
         ;
     }

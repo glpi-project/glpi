@@ -38,11 +38,11 @@ use Glpi\Application\View\TemplateRenderer;
 class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Problem::class;
-    public static $items_id_1   = 'problems_id';
+    public static ?string $itemtype_1 = Problem::class;
+    public static ?string $items_id_1   = 'problems_id';
 
-    public static $itemtype_2 = Ticket::class;
-    public static $items_id_2   = 'tickets_id';
+    public static ?string $itemtype_2 = Ticket::class;
+    public static ?string $items_id_2   = 'tickets_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -133,17 +133,17 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                             ];
                             if ($task->can(-1, CREATE, $input2)) {
                                 if ($task->add($input2)) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }

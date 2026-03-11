@@ -129,28 +129,25 @@ class AuthLDAP extends CommonDBTM
     ];
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * connection caching stuff
-     * @var array
      */
-    public static $conn_cache = [];
+    public static array $conn_cache = [];
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'rootdn_passwd',
     ];
 
     /**
      * Message of last error occurred during connection.
-     * @var ?string
      */
     private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
-     * @var ?int
      */
     private static ?int $last_errno = null;
 
@@ -373,7 +370,7 @@ class AuthLDAP extends CommonDBTM
                     !Session::haveRight("user", User::UPDATEAUTHENT)
                     || !$group->canGlobal(UPDATE)
                 ) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -395,9 +392,9 @@ class AuthLDAP extends CommonDBTM
                             'type'         => $input['ldap_import_type'][$id],
                         ];
                         if (self::ldapImportGroup($group_dn, $options)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($group_dn)));
                         }
                     }
@@ -409,7 +406,7 @@ class AuthLDAP extends CommonDBTM
             case 'import':
             case 'sync':
                 if (!Session::haveRight("user", User::IMPORTEXTAUTHUSERS)) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -424,9 +421,9 @@ class AuthLDAP extends CommonDBTM
                             true
                         )
                     ) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($id)));
                     }
                 }
@@ -436,15 +433,6 @@ class AuthLDAP extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    /**
-     * Print the auth ldap form
-     *
-     * @param int $ID      ID of the item
-     * @param array   $options Options
-     *     - target for the form
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -509,6 +497,7 @@ class AuthLDAP extends CommonDBTM
                 </div>
 TWIG, $twig_params);
         }
+        return true;
     }
 
     /**
@@ -2008,7 +1997,7 @@ TWIG, $twig_params);
                 ) {
                     // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
-                    if ($user['auths_id'] === $options['authldaps_id']) {
+                    if ($user['auths_id'] === (int) $options['authldaps_id']) {
                         if ((int) $user['is_deleted_ldap'] === 0) {
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
@@ -2857,6 +2846,45 @@ TWIG, $twig_params);
         }
 
         $ldapuri = self::buildUri($host, (int) $port);
+
+        if (!empty($tls_certfile)) {
+            if (!Filesystem::isFilepathSafe($tls_certfile)) {
+                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_certfile)) {
+                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            } else {
+                try {
+                    @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
+                } catch (LdapException $e) {
+                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+                }
+            }
+        }
+        if (!empty($tls_keyfile)) {
+            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
+                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_keyfile)) {
+                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            } else {
+                try {
+                    @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+                } catch (LdapException $e) {
+                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+                }
+            }
+        }
+        if (!empty($tls_version)) {
+            $cipher_suite = 'NORMAL';
+            foreach (self::TLS_VERSIONS as $tls_version_value) {
+                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
+            }
+            try {
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
+            } catch (LdapException $e) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
+            }
+        }
+
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -2898,44 +2926,6 @@ TWIG, $twig_params);
                     ),
                     E_USER_WARNING
                 );
-            }
-        }
-
-        if (!empty($tls_certfile)) {
-            if (!Filesystem::isFilepathSafe($tls_certfile)) {
-                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_certfile)) {
-                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
-            } else {
-                try {
-                    @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
-                } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
-                }
-            }
-        }
-        if (!empty($tls_keyfile)) {
-            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
-                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_keyfile)) {
-                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
-            } else {
-                try {
-                    @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
-                } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
-                }
-            }
-        }
-        if (!empty($tls_version)) {
-            $cipher_suite = 'NORMAL';
-            foreach (self::TLS_VERSIONS as $tls_version_value) {
-                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
-            }
-            try {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
-            } catch (LdapException $e) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
             }
         }
 

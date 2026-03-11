@@ -41,11 +41,11 @@ use function Safe\strtotime;
 
 class Item_Kanban extends CommonDBRelation
 {
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = User::class;
-    public static $items_id_2 = 'users_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
+    public static ?string $itemtype_2 = User::class;
+    public static ?string $items_id_2 = 'users_id';
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
     public static function getKanbanItemForItemtype(string $itemtype): KanbanInterface&CommonDBTM
     {
@@ -242,14 +242,16 @@ class Item_Kanban extends CommonDBRelation
 
         $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
-        $all_columns = [];
         $all_columns = $item->getAllKanbanColumns();
         $new_column_index = array_keys(array_filter($state, fn($c, $k) => $c['column'] === $column, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
             if (isset($all_columns[(int) $column])) {
                 $drop_only = $all_columns[(int) $column]['drop_only'] ?? false;
-                if (isset($all_columns[(int) $column]) && !$drop_only) {
+                if (!$drop_only) {
+                    if (!array_key_exists('cards', $state[$new_column_index])) {
+                        $state[$new_column_index]['cards'] = [];
+                    }
                     array_splice($state[$new_column_index]['cards'], $position, 0, $card);
                 }
             }

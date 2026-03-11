@@ -400,4 +400,30 @@ class CoreControllerTest extends HLAPITestCase
                 ->isOK();
         });
     }
+
+    public function testSessionEntityTree()
+    {
+        $this->login();
+        $this->api->call(new Request('GET', '/Session/EntityTree'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertIsArray($content);
+                    $this->assertNotEmpty($content);
+                    $fn_check_node = function ($node) use (&$fn_check_node) {
+                        $this->assertArrayHasKey('key', $node);
+                        $this->assertArrayHasKey('label', $node);
+                        $this->assertArrayHasKey('children', $node);
+                        $this->assertIsArray($node['children']);
+                        foreach ($node['children'] as $child) {
+                            $fn_check_node($child);
+                        }
+                    };
+                    foreach ($content as $root_node) {
+                        $fn_check_node($root_node);
+                    }
+                });
+        });
+    }
 }

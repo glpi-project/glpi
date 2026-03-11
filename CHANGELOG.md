@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 ## [12.0.0] unreleased
 
 ### Added
+- Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 
 ### Changed
 
@@ -20,16 +21,27 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `Session::haveRight()` now only returns a boolean
+- All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
+- `KnowbaseItem_Comment` is now final
+- `KnowbaseItem_Revision` is now final
 
 #### Deprecated
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
 - `Glpi\Features\Inventoriable::showInventoryInfo()`
 - `Glpi\Features\Inventoriable::displayAgentInformation()`
 - `User::loadMinimalSession()`
+- `DBConnection::switchToMaster()`
+- `DBConnection::switchToSlave()`
+- `DBmysql::$slave`
+- `DBmysql::isSlave()`
+- `DBSlave` class
 
 #### Removed
 
-- `js/Forms/FaIconSelector.js` module
+- `diff-match-patch` JS library
+- `jquery-prettytextdiff` JS library
+- `Forms/FaIconSelector` JS module
+- `Knowbase` JS module
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -37,9 +49,16 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
-- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
+- `Config::showFormDBSlave()`
+- `DBConnection::PROPERTY_SLAVE` constant
+- `DBConnection::createDBSlaveConfig()`
+- `DBConnection::createSlaveConnectionFile()`
+- `DBConnection::deleteDBSlaveConfig()`
+- `DBConnection::getDBSlaveConf()`
+- `DBConnection::isDBSlaveActive()`
+- `DBConnection::saveDBSlaveConf()`
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
 - `DBmysql::doQueryOrDie()`
@@ -48,49 +67,48 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
-- `Glpi\Toolbox\Sanitizer` class
-- `Migration::setOutputHandler()`
-- `Migration::addNewMessageArea()`
-- `Migration::displayTitle()`
-- `Migration::displayWarning()`
-- `Migration::displayError()`
-- `Timer` class
-- `Toolbox::seems_utf8()`
-- `Toolbox::sendFile()`
-- `Toolbox::addslashes_deep()`
-- `Toolbox::stripslashes_deep()`
-- `Html::entity_decode_deep()`
-- `Html::entities_deep()`
-- `Html::cleanInputText()`
-- `Html::cleanPostForTextArea()`
-- `Html::displayNotFoundError()`
-- `Html::displayRightError()`
-- `Html::displayDebugInfos()`
-- `Html::displayErrorAndDie()`
-- `Html::progressBar()`
-- `Html::createProgressBar()`
-- `Html::changeProgressBarMessage()`
-- `Html::changeProgressBarPosition()`
-- `Html::displayProgressBar()`
-- `Html::ajaxFooter()`
-- `Html::glpi_flush()`
-- `Html::jsGetElementbyID()`
-- `Html::jsSetDropdownValue()`
-- `Html::jsGetDropdownValue()`
 - `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashoboard\Filter::getAll()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Http\Response::sendContent()`
 - `Glpi\Http\Response::sendError()`
 - `Glpi\Http\Response::sendHeaders()`
-- `Glpi\Http\Response::sendContent()`
-- `Glpi\Http\Response::send()`
-- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Inventory\Asset\Software::getCompareKey()`
 - `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
 - `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
-- `ITILFollowup::ADDMYTICKET` constant
-- `ITILFollowup::ADDGROUPTICKET` constant
+- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Toolbox\Sanitizer` class
+- `Html::ajaxFooter()`
+- `Html::changeProgressBarMessage()`
+- `Html::changeProgressBarPosition()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
+- `Html::createProgressBar()`
+- `Html::displayDebugInfos()`
+- `Html::displayErrorAndDie()`
+- `Html::displayNotFoundError()`
+- `Html::displayProgressBar()`
+- `Html::displayRightError()`
+- `Html::entities_deep()`
+- `Html::entity_decode_deep()`
+- `Html::glpi_flush()`
+- `Html::jsGetDropdownValue()`
+- `Html::jsGetElementbyID()`
+- `Html::jsSetDropdownValue()`
+- `Html::progressBar()`
 - `ITILFollowup::ADDALLTICKET` constant
+- `ITILFollowup::ADDGROUPTICKET` constant
+- `ITILFollowup::ADDMYTICKET` constant
+- `KnowbaseItem_Comment::getCommentForm()`
+- `KnowbaseItem_Comment::showForItem()`
+- `KnowbaseItem_Revision::showForItem()`
+- `Migration::addNewMessageArea()`
+- `Migration::setOutputHandler()`
+- `Migration::displayError()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
 - `Pdu_Plug` class
 - `Plugin::getWebDir()`
 - `QueryExprfession` class
@@ -98,13 +116,73 @@ The present file will list all changes made to the project; according to the
 - `QuerySubQuery` class
 - `QueryUnion` class
 - `Search::joinDropdownTranslations()`
+- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
-- `Glpi\Inventory\Asset\Software::getCompareKey()`
+- `Timer` class
+- `Toolbox::addslashes_deep()`
+- `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
+- `Toolbox::stripslashes_deep()`
 
 
-## [11.0.5] unreleased
+## [11.0.7] unreleased
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.6] 2026-03-03
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.5] 2026-01-28
+
+### Added
+- New schemas for network port instantiations in High-Level API v2.2.
+- Endpoints for creating, updating and deleting Infocom (Financial and administrative information) for items in the High-Level API v2.2.
+- New endpoints/schema for notes in High-Level API v2.2.
+- New EventLog schema, endpoints, and webhook support in the High-Level API v2.2.
+- `active_profile.rights` property for the `Session` schema in High-Level API v2.2 to indicate the rights of the user's current profile.
+- New schemas/endpoints for Operating system installations on assets in the High-Level API v2.2.
+- New schemas/endpoints for software installations on assets in the High-Level API v2.2.
+- New schema/endpoints for DatabaseInstance in the High-Level API v2.2.
+- Several new properties for the User schema, and the timezone property for user preferences in the High-Level API v2.2.
+- New schemas/endpoints for user titles, user categories and approval substitutes in the High-Level API v2.2.
+- New schemas/endpoints for over 20 dropdown itemtypes in High-Level API v2.2.
+- Added `user`, `group`, `code`, `is_helpdesk_visible`, `ticket_incident_template`, `ticket_request_template`, `change_template`, `problem_template`, `is_incident_visible`,`is_request_visible`,`is_change_visible`,`is_problem_visible`, and `knowbase_category` properties for the ITILCategory schema in High-Level API v2.2.
+- Added `is_helpdesk_visible`, `date_creation` and `date_mod` properties for the TaskCategory schema in High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
@@ -878,7 +956,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.23] unreleased
+## [10.0.24] 2026-03-03
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.23] 2026-01-28
 
 ### Added
 

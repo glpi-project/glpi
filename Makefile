@@ -94,11 +94,11 @@ vendor: console
 .PHONY: vendor
 
 locales-extract: ## Extract locales
-	@$(PHP) vendor/bin/extract-locales
+	@$(CONSOLE) tools:locales:extract
 .PHONY: locales-extract
 
-locales-compile: c=locales:compile ## Compile locales
-locales-compile: console
+locales-compile:
+	@$(CONSOLE) tools:locales:compile
 .PHONY: locales-compile
 
 cc: c=cache:clear ## Clear the cache
@@ -106,11 +106,11 @@ cc: console
 .PHONY: cc
 
 license-headers-check: ## Verify that the license headers is present all files
-	@$(PHP) vendor/bin/licence-headers-check
+	@$(CONSOLE) tools:licence_headers_check
 .PHONY: license-headers-check
 
 license-headers-fix: ## Add the missing license headers in all files
-	@$(PHP) vendor/bin/licence-headers-check --fix
+	@$(CONSOLE) tools:licence_headers_check --fix
 .PHONY: license-headers-fix
 
 ## —— Database —————————————————————————————————————————————————————————————————
@@ -177,6 +177,18 @@ test-db-update: ## Update testing's database
 		--env=testing
 .PHONY: test-db-update
 
+test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-clone p=8
+	@$(eval p ?= 4)
+	@$(DB) bash -c ' \
+		for i in $$(seq 2 $(p)); do \
+			mariadb -u root -pglpi -e "DROP DATABASE IF EXISTS glpi_test_$$i"; \
+			mariadb -u root -pglpi -e "CREATE DATABASE glpi_test_$$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"; \
+			mariadb-dump -u root -pglpi --single-transaction glpi_test | mariadb -u root -pglpi glpi_test_$$i; \
+			echo "Database glpi_test_$$i created and populated"; \
+		done \
+	'
+.PHONY: test-db-clone
+
 e2e-db-install: ## Install e2e testing's database
 	@$(CONSOLE) database:install \
 		-r -f \
@@ -215,6 +227,12 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/phpunit $(c)
 .PHONY: phpunit
+
+paratest: ## Run paratest, example: make paratest p=8
+	@$(eval p ?= 4)
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/paratest -p $(p) --exclude-group "single-thread" $(c)
+.PHONY: paratest
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)
@@ -291,7 +309,7 @@ phpcsfixer-fix: ## Fix php coding standards issues
 .PHONY: phpcsfixer-fix
 
 ## —— Linters ——————————————————————————————————————————————————————————————————
-lint: lint-php lint-scss lint-twig lint-js ## Run all linters
+lint: lint-php lint-scss lint-twig lint-js lint-playwright ## Run all linters
 .PHONY: lint
 
 lint-php: ## Run the php linter script

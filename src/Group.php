@@ -47,11 +47,11 @@ class Group extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
-    public static $rightname       = 'group';
+    public static string $rightname       = 'group';
 
-    protected $usenotepad  = true;
+    protected bool $usenotepad  = true;
 
 
     public function getCloneRelations(): array
@@ -315,18 +315,18 @@ class Group extends CommonTreeDropdown
                                     $input["field"] => $input["groups_id"],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                 }
                 return;

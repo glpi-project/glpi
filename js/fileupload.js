@@ -42,15 +42,19 @@ function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
     // Search for fileupload container.
-    // First try to find an uplaoder having same name as editor element.
+    // First try to find an uploader having same name as editor element.
     var uploader = $(`[data-uploader-name="${CSS.escape(editor.getElement().name)}"]`);
     if (uploader.length === 0) {
         // Fallback to uploader using default name
         uploader = $(editor.getElement()).closest('form').find('[data-uploader-name="filename"]');
     }
     if (uploader.length === 0) {
+        // Fallback to an uploader found in the parent element
+        uploader = $(editor.getElement()).parent().find('[data-uploader-name]');
+    }
+    if (uploader.length === 0) {
         // Fallback to any uploader found in current form
-        uploader = $(editor.getElement()).closest('form').find('[data-uploader-name=]').first();
+        uploader = $(editor.getElement()).closest('form').find('[data-uploader-name]').first();
     }
 
     uploader.fileupload('add', {files: [file]});
@@ -67,7 +71,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                 $.each(
                     files,
                     (index, file) => {
-                        if (files_data[index].error !== undefined) {
+                        if ((files_data[index].error ?? false) !== false) {
                             container.parent().find('.uploadbar')
                                 .text(files_data[index].error)
                                 .css('width', '100%');
@@ -151,7 +155,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 
     // Delete button
     var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
-    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').on('click', () => {
+    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').attr('title', __('Delete')).on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
 
         // Trigger an event to notify that an image has been removed

@@ -53,8 +53,8 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory         = true;
-    public static $rightname         = 'cable_management';
+    public bool $dohistory         = true;
+    public static string $rightname         = 'cable_management';
 
     public static function getTypeName($nb = 0)
     {
@@ -470,16 +470,6 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    /**
-     * Print the main form
-     *
-     * @param int $ID      Integer ID of the item
-     * @param array  $options  Array of possible options:
-     *     - target for the Form
-     *     - withtemplate : template or basic item
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);

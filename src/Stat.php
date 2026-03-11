@@ -52,12 +52,9 @@ use function Safe\strtotime;
  **/
 class Stat extends CommonGLPI
 {
-    public static $rightname = 'statistic';
+    public static string $rightname = 'statistic';
 
-    /**
-     * @var array
-     */
-    public static $cache = [];
+    public static array $cache = [];
 
     public static function getTypeName($nb = 0)
     {
@@ -1781,7 +1778,7 @@ class Stat extends CommonGLPI
                 }
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
-                        $names["/plugins/{$plug}/{$page}"] = [
+                        $names["plugins/{$plug}/{$page}"] = [
                             "name" => $name,
                             "plug" => $plug,
                         ];

@@ -34,7 +34,7 @@
 
 final class TicketValidationStep extends ITIL_ValidationStep
 {
-    public static $rightname = 'ticketvalidation';
+    public static string $rightname = 'ticketvalidation';
     public static string $validation_classname = TicketValidation::class;
 
     public static function getTypeName($nb = 0)

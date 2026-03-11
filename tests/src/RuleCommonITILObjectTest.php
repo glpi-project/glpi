@@ -85,7 +85,8 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Get the ITIL Object class name that the tested Rule class is related to
-     * @return string
+     *
+     * @return class-string<\CommonITILObject>
      */
     protected function getITILObjectClass(): string
     {
@@ -2833,6 +2834,114 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
+     * Add approvals to the managers of the requester's groups
+     *
+     * Tested action : 'add_validation' with 'users_id_validate_requester_supervisor' field to set the approval to the requester group manager
+     */
+    public function testApprovalRequestToRequesterGroupManager(): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        // --- arrange : set a manager in the requester's group
+        $this->login();
+        $group = getItemByTypeName(Group::class, '_test_group_1');
+        $manager = getItemByTypeName(User::class, 'glpi');
+
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id' => $manager->getID(),
+                'is_manager' => 1,
+            ]
+        );
+
+        // rule to create an approval for the manager of the requester group
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setCondtion(RuleCommonITILObject::ONADD);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $this->getTestRootEntity(true));
+        $rule_builder->addAction('add_validation', 'users_id_validate_requester_supervisor', 1); // 1 = yes, but it works the same with 0
+        $this->createRule($rule_builder);
+
+        // --- act : create an itil object with a requester group
+        $itil = $this->createItem(
+            $this->getITILObjectClass(),
+            $this->getMinimalCreationInput($this->getITILObjectClass())
+            + ['_groups_id_requester' => [$group->getID()],]
+        );
+
+        // --- assert : approval request created for manager
+        $validation_instance = $this->getITILObjectInstance()->getValidationClassInstance();
+        $validations = $validation_instance->find(
+            [
+                $this->getITILObjectInstance()::getForeignKeyField()    => $itil->getId(), // 'tickets_id'
+                'items_id_target' => $manager->getId(),
+            ]
+        );
+
+        $this->assertCount(1, $validations, 'Approval to manager not created by rule');
+    }
+
+    /**
+     * Add approvals to the managers of the assignees' groups
+     *
+     * Tested action : 'add_validation' with 'users_id_validate_requester_supervisor' field to set the approval to the requester group manager
+     */
+    public function testApprovalRequestToAssignedGroupManager(): void
+    {
+        // no validation for problems
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        // --- arrange : set a manager in the tech's group
+        $this->login();
+        $group = getItemByTypeName(Group::class, '_test_group_1');
+        $manager = getItemByTypeName(User::class, 'glpi');
+
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id' => $manager->getID(),
+                'is_manager' => 1,
+            ]
+        );
+
+        // rule to create an approval for the manager of the tech group
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setCondtion(RuleCommonITILObject::ONADD);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $this->getTestRootEntity(true));
+        $rule_builder->addAction('add_validation', 'users_id_validate_assign_supervisor', 1); // 1 = yes, but it works the same with 0
+        $this->createRule($rule_builder);
+
+        // --- act : create an itil object with a tech group
+        $itil = $this->createItem(
+            $this->getITILObjectClass(),
+            $this->getMinimalCreationInput($this->getITILObjectClass())
+            + ['_groups_id_assign' => [$group->getID()],]
+        );
+
+        // --- assert : approval request created for manager
+        $validation_instance = $this->getITILObjectInstance()->getValidationClassInstance();
+        $validations = $validation_instance->find(
+            [
+                $this->getITILObjectInstance()::getForeignKeyField()    => $itil->getId(), // 'tickets_id'
+                'items_id_target' => $manager->getId(),
+            ]
+        );
+
+        $this->assertCount(1, $validations, 'Approval to manager not created by rule');
+    }
+
+    /**
      * Ensure a rule using the "global_validation" criteria work as expected on updates.
      *
      * @return void
@@ -3146,4 +3255,62 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             ],
         ], $check_results);
     }
+
+    /**
+     * Test that a rule can use validation step id/name as a criterion.
+     */
+    public function testValidationStepNameCriteria(): void
+    {
+        // only run this test if the ITIL object has validations
+        if (is_null($this->getITILObjectInstance()->getValidationClassInstance())) {
+            return;
+        }
+
+        // --- arrange ---
+        $auth = $this->login();
+
+        // create validation steps with specific names
+        $validation_step = $this->createValidationStepTemplate(50);
+        $validation_step = $this->updateItem(\ValidationStep::class, $validation_step->getID(), ['name' => 'Financial Approval']);
+
+        // create rule that triggers when validation step name is "Financial Approval"
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setEntity(getItemByTypeName(Entity::class, '_test_root_entity', true));
+        $rule_builder->addCriteria('_validationsteps_id', Rule::PATTERN_IS, $validation_step->getID());
+        $rule_builder->addAction('assign', 'priority', 5);
+        $this->createRule($rule_builder);
+
+        // create ITIL object then add validation with Financial Approval step
+        $itil = $this->createItem($this->getITILObjectClass(), [
+            'name' => 'Test validation step criterion - match',
+            'content' => 'Test content',
+            'priority' => 3,
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        $validation_class = $itil::getValidationClassName();
+        $validation = $this->createItem(
+            $validation_class,
+            [
+                $itil::getForeignKeyField() => $itil->getID(),
+                'itemtype_target' => 'User',
+                'items_id_target' => $auth->user->getID(),
+                '_validationsteps_id' => $validation_step->getID(),
+                'status' => CommonITILValidation::WAITING,
+                'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+            ]
+        );
+
+        // --- act : update validation status to trigger rule evaluation ---
+        $this->updateItem($validation::class, $validation->getID(), [
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+
+        // --- assert rule applied : priority changed to 5 ---
+        $itil->getFromDB($itil->getID());
+        $this->assertEquals(5, $itil->fields['priority'], 'Rule should have triggered and set priority to 5');
+    }
+
+
 }

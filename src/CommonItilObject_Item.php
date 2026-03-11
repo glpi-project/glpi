@@ -63,7 +63,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
-        $obj = getItemForTable(static::$itemtype_1);
+        /** @var CommonITILObject $obj */
+        $obj = getItemForItemtype(static::$itemtype_1);
 
         if ($obj->canUpdateItem()) {
             return true;
@@ -91,7 +92,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public function post_addItem()
     {
         $this->updateItemTCO();
-        $obj = getItemForTable(static::$itemtype_1);
+        /** @var CommonITILObject $obj */
+        $obj = getItemForItemtype(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
@@ -458,19 +460,29 @@ TWIG, $twig_params);
                 continue;
             }
 
+            $model_class = $item->getModelClass();
+            $model_fkey = $model_class != null ? $model_class::getForeignKeyField() : null;
+
             $iterator = static::getTypeItems($instID, $itemtype);
             foreach ($iterator as $data) {
                 $item->getFromDB($data["id"]);
+
+                $model = '-';
+                if ($model_fkey !== null && isset($data[$model_fkey]) && $data[$model_fkey] > 0) {
+                    $model = Dropdown::getDropdownName($model_class::getTable(), $data[$model_fkey]);
+                }
+
                 $entry = [
                     'itemtype' => static::class,
                     'id'   => $data["linkid"],
                     'row_class' => $data['is_deleted'] ? 'table-deleted' : '',
                     'linked_itemtype' => $item::getTypeName(1),
+                    'model'  => $model,
                     'serial'  => $data["serial"] ?? "-",
                     'otherserial' => $data["otherserial"] ?? "-",
                     'entity' => Dropdown::getDropdownName("glpi_entities", $data['entity']),
-                    'state' => Dropdown::getDropdownName("glpi_states", $data['states_id']),
-                    'location' => Dropdown::getDropdownName("glpi_locations", $data['locations_id']),
+                    'state' => isset($data['states_id']) ? Dropdown::getDropdownName("glpi_states", $data['states_id']) : "",
+                    'location' => isset($data['locations_id']) ? Dropdown::getDropdownName("glpi_locations", $data['locations_id']) : "",
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
@@ -500,6 +512,7 @@ TWIG, $twig_params);
                 'linked_itemtype' => _n('Type', 'Types', 1),
                 'entity'          => Entity::getTypeName(1),
                 'name'            => __('Name'),
+                'model'           => _n('Model', 'Models', 1),
                 'serial'          => __('Serial number'),
                 'otherserial'     => __('Inventory number'),
                 'kb'              => __('Knowledge base entries'),
@@ -698,7 +711,7 @@ TWIG, $twig_params);
         $params['criteria'][0]['value']      = 'all';
         $params['criteria'][0]['link']       = 'AND';
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case User::class:
                 $params['criteria'][] = [
                     'link'       => 'AND',
@@ -738,7 +751,7 @@ TWIG, $twig_params);
         if (
             $item->getID()
             && !$item->isDeleted()
-            && CommonITILObject::isPossibleToAssignType($item->getType())
+            && CommonITILObject::isPossibleToAssignType($item::class)
             && static::canCreate()
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))
@@ -1258,7 +1271,7 @@ TWIG, $twig_params);
     /**
      * Make a select box with all glpi items
      *
-     * @param array $options array of possible options:
+     * @param array<string,mixed> $options array of possible options:
      *    - name         : string / name of the select (default is users_id)
      *    - value
      *    - comments     : boolean / is the comments displayed near the dropdown (default true)
@@ -1419,17 +1432,17 @@ TWIG, $twig_params);
                             }
 
                             if ($ok) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -1456,21 +1469,21 @@ TWIG, $twig_params);
                                 }
 
                                 if ($ok) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -1796,7 +1809,7 @@ TWIG, $twig_params);
         return countElementsInTable(
             static::getTable(),
             [
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getId(),
             ]
         ) > 0;

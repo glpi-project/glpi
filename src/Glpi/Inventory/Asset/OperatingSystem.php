@@ -48,7 +48,7 @@ use function Safe\strtotime;
 
 class OperatingSystem extends InventoryAsset
 {
-    protected $extra_data = ['hardware' => null];
+    protected array $extra_data = ['hardware' => null];
     private string|int $operatingsystems_id;
 
     public function prepare(): array
@@ -152,12 +152,12 @@ class OperatingSystem extends InventoryAsset
         $val = $this->data[0];
 
         $ios->getFromDBByCrit([
-            'itemtype'  => $this->item->getType(),
+            'itemtype'  => $this->item::class,
             'items_id'  => $this->item->fields['id'],
         ]);
 
         $input_os = $this->handleInput($val, $ios) + [
-            'itemtype'                          => $this->item->getType(),
+            'itemtype'                          => $this->item::class,
             'items_id'                          => $this->item->fields['id'],
             'is_dynamic'                        => 1,
             'entities_id'                       => $this->item->fields['entities_id'],
@@ -188,7 +188,7 @@ class OperatingSystem extends InventoryAsset
             $iterator = $DB->request([
                 'FROM' => $ios->getTable(),
                 'WHERE' => [
-                    'itemtype'  => $this->item->getType(),
+                    'itemtype'  => $this->item::class,
                     'items_id'  => $this->item->fields['id'],
                     'NOT'       => ['id' => $ios->fields['id']],
                 ],

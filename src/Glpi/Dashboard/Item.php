@@ -40,8 +40,8 @@ use Glpi\DBAL\QueryParam;
 
 class Item extends CommonDBChild
 {
-    public static $itemtype = Dashboard::class;
-    public static $items_id = 'dashboards_dashboards_id';
+    public static string $itemtype = Dashboard::class;
+    public static string $items_id = 'dashboards_dashboards_id';
 
     /**
      * Return items for the provided dashboard
@@ -127,18 +127,20 @@ class Item extends CommonDBChild
             $card_options = exportArrayToDB($card_options);
             $gridstack_id = $item['gridstack_id'] ?? $item['gs_id'];
 
-            $stmt->bind_param(
-                'issiiiis',
-                $dashboards_id,
-                $gridstack_id,
-                $item['card_id'],
-                $item['x'],
-                $item['y'],
-                $item['width'],
-                $item['height'],
-                $card_options
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $dashboards_id,
+                    $gridstack_id,
+                    $item['card_id'],
+                    $item['x'],
+                    $item['y'],
+                    $item['width'],
+                    $item['height'],
+                    $card_options,
+                ],
+                ['i', 's', 's', 'i', 'i', 'i', 'i', 's']
             );
-            $DB->executeStatement($stmt);
         }
     }
 }

@@ -40,12 +40,12 @@
 class RegisteredID extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     // From CommonDBChild
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
-    public $dohistory              = true;
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
+    public bool $dohistory              = true;
 
     public static function getRegisteredIDTypes(): array
     {

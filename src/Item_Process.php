@@ -41,9 +41,9 @@ use Glpi\Application\View\TemplateRenderer;
 class Item_Process extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = true;
 
 
     public static function getTypeName($nb = 0)
@@ -63,7 +63,7 @@ class Item_Process extends CommonDBChild
                 self::getTable(),
                 [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                 ]
             );
             if ($nb == 0) {
@@ -73,7 +73,7 @@ class Item_Process extends CommonDBChild
             if (!$_SESSION['glpishow_count_on_tabs']) {
                 $nb = 0;
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
 
         return '';
@@ -99,7 +99,7 @@ class Item_Process extends CommonDBChild
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $start       = intval($_GET["start"] ?? 0);

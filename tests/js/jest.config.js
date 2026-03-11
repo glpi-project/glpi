@@ -31,18 +31,23 @@
  */
 
 module.exports = {
+    collectCoverage: true,
+    collectCoverageFrom: [
+        'js/**/*.{js,ts}',
+    ],
     projects: [
         {
             displayName: 'units',
-            testMatch: ['<rootDir>/*.test.js', '<rootDir>/modules/**/*.test.js'],
-            setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
-            setupFiles: ['<rootDir>/bootstrap.mjs'],
+            rootDir: './',
+            testMatch: ['<rootDir>/tests/js/*.test.js', '<rootDir>/tests/js/modules/**/*.test.js'],
+            setupFilesAfterEnv: ["<rootDir>/tests/js/jest-setup.mjs"],
+            setupFiles: ['<rootDir>/tests/js/bootstrap.mjs'],
             moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
             moduleFileExtensions: ['js'],
             moduleNameMapper: {
-                '^/js/(.*)$': '<rootDir>/../../js/$1',
-                '^/build/(.*)$': '<rootDir>/../../public/build/$1',
-                '^/lib/(.*)$': '<rootDir>/../../public/lib/$1',
+                '^/js/(.*)$': '<rootDir>/js/$1',
+                '^/build/(.*)$': '<rootDir>/public/build/$1',
+                '^/lib/(.*)$': '<rootDir>/public/lib/$1',
             },
             transform: {},
             transformIgnorePatterns: [

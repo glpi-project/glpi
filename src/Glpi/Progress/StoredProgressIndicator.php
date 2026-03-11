@@ -35,12 +35,16 @@
 namespace Glpi\Progress;
 
 use Glpi\Message\MessageType;
+use JsonSerializable;
 use RuntimeException;
+use Safe\DateTimeImmutable;
+
+use function Safe\json_decode;
 
 /**
  * @final
  */
-class StoredProgressIndicator extends AbstractProgressIndicator
+class StoredProgressIndicator extends AbstractProgressIndicator implements JsonSerializable
 {
     /**
      * Storage service used to store the current indicator.
@@ -64,21 +68,6 @@ class StoredProgressIndicator extends AbstractProgressIndicator
         parent::__construct();
 
         $this->storage_key = $storage_key;
-    }
-
-    public function __serialize(): array
-    {
-        $data = [];
-
-        foreach (\get_object_vars($this) as $property => $value) {
-            if ($property === 'progress_storage') {
-                continue; // the storage service must not be stored in the storage file
-            }
-
-            $data[$property] = $value;
-        }
-
-        return $data;
     }
 
     public function setProgressStorage(ProgressStorage $progress_storage): void
@@ -129,5 +118,58 @@ class StoredProgressIndicator extends AbstractProgressIndicator
     private function store(): void
     {
         $this->progress_storage->save($this);
+    }
+
+    /**
+     * @return array{
+     *   storage_key: string,
+     *   started_at: string,
+     *   updated_at: string,
+     *   ended_at: ?string,
+     *   failed: bool,
+     *   current_step: int,
+     *   max_steps: int,
+     *   progress_bar_message: string,
+     *   messages: list<array{type: value-of<MessageType>, message: string}>,
+     * }
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'storage_key'          => $this->storage_key,
+            'started_at'           => $this->started_at->format('c'),
+            'updated_at'           => $this->updated_at->format('c'),
+            'ended_at'             => $this->ended_at?->format('c'),
+            'failed'               => $this->failed,
+            'current_step'         => $this->current_step,
+            'max_steps'            => $this->max_steps,
+            'progress_bar_message' => $this->progress_bar_message,
+            'messages'             => \array_map(
+                fn(array $message_entry) => ['type' => $message_entry['type']->value, 'message' => $message_entry['message']],
+                $this->messages
+            ),
+        ];
+    }
+
+    public static function fromJsonString(string $string): self
+    {
+        $progress_data = json_decode($string, true);
+
+        $instance = new self($progress_data['storage_key']);
+
+        $instance->started_at           = new DateTimeImmutable($progress_data['started_at']);
+        $instance->updated_at           = new DateTimeImmutable($progress_data['updated_at']);
+        $instance->ended_at             = $progress_data['ended_at'] !== null ? new DateTimeImmutable($progress_data['ended_at']) : null;
+        $instance->failed               = $progress_data['failed'];
+        $instance->current_step         = $progress_data['current_step'];
+        $instance->max_steps            = $progress_data['max_steps'];
+        $instance->progress_bar_message = $progress_data['progress_bar_message'];
+
+        $instance->messages = \array_map(
+            fn(array $message_entry) => ['type' => MessageType::from($message_entry['type']), 'message' => $message_entry['message']],
+            $progress_data['messages']
+        );
+
+        return $instance;
     }
 }

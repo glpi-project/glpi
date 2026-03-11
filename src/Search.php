@@ -149,13 +149,9 @@ class Search
 
     /**
      * The output format for the search results
-     * @var int
      */
-    public static $output_type = self::HTML_OUTPUT;
-    /**
-     * @var array
-     */
-    public static $search = [];
+    public static int $output_type = self::HTML_OUTPUT;
+    public static array $search = [];
 
     /**
      * Display search engine for an type

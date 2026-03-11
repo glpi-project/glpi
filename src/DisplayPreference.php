@@ -40,16 +40,16 @@ use Glpi\Search\SearchOption;
 class DisplayPreference extends CommonDBTM
 {
     // From CommonGLPI
-    public $taborientation          = 'horizontal';
-    public $get_item_to_display_tab = false;
+    public string $taborientation          = 'horizontal';
+    public bool $get_item_to_display_tab = false;
 
     // From CommonDBTM
-    public $auto_message_on_action  = false;
+    public bool $auto_message_on_action  = false;
 
-    protected $displaylist          = false;
+    protected bool $displaylist          = false;
 
 
-    public static $rightname = 'search_config';
+    public static string $rightname = 'search_config';
 
     public const PERSONAL = 1024;
     public const GENERAL  = 2048;
@@ -179,18 +179,18 @@ class DisplayPreference extends CommonDBTM
                                     'itemtype' => $id,
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($user->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($user->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
             case 'reset_to_default':
@@ -198,13 +198,13 @@ class DisplayPreference extends CommonDBTM
                 if (!isset($input['users_id']) || $input['users_id'] <= 0) {
                     foreach ($ids as $itemtype) {
                         if (self::resetToDefaultOptions($itemtype)) {
-                            $ma->itemDone($item->getType(), $itemtype, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $itemtype, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $itemtype, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $itemtype, MassiveAction::ACTION_KO);
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
         }
@@ -650,7 +650,7 @@ class DisplayPreference extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Preference':
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
                     return self::createTabEntry(text: __('Personal View'), icon: 'ti ti-columns-3');
@@ -686,7 +686,7 @@ class DisplayPreference extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Preference':
                 self::showForUser(Session::getLoginUserID());
                 return true;

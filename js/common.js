@@ -41,6 +41,7 @@
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
+/* global uploaded_images */
 
 var timeoutglobalvar;
 
@@ -54,11 +55,15 @@ var tinymce_editor_configs = {};
 // api does not provide any method to get the current configuration
 var select2_configs = {};
 
+// Store fileupload configurations
+var fileupload_configs = {};
+
 /**
  * modifier la propriete display d'un element
  *
  * @param objet
  * @param statut
+ * @todo Remove - Not used. Not useful anyways.
 **/
 function setdisplay(objet, statut) {
 
@@ -72,6 +77,7 @@ function setdisplay(objet, statut) {
 
 /**
  * @param id
+ * @todo Remove - Not used. Not useful anyways.
 **/
 function cleandisplay(id) {
 
@@ -84,6 +90,7 @@ function cleandisplay(id) {
 
 /**
  * @param id
+ * @todo Remove - Not used. Not useful anyways.
 **/
 function cleanhide(id) {
 
@@ -97,6 +104,7 @@ function cleanhide(id) {
 /**
  * @param Type
  * @param Id
+ * @todo Remove - Not used. Not even sure what this was ever used for.
 **/
 function fillidfield(Type, Id) {
     window.opener.document.forms.helpdeskform.elements.items_id.value = Id;
@@ -151,6 +159,7 @@ function unMarkCheckboxes(container_id) {
  *
  * @param    select_object     DOM select object
  * @param    other_option_name the name of both the option and the text input field
+ * @note Used by src/Dropdown.php. Probably not actually used.
 **/
 function displayOtherSelectOptions(select_object, other_option_name) {
     if (select_object.options[select_object.selectedIndex].value == other_option_name) {
@@ -169,7 +178,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * Check all checkboxes inside the given element as the same state as a reference one (toggle this one before)
  * the given element is usaly a table or a div containing the table or tables
  *
- * @param {HTMLElement} reference
+ * @param {HTMLElement|string} reference
  * @param {string} container_id
 **/
 function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input[type="checkbox"]') {
@@ -227,6 +236,7 @@ $.fn.shiftSelectable = function() {
  * @param img_name         name attribut of the img item
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
+ * @todo Remove - Not very useful and only used by plugins since the removal of the old debug toolbar.
 **/
 function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
@@ -271,6 +281,7 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_name
  * @param img_src_yes
  * @param img_src_no
+ * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
     if (document.getElementById(id).value == '0') {
@@ -294,6 +305,7 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
  * @param img_name
  * @param img_src_close
  * @param img_src_open
+ * @todo Remove - Not used and I am not sure what it was ever used for.
  */
 function toggleTableDisplay(tbl, img_name, img_src_close, img_src_open) {
 
@@ -330,10 +342,12 @@ function toggleTableDisplay(tbl, img_name, img_src_close, img_src_open) {
 
 
 /**
+ * Creates a form element and submits it with POST method (despite the function name) to the specified target with the specified fields
  * @since 0.84
  *
  * @param target
  * @param fields
+ * @deprecated Use real form HTML
 **/
 function submitGetLink(target, fields) {
 
@@ -409,6 +423,7 @@ function massiveUpdateCheckbox(criterion, reference) {
 
 /**
  * Timeline for itiobjects
+ * @todo Remove - Not used anymore
  */
 var filter_timeline = function() {
     $(document).on("click", '.filter_timeline li a', function(event) {
@@ -454,6 +469,7 @@ var read_more = function() {
 };
 
 // Responsive header
+//TODO Remove - Probably not used anymore
 if ($(window).width() <= 700) {
     var didScroll;
     var lastScrollTop = 0;
@@ -492,6 +508,9 @@ if ($(window).width() <= 700) {
     };
 }
 
+/**
+ * @todo Remove? The 'fold_menu' field/$_SESSION['glpifold_menu'] seem unused.
+ */
 var switchFoldMenu = function() {
     $.ajax({
         url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
@@ -519,6 +538,7 @@ var switchFoldMenu = function() {
 };
 
 $(function() {
+    //TODO Remove. Only applies to legacy tables using .tab_cadre_fixehov class
     $("body").delegate('td','mouseover mouseleave', function(e) {
         var col = $(this).closest('tr').children().index($(this));
         var tr = $(this).closest('tr');
@@ -541,6 +561,7 @@ $(function() {
         }
     });
 
+    //TODO remove? See comment for switchFoldMenu()
     $('.reduce-menu').on('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -555,6 +576,7 @@ $(function() {
         }
     });
 
+    //TODO Remove - Was for the old debug toolbar/panels
     // toggle debug panel
     $(document).on('click', '.see_debug', function() {
         $('body > .debug-panel').toggle();
@@ -637,7 +659,7 @@ var urlExists = function(url) {
 /**
  * Format a size to the last possible unit (o, Kio, Mio, etc)
  *
- * @param  {integer} size
+ * @param  {number} size
  * @return {string}  The formated size
  */
 var getSize = function (size) {
@@ -668,7 +690,7 @@ var getSize = function (size) {
 /**
  * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
  * @since  9.3
- * @param  integer index    the numeric index
+ * @param  {number} index    the numeric index
  * @return string           excel like string index
  */
 var getBijectiveIndex = function(index) {
@@ -683,6 +705,7 @@ var getBijectiveIndex = function(index) {
 
 /**
  * Stop propagation and navigation default for the specified event
+ * @todo Remove - Not useful and only used one place
  */
 var stopEvent = function(event) {
     event.preventDefault();
@@ -691,6 +714,7 @@ var stopEvent = function(event) {
 
 /**
  * Returns element height, including margins
+ * @todo Remove - Not used anywhere
 */
 function _eltRealSize(_elt) {
     var _s = 0;
@@ -853,7 +877,10 @@ var templateResult = function(result) {
     return _elt;
 };
 
-// delay function who reinit timer on each call
+/**
+ * delay function who reinit timer on each call
+ * @todo Remove - use lodash.debounce instead
+ */
 var typewatch = (function(){
     var timer = 0;
     return function(callback, ms){
@@ -1311,10 +1338,16 @@ $(
 );
 
 // case insentive :contains selector -> ":icontains"
+//TODO Remove. Used only by templates/pages/setup/dropdowns_list.html.twig. This kind of case-insensitive search can be done other ways.
 jQuery.expr.filters.icontains = function(elem, i, m) {
     return (elem.innerText || elem.textContent || "").toLowerCase().indexOf(m[3].toLowerCase()) > -1;
 };
 
+/**
+ * @param table
+ * @returns {string}
+ * @note Used by System Info page to copy the info on the page for use on GitHub.
+ */
 function tableToDetails(table) {
     let in_details = false;
     const section_els = $(table).find('.section-header, .section-content');
@@ -1325,11 +1358,11 @@ function tableToDetails(table) {
             if (in_details) {
                 details += '\n</pre></details>';
             }
-            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>\n`;
+            details += `<details><summary>${_.escape(e.textContent)}</summary><pre>\n`;
             in_details = true;
         } else {
             if (in_details) {
-                details += _.escape(e.innerText);
+                details += _.escape(e.textContent);
             }
         }
     });
@@ -1683,7 +1716,6 @@ function setupAjaxDropdown(config) {
         placeholder: config.placeholder,
         allowClear: config.allowclear,
         minimumInputLength: 0,
-        quietMillis: 100,
         dropdownAutoWidth: true,
         dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         minimumResultsForSearch: config.ajax_limit_count,
@@ -1691,6 +1723,7 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
+            delay: 250,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {
@@ -1893,6 +1926,97 @@ function setupAdaptDropdown(config)
     return select2_el;
 }
 
+function setupFileUpload(config) {
+    // Field ID is used as a selector, so we need to escape special characters
+    // to avoid issues with jQuery.
+    const field_id = CSS.escape(config.field_id);
+
+    $(function() {
+        $('#' + field_id).fileupload({
+            dataType: 'json',
+            pasteZone: config.pasteZone,
+            dropZone: config.dropZone,
+            acceptFileTypes: config.acceptFileTypes,
+            maxFileSize: config.maxFileSize,
+            maxChunkSize: config.maxChunkSize,
+            add: function (e, data) {
+                // disable submit button during upload
+                $(this).closest('form').find(':submit').prop('disabled', true);
+                // randomize filename
+                for (var i = 0; i < data.files.length; i++) {
+                    data.files[i].uploadName = uniqid('', true) + data.files[i].name;
+                }
+                // call default handler
+                $.blueimp.fileupload.prototype.options.add.call(this, e, data);
+            },
+            done: function (event, data) {
+                const uploader_name = $('#' + field_id).fileupload('option', 'formData').name;
+                // eslint-disable-next-line no-undef
+                handleUploadedFile(
+                    data.files, // files as blob
+                    data.result[uploader_name], // response from '/ajax/fileupload.php'
+                    config.name,
+                    $('#' + CSS.escape(config.filecontainer)),
+                    config.editor_id
+                );
+                // enable submit button after upload
+                $(this).closest('form').find(':submit').prop('disabled', false);
+                // remove required
+                $('#' + field_id).removeAttr('required');
+            },
+            fail: function (e, data) {
+                // enable submit button after upload
+                $(this).closest('form').find(':submit').prop('disabled', false);
+                const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
+                    ? data.jqXHR.responseText
+                    : data.jqXHR.statusText;
+                alert(err);
+            },
+            processfail: function (e, data) {
+                // enable submit button after upload
+                $(this).closest('form').find(':submit').prop('disabled', false);
+                $.each(data.files, function(index, file) {
+                    if (file.error) {
+                        $('#progress' + CSS.escape(config.rand_id)).show();
+                        $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
+                            .text(file.error)
+                            .css('width', '100%')
+                            .show();
+
+                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
+                        if (config.editor_id && typeof tinyMCE !== 'undefined') {
+                            const editor = tinyMCE.get(config.editor_id);
+                            if (editor) {
+                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
+                                if (uploaded_image) {
+                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
+                                    if (img.length > 0) {
+                                        editor.dom.remove(img);
+                                    }
+                                    const index = uploaded_images.findIndex((entry) => entry.upload_id === uploaded_image.upload_id);
+                                    if (index !== -1) {
+                                        uploaded_images.splice(index, 1);
+                                    }
+                                }
+                            }
+                        }
+                        return;
+                    }
+                });
+            },
+            messages: config.messages,
+            progressall: function(event, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress' + CSS.escape(config.rand_id)).show();
+                $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
+                    .text(progress + '%')
+                    .css('width', progress + '%')
+                    .show();
+            }
+        });
+    });
+}
+
 window.displaySessionMessages = () => {
     $.ajax({
         method: 'GET',
@@ -1938,10 +2062,18 @@ document.addEventListener('hidden.bs.modal', (e) => {
 
 // Tinymce on click loading
 $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
-    const div = $(this);
-    const textarea_id = div.attr('data-glpi-tinymce-init-on-demand-render');
-    div.removeAttr('data-glpi-tinymce-init-on-demand-render');
-    const textarea = $("#" + textarea_id);
+    const $container = $(this);
+    const $textarea = $("#" + CSS.escape($container.attr('data-glpi-tinymce-init-on-demand-render')));
+    initTinyMCEOnDemand($textarea, $container);
+});
+
+/**
+ * Initialize TinyMCE editor on demand
+ * @param {string} textarea_id The ID of the textarea to initialize
+ * @param {HTMLElement} container The container element that triggered the initialization
+ */
+function initTinyMCEOnDemand($textarea, $container) {
+    $container.removeAttr('data-glpi-tinymce-init-on-demand-render');
 
     const loadingOverlay = $(`
         <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
@@ -1951,13 +2083,16 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
         </div>
     `);
 
-    textarea.show();
-    div.css('position', 'relative').append(loadingOverlay);
-    tinyMCE.init(tinymce_editor_configs[textarea_id]).then((editors) => {
+    $textarea.show();
+    $container.css('position', 'relative').append(loadingOverlay);
+    const promise = tinyMCE.init(tinymce_editor_configs[$textarea.attr('id')]);
+    promise.then((editors) => {
         editors[0].focus();
-        div.remove();
+        $container.remove();
     });
-});
+
+    return promise;
+}
 
 // Prevent Bootstrap dialog from blocking focusin
 // See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
@@ -1966,3 +2101,24 @@ document.addEventListener('focusin', (e) => {
         e.stopImmediatePropagation();
     }
 });
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        markCheckboxes,
+        unMarkCheckboxes,
+        checkAsCheckboxes,
+        selectAll,
+        deselectAll,
+        isImage,
+        getExtIcon,
+        getSize,
+        getBijectiveIndex,
+        getUuidV4,
+        setHasUnsavedChanges,
+        hasUnsavedChanges,
+        getFlatPickerLocale,
+        getAjaxCsrfToken,
+        tableToDetails,
+    };
+}

@@ -34,6 +34,7 @@
 
 namespace Glpi\Api\HL\Search;
 
+use CommonDBTM;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Search;
@@ -149,6 +150,7 @@ final class RecordSet
                 $field_parts = explode('.', $sql_field);
                 $field_only = end($field_parts);
                 // Handle translatable fields
+                /** @var class-string<CommonDBTM> $itemtype */
                 if (Session::haveTranslations($itemtype, $field_only)) {
                     $trans_alias = "{$join_name}__{$field_only}__trans";
                     $trans_alias = hash('xxh3', $trans_alias);

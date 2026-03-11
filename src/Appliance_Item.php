@@ -42,13 +42,13 @@ class Appliance_Item extends CommonDBRelation
     /** @use Clonable<static> */
     use Clonable;
 
-    public static $itemtype_1 = Appliance::class;
-    public static $items_id_1 = 'appliances_id';
-    public static $take_entity_1 = false;
+    public static ?string $itemtype_1 = Appliance::class;
+    public static ?string $items_id_1 = 'appliances_id';
+    public static bool $take_entity_1 = false;
 
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
-    public static $take_entity_2 = true;
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
+    public static bool $take_entity_2 = true;
 
     public function getCloneRelations(): array
     {
@@ -76,12 +76,12 @@ class Appliance_Item extends CommonDBRelation
                     $nb = self::countForMainItem($item);
                 }
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-        } elseif (in_array($item->getType(), Appliance::getTypes(true))) {
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
+        } elseif (in_array($item::class, Appliance::getTypes(true))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
 
         return '';
@@ -98,7 +98,7 @@ class Appliance_Item extends CommonDBRelation
                 self::showItems($item);
                 break;
             default:
-                if (in_array($item->getType(), Appliance::getTypes())) {
+                if (in_array($item::class, Appliance::getTypes())) {
                     self::showForItem($item, $withtemplate);
                 }
         }
@@ -135,7 +135,7 @@ class Appliance_Item extends CommonDBRelation
         ]);
 
         Session::initNavigateListItems(
-            self::getType(),
+            static::class,
             //TRANS : %1$s is the itemtype name,
             //        %2$s is the name of the item (used for headings of a list)
             sprintf(

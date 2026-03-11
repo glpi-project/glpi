@@ -48,35 +48,32 @@ class DBmysqlIterator implements SeekableIterator, Countable
 {
     /**
      * DBmysql object
-     * @var ?DBmysql
      */
-    private $conn;
+    private ?DBmysql $conn = null;
     // Current SQL query
-    /** @var ?string */
-    private $sql;
+    private ?string $sql = null;
     // Current result
-    /** @var mysqli_result|bool  */
-    private $res = false;
+    private mysqli_result|bool $res = false;
 
     /**
      * Total number of rows.
-     * @var int
      */
-    private $count;
+    private int $count;
 
     /**
      * Current row value.
-     * @var mixed
      */
-    private $row;
+    private mixed $row = null;
 
     /**
      * Current pointer position.
-     * @var int
      */
     private ?int $position = null;
 
-    //Known query operators
+    /**
+     * Known query operators
+     * @var string[]
+     */
     private array $allowed_operators = [
         '=',
         '!=',
@@ -112,16 +109,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Executes the query
      *
-     * @param array   $criteria Query criteria
+     * @param array<string, mixed> $criteria Query criteria
      *
      * @return DBmysqlIterator
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function execute($criteria): self
+    public function execute(array $criteria): self
     {
-        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
-
         $this->buildQuery($criteria);
         $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
@@ -132,16 +127,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Builds the query
      *
-     * @param array   $criteria Query criteria
+     * @param array<string, mixed> $criteria Query criteria
      *
      * @return void
      *
      * @since 11.0.0 The `$log` parameter has been removed.
      */
-    public function buildQuery($criteria): void
+    public function buildQuery(array $criteria): void
     {
-        $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
-
         $this->sql = null;
         $this->res = false;
 
@@ -340,7 +333,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle "ORDER BY" SQL clause
      *
-     * @param string|array $clause Clause parameters
+     * @param string|QueryExpression|array<int, string|QueryExpression> $clause Clause parameters
      *
      * @return string
      */
@@ -378,8 +371,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle LIMIT and OFFSET
      *
-     * @param int $limit  SQL LIMIT
-     * @param int $offset Start OFFSET (defaults to null)
+     * @param int  $limit  SQL LIMIT
+     * @param ?int $offset Start OFFSET (defaults to null)
      *
      * @return string
      */
@@ -398,14 +391,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle fields
      *
-     * @param int|string $t Table name or function
-     * @param array|string   $f Field(s) name(s)
+     * @param int|string                                    $t Table name or function
+     * @param string[]|string|QueryExpression|AbstractQuery $f Field(s) name(s)
      *
      * @return string
      */
-    private function handleFields($t, $f)
+    private function handleFields(int|string $t, array|string|QueryExpression|AbstractQuery $f): string
     {
         if (is_numeric($t)) {
+            if (is_array($f)) {
+                throw new RuntimeException("Invalid field, array not allowed.");
+            }
+
             if ($f instanceof AbstractQuery) {
                 return $f->getQuery();
             } elseif ($f instanceof QueryExpression) {
@@ -465,7 +462,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function handleFieldsAlias($t, $f, $suffix = '')
+    private function handleFieldsAlias(string $t, string $f, string $suffix = ''): string
     {
         $names = preg_split('/\s+AS\s+/i', $f);
         $expr  = "$t(" . $this->handleFields(0, $names[0]) . "$suffix)";
@@ -503,41 +500,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Generate the SQL statement for a array of criteria
      *
-     * @param array|string $crit Criteria
-     * @param string   $bool Boolean operator (default AND)
+     * @param array<int|string,mixed> $crit Criteria
+     * @param string $bool Boolean operator (default AND)
      *
      * @return string
      */
-    public function analyseCrit($crit, $bool = "AND")
+    public function analyseCrit(array $crit, $bool = "AND")
     {
-        if (is_string($crit)) {
-            Toolbox::deprecated(
-                sprintf(
-                    'Passing SQL request criteria as strings is deprecated for security reasons. Criteria was `` %s ``.',
-                    $crit
-                ),
-                version: '12.0'
-            );
-
-            /**
-             * Delegate the safeness check to the caller.
-             * There is no such usage in GLPI, it is the plugin developer responsibility to switch to safer criteria specs.
-             * @psalm-taint-escape sql
-             */
-            $safe_crit = $crit;
-
-            return $safe_crit;
-        }
-
-        if (!is_array($crit)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid criteria type. Expected `array`, `%s` received.',
-                    get_debug_type($crit)
-                )
-            );
-        }
-
         $ret = "";
         foreach ($crit as $name => $value) {
             if (!empty($ret)) {
@@ -549,15 +518,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     $ret .= $value->getValue();
                 } elseif ($value instanceof QuerySubQuery) {
                     $ret .= $value->getQuery();
-                } elseif (in_array($value, [1, 0, '1', '0', true, false], true)) {
-                    Toolbox::deprecated(
-                        sprintf(
-                            'Passing SQL request criteria as booleans is deprecated. Please use `new \Glpi\DBAL\QueryExpression("%s");`.',
-                            $value ? 'true' : 'false'
-                        ),
-                        version: '12.0'
-                    );
-                    $ret .= $value ? 'true' : 'false';
                 } else {
                     // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";
@@ -583,7 +543,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * analyse a criterion
+     * Analyze a criterion
      *
      * @since 9.3.1
      *
@@ -591,7 +551,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function analyseCriterion($value)
+    private function analyseCriterion($value): string
     {
         $criterion = null;
 
@@ -639,7 +599,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function getCriterionValue($value)
+    private function getCriterionValue($value): string
     {
         return match (true) {
             $value instanceof AbstractQuery => $value->getQuery(),
@@ -670,11 +630,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * analyse an array of joins criteria
+     * Analyze an array of joins criteria
      *
      * @since 9.4.0
      *
-     * @param array $joinarray Array of joins to analyse
+     * @param array<string,array<string,mixed>> $joinarray Array of joins to analyze
      *       [jointype => [table => criteria]]
      *
      * @return string
@@ -723,13 +683,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * Analyse foreign keys
+     * Analyze foreign keys
      *
      * @param mixed $values Values for Foreign keys
      *
      * @return string
      */
-    private function analyseFkey($values)
+    private function analyseFkey($values): string
     {
         if (is_array($values)) {
             $keys = array_keys($values);
@@ -912,44 +872,5 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function fetchFields(): array
     {
         return $this->res->fetch_fields();
-    }
-
-    /**
-     * Convert arguments used for `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods
-     * from old signature to new signature.
-     * For security reasons, an exception is thrown whenever the arguments contains a direct raw query.
-     *
-     * @param array $args
-     * @return array
-     */
-    private function convertOldRequestArgsToCriteria(array $args, string $method): array
-    {
-        if (is_string($args[0]) && str_contains($args[0], " ")) {
-            $names = preg_split('/\s+AS\s+/i', $args[0]);
-            if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
-                throw new InvalidArgumentException(
-                    sprintf('Building and executing raw queries with the `%s()` method is prohibited.', $method)
-                );
-            }
-        }
-
-        if (is_array($args[0])) {
-            // The new signature ($criteria, $debug = false) is already used
-            $criteria = $args[0];
-        } else {
-            // The old signature ($tableorsql, $crit = "", $debug = false) is still used
-            Toolbox::deprecated(
-                sprintf('The `%s()` method signature changed. Its previous signature is deprecated.', $method)
-            );
-            $criteria = $args[1] ?? [];
-            if (is_string($criteria)) {
-                $criteria = $criteria !== ''
-                    ? ['WHERE' => [new QueryExpression($criteria)]]
-                    : [];
-            }
-            $criteria['FROM'] = $args[0];
-        }
-
-        return $criteria;
     }
 }

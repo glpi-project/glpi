@@ -59,14 +59,14 @@
 
                     {{ fields.htmlField(
                         'name',
-                        item.fields['name'],
+                        item.fields['name']|e,
                         __('Name'),
                         field_options
                     ) }}
 
                     {{ fields.htmlField(
                         'agenttypes_id',
-                        get_item_name('AgentType', item.fields['agenttypes_id']),
+                        get_item_name('AgentType', item.fields['agenttypes_id'])|e,
                         _n('Agent type', 'Agents types', 1),
                         field_options
                     ) }}
@@ -80,7 +80,7 @@
 
                     {{ fields.htmlField(
                         'deviceid',
-                        item.fields['deviceid'],
+                        item.fields['deviceid']|e,
                         __('Device ID'),
                         field_options
                     ) }}
@@ -94,14 +94,14 @@
 
                     {{ fields.htmlField(
                         "Agent",
-                        item.fields['remote_addr'],
+                        item.fields['remote_addr']|e,
                         __('Public contact address'),
                         field_options
                     ) }}
 
                     {{ fields.htmlField(
                         "itemtype",
-                        item.fields['itemtype']|itemtype_name,
+                        item.fields['itemtype']|itemtype_name|e,
                         __('Item type'),
                         field_options
                     ) }}
@@ -137,21 +137,21 @@
 
                         {{ fields.htmlField(
                             'tag',
-                            item.fields['tag'],
+                            item.fields['tag']|e,
                             __('Tag'),
                             field_options
                         ) }}
 
                         {{ fields.htmlField(
                             'useragent',
-                            item.fields['useragent'],
+                            item.fields['useragent']|e,
                             __('Useragent'),
                             field_options
                         ) }}
 
                         {{ fields.htmlField(
                             'last_contact',
-                            item.fields['last_contact']|formatted_datetime,
+                            item.fields['last_contact']|formatted_datetime|e,
                             __('Last contact'),
                             field_options
                         ) }}

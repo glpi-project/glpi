@@ -87,7 +87,7 @@
          </div>
 
          {% set field_id = ("dropdown_criteria" ~ prefix ~ "[" ~ num ~ "][field]" ~ rand) %}
-         {% set spanid = ("SearchSpan" ~ normalized_itemtype ~ prefix ~ num) %}
+         {% set spanid = ("SearchSpan" ~ normalized_itemtype ~ prefix|replace({'[': '_', ']': '_'}) ~ num) %}
          <div class="col-auto">
             <div class="row g-1" id="{{ spanid }}">
                {% set used_itemtype = itemtype == 'AllAssets' ? 'Computer' : itemtype %}

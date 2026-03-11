@@ -74,7 +74,7 @@ test('Can delete a note', async ({ page, profile, api }) => {
     // Go to the entity and delete the note
     await entity_page.goto(id, EntityPageTabs.Notes);
     await expect(entity_page.notes).toHaveCount(1);
-    await entity_page.doDeleteNote(0);
+    await entity_page.doDeleteNote();
 
     // The note is now deleted
     await expect(entity_page.notes).toHaveCount(0);
@@ -125,7 +125,6 @@ test('Can add a file to a note', async ({ page, profile, api }) => {
     await entity_page.doAddFileToNote(0, "uploads/bar.txt");
 
     // The note should now have a linked document
-    await entity_page.doFocusNote(0);
     await expect(entity_page.getLink('File extension bar.txt'))
         .toBeAttached()
     ;

@@ -48,6 +48,7 @@ use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
@@ -80,13 +81,14 @@ final class DefaultDataManager
         $this->tiles_manager = TilesManager::getInstance();
     }
 
-    public function initializeDataIfNeeded(): void
+    public function initializeDataIfNeeded(): bool
     {
         if ($this->dataHasBeenInitialized()) {
-            return;
+            return false;
         }
 
         $this->initializeData();
+        return true;
     }
 
     public function initializeData(): void
@@ -314,6 +316,7 @@ final class DefaultDataManager
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
         $description_question = $this->addQuestion($section, $this->getDescriptionQuestionData());
+        $this->addQuestion($section, $this->getAttachmentsQuestionData());
 
         // Find title and description question tags, needed to configure the created ticket
         $title_tag = $this->answer_tag_provider->getTagForQuestion(
@@ -374,6 +377,7 @@ final class DefaultDataManager
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
         $description_question = $this->addQuestion($section, $this->getDescriptionQuestionData());
+        $this->addQuestion($section, $this->getAttachmentsQuestionData());
 
         // Find title and description question tags, needed to configure the created ticket
         $title_tag = $this->answer_tag_provider->getTagForQuestion(
@@ -536,6 +540,17 @@ final class DefaultDataManager
             'type' => QuestionTypeObserver::class,
             'name' => _n('Observer', 'Observers', Session::getPluralNumber()),
             'extra_data' => json_encode(['is_multiple_actors' => true]),
+        ];
+    }
+
+    /**
+     * @return array{'type': class-string, 'name': string}
+     */
+    private function getAttachmentsQuestionData(): array
+    {
+        return [
+            'type' => QuestionTypeFile::class,
+            'name' => __("Attachments"),
         ];
     }
 

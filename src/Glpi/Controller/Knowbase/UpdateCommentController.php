@@ -35,21 +35,23 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem_Comment;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\json_decode;
+
 final class UpdateCommentController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
-        "/Knowbase/Comment/{id}/Update",
-        name: "knowbase_comment_update",
+        "/Knowbase/UpdateComment/{id}",
+        name: "knowbase_update_comment",
         methods: ["POST"],
         requirements: [
             'id' => '\d+',
@@ -57,29 +59,20 @@ final class UpdateCommentController extends AbstractController
     )]
     public function __invoke(int $id, Request $request): Response
     {
-        $comment = new KnowbaseItem_Comment();
-        if (!$comment->getFromDB($id)) {
-            throw new NotFoundHttpException();
-        }
+        $data = json_decode($request->getContent(), true);
 
-        $content = $request->request->getString('content');
+        // Get submitted comment
+        $content = $data['content'] ?? '';
         if (empty($content)) {
             throw new BadRequestHttpException();
         }
 
-        $input = [
-            'id'      => $id,
-            'comment' => $content,
-        ];
-        if (!$comment->can($id, UPDATE, $input)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $success = $comment->update($input);
-
-        if (!$success) {
-            throw new RuntimeException("Failed to update comment");
-        }
+        // Update item
+        $comment = $this->update(
+            KnowbaseItem_Comment::class,
+            $id,
+            ['comment' => $content],
+        );
 
         return new JsonResponse([
             'success' => true,

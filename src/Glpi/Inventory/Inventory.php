@@ -106,37 +106,26 @@ class Inventory
     public const FULL_MODE = 0;
     public const INCR_MODE = 1;
 
-    /** @var int */
-    protected $mode;
-    /** @var ?stdClass */
-    protected $raw_data = null;
+    protected int $mode;
+    protected ?stdClass $raw_data = null;
     /** @var array<string, object> */
-    protected $data = [];
+    protected array $data = [];
     /** @var array<string, mixed> */
-    private $metadata = [];
+    private array $metadata = [];
     /** @var string[] */
-    private $errors = [];
-    /** @var CommonDBTM */
-    protected $item;
-    /** @var Agent */
-    private $agent;
+    private array $errors = [];
+    protected CommonDBTM $item;
+    private Agent $agent;
     /** @var array<string, InventoryAsset[]> */
-    protected $assets = [];
-    /** @var Conf */
-    protected $conf;
+    protected array $assets = [];
+    protected Conf $conf;
     /** @var array<string, array<stirng, mixed>> */
-    private $benchs = [];
-    /** @var string|false */
-    private $inventory_tmpfile = false;
-    /** @var ?string */
-    private $inventory_content;
-    /** @var int */
-    private $inventory_format;
-    /** @var ?MainAsset */
-    private $mainasset;
-    /** @var string */
-    private $request_query;
-    /** @var bool */
+    private array $benchs = [];
+    private string|false $inventory_tmpfile = false;
+    private ?string $inventory_content = null;
+    private int $inventory_format;
+    private ?MainAsset $mainasset = null;
+    private string $request_query = Request::INVENT_QUERY;
     private bool $is_discovery = false;
 
     /**
@@ -204,6 +193,7 @@ class Inventory
             //convert legacy format
             $data = json_decode($converter->convert($contentdata));
         } else {
+            $this->inventory_format = Request::JSON_MODE;
             $contentdata = json_encode($data, JSON_PRETTY_PRINT);
         }
 
@@ -228,7 +218,7 @@ class Inventory
             }
             return false;
         } finally {
-            $this->raw_data = $data;
+            $this->raw_data = $this->getCleanedObject($data);
         }
 
         if ($this->inventory_tmpfile !== false) {
@@ -445,7 +435,7 @@ class Inventory
 
             $item_start = microtime(true);
             $main->prepare();
-            $this->addBench($this->item->getType(), 'prepare', $item_start);
+            $this->addBench($this->item::class, 'prepare', $item_start);
 
             $this->mainasset = $main;
             if (isset($this->data['hardware'])) {
@@ -483,11 +473,11 @@ class Inventory
                 if (count($items)) {
                     $extra = 'Inventoried assets: ';
                     foreach ($items as $item) {
-                        $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+                        $extra .= $item::class . ' #' . $item->getId() . ', ';
                     }
                     $extra = rtrim($extra, ', ') . "\n";
                 }
-                $this->addBench($this->item->getType(), 'full', $main_start, $extra);
+                $this->addBench($this->item::class, 'full', $main_start, $extra);
                 $this->printBenchResults();
             }
         }
@@ -537,7 +527,7 @@ class Inventory
             $items = $this->getItems();
 
             foreach ($items as $item) {
-                $itemtype = $item->getType();
+                $itemtype = $item::class;
                 if (!isset($item->fields['id']) || empty($item->fields['id'])) {
                     throw new RuntimeException('Item ID is missing :(');
                 }
@@ -850,7 +840,7 @@ class Inventory
             $item_start = microtime(true);
             $this->mainasset->handle();
             $this->item = $this->mainasset->getItem();
-            $this->addBench($this->item->getType(), 'handle', $item_start);
+            $this->addBench($this->item::class, 'handle', $item_start);
         }
         return;
     }
@@ -1053,7 +1043,7 @@ class Inventory
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
             // use `getItemForItemtype` to fix classname case (i.e. `refusedequipement` -> `RefusedEquipement`)
-            $itemtype = getItemForItemtype($itemtype)::getType();
+            $itemtype = getItemForItemtype($itemtype)::class;
             $inventory_files = new RegexIterator(
                 new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($existing_type)
@@ -1157,5 +1147,29 @@ class Inventory
             }
         }
         return $itemtypes;
+    }
+
+    private function getCleanedObject(stdClass $data): stdClass
+    {
+        $cleaned = new stdClass();
+        // @phpstan-ignore foreach.nonIterable
+        foreach ($data as $key => $value) {
+            $cleaned->$key = $this->getCleanedValue($value);
+        }
+        return $cleaned;
+    }
+
+    private function getCleanedValue(mixed $value): mixed
+    {
+        if ($value instanceof stdClass) {
+            return $this->getCleanedObject($value);
+        }
+        if (is_array($value)) {
+            return \array_map($this->getCleanedValue(...), $value);
+        }
+        if (\is_string($value)) {
+            return strip_tags($value);
+        }
+        return $value;
     }
 }

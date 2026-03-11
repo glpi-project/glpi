@@ -45,9 +45,9 @@ use function Safe\strtotime;
  */
 class PrinterLog extends CommonDBChild
 {
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = false;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -68,7 +68,7 @@ class PrinterLog extends CommonDBChild
         /** @var Printer|Asset $item */
         if (in_array($item::class, $CFG_GLPI['printer_types'])) {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::class);
         }
         return $array_ret;
     }

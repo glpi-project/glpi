@@ -31,30 +31,30 @@
  #}
 
 <div class="d-flex align-items-center">
-    <form method="POST" action="{{ path('/Session/ChangeEntity') }}">
-        <button class="btn btn-link p-0 bg-transparent {{ is_recursive ? 'fw-bold' : '' }}">
-            {{ name }}
-        </button>
-        <input type="hidden" name="id" value="{{ id }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token }}">
-    </form>
+    <button
+        type="submit"
+        form="ch_ent_o_{{ rand }}"
+        name="id"
+        value="{{ id }}"
+        class="btn btn-link p-0 bg-transparent {{ is_recursive ? 'fw-bold' : '' }}">
+        {{ name }}
+    </button>
 
     {% if is_recursive %}
-        <form method="POST" action="{{ path('/Session/ChangeEntity') }}">
-            <button
-                class="btn btn-outline-secondary p-0 ms-1"
-                aria-label="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
-            >
-                <i
-                    class="ti ti-chevrons-down"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="right"
-                    title="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
-                ></i>
-            </button>
-            <input type="hidden" name="id" value="{{ id }}">
-            <input type="hidden" name="is_recursive" value="1">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token }}">
-        </form>
+        <button
+            type="submit"
+            form="ch_ent_r_{{ rand }}"
+            name="id"
+            value="{{ id }}"
+            class="btn btn-outline-secondary p-0 ms-1"
+            aria-label="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
+        >
+            <i
+                class="ti ti-chevrons-down"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                title="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
+            ></i>
+        </button>
     {% endif %}
 </div>

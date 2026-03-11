@@ -44,13 +44,13 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBChild
-    public static $itemtype = Software::class;
-    public static $items_id  = 'softwares_id';
+    public static string $itemtype = Software::class;
+    public static string $items_id  = 'softwares_id';
 
-    protected $displaylist = false;
+    protected bool $displaylist = false;
 
 
     public static function getTypeName($nb = 0)
@@ -91,17 +91,6 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
         return '';
     }
 
-    /**
-     * Print the Software / version form
-     *
-     * @param int $ID Id of the version or the template to print
-     * @param array $options of possible options:
-     *     - target form target
-     *     - softwares_id ID of the software for add process
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     *
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {

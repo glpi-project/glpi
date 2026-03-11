@@ -3016,4 +3016,56 @@ HTML;
         $this->assertContains($task_available->getID(), $ids);
         $this->assertNotContains($task_excluded->getID(), $ids);
     }
+
+    public function testGetDropdownValueDefaultConditionCanBeOverriden(): void
+    {
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        $this->login();
+
+        $project = $this->createItem(Project::class, [
+            'name' => 'Test Project',
+            'entities_id' => $root_entity_id,
+            'is_deleted' => 1,
+        ]);
+
+        // Ensure deleted project is not present by default
+        $params = [
+            'itemtype'            => Project::class,
+            'display_emptychoice' => false,
+            'entity_restrict'     => $root_entity_id,
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Project::class, $params);
+
+        $result = Dropdown::getDropdownValue($params, false);
+
+        $ids = [];
+        foreach ($result['results'] as $group) {
+            foreach ($group['children'] ?? [$group] as $item) {
+                $ids[] = $item['id'];
+            }
+        }
+
+        $this->assertNotContains($project->getID(), $ids);
+
+        // Ensure deleted project is present if the condition is overriden
+        $params = [
+            'itemtype'            => Project::class,
+            'display_emptychoice' => false,
+            'entity_restrict'     => $root_entity_id,
+            'condition' => ['is_deleted' => 1],
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Project::class, $params);
+
+        $result = Dropdown::getDropdownValue($params, false);
+
+        $ids = [];
+        foreach ($result['results'] as $group) {
+            foreach ($group['children'] ?? [$group] as $item) {
+                $ids[] = $item['id'];
+            }
+        }
+
+        $this->assertContains($project->getID(), $ids);
+    }
 }

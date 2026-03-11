@@ -45,10 +45,10 @@ use Glpi\Plugin\Hooks;
 class SavedSearch_Alert extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = SavedSearch::class;
-    public static $items_id = 'savedsearches_id';
-    public $dohistory       = true;
-    protected $displaylist  = false;
+    public static string $itemtype = SavedSearch::class;
+    public static string $items_id = 'savedsearches_id';
+    public bool $dohistory       = true;
+    protected bool $displaylist  = false;
 
     public const OP_LESS     = 0;
     public const OP_LESSEQ   = 1;
@@ -81,7 +81,7 @@ class SavedSearch_Alert extends CommonDBChild
                     ['savedsearches_id' => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -106,16 +106,6 @@ class SavedSearch_Alert extends CommonDBChild
         return $ong;
     }
 
-    /**
-     * Print the form
-     *
-     * @param int $ID      integer ID of the item
-     * @param array   $options array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $search = new SavedSearch();
@@ -181,7 +171,7 @@ class SavedSearch_Alert extends CommonDBChild
         $notifications = $DB->request([
             'FROM'   => Notification::getTable(),
             'WHERE'  => [
-                'itemtype'  => self::getType(),
+                'itemtype'  => static::class,
                 'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID()),
             ],
         ]);

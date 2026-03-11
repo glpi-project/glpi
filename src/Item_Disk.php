@@ -43,9 +43,9 @@ use Glpi\DBAL\QueryFunction;
 class Item_Disk extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = true;
 
     // Encryption status
     public const ENCRYPTION_STATUS_NO = 0;
@@ -86,12 +86,12 @@ class Item_Disk extends CommonDBChild
                     self::getTable(),
                     [
                         'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
+                        'itemtype'     => $item::class,
                         'is_deleted'   => 0,
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -114,17 +114,6 @@ class Item_Disk extends CommonDBChild
         return $ong;
     }
 
-    /**
-     * Print the version form
-     *
-     * @param int $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - itemtype type of the item for add process
-     *     - items_id ID of the item for add process
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $itemtype = null;
@@ -198,7 +187,7 @@ class Item_Disk extends CommonDBChild
                 ],
             ],
             'WHERE'     => [
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->fields['id'],
             ],
         ]);
@@ -636,16 +625,6 @@ TWIG, $twig_params);
         );
     }
 
-    /**
-     * List specifics value for selection
-     *
-     * @param string       $field   Name of the field
-     * @param string       $name    Name of the select (if empty use linkfield) (default '')
-     * @param string|array $values  Value(s) to select (default '')
-     * @param array        $options Array of options
-     *
-     * @return string the string to display
-     */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {

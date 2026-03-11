@@ -42,6 +42,7 @@ use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\SocketModel;
 
 use function Safe\json_encode;
@@ -58,19 +59,19 @@ class Dropdown
      * List of standard itemtypes options
      * @var array|null
      */
-    private static $standard_itemtypes_options = null;
+    private static ?array $standard_itemtypes_options = null;
 
     /**
      * List of devices itemtypes options
      * @var array|null
      */
-    private static $devices_itemtypes_options = null;
+    private static ?array $devices_itemtypes_options = null;
 
     /**
      * List of devices itemtypes options grouped by category
      * @var array|null
      */
-    private static $devices_itemtypes_options_grouped = null;
+    private static ?array $devices_itemtypes_options_grouped = null;
 
     /**
      * Print out an HTML "<select>" for a dropdown with preselected value
@@ -570,7 +571,8 @@ class Dropdown
         if ($id) {
             $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
             $JOIN          = [];
-            if ($translate && Session::haveTranslations(getItemTypeForTable($table), 'name')) {
+            $transitemtype = getItemTypeForTable($table);
+            if ($translate && $transitemtype && Session::haveTranslations($transitemtype, 'name')) {
                 $SELECTNAME = 'namet.value AS transname';
                 $JOIN = [
                     'LEFT JOIN' => [
@@ -682,6 +684,7 @@ class Dropdown
 
         if (
             $translate
+            && $itemtype
             && Session::haveTranslations($itemtype, 'comment')
         ) {
             $criteria['SELECT'][] = 'comment_translations.value AS translated_comment';
@@ -2992,9 +2995,14 @@ HTML;
                         $where = array_merge($where, $value['WHERE']);
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
-                        $where[] = ["$table.$key" => $value];
-                    } else {
+                        $where["$table.$key"] = $value;
+                    } elseif (is_numeric($key) || in_array($key, ['AND', 'OR', 'NOT'])) {
+                        // Prevent overriding criteria groups sharing the same key
                         $where[] = [$key => $value];
+                    } else {
+                        // Keep the criteria key at the root level to be able to override defaults.
+                        // e.g. to override the default `is_template` / `is_deleted` filtering.
+                        $where[$key] = $value;
                     }
                 }
             }
@@ -3026,8 +3034,10 @@ HTML;
                             "$table.completename" => ['LIKE', $search],
                         ],
                     ];
-                    if ($item->isField('code')) {
-                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    if (Session::getCurrentInterface() === 'central') {
+                        if ($item->isField('code')) {
+                            $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                        }
                     }
                     if ($item->isField('alias')) {
                         $swhere["OR"]["$table.alias"] = ['LIKE', $search];
@@ -3341,9 +3351,9 @@ HTML;
                             $outputval = $data['alias'];
                             $title     = $data['alias'];
                         }
-                        if (isset($data['code']) && !empty($data['code'])) {
+                        if ((Session::getCurrentInterface() === 'central') && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
-                            $title     .= ' - ' . $data['code'];
+                            $title .= ' - ' . $data['code'];
                         }
 
                         $selection_text = $title;
@@ -3546,7 +3556,7 @@ HTML;
                     ];
                     break;
 
-                case KnowbaseItem::getType():
+                case KnowbaseItem::class:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'DISTINCT'        => true,
@@ -3570,6 +3580,8 @@ HTML;
                     break;
 
                 case Ticket::class:
+                case Change::class:
+                case Problem::class:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'FROM'   => $table,
@@ -3577,17 +3589,18 @@ HTML;
                     if (count($ljoin)) {
                         $criteria['LEFT JOIN'] = $ljoin;
                     }
-                    if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+                    $itemtype_class = $post['itemtype'];
+                    if (!Session::haveRight($itemtype_class::$rightname, $itemtype_class::READALL)) {
                         $unused_ref = [];
-                        $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
-                        if (!empty($joins_str)) {
-                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        $default_join = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
+                        if ($default_join !== []) {
+                            $criteria = array_merge_recursive($criteria, $ljoin, $default_join);
                         }
-                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
+                        $where[] = SQLProvider::getDefaultWhereCriteria($itemtype_class);
                     }
                     break;
 
-                case Project::getType():
+                case Project::class:
                     $visibility = Project::getVisibilityCriteria();
                     if (count($visibility['LEFT JOIN'])) {
                         $ljoin = array_merge($ljoin, $visibility['LEFT JOIN']);

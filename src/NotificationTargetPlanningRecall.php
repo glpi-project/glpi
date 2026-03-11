@@ -116,7 +116,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             if ($item->isField('users_id_tech')) {
                 $field = 'users_id_tech';
             } elseif (
-                in_array($item->getType(), ['PlanningExternalEvent', 'Reminder'])
+                in_array($item::class, ['PlanningExternalEvent', 'Reminder'])
                     && $item->isField('users_id')
             ) {
                 $field = 'users_id';
@@ -177,13 +177,13 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             $this->data['##recall.item.url##']
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
-                      $item2->getType() . "_" . $item2->getID()
+                      $item2::class . "_" . $item2->getID()
                   );
         } else {
             $this->data['##recall.item.url##']
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
-                      $target_object->getType()
+                      $target_object::class
                       . "_" . $target_object->getID()
                   );
         }

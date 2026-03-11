@@ -425,8 +425,13 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                     $requirement = DataRequirementSpecification::fromItem($item);
                     $requirements[] = $requirement;
                     $items[$itemtype][$i] = $requirement->name;
+                } else {
+                    // Remove deleted actors from the export
+                    unset($items[$itemtype][$i]);
                 }
             }
+            // Re-index the array after removing elements
+            $items[$itemtype] = array_values($items[$itemtype]);
         }
 
         $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = $items;

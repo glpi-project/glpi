@@ -32,12 +32,49 @@
 
 import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
+import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
+import { SlashMenuHelper } from "../utils/SlashMenuHelper";
+import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
+    private _editorHelper: TipTapEditorHelper | null = null;
+    private _slashMenuHelper: SlashMenuHelper | null = null;
+    private _bubbleMenuHelper: BubbleMenuHelper | null = null;
+
     public constructor(page: Page)
     {
         super(page);
+    }
+
+    public get editor(): TipTapEditorHelper
+    {
+        if (!this._editorHelper) {
+            this._editorHelper = new TipTapEditorHelper(this.page);
+        }
+        return this._editorHelper;
+    }
+
+    public get slashMenu(): SlashMenuHelper
+    {
+        if (!this._slashMenuHelper) {
+            this._slashMenuHelper = new SlashMenuHelper(this.page, this.editor);
+        }
+        return this._slashMenuHelper;
+    }
+
+    public get bubbleMenu(): BubbleMenuHelper
+    {
+        if (!this._bubbleMenuHelper) {
+            this._bubbleMenuHelper = new BubbleMenuHelper(this.page, this.editor);
+        }
+        return this._bubbleMenuHelper;
+    }
+
+    public get subject(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by ArticleController.js, not a test ID
+        return this.page.locator('[data-glpi-kb-subject]');
     }
 
     public async goto(id: number): Promise<void>
@@ -47,10 +84,48 @@ export class KnowbaseItemPage extends GlpiPage
         );
     }
 
+    public async doToggleFaqStatus(): Promise<void>
+    {
+        const faq_toggle = this.getButton('Add to FAQ');
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleField')
+        );
+        await faq_toggle.click();
+        await response_promise;
+    }
+
+    public async doOpenCommentsPanel(): Promise<void>
+    {
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('Comments').click();
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({
             'visible': true,
         });
+    }
+
+    public getCommentsCounter(): Locator
+    {
+        return this.page.getByTestId('comments-counter');
+    }
+
+    public getNoCommentsMessage(): Locator
+    {
+        return this.page.getByText('No comments yet.');
+    }
+
+    public getComment(content: string): Locator
+    {
+        return this.page.getByTestId('comment').filter({
+            hasText: content
+        });
+    }
+
+    public getNewCommentTextarea(): Locator
+    {
+        return this.page.getByPlaceholder("Add a comment...");
     }
 }

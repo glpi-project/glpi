@@ -849,6 +849,42 @@ function loadDataset()
                 'name' => '_testDomain',
             ],
         ],
+        OperatingSystem::class => [
+            [
+                'name' => '_test_os_1',
+            ],
+        ],
+        OperatingSystemArchitecture::class => [
+            [
+                'name' => '_test_os_arch_1',
+            ],
+        ],
+        OperatingSystemVersion::class => [
+            [
+                'name' => '_test_os_version_1',
+            ],
+        ],
+        OperatingSystemEdition::class => [
+            [
+                'name' => '_test_os_edition_1',
+            ],
+        ],
+        OperatingSystemServicePack::class => [
+            [
+                'name' => '_test_os_sp_1',
+            ],
+        ],
+        OperatingSystemKernel::class => [
+            [
+                'name' => '_test_os_kernel_1',
+            ],
+        ],
+        OperatingSystemKernelVersion::class => [
+            [
+                'name' => '_test_os_kernel_version_1',
+                'operatingsystem_kernels_id' => '_test_os_kernel_1',
+            ],
+        ],
     ];
 
     // To bypass various right checks

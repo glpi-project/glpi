@@ -59,14 +59,14 @@ use function Safe\unlink;
 class CronTask extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     // Specific ones
     private static string $lockname = '';
     private float $timer           = 0.0;
     private int $startlog        = 0;
     private int $volume          = 0;
-    public static $rightname        = 'config';
+    public static string $rightname        = 'config';
 
     /** The automatic action is disabled */
     public const STATE_DISABLE = 0;
@@ -239,7 +239,7 @@ class CronTask extends CommonDBTM
     {
         global $DB;
 
-        if (!isset($this->fields['id']) || ($DB->isSlave())) {
+        if (!isset($this->fields['id']) || ($DB->isReplica())) {
             return false;
         }
 
@@ -595,16 +595,6 @@ class CronTask extends CommonDBTM
         }
     }
 
-    /**
-     * Print the contact form
-     *
-     * @param int $ID
-     * @param array   $options
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return bool
-     **/
     public function showForm($ID, array $options = [])
     {
         if (!Config::canView() || !$this->getFromDB($ID)) {
@@ -1358,17 +1348,17 @@ TWIG, ['msg' => __('Last run list')]);
                     if (Config::canUpdate()) {
                         if ($item->getFromDB($key)) {
                             if ($item->resetDate()) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }

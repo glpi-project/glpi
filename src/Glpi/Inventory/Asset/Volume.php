@@ -42,7 +42,6 @@ use stdClass;
 
 class Volume extends InventoryAsset
 {
-    /** @var Conf */
     private Conf $conf;
 
     public function prepare(): array
@@ -129,7 +128,7 @@ class Volume extends InventoryAsset
             'FROM'   => Item_Disk::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
             ],
         ]);
         foreach ($iterator as $data) {
@@ -184,7 +183,7 @@ class Volume extends InventoryAsset
             foreach ($value as $val) {
                 $input = $this->handleInput($val, $itemDisk) + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType(),
+                    'itemtype'     => $this->item::class,
                 ];
 
                 $itemDisk->add($input);

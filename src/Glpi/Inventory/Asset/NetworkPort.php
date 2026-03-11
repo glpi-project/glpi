@@ -510,7 +510,6 @@ class NetworkPort extends InventoryAsset
                     'name' => $vlan_data->name ?? '',
                     'tag'  => $vlan_data->tag,
                 ];
-                $stmt_types = str_repeat('s', count($stmt_columns));
 
                 if (!isset($this->vlan_stmt)) {
                     $reference = array_fill_keys(
@@ -524,9 +523,7 @@ class NetworkPort extends InventoryAsset
                     $this->vlan_stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns);
-                $this->vlan_stmt->bind_param($stmt_types, ...$stmt_values);
-                $DB->executeStatement($this->vlan_stmt);
+                $DB->executeStatement($this->vlan_stmt, $stmt_columns);
                 $vlans_id = $DB->insertId();
 
                 $db_vlans[$vlan_key] = $vlans_id;
@@ -538,7 +535,6 @@ class NetworkPort extends InventoryAsset
                 'vlans_id'        => $vlans_id,
                 'tagged'          => $vlan_data->tagged ?? 0,
             ];
-            $pvlan_stmt_types = str_repeat('s', count($pvlan_stmt_columns));
 
             if (!isset($this->pvlan_stmt)) {
                 $reference = array_fill_keys(
@@ -552,9 +548,7 @@ class NetworkPort extends InventoryAsset
                 $this->pvlan_stmt = $DB->prepare($insert_query);
             }
 
-            $pvlan_stmt_values = array_values($pvlan_stmt_columns);
-            $this->pvlan_stmt->bind_param($pvlan_stmt_types, ...$pvlan_stmt_values);
-            $DB->executeStatement($this->pvlan_stmt);
+            $DB->executeStatement($this->pvlan_stmt, $pvlan_stmt_columns);
         }
     }
 
@@ -831,7 +825,7 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param ?string $itemtype
+     * @param ?class-string<CommonDBTM> $itemtype
      * @param ?int $items_id
      *
      * @return void
@@ -847,9 +841,9 @@ class NetworkPort extends InventoryAsset
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
-                    "itemtype"           => $this->item->getType(),
+                    "itemtype"           => $this->item::class,
                     "items_id"           => $this->item->getID(),
-                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "instantiation_type" => NetworkPortAggregate::class,
                     "name"               => "Management",
                 ], true);
             }
@@ -917,7 +911,7 @@ class NetworkPort extends InventoryAsset
         $id = $link->getOppositeContact($netports_id);
         $netport->getFromDB($id);
 
-        if ($id && $netport->fields['itemtype'] == Unmanaged::getType()) {
+        if ($id && $netport->fields['itemtype'] == Unmanaged::class) {
             $unmanaged = new Unmanaged();
             $unmanaged->getFromDB($netport->fields['items_id']);
             if ($unmanaged->fields['hub'] == 1) {
@@ -941,7 +935,7 @@ class NetworkPort extends InventoryAsset
         $glpi_ports = [];
         $dbports = $netport->find([
             'items_id' => $hubs_id,
-            'itemtype' => Unmanaged::getType(),
+            'itemtype' => Unmanaged::class,
         ]);
         foreach ($dbports as $dbport) {
             $id = $link->getOppositeContact($dbport['id']);

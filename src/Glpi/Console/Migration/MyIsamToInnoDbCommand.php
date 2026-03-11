@@ -43,7 +43,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     /**
      * Error code returned when failed to migrate one table.
@@ -67,7 +67,7 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
         $this->setDescription(__('Migrate MyISAM tables to InnoDB'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $myisam_tables = $this->db->getMyIsamTables();

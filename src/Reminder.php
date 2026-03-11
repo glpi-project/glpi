@@ -60,11 +60,10 @@ class Reminder extends CommonDBVisible implements
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    /** @var bool */
-    public $can_be_translated           = true;
+    public bool $dohistory                   = true;
+    public bool $can_be_translated           = true;
 
-    public static $rightname    = 'reminder_public';
+    public static string $rightname    = 'reminder_public';
 
     public const PERSONAL = 128;
 
@@ -487,7 +486,7 @@ class Reminder extends CommonDBVisible implements
                             'Target',
                             'Targets',
                             Session::getPluralNumber()
-                        ), $nb, $item::getType()),
+                        ), $nb, $item::class),
                         ];
                     }
             }
@@ -521,14 +520,6 @@ class Reminder extends CommonDBVisible implements
         $this->trait_post_getEmpty();
     }
 
-    /**
-     * Print the reminder form
-     *
-     * @param int $ID ID of the item to print
-     * @param array $options   array of possible options:
-     *     - target filename : where to go when done.
-     *     - from_planning_ajax : set to disable planning form part
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);

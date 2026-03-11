@@ -48,9 +48,9 @@ use function Safe\preg_replace;
 class ItemVirtualMachine extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public bool $dohistory       = true;
 
 
     public static function getTypeName($nb = 0)
@@ -78,7 +78,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])
+            && in_array($item::class, $CFG_GLPI['itemvirtualmachines_types'])
             && $item::canView()
         ) {
             $nb = 0;
@@ -86,13 +86,13 @@ class ItemVirtualMachine extends CommonDBChild
                 $nb = countElementsInTable(
                     self::getTable(),
                     [
-                        'itemtype' => $item->getType(),
+                        'itemtype' => $item::class,
                         'items_id' => $item->getID(),
                         'is_deleted' => 0,
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(), $nb, $item::class);
         }
         return '';
     }
@@ -149,9 +149,10 @@ class ItemVirtualMachine extends CommonDBChild
 
         $linked_asset = "";
         if ($link_asset = self::findVirtualMachine($this->fields)) {
-            $asset_to_link = getItemForItemtype($this->fields['itemtype']);
-            if ($asset_to_link->getFromDB($link_asset)) {
-                $linked_asset = $asset_to_link->getLink(['comments' => true]);
+            if ($asset_to_link = getItemForItemtype($this->fields['itemtype'])) {
+                if ($asset_to_link->getFromDB($link_asset)) {
+                    $linked_asset = $asset_to_link->getLink(['comments' => true]);
+                }
             }
         }
 
@@ -181,7 +182,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $ID = $asset->fields['id'];
 
-        if (!in_array($asset->getType(), $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
+        if (!in_array($asset::class, $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
         }
 
@@ -248,7 +249,7 @@ class ItemVirtualMachine extends CommonDBChild
     {
 
         $ID = $asset->fields['id'];
-        $itemtype = $asset->getType();
+        $itemtype = $asset::class;
 
         if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
@@ -288,16 +289,28 @@ class ItemVirtualMachine extends CommonDBChild
             $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
             $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
 
+            $linked_asset_url = ''; //no asset linked
+            if ($link_assets_id = self::findVirtualMachine($virtualmachine)) {
+                if ($linked_asset = getItemForItemtype($virtualmachine['itemtype'])) {
+                    if ($linked_asset->can($link_assets_id, READ)) {
+                        $linked_asset_url = $linked_asset->getLink();
+                    } else {
+                        $linked_asset_url = htmlescape($linked_asset->fields['name']);
+                    }
+                }
+            }
+
             $entries[] = [
                 'name'                      => $vm->getLink(),
                 'comment'                   => $virtualmachine['comment'],
                 'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
+                'virtualmachinestypes_id'   => $type ? $type->getLink() : htmlescape(NOT_AVAILABLE),
                 'virtualmachinesystems_id'  => $system ? $system->getLink() : htmlescape(NOT_AVAILABLE),
                 'virtualmachinestates_id'   => $state ? $state->getLink() : htmlescape(NOT_AVAILABLE),
                 'uuid'                      => $virtualmachine['uuid'],
                 'vcpu'                      => $virtualmachine['vcpu'],
                 'ram'                       => $virtualmachine['ram'],
-                'asset'                     => $type ? $type->getLink() : htmlescape(NOT_AVAILABLE),
+                'linked_asset'              => $linked_asset_url,
             ];
         }
 
@@ -309,20 +322,22 @@ class ItemVirtualMachine extends CommonDBChild
                 'name' => __('Name'),
                 'comment' => _n('Comment', 'Comments', 1),
                 'dynamic' => __('Automatic inventory'),
+                'virtualmachinestypes_id' => VirtualMachineType::getTypeName(1),
                 'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
                 'virtualmachinestates_id' => _n('State', 'States', 1),
                 'uuid' => __('UUID'),
                 'vcpu' => __('Processors number'),
                 'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
-                'asset' => __('Machine'),
+                'linked_asset' => __('Machine'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
+                'virtualmachinestypes_id' => 'raw_html',
                 'virtualmachinesystems_id' => 'raw_html',
                 'virtualmachinestates_id' => 'raw_html',
                 'vcpu' => 'integer',
                 'ram' => 'integer',
-                'asset' => 'raw_html',
+                'linked_asset' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -380,7 +395,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param array<string,mixed> $fields  Array of virtual machine fields
      *
-     * @return int|bool ID of the asset that have this uuid or false otherwise
+     * @return int|false ID of the asset that have this uuid or false otherwise
      **/
     public static function findVirtualMachine($fields = [])
     {

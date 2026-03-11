@@ -32,6 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{# Additional fields configuration for SPECIFIC_VALUE strategy #}
 <div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}">
     {{ fields.dropdownField(
         specific_value_extra_field.slm_class,
@@ -50,4 +51,107 @@
             }
         })
     ) }}
+</div>
+
+{# Additional fields configuration for SPECIFIC_DATE_ANSWER strategy #}
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_DATE_ANSWER }}">
+    {# We need to redefine the random to avoid an ID conflict #}
+    {% set options = options|merge({rand: random()}) %}
+
+    {{ fields.dropdownArrayField(
+        specific_date_answer_extra_field.input_name,
+        specific_date_answer_extra_field.value,
+        specific_date_answer_extra_field.possible_values,
+        "",
+        options|merge({
+            field_class: '',
+            mb: '',
+            no_label: true,
+            display_emptychoice: true,
+            emptylabel: specific_date_answer_extra_field.empty_label,
+            aria_label: specific_date_answer_extra_field.empty_label,
+        })
+    ) }}
+</div>
+
+{# Additional fields configuration for COMPUTED_DATE_FROM_FORM_SUBMISSION strategy #}
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_COMPUTED_DATE_FROM_FORM_SUBMISSION }}">
+    {# We need to redefine the random to avoid an ID conflict #}
+    {% set options = options|merge({rand: random()}) %}
+
+    <div class="d-flex w-full" data-glpi-itildestination-field-slm-computed-strategy-config>
+        {{ fields.dropdownNumberField(
+            time_offset_extra_field.input_name,
+            time_offset_extra_field.value,
+            "",
+            options|merge({
+                field_class: '',
+                mb: '',
+                no_label: true,
+                min: time_offset_extra_field.min,
+                max: time_offset_extra_field.max,
+                aria_label: time_offset_extra_field.aria_label,
+            })
+        ) }}
+        {{ fields.dropdownArrayField(
+            time_definition_extra_field.input_name,
+            time_definition_extra_field.value,
+            time_definition_extra_field.possible_values,
+            "",
+            options|merge({
+                field_class: '',
+                mb: '',
+                no_label: true,
+                aria_label: time_definition_extra_field.aria_label,
+            })
+        ) }}
+    </div>
+</div>
+
+{# Additional fields configuration for COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER strategy #}
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER }}">
+    {# We need to redefine the random to avoid an ID conflict #}
+    {% set options = options|merge({rand: random()}) %}
+
+    {{ fields.dropdownArrayField(
+        specific_date_answer_extra_field.input_name,
+        specific_date_answer_extra_field.value,
+        specific_date_answer_extra_field.possible_values,
+        "",
+        options|merge({
+            field_class: '',
+            mb: '',
+            no_label: true,
+            display_emptychoice: true,
+            emptylabel: specific_date_answer_extra_field.empty_label,
+            aria_label: specific_date_answer_extra_field.empty_label,
+        })
+    ) }}
+    <div class="d-flex w-full" data-glpi-itildestination-field-slm-computed-strategy-config>
+        {{ fields.dropdownNumberField(
+            time_offset_extra_field.input_name,
+            time_offset_extra_field.value,
+            "",
+            options|merge({
+                field_class: '',
+                mb: '',
+                no_label: true,
+                min: time_offset_extra_field.min,
+                max: time_offset_extra_field.max,
+                aria_label: time_offset_extra_field.aria_label,
+            })
+        ) }}
+        {{ fields.dropdownArrayField(
+            time_definition_extra_field.input_name,
+            time_definition_extra_field.value,
+            time_definition_extra_field.possible_values,
+            "",
+            options|merge({
+                field_class: '',
+                mb: '',
+                no_label: true,
+                aria_label: time_definition_extra_field.aria_label,
+            })
+        ) }}
+    </div>
 </div>

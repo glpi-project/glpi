@@ -59,13 +59,13 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'networking';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'networking';
+    protected bool $usenotepad               = true;
 
     /** RELATIONS */
     public function getCloneRelations(): array
@@ -232,7 +232,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
                         'SELECT' => 'id',
                         'FROM'   => 'glpi_networkports',
                         'WHERE'  => [
-                            'itemtype'  => $this->getType(),
+                            'itemtype'  => static::class,
                             'items_id'  => $ID,
                         ],
                     ]),

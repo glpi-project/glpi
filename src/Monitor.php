@@ -58,13 +58,13 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
         'Item_SoftwareVersion',
     ];
 
-    public static $rightname            = 'monitor';
-    protected $usenotepad               = true;
+    public static string $rightname            = 'monitor';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -197,7 +197,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_peripheral' => $this->getType(),
+                'itemtype_peripheral' => static::class,
                 'items_id_peripheral' => $this->fields['id'],
             ],
         ]);

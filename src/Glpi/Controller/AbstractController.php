@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DependencyInjection\PublicService;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController implements PublicService
@@ -69,5 +70,21 @@ abstract class AbstractController implements PublicService
 
         $response->setContent($content);
         return $response;
+    }
+
+    /**
+     * @param array<mixed> $input
+     * @param array<mixed> $keys
+     */
+    final protected function validateInputHasExactKeys(
+        array $input,
+        array $keys
+    ): void {
+        $input_keys = array_keys($input);
+        sort($input_keys);
+        sort($keys);
+        if ($input_keys !== $keys) {
+            throw new BadRequestHttpException();
+        }
     }
 }

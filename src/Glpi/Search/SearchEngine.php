@@ -187,7 +187,7 @@ final class SearchEngine
 
         // Add entity meta if needed
         if ($item->isField('entities_id') && !($item instanceof Entity)) {
-            $linked[] = Entity::getType();
+            $linked[] = Entity::class;
         }
 
         return array_unique($linked);
@@ -217,13 +217,16 @@ final class SearchEngine
             'rackable_types'       => [Enclosure::class, Rack::class],
             'socket_types'         => [Socket::class],
             'ticket_types'         => [Change::class, Problem::class, Ticket::class],
+            'itil_types'           => [Change::class, Problem::class, Ticket::class],
+            'consumables_types'    => [\Consumable::class],
+            'process_types'        => [\Item_Process::class],
         ];
 
         if (array_key_exists($config_key, $key_to_itemtypes)) {
             return $key_to_itemtypes[$config_key];
         }
 
-        $itemclass = $matches[1];
+        $itemclass = (new \DbUtils())->getClassForItemtype($matches[1]);
         if (is_a($itemclass, CommonDBTM::class, true)) {
             return [$itemclass::getType()];
         }
@@ -396,7 +399,7 @@ final class SearchEngine
         // Instanciate an object to access method
         $data['item'] = null;
 
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype != AllAssets::class) {
             $data['item'] = getItemForItemtype($itemtype);
         }
 
@@ -463,7 +466,11 @@ final class SearchEngine
                                     || !$criterion['meta'])
                             ) {
                                 $data['toview'][] = $criterion['field'];
-                            } elseif ($criterion['field'] == 'all') {
+                            } elseif (
+                                $criterion['field'] == 'all'
+                                && isset($criterion['value'])
+                                && (string) $criterion['value'] !== ''
+                            ) {
                                 $data['search']['all_search'] = true;
                             } elseif ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;

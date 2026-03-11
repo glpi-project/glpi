@@ -77,7 +77,7 @@ class SetCommand extends AbstractCommand
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $context = $input->getOption('context');

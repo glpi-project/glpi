@@ -49,10 +49,10 @@ use function Safe\json_encode;
 
 abstract class ItemTranslation extends CommonDBChild
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
     #[Override]
     public function prepareInputForAdd($input): array
@@ -64,6 +64,52 @@ abstract class ItemTranslation extends CommonDBChild
     public function prepareInputForUpdate($input): array
     {
         return $this->prepapreInput($input);
+    }
+
+    #[Override]
+    public function post_addItem()
+    {
+        parent::post_addItem();
+        $this->processRichTextFileUploads();
+    }
+
+    #[Override]
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+        $this->processRichTextFileUploads();
+    }
+
+    /**
+     * Process file uploads from TinyMCE rich text editor.
+     *
+     * When a translation contains rich text with embedded images (from TinyMCE),
+     * those images are temporarily stored and referenced by tags. This method
+     * converts them to proper GLPI documents and updates the translation content
+     * with the final document references.
+     *
+     * The addFiles() method expects specific input keys:
+     * - '_<name>': Array of uploaded file paths
+     * - '_tag_<name>': Array of corresponding HTML tags
+     * - '_prefix_<name>': Array of file prefixes
+     *
+     * Since translations are stored in JSON format with CLDR plural keys ('one', 'few', 'many', etc.),
+     * we use 'one' (singular) as the primary content field.
+     */
+    private function processRichTextFileUploads(): void
+    {
+        $language = new CldrLanguage($this->fields['language']);
+        $category_index = $language->getPluralKey(1);
+
+        $translations = json_decode($this->fields['translations'], true);
+        $translations = $this->addFiles($translations, [
+            'name'          => $category_index,
+            'content_field' => $category_index,
+        ]);
+
+        $translations = [$category_index => $translations[$category_index] ?? ''];
+        $this->fields['translations'] = json_encode($translations);
+        $this->updateInDB(['translations']);
     }
 
     /**
@@ -160,7 +206,7 @@ abstract class ItemTranslation extends CommonDBChild
     {
         $translations = (new static())->find([
             static::$items_id => $item->getID(),
-            static::$itemtype => $item->getType(),
+            static::$itemtype => $item::class,
         ]);
 
         return array_map(fn($id) => static::getById($id), array_keys($translations));
@@ -173,7 +219,7 @@ abstract class ItemTranslation extends CommonDBChild
     {
         $translation = (new static())->find([
             static::$items_id => $item->getID(),
-            static::$itemtype => $item->getType(),
+            static::$itemtype => $item::class,
             'key'             => $key,
             'language'        => $language,
         ]);

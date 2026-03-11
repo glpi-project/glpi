@@ -49,12 +49,12 @@ class Budget extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
-    public static $rightname           = 'budget';
-    protected $usenotepad       = true;
+    public static string $rightname           = 'budget';
+    protected bool $usenotepad       = true;
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     public function getCloneRelations(): array
     {
@@ -99,14 +99,14 @@ class Budget extends CommonDropdown
     {
 
         if (!$withtemplate) {
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case self::class:
                     $count = 0;
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $count = self::countForBudget($item);
                     }
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::class, 'ti ti-package'),
                     ];
             }
         }
@@ -128,16 +128,6 @@ class Budget extends CommonDropdown
         return true;
     }
 
-    /**
-     * Print the contact form
-     *
-     * @param int $ID      Integer ID of the item
-     * @param array  $options  Array of possible options:
-     *     - target for the Form
-     *     - withtemplate : template or basic item
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     **/
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [
