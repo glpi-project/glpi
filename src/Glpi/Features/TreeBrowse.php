@@ -77,6 +77,10 @@ trait TreeBrowse
                             ? (int) $params['unpublished']
                             : 1;
 
+        $cat_item = static::getCategoryItem($itemtype);
+        $cat_fk = $cat_item ? $cat_item::getForeignKeyField() : null;
+        $initial_cat_id = ($cat_fk && isset($params[$cat_fk])) ? (int) $params[$cat_fk] : -1;
+
         $js_itemtype = \jsescape($itemtype);
         $criteria    = json_encode($params['criteria']);
         $sort        = json_encode($_REQUEST['sort'] ?? []);
@@ -158,7 +162,10 @@ JAVASCRIPT;
                 });
 
                 var tree = $.ui.fancytree.getTree("#tree_category")
-                if (tree.activeNode === null) {
+                if ($initial_cat_id !== -1) {
+                    // URL parameter takes precedence over persisted state
+                    tree.activateKey($initial_cat_id);
+                } else if (tree.activeNode === null) {
                     tree.activateKey(-1);
                 }
                 $(document).on('keyup', '#browser_tree_search', function() {
