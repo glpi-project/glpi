@@ -51,7 +51,7 @@ class UpgradeCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('marketplace:upgrade');
-        $this->setDescription(__('Download all plugins to their latest compatible versions, update all active plugins and reactivate those that are active.'));
+        $this->setDescription(__('Download all plugins to their latest compatible versions, update all active plugins and reactivate those that were active.'));
 
         $this->addOption(
             'username',
