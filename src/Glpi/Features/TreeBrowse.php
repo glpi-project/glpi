@@ -162,8 +162,11 @@ JAVASCRIPT;
                 });
 
                 var tree = $.ui.fancytree.getTree("#tree_category")
-                if (tree.activeNode === null) {
+                if ($initial_cat_id !== -1) {
+                    // URL parameter takes precedence over persisted state
                     tree.activateKey($initial_cat_id);
+                } else if (tree.activeNode === null) {
+                    tree.activateKey(-1);
                 }
                 $(document).on('keyup', '#browser_tree_search', function() {
                     var search_text = $(this).val();
