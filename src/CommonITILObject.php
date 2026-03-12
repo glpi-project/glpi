@@ -8898,6 +8898,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ];
     }
 
+    /**
+     * Add associated items in database
+     */
     public function handleItemsIdInput(): void
     {
         if (!empty($this->input['items_id'])) {
@@ -10797,6 +10800,27 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
                     $input['profiles_id'] = $user->fields['profiles_id']; //default profile
+                }
+            }
+        }
+
+        // set groups of associated items - $input['_groups_id_of_item']
+        if (isset($input["items_id"])) {
+            $items = is_array($input["items_id"]) ? $input["items_id"] : [$input["items_id"]];
+            foreach ($items as $itemtype => $items_ids) {
+                if (!is_array($items_ids)) {
+                    continue;
+                }
+
+                $item = getItemForItemtype($itemtype);
+                if (false === $item || !($item instanceof CommonDBTM)) {
+                    continue;
+                }
+
+                foreach ($items_ids as $id) {
+                    if ($item->getFromDB($id) && isset($item->fields['groups_id'])) {
+                        $input['_groups_id_of_item'] = $item->fields['groups_id'];
+                    }
                 }
             }
         }

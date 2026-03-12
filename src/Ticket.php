@@ -1573,9 +1573,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                                  $infocom->fields['businesscriticities_id']
                              );
                         }
-                        if (isset($item->fields['groups_id'])) {
-                            $input['_groups_id_of_item'] = $item->fields['groups_id'];
-                        }
                         break(2);
                     }
                 }
