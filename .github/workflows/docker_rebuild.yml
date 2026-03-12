@@ -1,0 +1,140 @@
+name: "Docker nightly and security rebuild"
+
+permissions:
+  contents: "read"
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Nightly builds (daily)
+    - cron: '0 3 * * 0'   # Security rebuild of living tags
+  workflow_dispatch:
+    inputs:
+      security-rebuild:
+        description: "Run security rebuild (re-pulls base images with no-cache) instead of nightly builds"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  SUPPORTED_VERSIONS: "11.0, 10.0"
+
+jobs:
+  resolve:
+    name: "Resolve build matrix"
+    runs-on: "ubuntu-latest"
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+    steps:
+      - name: "Resolve versions and build matrix"
+        id: "resolve"
+        uses: "actions/github-script@v8"
+        with:
+          script: |
+            const isSecurityRebuild =
+              context.payload.schedule === '0 3 * * 0' ||
+              context.payload.inputs?.['security-rebuild'] === 'true';
+
+            // Parse supported active major/minor versions from env
+            const supportedVersions = process.env.SUPPORTED_VERSIONS
+              .split(',')
+              .map(v => v.trim())
+              .filter(Boolean);
+
+            if (supportedVersions.length === 0) {
+              core.setFailed('SUPPORTED_VERSIONS environment variable is empty. Matrix cannot be built.');
+              return;
+            }
+
+            core.info(`Supported versions: ${supportedVersions.join(', ')}`);
+
+            let matrix = [];
+
+            if (isSecurityRebuild) {
+              const tags = await github.rest.repos.listTags({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+              });
+
+              // Tags are ordered by creation (newest first), only keep stable tags (i.e: 11.0.6, not 11.0.6-rc1)
+              const stableTags = tags.data
+                .map(t => t.name)
+                .filter(name => /^\d+\.\d+\.\d+$/.test(name));
+
+              const latestPerMinorVersion = [];
+              for (const supportedVersion of supportedVersions) {
+                // Find the first stable tag that begins with the Major.Minor prefix (i.e: 11.0)
+                const latestVersionTag = stableTags.find(t => t.startsWith(`${supportedVersion}.`));
+                if (latestVersionTag) {
+                  latestPerMinorVersion.push({ supportedVersion, version: latestVersionTag });
+                } else {
+                  core.warning(`No stable tags found for supported version: ${supportedVersion}`);
+                }
+              }
+
+              if (latestPerMinorVersion.length === 0) {
+                core.setFailed('No stable releases found for any supported versions.');
+                return;
+              }
+
+              core.info(`Security rebuild targets: ${latestPerMinorVersion.map(m => m.version).join(', ')}`);
+
+              matrix = latestPerMinorVersion.map(({ supportedVersion, version }) => {
+                const major = supportedVersion.split('.')[0];
+                return {
+                  'glpi-version': version,
+                  'image-tag': '',
+                  'no-cache': true,
+                  'use-legacy-marketplace-path': Number(major) < 11,
+                };
+              });
+
+            } else {
+              // Nightly Rebuild Matrix
+              matrix = [
+                {
+                  'glpi-version': 'main',
+                  'image-tag': 'dev-nightly',
+                  'no-cache': false,
+                  'use-legacy-marketplace-path': false,
+                },
+                ...supportedVersions.map(supportedVersion => {
+                  const major = supportedVersion.split('.')[0];
+                  return {
+                    'glpi-version': `${supportedVersion}/bugfixes`,
+                    'image-tag': `${supportedVersion}-nightly`,
+                    'no-cache': false,
+                    'use-legacy-marketplace-path': Number(major) < 11,
+                  };
+                })
+              ];
+            }
+
+            core.setOutput('matrix', JSON.stringify({ include: matrix }));
+
+            // Job summary
+            const mode = isSecurityRebuild ? 'Security Rebuild' : 'Nightly Build';
+            await core.summary
+              .addHeading(`${mode} Matrix`)
+              .addCodeBlock(JSON.stringify(matrix, null, 2), 'json')
+              .write();
+
+  build:
+    name: "Build ${{ matrix.image-tag || matrix.glpi-version }}"
+    needs: [resolve]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.resolve.outputs.matrix) }}
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    # GitHub issue with matrix, secrets: inherit trigger error and must manually be defined
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+      GHCR_ACCESS_TOKEN: ${{ secrets.GHCR_ACCESS_TOKEN }}
+    with:
+      push: true
+      glpi-version: ${{ matrix.glpi-version }}
+      image-tag: ${{ matrix.image-tag }}
+      no-cache: ${{ matrix.no-cache }}
+      use-legacy-marketplace-path: ${{ matrix.use-legacy-marketplace-path }}
