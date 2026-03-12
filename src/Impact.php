@@ -578,7 +578,7 @@ TWIG, $twig_params);
             $color = htmlescape($user->fields["priority_$priority"]);
 
             echo Html::scriptBlock('
-                $(document).on("click", "#$id", () => {
+                $(document).on("click", "#' . $id . '", () => {
                     window.open("' . jsescape($link) . '");
                 });
             ');
