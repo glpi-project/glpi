@@ -37,4 +37,4 @@
  */
 
 // Add configuration option to control document attachment for anonymous users in notifications
-$migration->addConfig(['attach_ticket_documents_to_mail_for_anonymous' => 0]);
+$migration->addConfig(['attach_documents_to_notifications_for_anonymous' => 0]);
