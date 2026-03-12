@@ -2659,6 +2659,7 @@ CREATE TABLE `glpi_documents` (
   `is_blacklisted` tinyint NOT NULL DEFAULT '0',
   `tag` varchar(255) DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `filesize` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
