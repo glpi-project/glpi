@@ -2020,10 +2020,11 @@ HTML;
             }
         }
 
+        $date = Html::convDate(date("Y-m-d", $timestamp));
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
-            return "<span class='red'>" . htmlescape(Html::convDate(date("Y-m-d", $timestamp))) . "</span>";
+            return "<span class='red'>" . $date . "</span>";
         }
-        return htmlescape(Html::convDate(date("Y-m-d", $timestamp)));
+        return $date;
     }
 
 
