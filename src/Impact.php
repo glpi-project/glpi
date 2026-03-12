@@ -579,7 +579,7 @@ TWIG, $twig_params);
             $extra = 'id="' . $id . '" style="background-color:' . htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
 
             echo Html::scriptBlock('
-                $(document).on("click", "#$id", () => {
+                $(document).on("click", "#' . $id . '", () => {
                     window.open("' . jsescape($link) . '");
                 });
             ');
