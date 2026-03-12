@@ -20,7 +20,7 @@ export default defineConfig(({ mode, command }) => {
     return {
         base: command === 'serve' ? '/' : '/__dynamic_base__/',
         build: {
-            manifest: true,
+            manifest: 'vite/manifest.json',
             sourcemap: mode !== 'production',
             rolldownOptions: {
                 input: 'js/src/vue/app.js',

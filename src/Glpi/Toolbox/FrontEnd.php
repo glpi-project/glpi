@@ -89,7 +89,7 @@ class FrontEnd
             return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
         }
         $manifest = json_decode(
-            file_get_contents(GLPI_ROOT . '/public/build/vue/.vite/manifest.json'),
+            file_get_contents(GLPI_ROOT . '/public/build/vue/vite/manifest.json'),
             true
         );
 
