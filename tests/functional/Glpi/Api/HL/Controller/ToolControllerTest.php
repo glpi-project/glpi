@@ -154,6 +154,10 @@ class ToolControllerTest extends HLAPITestCase
                             endpoint: $type['href'],
                             itemtype: $type['itemtype'],
                             items_id: (int) $new_items_id,
+                            create_params: [
+                                'name' => __FUNCTION__,
+                                'url' => $CFG_GLPI['url_base'] . '/api.php/v2/fakerss',
+                            ]
                         );
                     }
                 });
