@@ -4298,7 +4298,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.2\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
+	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.[0-9]+\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Config.php',

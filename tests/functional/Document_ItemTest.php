@@ -289,4 +289,403 @@ class Document_ItemTest extends DbTestCase
             $ticket->fields['date_mod']
         );
     }
+
+    /**
+     * Test that private documents are hidden from users without SEEPRIVATE right.
+     */
+    public function testPrivateDocumentVisibilityWithoutSeeprivateRight()
+    {
+        $this->login();
+
+        // Create a ticket
+        $tickets_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test private document visibility',
+                'content' => 'Test content',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Create a document
+        $doc_id = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'Private test document',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Attach document to ticket as private
+        $doc_item = $this->createItem(
+            Document_Item::class,
+            [
+                'items_id'      => $tickets_id,
+                'itemtype'      => \Ticket::class,
+                'documents_id'  => $doc_id,
+                'is_private'    => 1,
+                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            ]
+        );
+        $doc_item_id = $doc_item->getID();
+
+        // Verify the document is created with is_private = 1
+        $this->assertTrue($doc_item->getFromDB($doc_item_id));
+        $this->assertEquals(1, $doc_item->fields['is_private']);
+
+        // Create a user without SEEPRIVATE right
+        $user = new \User();
+        $user_id = $user->add([
+            'name' => 'user_no_seeprivate',
+            'password' => 'test_password',
+            'password2' => 'test_password',
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        // Create a read-only profile without SEEPRIVATE
+        $profile_id = $this->createItem(
+            \Profile::class,
+            [
+                'name' => 'Test profile no SEEPRIVATE',
+            ]
+        )->getID();
+
+        // Assign profile to user
+        $this->createItem(
+            \Profile_User::class,
+            [
+                'users_id' => $user_id,
+                'profiles_id' => $profile_id,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Login as the user without SEEPRIVATE right
+        $this->login('user_no_seeprivate', 'test_password', false);
+
+        // Check that the private document is not visible
+        $doc_item_check = new Document_Item();
+        $doc_item_check->getFromDB($doc_item_id);
+        $this->assertFalse($doc_item_check->canViewItem());
+
+        // Clean up and restore session
+        $this->login();
+    }
+
+    /**
+     * Test that private documents are visible to users with SEEPRIVATE right.
+     */
+    public function testPrivateDocumentVisibilityWithSeeprivateRight()
+    {
+        $this->login(); // Login as super-admin who should have SEEPRIVATE
+
+        // Create a ticket
+        $tickets_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test private document visibility with SEEPRIVATE',
+                'content' => 'Test content',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Create a document
+        $doc_id = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'Private test document',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Attach document to ticket as private
+        $doc_item = $this->createItem(
+            Document_Item::class,
+            [
+                'items_id' => $tickets_id,
+                'itemtype' => \Ticket::class,
+                'documents_id' => $doc_id,
+                'is_private' => 1,
+                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            ]
+        );
+        $doc_item_id = $doc_item->getID();
+
+        // Check that the private document is visible
+        $doc_item->getFromDB($doc_item_id);
+        $this->assertTrue($doc_item->canViewItem());
+    }
+
+    /**
+     * Test that public documents are visible to all authorized users.
+     */
+    public function testPublicDocumentVisibility()
+    {
+        $this->login();
+
+        // Create a ticket
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Test public document visibility',
+            'content' => 'Test content',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $tickets_id = $ticket->getID();
+
+        // Create a document
+        $doc_id = $this->createItem('Document', [
+            'name' => 'Public test document',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        // Attach document to ticket as public (is_private = 0)
+        $doc_item = $this->createItem('Document_Item', [
+            'items_id'      => $tickets_id,
+            'itemtype'      => 'Ticket',
+            'documents_id'  => $doc_id,
+            'is_private'    => 0,
+            'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+        ]);
+        $doc_item_id = $doc_item->getID();
+
+        // Check that the public document is visible
+        $doc_item->getFromDB($doc_item_id);
+        $this->assertTrue($doc_item->canViewItem());
+    }
+
+    /**
+     * Test that documents are public by default (is_private = 0).
+     */
+    public function testDefaultIsPrivateValue()
+    {
+        $this->login();
+
+        // Create a ticket
+        $tickets_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test default is_private',
+                'content' => 'Test content',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Create a document
+        $doc_id = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'Test document default is_private',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Attach document to ticket without specifying is_private
+        $doc_item = $this->createItem(
+            Document_Item::class,
+            [
+                'items_id'      => $tickets_id,
+                'itemtype'      => \Ticket::class,
+                'documents_id'  => $doc_id,
+                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            ]
+        );
+        $doc_item_id = $doc_item->getID();
+
+        // Verify is_private defaults to 0
+        $doc_item->getFromDB($doc_item_id);
+        $this->assertEquals(0, $doc_item->fields['is_private']);
+    }
+
+    /**
+     * Test that document owner can always see their own private documents.
+     */
+    public function testPrivateDocumentVisibleToOwner()
+    {
+        // Create a user
+        $user = new \User();
+        $user_id = $user->add([
+            'name' => 'doc_owner',
+            'password' => 'test_password',
+            'password2' => 'test_password',
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        // Create profile with document READ but not SEEPRIVATE
+        $profile_id = $this->createItem(
+            \Profile::class,
+            [
+                'name' => 'Test doc owner profile',
+            ]
+        )->getID();
+
+        $this->addRightToProfile(
+            'Test doc owner profile',
+            \Ticket::$rightname,
+            \Ticket::READASSIGN
+        );
+
+        // Assign profile to user
+        $this->createItem(
+            \Profile_User::class,
+            [
+                'users_id' => $user_id,
+                'profiles_id' => $profile_id,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Login as doc owner user
+        $this->login('doc_owner', 'test_password');
+
+        \Session::changeProfile($profile_id);
+        \Session::changeActiveEntities([$this->getTestRootEntity(true)]);
+
+        // Create a ticket
+        $tickets_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test owner private document',
+                'content' => 'Test content',
+                'entities_id' => $this->getTestRootEntity(true),
+                '_users_id_assign' => $user_id,
+            ]
+        )->getID();
+
+        // Create a document
+        $doc_id = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'Owner private document',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        )->getID();
+
+        // Attach document as private with current user as owner
+        $doc_item = $this->createItem(
+            Document_Item::class,
+            [
+                'items_id'      => $tickets_id,
+                'itemtype'      => \Ticket::class,
+                'documents_id'  => $doc_id,
+                'is_private'    => 1,
+                'users_id'      => \Session::getLoginUserID(),
+                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            ]
+        );
+        $doc_item_id = $doc_item->getID();
+
+        // Check that the owner can see their own private document
+        $doc_item->getFromDB($doc_item_id);
+        $this->assertTrue($doc_item->canViewItem());
+
+        // Clean up
+        $this->login();
+    }
+
+    /**
+     * Test that SEEPRIVATE constant is correctly defined.
+     */
+    public function testSeeprivateConstant()
+    {
+        $this->assertEquals(8192, Document_Item::SEEPRIVATE);
+    }
+
+    /**
+     * Test that private documents are excluded from email notifications when user doesn't have SEEPRIVATE right.
+     */
+    public function testPrivateDocumentsExcludedFromNotifications()
+    {
+        $this->login();
+
+        // Create a ticket
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test notification with private document',
+                'content' => 'Test content',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        $tickets_id = $ticket->getID();
+
+        // Create a public document
+        $public_doc = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'Public document for notification test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Create a private document
+        $private_doc = $this->createItem(
+            \Document::class,
+            [
+                'name' => 'Private document for notification test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Attach public document
+        $this->createItem(
+            Document_Item::class,
+            [
+                'items_id'      => $tickets_id,
+                'itemtype'      => \Ticket::class,
+                'documents_id'  => $public_doc->getID(),
+                'is_private'    => 0,
+                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            ]
+        );
+
+        // Attach private document
+        $this->createItem(
+            Document_Item::class,
+            [
+                'items_id'      => $tickets_id,
+                'itemtype'      => \Ticket::class,
+                'documents_id'  => $private_doc->getID(),
+                'is_private'    => 1,
+                'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            ]
+        );
+
+        // Get notification data without show_private (default behavior)
+        $notification = new \NotificationTargetTicket();
+        $notif_data = $notification->getDataForObject($ticket, [
+            'additionnaloption' => [
+                'usertype' => \NotificationTarget::GLPI_USER,
+                'is_self_service' => false,
+                'show_private' => false, // User doesn't have SEEPRIVATE right
+            ],
+        ]);
+
+        // Verify documents array exists
+        $this->assertArrayHasKey('documents', $notif_data);
+
+        // Extract document names from notification data
+        $document_names = array_column($notif_data['documents'], '##document.name##');
+
+        // Verify public document is in notification
+        $this->assertContains('Public document for notification test', $document_names);
+
+        // Verify private document is NOT in notification when show_private is false
+        $this->assertNotContains('Private document for notification test', $document_names);
+
+        // Now test with show_private = true (user has SEEPRIVATE right)
+        $notif_data_with_private = $notification->getDataForObject($ticket, [
+            'additionnaloption' => [
+                'usertype' => \NotificationTarget::GLPI_USER,
+                'is_self_service' => false,
+                'show_private' => true, // User has SEEPRIVATE right
+            ],
+        ]);
+
+        // Extract document names with private access
+        $document_names_with_private = array_column($notif_data_with_private['documents'], '##document.name##');
+
+        // Verify both documents are in notification when show_private is true
+        $this->assertContains('Public document for notification test', $document_names_with_private);
+        $this->assertContains('Private document for notification test', $document_names_with_private);
+    }
 }

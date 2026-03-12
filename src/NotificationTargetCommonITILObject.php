@@ -790,7 +790,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * Add profiles_id in $this->central_profiles & $this->private_profiles
      *
      * - Profiles with interface 'central' in $this->central_profiles
-     * - Profiles with right ITILFollowup::SEEPRIVATE on followup in $this->private_profiles
+     * - Profiles with right ITILFollowup::SEEPRIVATE on followup or Document_Item::SEEPRIVATE on document in $this->private_profiles
      *
      * @return void
      */
@@ -798,12 +798,27 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     {
         global $DB;
 
+        // Get profiles with SEEPRIVATE right on followups
         $iterator = $DB->request([
             'SELECT' => ['profiles_id'],
             'FROM'   => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'followup',
                 'rights' => ['&', ITILFollowup::SEEPRIVATE],
+            ],
+        ]);
+
+        foreach ($iterator as $data) {
+            $this->private_profiles[$data['profiles_id']] = $data['profiles_id'];
+        }
+
+        // Get profiles with SEEPRIVATE right on documents
+        $iterator = $DB->request([
+            'SELECT' => ['profiles_id'],
+            'FROM'   => 'glpi_profilerights',
+            'WHERE'  => [
+                'name'   => 'document',
+                'rights' => ['&', Document_Item::SEEPRIVATE],
             ],
         ]);
 
@@ -1643,6 +1658,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $incoming_restrict, false);
 
             // Document
+            $document_where = [
+                $item->getAssociatedDocumentsCriteria(true),
+                'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
+            ];
+
+            // Apply same privacy logic as followups
+            if (!$show_private) {
+                $document_where['glpi_documents_items.is_private'] = 0;
+            }
+
             $iterator = $DB->request([
                 'SELECT'    => 'glpi_documents.*',
                 'FROM'      => 'glpi_documents',
@@ -1654,10 +1679,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         ],
                     ],
                 ],
-                'WHERE'     => [
-                    $item->getAssociatedDocumentsCriteria(true),
-                    'timeline_position' => ['>', CommonITILObject::NO_TIMELINE], // skip inlined images
-                ],
+                'WHERE'     => $document_where,
             ]);
 
             $data["documents"] = [];

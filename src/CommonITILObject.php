@@ -2042,12 +2042,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $doc = new Document();
             if ($doc->getFromDB($input["document"])) {
                 $docitem = new Document_Item();
-                if (
-                    $docitem->add(['documents_id' => $input["document"],
-                        'itemtype'     => static::class,
-                        'items_id'     => $input["id"],
-                    ])
-                ) {
+                $docitem_input = [
+                    'documents_id' => $input["document"],
+                    'itemtype'     => static::class,
+                    'items_id'     => $input["id"],
+                ];
+
+                if (isset($input['is_private'])) {
+                    $docitem_input['is_private'] = $input['is_private'];
+                }
+
+                if ($docitem->add($docitem_input)) {
                     // Force date_mod of tracking
                     $input["date_mod"]     = $_SESSION["glpi_currenttime"];
                     $input['_doc_added'][] = $doc->fields["name"];
@@ -7879,6 +7884,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     continue;
                 }
 
+                // Check visibility for private documents
+                if ($params['check_view_rights'] && !empty($document_item['is_private'])) {
+                    if (
+                        !Session::haveRight('document', Document_Item::SEEPRIVATE)
+                        && (int) ($document_item['users_id'] ?? 0) !== Session::getLoginUserID()
+                    ) {
+                        continue;
+                    }
+                }
+                if ($params['hide_private_items'] && !empty($document_item['is_private'])) {
+                    continue;
+                }
+
                 $item = $document_obj->fields;
                 $item['date'] = $document_item['date'] ?? $document_item['date_creation'];
                 // #1476 - set date_creation, date_mod and owner to attachment ones
@@ -7886,6 +7904,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item['date_mod'] = $document_item['date_mod'];
                 $item['users_id'] = $document_item['users_id'];
                 $item['documents_item_id'] = $document_item['id'];
+                $item['is_private'] = $document_item['is_private'] ?? 0;
 
                 $item['timeline_position'] = $document_item['timeline_position'];
                 $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
