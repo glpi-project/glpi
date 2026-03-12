@@ -42,6 +42,7 @@ use Glpi\Form\Migration\FormMigration;
 use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
+use Glpi\System\Requirement\DangerousFunctionsSecurity;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
@@ -637,6 +638,7 @@ class Central extends CommonGLPI
             $security_requirements = [
                 new PhpSupportedVersion(),
                 new SessionsSecurityConfiguration(),
+                new DangerousFunctionsSecurity(),
             ];
             foreach ($security_requirements as $requirement) {
                 if (!$requirement->isValidated()) {
