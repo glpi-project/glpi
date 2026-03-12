@@ -662,9 +662,79 @@ class Item_OperatingSystem extends CommonDBRelation
         $item->getFromDB($input['items_id']);
         $input['entities_id'] = $item->fields['entities_id'];
         $input['is_recursive'] = $item->fields['is_recursive'];
+
+        // Check if all OS fields are empty
+        if ($this->areAllFieldsEmpty($input)) {
+            Session::addMessageAfterRedirect(
+                __s("Cannot add an empty operating system. At least one field must be filled."),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         return $input;
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        // Check if all OS fields are empty
+        if (isset($input['id']) && $this->getFromDB($input['id'])) {
+            $merged = array_merge($this->fields, $input);
+
+            if ($this->areAllFieldsEmpty($merged)) {
+                Session::addMessageAfterRedirect(
+                    __s("Cannot update operating system with empty values. To remove the operating system, use the delete action instead."),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * Check if all relevant OS fields are empty
+     *
+     * @param array<string, mixed> $input Input data
+     *
+     * @return bool True if all fields are empty
+     */
+    private function areAllFieldsEmpty(array $input): bool
+    {
+        $fields_to_check = [
+            'operatingsystems_id',
+            'operatingsystemversions_id',
+            'operatingsystemservicepacks_id',
+            'operatingsystemarchitectures_id',
+            'operatingsystemkernelversions_id',
+            'operatingsystemeditions_id',
+            'license_number',
+            'licenseid',
+            'company',
+            'owner',
+            'hostid',
+        ];
+
+        foreach ($fields_to_check as $field) {
+            if (!array_key_exists($field, $input)) {
+                continue;
+            }
+
+            $value = $input[$field];
+
+            if (
+                (is_numeric($value) && (int) $value > 0)
+                || (is_string($value) && trim($value) !== '' && !is_numeric($value))
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public static function getIcon()
     {
