@@ -9649,6 +9649,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             'status'                          => self::ASSIGNED,
                             '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
                             '_from_assignment'                => true,
+                            '_skip_rules'                     => true,
                         ]
                     );
                     $this->fields['status'] = $self->fields['status'];

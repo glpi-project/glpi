@@ -1988,6 +1988,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),
                         'takeintoaccountdate'        => $_SESSION["glpi_currenttime"],
                         '_disablenotif'              => true,
+                        '_skip_rules'                => true,
                     ]
                 );
             }

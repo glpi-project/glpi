@@ -1033,6 +1033,74 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals('<p>test testFollowupTemplateAssignFromRule</p>', $itil_followups_data['content']);
     }
 
+    /**
+     * When a followup template or a task template is assigned by a rule on update + oncreate,
+     * the followup was added multiple times because of \CommonITILObject::updateActors()
+     * which triggers an update on the ITIL Object which retriggers the rule.
+     */
+    public function testFollowupTemplateAndTaskTemplateAssignFromRuleIsCreatedOnlyOnce(): void
+    {
+        $this->login();
+        $itil_class = $this->getITILObjectClass();
+
+        // --- arrange: create a followup template + a task template and a rule that triggers anytime ---
+        $followup_template = $this->createItem(ITILFollowupTemplate::class, $this->getMinimalCreationInput(ITILFollowupTemplate::class));
+        $task_template = $this->createItem(TaskTemplate::class, $this->getMinimalCreationInput(TaskTemplate::class));
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setOperator('AND')
+            ->setCondtion(RuleCommonITILObject::ONADD + RuleCommonITILObject::ONUPDATE)
+            ->addCriteria('profiles_id', Rule::PATTERN_IS_NOT, 99)
+            ->addAction('append', 'itilfollowup_template', $followup_template->getID())
+            ->addAction('append', 'task_template', $task_template->getID());
+        $this->createRule($rule_builder);
+
+        // --- act: create an ITIL object with an assigned user ---
+        $users_id_tech = getItemByTypeName(User::class, 'tech', true);
+        $users_id_glpi  = getItemByTypeName(User::class, 'glpi', true);
+        $itil_object = $this->createItem(
+            $itil_class,
+            [
+                '_actors'     => [
+                    'requester' => [
+                        [
+                            'itemtype' => User::class,
+                            'items_id' => $users_id_tech,
+                        ],
+                    ],
+                    'assign' => [
+                        [
+                            'itemtype' => User::class,
+                            'items_id' => $users_id_glpi,
+                        ],
+                    ],
+                ],
+            ]
+            + $this->getMinimalCreationInput($itil_class)
+        );
+
+        // check user assignment is correct
+
+        $itil_user_association = $this->getITILLinkInstance(User::class);
+        $actors = $itil_user_association->find([ $itil_object::getForeignKeyField() => $itil_object->getID()]);
+        assert(in_array($users_id_tech, array_column($actors, 'users_id')), 'tech user should be assigned');
+        assert(in_array($users_id_glpi, array_column($actors, 'users_id')), 'glpi user should be assigned');
+
+        // --- assert: verify only one followup and one task are added ---
+        $followups = (new ITILFollowup())->find([
+            'itemtype' => $itil_class,
+            'items_id' => $itil_object->getID(),
+        ]);
+        $this->assertCount(1, $followups);
+
+        $linked_task = $this->getITILObjectClass() . 'Task';
+        $tasks = (new $linked_task())->find([
+            $itil_object::getForeignKeyField() => $itil_object->getID(),
+        ]);
+        $this->assertCount(1, $tasks);
+    }
+
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateITILContent()
     {
         $this->login();
