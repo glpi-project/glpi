@@ -549,7 +549,9 @@ final class HLAPIHelper
         ?callable $deny_update = null,
         ?callable $deny_delete = null,
         ?callable $deny_purge = null,
-        ?callable $deny_restore = null
+        ?callable $deny_restore = null,
+        ?array $create_params = null,
+        ?array $update_params = null,
     ): self {
         $this->test->loginWeb();
         $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
@@ -588,7 +590,13 @@ final class HLAPIHelper
 
         $deny_create();
         // No CREATE = Access denied
-        $this->call(new Request('POST', $endpoint), function ($call) {
+        $create_request = new Request('POST', $endpoint);
+        if ($create_params !== null) {
+            foreach ($create_params as $key => $value) {
+                $create_request->setParameter($key, $value);
+            }
+        }
+        $this->call($create_request, function ($call) {
             /** @var HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         }, false);
@@ -597,6 +605,11 @@ final class HLAPIHelper
         $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
         // Property does not need to exist, but we try to act like a real update
         $update_request->setParameter('name', 'updated');
+        if ($update_params !== null) {
+            foreach ($update_params as $key => $value) {
+                $update_request->setParameter($key, $value);
+            }
+        }
         // No UPDATE = Access denied
         $this->call($update_request, function ($call) {
             /** @var HLAPICallAsserter $call */
