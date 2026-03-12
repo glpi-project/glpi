@@ -225,28 +225,28 @@ class Reservation extends CommonDBChild
                     $rri = new ReservationItem();
                     $rri->getFromDB($reservationitems_id);
                     $item = getItemForItemtype($rri->fields["itemtype"]);
-                    $item->getFromDB($rri->fields["items_id"]);
-
-                    Event::log(
-                        $newID,
-                        "reservation",
-                        4,
-                        "inventory",
-                        sprintf(
-                            __s('%1$s adds reservation %2$s for %3$s %4$s'),
-                            $_SESSION["glpiname"],
+                    if ($item && $item->getFromDB($rri->fields["items_id"])) {
+                        Event::log(
                             $newID,
-                            $item::getTypeName(1),
-                            $item->getNameID(['forceid' => true])
-                        )
-                    );
-                    Session::addMessageAfterRedirect(
-                        sprintf(
-                            __s('Reservation added for item %s at %s'),
-                            $item->getLink(),
-                            htmlescape(Html::convDateTime($reservation_input['begin']))
-                        )
-                    );
+                            "reservation",
+                            4,
+                            "inventory",
+                            sprintf(
+                                __s('%1$s adds reservation %2$s for %3$s %4$s'),
+                                $_SESSION["glpiname"],
+                                $newID,
+                                $item::getTypeName(1),
+                                $item->getNameID(['forceid' => true])
+                            )
+                        );
+                        Session::addMessageAfterRedirect(
+                            sprintf(
+                                __s('Reservation added for item %s at %s'),
+                                $item->getLink(),
+                                htmlescape(Html::convDateTime($reservation_input['begin']))
+                            )
+                        );
+                    }
                 }
             }
         }
