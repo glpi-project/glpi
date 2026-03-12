@@ -34,12 +34,17 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use Entity_KnowbaseItem;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
+use Group_KnowbaseItem;
 use KnowbaseItem;
+use KnowbaseItem_Profile;
+use KnowbaseItem_User;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,6 +56,8 @@ use function Safe\json_decode;
 
 final class KnowbaseItemController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Content",
         name: "knowbaseitem_content",
@@ -250,5 +257,35 @@ final class KnowbaseItemController extends AbstractController
         return new StreamedResponse(static function () use ($twig_params) {
             TemplateRenderer::getInstance()->display('pages/tools/search_knowbaseitem.html.twig', $twig_params);
         });
+    }
+
+    private const ALLOWED_PERMISSION_TYPES = [
+        'KnowbaseItem_User'    => KnowbaseItem_User::class,
+        'Group_KnowbaseItem'   => Group_KnowbaseItem::class,
+        'Entity_KnowbaseItem'  => Entity_KnowbaseItem::class,
+        'KnowbaseItem_Profile' => KnowbaseItem_Profile::class,
+    ];
+
+    #[Route(
+        "/Knowbase/KnowbaseItem/Permission/{itemtype}/{permission_id}",
+        name: "knowbaseitem_delete_permission",
+        methods: ["POST"],
+        requirements: [
+            'itemtype' => 'KnowbaseItem_User|Group_KnowbaseItem|Entity_KnowbaseItem|KnowbaseItem_Profile',
+            'permission_id' => '\d+',
+        ]
+    )]
+    public function deletePermission(Request $request): JsonResponse
+    {
+        $itemtype = $request->attributes->get('itemtype');
+        $permission_id = (int) $request->attributes->get('permission_id');
+
+        if (!isset(self::ALLOWED_PERMISSION_TYPES[$itemtype])) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->purge(self::ALLOWED_PERMISSION_TYPES[$itemtype], $permission_id);
+
+        return new JsonResponse(['success' => true]);
     }
 }
