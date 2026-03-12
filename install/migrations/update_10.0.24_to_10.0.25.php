@@ -33,11 +33,11 @@
  */
 
 /**
- * Update from 10.0.23 to 10.0.25
+ * Update from 10.0.24 to 10.0.25
  *
  * @return bool for success (will die for most error)
  **/
-function update10023to10025()
+function update10024to10025()
 {
     /**
      * @var \DBmysql $DB
@@ -48,7 +48,7 @@ function update10023to10025()
     $updateresult       = true;
     $ADDTODISPLAYPREF   = [];
     $DELFROMDISPLAYPREF = [];
-    $update_dir = __DIR__ . '/update_10.0.23_to_10.0.25/';
+    $update_dir = __DIR__ . '/update_10.0.24_to_10.0.25/';
 
     //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '10.0.25'));
