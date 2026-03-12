@@ -80,13 +80,13 @@ class FrontEnd
 
     public static function getViteDevServerClient(): string
     {
-        return 'http://localhost:5173/@vite/client';
+        return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/@vite/client';
     }
 
     public static function getViteEntrypoint(): string
     {
         if (self::isViteDevServerRunning()) {
-            return 'http://localhost:5173/js/src/vue/app.js';
+            return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
         }
         $manifest = json_decode(
             file_get_contents(GLPI_ROOT . '/public/build/vue/.vite/manifest.json'),
