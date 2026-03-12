@@ -179,7 +179,7 @@ final class AnswersSet extends CommonDBChild
     }
 
     #[Override]
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         // Answers set can't be viewed from the UI
         return false;

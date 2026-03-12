@@ -51,7 +51,7 @@ class ChangeCost extends CommonITILCost
     }
 
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
     }

@@ -85,7 +85,7 @@ class DisplayPreference extends CommonDBTM
     }
 
     #[Override]
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return static::canCrud();
     }

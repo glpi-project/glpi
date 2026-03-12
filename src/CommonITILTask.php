@@ -292,7 +292,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return true;
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         if (!Session::haveRightsOr(static::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])) {
             return false;

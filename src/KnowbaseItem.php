@@ -129,7 +129,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return Session::haveRightsOr(self::$rightname, [DELETE, self::KNOWBASEADMIN]);
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         global $CFG_GLPI;
 

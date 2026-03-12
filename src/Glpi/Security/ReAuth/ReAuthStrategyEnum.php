@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,20 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class KnowbaseItemCategory
-class KnowbaseItemCategory extends CommonTreeDropdown
+declare(strict_types=1);
+
+namespace Glpi\Security\ReAuth;
+
+enum ReAuthStrategyEnum: string
 {
-    // From CommonDBTM
-    public bool $dohistory          = true;
-    public bool $can_be_translated  = true;
+    case TOTP = 'totp';
+    case PASSWORD = 'password';
 
-    public static string $rightname          = 'knowbasecategory';
-
-    public const SEEALL = -1;
-
-    public static function getTypeName($nb = 0)
+    public function createStrategy(): ReAuthStrategyInterface
     {
-        return _n('Knowledge base category', 'Knowledge base categories', $nb);
-    }
-
-    public static function canView(bool $require_reauth = false): bool
-    {
-        if (Session::getCurrentInterface() == "helpdesk") {
-            return true;
-        }
-
-        return parent::canView();
-    }
-
-    public static function getIcon()
-    {
-        return KnowbaseItem::getIcon();
-    }
-
-    public function cleanDBonPurge()
-    {
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                KnowbaseItem_KnowbaseItemCategory::class,
-            ]
-        );
+        return match ($this) {
+            self::TOTP => new TOTPReAuthStrategy(),
+            self::PASSWORD => new PasswordReAuthStrategy(),
+        };
     }
 }

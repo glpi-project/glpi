@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,53 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class KnowbaseItemCategory
-class KnowbaseItemCategory extends CommonTreeDropdown
+declare(strict_types=1);
+
+namespace Glpi\Security\ReAuth;
+
+use Auth;
+use User;
+
+final class PasswordReAuthStrategy implements ReAuthStrategyInterface
 {
-    // From CommonDBTM
-    public bool $dohistory          = true;
-    public bool $can_be_translated  = true;
-
-    public static string $rightname          = 'knowbasecategory';
-
-    public const SEEALL = -1;
-
-    public static function getTypeName($nb = 0)
+    #[\Override]
+    public function verify(int $users_id, string $user_input): bool
     {
-        return _n('Knowledge base category', 'Knowledge base categories', $nb);
-    }
-
-    public static function canView(bool $require_reauth = false): bool
-    {
-        if (Session::getCurrentInterface() == "helpdesk") {
-            return true;
+        $user = new User();
+        if (!$user->getFromDB($users_id)) {
+            return false;
         }
 
-        return parent::canView();
+        return Auth::checkPassword($user_input, $user->fields['password']);
     }
 
-    public static function getIcon()
+    #[\Override]
+    public function isAvailable(int $users_id): bool
     {
-        return KnowbaseItem::getIcon();
+        $user = new User();
+        if (!$user->getFromDB($users_id)) {
+            return false;
+        }
+
+        return $user->fields['authtype'] === Auth::DB_GLPI
+            && !empty($user->fields['password']);
     }
 
-    public function cleanDBonPurge()
+    #[\Override]
+    public function getLabel(): string
     {
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                KnowbaseItem_KnowbaseItemCategory::class,
-            ]
-        );
+        return __('Password');
+    }
+
+    #[\Override]
+    public function getPromptTemplate(): string
+    {
+        return 'pages/reauth/password_form.html.twig';
+    }
+
+    #[\Override]
+    public function getPriority(): int
+    {
+        return 50;
     }
 }

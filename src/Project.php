@@ -90,7 +90,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return ['tools', self::class];
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }

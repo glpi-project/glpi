@@ -65,7 +65,7 @@ final class KnowbaseItem_Comment extends CommonDBTM
     }
 
     #[Override]
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
     }

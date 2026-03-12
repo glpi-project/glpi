@@ -174,7 +174,7 @@ class Planning extends CommonGLPI
         return 'p';
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READMY, self::READGROUP,
             self::READALL,

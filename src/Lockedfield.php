@@ -65,7 +65,7 @@ class Lockedfield extends CommonDBTM
         return 'inventory';
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return self::canUpdate();
     }

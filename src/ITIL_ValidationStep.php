@@ -66,7 +66,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
         return static::$validation_classname::canCreate();
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         // View right does not exist on ChangeValidation and TicketValidation, use create right
         return static::$validation_classname::canCreate();

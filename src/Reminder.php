@@ -85,7 +85,7 @@ class Reminder extends CommonDBVisible implements
         return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return (Session::haveRightsOr(self::$rightname, [READ, self::PERSONAL]));
     }

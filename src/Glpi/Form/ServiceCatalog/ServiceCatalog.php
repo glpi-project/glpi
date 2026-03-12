@@ -96,7 +96,7 @@ final class ServiceCatalog extends CommonGLPI
     }
 
     #[Override]
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         $session_info = Session::getCurrentSessionInfo();
         if ($session_info === null) {

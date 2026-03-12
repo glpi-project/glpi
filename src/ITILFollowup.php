@@ -97,7 +97,7 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         global $CFG_GLPI;
 

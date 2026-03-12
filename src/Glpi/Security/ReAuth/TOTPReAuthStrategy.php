@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-/// Class KnowbaseItemCategory
-class KnowbaseItemCategory extends CommonTreeDropdown
+declare(strict_types=1);
+
+namespace Glpi\Security\ReAuth;
+
+use Glpi\Security\TOTPManager;
+
+final class TOTPReAuthStrategy implements ReAuthStrategyInterface
 {
-    // From CommonDBTM
-    public bool $dohistory          = true;
-    public bool $can_be_translated  = true;
+    private TOTPManager $totp_manager;
 
-    public static string $rightname          = 'knowbasecategory';
-
-    public const SEEALL = -1;
-
-    public static function getTypeName($nb = 0)
+    public function __construct()
     {
-        return _n('Knowledge base category', 'Knowledge base categories', $nb);
+        $this->totp_manager = new TOTPManager();
     }
 
-    public static function canView(bool $require_reauth = false): bool
+    #[\Override]
+    public function verify(int $users_id, string $user_input): bool
     {
-        if (Session::getCurrentInterface() == "helpdesk") {
-            return true;
-        }
-
-        return parent::canView();
+        return $this->totp_manager->verifyCodeForUser($user_input, $users_id);
     }
 
-    public static function getIcon()
+    #[\Override]
+    public function isAvailable(int $users_id): bool
     {
-        return KnowbaseItem::getIcon();
+        return $this->totp_manager->is2FAEnabled($users_id);
     }
 
-    public function cleanDBonPurge()
+    #[\Override]
+    public function getLabel(): string
     {
-        $this->deleteChildrenAndRelationsFromDb(
-            [
-                KnowbaseItem_KnowbaseItemCategory::class,
-            ]
-        );
+        return __('Two-factor authentication');
+    }
+
+    #[\Override]
+    public function getPromptTemplate(): string
+    {
+        return 'pages/reauth/totp_form.html.twig';
+    }
+
+    #[\Override]
+    public function getPriority(): int
+    {
+        return 100;
     }
 }

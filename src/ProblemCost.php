@@ -51,7 +51,7 @@ class ProblemCost extends CommonITILCost
     }
 
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
     }

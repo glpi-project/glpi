@@ -114,7 +114,7 @@ class NetworkPort extends CommonDBChild
         return false;
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         if (static::$rightname && Session::haveRight(static::$rightname, READ)) {
             return true;

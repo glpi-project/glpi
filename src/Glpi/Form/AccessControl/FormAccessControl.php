@@ -114,7 +114,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         // Must be able to view forms
         return Form::canView();

@@ -367,7 +367,7 @@ class Reservation extends CommonDBChild
               && (strtotime($this->fields["begin"]) < strtotime($this->fields["end"])));
     }
 
-    public static function canView(): bool
+    public static function canView(bool $require_reauth = false): bool
     {
         // Users with READ right can see all reservations
         if (Session::haveRight(self::$rightname, READ)) {
