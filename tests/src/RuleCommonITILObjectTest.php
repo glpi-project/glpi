@@ -46,12 +46,14 @@ use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Location;
+use PHPUnit\Framework\Attributes\TestWith;
 use Rule;
 use RuleAction;
 use RuleCommonITILObject;
 use RuleCriteria;
 use Session;
 use SingletonRuleList;
+use Supplier;
 use TaskTemplate;
 use Ticket;
 use User;
@@ -110,7 +112,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      *
      * This only works for classes in the global namespace.
      * @param string $other_type The simple name of the other class (No namespaces)
-     * @return string|null The link class name or null if the link class cannot be determined
+     * @return class-string|null The link class name or null if the link class cannot be determined
      */
     protected function getITILLinkClass(string $other_type): ?string
     {
@@ -575,6 +577,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals(\CommonITILObject::SOLVED, (int) $itil->getField('status'));
     }
 
+    /**
+     * Action is already tested
+     * Test not removed, maybe it also tests criterias
+     */
     public function testAssignGroup()
     {
         $this->login();
@@ -686,90 +692,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             ])
         );
     }
-
-    public function testGroupRequesterAssignFromDefaultUserOnCreate()
-    {
-        $this->login();
-
-        // Create rule
-        $rule_itil = $this->getRuleInstance();
-        $rulecrit   = new RuleCriteria();
-        $ruleaction = new RuleAction();
-
-        $ruletid = $rule_itil->add($ruletinput = [
-            'name'         => 'test group requester criterion',
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'sub_type'     => $this->getTestedClass(),
-            'condition'    => RuleCommonITILObject::ONADD,
-            'is_recursive' => 1,
-        ]);
-        $this->checkInput($rule_itil, $ruletid, $ruletinput);
-
-        //create criteria to check if group requester already define
-        $crit_id = $rulecrit->add($crit_input = [
-            'rules_id'  => $ruletid,
-            'criteria'  => '_groups_id_requester',
-            'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
-            'pattern'   => 1,
-        ]);
-        $this->checkInput($rulecrit, $crit_id, $crit_input);
-
-        //create action to put default user group as group requester
-        $action_id = $ruleaction->add($action_input = [
-            'rules_id'    => $ruletid,
-            'action_type' => 'defaultfromuser',
-            'field'       => '_groups_id_requester',
-            'value'       => 1,
-        ]);
-        $this->checkInput($ruleaction, $action_id, $action_input);
-
-        //create new group
-        $group = new Group();
-        $group_id = $group->add($group_input = [
-            "name" => "group1",
-            "is_requester" => true,
-        ]);
-        $this->checkInput($group, $group_id, $group_input);
-
-        //Load user tech
-        $user = new User();
-        $user->getFromDB(getItemByTypeName('User', 'tech', true));
-
-        //add user to group
-        $group_user = new Group_User();
-        $group_user_id = $group_user->add($group_user_input = [
-            "groups_id" => $group_id,
-            "users_id"  => $user->fields['id'],
-        ]);
-        $this->checkInput($group_user, $group_user_id, $group_user_input);
-
-        //add default group to user
-        $user->fields['groups_id'] = $group_id;
-        $this->assertTrue($user->update($user->fields));
-
-        // Check ITIL Object that trigger rule on creation
-        $itil = $this->getITILObjectInstance();
-        $itil_id = $itil->add($itil_input = [
-            'name'             => 'Add group requester if requester have default group',
-            'content'          => 'test',
-            '_users_id_requester' => $user->fields['id'],
-        ]);
-        unset($itil_input['_users_id_requester']); // _users_id_requester is stored in glpi_*_users table, so remove it
-        $this->checkInput($itil, $itil_id, $itil_input);
-
-        //load ITILGroup
-        $itil_group = $this->getITILLinkInstance('Group');
-        $itil_fk = $this->getITILObjectClass()::getForeignKeyField();
-        $this->assertTrue(
-            $itil_group->getFromDBByCrit([
-                $itil_fk    => $itil_id,
-                'groups_id' => $group_id,
-                'type'      => CommonITILActor::REQUESTER,
-            ])
-        );
-    }
-
 
     public function testTaskTemplateAssignFromRule()
     {
@@ -1033,6 +955,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->assertEquals('<p>test testFollowupTemplateAssignFromRule</p>', $itil_followups_data['content']);
     }
 
+    /**
+     * @todo May be removed after analysis.
+     * We don't really know what is tested here.
+     */
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdateITILContent()
     {
         $this->login();
@@ -1062,6 +988,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create action to put the groups that match the criteria
+        // already tested in separe test
         $action_id = $ruleaction->add($action_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'regex_result',
@@ -1223,6 +1150,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
         //create action to put group matching on criteria
+        // already tested in a separe test
         $action_id = $ruleaction->add($action_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'regex_result',
@@ -1320,6 +1248,9 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         );
     }
 
+    /**
+     * @todo analyse what is really tested here then split in explicit tests
+     */
     public function testGroupRequesterAssignFromUserGroupsAndRegexOnUpdate()
     {
         $this->login();
@@ -2473,69 +2404,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'groups_id' => $root_requester_group_completename->fields['id'],
         ]);
 
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type'    => 'regex_result',
-                'field'          => '_groups_id_requester_by_completename',
-                'value'          => '#0',
-                'field_specific' => function ($ticket) {
-                    // Can't read '_groups_id_requester' from group field, need
-                    // to fetch it from the Group_Ticket table
-                    $groups = (new Group_Ticket())->find([
-                        'type' => CommonITILActor::REQUESTER,
-                        'tickets_id' => $ticket->fields['id'],
-                    ]);
-                    if (count($groups) == 1) {
-                        return array_pop($groups)['groups_id'];
-                    } else {
-                        return 0;
-                    }
-                },
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Requester group root > Requester group sub',
-            'expected_value'     => $sub_requester_group_completename->fields['id'],
-        ];
-
-        // Test 'regex_result' action on the ticket requester group
-        $requester_group = $this->createItem(Group::getType(), [
-            'name' => 'Requester group from regex',
-        ]);
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type'    => 'regex_result',
-                'field'          => '_groups_id_requester',
-                'value'          => '#0',
-                'field_specific' => function ($ticket) {
-                    // Can't read '_groups_id_requester' from group field, need
-                    // to fetch it from the Group_Ticket table
-                    $groups = (new Group_Ticket())->find([
-                        'type' => CommonITILActor::REQUESTER,
-                        'tickets_id' => $ticket->fields['id'],
-                    ]);
-                    if (count($groups) == 1) {
-                        return array_pop($groups)['groups_id'];
-                    } else {
-                        return 0;
-                    }
-                },
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Requester group from regex',
-            'expected_value'     => $requester_group->fields['id'],
-        ];
-
-
         // Test 'regex_result' action on the ticket observer group by completename
         $root_observer_group_completename = $this->createItem(Group::getType(), [
             'name' => 'Observer group root',
@@ -2652,34 +2520,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $tech_group = $this->createItem(Group::getType(), [
             'name' => 'Tech group from regex',
         ]);
-        yield [
-            'criteria' => [
-                'condition' => Rule::REGEX_MATCH,
-                'field'     => 'name',
-                'pattern'   => '/(.*)/',
-            ],
-            'action' => [
-                'action_type'    => 'regex_result',
-                'field'          => '_groups_id_assign',
-                'value'          => '#0',
-                'field_specific' => function ($ticket) {
-                    // Can't read '_groups_id_requester' from group field, need
-                    // to fetch it from the Group_Ticket table
-                    $groups = (new Group_Ticket())->find([
-                        'type' => CommonITILActor::ASSIGN,
-                        'tickets_id' => $ticket->fields['id'],
-                    ]);
-                    if (count($groups) == 1) {
-                        return array_pop($groups)['groups_id'];
-                    } else {
-                        return 0;
-                    }
-                },
-            ],
-            'control_test_value' => 'Test_title_no_match',
-            'real_test_value'    => 'Tech group from regex',
-            'expected_value'     => $tech_group->fields['id'],
-        ];
     }
 
     /**
@@ -2707,9 +2547,10 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Test a given ticket rule
      *
-     * @return void
+     * @todo Delete this test and create more specific tests by action type.
+     * This test is too generic and therefore not precise enough,
+     * making it difficult to maintain and to give usefull information without painfull investigations.
      */
-
     public function testAction(): void
     {
         global $DB;
@@ -3254,6 +3095,2011 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
                 'id'     => $criterion->getID(),
             ],
         ], $check_results);
+    }
+
+    /**
+     * Test _groups_id_requester action with 'assign'
+     * Rule with 'assign' should replace any group requester previously defined on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterActionAssign(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_group = getItemByTypeName(Group::class, '_test_group_1');
+        $form_group = getItemByTypeName(Group::class, '_test_group_2');
+
+        // assert groups can be set as requester
+        assert(1 === $rule_group->fields['is_requester']);
+        assert(1 === $form_group->fields['is_requester']);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__ . '_assign', $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_groups_id_requester', $rule_group->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    '_groups_id_requester' => $form_group->getID(),
+                    'priority' => 5,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    '_groups_id_requester' => $form_group->getID(),
+                    'priority' => 5,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the requester group set by the rule replaces any previously defined one ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $form_group->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $rule_group->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_requester action with 'append'
+     * Rule with 'append' should add the group requester on top of any previously defined one on the form.
+     */
+
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterActionAppend(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_group = getItemByTypeName(Group::class, '_test_group_1');
+        $form_group = getItemByTypeName(Group::class, '_test_group_2');
+
+        // assert groups can be set as requester
+        assert(1 === $rule_group->fields['is_requester']);
+        assert(1 === $form_group->fields['is_requester']);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__ . '_append', $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_groups_id_requester', $rule_group->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_groups_id_requester' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_groups_id_requester' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the requester group set by the rule is added to previously defined one ---
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => [$form_group->getID(), $rule_group->getID()],
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_requester action with 'defaultfromuser'
+     * Set an itil's requester group, the group is the requester default's group.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterActionDefaultFromUser(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $user_default_group = getItemByTypeName(Group::class, '_test_group_1');
+
+        assert(1 === $user_default_group->fields['is_requester']);
+
+        // set user's default group
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(Group_User::class, [
+            'users_id' => $user->getID(),
+            'groups_id' => $user_default_group->getID(),
+        ]);
+        $user = $this->updateItem(User::class, $user->getID(), ['groups_id' => $user_default_group->getID()]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('defaultfromuser', '_groups_id_requester', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the itil requester group is set to requester group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $user_default_group->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_requester action with 'fromitem'
+     * Rule with 'fromitem' should set the requester group to the group of the associated item.*
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterActionFromItem(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $group = getItemByTypeName(Group::class, '_test_group_1');
+
+        // create a computer with that group
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                '_groups_id'   => [$group->getID()],
+            ] + $this->getMinimalCreationInput(\Computer::class)
+        );
+        // check the computer is correctly linked to the group
+        assert(countElementsInTable(
+            \Group_Item::getTable(),
+            ['groups_id' => $group->getID(), 'items_id' => $computer->getID(), 'itemtype' => \Computer::class]
+        ) === 1, "The computer should be linked to the group");
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('fromitem', '_groups_id_requester', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ] + $this->getMinimalCreationInput($itil_class),
+                ['items_id', 'name']
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ] + $this->getMinimalCreationInput($itil_class),
+                ['items_id']
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+        assert(countElementsInTable(
+            ($this->getITILLinkClass('Item'))::getTable(),
+            [$itil_fk => $itil_item->getID(), 'itemtype' => \Computer::class, 'items_id' => $computer->getID()]
+        ) === 1, "The computer should be linked to the ticket");
+
+        // --- assert the group of the linked item is set as requester group ---
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_requester action with 'regex_result'
+     * Rule with 'regex_result' should resolve the requester group by matching the group name against a regex.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterActionRegexResult(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        // create a group whose name will match the ticket name via regex
+        $group = $this->createItem(Group::class, [
+            'name'         => 'regex requester group',
+            'is_requester' => true,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_requester', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for ' . $group->fields['name'],
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for ' . $group->fields['name'],
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the group resolved by regex is set as requester group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_requester_by_completename action with 'regex_result'
+     * Rule with 'regex_result' should resolve the requester group by matching the group completename against a regex.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterByCompletenameActionRegexResult(int $condition): void
+    {
+        // --- arrange: create parent and child groups to test completename resolution ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $parent_group = $this->createItem(Group::class, [
+            'name'         => 'Parent requester group',
+            'is_requester' => true,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $child_group = $this->createItem(Group::class, [
+            'name'         => 'Child requester group',
+            'groups_id'    => $parent_group->getID(),
+            'is_requester' => true,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $child_group->getFromDB($child_group->getID());
+        $expected_completename = $parent_group->fields['name'] . ' > ' . $child_group->fields['name'];
+        assert($child_group->fields['completename'] === $expected_completename);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_requester_by_completename', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for ' . $expected_completename,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for ' . $expected_completename,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $child_group->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_requester_by_completename action with 'regex_result' - no match scenario
+     * Rule with 'regex_result' should not set a group if the completename doesn't match.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdRequesterByCompletenameActionRegexResultNoMatch(int $condition): void
+    {
+        // --- arrange: create rule matching on completename that won't exist ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_requester_by_completename', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for Non existing completename',
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for Non existing completename',
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'type'      => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _users_id_requester action with 'assign'
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testUsersIdRequesterActionAssign(int $condition): void
+    {
+        // --- arrange
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_user_link_class = $this->getITILLinkClass(User::class);
+        $group = getItemByTypeName(Group::class, '_test_group_2');
+        $rule_user = getItemByTypeName(User::class, 'tech');
+        $form_user = getItemByTypeName(User::class, 'post-only');
+
+        // assert users can be set as requester - belong to a group with is_requester = 1
+        assert(1 === $group->fields['is_requester']);
+
+        $this->createItems(
+            Group_User::class,
+            [
+                [
+                    'groups_id' => $group->getID(),
+                    'users_id' => $rule_user->getID(),
+                ],
+                [
+                    'groups_id' => $group->getID(),
+                    'users_id' => $form_user->getID(),
+                ],
+            ]
+        );
+
+        $rule_builder = new RuleBuilder(__FUNCTION__ . '_assign', $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_users_id_requester', $rule_user->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_assign = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_assign = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_assign->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the requester set by the rule replaces any previously defined one ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk => $itil_assign->getID(),
+                    'users_id' => $form_user->getID(),
+                    'type' => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk => $itil_assign->getID(),
+                    'users_id' => $rule_user->getID(),
+                    'type' => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _users_id_requester action with 'append'
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testUsersIdRequesterActionAppend(int $condition): void
+    {
+        // --- arrange
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_user_link_class = $this->getITILLinkClass(User::class);
+        $group = getItemByTypeName(Group::class, '_test_group_2');
+        $rule_user = getItemByTypeName(User::class, 'tech');
+        $form_user = getItemByTypeName(User::class, 'post-only');
+
+        // assert users can be set as requester - belong to a group with is_requester = 1
+        assert(1 === $group->fields['is_requester']);
+
+        $this->createItems(
+            Group_User::class,
+            [
+                [
+                    'groups_id' => $group->getID(),
+                    'users_id' => $rule_user->getID(),
+                ],
+                [
+                    'groups_id' => $group->getID(),
+                    'users_id' => $form_user->getID(),
+                ],
+            ]
+        );
+
+        $rule_builder = new RuleBuilder(__FUNCTION__ . '_assign', $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_users_id_requester', $rule_user->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_assign = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_assign = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_assign->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the requester set by the rule is added to previously defined one ---
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk => $itil_assign->getID(),
+                    'users_id' => [$form_user->getID(), $rule_user->getID()],
+                    'type' => CommonITILActor::REQUESTER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _users_id_assign action with 'assign'
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testUsersIdAssignActionAssign(int $condition): void
+    {
+        // --- arrange: create rule that assigns a technician ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_user_link_class = $this->getITILLinkClass(User::class);
+
+        $rule_user = getItemByTypeName(User::class, 'tech');
+        $form_user = getItemByTypeName(User::class, 'post-only');
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_users_id_assign', $rule_user->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_assign' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_assign' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // form_user is replaced by rule_user
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk   => $itil_item->getID(),
+                    'users_id' => $form_user->getID(),
+                    'type'     => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk   => $itil_item->getID(),
+                    'users_id' => $rule_user->getID(),
+                    'type'     => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _users_id_assign action with 'append'
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testUsersIdAssignActionAppend(int $condition): void
+    {
+        // --- arrange: create rule that appends a technician ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_user_link_class = $this->getITILLinkClass(User::class);
+
+        $rule_user = getItemByTypeName(User::class, 'tech');
+        $form_user = getItemByTypeName(User::class, 'post-only');
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_users_id_assign', $rule_user->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_assign' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_assign' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // both users are assigned
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk   => $itil_item->getID(),
+                    'users_id' => [$form_user->getID(), $rule_user->getID()],
+                    'type'     => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _users_id_observer action with 'assign'
+     * Rule with 'assign' should replace any observer previously defined on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testUsersIdObserverActionAssign(int $condition): void
+    {
+        // --- arrange: create rule that assigns an observer ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_user_link_class = $this->getITILLinkClass(User::class);
+
+        $rule_user = getItemByTypeName(User::class, 'tech');
+        $form_user = getItemByTypeName(User::class, 'post-only');
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_users_id_observer', $rule_user->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_observer' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_observer' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the observer set by the rule replaces any previously defined one ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk   => $itil_item->getID(),
+                    'users_id' => $form_user->getID(),
+                    'type'     => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk   => $itil_item->getID(),
+                    'users_id' => $rule_user->getID(),
+                    'type'     => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _users_id_observer action with 'append'
+     * Rule with 'append' should add an observer alongside previously defined ones.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testUsersIdObserverActionAppend(int $condition): void
+    {
+        // --- arrange: create rule that appends an observer ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_user_link_class = $this->getITILLinkClass(User::class);
+
+        $rule_user = getItemByTypeName(User::class, 'tech');
+        $form_user = getItemByTypeName(User::class, 'post-only');
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_users_id_observer', $rule_user->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_observer' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_observer' => $form_user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert both observers are present ---
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_user_link_class::getTable(),
+                [
+                    $itil_fk   => $itil_item->getID(),
+                    'users_id' => [$form_user->getID(), $rule_user->getID()],
+                    'type'     => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _suppliers_id_assign action with 'assign'
+     * Rule with 'assign' should replace any assigned supplier previously defined on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testSuppliersIdAssignActionAssign(int $condition): void
+    {
+        // --- arrange: create rule that assigns a supplier ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_supplier_link_class = $this->getITILLinkClass(Supplier::class);
+
+        $rule_supplier = getItemByTypeName(Supplier::class, '_suplier01_name');
+        $form_supplier = getItemByTypeName(Supplier::class, '_suplier02_name');
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_suppliers_id_assign', $rule_supplier->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_suppliers_id_assign' => $form_supplier->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_suppliers_id_assign' => $form_supplier->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the supplier set by the rule replaces any previously defined one ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_supplier_link_class::getTable(),
+                [
+                    $itil_fk       => $itil_item->getID(),
+                    'suppliers_id' => $form_supplier->getID(),
+                    'type'         => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_supplier_link_class::getTable(),
+                [
+                    $itil_fk       => $itil_item->getID(),
+                    'suppliers_id' => $rule_supplier->getID(),
+                    'type'         => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _suppliers_id_assign action with 'append'
+     * Rule with 'append' should add the supplier on top of any previously defined one on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testSuppliersIdAssignActionAppend(int $condition): void
+    {
+        // --- arrange: create rule that appends a supplier ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_supplier_link_class = $this->getITILLinkClass(Supplier::class);
+
+        $rule_supplier = getItemByTypeName(Supplier::class, '_suplier01_name');
+        $form_supplier = getItemByTypeName(Supplier::class, '_suplier02_name');
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_suppliers_id_assign', $rule_supplier->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_suppliers_id_assign' => $form_supplier->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_suppliers_id_assign' => $form_supplier->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert both suppliers are assigned ---
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_supplier_link_class::getTable(),
+                [
+                    $itil_fk       => $itil_item->getID(),
+                    'suppliers_id' => [$form_supplier->getID(), $rule_supplier->getID()],
+                    'type'         => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_assign action with 'assign'
+     * Rule with 'assign' should replace any technician group previously defined on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignActionAssign(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_group = getItemByTypeName(Group::class, '_test_group_1');
+        $form_group = getItemByTypeName(Group::class, '_test_group_2');
+
+        // assert groups can be set as assign (technician group)
+        assert(1 === $rule_group->fields['is_assign']);
+        assert(1 === $form_group->fields['is_assign']);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_groups_id_assign', $rule_group->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_groups_id_assign' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_groups_id_assign' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the assign group set by the rule replaces any previously defined one ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $form_group->getID(),
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $rule_group->getID(),
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_assign action with 'append'
+     * Rule with 'append' should add the technician group on top of any previously defined one on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignActionAppend(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_group = getItemByTypeName(Group::class, '_test_group_1');
+        $form_group = getItemByTypeName(Group::class, '_test_group_2');
+
+        // assert groups can be set as assign (technician group)
+        assert(1 === $rule_group->fields['is_assign']);
+        assert(1 === $form_group->fields['is_assign']);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_groups_id_assign', $rule_group->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_groups_id_assign' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_groups_id_assign' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert both assign groups are present ---
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => [$form_group->getID(), $rule_group->getID()],
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_assign action with 'regex_result'
+     * Rule with 'regex_result' should resolve the technician group by matching the group name against a regex.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignActionRegexResult(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        // create a group whose name will match the ticket name via regex
+        $group = $this->createItem(Group::class, [
+            'name'         => 'regex assign group',
+            'is_assign'    => true,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_assign', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for ' . $group->fields['name'],
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for ' . $group->fields['name'],
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the group resolved by regex is set as technician group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_assign action with 'fromitem'
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignActionFromItem(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $group = getItemByTypeName(Group::class, '_test_group_1');
+
+        // create a computer linked to that group
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                '_groups_id' => [$group->getID()],
+            ] + $this->getMinimalCreationInput(\Computer::class)
+        );
+        assert(countElementsInTable(
+            \Group_Item::getTable(),
+            ['groups_id' => $group->getID(), 'items_id' => $computer->getID(), 'itemtype' => \Computer::class]
+        ) === 1, "The computer should be linked to the group");
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('fromitem', '_groups_id_assign', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ] + $this->getMinimalCreationInput($itil_class),
+                ['items_id', 'name']
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ] + $this->getMinimalCreationInput($itil_class),
+                ['items_id', 'name']
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+        // --- assert the group of the linked item is set as technician group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type' => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_assign action with 'defaultfromuser'
+     * Set an itil's assigned group, the group is the requester default's group.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignActionDefaultFromUser(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $requester_default_group = getItemByTypeName(Group::class, '_test_group_1');
+
+        assert(1 === $requester_default_group->fields['is_assign']);
+
+        // set requester default group
+        $requester = getItemByTypeName(User::class, 'post-only');
+        $this->createItem(Group_User::class, [
+            'users_id'  => $requester->getID(),
+            'groups_id' => $requester_default_group->getID(),
+        ]);
+        $requester = $this->updateItem(User::class, $requester->getID(), ['groups_id' => $requester_default_group->getID()]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('defaultfromuser', '_groups_id_assign', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $requester->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $requester->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the itil assignees' group is the requester default group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $requester_default_group->getID(),
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_assign_by_completename action with 'regex_result'
+     * Rule with 'regex_result' should resolve the technician group by matching the group completename against a regex.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdAssignByCompletenameActionRegexResult(int $condition): void
+    {
+        // --- arrange: create parent and child groups to test completename resolution ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $parent_group = $this->createItem(Group::class, [
+            'name'         => 'Parent assign group',
+            'is_assign'    => true,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $child_group = $this->createItem(Group::class, [
+            'name'         => 'Child assign group',
+            'groups_id'    => $parent_group->getID(),
+            'is_assign'    => true,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $child_group->getFromDB($child_group->getID());
+        $expected_completename = $parent_group->fields['name'] . ' > ' . $child_group->fields['name'];
+        assert($child_group->fields['completename'] === $expected_completename);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_assign_by_completename', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for ' . $expected_completename,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for ' . $expected_completename,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $child_group->getID(),
+                    'type'      => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_observer action with 'assign'
+     * Rule with 'assign' should replace any observer group previously defined on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverActionAssign(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_group = getItemByTypeName(Group::class, '_test_group_1');
+        $form_group = getItemByTypeName(Group::class, '_test_group_2');
+
+        // assert groups can be set as observer (watcher)
+        assert(1 === $rule_group->fields['is_watcher']);
+        assert(1 === $form_group->fields['is_watcher']);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('assign', '_groups_id_observer', $rule_group->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_groups_id_observer' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_groups_id_observer' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the observer group set by the rule replaces any previously defined one ---
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $form_group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $rule_group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_observer action with 'append'
+     * Rule with 'append' should add the observer group on top of any previously defined one on the form.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverActionAppend(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $rule_group = getItemByTypeName(Group::class, '_test_group_1');
+        $form_group = getItemByTypeName(Group::class, '_test_group_2');
+
+        // assert groups can be set as observer (watcher)
+        assert(1 === $rule_group->fields['is_watcher']);
+        assert(1 === $form_group->fields['is_watcher']);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('append', '_groups_id_observer', $rule_group->getID());
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_groups_id_observer' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_groups_id_observer' => $form_group->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert both observer groups are present ---
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => [$form_group->getID(), $rule_group->getID()],
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_observer action with 'regex_result'
+     * Rule with 'regex_result' should resolve the observer group by matching the group name against a regex.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverActionRegexResult(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        // create a group whose name will match the ticket name via regex
+        $group = $this->createItem(Group::class, [
+            'name'         => 'regex observer group',
+            'is_watcher'   => 1,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_observer', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for ' . $group->fields['name'],
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for ' . $group->fields['name'],
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the group resolved by regex is set as observer group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_observer action with 'fromitem'
+     * Rule with 'fromitem' should set the observer group to the group of the associated item.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverActionFromItem(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $group = getItemByTypeName(Group::class, '_test_group_1');
+
+        // create a computer linked to that group
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                '_groups_id' => [$group->getID()],
+            ] + $this->getMinimalCreationInput(\Computer::class)
+        );
+        assert(countElementsInTable(
+            \Group_Item::getTable(),
+            ['groups_id' => $group->getID(), 'items_id' => $computer->getID(), 'itemtype' => \Computer::class]
+        ) === 1, "The computer should be linked to the group");
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('fromitem', '_groups_id_observer', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ] + $this->getMinimalCreationInput($itil_class),
+                ['items_id']
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $itil_item = $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    'items_id' => [\Computer::class => [$computer->getID()]],
+                ],
+                ['items_id']
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the group of the linked item is set as observer group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_observer action with 'defaultfromuser'
+     * Set the observer group to the default group of the requester user.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverActionDefaultFromUser(int $condition): void
+    {
+        // --- arrange ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+        $user_default_group = getItemByTypeName(Group::class, '_test_group_1');
+
+        assert(1 === $user_default_group->fields['is_watcher']);
+
+        // set user's default group
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(Group_User::class, [
+            'users_id'  => $user->getID(),
+            'groups_id' => $user_default_group->getID(),
+        ]);
+        $user = $this->updateItem(User::class, $user->getID(), ['groups_id' => $user_default_group->getID()]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('priority', Rule::PATTERN_IS, 5)
+            ->addAction('defaultfromuser', '_groups_id_observer', 1);
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'priority' => 5,
+                    '_users_id_requester' => $user->getID(),
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert the default group of the requester is set as observer group ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $user_default_group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Test _groups_id_observer_by_completename action with 'regex_result'
+     * Rule with 'regex_result' should resolve the observer group by matching the group completename against a regex.
+     */
+    #[TestWith(['condition' => RuleCommonITILObject::ONADD])]
+    #[TestWith(['condition' => RuleCommonITILObject::ONUPDATE])]
+    public function testGroupsIdObserverByCompletenameActionRegexResult(int $condition): void
+    {
+        // --- arrange: create parent and child groups to test completename resolution ---
+        $this->login();
+
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_group_link_class = $this->getITILLinkClass(Group::class);
+
+        $parent_group = $this->createItem(Group::class, [
+            'name'         => 'Parent observer group',
+            'is_watcher'   => 1,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $child_group = $this->createItem(Group::class, [
+            'name'         => 'Child observer group',
+            'groups_id'    => $parent_group->getID(),
+            'is_watcher'   => 1,
+            'entities_id'  => getItemByTypeName(Entity::class, '_test_root_entity', true),
+
+        ]);
+
+        $child_group->getFromDB($child_group->getID());
+        $expected_completename = $parent_group->fields['name'] . ' > ' . $child_group->fields['name'];
+        assert($child_group->fields['completename'] === $expected_completename);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion($condition)
+            ->addCriteria('name', Rule::REGEX_MATCH, '/for (.*)/')
+            ->addAction('regex_result', '_groups_id_observer_by_completename', '#0');
+        $this->createRule($rule_builder);
+
+        // --- act ---
+        if ($condition === RuleCommonITILObject::ONADD) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                [
+                    'name' => 'for ' . $expected_completename,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } elseif ($condition === RuleCommonITILObject::ONUPDATE) {
+            $itil_item = $this->createItem(
+                $itil_class,
+                $this->getMinimalCreationInput($itil_class)
+            );
+            $this->updateItem(
+                $itil_class,
+                $itil_item->getID(),
+                [
+                    'name' => 'for ' . $expected_completename,
+                ] + $this->getMinimalCreationInput($itil_class)
+            );
+        } else {
+            throw new \InvalidArgumentException("Condition $condition not expected");
+        }
+
+        // --- assert ---
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_group_link_class::getTable(),
+                [
+                    $itil_fk    => $itil_item->getID(),
+                    'groups_id' => $child_group->getID(),
+                    'type'      => CommonITILActor::OBSERVER,
+                ]
+            )
+        );
     }
 
     /**

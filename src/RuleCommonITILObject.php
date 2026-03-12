@@ -865,6 +865,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_requester']['appendtoarrayfield']       = 'users_id';
 
         // set a requester group
+        // defaultfromuser means use the requester's default group
         $actions['_groups_id_requester']['name']                    = _n('Requester group', 'Requester groups', 1);
         $actions['_groups_id_requester']['type']                    = 'dropdown';
         $actions['_groups_id_requester']['table']                   = 'glpi_groups';
@@ -892,6 +893,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_assign']['appendtoarrayfield']          = 'users_id';
 
         // set a technician group
+        // defaultfromuser means use the requester's default group (not the assigned technician's default group)
         $actions['_groups_id_assign']['table']                      = 'glpi_groups';
         $actions['_groups_id_assign']['name']                       = __('Technician group');
         $actions['_groups_id_assign']['type']                       = 'dropdown';
@@ -929,6 +931,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
         // set an observer group
+        // defaultfromuser means use the requester's default group
         $actions['_groups_id_observer']['table']                    = 'glpi_groups';
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
