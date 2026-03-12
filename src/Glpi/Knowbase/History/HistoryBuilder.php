@@ -63,6 +63,7 @@ final class HistoryBuilder
         $this->addAssociatedItemChangesToHistory();
         $this->addDocumentChangesToHistory();
         $this->addPermissionChangesToHistory();
+        $this->addNameChangesToHistory();
 
         $this->history->sort();
         return $this->history;
@@ -179,6 +180,34 @@ final class HistoryBuilder
                 description: $description,
                 date: $row['date_mod'],
                 author: $row['user_name'],
+            ));
+        }
+    }
+
+    private function addNameChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => ['date_mod', 'user_name', 'old_value', 'new_value'],
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'         => KnowbaseItem::class,
+                'items_id'         => $this->kb->getID(),
+                'linked_action'    => 0, // Update
+                'id_search_option' => 1, // Name
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $this->history->addEvent(new LogEvent(
+                label: __("Renamed"),
+                description: __("Updated by"),
+                date: $row['date_mod'],
+                author: $row['user_name'],
+                old_value: $row['old_value'],
+                new_value: $row['new_value'],
             ));
         }
     }

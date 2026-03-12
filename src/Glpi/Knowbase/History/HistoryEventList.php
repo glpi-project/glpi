@@ -68,10 +68,17 @@ final class HistoryEventList
     {
         usort(
             $this->events,
-            static fn(HistoryEventInterface $left, HistoryEventInterface $right): int => strcmp(
-                $right->getDate(),
-                $left->getDate()
-            )
+            static function (HistoryEventInterface $left, HistoryEventInterface $right): int {
+                $date_cmp = strcmp($right->getDate(), $left->getDate());
+                if ($date_cmp !== 0) {
+                    return $date_cmp;
+                }
+
+                // When dates are equal, LogEvents (metadata changes) come
+                // before RevisionEvents (content snapshots).
+                return ($left instanceof RevisionEvent ? 1 : 0)
+                    - ($right instanceof RevisionEvent ? 1 : 0);
+            }
         );
     }
 }
