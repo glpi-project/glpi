@@ -532,6 +532,7 @@ class FieldUnicity extends CommonDropdown
         }
 
         $where = [];
+
         if ($item->maybeTemplate()) {
             $where[$item::getTable() . '.is_template'] = 0;
         }
@@ -550,7 +551,7 @@ class FieldUnicity extends CommonDropdown
             'FROM'      => $item_table,
             'WHERE'     => [
                 $item_table . '.entities_id'  => $entities,
-            ] + $where,
+            ] + $where + $item::getSystemSQLCriteria(),
             'GROUPBY'   => $fields,
             'ORDERBY'   => 'cpt DESC',
         ]);
