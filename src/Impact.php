@@ -535,7 +535,6 @@ TWIG, $twig_params);
         $user->computePreferences();
 
         $count = count($itil_objects) ?: "";
-        $extra = "";
         $node_details = explode(self::NODE_ID_DELIMITER, $node_id);
 
         if ($count) {
@@ -576,16 +575,26 @@ TWIG, $twig_params);
                     $priority = $itil_object['priority'];
                 }
             }
-            $extra = 'id="' . $id . '" style="background-color:' . htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
+            $color = htmlescape($user->fields["priority_$priority"]);
 
             echo Html::scriptBlock('
                 $(document).on("click", "#$id", () => {
                     window.open("' . jsescape($link) . '");
                 });
             ');
-        }
 
-        echo '<td class="text-center" ' . $extra . '><div>' . $count . '</div></td>';
+            echo <<<HTML
+                <td class="text-center">
+                    <div class="badge_block" style="border-color: $color">
+                        <span class="me-1" style="background: $color"></span>
+                        $count
+                    </div>
+                </td>
+HTML;
+
+        } else {
+            echo '<td class="text-center"><div>' . $count . '</div></td>';
+        }
     }
 
     /**
