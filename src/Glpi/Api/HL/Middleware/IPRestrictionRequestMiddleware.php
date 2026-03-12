@@ -35,7 +35,6 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Http\JSONResponse;
@@ -62,15 +61,16 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             $client_id = null;
         }
 
-        // Check if client_id is set and if client's allowed IPs restrict the request IP
-        if ($client_id !== null && !$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'] ?? '')) {
-            if ($client !== null) {
-                $input->response = AbstractController::getAccessDeniedErrorResponse();
-            } else {
-                $input->response = OAuthServerException::accessDenied( // @phpstan-ignore assign.propertyType (Response vs ResponseInterface)
-                    'Your IP address is not allowed to use this OAuth client.'
-                )->generateHttpResponse(new JSONResponse());
-            }
+        if ($client_id === null) {
+            $next($input);
+            return;
+        }
+
+        // Check if client is allowed for the remote IP
+        if (!$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'])) {
+            $input->response = OAuthServerException::accessDenied(
+                'Your IP address is not allowed to use this OAuth client.'
+            )->generateHttpResponse(new JSONResponse());
             return;
         }
 

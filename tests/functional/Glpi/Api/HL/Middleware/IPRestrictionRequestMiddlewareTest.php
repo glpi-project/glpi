@@ -143,7 +143,7 @@ class IPRestrictionRequestMiddlewareTest extends DbTestCase
                 'route_path'             => '/Ticket',
                 'authenticated_client'   => true,
                 'expected_next_called'   => false,
-                'expected_status_code'   => 403,
+                'expected_status_code'   => 401,
             ],
             'status_all_no_ip_restriction_unauthenticated' => [
                 'allowed_ips'            => null,
@@ -167,7 +167,7 @@ class IPRestrictionRequestMiddlewareTest extends DbTestCase
                 'route_path'             => '/status/all',
                 'authenticated_client'   => true,
                 'expected_next_called'   => false,
-                'expected_status_code'   => 403,
+                'expected_status_code'   => 401,
             ],
         ];
     }
