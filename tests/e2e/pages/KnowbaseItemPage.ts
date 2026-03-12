@@ -30,7 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
+import path from 'path';
 import { GlpiPage } from "./GlpiPage";
 import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
@@ -80,7 +81,8 @@ export class KnowbaseItemPage extends GlpiPage
     public async goto(id: number): Promise<void>
     {
         await this.page.goto(
-            `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`
+            `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
+            { waitUntil: 'domcontentloaded' }
         );
     }
 
@@ -127,5 +129,40 @@ export class KnowbaseItemPage extends GlpiPage
     public getNewCommentTextarea(): Locator
     {
         return this.page.getByPlaceholder("Add a comment...");
+    }
+
+    public async doSelectFilesForKbUpload(files: string[], modal: Locator): Promise<void>
+    {
+        const filePaths = files.map(file => path.join(__dirname, `../../fixtures/${file}`));
+
+        // Use filechooser event - click the label to trigger the hidden file input
+        const fileChooserPromise = this.page.waitForEvent('filechooser');
+        await modal.getByText('Drop files here or click to browse').click();
+        const fileChooser = await fileChooserPromise;
+        await fileChooser.setFiles(filePaths);
+
+        // Wait for files to be processed and appear in preview
+        await expect(modal.getByRole('listitem')).toHaveCount(files.length);
+
+        // Wait for all uploads to tmp to complete (button becomes enabled)
+        await expect(modal.getByRole('button', { name: 'Upload Documents' })).toBeEnabled();
+    }
+
+    public async doAddFileToKbUploadArea(file: string, modal: Locator): Promise<void>
+    {
+        await this.doSelectFilesForKbUpload([file], modal);
+        await modal.getByRole('button', { name: 'Upload Documents' }).click();
+        await expect(modal).toBeHidden();
+        // Wait for page reload after upload
+        await this.page.waitForLoadState('load');
+    }
+
+    public async doAddFilesToKbUploadArea(files: string[], modal: Locator): Promise<void>
+    {
+        await this.doSelectFilesForKbUpload(files, modal);
+        await modal.getByRole('button', { name: 'Upload Documents' }).click();
+        await expect(modal).toBeHidden();
+        // Wait for page reload after upload
+        await this.page.waitForLoadState('load');
     }
 }
