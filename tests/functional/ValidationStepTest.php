@@ -232,22 +232,25 @@ class ValidationStepTest extends DbTestCase
 
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
             $achievements = $itil_validationstep->getAchievements();
-            $this->assertEquals(1 / 3 * 100, $achievements[CommonITILValidation::REFUSED]);
-            $this->assertEquals(1 / 3 * 100, $achievements[CommonITILValidation::ACCEPTED]);
-            $this->assertEquals(1 / 3 * 100, $achievements[CommonITILValidation::WAITING]);
+            $this->assertEquals(34, $achievements[CommonITILValidation::ACCEPTED]);
+            $this->assertEquals(33, $achievements[CommonITILValidation::WAITING]);
+            $this->assertEquals(33, $achievements[CommonITILValidation::REFUSED]);
+            $this->assertEquals(100, array_sum($achievements));
 
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
             $achievements = $itil_validationstep->getAchievements();
-            $this->assertEquals(2 / 3 * 100, $achievements[CommonITILValidation::REFUSED]);
-            $this->assertEquals(1 / 3 * 100, $achievements[CommonITILValidation::ACCEPTED]);
+            $this->assertEquals(34, $achievements[CommonITILValidation::ACCEPTED]);
             $this->assertEquals(0, $achievements[CommonITILValidation::WAITING]);
+            $this->assertEquals(66, $achievements[CommonITILValidation::REFUSED]);
+            $this->assertEquals(100, array_sum($achievements));
 
             // 4 validations with different status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
             $achievements = $itil_validationstep->getAchievements();
-            $this->assertEquals(2 / 4 * 100, $achievements[CommonITILValidation::WAITING]);
-            $this->assertEquals(1 / 4 * 100, $achievements[CommonITILValidation::REFUSED]);
-            $this->assertEquals(1 / 4 * 100, $achievements[CommonITILValidation::ACCEPTED]);
+            $this->assertEquals(25, $achievements[CommonITILValidation::ACCEPTED]);
+            $this->assertEquals(50, $achievements[CommonITILValidation::WAITING]);
+            $this->assertEquals(25, $achievements[CommonITILValidation::REFUSED]);
+            $this->assertEquals(100, array_sum($achievements));
 
             // 5 validations with different status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
@@ -296,14 +299,8 @@ class ValidationStepTest extends DbTestCase
     // -- providers
     public static function getValidationStepStatusProvider(): array
     {
-        /**
-         * Array with
-         * 0 : mininal_required_validation_percent
-         * 1 : [Validation status, ...]
-         * 2 : expected ValidationStep status
-         */
         return [
-            // --- Refused validation step ---
+            // === 0% required (special case: priority is ACCEPTED > REFUSED > WAITING) ===
             // 1 validation
             [100, [CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
             // 2 validations
@@ -313,17 +310,14 @@ class ValidationStepTest extends DbTestCase
             [50, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
             [80, [CommonITILValidation::REFUSED, CommonITILValidation::WAITING], CommonITILValidation::REFUSED],
             [80, [CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], CommonITILValidation::REFUSED],
-            // 3 validations
+            // 3 validations - 100 %
             [100, [CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], CommonITILValidation::REFUSED],
             [100, [CommonITILValidation::REFUSED, CommonITILValidation::WAITING, CommonITILValidation::WAITING], CommonITILValidation::REFUSED],
+            // 3 validations - x/3 limit
             [67, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], CommonITILValidation::REFUSED],
-            [34, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], CommonITILValidation::REFUSED],
-            // 5 validations
-            [40, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
-            [40, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [34, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
 
-            // --- Accepted validation step ---
-            // 1 validation
+            // --- Accepted validation step
             [100, [CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
             // 2 validations
             [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
@@ -336,37 +330,133 @@ class ValidationStepTest extends DbTestCase
             [66, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING], CommonITILValidation::ACCEPTED],
             [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
             [20, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::WAITING], CommonITILValidation::ACCEPTED],
-            // 5 validations
-            [40, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
-            [20, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
 
-            // --- Waiting validation step ---
-            // 1 validation
+            // --- Waiting validation step
             [100, [CommonITILValidation::WAITING], CommonITILValidation::WAITING],
-            // 2 validations
+
             [100, [CommonITILValidation::WAITING, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
             [100, [CommonITILValidation::WAITING, CommonITILValidation::ACCEPTED], CommonITILValidation::WAITING],
             [40, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
-            // 3 validations
+
             [100, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
-            [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
             [75, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
             [66, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::ACCEPTED], CommonITILValidation::WAITING],
             [66, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
-            // 5 validations
+
+            // 5 validations -
+            [20, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
             [20, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
             [20, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [40, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
             [40, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
-            [40, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::WAITING, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
+            [40, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
 
-            // --- Special cases: 0% required ---
+            // --- special cases 0% required : one ACCEPTED -> ACCEPTED else one REFUSED -> REFUSED, else WAITING
             [0, [CommonITILValidation::WAITING], CommonITILValidation::WAITING],
             [0, [CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
             [0, [CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            // 2 validations
             [0, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
             [0, [CommonITILValidation::WAITING, CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
             [0, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            // 3 validations
             [0, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::WAITING], CommonITILValidation::ACCEPTED],
+
+            // === 100% required (all must be accepted) ===
+            // 1 validation
+            [100, [CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
+            [100, [CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [100, [CommonITILValidation::WAITING], CommonITILValidation::WAITING],
+            // 2 validations (50% each)
+            [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
+            [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
+            [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [100, [CommonITILValidation::REFUSED, CommonITILValidation::WAITING], CommonITILValidation::REFUSED],
+            // 3 validations (33% each, +1% adjustment on first non-zero)
+            [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
+            [100, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
+            [100, [CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], CommonITILValidation::REFUSED],
+
+            // === 50% required (threshold case) ===
+            // 2 validations (50% each) - edge cases
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING], CommonITILValidation::ACCEPTED],
+            [50, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [50, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            // 3 validations (33% each) - threshold reached with 2/3
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            // 4 validations (25% each) - need 2 accepted to reach 50%
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [50, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [50, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+
+            // === 51% required (just above half - tests rounding behavior) ===
+            // 2 validations (50% each)
+            [51, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [51, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING], CommonITILValidation::WAITING],
+
+            // === 25% required (exact match with 4 validations) ===
+            // 4 validations (25% each) - exactly one approval needed
+            [25, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [25, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [25, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            // 26% required - one approval (25%) is not enough
+            [26, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [26, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+
+            // === 33% required (low threshold - 1 approval out of 3 is enough) ===
+            // 1 validation
+            [33, [CommonITILValidation::ACCEPTED], CommonITILValidation::ACCEPTED],
+            [33, [CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [33, [CommonITILValidation::WAITING], CommonITILValidation::WAITING],
+            // 2 validations (50% each)
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [33, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [33, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            // 3 validations (33% each)
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [33, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [33, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            // 4 validations (25% each)
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [33, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            // 5 validations (20% each)
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [33, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            // 6 validations (16% each, +1% adjustment -> 17+17+17+17+16+16)
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [33, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [33, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+
+            // === 34%/35% required (just above 33% - tests floor rounding with 3 validations) ===
+            // 3 validations: 33.33% each -> floor = 33%, first non-zero gets +1 = 34%
+            [34, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [35, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [34, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [35, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+
+            // === 66% required (just below 2/3 - edge case for rounding) ===
+            // 3 validations (33% each, +1% adjustment -> 34+33+33)
+            [66, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [66, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [66, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+
+            // === 67% required (qualified majority - 2/3 required) ===
+            // 3 validations (33% each, +1% adjustment)
+            [67, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [67, [CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [67, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+            [67, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
+
+            // === 80% required (high threshold) ===
+            // 5 validations (20% each)
+            [80, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED],
+            [80, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::WAITING, CommonITILValidation::REFUSED], CommonITILValidation::WAITING],
+            [80, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED], CommonITILValidation::REFUSED],
         ];
     }
 
