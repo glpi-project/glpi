@@ -512,20 +512,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTypeName\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of method Webhook\\:\\:getApiPath\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/webhook.php',
 ];
