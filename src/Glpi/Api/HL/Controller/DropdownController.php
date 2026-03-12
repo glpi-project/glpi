@@ -110,6 +110,7 @@ use SoftwareLicenseType;
 use SolutionTemplate;
 use SolutionType;
 use State;
+use Stencil;
 use SupplierType;
 use TaskCategory;
 use TaskTemplate;
@@ -1947,6 +1948,57 @@ EOT,
             ],
         ];
 
+        $schemas['Stencil'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Stencil::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'maxLength' => 100,
+                    'required' => true,
+                ],
+                'items_id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'required' => true,
+                ],
+                'number_zones' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'nb_zones',
+                    'minimum' => 1,
+                    'maximum' => 256,
+                    'default' => 1
+                ],
+                'zones' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => <<<EOT
+                        JSON encoded object of zone definitions. Each zone definition is an object with at least the following properties:
+                        - "number": The zone number
+                        - "label": The zone label
+                        - "side": 0 - Front, 1 - Back
+                        - "selection": The zone selection object, which contains:
+                            - "x": The x coordinate of the selection
+                            - "y": The y coordinate of the selection
+                            - "width": The width of the selection
+                            - "height": The height of the selection
+                        - "image": The JS canvas context 2D transform data (DOMMatrix) to apply to the zone
+                        - "x_percent": The x coordinate of the zone in percentage of the total width
+                        - "y_percent": The y coordinate of the zone in percentage of the total height
+                        - "width_percent": The width of the zone in percentage of the total width
+                        - "height_percent": The height of the zone in percentage of the total height
+EOT,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2066,7 +2118,7 @@ EOT,
             'ApplianceType', 'BudgetType', 'CartridgeItemType', 'CertificateType', 'ClusterType', 'ContactType',
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
             'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
-            'ApplianceEnvironment', 'Network', 'DomainRelation',
+            'ApplianceEnvironment', 'Network', 'DomainRelation', 'Stencil',
         ];
     }
 
