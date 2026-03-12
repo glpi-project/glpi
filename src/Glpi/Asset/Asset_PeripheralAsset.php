@@ -260,14 +260,42 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
-        $specificities = self::getRelationMassiveActionsSpecificities();
+        global $CFG_GLPI;
 
-        if (in_array($itemtype, $specificities['itemtypes'], true)) {
+        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
+
+        if (in_array($itemtype, $CFG_GLPI['directconnect_types'], true)) {
             $actions[$action_prefix . 'add']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Connect');
             $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off'></i>" . _sx('button', 'Disconnect');
         }
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+    }
+
+    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
+    {
+        global $CFG_GLPI;
+
+        $items = $ma->getItems();
+
+        if (
+            count(array_intersect(
+                array_keys($items),
+                $CFG_GLPI['directconnect_types']
+            )) > 0
+        ) {
+            return 1;
+        }
+
+        if (
+            empty(array_diff(
+                array_keys($items),
+                self::getPeripheralHostItemtypes()
+            ))
+        ) {
+            return 2;
+        }
+
+        return parent::getRelationMassiveActionsPeerForSubForm($ma);
     }
 
     public static function getRelationMassiveActionsSpecificities()
@@ -275,7 +303,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
-        $specificities['itemtypes'] = $CFG_GLPI['directconnect_types'];
+        $specificities['itemtypes'] = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
         $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
@@ -847,35 +875,6 @@ TWIG, $twig_params);
         }
 
         return $tab;
-    }
-
-    #[Override]
-    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
-    {
-        global $CFG_GLPI;
-
-        $items = $ma->getItems();
-
-        if (
-            count(array_intersect(
-                array_keys($items),
-                $CFG_GLPI['directconnect_types']
-            )) > 0
-        ) {
-            return 1;
-        }
-
-        if (
-            empty(array_diff(
-                array_keys($items),
-                self::getPeripheralHostItemtypes()
-            ))
-        ) {
-            return 2;
-        }
-
-        // Else we cannot define !
-        return 0;
     }
 
     /**
