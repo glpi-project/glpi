@@ -148,19 +148,22 @@ class DBTest extends GLPITestCase
                     'field'  => 'value',
                     'other'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                ['value', 'doe'],
             ], [
                 '`table`', [
                     '`field`'  => 'value',
                     '`other`'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                ['value', 'doe'],
             ], [
                 'table', [
                     'field'  => new QueryParam(),
                     'other'  => new QueryParam(),
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                [],
             ], [
                 'table', new QuerySubQuery([
                     'SELECT' => ['id', 'name'],
@@ -168,15 +171,18 @@ class DBTest extends GLPITestCase
                     'WHERE' => ['NOT' => ['name' => null]],
                 ]),
                 'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))',
+                [],
             ],
         ];
     }
 
     #[DataProvider('dataInsert')]
-    public function testBuildInsert($table, $values, $expected)
+    public function testBuildInsert(string $table, array|QuerySubQuery $values, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildInsert($table, $values));
+        $insert = $instance->buildInsert($table, $values);
+        $this->assertSame($expected_sql, $insert->getSQL());
+        $this->assertSame($expected_values, $insert->getValues());
     }
 
     public static function dataUpdate()
@@ -190,7 +196,8 @@ class DBTest extends GLPITestCase
                     'id'  => 1,
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\'',
+                'UPDATE `table` SET `field` = ?, `other` = ? WHERE `id` = ?',
+                ['value', 'doe', 1],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -198,7 +205,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = ? WHERE `id` IN (?, ?)',
+                ['value', 1, 2],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -206,7 +214,8 @@ class DBTest extends GLPITestCase
                     'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))',
+                'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
+                ['value', 1, 2],
             ], [
                 'table', [
                     'field'  => new QueryParam(),
@@ -215,6 +224,7 @@ class DBTest extends GLPITestCase
                 ],
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
+                [],
             ], [
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
@@ -222,7 +232,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
@@ -230,7 +241,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -256,16 +268,19 @@ class DBTest extends GLPITestCase
                 'UPDATE `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+                . ' SET `field` = ? WHERE `id` IN (?, ?)',
+                ['value', 1, 2],
             ],
         ];
     }
 
     #[DataProvider('dataUpdate')]
-    public function testBuildUpdate($table, $values, $where, array $joins, $expected)
+    public function testBuildUpdate(string $table, array $values, array $where, array $joins, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildUpdate($table, $values, $where, $joins));
+        $update = $instance->buildUpdate($table, $values, $where, $joins);
+        $this->assertSame($expected_sql, $update->getSQL());
+        $this->assertSame($expected_values, $update->getValues());
     }
 
     public function testBuildUpdateWException()
@@ -283,25 +298,29 @@ class DBTest extends GLPITestCase
                     'id'  => 1,
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` = \'1\'',
+                'DELETE `table` FROM `table` WHERE `id` = ?',
+                [1],
             ], [
                 'table', [
                     'id'  => [1, 2],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')',
+                'DELETE `table` FROM `table` WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))',
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
+                [1, 2],
             ], [
                 'table', [
                     'NOT'  => ['id' => [new QueryParam(), new QueryParam()]],
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
+                [],
             ], [
                 'table', [
                     'id'  => 1,
@@ -325,16 +344,19 @@ class DBTest extends GLPITestCase
                 'DELETE `table` FROM `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' WHERE `id` = \'1\'',
+                . ' WHERE `id` = ?',
+                [1],
             ],
         ];
     }
 
     #[DataProvider('dataDelete')]
-    public function testBuildDelete($table, $where, array $joins, $expected)
+    public function testBuildDelete(string $table, array $where, array $joins, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildDelete($table, $where, $joins));
+        $delete = $instance->buildDelete($table, $where, $joins);
+        $this->assertSame($expected_sql, $delete->getSQL());
+        $this->assertSame($expected_values, $delete->getValues());
     }
 
     public function testBuildDeleteWException()

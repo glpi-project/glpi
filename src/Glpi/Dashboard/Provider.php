@@ -674,12 +674,24 @@ class Provider
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
         $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
+        $qexpr = new QueryExpression(
+            "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))",
+            'sla_state'
+        );
+        $qexpr->setValues(
+            array_merge(
+                $ownExceeded->getValues(),
+                $resolveExceeded->getValues(),
+                $resolveExceeded->getValues(),
+                $ownExceeded->getValues(),
+            )
+        );
 
         $query_criteria = [
             'COUNT' => 'cpt',
             'SELECT'    => [
                 "$groupTable.name",
-                new QueryExpression("$slaState as `sla_state`"),
+                $qexpr,
             ],
             'FROM'   => $table,
             'INNER JOIN' => [
