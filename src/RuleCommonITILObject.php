@@ -252,6 +252,17 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                     case "assign":
                         $output[$action->fields["field"]] = $action->fields["value"];
 
+                        // When assigning group actor fields via a business rule, mark them for replacement
+                        // (not append) when updating an existing ticket. Without this flag, updateActors()
+                        // appends the new group on top of the existing one instead of replacing it.
+                        // See: https://github.com/glpi-project/glpi/issues/17739
+                        if (in_array($action->fields["field"], ["_groups_id_assign", "_groups_id_requester", "_groups_id_observer"])) {
+                            if (!isset($output["_rule_replace_actor_groups"])) {
+                                $output["_rule_replace_actor_groups"] = [];
+                            }
+                            $output["_rule_replace_actor_groups"][] = $action->fields["field"];
+                        }
+
                         // Special case of status
                         if ($action->fields["field"] === 'status') {
                             // Add a flag to remember that status was forced by rule
