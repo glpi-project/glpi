@@ -85,6 +85,7 @@ use Notification;
 use OLA;
 use Override;
 use PlanningExternalEvent;
+use Plug;
 use Plugin;
 use Problem;
 use Project;
@@ -3345,6 +3346,42 @@ final class SQLProvider implements SearchProviderInterface
         ];
 
         // Specific JOIN
+        if ($to_type === Plug::class && in_array($from_type, $CFG_GLPI['plug_types'], true)) {
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN']["`glpi_plugs` AS `$to_table_alias`"] = [
+                    'ON' => [
+                        $to_table_alias => 'items_id_main',
+                        $from_table     => 'id',
+                        [
+                            'AND' => [
+                                "$to_table_alias.itemtype_main" => $from_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
+        if ($from_type === Plug::class && in_array($to_type, $CFG_GLPI['plug_types'], true)) {
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $from_table => 'items_id_main',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => [
+                                "$from_table.itemtype_main" => $to_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
         if ($from_referencetype === Software::class && in_array($to_type, $CFG_GLPI['software_types'], true)) {
             // From Software to software_types
             $softwareversions_table = "glpi_softwareversions{$alias_suffix}";

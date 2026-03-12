@@ -1407,9 +1407,6 @@ HTML;
                 __('External authentications') => [
                     'SsoVariable' => null,
                 ],
-                __('Power management') => [
-                    'Plug' => null,
-                ],
                 __('Appliances') => [
                     'ApplianceType' => null,
                     'ApplianceEnvironment' => null,

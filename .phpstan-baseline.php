@@ -1010,30 +1010,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method getFormURLWithID\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'items_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -6132,6 +6108,24 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareVersion.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedFields\\(\\) should return array but returns array\\|object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapDeprecatedToCurrentFields\\(\\) should return object but returns array\\|object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
