@@ -3332,6 +3332,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDevice.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method CommonDevice\\:\\:displayFullPageForItem\\(\\) has parameter \\$menus with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDevice.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonDevice\\:\\:getDeviceTypes\\(\\) should return array\\<array\\<class\\-string\\<CommonDevice\\>\\>\\|class\\-string\\<CommonDevice\\>\\> but returns array\\<int\\<0, max\\>\\|string, array\\<int\\<0, max\\>, class\\-string\\<CommonDevice\\>\\|CommonDevice\\>\\|class\\-string\\<CommonDevice\\>\\|CommonDevice\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
