@@ -184,6 +184,8 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $documents_ids = [];
                 $documents_to_attach = [];
+                $user = new User();
+                $is_anonymous_requester = !$user->getFromDBbyEmail($current->fields['recipient']);
                 if ($is_html || $CFG_GLPI['attach_ticket_documents_to_mail']) {
                     // Retieve document list if mail is in HTML format (for inline images)
                     // or if documents are attached to mail.
@@ -201,9 +203,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             'itemtype' => $current->fields['itemtype'],
                         ];
                         if ($item instanceof CommonITILObject) {
-                            $user = new User();
-                            $user->getFromDBbyEmail($current->fields['recipient']);
-                            $doc_crit = $item->getAssociatedDocumentsCriteria(false, $user);
+                            $doc_crit = $item->getAssociatedDocumentsCriteria(false, $is_anonymous_requester ? null : $user, $is_anonymous_requester);
                             if ($is_html) {
                                 // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                                 // these documents corresponds to inlined images.
@@ -229,7 +229,9 @@ class NotificationEventMailing extends NotificationEventAbstract
                 $mmail->isHTML($is_html);
                 if (!$is_html) {
                     $mmail->Body = GLPIMailer::normalizeBreaks($current->fields['body_text']);
-                    $documents_to_attach = $documents_ids; // Attach all documents
+                    if (!$is_anonymous_requester || $CFG_GLPI['attach_documents_to_notifications_for_anonymous']) {
+                        $documents_to_attach = $documents_ids; // Attach all documents
+                    }
                 } else {
                     $mmail->Body = '';
                     $inline_docs = [];
@@ -270,7 +272,9 @@ class NotificationEventMailing extends NotificationEventAbstract
                             }
                         } else {
                             // Attach only documents that are not inlined images
-                            $documents_to_attach[] = $document_id;
+                            if (!$is_anonymous_requester || $CFG_GLPI['attach_documents_to_notifications_for_anonymous']) {
+                                $documents_to_attach[] = $document_id;
+                            }
                         }
                     }
 

@@ -275,6 +275,7 @@ $empty_data_builder = new class {
             'maintenance_mode' => '0',
             'maintenance_text' => '',
             'attach_ticket_documents_to_mail' => '0',
+            'attach_documents_to_notifications_for_anonymous' => '0',
             'backcreated' => '0',
             'task_state' => '1',
             'palette' => 'auror',

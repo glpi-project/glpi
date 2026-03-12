@@ -81,6 +81,7 @@ class NotificationMailingSetting extends NotificationSetting
             'noreply_email',
             'noreply_email_name',
             'attach_ticket_documents_to_mail',
+            'attach_documents_to_notifications_for_anonymous',
             'mailing_signature',
             'smtp_mode',
             'smtp_max_retries',
@@ -223,6 +224,17 @@ class NotificationMailingSetting extends NotificationSetting
             $out .= Dropdown::showYesNo(
                 "attach_ticket_documents_to_mail",
                 $CFG_GLPI["attach_ticket_documents_to_mail"],
+                -1,
+                ['display' => false, 'rand' => $rand]
+            );
+            $out .= "</td>";
+            $out .= "<td colspan='2'></td></tr>";
+
+            $out .= "<tr class='tab_bg_2'>";
+            $out .= "<td><label for='dropdown_attach_documents_to_notifications_for_anonymous$rand'>" . __('Add documents into notifications sent to anonymous users') . "</label></td><td>";
+            $out .= Dropdown::showYesNo(
+                "attach_documents_to_notifications_for_anonymous",
+                $CFG_GLPI["attach_documents_to_notifications_for_anonymous"],
                 -1,
                 ['display' => false, 'rand' => $rand]
             );
