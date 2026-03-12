@@ -36,7 +36,6 @@
 namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Router;
-use Glpi\Application\Environment;
 use Glpi\Http\JSONResponse;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
@@ -46,7 +45,8 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        if (isCommandLine() && Environment::get() !== Environment::TESTING) {
+        if (!\array_key_exists('REMOTE_ADDR', $_SERVER)) {
+            // If `$_SERVER['REMOTE_ADDR']` is not set, it means that the request is made in CLI context (i.e. inside test suite).
             $next($input);
             return;
         }

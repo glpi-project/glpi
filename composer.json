@@ -58,6 +58,7 @@
         "phpoffice/phpspreadsheet": "^5.1",
         "psr/cache": "^3.0",
         "psr/container": "^1.1",
+        "psr/http-message": "^2.0",
         "psr/log": "^3.0",
         "psr/simple-cache": "^3.0",
         "ralouphie/getallheaders": "^3.0",
