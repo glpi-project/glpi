@@ -1992,23 +1992,8 @@ function setupFileUpload(config) {
                             .css('width', '100%')
                             .show();
 
-                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
-                        if (config.editor_id && typeof tinyMCE !== 'undefined') {
-                            const editor = tinyMCE.get(config.editor_id);
-                            if (editor) {
-                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                                if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
-                                    if (img.length > 0) {
-                                        editor.dom.remove(img);
-                                    }
-                                    const index = uploaded_images.findIndex((entry) => entry.upload_id === uploaded_image.upload_id);
-                                    if (index !== -1) {
-                                        uploaded_images.splice(index, 1);
-                                    }
-                                }
-                            }
-                        }
+                        // eslint-disable-next-line no-undef
+                        removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
                         return;
                     }
                 });
