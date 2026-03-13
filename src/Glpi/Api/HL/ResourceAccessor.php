@@ -238,7 +238,7 @@ final class ResourceAccessor
                     'maximum' => $prop['maximum'] ?? null,
                 ];
             }
-            if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
+            if (isset($prop['pattern']) && is_string($value) && !preg_match($prop['pattern'], $value)) {
                 $errors[$key][] = [
                     'error' => 'pattern',
                     'message' => "This field must match the pattern {$prop['pattern']}",
