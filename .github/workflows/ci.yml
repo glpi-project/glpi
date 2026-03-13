@@ -153,7 +153,7 @@ jobs:
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     needs: "generate-tests-matrix"
-    runs-on: "ubuntu-latest"
+    runs-on: "ubicloud-standard-2"
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -253,7 +253,7 @@ jobs:
     permissions:
       contents: "read"
     name: "E2E and web tests using latest PHP and MariaDB versions"
-    runs-on: "ubuntu-latest"
+    runs-on: "ubicloud-standard-2"
     timeout-minutes: 90
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
