@@ -61,10 +61,13 @@ use ManualLink;
 use OLA;
 use OlaLevel;
 use Plugin;
+use QueuedWebhook;
 use SLA;
 use SlaLevel;
 use SLM;
 use Throwable;
+use Webhook;
+use WebhookCategory;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -705,6 +708,184 @@ EOT,
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
+            'Webhook' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Webhook::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'category' => self::getDropdownTypeSchema(class: WebhookCategory::class, full_schema: 'WebhookCategory'),
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'event' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'payload' => ['type' => Doc\Schema::TYPE_STRING],
+                    'use_default_payload' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'If true, the entire JSON output from the API for the item will be used',
+                    ],
+                    'custom_headers' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object containing custom headers to add to the webhook request. The header names and values are Twig templates that can use any property of the item as a variable.',
+                    ],
+                    'url' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The URL to send the webhook request to. This is a Twig template that can use any property of the item as a variable.',
+                    ],
+                    'secret' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'A secret value that can be shared with a target server to allow it to validate requests are actually coming from the GLPI server and that the content was not modified between GLPI and the target.',
+                    ],
+                    'use_cra_challenge' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to use a Challenge-Response Authentication mechanism to validate the target server.',
+                        'default' => false,
+                    ],
+                    'http_method' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => ['POST', 'GET', 'PUT', 'PATCH'],
+                        'default' => 'POST',
+                    ],
+                    'sent_try' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'default' => 0,
+                        'description' => 'The number of times this webhook will try to be sent.',
+                    ],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'save_response_body' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'If true and if response saving is globally allowed (disabled by default), the response body of the webhook request will be saved in the queued webhook data. This is only intended for debugging purposes.',
+                        'default' => false,
+                    ],
+                    'log_in_item_history' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => "Whether to log webhook calls in the related item's history.",
+                        'default' => false,
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'use_oauth' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to use OAuth 2.0 authentication when sending the webhook request.',
+                        'default' => false,
+                    ],
+                    'oauth_url' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The URL to obtain the OAuth 2.0 access token.',
+                        'maxLength' => 255,
+                    ],
+                    'clientid' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The OAuth 2.0 client ID.',
+                        'maxLength' => 255,
+                    ],
+                    'clientsecret' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The OAuth 2.0 client secret.',
+                        'maxLength' => 255,
+                        'writeOnly' => true,
+                    ],
+                ],
+            ],
+            'WebhookCategory' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => WebhookCategory::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'completename' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 1024, 'readOnly' => true],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'parent' => self::getDropdownTypeSchema(class: WebhookCategory::class, full_schema: 'WebhookCategory'),
+                    'level' => ['type' => Doc\Schema::TYPE_INTEGER, 'readOnly' => true],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'QueuedWebhook' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => QueuedWebhook::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'sent_try' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The number of times this webhook has been tried to be sent.',
+                        'readOnly' => true,
+                    ],
+                    'webhook' => self::getDropdownTypeSchema(class: Webhook::class, full_schema: 'Webhook') + [
+                        'readOnly' => true,
+                    ],
+                    'url' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The resolved URL the webhook will be sent to.',
+                        'maxLength' => 255,
+                        'readOnly' => true,
+                    ],
+                    'create_time' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'The date and time when the webhook was queued.',
+                        'readOnly' => true,
+                    ],
+                    'send_time' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'The date and time when the webhook is expected to be sent.',
+                        'readOnly' => true,
+                    ],
+                    'sent_time' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'The last date and time when the webhook was tried to be sent.',
+                        'readOnly' => true,
+                    ],
+                    'headers' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object containing the resolved headers that will be sent with the webhook request.',
+                        'readOnly' => true,
+                    ],
+                    'body' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The resolved body that will be sent with the webhook request.',
+                        'readOnly' => true,
+                    ],
+                    'event' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The event that triggered the webhook.',
+                        'readOnly' => true,
+                    ],
+                    'last_status_code' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The last HTTP status code received when trying to send the webhook.',
+                        'readOnly' => true,
+                    ],
+                    'http_method' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The HTTP method used to send the webhook request.',
+                        'enum' => ['POST', 'GET', 'PUT', 'PATCH'],
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -771,6 +952,18 @@ EOT,
                     'itemtype' => MailCollector::class,
                     'label' => MailCollector::getTypeName(1),
                 ],
+                'Webhook' => [
+                    'itemtype' => Webhook::class,
+                    'label' => Webhook::getTypeName(1),
+                ],
+                'WebhookCategory' => [
+                    'itemtype' => WebhookCategory::class,
+                    'label' => WebhookCategory::getTypeName(1),
+                ],
+                'QueuedWebhook' => [
+                    'itemtype' => QueuedWebhook::class,
+                    'label' => QueuedWebhook::getTypeName(1),
+                ],
             ];
         }
         return $types_only ? array_keys($types) : $types;
@@ -792,6 +985,7 @@ EOT,
         return [
             'SLM', 'SLA', 'SLALevel', 'OLA', 'OLALevel', 'EmailAuthServer', 'FieldUnicity',
             'LDAPDirectoryReplicate', 'EmailCollector', 'ExternalLink', 'ManualLink',
+            'Webhook', 'WebhookCategory', 'QueuedWebhook'
         ];
     }
 
