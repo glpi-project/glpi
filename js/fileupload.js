@@ -112,6 +112,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                             container.parent().find('.uploadbar')
                                 .text(files_data[index].error)
                                 .css('width', '100%');
+                            removeFailedUploadImage({filename: file.name, editor_id: editor_id});
                             return;
                         }
 
