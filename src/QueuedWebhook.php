@@ -79,7 +79,7 @@ class QueuedWebhook extends CommonDBChild
 
     public static function canPurge(): bool
     {
-        return Session::haveRight(static::$rightname, UPDATE);
+        return (bool) Session::haveRight(static::$rightname, UPDATE);
     }
 
     public static function getForbiddenActionsForMenu()
