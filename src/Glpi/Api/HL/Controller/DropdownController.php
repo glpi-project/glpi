@@ -1973,7 +1973,7 @@ EOT,
                     'x-field' => 'nb_zones',
                     'minimum' => 1,
                     'maximum' => 256,
-                    'default' => 1
+                    'default' => 1,
                 ],
                 'zones' => [
                     'type' => Doc\Schema::TYPE_STRING,
