@@ -985,7 +985,7 @@ EOT,
         return [
             'SLM', 'SLA', 'SLALevel', 'OLA', 'OLALevel', 'EmailAuthServer', 'FieldUnicity',
             'LDAPDirectoryReplicate', 'EmailCollector', 'ExternalLink', 'ManualLink',
-            'Webhook', 'WebhookCategory', 'QueuedWebhook'
+            'Webhook', 'WebhookCategory', 'QueuedWebhook',
         ];
     }
 
