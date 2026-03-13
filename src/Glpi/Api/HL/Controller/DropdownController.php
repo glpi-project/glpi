@@ -45,6 +45,7 @@ use BusinessCriticity;
 use CableStrand;
 use CableType;
 use Calendar;
+use CalendarSegment;
 use CartridgeItemType;
 use CertificateType;
 use ChangeTemplate;
@@ -296,6 +297,52 @@ final class DropdownController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'close_times' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'CloseTime',
+                        'x-join' => [
+                            'table' => Holiday::getTable(),
+                            'fkey' => Holiday::getForeignKeyField(),
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_calendars_holidays',
+                                'fkey' => 'id',
+                                'field' => 'calendars_id',
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
+                        ],
+                    ],
+                ],
+                'time_ranges' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'CalendarTimeRange',
+                        'x-join' => [
+                            'table' => CalendarSegment::getTable(),
+                            'fkey' => 'id',
+                            'field' => Calendar::getForeignKeyField(),
+                            'primary-property' => 'id',
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -1951,6 +1998,38 @@ EOT,
             ],
         ];
 
+        $schemas['CalendarTimeRange'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => CalendarSegment::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'day_of_week' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'day',
+                    'minimum' => 1,
+                    'maximum' => 7,
+                ],
+                'begin_time' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_TIME,
+                    'x-field' => 'begin',
+                ],
+                'end_time' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_TIME,
+                    'x-field' => 'end',
+                ],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2070,7 +2149,7 @@ EOT,
             'ApplianceType', 'BudgetType', 'CartridgeItemType', 'CertificateType', 'ClusterType', 'ContactType',
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
             'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
-            'ApplianceEnvironment', 'Network', 'DomainRelation',
+            'ApplianceEnvironment', 'Network', 'DomainRelation', 'CalendarCloseTime', 'CalendarTimeRange',
         ];
     }
 
