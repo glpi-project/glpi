@@ -567,6 +567,7 @@ JAVASCRIPT;
             ])
             ->allowRelativeLinks()
             ->allowRelativeMedias()
+            ->allowMediaSchemes(['http', 'https'])
             ->withMaxInputLength(-1)
         ;
 
