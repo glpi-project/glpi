@@ -331,13 +331,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
             return false;
         }
 
-        // Normalize inputs from "add from item" form
-        if (isset($input['_add_fromitem'], $input['itemtype'], $input['items_id']) && !is_array($input['items_id'])) {
-            $input['_from_itemtype'] = $input['itemtype'];
-            $input['_from_items_id'] = $input['items_id'];
-            $input['items_id'] = [$input['itemtype'] => [$input['items_id']]];
-        }
-
         $this->processRules(RuleCommonITILObject::ONADD, $input);
 
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
@@ -417,19 +410,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->handleNewItemNotifications();
-
-        if (
-            isset($this->input['_from_items_id'])
-            && isset($this->input['_from_itemtype'])
-        ) {
-            $item_problem = new Item_Problem();
-            $item_problem->add([
-                'items_id'      => (int) $this->input['_from_items_id'],
-                'itemtype'      => $this->input['_from_itemtype'],
-                'problems_id'   => $this->fields['id'],
-                '_disablenotif' => true,
-            ]);
-        }
     }
 
     #[Override]

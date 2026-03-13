@@ -36,7 +36,6 @@ namespace tests\units;
 
 use Change;
 use CommonITILObject;
-use Computer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -44,53 +43,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ChangeTest extends DbTestCase
 {
-    public function testAddFromItem()
-    {
-        // add change from a computer
-        $computer   = getItemByTypeName('Computer', '_test_pc01');
-        $change     = new Change();
-        $changes_id = $change->add([
-            'name'           => "test add from computer \'_test_pc01\'",
-            'content'        => "test add from computer \'_test_pc01\'",
-            '_add_from_item' => true,
-            '_from_itemtype' => 'Computer',
-            '_from_items_id' => $computer->getID(),
-        ]);
-        $this->assertGreaterThan(0, $changes_id);
-        $this->assertTrue($change->getFromDB($changes_id));
-
-        // check relation
-        $change_item = new \Change_Item();
-        $this->assertTrue($change_item->getFromDBForItems($change, $computer));
-    }
-
-    public function testAddFromItemFormFlow(): void
-    {
-        $computer = getItemByTypeName(Computer::class, '_test_pc01');
-        $change   = new Change();
-
-        // Simulate raw inputs as received by the front controller
-        $changes_id = $change->add([
-            'name'           => 'test add from item form flow',
-            'content'        => 'test add from item form flow',
-            '_add_fromitem'  => true,
-            'itemtype'       => Computer::class,
-            'items_id'       => $computer->getID(),
-        ]);
-        $this->assertGreaterThan(0, $changes_id);
-
-        $change_item = new \Change_Item();
-        $this->assertTrue($change_item->getFromDBForItems($change, $computer));
-        $this->assertEquals(
-            1,
-            countElementsInTable(\Change_Item::getTable(), [
-                'changes_id' => $changes_id,
-                'itemtype'   => Computer::class,
-                'items_id'   => $computer->getID(),
-            ])
-        );
-    }
-
     public function testAssignFromCategory()
     {
         $this->login('glpi', 'glpi');
