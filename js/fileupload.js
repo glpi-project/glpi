@@ -142,6 +142,9 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
             },
             error: function (request) {
                 console.warn(request.responseText);
+                $.each(files, (index, file) => {
+                    removeFailedUploadImage({filename: file.name, editor_id: editor_id});
+                });
             },
             complete: function () {
                 $.each(
