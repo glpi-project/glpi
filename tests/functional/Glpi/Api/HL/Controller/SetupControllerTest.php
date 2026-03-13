@@ -45,6 +45,7 @@ use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Link;
 use MailCollector;
+use QueuedWebhook;
 use SLM;
 
 class SetupControllerTest extends HLAPITestCase
@@ -163,7 +164,7 @@ class SetupControllerTest extends HLAPITestCase
                         'definition_time' => 'hour',
                     ]);
                     foreach ($content as $type) {
-                        if ($type['itemtype'] === 'CronTask') {
+                        if ($type['itemtype'] === 'CronTask' || $type['itemtype'] === 'QueuedWebhook') {
                             continue;
                         }
                         $create_params = [];
@@ -222,6 +223,9 @@ class SetupControllerTest extends HLAPITestCase
         ]);
 
         foreach ([...$types_20, ...$types_23] as $type) {
+            if ($type === 'QueuedWebhook') {
+                continue;
+            }
             $itemtype = $type;
             $create_request = new Request('POST', '/Setup/' . $type);
             $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
@@ -278,6 +282,7 @@ class SetupControllerTest extends HLAPITestCase
                 || $type === 'EmailAuthServer'
                 || $type === 'FieldUnicity'
                 || $type === 'EmailCollector'
+                || $type === 'Webhook'
             ) {
                 $this->api->autoTestCRUDNoRights(
                     endpoint: '/Setup/' . $type,
@@ -480,6 +485,89 @@ class SetupControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) {
                     $this->assertArrayHasKey('errors', $content);
                 });
+        });
+    }
+
+    private function createQueuedWebhook()
+    {
+        $webhook = $this->createItem('Webhook', [
+            'name' => 'Test Queued Webhook',
+            'url' => 'https://example.com',
+            'http_method' => 'POST',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $queued_webhook = $this->createItem('QueuedWebhook', [
+            'webhooks_id' => $webhook->getID(),
+            'url' => 'https://example.com',
+            'http_method' => 'POST',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertEquals($webhook->getID(), $queued_webhook->fields['webhooks_id']);
+        $this->assertEquals('https://example.com', $queued_webhook->fields['url']);
+        return $queued_webhook;
+    }
+
+    public function testCRUDQueuedWebhook()
+    {
+        $this->login();
+        $queued_webhook = $this->createQueuedWebhook();
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) use ($queued_webhook) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($queued_webhook) {
+                    $this->assertEquals($queued_webhook->getID(), $content['id']);
+                    $this->assertEquals('https://example.com', $content['url']);
+                    $this->assertEquals('POST', $content['http_method']);
+                });
+        });
+
+        $this->api->call(new Request('DELETE', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) use ($queued_webhook) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($queued_webhook) {
+                    $this->assertTrue($content['is_deleted']);
+                });
+        });
+
+        $force_delete_request = new Request('DELETE', '/Setup/QueuedWebhook/' . $queued_webhook->getID());
+        $force_delete_request->setParameter('force', true);
+        $this->api->call($force_delete_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testCRUDNoRightsQueuedWebhook()
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $queued_webhook = $this->createQueuedWebhook();
+
+        $_SESSION['glpiactiveprofile'][QueuedWebhook::$rightname] = ALLSTANDARDRIGHT & ~READ;
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][QueuedWebhook::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+
+        $this->api->call(new Request('DELETE', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
         });
     }
 }
