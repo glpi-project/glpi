@@ -323,6 +323,8 @@ if (typeof tinyMCE != 'undefined') {
                             }
                         );
                         uploadFile(file, editor);
+                    }).catch(() => {
+                        removeFailedUploadImage({upload_id: upload_id, editor: editor});
                     });
                 }
             });
