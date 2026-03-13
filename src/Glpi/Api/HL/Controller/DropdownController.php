@@ -210,7 +210,7 @@ final class DropdownController extends AbstractController
             $schemas['State_Visibilities']['properties'][$visiblity] = [
                 'type' => Doc\Schema::TYPE_BOOLEAN,
                 'x-field' => 'is_visible',
-                'readOnly' => true,
+                'x-input-field' => 'is_visible_' . $visiblity,
                 'x-join' => [
                     'table' => DropdownVisibility::getTable(),
                     'fkey' => 'id',

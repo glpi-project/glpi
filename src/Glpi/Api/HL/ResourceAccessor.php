@@ -147,7 +147,9 @@ final class ResourceAccessor
             }
 
             // Field resolution priority: x-field -> x-join.fkey -> property name
-            if (isset($prop['x-field'])) {
+            if (isset($prop['x-input-field'])) {
+                $internal_name = $prop['x-input-field'];
+            } elseif (isset($prop['x-field'])) {
                 $internal_name = $prop['x-field'];
             } elseif (isset($prop['x-join']['fkey'])) {
                 $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
