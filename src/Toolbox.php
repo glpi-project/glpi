@@ -1405,6 +1405,15 @@ class Toolbox
             }
         }
 
+        $curl_version = curl_version();
+        if (defined('CURLSSLOPT_NATIVE_CA')
+            && $curl_version
+            && version_compare($curl_version['version'], '7.71', '>=')) {
+            $opts += [
+                CURLOPT_SSL_OPTIONS => CURLSSLOPT_NATIVE_CA,
+            ];
+        }
+
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
