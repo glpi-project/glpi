@@ -316,7 +316,7 @@ HTML,
 <p>
   img, audio and video are allowed
   <img src="/path/to/img.jpg" alt="img" />
-  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD&#43;wSzIAAAABlBMVEX///&#43;/v7&#43;jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII" alt="b64 img" />
+  <img alt="b64 img" />
   <audio src="/path/to/audio.mp3"></audio>
   <video><source src="/path/to/video.mp4" type="video/mp4" /></video>
 </p>
