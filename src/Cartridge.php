@@ -252,7 +252,24 @@ class Cartridge extends CommonDBRelation
                 'id' => $input['id'],
             ]
         );
-        return $result && ($DB->affectedRows() > 0);
+        if ($result && ($DB->affectedRows() > 0)) {
+            $changesCartrige = [
+                0,
+                '',
+                sprintf(__('Cartridge (%1$s): back to stock'), $input['id']),
+            ];
+            $this->getFromDB($input['id']);
+            Log::history(
+                $this->fields['cartridgeitems_id'],
+                CartridgeItem::class,
+                $changesCartrige,
+                Cartridge::class,
+                Log::HISTORY_UPDATE_SUBITEM
+            );
+            return true;
+        }
+
+        return false;
     }
 
     // SPECIFIC FUNCTIONS
@@ -304,6 +321,20 @@ class Cartridge extends CommonDBRelation
                     __('Installing a cartridge'),
                 ];
                 Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+
+                $changesCartrige = [
+                    0,
+                    '',
+                    sprintf(__('Instal the cartridge %1$s on printer : %2$s'), $cID, $pID),
+                ];
+                $this->getFromDB($cID);
+                Log::history(
+                    $this->fields['cartridgeitems_id'],
+                    CartridgeItem::class,
+                    $changesCartrige,
+                    Cartridge::class,
+                    Log::HISTORY_UPDATE_SUBITEM
+                );
                 return true;
             }
         } else {
@@ -355,6 +386,21 @@ class Cartridge extends CommonDBRelation
                     $changes,
                     0,
                     Log::HISTORY_LOG_SIMPLE_MESSAGE
+                );
+
+                $this->getFromDB($ID);
+                $changesCartrige = [
+                    0,
+                    '',
+                    sprintf(__('Uninstal the cartridge %1$s for end life'), $ID),
+                ];
+
+                Log::history(
+                    $this->fields['cartridgeitems_id'],
+                    CartridgeItem::class,
+                    $changesCartrige,
+                    Cartridge::class,
+                    Log::HISTORY_UPDATE_SUBITEM
                 );
 
                 return true;
