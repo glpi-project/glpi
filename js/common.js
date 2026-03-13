@@ -1953,6 +1953,7 @@ function setupFileUpload(config) {
                 $.blueimp.fileupload.prototype.options.add.call(this, e, data);
             },
             done: function (event, data) {
+                const form = $(this).closest('form');
                 const uploader_name = $('#' + field_id).fileupload('option', 'formData').name;
                 // eslint-disable-next-line no-undef
                 handleUploadedFile(
@@ -1961,11 +1962,12 @@ function setupFileUpload(config) {
                     config.name,
                     $('#' + CSS.escape(config.filecontainer)),
                     config.editor_id
-                );
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-                // remove required
-                $('#' + field_id).removeAttr('required');
+                ).then(() => {
+                    // enable submit button after upload
+                    form.find(':submit').prop('disabled', false);
+                    // remove required
+                    $('#' + field_id).removeAttr('required');
+                });
             },
             fail: function (e, data) {
                 // enable submit button after upload

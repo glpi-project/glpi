@@ -98,8 +98,9 @@ function uploadFile(file, editor) {
 }
 
 var handleUploadedFile = function (files, files_data, input_name, container, editor_id) {
-    $.ajax(
-        {
+    return new Promise((resolve) => {
+        $.ajax(
+            {
             type: 'POST',
             url: `${CFG_GLPI.root_doc}/ajax/getFileTag.php`,
             data: {data: files_data},
@@ -153,9 +154,11 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                         delete(insertIntoEditor[file.name]);
                     }
                 );
+                resolve();
             }
         }
-    );
+        );
+    });
 };
 
 /**
