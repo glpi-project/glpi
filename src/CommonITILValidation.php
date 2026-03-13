@@ -180,6 +180,7 @@ abstract class CommonITILValidation extends CommonDBChild
         return Session::haveRightsOr(
             static::$rightname,
             array_merge(
+                [READ],
                 static::getCreateRights(),
                 static::getValidateRights(),
                 static::getPurgeRights()
@@ -1030,6 +1031,7 @@ abstract class CommonITILValidation extends CommonDBChild
             !Session::haveRightsOr(
                 static::$rightname,
                 array_merge(
+                    [READ],
                     static::getCreateRights(),
                     static::getValidateRights(),
                     static::getPurgeRights()
@@ -1795,7 +1797,7 @@ HTML;
     {
 
         $values = parent::getRights();
-        unset($values[UPDATE], $values[READ]);
+        unset($values[UPDATE]);
 
         $values[self::VALIDATE]  = __('Validate');
 
