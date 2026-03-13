@@ -123,7 +123,8 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
-
+- `Reminder::addVisibilityRestrict()`
+- `SavedSearch::addVisibilityRestrict()`
 
 ## [11.0.7] unreleased
 
