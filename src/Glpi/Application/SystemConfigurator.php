@@ -249,6 +249,10 @@ final class SystemConfigurator
                     $constants[GLPI_ENVIRONMENT_TYPE][$name] ?? $constants['default'][$name]
                 );
 
+                if ($name === 'GLPI_PLUGINS_DIRECTORIES' && is_array($value)) {
+                    $value = array_values(array_unique($value));
+                }
+
                 define($name, $value);
             }
         }
