@@ -1976,6 +1976,10 @@ function setupFileUpload(config) {
                     ? data.jqXHR.responseText
                     : data.jqXHR.statusText;
                 alert(err);
+                // eslint-disable-next-line no-undef
+                $.each(data.files, function(index, file) {
+                    removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
+                });
             },
             processfail: function (e, data) {
                 // enable submit button after upload
