@@ -1976,8 +1976,8 @@ function setupFileUpload(config) {
                     ? data.jqXHR.responseText
                     : data.jqXHR.statusText;
                 alert(err);
-                // eslint-disable-next-line no-undef
                 $.each(data.files, function(index, file) {
+                    // eslint-disable-next-line no-undef
                     removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
                 });
             },
