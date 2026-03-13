@@ -34,7 +34,7 @@ import { test, expect } from '../../fixtures/glpi_fixture';
 import { ComputerPage } from '../../pages/ComputerPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
-import {GlpiPage} from "../../pages/GlpiPage";
+import { GlpiPage } from '../../pages/GlpiPage';
 
 test('Main form loads', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -93,7 +93,7 @@ test('Antivirus tab loads', async ({ page, profile, api }) => {
     await expect(tabpanel.getByRole('cell', { name: 'Test AV' })).toBeVisible();
 });
 
-test('Create ITIL objects from computer', async ({ page, profile, api, context }) => {
+test('Create ITIL objects from computer', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const computer_id = await api.createItem('Computer', {
         name: 'Test computer for ITIL',
@@ -101,40 +101,35 @@ test('Create ITIL objects from computer', async ({ page, profile, api, context }
     });
 
     const computer_page = new ComputerPage(page);
+    const glpi_page = new GlpiPage(page);
+
+    // Create a Problem from the computer's Problem tab
     await computer_page.goto(computer_id, 'Item_Problem$1');
-    const tabpanel = page.getByRole('tabpanel');
-    const new_problem_page_event = context.waitForEvent('page');
-    await tabpanel.getByRole('button', { name: 'New Problem for this item' }).click();
-    const new_problem_page = new GlpiPage(await new_problem_page_event);
-    await new_problem_page.page.getByLabel('Title').fill('Test problem');
-    await new_problem_page.getRichTextByLabel('Content').fill('Problem content');
-    const problem_page_event = context.waitForEvent('page');
-    await new_problem_page.page.getByRole('button', { name: 'Add' }).click();
-    const problem_page = new GlpiPage(await problem_page_event);
-    await expect(problem_page.page.getByRole('heading', { name: 'Test problem' })).toBeVisible();
-    await expect(problem_page.page.getByRole('link', { name: 'Test computer for ITIL' })).toBeVisible();
+    await page.getByRole('tabpanel').getByText('New Problem for this item').click();
+    await page.getByLabel('Title').fill('Test problem');
+    await glpi_page.getRichTextByLabel('Description').fill('Problem content');
+    await page.getByRole('button', { name: 'Add' }).click();
+    await page.waitForLoadState('load');
+    await computer_page.goto(computer_id, 'Item_Problem$1');
+    await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Test problem' })).toBeVisible();
 
+    // Create a Change from the computer's Change tab
     await computer_page.goto(computer_id, 'Change_Item$1');
-    const new_change_page_event = context.waitForEvent('page');
-    await tabpanel.getByRole('button', { name: 'New Change for this item' }).click();
-    const new_change_page = new GlpiPage(await new_change_page_event);
-    await new_change_page.page.getByLabel('Title').fill('Test change');
-    await new_change_page.getRichTextByLabel('Content').fill('Change content');
-    const change_page_event = context.waitForEvent('page');
-    await new_change_page.page.getByRole('button', { name: 'Add' }).click();
-    const change_page = new GlpiPage(await change_page_event);
-    await expect(change_page.page.getByRole('heading', { name: 'Test change' })).toBeVisible();
-    await expect(change_page.page.getByRole('link', { name: 'Test computer for ITIL' })).toBeVisible();
+    await page.getByRole('tabpanel').getByText('New Change for this item').click();
+    await page.getByLabel('Title').fill('Test change');
+    await glpi_page.getRichTextByLabel('Description').fill('Change content');
+    await page.getByRole('button', { name: 'Add' }).click();
+    await page.waitForLoadState('load');
+    await computer_page.goto(computer_id, 'Change_Item$1');
+    await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Test change' })).toBeVisible();
 
+    // Create a Ticket from the computer's Ticket tab
     await computer_page.goto(computer_id, 'Item_Ticket$1');
-    const new_ticket_page_event = context.waitForEvent('page');
-    await tabpanel.getByRole('button', { name: 'New Ticket for this item' }).click();
-    const new_ticket_page = new GlpiPage(await new_ticket_page_event);
-    await new_ticket_page.page.getByLabel('Title').fill('Test ticket');
-    await new_ticket_page.getRichTextByLabel('Content').fill('Ticket content');
-    const ticket_page_event = context.waitForEvent('page');
-    await new_ticket_page.page.getByRole('button', { name: 'Add' }).click();
-    const ticket_page = new GlpiPage(await ticket_page_event);
-    await expect(ticket_page.page.getByRole('heading', { name: 'Test ticket' })).toBeVisible();
-    await expect(ticket_page.page.getByRole('link', { name: 'Test computer for ITIL' })).toBeVisible();
+    await page.getByRole('tabpanel').getByText('New Ticket for this item').click();
+    await page.getByLabel('Title').fill('Test ticket');
+    await glpi_page.getRichTextByLabel('Description').fill('Ticket content');
+    await page.getByRole('button', { name: 'Add' }).click();
+    await page.waitForLoadState('load');
+    await computer_page.goto(computer_id, 'Item_Ticket$1');
+    await expect(page.getByRole('tabpanel').getByRole('link', { name: 'Test ticket' })).toBeVisible();
 });
