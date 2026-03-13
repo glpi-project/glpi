@@ -6003,7 +6003,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'changevalidation',
-                'rights' => CREATE | PURGE,
+                'rights' => READ | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'ticketvalidation',
@@ -6307,15 +6307,15 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'changevalidation',
-                'rights' => CREATE | PURGE | CommonITILValidation::VALIDATE,
+                'rights' => READ | CREATE | PURGE | CommonITILValidation::VALIDATE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'changevalidation',
-                'rights' => CREATE | PURGE,
+                'rights' => READ | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticketvalidation',
-                'rights' => PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
+                'rights' => READ | PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'computer',
@@ -6618,15 +6618,15 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'changevalidation',
-                'rights' => CREATE | PURGE | CommonITILValidation::VALIDATE,
+                'rights' => READ | CREATE | PURGE | CommonITILValidation::VALIDATE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'changevalidation',
-                'rights' => CREATE | PURGE | CommonITILValidation::VALIDATE,
+                'rights' => READ | CREATE | PURGE | CommonITILValidation::VALIDATE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticketvalidation',
-                'rights' => PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT
+                'rights' => READ | PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT
                     | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
@@ -6935,7 +6935,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticketvalidation',
-                'rights' => PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
+                'rights' => READ | PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'computer',
@@ -7229,7 +7229,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticketvalidation',
-                'rights' => PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT,
+                'rights' => READ | PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'computer',
@@ -7524,7 +7524,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticketvalidation',
-                'rights' => PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT,
+                'rights' => READ | PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'computer',
@@ -7755,7 +7755,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'changevalidation',
-                'rights' => CREATE | PURGE | CommonITILValidation::VALIDATE,
+                'rights' => READ | CREATE | PURGE | CommonITILValidation::VALIDATE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'state',
@@ -7811,7 +7811,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketvalidation',
-                'rights' => PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
+                'rights' => READ | PURGE | TicketValidation::CREATEREQUEST | TicketValidation::CREATEINCIDENT | TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'backup',
@@ -7839,7 +7839,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'changevalidation',
-                'rights' => self::RIGHT_NONE,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'computer',
@@ -8095,7 +8095,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticketvalidation',
-                'rights' => self::RIGHT_NONE,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'transfer',

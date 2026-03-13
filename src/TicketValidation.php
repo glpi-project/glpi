@@ -102,7 +102,7 @@ class TicketValidation extends CommonITILValidation
     {
 
         $values = parent::getRights();
-        unset($values[UPDATE], $values[CREATE], $values[READ]);
+        unset($values[UPDATE], $values[CREATE]);
 
         $values[self::CREATEREQUEST]
                               = ['short' => __('Create for request'),
