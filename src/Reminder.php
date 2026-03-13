@@ -43,8 +43,6 @@ use Ramsey\Uuid\Uuid;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
-use function Safe\preg_replace;
-
 /**
  * Reminder Class
  **/
@@ -183,28 +181,6 @@ class Reminder extends CommonDBVisible implements
             return false;
         }
         return parent::haveVisibilityAccess();
-    }
-
-    /**
-     * Return visibility SQL restriction to add
-     *
-     * @return string restrict to add
-     **/
-    public static function addVisibilityRestrict()
-    {
-        //not deprecated because used in Search
-
-        //get and clean criteria
-        $criteria = self::getVisibilityCriteria();
-        unset($criteria['LEFT JOIN']);
-        $criteria['FROM'] = self::getTable();
-
-        $it = new DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-        return $sql;
     }
 
     /**
