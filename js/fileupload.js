@@ -38,6 +38,43 @@ var insertIntoEditor = []; // contains flags that indicate if uploaded file (ima
 
 var uploaded_images = []; // Mapping between random identifier and image filename
 
+/**
+ * Remove a failed upload image from the TinyMCE editor to prevent base64 data in DB.
+ *
+ * @param {Object} options
+ * @param {string|null} options.filename   - The filename to look up in uploaded_images
+ * @param {string|null} options.upload_id  - The upload_id to target directly
+ * @param {string|null} options.editor_id  - The TinyMCE editor id
+ * @param {Object|null} options.editor     - The TinyMCE editor instance
+ */
+function removeFailedUploadImage({filename = null, upload_id = null, editor_id = null, editor = null} = {}) {
+    if (!editor && editor_id && typeof tinyMCE !== 'undefined') {
+        editor = tinyMCE.get(editor_id);
+    }
+    if (!editor) {
+        return;
+    }
+
+    let target_upload_id = upload_id;
+    if (!target_upload_id && filename) {
+        const entry = uploaded_images.find((e) => e.filename === filename);
+        if (entry) {
+            target_upload_id = entry.upload_id;
+        }
+    }
+
+    if (target_upload_id) {
+        const img = editor.dom.select('img[data-upload_id="' + CSS.escape(target_upload_id) + '"]');
+        if (img.length > 0) {
+            editor.dom.remove(img);
+        }
+        const idx = uploaded_images.findIndex((e) => e.upload_id === target_upload_id);
+        if (idx !== -1) {
+            uploaded_images.splice(idx, 1);
+        }
+    }
+}
+
 function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
