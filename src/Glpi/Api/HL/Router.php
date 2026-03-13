@@ -52,6 +52,7 @@ use Glpi\Api\HL\Controller\InventoryController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
+use Glpi\Api\HL\Controller\NetworkController;
 use Glpi\Api\HL\Controller\NotepadController;
 use Glpi\Api\HL\Controller\NotificationController;
 use Glpi\Api\HL\Controller\ProjectController;
@@ -258,6 +259,7 @@ EOT;
             self::$instance->registerController(new KnowbaseController());
             self::$instance->registerController(new InventoryController());
             self::$instance->registerController(new NotificationController());
+            self::$instance->registerController(new NetworkController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {

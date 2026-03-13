@@ -49,6 +49,8 @@ abstract class FQDNLabel extends CommonDBChild
     // Inherits from CommonDBChild as it must be attached to a specific element
     // (NetworkName, NetworkPort, ...)
 
+    public const FQDN_LABEL_PATTERN = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
+
     /**
      * @return string
      */
@@ -103,11 +105,10 @@ abstract class FQDNLabel extends CommonDBChild
                     return false;
                 }
             } else {
-                $fqdn_regex = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
-                if (!preg_match($fqdn_regex, $label, $regs)) {
+                if (!preg_match(self::FQDN_LABEL_PATTERN, $label, $regs)) {
                     //check also Internationalized domain name
                     $idn = idn_to_ascii($label);
-                    if (!preg_match($fqdn_regex, $idn, $regs)) {
+                    if (!preg_match(self::FQDN_LABEL_PATTERN, $idn, $regs)) {
                         return false;
                     }
                 }
