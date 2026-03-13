@@ -56,6 +56,11 @@ if (!empty($_POST["update"])) {
     $config->update($_POST);
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
+if (!empty($_POST['reset_registration_key'])) {
+    $config->checkGlobal(UPDATE);
+    Config::setConfigurationValues('core', ['glpinetwork_registration_key' => '']);
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+}
 if (!empty($_POST['reset_opcache'])) {
     $config->checkGlobal(UPDATE);
     if (opcache_reset()) {
