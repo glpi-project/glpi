@@ -1966,7 +1966,7 @@ function setupFileUpload(config) {
                     // enable submit button after upload
                     form.find(':submit').prop('disabled', false);
                     // remove required
-                    $('#' + field_id).removeAttr('required');
+                    $(`#${field_id}`).removeAttr('required');
                 });
             },
             fail: function (e, data) {
