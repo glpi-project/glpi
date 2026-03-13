@@ -60,10 +60,15 @@ final class CommentsRenderer implements RendererInterface
         $threads = KnowbaseItem_Comment::getCommentsThreads($item);
 
         // Load users
-        $users = User::getSeveralFromDBByCrit([
-            'id' => $this->extractRequiredUsersIds($threads),
-        ]);
-        $users = iterator_to_array($users);
+        $user_ids = $this->extractRequiredUsersIds($threads);
+        if (count($user_ids) === 0) {
+            $users = [];
+        } else {
+            $users = User::getSeveralFromDBByCrit([
+                'id' => $user_ids,
+            ]);
+            $users = iterator_to_array($users);
+        }
 
         // Transform the user list into an id -> user hash map
         $users = array_combine(
