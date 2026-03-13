@@ -45,8 +45,8 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-
 use SNMPCredential;
+
 use function Safe\file_get_contents;
 
 #[Route(path: '/Inventory', priority: 1, tags: ['Inventory'])]

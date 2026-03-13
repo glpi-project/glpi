@@ -130,7 +130,7 @@ class InventoryControllerTest extends HLAPITestCase
             itemtype: SNMPCredential::class,
             items_id: $sc->getID(),
             create_params: [
-                'snmp_version' => '2c'
+                'snmp_version' => '2c',
             ]
         );
 
