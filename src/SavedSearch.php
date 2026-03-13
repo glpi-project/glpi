@@ -1176,31 +1176,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
     }
 
-    /**
-     * Return visibility SQL restriction to add
-     *
-     * @return string restrict to add
-     **/
-    public static function addVisibilityRestrict()
-    {
-        //not deprecated because used in Search
-        if (Session::haveRight('config', UPDATE)) {
-            return '';
-        }
-
-        //get and clean criteria
-        $criteria = self::getVisibilityCriteria();
-        unset($criteria['LEFT JOIN']);
-        $criteria['FROM'] = self::getTable();
-
-        $it = new DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-        return $sql;
-    }
-
     private static function getVisibilityCriteriaForMine(): array
     {
         $criteria = ['WHERE' => []];
