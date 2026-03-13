@@ -324,7 +324,7 @@ class Plugin extends CommonDBTM
      */
     protected static function getPluginDirectories(): array
     {
-        return GLPI_PLUGINS_DIRECTORIES;
+        return array_values(array_unique(GLPI_PLUGINS_DIRECTORIES));
     }
 
     /**
