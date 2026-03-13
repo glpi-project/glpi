@@ -62,7 +62,7 @@
                 <div>
                     <h4 class="alert-heading">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</h4>
                     <div class="alert-description">
-                        <a href="{{ constant('GLPI_NETWORK_SERVICES') }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank">
+                        <a href="{{ constant('GLPI_NETWORK_SERVICES') }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" rel=\"noopener noreferrer\">
                             <i class="ti ti-external-link"></i>
                             <span>{{ __('Register on %1$s!')|format(__('GLPI Network')) }}</span>
                         </a>
@@ -114,7 +114,6 @@
             }) }}
         {% endif %}
 
-        <input type="hidden" name="glpinetwork_registration_key" value="" />
         {% set clear_btn %}
             <button type="submit" name="reset_registration_key" value="1" class="ms-auto btn btn-outline-danger">
                 <i class="ti ti-x"></i>
@@ -158,15 +157,12 @@
         full_width: true,
     }) }}
 
-{% if canedit %}
+    {% if canedit %}
         <div class="card-footer mx-n2 d-flex">
             <button type="submit" name="update" value="1" class="ms-auto btn btn-primary">
                 <i class="ti ti-device-floppy"></i>
                 <span>{{ _x('button', 'Save') }}</span>
             </button>
         </div>
-    </form>
-{% endif %}
-
-
+    {% endif %}
 </form>
