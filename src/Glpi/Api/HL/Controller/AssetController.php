@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Agent;
 use Appliance;
 use Appliance_Item;
 use Appliance_Item_Relation;
@@ -42,6 +43,8 @@ use ApplianceEnvironment;
 use ApplianceType;
 use AutoUpdateSystem;
 use Cable;
+use CableStrand;
+use CableType;
 use Cartridge;
 use CartridgeItem;
 use CartridgeItem_PrinterModel;
@@ -126,6 +129,7 @@ use Rack;
 use RackModel;
 use RackType;
 use RuntimeException;
+use SNMPCredential;
 use Software;
 use SoftwareCategory;
 use SoftwareLicense;
@@ -672,6 +676,35 @@ final class AssetController extends AbstractController
                 ],
                 'network' => $network_property,
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'is_template' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'is_dynamic' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'ticket_tco' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                ],
+                'last_inventory_update' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                ],
+                'last_boot' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                ],
             ],
         ];
 
@@ -714,6 +747,69 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'size' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0, 'x-version-introduced' => '2.3.0'],
+                'has_microphone' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_micro',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_speaker' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_speaker',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_subd' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_subd',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_bnc' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_bnc',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_dvi' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_dvi',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_pivot' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_pivot',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_hdmi' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_hdmi',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_displayport' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_displayport',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'is_template' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                ],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -757,6 +853,29 @@ final class AssetController extends AbstractController
                 ],
                 'network' => $network_property,
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'ram' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'x-version-introduced' => '2.3.0'],
+                'is_template' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                ],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'cpu' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-version-introduced' => '2.3.0'],
+                'last_inventory_update' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                ],
+                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -799,6 +918,21 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'brand' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'is_template' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                ],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -895,6 +1029,58 @@ final class AssetController extends AbstractController
                 ],
                 'network' => $network_property,
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'has_serial' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_serial',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_parallel' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_parallel',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_usb' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_usb',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_wifi' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_wifi',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'has_ethernet' => [
+                    'x-version-introduced' => '2.3.0',
+                    'x-field' => 'have_ethernet',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'is_template' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'default' => false,
+                ],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                ],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'last_inventory_update' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                ],
+                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -1051,6 +1237,24 @@ final class AssetController extends AbstractController
                 'group_tech' => $fn_get_group_tech_property(Unmanaged::class),
                 'network' => $network_property,
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'sysdescr' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'agent' => self::getDropdownTypeSchema(class: Agent::class, full_schema: 'Agent') + ['x-version-introduced' => '2.3.0'],
+                'itemtype' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.3.0',
+                    'maxLength' => 100,
+                ],
+                'accepted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3.0'],
+                'is_hub' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'hub', 'x-version-introduced' => '2.3.0'],
+                'ip' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential') + ['x-version-introduced' => '2.3.0'],
+                'last_inventory_update' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                ],
             ],
         ];
 
@@ -1086,6 +1290,9 @@ final class AssetController extends AbstractController
                 'type' => self::getDropdownTypeSchema(class: ApplianceType::class, full_schema: 'ApplianceType'),
                 'group' => $fn_get_group_property(Appliance::class),
                 'group_tech' => $fn_get_group_tech_property(Appliance::class),
+                'environment' => self::getDropdownTypeSchema(class: ApplianceEnvironment::class, full_schema: 'ApplianceEnvironment') + ['x-version-introduced' => '2.3.0'],
+                'external_id' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'externalidentifier', 'x-version-introduced' => '2.3.0'],
+                'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -1375,6 +1582,14 @@ final class AssetController extends AbstractController
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                    'x-version-introduced' => '2.3.0',
+                ],
             ],
         ];
 
@@ -1708,6 +1923,8 @@ final class AssetController extends AbstractController
                 'power_supplies' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -1796,6 +2013,8 @@ final class AssetController extends AbstractController
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -1884,6 +2103,8 @@ final class AssetController extends AbstractController
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
@@ -1983,6 +2204,15 @@ final class AssetController extends AbstractController
                 'sockets_id_endpoint_b' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'cable_strand' => self::getDropdownTypeSchema(class: CableStrand::class, full_schema: 'CableStrand') + ['x-version-introduced' => '2.3.0'],
+                'type' => self::getDropdownTypeSchema(class: CableType::class, full_schema: 'CableType') + ['x-version-introduced' => '2.3.0'],
+                'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'color' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-version-introduced' => '2.3.0',
+                ],
             ],
         ];
 
