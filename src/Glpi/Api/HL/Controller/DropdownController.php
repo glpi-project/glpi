@@ -80,6 +80,7 @@ use Group;
 use Holiday;
 use ImageFormat;
 use ImageResolution;
+use Item_Plug;
 use ITILCategory;
 use ITILFollowupTemplate;
 use ITILValidationTemplate;
@@ -99,9 +100,11 @@ use PCIVendor;
 use PeripheralModel;
 use PeripheralType;
 use PhoneModel;
+use PhonePowerSupply;
 use PhoneType;
 use Planning;
 use PlanningEventCategory;
+use Plug;
 use PrinterModel;
 use PrinterType;
 use ProblemTemplate;
@@ -2123,6 +2126,59 @@ EOT,
             ],
         ];
 
+        $schemas['Plug'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Plug::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+            ],
+        ];
+
+        $schemas['Item_Plug'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Item_Plug::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'plug' => self::getDropdownTypeSchema(class: Plug::class, full_schema: 'Plug') + ['required' => true],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'required' => true],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'required' => true],
+                'number_plugs' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 1, 'required' => true],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+            ],
+        ];
+
+        $schemas['PhonePowerSupply'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => PhonePowerSupply::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2204,6 +2260,7 @@ EOT,
                 'DomainRelation' => DomainRelation::getTypeName(1),
                 'CameraImageFormat' => ImageFormat::getTypeName(1),
                 'CameraImageResolution' => ImageResolution::getTypeName(1),
+                'Plug' => Plug::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
@@ -2245,7 +2302,7 @@ EOT,
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
             'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
             'ApplianceEnvironment', 'Network', 'DomainRelation', 'Stencil', 'CameraImageFormat', 'CameraImageResolution',
-            'CalendarCloseTime', 'CalendarTimeRange',
+            'CalendarCloseTime', 'CalendarTimeRange', 'Plug', 'Item_Plug', 'PhonePowerSupply',
         ];
     }
 
