@@ -44,6 +44,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Lockedfield;
 
 use function Safe\file_get_contents;
 
@@ -128,45 +129,111 @@ final class InventoryController extends AbstractController
                     'use_module_collect_data' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'readOnly' => true],
                 ],
             ],
+            'LockedField' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => Lockedfield::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'field' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 50],
+                    'value' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The last inventoried value of the locked field.',
+                        'maxLength' => 255,
+                    ],
+                    'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'date_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'date_mod' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
         ];
     }
 
-    #[Route(path: '/Agent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => 'Agent|LockedField',
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\SearchRoute(schema_name: 'Agent')]
+    #[Doc\SearchRoute(schema_name: '{itemtype}')]
     public function search(Request $request): Response
     {
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
     }
 
-    #[Route(path: '/Agent/{id}', methods: ['GET'], requirements: [
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Agent|LockedField',
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\GetRoute(schema_name: 'Agent')]
+    #[Doc\GetRoute(schema_name: '{itemtype}')]
     public function getItem(Request $request): Response
     {
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
     }
 
-    #[Route(path: '/Agent/{id}', methods: ['PATCH'], requirements: [
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => 'LockedField',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: '{itemtype}')]
+    public function createItem(Request $request): Response
+    {
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getItem'],
+            extra_get_route_params: ['mapped' => ['itemtype' => $request->getAttribute('itemtype')]]
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Agent|LockedField',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\UpdateRoute(schema_name: 'Agent')]
+    #[Doc\UpdateRoute(schema_name: '{itemtype}')]
     public function updateItem(Request $request): Response
     {
-        return ResourceAccessor::updateBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Agent|LockedField',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\DeleteRoute(schema_name: 'Agent')]
+    #[Doc\DeleteRoute(schema_name: '{itemtype}')]
     public function deleteItem(Request $request): Response
     {
-        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
     }
 
     #[Route(path: '/Agent/{id}/InventoryRequest', methods: ['POST'], requirements: [

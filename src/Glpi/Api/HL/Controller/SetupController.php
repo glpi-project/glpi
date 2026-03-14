@@ -58,6 +58,8 @@ use Link;
 use Link_Itemtype;
 use MailCollector;
 use ManualLink;
+use NotImportedEmail;
+use OAuthClient;
 use OLA;
 use OlaLevel;
 use Plugin;
@@ -65,6 +67,7 @@ use SLA;
 use SlaLevel;
 use SLM;
 use Throwable;
+use User;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -705,6 +708,83 @@ EOT,
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
+            'NotImportedEmail' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => NotImportedEmail::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'from' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'to' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'mail_collector' => self::getDropdownTypeSchema(class: MailCollector::class, full_schema: 'EmailCollector') + ['readOnly' => true],
+                    'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                    'subject' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'messageid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'reason' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [
+                            NotImportedEmail::MATCH_NO_RULE,
+                            NotImportedEmail::USER_UNKNOWN,
+                            NotImportedEmail::FAILED_OPERATION,
+                            NotImportedEmail::NOT_ENOUGH_RIGHTS,
+                        ],
+                        'description' => <<<EOT
+                        -  0: No matching rule to assign the ticket to an entity.
+                        -  1: User unknown. The email address of the requester does not correspond to any user in GLPI.
+                        -  2: Failed operation/insert. An error occurred while trying to create the ticket or followup.
+                        -  3: Not enough rights. The user does not have permission to create the ticket or followup.
+EOT,
+                        'readOnly' => true,
+                    ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['readOnly' => true],
+                ],
+            ],
+            'OAuthClient' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => OAuthClient::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'identifier' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The client identifier.',
+                        'readOnly' => true,
+                    ],
+                    'secret' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The client secret.',
+                        'readOnly' => true,
+                    ],
+                    'redirect_uri' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of allowed redirect URIs for this client',
+                    ],
+                    'grants' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of allowed grant types for this client. Allowed values are "authorization_code", "password", and "client_credentials".',
+                    ],
+                    'scopes' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of allowed scopes for this client. Allowed values are "email", "user", "api", "inventory", "status" and "graphql".',
+                    ],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'is_confidential' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'allowed_ips' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'Comma-separated list of allowed IPs or CIDR blocks. If empty, there is no restriction.',
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -771,6 +851,10 @@ EOT,
                     'itemtype' => MailCollector::class,
                     'label' => MailCollector::getTypeName(1),
                 ],
+                'OAuthClient' => [
+                    'itemtype' => OAuthClient::class,
+                    'label' => OAuthClient::getTypeName(1),
+                ],
             ];
         }
         return $types_only ? array_keys($types) : $types;
@@ -792,6 +876,7 @@ EOT,
         return [
             'SLM', 'SLA', 'SLALevel', 'OLA', 'OLALevel', 'EmailAuthServer', 'FieldUnicity',
             'LDAPDirectoryReplicate', 'EmailCollector', 'ExternalLink', 'ManualLink',
+            'OAuthClient',
         ];
     }
 
@@ -1187,5 +1272,46 @@ EOT,
             return AbstractController::getCRUDErrorResponse('clean');
         }
         return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/NotImportedEmail', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute('NotImportedEmail')]
+    public function searchNotImportedEmails(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/NotImportedEmail/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute('NotImportedEmail')]
+    public function getNotImportedEmail(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/NotImportedEmail/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute('NotImportedEmail')]
+    public function deleteNotImportedEmail(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
     }
 }
