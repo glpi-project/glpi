@@ -46,6 +46,10 @@ class NotImportedEmail extends CommonDBTM
     public const FAILED_INSERT     = self::FAILED_OPERATION;
     public const NOT_ENOUGH_RIGHTS = 3;
 
+    public static function canPurge(): bool
+    {
+        return self::canUpdate();
+    }
 
     public function getForbiddenStandardMassiveAction()
     {

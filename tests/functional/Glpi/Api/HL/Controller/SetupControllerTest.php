@@ -45,6 +45,7 @@ use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Link;
 use MailCollector;
+use NotImportedEmail;
 use QueuedWebhook;
 use SLM;
 
@@ -550,6 +551,62 @@ class SetupControllerTest extends HLAPITestCase
         });
     }
 
+    public function testCRUDNotImportedEmails()
+    {
+        $not_imported_id = $this->createItem(NotImportedEmail::class, [
+            'from' => 'sender@example.com',
+            'to' => 'helpdesk@example.com',
+            'subject' => 'Test email',
+            'messageid' => '8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com',
+            'reason' => NotImportedEmail::USER_UNKNOWN,
+        ])->getID();
+
+        // search, get, delete only
+
+        $this->login();
+        $this->api->call(new Request('GET', '/Setup/NotImportedEmail'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $found = false;
+                    foreach ($content as $email) {
+                        if ($email['messageid'] === '8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com') {
+                            $found = true;
+                            $this->assertEquals('sender@example.com', $email['from']);
+                            $this->assertEquals('helpdesk@example.com', $email['to']);
+                            $this->assertEquals('Test email', $email['subject']);
+                            $this->assertEquals(NotImportedEmail::USER_UNKNOWN, $email['reason']);
+                            break;
+                        }
+                    }
+                    $this->assertTrue($found);
+                });
+        });
+
+        $this->api->call(new Request('GET', "/Setup/NotImportedEmail/{$not_imported_id}"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($email) {
+                    $this->assertEquals('8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com', $email['messageid']);
+                    $this->assertEquals('helpdesk@example.com', $email['to']);
+                    $this->assertEquals('Test email', $email['subject']);
+                    $this->assertEquals(NotImportedEmail::USER_UNKNOWN, $email['reason']);
+                });
+        });
+
+        $this->api->call(new Request('DELETE', "/Setup/NotImportedEmail/{$not_imported_id}"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+        $this->api->call(new Request('GET', "/Setup/NotImportedEmail/{$not_imported_id}"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
     public function testCRUDNoRightsQueuedWebhook()
     {
         $this->loginWeb();
@@ -569,5 +626,33 @@ class SetupControllerTest extends HLAPITestCase
             /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
+    }
+
+    public function testCRUDNotImportedEmailsNoRights()
+    {
+        $not_imported_id = $this->createItem(NotImportedEmail::class, [
+            'from' => 'sender@example.com',
+            'to' => 'helpdesk@example.com',
+            'subject' => 'Test email',
+            'messageid' => '8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com',
+            'reason' => NotImportedEmail::USER_UNKNOWN,
+        ])->getID();
+
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Setup/NotImportedEmail',
+            itemtype: NotImportedEmail::class,
+            items_id: $not_imported_id,
+            deny_purge: static function () {
+                $_SESSION['glpiactiveprofile'][NotImportedEmail::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            create_params: [
+                'from' => 'sender2@example.com',
+                'to' => 'helpdesk@example.com',
+                'subject' => 'Test email',
+                'messageid' => 'c9b53a8a-a460-4b4a-98ad-02fd548e3c25@exmaple.com',
+                'reason' => NotImportedEmail::USER_UNKNOWN,
+            ],
+            extra_options: ['skip_create_test' => true, 'skip_update_test' => true],
+        );
     }
 }
