@@ -591,15 +591,19 @@ class CommonDBTM extends CommonGLPI
     /**
      * Retrieve all items from the database
      *
-     * @param array        $condition WHERE condition used to filter (can be empty to get all)
+     * @param array        $condition WHERE condition used to filter
      * @param array|string $order     ORDER field (can be empty)
      * @param int      $limit     LIMIT sql clause
      *
      * @return array all retrieved data in an associative array by id
      **/
-    public function find($condition = [], $order = [], $limit = null)
+    public function find($condition, $order = [], $limit = null)
     {
         global $DB;
+
+        if (empty($condition)) {
+            throw new InvalidArgumentException('Argument $condition cannot be empty.');
+        }
 
         $criteria = [
             'FROM'   => static::getTable(),
