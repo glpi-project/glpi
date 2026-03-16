@@ -1055,7 +1055,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 type: EditorActionType::OPEN_MODAL,
                 params: [
                     'id' => $this->fields['id'],
-                    'key' => 'permissions',
+                    'key' => 'SidePanel/permissions',
                     'title' => _n('Target', 'Targets', Session::getPluralNumber()),
                 ],
             );
