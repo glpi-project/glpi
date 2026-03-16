@@ -431,7 +431,7 @@ final class Search
 
             // Entity management in GLPI is a mess...
             $entity_assign = $item->isEntityAssign();
-            if ($entity_assign && $item->isField('entities_id') && !in_array($itemtype, ['Consumable', 'Cartridge', 'ProblemCost'], true)) {
+            if ($entity_assign && $item->isField('entities_id') && !in_array($itemtype, ['Consumable', 'Cartridge', 'ProblemCost', 'QueuedWebhook'], true)) {
                 $entity_restrict[] = getEntitiesRestrictCriteria(table: '_', is_recursive: $item->maybeRecursive() && !($item instanceof Entity));
             } elseif ($entity_assign && $item instanceof CommonDBChild && !str_starts_with($item::$itemtype, 'itemtype')) {
                 // need to join the parent item table and apply the entity restrict there
