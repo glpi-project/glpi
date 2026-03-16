@@ -77,8 +77,6 @@ class State extends CommonTreeDropdown
         ];
 
         foreach ($this->getvisibilityFields() as $type => $field) {
-            // $type is a class-string representing an item class (eg. Computer::class)
-            /** @var class-string<CommonDBTM> $type */
             $fields[] = ['name'  => $field,
                 'label' => $type::getTypeName(Session::getPluralNumber()),
                 'type'  => 'bool',
@@ -992,7 +990,7 @@ class State extends CommonTreeDropdown
     /**
      * Get visibility fields from conf
      *
-     * @return array<string,string>
+     * @return array<class-string<CommonDBTM>,string>
      */
     protected function getvisibilityFields(): array
     {
