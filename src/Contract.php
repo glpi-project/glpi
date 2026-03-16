@@ -458,6 +458,14 @@ class Contract extends CommonDBTM implements StateInterface
                 (int) $values['renewal'] === self::RENEWAL_TACIT,
                 $values['periodicity']
             ),
+	    '_virtual_expire_notice' => Infocom::getWarrantyExpir(
+                $values['begin_date'],
+                $values['renewal'] == self::RENEWAL_EXPRESS ? $values['duration'] + $values['periodicity'] : $values['duration'],
+                $values['notice'],
+                true,
+                (int) $values['renewal'] === self::RENEWAL_TACIT,
+                $values['periodicity']
+            ),
             default => parent::getSpecificValueToDisplay($field, $values, $options),
         };
     }
@@ -653,19 +661,21 @@ class Contract extends CommonDBTM implements StateInterface
         $tab[] = [
             'id'                 => '13',
             'table'              => static::getTable(),
-            'field'              => 'expire_notice',
-            'name'               => __('Expiration date + notice'),
-            'datatype'           => 'date_delay',
-            'datafields'         => [
-                '1'                  => 'begin_date',
-                '2'                  => 'duration',
-                '3'                  => 'notice',
+            'field'              => '_virtual_expire_notice', // virtual field
+            'additionalfields'   => [
+                'begin_date',
+                'duration',
+                'renewal',
+                'notice',
+                'periodicity',
             ],
-            'searchunit'         => 'DAY',
-            'delayunit'          => 'MONTH',
-            'maybefuture'        => true,
+            'name'               => __('Expiration date + notice'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false,
         ];
+
 
         $tab[] = [
             'id'                 => '16',
