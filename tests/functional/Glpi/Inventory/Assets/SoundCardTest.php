@@ -213,8 +213,7 @@ class SoundCardTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 sound cards
-        $sounds = $device_sound->find();
-        $this->assertCount(3, $sounds);
+        $this->assertEquals(3, countElementsInTable(\DeviceSoundCard::getTable()));
 
         //we still have 3 sound cards items linked to the computer
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -252,8 +251,7 @@ class SoundCardTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 sound cards
-        $sounds = $device_sound->find();
-        $this->assertCount(3, $sounds);
+        $this->assertEquals(3, countElementsInTable(\DeviceSoundCard::getTable()));
 
         //we now have 2 sound cards linked to computer only
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

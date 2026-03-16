@@ -246,8 +246,7 @@ class CameraTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 cameras
-        $cams = $device_cam->find();
-        $this->assertCount(3, $cams);
+        $this->assertEquals(3, countElementsInTable(\DeviceCamera::getTable()));
 
         //we still have 3 cameras items linked to the computer
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -285,8 +284,7 @@ class CameraTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 cameras
-        $cams = $device_cam->find();
-        $this->assertCount(3, $cams);
+        $this->assertEquals(3, countElementsInTable(\DeviceCamera::getTable()));
 
         //we now have 2 cameras linked to computer only
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

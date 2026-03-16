@@ -889,8 +889,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 network cards
-        $cards = $device_net->find();
-        $this->assertCount(3, $cards);
+        $this->assertEquals(3, countElementsInTable(\DeviceNetworkCard::getTable()));
 
         //we still have 3 network cards items linked to the computer
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -953,8 +952,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 network cards
-        $cards = $device_net->find();
-        $this->assertCount(3, $cards);
+        $this->assertEquals(3, countElementsInTable(\DeviceNetworkCard::getTable()));
 
         //we now have 2 network cards linked to computer only
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

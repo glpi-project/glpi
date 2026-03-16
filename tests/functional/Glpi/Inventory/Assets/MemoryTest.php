@@ -242,8 +242,7 @@ class MemoryTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 2 memory devices
-        $memories = $device_mem->find();
-        $this->assertCount(2, $memories);
+        $this->assertEquals(2, countElementsInTable(\DeviceMemory::getTable()));
 
         //and one memory model
         $this->assertSame(
@@ -314,7 +313,8 @@ class MemoryTest extends AbstractInventoryAsset
 
     public function testMemoryOneManufactuerOneNot()
     {
-        $device_mem = new \DeviceMemory();
+        global $DB;
+
         $item_mem = new \Item_DeviceMemory();
 
         $json_str = <<<JSON
@@ -375,21 +375,26 @@ JSON;
             print_r($memories, true)
         );
 
-        $manufacturer = new \Manufacturer();
-        $manufacturers = $manufacturer->find();
+        $manufacturers = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => \Manufacturer::getTable(),
+        ]);
         //2 manufacturers ine db: "Hynix" from current inv, "My Manufacturer" from bootstrap data
         $this->assertCount(
             2,
             $manufacturers,
-            print_r($manufacturers, true)
+            print_r(iterator_to_array($manufacturers, false), true)
         );
 
         //we have 2 memory devices: one for Hynix, one without manufacturer
-        $memories = $device_mem->find();
+        $memories = $DB->request([
+            'SELECT' => ['id', 'designation', 'manufacturers_id'],
+            'FROM'   => \DeviceMemory::getTable(),
+        ]);
         $this->assertCount(
             2,
             $memories,
-            print_r($memories, true)
+            print_r(iterator_to_array($memories, false), true)
         );
     }
 }

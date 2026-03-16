@@ -257,8 +257,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $esx_id_first);
 
         //always one VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get ComputervirtualMachine
         $vm_first = new \ItemVirtualMachine();
@@ -388,8 +387,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertSame($esx_id_second, $esx_id_first);
 
         //always one VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get ComputervirtualMachine
         $vm_second = new \ItemVirtualMachine();
@@ -478,8 +476,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $esx_id_first);
 
         //get two VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(2, $vm->find());
+        $this->assertEquals(2, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get first ComputervirtualMachine -> not deleted / purged
         $firlst_vm = new \ItemVirtualMachine();
@@ -553,8 +550,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $inventory = $this->doInventory($xml_source, true);
 
         //now one VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get first ComputervirtualMachine -> not deleted / purged
         $firlst_vm = new \ItemVirtualMachine();
@@ -702,8 +698,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $esx_id_first);
 
         //get three VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(3, $vm->find());
+        $this->assertEquals(3, countElementsInTable(\ItemVirtualMachine::getTable()));
 
 
         //get related computer with fe040942-926a-e895-13f9-a37fc3607c14 -> exist
@@ -735,8 +730,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $id_first);
 
         //one VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get ComputervirtualMachine
         $vm = new \ItemVirtualMachine();
@@ -759,8 +753,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertSame($id_second, $id_first);
 
         //VM still present
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get ComputervirtualMachine
         $vm = new \ItemVirtualMachine();
@@ -781,8 +774,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertSame($id_second, $id_first);
 
         //no VM left
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(0, $vm->find());
+        $this->assertEquals(0, countElementsInTable(\ItemVirtualMachine::getTable()));
     }
 
 
@@ -844,8 +836,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $esx_id);
 
         //get one VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get related ComputervirtualMachine
         $firlst_vm = new \ItemVirtualMachine();
@@ -873,8 +864,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $id_first);
 
         //one VM
-        $vm = new \ItemVirtualMachine();
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         //get ComputervirtualMachine
         $vm = new \ItemVirtualMachine();
@@ -891,7 +881,7 @@ class VirtualMachineTest extends AbstractInventoryAsset
         $this->doInventory($source);
 
         //still one VM
-        $this->assertCount(1, $vm->find());
+        $this->assertEquals(1, countElementsInTable(\ItemVirtualMachine::getTable()));
 
         $this->assertTrue($vm->getFromDBByCrit([
             'uuid'     => '420904fe-6a92-95e8-13f9-a37fc3607c14',

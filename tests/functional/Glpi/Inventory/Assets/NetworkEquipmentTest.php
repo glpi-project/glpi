@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
@@ -3044,6 +3045,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
     public function testRuleMatchedLog()
     {
+        global $DB;
         $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
 <REQUEST>
   <CONTENT>
@@ -3127,8 +3129,8 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $this->assertSame('DFGKJ6545684SDF', $networkEquipment->fields['serial']);
 
         $unmanaged = new \Unmanaged();
-        $found_unmanaged = $unmanaged->find();
-        $this->assertCount(1, $found_unmanaged);
+        $found_unmanaged = $unmanaged->find([new QueryExpression('true')]);
+        $this->assertEquals(1, countElementsInTable(\Unmanaged::getTable()));
 
         $rulematchedLog = new \RuleMatchedLog();
         $found_rulematchedLog = $rulematchedLog->find(
@@ -3143,7 +3145,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $inventory = $this->doInventory($xml_source, true);
 
         $unmanaged = new \Unmanaged();
-        $found_unmanaged = $unmanaged->find();
+        $found_unmanaged = $unmanaged->find([new QueryExpression('true')]);
         //get only one RuleMatchedLog
         $this->assertCount(1, $found_unmanaged);
 

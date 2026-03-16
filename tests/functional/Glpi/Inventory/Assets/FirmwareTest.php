@@ -179,8 +179,7 @@ class FirmwareTest extends AbstractInventoryAsset
         $agent = $agents->current();
 
         //we still have 2 firmwares + 1 bios
-        $fws = $device_fw->find();
-        $this->assertCount(3, $fws);
+        $this->assertEquals(3, countElementsInTable(\DeviceFirmware::getTable()));
 
         //we still have 2 firmwares items linked to the computer
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $agent['items_id']]);
@@ -311,8 +310,7 @@ class FirmwareTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 firmwares + 1 bios
-        $fws = $device_fw->find();
-        $this->assertCount(3 + 1, $fws);
+        $this->assertEquals(3 + 1, countElementsInTable(\DeviceFirmware::getTable()));
 
         //we still have 3 firmwares items linked to the computer
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -352,8 +350,7 @@ class FirmwareTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 firmwares + 1 bios
-        $fws = $device_fw->find();
-        $this->assertCount(3 + 1, $fws);
+        $this->assertEquals(3 + 1, countElementsInTable(\DeviceFirmware::getTable()));
 
         //we now have 2 firmwares linked to computer only
         $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

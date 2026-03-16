@@ -300,8 +300,7 @@ class BatteryTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 batteries
-        $batteries = $device_battery->find();
-        $this->assertCount(3, $batteries);
+        $this->assertEquals(3, countElementsInTable(\DeviceBattery::getTable()));
 
         //we still have 3 batteries items linked to the computer
         $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -343,8 +342,7 @@ class BatteryTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 batteries
-        $batteries = $device_battery->find();
-        $this->assertCount(3, $batteries);
+        $this->assertEquals(3, countElementsInTable(\DeviceBattery::getTable()));
 
         //we now have 2 batteries linked to computer only
         $batteries = $item_battery->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

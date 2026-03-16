@@ -280,8 +280,7 @@ class DriveTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 drives
-        $drives = $device_drive->find();
-        $this->assertCount(3, $drives);
+        $this->assertEquals(3, countElementsInTable(\DeviceDrive::getTable()));
 
         //we still have 3 drives items linked to the computer
         $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -324,8 +323,7 @@ class DriveTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 drives
-        $drives = $device_drive->find();
-        $this->assertCount(3, $drives);
+        $this->assertEquals(3, countElementsInTable(\DeviceDrive::getTable()));
 
         //we now have 2 drives linked to computer only
         $drives = $item_drive->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -473,8 +471,7 @@ class DriveTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 harddrives
-        $harddrives = $device_hdd->find();
-        $this->assertCount(3, $harddrives);
+        $this->assertEquals(3, countElementsInTable(\DeviceHardDrive::getTable()));
 
         //we still have 3 harddrives items linked to the computer
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -518,8 +515,7 @@ class DriveTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 harddrives
-        $harddrives = $device_hdd->find();
-        $this->assertCount(3, $harddrives);
+        $this->assertEquals(3, countElementsInTable(\DeviceHardDrive::getTable()));
 
         //we now have 2 harddrives linked to computer only
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -1871,7 +1871,7 @@ JSON;
 
         //check there is no locked field
         $lockedfields = new \Lockedfield();
-        $this->assertEquals([], $lockedfields->find());
+        $this->assertEquals(0, countElementsInTable(\Lockedfield::getTable()));
 
         //change OS by hand
         $new_osid = $os->add([
@@ -1892,7 +1892,9 @@ JSON;
         );
 
         //check Item_OperatingSystem has been locked
-        $locks = $lockedfields->find();
+        $locks = $lockedfields->find([
+            'field' => 'operatingsystems_id',
+        ]);
         $this->assertCount(1, $locks);
         $lock = array_pop($locks);
         $this->assertSame('operatingsystems_id', $lock['field']);

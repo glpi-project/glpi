@@ -734,9 +734,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         $inventory->doInventory($xml_source, true);
 
         //no Unmanaged create
-        $unmanaged = new \Unmanaged();
-        $found = $unmanaged->find();
-        $this->assertCount(0, $found);
+        $this->assertEquals(0, countElementsInTable(\Unmanaged::getTable()));
 
         //reload computer
         $this->assertTrue($computer->getFromDB($computers_id));

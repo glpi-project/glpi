@@ -273,20 +273,16 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 remote managements
-        $mgmts = $mgmt->find();
-        $this->assertCount(3, $mgmts);
+        $this->assertEquals(3, countElementsInTable(\Item_RemoteManagement::getTable()));
 
         //we still have 3 remote managements items linked to the computer
-        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-        $this->assertCount(3, $mgmts);
+        $this->assertEquals(3, countElementsInTable(\Item_RemoteManagement::getTable(), ['itemtype' => 'Computer', 'items_id' => $computers_id]));
 
         //remote managements present in the inventory source are now dynamic
-        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-        $this->assertCount(2, $mgmts);
+        $this->assertEquals(2, countElementsInTable(\Item_RemoteManagement::getTable(), ['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]));
 
         //remote management not present in the inventory is still not dynamic
-        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-        $this->assertCount(1, $mgmts);
+        $this->assertEquals(1, countElementsInTable(\Item_RemoteManagement::getTable(), ['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]));
 
         //Redo inventory, but with removed "anydesk" remote managements
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -311,26 +307,20 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we now have only 2 remote managements
-        $mgmts = $mgmt->find();
-        $this->assertCount(2, $mgmts);
+        $this->assertEquals(2, countElementsInTable(\Item_RemoteManagement::getTable()));
 
         //we now have 2 remote managements linked to computer only
-        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-        $this->assertCount(2, $mgmts);
+        $this->assertEquals(2, countElementsInTable(\Item_RemoteManagement::getTable(), ['itemtype' => 'Computer', 'items_id' => $computers_id]));
 
         //remote management present in the inventory source is still dynamic
-        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
-        $this->assertCount(1, $mgmts);
+        $this->assertEquals(1, countElementsInTable(\Item_RemoteManagement::getTable(), ['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]));
 
         //remote management not present in the inventory is still not dynamic
-        $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-        $this->assertCount(1, $mgmts);
+        $this->assertEquals(1, countElementsInTable(\Item_RemoteManagement::getTable(), ['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]));
     }
 
     public function testNoMoreRemoteManagement()
     {
-        $mgmt = new \Item_RemoteManagement();
-
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -354,8 +344,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we have 1 remote managements (anydesk / abcdyz) linked to computer
-        $mgmts = $mgmt->find();
-        $this->assertCount(1, $mgmts);
+        $this->assertEquals(1, countElementsInTable(\Item_RemoteManagement::getTable()));
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -375,7 +364,6 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we have no remote managements linked to computer
-        $mgmts = $mgmt->find();
-        $this->assertCount(0, $mgmts);
+        $this->assertCount(0, countElementsInTable(\Item_RemoteManagement::getTable()));
     }
 }

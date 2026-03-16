@@ -445,9 +445,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->assertSame($expecteds[$unmanaged['name']], $unmanaged['sysdescr']);
         }
 
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(6, $found);//1 equipment, 5 unmanageds
+        $this->assertEquals(6, countElementsInTable(\RuleMatchedLog::getTable()));//1 equipment, 5 unmanageds
 
         $unmanaged_criteria = [
             'FROM' => \RuleMatchedLog::getTable(),

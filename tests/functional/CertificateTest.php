@@ -180,7 +180,7 @@ class CertificateTest extends DbTestCase
 
     public function testCronCertificate()
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         $this->login();
         $obj = new \Certificate();
@@ -216,21 +216,24 @@ class CertificateTest extends DbTestCase
 
         // check presence of the id in alerts table
         $alert  = new \Alert();
-        $alerts = $alert->find();
-
+        $alerts = $alert->find([
+            'itemtype' => 'Certificate',
+            'items_id' => $id,
+        ]);
         $this->assertCount(1, $alerts);
         $alert_certificate = array_pop($alerts);
-        $this->assertEquals('Certificate', $alert_certificate['itemtype']);
-        $this->assertEquals($id, $alert_certificate['items_id']);
 
         // No new alert if the last one is less than 1 hour old
         $alert_id = $alert_certificate['id'];
         $ret      = $crontask->launch($force, 1, 'certificate');
         $this->assertNotEquals(false, $ret);
-        $alerts   = $alert->find();
+        $alerts   = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
+            'FROM'   => 'glpi_alerts',
+        ]);
 
         $this->assertCount(1, $alerts);
-        $alert_certificate = array_pop($alerts);
+        $alert_certificate = $alerts->current();
         $this->assertEquals('Certificate', $alert_certificate['itemtype']);
         $this->assertEquals($id, $alert_certificate['items_id']);
         $this->assertEquals($alert_id, $alert_certificate['id']);
@@ -243,10 +246,13 @@ class CertificateTest extends DbTestCase
         ]);
         $ret      = $crontask->launch($force, 1, 'certificate');
         $this->assertNotEquals(false, $ret);
-        $alerts   = $alert->find();
+        $alerts   = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
+            'FROM'   => 'glpi_alerts',
+        ]);
 
         $this->assertCount(1, $alerts);
-        $alert_certificate = array_pop($alerts);
+        $alert_certificate = $alerts->current();
         $this->assertEquals('Certificate', $alert_certificate['itemtype']);
         $this->assertEquals($id, $alert_certificate['items_id']);
         $this->assertEquals($alert_id + 1, $alert_certificate['id']);

@@ -218,8 +218,7 @@ class GraphicCardTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 graphic cards
-        $gcs = $device_gc->find();
-        $this->assertCount(3, $gcs);
+        $this->assertEquals(3, countElementsInTable(\DeviceGraphicCard::getTable()));
 
         //we still have 3 graphic cards items linked to the computer
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -258,8 +257,7 @@ class GraphicCardTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 graphic cards
-        $gcs = $device_gc->find();
-        $this->assertCount(3, $gcs);
+        $this->assertEquals(3, countElementsInTable(\DeviceGraphicCard::getTable()));
 
         //we now have 2 graphic cards linked to computer only
         $gcs = $item_gc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

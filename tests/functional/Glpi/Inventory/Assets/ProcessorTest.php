@@ -257,8 +257,7 @@ class ProcessorTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 processors
-        $cpus = $device_proc->find();
-        $this->assertCount(3, $cpus);
+        $this->assertEquals(3, countElementsInTable(\DeviceProcessor::getTable()));
 
         //we still have 3 processors items linked to the computer
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -298,8 +297,7 @@ class ProcessorTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 processors
-        $cpus = $device_proc->find();
-        $this->assertCount(3, $cpus);
+        $this->assertEquals(3, countElementsInTable(\DeviceProcessor::getTable()));
 
         //we now have 2 processors linked to computer only
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

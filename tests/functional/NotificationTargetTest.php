@@ -653,16 +653,20 @@ class NotificationTargetTest extends DbTestCase
 
         $this->login();
 
-        $notification = new Notification();
-        $notifications = $notification->find();
+        $notifications = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'event'],
+            'FROM' => Notification::getTable(),
+        ]);
 
         foreach ($notifications as $notification) {
             // Ensure that there is at least one default target
             $iterator = $DB->request([
+                'COUNT' => 'cpt',
                 'FROM' => NotificationTarget::getTable(),
                 'WHERE' => ['notifications_id' => $notification['id']],
+                'LIMIT' => 1,
             ]);
-            $this->assertGreaterThan(0, count($iterator));
+            $this->assertGreaterThan(0, $iterator->current()['cpt']);
 
             // Ensure that the Administrator is one of the default targets, unless it is not a valid target
             // for the current notification.

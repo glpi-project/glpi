@@ -96,9 +96,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $this->assertGreaterThan(0, $agent['items_id']);
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(1, $found);
+        $this->assertEquals(1, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -886,9 +884,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $assets_id = $asset->getID();
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(1, $found);
+        $this->assertEquals(1, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -1007,9 +1003,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $assets_id = $asset->getID();
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(3, $found);
+        $this->assertEquals(3, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $criteria = [
             'FROM' => \RuleMatchedLog::getTable(),

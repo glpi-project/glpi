@@ -33,6 +33,7 @@
  */
 
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
@@ -982,7 +983,7 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
     if (!$item->getFromDBByCrit([$nameField => $name])) {
-        $found = $item->find();
+        $found = $item->find([new QueryExpression('true')]);
         $found_names = array_column($found, $nameField);
         throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (available items names are : ' . implode(', ', $found_names) . ').', $type, $name));
     }

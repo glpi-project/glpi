@@ -117,7 +117,7 @@ class ReservationTest extends DbTestCase
             "entities_id" => 0,
         ]);
         $reservation = new \Reservation();
-        $this->assertEquals(0, count($reservation->find()));
+        $this->assertEquals(0, countElementsInTable(\Reservation::getTable()));
 
         \Reservation::handleAddForm([
             "itemtype"  => "Computer",
@@ -138,7 +138,7 @@ class ReservationTest extends DbTestCase
             "users_id"  => getItemByTypeName('User', TU_USER, true),
             "comment"   => "",
         ]);
-        $this->assertEquals(5, count($reservation->find()));
+        $this->assertEquals(5, countElementsInTable(\Reservation::getTable()));
     }
 
     public static function dataAddReservationTest(): array
@@ -189,15 +189,17 @@ class ReservationTest extends DbTestCase
 
     public function testDeleteRecurrentReservation(): void
     {
+        global $DB;
         self::testAddRecurrentReservation();
         $reservation = new \Reservation();
-        $this->assertCount(5, $reservation->find());
-        foreach ($reservation->find() as $res) {
-            $firstres = $res;
-            break;
-        }
+        $reservations = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => \Reservation::getTable(),
+        ]);
+        $this->assertCount(5, $reservations);
+        $firstres = $reservations->current();
         $reservation->delete($firstres + ['_delete_group' => 'on']);
-        $this->assertCount(0, $reservation->find());
+        $this->assertEquals(0, countElementsInTable(\Reservation::getTable()));
     }
 
     public function testMassiveActions()
@@ -641,14 +643,13 @@ class ReservationTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['reservation'] = ReservationItem::RESERVEANITEM;
 
         // Count reservations before
-        $reservation = new \Reservation();
-        $count_before = count($reservation->find());
+        $count_before = countElementsInTable(\Reservation::getTable());
 
         // Call handleAddForm - should work without explicit permission checks
         \Reservation::handleAddForm($form_input);
 
         // Count reservations after
-        $count_after = count($reservation->find());
+        $count_after = countElementsInTable(\Reservation::getTable());
 
         $this->assertEquals($count_before + 1, $count_after, "handleAddForm should create reservation without explicit permission checks");
     }
@@ -848,9 +849,9 @@ class ReservationTest extends DbTestCase
             'comment' => 'Simplified interface workflow test',
         ];
 
-        $count_before = count($reservation->find());
+        $count_before = countElementsInTable(\Reservation::getTable());
         \Reservation::handleAddForm($form_data);
-        $count_after = count($reservation->find());
+        $count_after = countElementsInTable(\Reservation::getTable());
         $this->assertEquals($count_before + 1, $count_after, "Should be able to create reservation via form");
 
         // Get the created reservation
