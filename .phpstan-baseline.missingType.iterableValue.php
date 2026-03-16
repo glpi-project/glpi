@@ -8762,6 +8762,126 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/DeprecatedInterface.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:addField\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:addSearchOption\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:addSearchOption\\(\\) has parameter \\$values with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:alterSearchOption\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:alterSearchOption\\(\\) has parameter \\$values with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:deleteField\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:deleteSearchOption\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedFields\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedFields\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedHateoas\\(\\) has parameter \\$hateoas with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedHateoas\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedSearchOptions\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapCurrentToDeprecatedSearchOptions\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapDeprecatedToCurrentCriteria\\(\\) has parameter \\$criteria with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:mapDeprecatedToCurrentCriteria\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:renameField\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:replaceCurrentHateoasRefByDeprecated\\(\\) has parameter \\$hateoas with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:replaceCurrentHateoasRefByDeprecated\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:updateSearchOptionsTables\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Item_Plug\\:\\:updateSearchOptionsUids\\(\\) has parameter \\$soptions with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Item_Plug.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\Deprecated\\\\Netpoint\\:\\:addField\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -20532,24 +20652,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_OperatingSystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Plug\\:\\:getForbiddenStandardMassiveAction\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Plug\\:\\:prepareInput\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Plug\\:\\:prepareInput\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Plug.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Item_Process\\:\\:convertFiltersValuesToSqlCriteria\\(\\) has parameter \\$filters with no value type specified in iterable type array\\.$#',
