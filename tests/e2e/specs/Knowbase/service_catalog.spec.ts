@@ -41,7 +41,7 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     const kb = new KnowbaseItemPage(page);
 
     // Create a KB and go to its page
-    const category_name = `My category ${randomUUID()}`
+    const category_name = `My category ${randomUUID()}`;
     const [kb_id] = await Promise.all([
         api.createItem('KnowbaseItem', {
             name: 'My kb entry for service catalog config test',
