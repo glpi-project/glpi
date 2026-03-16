@@ -269,6 +269,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/planningexternalevent.php' => \PlanningExternalEvent::class,
             '/front/planningexternaleventtemplate.form.php' => \PlanningExternalEventTemplate::class,
             '/front/planningexternaleventtemplate.php' => \PlanningExternalEventTemplate::class,
+            '/front/plug.form.php' => \Plug::class,
             '/front/plug.php' => \Plug::class,
             '/front/printer.php' => \Printer::class,
             '/front/printermodel.form.php' => \PrinterModel::class,
