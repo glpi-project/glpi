@@ -570,6 +570,7 @@ JAVASCRIPT;
                 ])
                 ->allowRelativeLinks()
                 ->allowRelativeMedias()
+                ->allowMediaSchemes(['http', 'https'])
                 ->withMaxInputLength(-1);
 
             // Block some elements (tag is removed but contents is preserved)

@@ -316,7 +316,7 @@ HTML,
 <p>
   img, audio and video are allowed
   <img src="/path/to/img.jpg" alt="img" />
-  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD&#43;wSzIAAAABlBMVEX///&#43;/v7&#43;jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII" alt="b64 img" />
+  <img alt="b64 img" />
   <audio src="/path/to/audio.mp3"></audio>
   <video><source src="/path/to/video.mp4" type="video/mp4" /></video>
 </p>
@@ -412,6 +412,25 @@ HTML,
             'content'                => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
             'encode_output_entities' => false,
             'expected_result'        => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
+        ];
+
+        // data: URI scheme should be stripped from media elements (defense-in-depth)
+        yield 'data: URI is stripped from img src' => [
+            'content'                => '<p><img src="data:image/png;base64,iVBORw0KGgo=" alt="b64" /></p>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p><img alt="b64" /></p>',
+        ];
+
+        yield 'http/https img src is preserved' => [
+            'content'                => '<p><img src="https://example.com/img.png" alt="ok" /><img src="http://example.com/img.png" alt="ok2" /></p>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p><img src="https://example.com/img.png" alt="ok" /><img src="http://example.com/img.png" alt="ok2" /></p>',
+        ];
+
+        yield 'relative img src is preserved' => [
+            'content'                => '<p><img src="/path/to/img.jpg" alt="rel" /></p>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p><img src="/path/to/img.jpg" alt="rel" /></p>',
         ];
     }
 
