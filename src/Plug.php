@@ -47,20 +47,7 @@ class Plug extends CommonDBRelation
     public static ?string $items_id_2       = 'items_id_asset';
     public static bool $mustBeAttached_2       = false;
 
-    public static string $rightname      = 'datacenter';
-
     public bool $no_form_page                = false;
-
-
-    public static function canCreate(): bool
-    {
-        return Session::haveRight(static::$rightname, UPDATE);
-    }
-
-    public function canCreateItem(): bool
-    {
-        return Session::haveRight(static::$rightname, UPDATE);
-    }
 
     public static function getTypeName($nb = 0)
     {
