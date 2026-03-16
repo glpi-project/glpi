@@ -402,6 +402,8 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function formatRawAnswer(mixed $answer, Question $question): string
     {
+        global $CFG_GLPI;
+
         $item = $answer['itemtype']::getById($answer['items_id']);
         if (!$item) {
             return '';
@@ -412,7 +414,40 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return $item->getFriendlyName();
         }
 
-        return $item->fields['name'];
+        $name = $item->fields['name'];
+
+        // Append additional fields to match what is displayed in renderEndUserTemplate.
+        $itemtype = $answer['itemtype'];
+        $extra_parts = [];
+
+        // For ITIL types, append the numeric ID when it is not already embedded in the name.
+        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+        if ($is_itil_type && !$id_already_visible) {
+            $extra_parts[] = $item->fields['id'];
+        }
+
+        // For asset types, append serial, otherserial and the linked user when present.
+        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
+            if ($item->isField('serial') && !empty($item->fields['serial'])) {
+                $extra_parts[] = $item->fields['serial'];
+            }
+            if ($item->isField('otherserial') && !empty($item->fields['otherserial'])) {
+                $extra_parts[] = $item->fields['otherserial'];
+            }
+            if ($item->isField('users_id') && $item->fields['users_id'] > 0) {
+                $user = User::getById($item->fields['users_id']);
+                if ($user) {
+                    $extra_parts[] = $user->getFriendlyName();
+                }
+            }
+        }
+
+        if (!empty($extra_parts)) {
+            $name .= ' - ' . implode(' - ', $extra_parts);
+        }
+
+        return $name;
     }
 
     #[Override]
