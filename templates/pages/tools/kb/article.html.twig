@@ -327,34 +327,6 @@
                                                         </a>
                                                     </div>
                                                 </div>
-                                                {# Related Items Tab Pane #}
-                                                <div class="tab-pane fade" id="kb-items-tab" role="tabpanel">
-                                                    {% if related_items|length > 0 %}
-                                                        <div class="d-flex flex-wrap gap-2 mb-2">
-                                                            {% for item in related_items %}
-                                                                <a
-                                                                    href="{{ item.link_url }}"
-                                                                    class="kb-related-item-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
-                                                                    title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
-                                                                    data-testid="related-item-chip"
-                                                                >
-                                                                    <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
-                                                                    <span>{{ item.name }}</span>
-                                                                </a>
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %}
-
-                                                    {% if can_link_items %}
-                                                        <button type="button" class="btn btn-sm btn-outline-primary mt-2"
-                                                                data-glpi-kb-action="OPEN_MODAL"
-                                                                data-glpi-kb-action-param-id="{{ item_id }}"
-                                                                data-glpi-kb-action-param-key="LinkItemModal"
-                                                                data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
-                                                            <i class="ti ti-link me-1"></i>{{ __('Link to another item') }}
-                                                        </button>
-                                                    {% endif %}
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
