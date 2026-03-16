@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,18 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL\Middleware;
+use function Safe\preg_match;
+use function Safe\scandir;
 
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
-use Psr\Http\Message\ResponseInterface;
-
-final class MiddlewareInput
+/**
+ * Update from 10.0.24 to 10.0.25
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update10024to10025()
 {
-    public function __construct(
-        public Request $request,
-        public RoutePath $route_path,
-        public ?ResponseInterface $response,
-        public ?array $client = null,
-    ) {}
+    /**
+     * @var DBmysql $DB
+     * @var Migration $migration
+     */
+    global $DB, $migration;
+
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_10.0.24_to_10.0.25/';
+
+    $migration->setVersion('10.0.25');
+
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
+    }
+
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    $migration->executeMigration();
+
+    return $updateresult;
 }

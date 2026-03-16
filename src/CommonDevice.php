@@ -663,4 +663,10 @@ abstract class CommonDevice extends CommonDropdown
     {
         return "ti ti-components";
     }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        $options['itemtype'] = static::class;
+        parent::displayFullPageForItem($id, $menus, $options);
+    }
 }

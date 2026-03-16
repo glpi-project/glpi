@@ -9700,7 +9700,7 @@ HTML,
         $this->assertNotContains($doc3->getID(), $found_docs);
 
         // Anonymous user can't see documents linked to private followups
-        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, new User());
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, null, true);
         $doc_crit[] = [
             'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
         ];
@@ -10039,6 +10039,43 @@ HTML,
             'test_user' => 'post-only',
             'expected' => true,
         ];
+
+        // Tests for anonymous user (no GLPI account)
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILFollowup::class,
+            'is_private' => false,
+            'test_user' => null, // anonymous
+            'expected' => true,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILFollowup::class,
+            'is_private' => true,
+            'test_user' => null, // anonymous
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \TicketTask::class,
+            'is_private' => false,
+            'test_user' => null, // anonymous
+            'expected' => true,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \TicketTask::class,
+            'is_private' => true,
+            'test_user' => null, // anonymous
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILSolution::class,
+            'is_private' => false,
+            'test_user' => null, // anonymous
+            'expected' => true,
+        ];
     }
 
     /**
@@ -10051,21 +10088,22 @@ HTML,
         string $parent_itil_itemtype,
         string $timeline_item_type,
         bool $is_private,
-        string $test_user,
+        ?string $test_user,
         bool $expected
     ): void {
         global $DB;
 
         $this->login();
 
-        // Get the test user
-        $user = getItemByTypeName(User::class, $test_user, false);
+        // Get the test user (or anonymous)
+        $user = $test_user !== null ? getItemByTypeName(User::class, $test_user, false) : null;
+        $is_anonymous = ($test_user === null);
 
         $parent_item = $this->createItem($parent_itil_itemtype, [
             'name'               => 'ITIL Object test',
             'content'            => 'test',
             'entities_id'        => $this->getTestRootEntity(true),
-            '_users_id_requester' => $user->getID(),
+            '_users_id_requester' => $is_anonymous ? 0 : $user->getID(),
         ]);
 
         // Create a document linked directly to the parent item (ticket/change/problem)
@@ -10118,7 +10156,7 @@ HTML,
                 $fk_field            => $parent_item->getID(),
                 'comment_submission' => 'Validation request with document',
                 'itemtype_target'    => User::class,
-                'items_id_target'    => $user->getID(),
+                'items_id_target'    => $is_anonymous ? Session::getLoginUserID() : $user->getID(),
             ]);
             $doc_timeline = $this->createItem(\Document::class, [
                 'name' => 'Doc: linked to ticket validation',
@@ -10134,7 +10172,7 @@ HTML,
         ]);
 
         // First verify with active session
-        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $is_anonymous ? null : $user, $is_anonymous);
         $doc_items_iterator = $DB->request([
             'SELECT' => ['documents_id'],
             'FROM'   => \Document_Item::getTable(),
@@ -10172,7 +10210,7 @@ HTML,
         $parent_item->getFromDB($parent_item->getID());
 
         // Test that documents visibility is consistent without session
-        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $is_anonymous ? null : $user, $is_anonymous);
         $doc_items_iterator = $DB->request([
             'SELECT' => ['documents_id'],
             'FROM'   => \Document_Item::getTable(),

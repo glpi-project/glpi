@@ -114,7 +114,7 @@
         "axe-core": "^4.11.1",
         "axios": "^1.13.6",
         "clean-webpack-plugin": "^4.0.0",
-        "copy-webpack-plugin": "^13.0.1",
+        "copy-webpack-plugin": "^14.0.0",
         "css-loader": "^7.1.4",
         "csso-cli": "^4.0.2",
         "cypress": "^14.5.4",
@@ -155,6 +155,8 @@
         "webpack-dev-server": "^5.2.3"
     },
     "overrides": {
-        "serialize-javascript": "^7.0.3"
+        "monaco-editor": {
+            "dompurify": "^3.3.3"
+        }
     }
 }

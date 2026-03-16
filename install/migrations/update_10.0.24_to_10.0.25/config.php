@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,18 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Api\HL\Middleware;
+/**
+ * @var Migration $migration
+ */
 
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
-use Psr\Http\Message\ResponseInterface;
-
-final class MiddlewareInput
-{
-    public function __construct(
-        public Request $request,
-        public RoutePath $route_path,
-        public ?ResponseInterface $response,
-        public ?array $client = null,
-    ) {}
-}
+// Add configuration option to control document attachment for anonymous users in notifications
+$migration->addConfig(['attach_documents_to_notifications_for_anonymous' => 0]);
