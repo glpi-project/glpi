@@ -79,13 +79,6 @@ class ImportMapGeneratorTest extends GLPITestCase
                         'library2.js' => '// Library 2 content',
                     ],
                 ],
-                'build' => [
-                    'compiled.js' => '// Compiled JS content',
-                    'assets' => [
-                        'module1.js' => '// Built module 1',
-                        'module2.js' => '// Built module 2',
-                    ],
-                ],
             ],
             'plugins' => [
                 'myplugin' => [
@@ -190,12 +183,9 @@ class ImportMapGeneratorTest extends GLPITestCase
         $this->assertArrayHasKey('/js/modules/Forms/GlpiFormDestinationAutoConfigController.js', $import_map['imports']);
         $this->assertArrayHasKey('/js/modules/Utils/HelperFunctions.js', $import_map['imports']);
 
-        // Check for core modules in public/lib and public/build
+        // Check for core modules in public/lib
         $this->assertArrayHasKey('/lib/vendor1/library1.js', $import_map['imports']);
         $this->assertArrayHasKey('/lib/vendor2/library2.js', $import_map['imports']);
-        $this->assertArrayHasKey('/build/compiled.js', $import_map['imports']);
-        $this->assertArrayHasKey('/build/assets/module1.js', $import_map['imports']);
-        $this->assertArrayHasKey('/build/assets/module2.js', $import_map['imports']);
 
         // Verify all URLs have version parameters
         foreach ($import_map['imports'] as $module_name => $url) {
