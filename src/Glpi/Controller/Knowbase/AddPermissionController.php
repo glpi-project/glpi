@@ -119,6 +119,11 @@ final class AddPermissionController extends GenericFormController
             sprintf(__('%s adds a target'), $_SESSION["glpiname"])
         );
 
-        return new RedirectResponse(Html::getBackUrl());
+        $back = Html::getBackUrl();
+        if ($back) {
+            return new RedirectResponse($back);
+        } else {
+            return new Response();
+        }
     }
 }

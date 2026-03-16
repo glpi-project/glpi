@@ -41,7 +41,7 @@
         data-glpi-knowbase-article-content
     >
         <div class="d-flex align-items-center mb-3">
-            {% if mode == 'edit' or mode === 'view' %}
+            {% if mode == 'edit' or mode == 'view' %}
                 <div class="me-3 flex-shrink-0" data-glpi-kb-illustration-container>
                     {{ include('components/illustration/icon_picker.html.twig', {
                         'value': illustration,
