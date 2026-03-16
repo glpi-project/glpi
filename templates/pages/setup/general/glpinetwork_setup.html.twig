@@ -30,56 +30,72 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends 'pages/setup/general/base_form.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% block config_fields %}
-    {{ fields.largeTitle(__('Registration')) }}
+{% if not services_available %}
+    <div class="alert alert-warning">
+        <div class="alert-title">{{ __('%1$s services website seems to be unavailable from your network or offline!')|format(__('GLPI Network')) }}</div>
+        <span class="text-secondary">
+            {% if curl_error is not null %}
+                {{ __('Error was: %s')|format(curl_error) }}
+            {% endif %}
+        </span>
+    </div>
+{% endif %}
+
+{% set form_path = form_path|default('Config'|itemtype_form_path) %}
+<form name="form"
+      action="{{ form_path }}"
+      method="post"
+      data-track-changes="true">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
+    {{ fields.largeTitle(__('Registration'), 'ti ti-shield-star', true) }}
 
     {% if registration_key is empty %}
-        <div class="alert alert-info">
-            <div class="alert-title">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</div>
-            <span class="text-secondary">
-                <a href="{{ constant('GLPI_NETWORK_SERVICES') }}">
-                    {{ __('Register on %1$s!')|format(__('GLPI Network')) }}
-                </a>
-                <br>
-                {{ __("And retrieve your key to paste it below") }}
-            </span>
-        </div>
-    {% endif %}
 
-    {% if not services_available %}
-        <div class="alert alert-warning">
-            <div class="alert-title">{{ __('%1$s services website seems to be unavailable from your network or offline!')|format(__('GLPI Network')) }}</div>
-            <span class="text-secondary">
-                {% if curl_error is not null %}
-                    {{ __('Error was: %s')|format(curl_error) }}
-                {% endif %}
-            </span>
-        </div>
-    {% endif %}
+        {% set registration_alert %}
+            <div class="alert alert-info mb-0 d-inline-flex mt-3">
+                <div class="alert-icon">
+                    <i class="ti ti-shield-check"></i>
+                </div>
+                <div>
+                    <h4 class="alert-heading">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</h4>
+                    <div class="alert-description">
+                        <a href="{{ constant('GLPI_NETWORK_SERVICES') }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" rel="noopener noreferrer">
+                            <i class="ti ti-external-link"></i>
+                            <span>{{ __('Register on %1$s!')|format(__('GLPI Network')) }}</span>
+                        </a>
+                        {{ __("And retrieve your key to paste it below") }}
+                    </div>
+                </div>
+            </div>
+        {% endset %}
 
-    {{ fields.passwordField(
-        'glpinetwork_registration_key',
-        registration_key,
-        __('Registration key'),
-        {
+        {{ fields.htmlField('', registration_alert, null, {
             full_width: true,
-            'is_disclosable': true,
-        }
-    ) }}
+        }) }}
 
-    {% if registration_key is not empty %}
+        {{ fields.passwordField(
+            'glpinetwork_registration_key',
+            registration_key,
+            __('Registration key'),
+            {
+                full_width: true,
+                'is_disclosable': true,
+            }
+        ) }}
+
+    {% else %}
         {% if informations['validation_message'] is not empty %}
             {% set subscription_ok = informations['is_valid'] and informations['subscription']['is_running'] %}
-            {% set validation_message %}
+            {% set alert_sub_ok %}
                 <span class="{{ subscription_ok ? 'text-success' : 'text-danger' }}">
                     <i class="ti ti-info-circle"></i>
                     {{ informations['validation_message'] }}
                 </span>
             {% endset %}
-            {{ fields.htmlField('', validation_message, null, {
+            {{ fields.htmlField('', alert_sub_ok, null, {
                 full_width: true,
             }) }}
         {% endif %}
@@ -89,7 +105,7 @@
                 full_width: true,
             }) }}
 
-            {{ fields.htmlField('', __('From %1$s to %2$s')|format(informations['subscription']['begin_date']|formatted_date|e, informations['subscription']['end_date']|formatted_date)|e, __('Period'), {
+            {{ fields.htmlField('', __('From %1$s to %2$s')|format("<b>" ~ informations['subscription']['begin_date']|formatted_date|e ~ "</b>", "<b>" ~ informations['subscription']['end_date']|formatted_date|e ~ "</b>"), __('Period'), {
                 full_width: true,
             }) }}
 
@@ -97,9 +113,23 @@
                 full_width: true,
             }) }}
         {% endif %}
+
+        {% set clear_btn %}
+            <button type="submit" name="reset_registration_key" value="1" class="ms-auto btn btn-outline-danger">
+                <i class="ti ti-x"></i>
+                <span>{{ __('Remove registration key') }}</span>
+            </button>
+        {% endset %}
+
+        {{ fields.htmlField('', clear_btn, null, {
+            full_width: true,
+        }) }}
     {% endif %}
 
-    {{ fields.largeTitle(__('Marketplace')) }}
+
+
+    {{ fields.largeTitle(__('Marketplace'), 'ti ti-puzzle') }}
+
 
     {{ fields.dropdownArrayField(
         'marketplace_replace_plugins',
@@ -112,12 +142,27 @@
         __('Plugin page replacement'),
         {
             'full_width': true,
-            'add_field_html': '<div class="form-text">' ~ __('Choose whether to replace the classic plugins page with the new marketplace interface.') ~ '</div>'
+            'helper': __('Choose whether to replace the classic plugins page with the new marketplace interface.')
         }
     ) }}
 
-    {{ fields.htmlField('', '<a href="' ~ path('/front/marketplace.php')|e ~ '" class="btn btn-primary">' ~ __('Access GLPI Network Marketplace')|e ~ '</a>', null, {
+    {% set btns_marketplace %}
+        <a href="{{ path('/front/marketplace.php') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="ti ti-arrow-narrow-right-dashed"></i>
+            <span>{{ __('Access GLPI Network Marketplace') }}</span>
+        </a>
+    {% endset %}
+
+    {{ fields.htmlField('', btns_marketplace, null, {
         full_width: true,
     }) }}
 
-{% endblock %}
+    {% if canedit %}
+        <div class="card-footer mx-n2 d-flex">
+            <button type="submit" name="update" value="1" class="ms-auto btn btn-primary">
+                <i class="ti ti-device-floppy"></i>
+                <span>{{ _x('button', 'Save') }}</span>
+            </button>
+        </div>
+    {% endif %}
+</form>
