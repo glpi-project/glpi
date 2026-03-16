@@ -328,7 +328,7 @@ export class GlpiKnowbaseArticleController
     #openModal(id, key, title)
     {
         glpi_ajax_dialog({
-            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/${key}`,
+            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/SidePanel/${key}`,
             title: title || '',
             dialogclass: 'modal-lg',
         });
