@@ -587,7 +587,8 @@ trait PlanningEvent
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
+                $event_obj->getFromResultSet($data);
+                if ($event_obj->canViewItem()) {
                     $key = $data["begin"]
                       . "$$" . $itemtype
                       . "$$" . $data["id"]
@@ -598,7 +599,7 @@ trait PlanningEvent
                     }
 
                     $url = (!$options['genical'])
-                    ? $event_obj->getFormURLWithID($data['id'])
+                    ? static::getFormURLWithID($data['id'])
                     : $CFG_GLPI["url_base"]
                     . static::getFormURLWithID($data['id'], false);
 
