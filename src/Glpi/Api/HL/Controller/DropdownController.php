@@ -77,6 +77,8 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group;
 use Holiday;
+use ImageFormat;
+use ImageResolution;
 use ITILCategory;
 use ITILFollowupTemplate;
 use ITILValidationTemplate;
@@ -2003,6 +2005,45 @@ EOT,
             ],
         ];
 
+        $schemas['CameraImageFormat'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => ImageFormat::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['CameraImageResolution'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => ImageResolution::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'is_video' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -2082,6 +2123,8 @@ EOT,
                 'ApplianceEnvironment' => ApplianceEnvironment::getTypeName(1),
                 'Network' => Network::getTypeName(1),
                 'DomainRelation' => DomainRelation::getTypeName(1),
+                'CameraImageFormat' => ImageFormat::getTypeName(1),
+                'CameraImageResolution' => ImageResolution::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
@@ -2122,7 +2165,7 @@ EOT,
             'ApplianceType', 'BudgetType', 'CartridgeItemType', 'CertificateType', 'ClusterType', 'ContactType',
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
             'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
-            'ApplianceEnvironment', 'Network', 'DomainRelation', 'Stencil',
+            'ApplianceEnvironment', 'Network', 'DomainRelation', 'Stencil', 'CameraImageFormat', 'CameraImageResolution',
         ];
     }
 
