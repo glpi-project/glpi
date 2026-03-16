@@ -61,9 +61,8 @@ final class CommentsRenderer implements RendererInterface
 
         // Load users
         $user_ids = $this->extractRequiredUsersIds($threads);
-        if (count($user_ids) === 0) {
-            $users = [];
-        } else {
+        $users = [];
+        if (count($user_ids) > 0) {
             $users = User::getSeveralFromDBByCrit([
                 'id' => $user_ids,
             ]);
