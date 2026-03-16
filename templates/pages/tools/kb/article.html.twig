@@ -464,7 +464,7 @@
             document.querySelector('[data-glpi-knowbase-article]'),
             document.querySelector('[data-glpi-knowbase-side-panel]'),
             document.querySelector('[data-glpi-knowbase-side-panel-offcanvas]'),
-            '{{ mode }}',
+            '{{ mode|e('js') }}',
         );
 
         // Initialize document upload controller when modal opens

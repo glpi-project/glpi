@@ -106,7 +106,7 @@ final class AddPermissionController extends GenericFormController
         }
 
         if (isset($input['entities_id']) && $input['entities_id'] == -1) {
-            $input['entities_id'] = 'NULL';
+            $input['entities_id'] = null;
             $input['no_entity_restriction'] = 1;
         }
 
