@@ -41,7 +41,7 @@ class Plug extends CommonDBRelation
 {
     public static ?string $itemtype_1 = 'itemtype_main';
     public static ?string $items_id_1 = 'items_id_main';
-    public static bool $mustBeAttached_1       = false;
+    public static bool $mustBeAttached_1       = true;
 
     public static ?string $itemtype_2       = 'itemtype_asset';
     public static ?string $items_id_2       = 'items_id_asset';
