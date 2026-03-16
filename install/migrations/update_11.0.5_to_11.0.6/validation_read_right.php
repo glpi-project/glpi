@@ -89,6 +89,8 @@ foreach (['ticketvalidation', 'changevalidation'] as $right_name) {
 
 // Ensure the Object Lock profile also has READ for validation rights,
 // so validations remain visible when a ticket/change is viewed in read-only lock mode.
+// This is needed separately from the above query because the lock profile may have
+// rights = 0 (excluded by the NOT condition above) or may not have an entry at all.
 $lock_profile_row = $DB->request([
     'SELECT' => 'value',
     'FROM'   => 'glpi_configs',

@@ -1027,17 +1027,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         global $CFG_GLPI, $DB;
 
-        if (
-            !Session::haveRightsOr(
-                static::$rightname,
-                array_merge(
-                    [READ],
-                    static::getCreateRights(),
-                    static::getValidateRights(),
-                    static::getPurgeRights()
-                )
-            )
-        ) {
+        if (!static::canView()) {
             return;
         }
 
