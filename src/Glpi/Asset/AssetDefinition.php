@@ -354,6 +354,8 @@ TWIG, $twig_params);
 
     public function post_addItem()
     {
+        global $DB;
+
         parent::post_addItem();
 
         // Trigger the `onCapacityEnabled` hooks.
@@ -384,8 +386,11 @@ TWIG, $twig_params);
         // add asset in dropdownvisibilities
         $dropdown_visibility = new \DropdownVisibility();
         // Only State type is handled atm, DropdownVisibility is designed to handle other classes
-        $states = (new \State())->find();
-        foreach ($states as $state) {
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_states',
+        ]);
+        foreach ($it as $state) {
             if (!$dropdown_visibility->add(
                 [
                     'visible_itemtype' => $this->getCustomObjectClassName(),

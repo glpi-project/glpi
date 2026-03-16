@@ -1447,6 +1447,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $criteria = [
+            'SELECT' => ['id', 'name'],
             'FROM'   => 'glpi_documentcategories',
             'WHERE'  => [
                 'id' => new QuerySubQuery([
@@ -1511,9 +1512,12 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $params['rubdoc'] = $p['rubdoc'] ?? 0;
         $params['value'] = $p['value'] ?? 0;
         if ($readonly) {
-            $document = new Document();
-            $doclist = $document->find([]);
-            foreach ($doclist as $doc) {
+            //FIXME This seems wrong. Original code also used `CommonDBTM::find` to get every single document. It doesn't account for the selected value(s), entity, category, or if the dropdown should accept multiple values or not.
+            $it = $DB->request([
+                'SELECT' => ['id', 'name'],
+                'FROM'   => 'glpi_documents',
+            ]);
+            foreach ($it as $doc) {
                 $docvalue[$doc['id']] = $doc['name'];
             }
 

@@ -1807,6 +1807,7 @@ TWIG, $twig_params);
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
+        global $DB;
         // TODO Make this function only return the card data and leave rendering to Vue components. This will deduplicate the data between display and filters.
         if ($column_field !== 'projectstates_id') {
             return [];
@@ -1827,8 +1828,10 @@ TWIG, $twig_params);
         }
         $items      = self::getDataToDisplayOnKanban($ID, $criteria);
 
-        $projecttasktype = new ProjectTaskType();
-        $alltypes = $projecttasktype->find();
+        $alltypes = iterator_to_array($DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => ProjectTaskType::getTable(),
+        ]), false);
 
         $extracolumns = self::getAllKanbanColumns('projectstates_id', $column_ids, $get_default);
         foreach ($extracolumns as $column_id => $column) {

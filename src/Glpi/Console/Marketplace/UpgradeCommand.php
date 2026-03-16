@@ -63,6 +63,8 @@ class UpgradeCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        global $DB;
+
         if (!Controller::isCLIAllowed()) {
             $output->writeln("<error>" . __('Access to the marketplace CLI commands is disallowed by the GLPI configuration') . "</error>");
             return self::FAILURE;
@@ -83,13 +85,19 @@ class UpgradeCommand extends AbstractCommand
         $plugins_manager = new Plugin();
         $plugins_api     = new Plugins();
 
-        $local_plugins_data = $plugins_manager->find();
-        $local_versions     = \array_column($local_plugins_data, 'version', 'directory');
-        $active_plugins     = \array_column(
-            \array_filter($local_plugins_data, fn($plugin_data) => $plugin_data['state'] === Plugin::ACTIVATED),
-            'id',
-            'directory'
-        );
+        $it = $DB->request([
+            'SELECT' => ['id', 'directory', 'version', 'state'],
+            'FROM'   => $plugins_manager::getTable(),
+        ]);
+
+        $local_versions     = [];
+        $active_plugins     = [];
+        foreach ($it as $plugin_data) {
+            $local_versions[$plugin_data['directory']] = $plugin_data['version'];
+            if ($plugin_data['state'] === Plugin::ACTIVATED) {
+                $active_plugins[$plugin_data['directory']] = $plugin_data['id'];
+            }
+        }
 
         // Update all plugins sources, to be sure that all plugins have the latest version.
         $updated_plugins = [];

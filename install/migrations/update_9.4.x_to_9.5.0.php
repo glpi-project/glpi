@@ -1438,6 +1438,8 @@ HTML,
     /** /Appliances & webapps */
 
     /** update project and itil task templates to tinymce content **/
+
+    /** @var array<class-string<CommonDBTM>, string> $template_types */
     $template_types = [
         'ProjectTaskTemplate' => 'description',
         'TaskTemplate'        => 'content',
@@ -1454,8 +1456,10 @@ HTML,
         );
         $stmt = $DB->prepare($query);
 
-        $template_inst = new $template_type();
-        $templates = $template_inst->find();
+        $templates = $DB->request([
+            'SELECT' => ['id', $fieldname],
+            'FROM'   => $template_type::getTable(),
+        ]);
         foreach ($templates as $template) {
             $new_description = str_replace("\n", '<br>', $template[$fieldname]);
             $stmt->bind_param(
