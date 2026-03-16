@@ -864,8 +864,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['can_link_items']      = $can_update;
 
             // General fields
-            $params['views']    = $this->fields['view'];
-            $params['can_edit'] = $can_update;
+            $params['views']        = $this->fields['view'];
+            $params['can_edit']     = $can_update;
+            $params['illustration'] = $this->fields['illustration'] ?: 'kb-faq';
 
             // Add actions
             $params['actions'] = $mode === "edit" ? $this->getEditorActions() : [];
