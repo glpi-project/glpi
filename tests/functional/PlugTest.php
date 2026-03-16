@@ -38,6 +38,7 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
+use Plug;
 use Toolbox;
 
 class PlugTest extends DbTestCase
@@ -72,7 +73,8 @@ class PlugTest extends DbTestCase
                 continue;
             }
 
-            $this->assertTrue(true);
+            $item = \getItemForItemtype($itemtype);
+            $this->assertContains(Plug::class, $item->getCloneRelations(), $itemtype);
         }
     }
 }

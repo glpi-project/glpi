@@ -60,7 +60,9 @@ class HasPlugCapacity extends AbstractCapacity
 
     public function getCloneRelations(): array
     {
-        return [];
+        return [
+            Plug::class,
+        ];
     }
 
     public function isUsed(string $classname): bool
