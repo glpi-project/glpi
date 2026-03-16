@@ -54,7 +54,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use User;
 
-final class AddPermissionController extends GenericFormController
+final class KnowbaseFormController extends GenericFormController
 {
     use CrudControllerTrait;
 
