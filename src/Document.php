@@ -997,12 +997,34 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             ],
         ];
 
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => static::getTable(),
+            'field'              => 'filesize',
+            'name'               => __('Size'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+        ];
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        if ($field == 'filesize' && $values[$field] !== null) {
+            return htmlescape(Toolbox::getSize($values[$field]));
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     /**
@@ -1053,6 +1075,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $fullpath = GLPI_UPLOAD_DIR . "/" . $filename;
+        $filesize = filesize($fullpath);
         $filename = str_replace($prefix, '', $filename);
 
         if (!is_dir(GLPI_UPLOAD_DIR)) {
@@ -1148,6 +1171,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $input['filepath'] = $new_path;
         // Checksum
         $input['sha1sum']  = $sha1sum;
+        // Size
+        $input['filesize'] = $filesize;
         return true;
     }
 
@@ -1173,6 +1198,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $fullpath = GLPI_TMP_DIR . "/" . $filename;
+        $filesize = filesize($fullpath);
         $filename = str_replace($prefix, '', $filename);
         if (!is_dir(GLPI_TMP_DIR)) {
             Session::addMessageAfterRedirect(__s("Temporary directory doesn't exist"), false, ERROR);
@@ -1257,6 +1283,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $input['filepath'] = $new_path;
         // Checksum
         $input['sha1sum']  = $sha1sum;
+        // Size
+        $input['filesize'] = $filesize;
         return true;
     }
 
