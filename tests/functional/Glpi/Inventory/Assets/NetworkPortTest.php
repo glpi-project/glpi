@@ -1538,7 +1538,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //8 connections on port + one hub - 1 converted
         $unmanageds = $DB->request([
             'SELECT' => 'id',
-            'FROM' => \Unmanaged::getTable()
+            'FROM' => \Unmanaged::getTable(),
         ]);
         $this->assertCount(8, $unmanageds);
         foreach ($unmanageds as $toremove) {

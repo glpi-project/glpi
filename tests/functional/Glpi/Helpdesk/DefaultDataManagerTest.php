@@ -427,10 +427,14 @@ final class DefaultDataManagerTest extends DbTestCase
 
     public function testsTilesAreAddedAfterInstallation(): void
     {
+        global $DB;
         $this->assertEquals(6, countElementsInTable(Item_Tile::getTable()));
 
         // Default tiles must be attached to the root entity
-        $profile_tiles = (new Item_Tile())->find([]);
+        $profile_tiles = $DB->request([
+            'SELECT' => ['itemtype_item', 'items_id_item'],
+            'FROM' => Item_Tile::getTable(),
+        ]);
         foreach ($profile_tiles as $row) {
             $this->assertEquals(Entity::class, $row['itemtype_item']);
             $this->assertEquals(0, $row['items_id_item']);
@@ -453,18 +457,23 @@ final class DefaultDataManagerTest extends DbTestCase
 
     public function testDefaultTilesAreValid(): void
     {
+        global $DB;
         // Arrange: load valid illustration names
         $illustration_manager = new IllustrationManager();
         $valid_icons = $illustration_manager->getAllIconsIds();
 
         // Act: load the default tiles
-        $profile_tiles = (new Item_Tile())->find([]);
-        $tiles = array_map(function ($row) {
+        $profile_tiles = $DB->request([
+            'SELECT' => ['itemtype_tile', 'items_id_tile'],
+            'FROM' => Item_Tile::getTable(),
+        ]);
+        $tiles = [];
+        foreach ($profile_tiles as $row) {
             $itemtype = $row['itemtype_tile'];
             $tile = new $itemtype();
             $tile->getFromDb($row['items_id_tile']);
-            return $tile;
-        }, $profile_tiles);
+            $tiles[] = $tile;
+        }
 
         // Assert: there should be at least one tile and each tile should have a
         // valid title, description, illustration and link
