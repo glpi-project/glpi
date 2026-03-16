@@ -189,13 +189,6 @@ class Telemetry extends CommonGLPI
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        $curl_version = curl_version();
-        if (defined('CURLSSLOPT_NATIVE_CA')
-            && $curl_version
-            && version_compare($curl_version['version'], '7.71', '>=')) {
-            curl_setopt($ch, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NATIVE_CA);
-        }
-
         if ($response = curl_exec($ch)) {
             $headers = substr($response, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
             $header_matches = [];
