@@ -2336,7 +2336,7 @@ final class SQLProvider implements SearchProviderInterface
             ];
         }
 
-        if (isset($opt['htmltext']) && $opt['htmltext'] && !empty($val) && strpos($val, ' ') !== false) {
+        if (isset($opt['htmltext']) && $opt['htmltext'] && !empty($val) && str_contains($val, ' ')) {
             // This handles cases like "<b>text</b> suite" when searching for "text suite"
             $val_with_tags = str_replace(' ', '%', $val);
             return [
