@@ -35,6 +35,7 @@
 namespace Glpi\Api\HL\Controller;
 
 use Agent;
+use AgentType;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -44,6 +45,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use SNMPCredential;
 
 use function Safe\file_get_contents;
 
@@ -63,6 +65,7 @@ final class InventoryController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
+                    'type' => self::getDropdownTypeSchema(class: AgentType::class, full_schema: 'AgentType') + ['readOnly' => true],
                     'deviceid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
                     'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + ['readOnly' => true],
@@ -128,45 +131,143 @@ final class InventoryController extends AbstractController
                     'use_module_collect_data' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'readOnly' => true],
                 ],
             ],
+            'AgentType' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => AgentType::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                ],
+            ],
+            'SNMPCredential' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => SNMPCredential::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 64],
+                    'snmp_version' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'snmpversion',
+                        'enum' => ['1', '2c', '3'],
+                        'required' => true,
+                    ],
+                    'community' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'username' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'authentication' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [1, 2, 3, 4, 5, 6],
+                        'description' => <<<EOT
+                        - 1: MD5
+                        - 2: SHA
+                        - 3: SHA224
+                        - 4: SHA256
+                        - 5: SHA384
+                        - 6: SHA512
+EOT,
+                    ],
+                    'auth_passphrase' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'writeOnly' => true],
+                    'encryption' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [1, 2, 3, 4, 5, 6, 7],
+                        'description' => <<<EOT
+                        - 1: DES
+                        - 2: AES
+                        - 3: 3DES
+                        - 4: AES192C
+                        - 5: AES256C
+                        - 6: CFB192-AES
+                        - 7: CFB256-AES
+EOT,
+                    ],
+                    'priv_passphrase' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'writeOnly' => true],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
         ];
     }
 
-    #[Route(path: '/Agent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => 'Agent|SNMPCredential',
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\SearchRoute(schema_name: 'Agent')]
+    #[Doc\SearchRoute(schema_name: '{itemtype}')]
     public function search(Request $request): Response
     {
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema(
+            $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            $request->getParameters(),
+        );
     }
 
-    #[Route(path: '/Agent/{id}', methods: ['GET'], requirements: [
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Agent|SNMPCredential',
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\GetRoute(schema_name: 'Agent')]
+    #[Doc\GetRoute(schema_name: '{itemtype}')]
     public function getItem(Request $request): Response
     {
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+        );
     }
 
-    #[Route(path: '/Agent/{id}', methods: ['PATCH'], requirements: [
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => 'SNMPCredential',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\UpdateRoute(schema_name: 'Agent')]
+    #[Doc\CreateRoute(schema_name: '{itemtype}')]
+    public function createItem(Request $request): Response
+    {
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getItem'],
+            extra_get_route_params: ['mapped' => ['itemtype' => $request->getAttribute('itemtype')]],
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Agent|SNMPCredential',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: '{itemtype}')]
     public function updateItem(Request $request): Response
     {
-        return ResourceAccessor::updateBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+        );
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Agent|SNMPCredential',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
-    #[Doc\DeleteRoute(schema_name: 'Agent')]
+    #[Doc\DeleteRoute(schema_name: '{itemtype}')]
     public function deleteItem(Request $request): Response
     {
-        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Agent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+        );
     }
 
     #[Route(path: '/Agent/{id}/InventoryRequest', methods: ['POST'], requirements: [
