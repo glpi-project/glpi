@@ -312,14 +312,4 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
 
         return $input;
     }
-
-    public function post_deleteItem()
-    {
-        $plug = new Plug();
-        $plugs = $plug->find(['items_id_main' => $this->fields['id'], 'itemtype_main' => get_class($this)]);
-
-        foreach ($plugs as $p) {
-            $plug->delete(['id' => $p->fields['id']]);
-        }
-    }
 }

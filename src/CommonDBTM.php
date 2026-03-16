@@ -1082,6 +1082,11 @@ class CommonDBTM extends CommonGLPI
             $dbinstance->deleteByCriteria(['itemtype' => static::class, 'items_id' => $this->getID()], true);
         }
 
+        if (in_array(static::class, $CFG_GLPI['plug_types'], true)) {
+            $plug = new Plug();
+            $plug->deleteByCriteria(['items_id_main' => $this->fields['id'], 'itemtype_main' => static::class], true);
+        }
+
         if (in_array(static::class, $CFG_GLPI['itemdevices_types'], true)) {
             Item_Devices::cleanItemDeviceDBOnItemDelete(
                 static::class,
