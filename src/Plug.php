@@ -73,45 +73,6 @@ class Plug extends CommonDBRelation
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
-    {
-        $actions = parent::getSpecificMassiveActions($checkitem);
-        if (static::canUpdate() && is_null($checkitem)) {
-            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Unlink plug');
-        }
-        return $actions;
-    }
-
-    public static function processMassiveActionsForOneItemtype(
-        MassiveAction $ma,
-        CommonDBTM $item,
-        array $ids
-    ) {
-        switch ($ma->getAction()) {
-            case 'unlink':
-                foreach ($ids as $id) {
-                    $plug = new self();
-                    if ($plug->getFromDB($id)) {
-                        if ($plug->update(
-                            [
-                                'itemtype_main'  => '',
-                                'items_id_main'  => 0,
-                                'id'            => $id,
-                            ]
-                        )
-                        ) {
-                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                        } else {
-                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                        }
-                    }
-                }
-                return;
-        }
-        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-    }
-
-
     /**
      * Prepare input data for adding the item. If false, add is canceled.
      *
