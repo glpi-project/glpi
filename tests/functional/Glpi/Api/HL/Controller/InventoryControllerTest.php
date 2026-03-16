@@ -40,6 +40,7 @@ use Computer;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPICallAsserter;
 use Glpi\Tests\HLAPITestCase;
+use Lockedfield;
 use SNMPCredential;
 
 class InventoryControllerTest extends HLAPITestCase
@@ -133,7 +134,10 @@ class InventoryControllerTest extends HLAPITestCase
                 'snmp_version' => '2c',
             ]
         );
+    }
 
+    public function testAutoTestCRUDAgentNoRights()
+    {
         $agenttypes_id = $this->createItem(AgentType::class, [
             'name' => 'Test Agent Type',
         ])->getID();
@@ -150,6 +154,49 @@ class InventoryControllerTest extends HLAPITestCase
             itemtype: Agent::class,
             items_id: $agents_id,
             extra_options: ['skip_create_test' => true]
+        );
+    }
+
+    public function testCRUDLockedField()
+    {
+        $this->api->autoTestCRUD('/Inventory/LockedField', [
+            'itemtype' => Computer::class,
+            'items_id' => getItemByTypeName(Computer::class, '_test_pc01', true),
+            'field' => 'comment',
+        ]);
+    }
+
+    public function testCRUDLockedFieldNoRights()
+    {
+        $locked_field = $this->createItem(Lockedfield::class, [
+            'itemtype' => Computer::class,
+            'items_id' => getItemByTypeName(Computer::class, '_test_pc01', true),
+            'field' => 'comment',
+        ]);
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Inventory/LockedField',
+            itemtype: Lockedfield::class,
+            items_id: $locked_field->getID(),
+            deny_read: static function () {
+                $_SESSION['glpiactiveprofile'][Lockedfield::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            deny_create: static function () {
+                $_SESSION['glpiactiveprofile'][Lockedfield::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            deny_delete: static function () {
+                $_SESSION['glpiactiveprofile'][Lockedfield::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            deny_purge: static function () {
+                $_SESSION['glpiactiveprofile'][Lockedfield::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            deny_restore: static function () {
+                $_SESSION['glpiactiveprofile'][Lockedfield::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            create_params: [
+                'itemtype' => Computer::class,
+                'items_id' => getItemByTypeName(Computer::class, '_test_pc02', true),
+                'field' => 'comment',
+            ]
         );
     }
 }

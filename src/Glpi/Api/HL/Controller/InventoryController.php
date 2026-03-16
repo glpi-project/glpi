@@ -45,6 +45,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Lockedfield;
 use SNMPCredential;
 
 use function Safe\file_get_contents;
@@ -193,24 +194,55 @@ EOT,
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 ],
             ],
+            'LockedField' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => Lockedfield::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'field' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 50],
+                    'value' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The last inventoried value of the locked field.',
+                        'maxLength' => 255,
+                    ],
+                    'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'date_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'date_mod' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
         ];
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => 'Agent|SNMPCredential',
+        'itemtype' => 'Agent|LockedField|SNMPCredential',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
     #[Doc\SearchRoute(schema_name: '{itemtype}')]
     public function search(Request $request): Response
     {
         return ResourceAccessor::searchBySchema(
-            $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
-            $request->getParameters(),
+            schema: $this->getKnownSchema($request->getAttribute('itemtype'), $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
         );
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
-        'itemtype' => 'Agent|SNMPCredential',
+        'itemtype' => 'Agent|LockedField|SNMPCredential',
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.3')]
@@ -225,7 +257,7 @@ EOT,
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => 'SNMPCredential',
+        'itemtype' => 'LockedField|SNMPCredential',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
@@ -241,7 +273,7 @@ EOT,
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => 'Agent|SNMPCredential',
+        'itemtype' => 'Agent|LockedField|SNMPCredential',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
@@ -256,7 +288,7 @@ EOT,
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => 'Agent|SNMPCredential',
+        'itemtype' => 'Agent|LockedField|SNMPCredential',
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.3')]
