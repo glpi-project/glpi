@@ -56,50 +56,6 @@ class SavedSearchTest extends DbTestCase
         $this->assertNotEmpty(SavedSearch::getVisibilityCriteria()['WHERE']);
     }
 
-    public function testAddVisibilityRestrict()
-    {
-        $test_root    = getItemByTypeName('Entity', '_test_root_entity', true);
-        $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
-        $test_child_2 = getItemByTypeName('Entity', '_test_child_2', true);
-        $test_child_3 = getItemByTypeName('Entity', '_test_child_3', true);
-
-        //first, as a super-admin
-        $this->login();
-        $this->assertSame('', SavedSearch::addVisibilityRestrict());
-
-        $this->login('normal', 'normal');
-        $this->assertSame(
-            "`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5' AND (true)",
-            SavedSearch::addVisibilityRestrict()
-        );
-
-        //add public saved searches read right for normal profile
-        global $DB;
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => 1],
-            [
-                'profiles_id'  => 2,
-                'name'         => 'bookmark_public',
-            ]
-        );
-
-        //ACLs have changed: login again.
-        $this->login('normal', 'normal');
-
-        $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND (true)",
-            SavedSearch::addVisibilityRestrict()
-        );
-
-        // Check entity restriction
-        $this->setEntity('_test_root_entity', true);
-        $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
-            SavedSearch::addVisibilityRestrict()
-        );
-    }
-
     public function testGetMine()
     {
         global $DB;

@@ -115,6 +115,8 @@ The present file will list all changes made to the project; according to the
 - `QueryParam` class
 - `QuerySubQuery` class
 - `QueryUnion` class
+- `Reminder::addVisibilityRestrict()`
+- `SavedSearch::addVisibilityRestrict()`
 - `Search::joinDropdownTranslations()`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
@@ -123,7 +125,6 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
-
 
 ## [11.0.7] unreleased
 
