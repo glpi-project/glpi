@@ -41,14 +41,11 @@ use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 use Plug;
 
 class HasPlugCapacityTest extends DbTestCase
 {
-    use CapacityUsageTestTrait;
-
     protected function getTargetCapacity(): string
     {
         return HasPlugCapacity::class;
@@ -261,26 +258,8 @@ class HasPlugCapacityTest extends DbTestCase
         $this->assertTrue($capacity->isUsed($definition->getAssetClassName()));
     }
 
-
-    public static function provideIsUsed(): iterable
-    {
-        yield [
-            'target_classname'   => Plug::class,
-        ];
-    }
-
-    public static function provideGetCapacityUsageDescription(): iterable
-    {
-        yield [
-            'target_classname'   => Plug::class,
-            'expected'           => '%d plugs declared on %d assets',
-        ];
-    }
-
     public function testGetCapacityUsageDescription(): void
     {
-        global $CFG_GLPI;
-
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
@@ -290,7 +269,7 @@ class HasPlugCapacityTest extends DbTestCase
 
         $capacity = new HasPlugCapacity();
         $this->assertEquals(
-            '0 plugs attached to 0 assets',
+            '0 plugs declared on 0 assets',
             $capacity->getCapacityUsageDescription($class)
         );
 
@@ -313,7 +292,7 @@ class HasPlugCapacityTest extends DbTestCase
         );
 
         $this->assertEquals(
-            '1 plugs attached to 1 assets',
+            '1 plugs declared on 1 assets',
             $capacity->getCapacityUsageDescription($class)
         );
 
@@ -327,7 +306,7 @@ class HasPlugCapacityTest extends DbTestCase
         );
 
         $this->assertEquals(
-            '2 plugs attached to 2 assets',
+            '2 plugs declared on 2 assets',
             $capacity->getCapacityUsageDescription($class)
         );
     }
