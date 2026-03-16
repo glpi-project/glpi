@@ -251,15 +251,30 @@
                         {% if documents|length > 0 %}
                             <div class="d-flex flex-wrap gap-2 mb-2">
                                 {% for doc in documents %}
-                                    <a
-                                        href="{{ doc.download_url }}"
-                                        class="kb-document-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
-                                        target="_blank"
+                                    <span
+                                        class="kb-document-badge badge bg-light text-dark d-flex align-items-center gap-2"
+                                        data-glpi-document-assoc-id="{{ doc.assoc_id }}"
                                         data-testid="document-chip"
                                     >
-                                        <i class="ti {{ doc.icon_class }} {{ doc.color_class }}"></i>
-                                        <span>{{ doc.filename }}</span>
-                                    </a>
+                                        <a
+                                            href="{{ doc.download_url }}"
+                                            class="d-flex align-items-center gap-2 text-decoration-none"
+                                            target="_blank"
+                                        >
+                                            <i class="ti {{ doc.icon_class }} {{ doc.color_class }}"></i>
+                                            <span>{{ doc.filename }}</span>
+                                        </a>
+
+                                        {% if can_edit %}
+                                            <button
+                                                type="button"
+                                                class="kb-unlink-document btn-close btn-close-white"
+                                                data-glpi-kb-unlink-document="{{ doc.assoc_id }}"
+                                                title="{{ __('Unlink document') }}"
+                                                aria-label="{{ __('Unlink document') }}"
+                                            ></button>
+                                        {% endif %}
+                                    </span>
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -318,11 +333,57 @@
                                                     role="tabpanel"
                                                     aria-labelledby="kb-modal-upload-tab"
                                                 >
+                                                    <form id="kb-document-upload-form" method="post">
+                                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="itemtype" value="KnowbaseItem">
+                                                        <input type="hidden" name="items_id" value="{{ item_id }}">
+
+                                                        {# File uploader component #}
+                                                        {{ include('components/form/file_uploader.html.twig', {
+                                                            'input_id': 'kb-document-input',
+                                                            'input_name': 'files[]',
+                                                            'multiple': true,
+                                                        }, with_context = false) }}
+
+                                                        {# KB-specific: Description #}
+                                                        <div class="mb-3 mt-3">
+                                                            <label for="kb-document-description" class="form-label">
+                                                                {{ __('Description') }}
+                                                                <span class="text-muted">({{ __('optional') }})</span>
+                                                            </label>
+                                                             <textarea
+                                                                class="form-control"
+                                                                id="kb-document-description"
+                                                                name="comment"
+                                                                rows="2"
+                                                                placeholder="{{ __('Add a description for these documents...') }}"
+                                                            ></textarea>
+                                                        </div>
+
+                                                        {# Actions #}
+                                                        <div class="d-flex justify-content-end gap-2 mt-4">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                {{ __('Cancel') }}
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary"
+                                                                    data-glpi-kb-upload-submit disabled>
+                                                                <i class="ti ti-upload me-1"></i>
+                                                                {{ __('Upload Documents') }}
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <div
+                                                    class="tab-pane fade"
+                                                    id="kb-modal-link-pane"
+                                                    role="tabpanel"
+                                                    aria-labelledby="kb-modal-link-tab"
+                                                >
                                                     <div class="text-center text-muted py-4">
-                                                        <i class="ti ti-cloud-upload fs-1 mb-3 d-inline-block"></i>
-                                                        <p>{{ __('Document upload coming soon...') }}</p>
+                                                        <i class="ti ti-file-symlink fs-1 mb-3 d-inline-block"></i>
+                                                        <p>{{ __('Link existing documents coming soon...') }}</p>
                                                         <a
-                                                            href="{{ 'KnowbaseItem'|itemtype_form_path }}?id={{ item_id }}&amp;forcetab=Document_Item$1"
+                                                            href="{{ 'Document'|itemtype_search_path }}"
                                                             class="btn btn-primary"
                                                         >
                                                             {{ __('Use existing interface') }}
