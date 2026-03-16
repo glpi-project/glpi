@@ -72,15 +72,14 @@ class Plug extends CommonDBRelation
         return $ong;
     }
 
-
     /**
-     * Prepare input data for adding the item. If false, add is canceled.
+     * Prepare input data.
      *
-     * @param array<string, mixed> $input datas used to add the item
+     * @param array<string, mixed> $input
      *
-     * @return false|array<string, mixed> the modified $input array
-     **/
-    public static function handleInput($input)
+     * @return false|array<string, mixed>
+     */
+    private function prepareInput($input): array|false
     {
         if (isset($input['name']) && empty($input['name'])) {
             Session::addMessageAfterRedirect(
@@ -91,30 +90,26 @@ class Plug extends CommonDBRelation
             return false;
         }
 
-        if (isset($input['itemtype_main']) &&  !is_a($input['itemtype_main'], CommonDBTM::class, true)) {
+        if (isset($input['itemtype_main']) && !is_a($input['itemtype_main'], CommonDBTM::class, true)) {
             trigger_error(
-                sprintf('Invalid itemtype_main value: %s', $input['itemtype_main'] ?? 'NULL'),
+                sprintf('Invalid itemtype_main value: %s', $input['itemtype_main']),
                 E_USER_WARNING
             );
             return false;
         }
 
         return $input;
-
     }
-
 
     public function prepareInputForAdd($input)
     {
-        return self::handleInput($input);
+        return $this->prepareInput($input);
     }
-
 
     public function prepareInputForUpdate($input)
     {
-        return self::handleInput($input);
+        return $this->prepareInput($input);
     }
-
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -184,10 +179,10 @@ class Plug extends CommonDBRelation
 
         if (Plug::canCreate()) {
             $rand = mt_rand();
-            echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
-               action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='items_id_main' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype_main' value='" . $item::class . "'>\n";
+            echo "<form id='form_device_add$rand' name='form_device_add$rand'
+               action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>";
+            echo "<input type='hidden' name='items_id_main' value='$ID'>";
+            echo "<input type='hidden' name='itemtype_main' value='" . htmlescape($item::class) . "'>";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label> <span class='form-help' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-html='true'
                      data-bs-title='" . __s('Name will by suffixed by number') . "'>?</span></td>";
@@ -221,22 +216,18 @@ class Plug extends CommonDBRelation
             $plug = new Plug();
             $plug->getFromDB($row['id']);
 
-            $itemtype_linked = "";
-            if ($plug->fields['itemtype_asset'] && $plug->fields['items_id_asset']) {
-                if (is_a($plug->fields['itemtype_asset'], CommonDBTM::class, true)) {
-                    $linked_item = new $plug->fields['itemtype_asset']();
-                    if ($linked_item->getFromDB($plug->fields['items_id_asset'])) {
-                        $itemtype_linked = $linked_item->getLink();
-                    }
-                }
-            }
+            $asset = is_a($plug->fields['itemtype_asset'], CommonDBTM::class, true)
+                ? new $plug->fields['itemtype_asset']()
+                : null;
 
             $entries[] = [
                 'name' => $plug->getLink(),
                 'itemtype' => $plug::class,
                 'items_id' => $plug->getID(),
                 'custom_name' => $plug->fields['custom_name'],
-                'linked_item' => $itemtype_linked,
+                'linked_item' => $asset !== null && $plug->fields['items_id_asset'] && $asset->getFromDB($plug->fields['items_id_asset'])
+                    ? $asset->getLink()
+                    : '',
                 'id' => $row['id'],
             ];
         }

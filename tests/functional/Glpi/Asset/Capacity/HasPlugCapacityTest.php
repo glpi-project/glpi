@@ -273,7 +273,7 @@ class HasPlugCapacityTest extends DbTestCase
     {
         yield [
             'target_classname'   => Plug::class,
-            'expected'           => '%d plugs attached to %d assets',
+            'expected'           => '%d plugs declared on %d assets',
         ];
     }
 
