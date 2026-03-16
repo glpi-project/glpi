@@ -61,7 +61,7 @@ class Plug extends CommonDBRelation
 
     public static function getSectorizedDetails(): array
     {
-        return ['assets', PDU::class, self::class];
+        return ['assets'];
     }
 
     public function defineTabs($options = [])
