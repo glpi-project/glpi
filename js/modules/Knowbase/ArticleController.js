@@ -130,11 +130,8 @@ export class GlpiKnowbaseArticleController
             }
         }
 
-        // Enable dots menu once listeners are ready
-        const dots = this.#container.querySelector('[data-glpi-kb-dots]');
-        if (dots) {
-            dots.classList.remove('pointer-events-none');
-        }
+        // Enable interactions once all listeners are registered
+        this.#container.classList.remove('pe-none');
     }
 
     #initEventListeners()

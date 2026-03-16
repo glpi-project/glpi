@@ -31,7 +31,7 @@
  #}
 
 <div
-    class="d-flex mx-n2 my-n2"
+    class="d-flex mx-n2 my-n2 pe-none"
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
@@ -94,7 +94,7 @@
                 <div class="dropdown cursor-pointer d-flex align-items-center">
                     {% if mode == "edit" and actions|length > 0 %}
                         <i
-                            class="ti ti-dots-vertical pointer-events-none"
+                            class="ti ti-dots-vertical"
                             data-glpi-kb-dots
                             data-bs-toggle="dropdown"
                             aria-expanded="false"

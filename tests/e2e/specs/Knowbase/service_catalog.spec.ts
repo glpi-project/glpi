@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+import { randomUUID } from "crypto";
 import { expect, test } from "../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
@@ -40,6 +41,7 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     const kb = new KnowbaseItemPage(page);
 
     // Create a KB and go to its page
+    const category_name = `My category ${randomUUID()}`
     const [kb_id] = await Promise.all([
         api.createItem('KnowbaseItem', {
             name: 'My kb entry for service catalog config test',
@@ -47,7 +49,7 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
             answer: "My answer",
         }),
         api.createItem('Glpi\\Form\\Category', {
-            'name': "My category",
+            'name': category_name,
         }),
     ]);
     await kb.goto(kb_id);
@@ -67,7 +69,7 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     await page.getByText('Show in service catalog').click();
     await page.getByText('Pin to top of the service catalog').click();
     await kb.getRichTextByLabel('Description').fill("My description");
-    await kb.doSetDropdownValue(kb.getDropdownByLabel('Category'), "My category", false);
+    await kb.doSetDropdownValue(kb.getDropdownByLabel('Category'), category_name, false);
 
     // Save and reload
     await kb.getButton('Save').click();
@@ -81,5 +83,5 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     await expect(kb.getCheckbox('Show in service catalog')).toBeChecked();
     await expect(kb.getCheckbox('Pin to top of the service catalog')).toBeChecked();
     await expect(kb.getRichTextByLabel('Description')).toHaveText("My description");
-    await expect(kb.getDropdownByLabel('Category')).toHaveText("My category");
+    await expect(kb.getDropdownByLabel('Category')).toHaveText(category_name);
 });
