@@ -59,14 +59,6 @@ class Plug extends CommonDBRelation
         return "ti ti-plug";
     }
 
-    public function post_getEmpty()
-    {
-        $this->fields['itemtype_main'] = PDU::class;
-        $this->fields['items_id_main'] = 0;
-        $this->fields['itemtype_asset'] = Computer::class;
-        $this->fields['items_id_asset'] = 0;
-    }
-
     public static function getSectorizedDetails(): array
     {
         return ['assets', PDU::class, self::class];
