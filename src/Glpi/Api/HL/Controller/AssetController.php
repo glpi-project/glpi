@@ -117,6 +117,7 @@ use PeripheralModel;
 use PeripheralType;
 use Phone;
 use PhoneModel;
+use PhonePowerSupply;
 use PhoneType;
 use Printer;
 use PrinterModel;
@@ -840,6 +841,17 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
+                'brand' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
+                'power_supply' => self::getDropdownTypeSchema(class: PhonePowerSupply::class, field: 'phonepowersupplies_id', full_schema: 'PhonePowerSupply') + ['x-version-introduced' => '2.3.0'],
+                'number_line' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
+                'have_headset' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'have_hp' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'is_global' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
+                'ticket_tco' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'x-version-introduced' => '2.3.0'],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'last_inventory_update' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3.0'],
             ],
         ];
 
