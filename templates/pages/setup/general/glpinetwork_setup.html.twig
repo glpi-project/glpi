@@ -62,7 +62,7 @@
                 <div>
                     <h4 class="alert-heading">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</h4>
                     <div class="alert-description">
-                        <a href="{{ constant('GLPI_NETWORK_SERVICES') }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" rel=\"noopener noreferrer\">
+                        <a href="{{ constant('GLPI_NETWORK_SERVICES') }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" rel="noopener noreferrer">
                             <i class="ti ti-external-link"></i>
                             <span>{{ __('Register on %1$s!')|format(__('GLPI Network')) }}</span>
                         </a>
@@ -147,7 +147,7 @@
     ) }}
 
     {% set btns_marketplace %}
-        <a href="{{ path('/front/marketplace.php')|e }}" class="btn btn-outline-secondary btn-sm">
+        <a href="{{ path('/front/marketplace.php') }}" class="btn btn-outline-secondary btn-sm">
             <i class="ti ti-arrow-narrow-right-dashed"></i>
             <span>{{ __('Access GLPI Network Marketplace') }}</span>
         </a>
