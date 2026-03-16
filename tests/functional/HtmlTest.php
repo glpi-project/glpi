@@ -1438,4 +1438,43 @@ SCSS,
 
         $this->assertSame($expected, \Html::timestampToRelativeStr($timestamp));
     }
+
+    public function testFileWithMissingTempFileDoesNotThrow(): void
+    {
+        $uploads = [
+            '_filename'      => ['20230101_120000_0000000nonexistent.txt'],
+            '_tag_filename'  => ['abc123tag'],
+        ];
+
+        $result = \Html::file([
+            'display' => false,
+            'uploads' => $uploads,
+        ]);
+
+        $this->assertIsString($result);
+        $this->hasPhpLogRecordThatContains('not found, skipping', LogLevel::WARNING);
+    }
+
+    public function testFileWithExistingTempFileReturnsFilename(): void
+    {
+        $filename = '20230101_120000_0000000testfile.txt';
+        $filepath = GLPI_TMP_DIR . '/' . $filename;
+        file_put_contents($filepath, 'test content');
+
+        try {
+            $uploads = [
+                '_filename'      => [$filename],
+                '_tag_filename'  => ['abc123tag'],
+            ];
+
+            $result = \Html::file([
+                'display' => false,
+                'uploads' => $uploads,
+            ]);
+
+            $this->assertStringContainsString('testfile.txt', $result);
+        } finally {
+            unlink($filepath);
+        }
+    }
 }
