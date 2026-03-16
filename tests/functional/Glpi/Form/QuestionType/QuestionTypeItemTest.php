@@ -76,8 +76,8 @@ final class QuestionTypeItemTest extends DbTestCase
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
                     'question'     => 'Asset',
-                    'content'      => '1) Asset: My Computer', 
-                ], 
+                    'content'      => '1) Asset: My Computer',
+                ],
             ],
 
             'user — friendly name (realname firstname)' => [
@@ -199,7 +199,7 @@ final class QuestionTypeItemTest extends DbTestCase
                     return [
                         'itemtype'  => Ticket::class,
                         'items_id'  => $linked->getID(),
-                        'extra_data' => json_encode(        
+                        'extra_data' => json_encode(
                             (new QuestionTypeItemExtraDataConfig(itemtype: Ticket::class))->jsonSerialize()
                         ),
                         'question'  => 'Linked Ticket',
