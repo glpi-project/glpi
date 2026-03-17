@@ -308,6 +308,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
+        $default_itemtype = $this->getDefaultValueItemtype($question);
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item/administration_template.html.twig',
@@ -315,11 +316,12 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'init'             => $question != null,
                 'question'         => $question,
                 'question_type'    => $this::class,
-                'default_itemtype' => $this->getDefaultValueItemtype($question),
+                'default_itemtype' => $default_itemtype,
                 'default_items_id' => $this->getDefaultValueItemId($question),
                 'itemtypes'        => $this->getAllowedItemtypes(),
                 'aria_label'       => $this->items_id_aria_label,
                 'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question),
+                'displaywith'      => $this->getDisplayWith($default_itemtype),
             ]
         );
     }
@@ -355,16 +357,24 @@ class QuestionTypeItem extends AbstractQuestionType implements
         );
     }
 
-    #[Override]
-    public function renderEndUserTemplate(Question $question): string
+    /**
+     * Compute the list of additional fields to display alongside item names in dropdowns.
+     *
+     * @param string|null $itemtype The itemtype to compute displaywith for.
+     * @return array
+     */
+    public function getDisplayWith(?string $itemtype): array
     {
         global $CFG_GLPI;
 
-        $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
+        if ($itemtype === null || $itemtype === '0') {
+            return [];
+        }
+
+        $displaywith = [];
         $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
         $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
 
-        $displaywith = [];
         if ($is_itil_type && !$id_already_visible) {
             $displaywith[] = 'id';
         }
@@ -372,17 +382,26 @@ class QuestionTypeItem extends AbstractQuestionType implements
         if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
             $item = getItemForItemtype($itemtype);
             if ($item) {
-                if ($item->isField('serial')) {
-                    $displaywith[] = 'serial';
-                }
                 if ($item->isField('otherserial')) {
                     $displaywith[] = 'otherserial';
+                }
+                if ($item->isField('serial')) {
+                    $displaywith[] = 'serial';
                 }
                 if ($item->isField('users_id')) {
                     $displaywith[] = 'users_id';
                 }
             }
         }
+
+        return $displaywith;
+    }
+
+    #[Override]
+    public function renderEndUserTemplate(Question $question): string
+    {
+        $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
+        $displaywith = $this->getDisplayWith($itemtype);
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
