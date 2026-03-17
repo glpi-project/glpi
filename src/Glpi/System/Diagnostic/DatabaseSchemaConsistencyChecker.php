@@ -94,4 +94,27 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
 
         return $missing_columns;
     }
+
+    /**
+     * Get all columns that are not the expected schema.
+     * @param string $table_name
+     * @return array
+     */
+    public function getInvalidFields(string $table_name): array
+    {
+        $invalid_columns = [];
+
+        $columns = $this->getColumnsNames($table_name);
+
+        foreach ($columns as $column_name) {
+            if ($column_name !== 'itemtype' && !str_starts_with($column_name, 'itemtype_')) {
+                continue;
+            }
+            if ($this->getColumnType($table_name, $column_name) !== 'varchar(255)') {
+                $invalid_columns[] = $column_name;
+            }
+        }
+
+        return $invalid_columns;
+    }
 }
