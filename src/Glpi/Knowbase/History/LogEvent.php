@@ -45,8 +45,8 @@ final class LogEvent implements HistoryEventInterface
         private string $description,
         private string $date,
         private string $author,
-        private ?string $new_value = null,
         private ?string $old_value = null,
+        private ?string $new_value = null,
     ) {}
 
     #[Override]
@@ -76,19 +76,11 @@ final class LogEvent implements HistoryEventInterface
 
     public function getNewValue(): ?string
     {
-        if ($this->new_value === null) {
-            return null;
-        }
-
-        return strip_tags($this->new_value);
+        return $this->new_value !== null ? strip_tags($this->new_value) : null;
     }
 
     public function getOldValue(): ?string
     {
-        if ($this->old_value === null) {
-            return null;
-        }
-
-        return strip_tags($this->old_value);
+        return $this->old_value !== null ? strip_tags($this->old_value) : null;
     }
 }

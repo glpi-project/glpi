@@ -2225,11 +2225,9 @@ TWIG, $twig_params);
 
     public function pre_updateInDB()
     {
-        // Only create a revision if name or answer was modified.
-        if (
-            !in_array('name', $this->updates)
-            && !in_array('answer', $this->updates)
-        ) {
+        // Only create a revision if the answer was modified.
+        // Name changes are tracked separately as "Renamed" events in the history.
+        if (!in_array('answer', $this->updates)) {
             return;
         }
 
@@ -2302,7 +2300,6 @@ TWIG, $twig_params);
 
         $values = [
             'id'     => $this->getID(),
-            'name'   => $revision->fields['name'],
             'answer' => $revision->fields['answer'],
         ];
 
