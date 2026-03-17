@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem;
@@ -46,6 +47,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DeleteTranslationController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Translation/{language}/Delete",
         name: "knowbaseitem_translation_delete",
@@ -63,9 +66,6 @@ final class DeleteTranslationController extends AbstractController
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         }
-        if (!$kbitem->can($id, UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
 
         $translation = new KnowbaseItemTranslation();
         $found = $translation->find([
@@ -81,18 +81,11 @@ final class DeleteTranslationController extends AbstractController
         }
 
         $existing_data = array_shift($found);
-        $success = $translation->delete(['id' => $existing_data['id']]);
-
-        if ($success) {
-            return new JsonResponse([
-                'success' => true,
-                'message' => __('Translation deleted successfully'),
-            ]);
-        }
+        $this->delete(KnowbaseItemTranslation::class, $existing_data['id']);
 
         return new JsonResponse([
-            'success' => false,
-            'message' => __('Failed to delete the translation'),
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            'success' => true,
+            'message' => __('Translation deleted successfully'),
+        ]);
     }
 }

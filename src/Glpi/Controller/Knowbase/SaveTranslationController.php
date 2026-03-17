@@ -35,7 +35,8 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\CrudControllerTrait;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
 use KnowbaseItem;
@@ -50,6 +51,8 @@ use function Safe\json_decode;
 
 final class SaveTranslationController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Translation",
         name: "knowbaseitem_translation_save",
@@ -66,9 +69,6 @@ final class SaveTranslationController extends AbstractController
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         }
-        if (!$kbitem->can($id, UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
 
         $data = json_decode($request->getContent(), true);
         $language = $data['language'] ?? null;
@@ -82,7 +82,19 @@ final class SaveTranslationController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        // Make sure answer content is not empty if specified
+        if ($answer !== null) {
+            $answer = strip_tags(trim($answer));
+            if ($answer === '') {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => __('Content cannot be empty'),
+                ], Response::HTTP_BAD_REQUEST);
+            }
+        }
         $answer = RichText::getSafeHtml($answer);
+
+        // Make sure title is not empty if specified
         if ($name !== null) {
             $name = strip_tags(trim($name));
             if ($name === '') {
@@ -93,6 +105,7 @@ final class SaveTranslationController extends AbstractController
             }
         }
 
+        // Try to find a row for the given language
         $translation = new KnowbaseItemTranslation();
         $existing = $translation->find([
             'knowbaseitems_id' => $id,
@@ -108,7 +121,12 @@ final class SaveTranslationController extends AbstractController
             if ($name !== null) {
                 $update_data['name'] = $name;
             }
-            $success = $translation->update($update_data);
+            $this->update(
+                KnowbaseItemTranslation::class,
+                $existing_data['id'],
+                $update_data,
+            );
+            $translation->update($update_data);
         } else {
             $input = [
                 'knowbaseitems_id' => $id,
@@ -117,19 +135,12 @@ final class SaveTranslationController extends AbstractController
                 'name' => $name ?? '',
                 'users_id' => Session::getLoginUserID(),
             ];
-            $success = $translation->add($input) !== false;
-        }
-
-        if ($success) {
-            return new JsonResponse([
-                'success' => true,
-                'message' => __('Translation saved successfully'),
-            ]);
+            $this->add(KnowbaseItemTranslation::class, $input);
         }
 
         return new JsonResponse([
-            'success' => false,
-            'message' => __('Failed to save the translation'),
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            'success' => true,
+            'message' => __('Translation saved successfully'),
+        ]);
     }
 }

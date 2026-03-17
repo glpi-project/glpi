@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem;
@@ -45,6 +46,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class GetTranslationContentController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Translation/{language}",
         name: "knowbaseitem_translation_content",
@@ -61,22 +64,18 @@ final class GetTranslationContentController extends AbstractController
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         }
-        if (!$kbitem->canViewItem()) {
-            throw new AccessDeniedHttpException();
-        }
 
-        $translation = new KnowbaseItemTranslation();
-        $found = $translation->find([
+        $found = (new KnowbaseItemTranslation())->find([
             'knowbaseitems_id' => $id,
             'language' => $language,
         ]);
-
         if (count($found) > 0) {
             $data = array_shift($found);
+            $translation = $this->read(KnowbaseItemTranslation::class, $data['id']);
             return new JsonResponse([
                 'exists' => true,
-                'name' => $data['name'],
-                'answer' => $data['answer'],
+                'name' => $translation->fields['name'],
+                'answer' => $translation->fields['answer'],
             ]);
         }
 

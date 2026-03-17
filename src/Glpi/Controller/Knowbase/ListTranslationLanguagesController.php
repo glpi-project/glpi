@@ -61,7 +61,7 @@ final class ListTranslationLanguagesController extends AbstractController
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
         }
-        if (!$kbitem->canViewItem()) {
+        if (!$kbitem->can($id, READ) || !KnowbaseItemTranslation::canView()) {
             throw new AccessDeniedHttpException();
         }
 
