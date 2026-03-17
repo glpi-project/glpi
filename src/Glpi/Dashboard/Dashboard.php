@@ -338,17 +338,11 @@ class Dashboard extends CommonDBTM
             return false;
         }
 
-        $default_dashboards = require(GLPI_ROOT . '/install/migrations/update_9.4.x_to_9.5.0/dashboards.php');
-
         $target_dashboard = null;
 
-        foreach ($default_dashboards as $dashboard) {
-            if ($dashboard['key'] === $default_dashboard_key) {
+        foreach (self::getDefaults() as $dashboard) {
+            if ($dashboard['key'] === $default_dashboard_key && $dashboard['context'] === $this->fields['context']) {
                 $target_dashboard = $dashboard;
-                $target_dashboard['_items'] = array_map(static function ($item) {
-                    $item['card_options'] = json_decode($item['card_options'], true);
-                    return $item;
-                }, $target_dashboard['_items']);
                 break;
             }
         }
@@ -359,7 +353,7 @@ class Dashboard extends CommonDBTM
 
         $this->saveFilter('');
         $this->saveRights([]);
-        $this->saveItems($target_dashboard['_items']);
+        $this->saveItems($target_dashboard['items']);
 
         return true;
     }
@@ -367,9 +361,8 @@ class Dashboard extends CommonDBTM
     public function showResetForm(): void
     {
         $this->load();
-        $default_dashboard_data = require(GLPI_ROOT . '/install/migrations/update_9.4.x_to_9.5.0/dashboards.php');
         $default_dashboards = [];
-        foreach ($default_dashboard_data as $dashboard) {
+        foreach (self::getDefaults() as $dashboard) {
             if ($dashboard['context'] !== $this->fields['context']) {
                 continue;
             }
