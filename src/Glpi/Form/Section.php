@@ -298,7 +298,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             // Read from database
             $questions_data = (new Question())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'vertical_rank ASC, horizontal_rank ASC',
+                ['vertical_rank ASC', 'horizontal_rank ASC'],
             );
             foreach ($questions_data as $row) {
                 $question = new Question();
@@ -332,7 +332,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             // Read from database
             $comments_data = (new Comment())->find(
                 [self::getForeignKeyField() => $this->fields['id']],
-                'vertical_rank ASC, horizontal_rank ASC',
+                ['vertical_rank ASC', 'horizontal_rank ASC'],
             );
             foreach ($comments_data as $row) {
                 $comment = new Comment();

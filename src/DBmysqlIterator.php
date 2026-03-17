@@ -345,7 +345,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         $cleanorderby = [];
         foreach ($clause as $o) {
-            if (is_string($o)) {
+            if (is_string($o) && str_contains($o, ',')) {
+                Toolbox::deprecated('Using coma separated list of fields is deprecated in ORDER BY clause.');
+
                 $fields = explode(',', $o);
                 foreach ($fields as $field) {
                     $new = '';
@@ -357,6 +359,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     }
                     $cleanorderby[] = $new;
                 }
+            } elseif (is_string($o)) {
+                $parts = explode(' ', trim($o));
+                $cleanorderby[] = DBmysql::quoteName($parts[0])
+                    . (isset($parts[1]) && in_array($parts[1], ['ASC', 'DESC']) ? ' ' . $parts[1] : '');
+
             } elseif ($o instanceof QueryExpression) {
                 $cleanorderby[] = $o->getValue();
             } else {
