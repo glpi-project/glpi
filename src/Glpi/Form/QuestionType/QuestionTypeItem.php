@@ -361,7 +361,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Compute the list of additional fields to display alongside item names in dropdowns.
      *
      * @param string|null $itemtype The itemtype to compute displaywith for.
-     * @return array
+     * @return array<string>
      */
     public function getDisplayWith(?string $itemtype): array
     {

@@ -60,6 +60,12 @@ test.describe('Item form question type', () => {
 
     });
 
+    test.afterEach(async ({ entity, api }) => {
+        // Reset entity to default one to avoid issues with other tests in the same worker
+        entity.resetToDefaultWorkerEntity();
+        api.refreshSession();
+    });
+
     test('Adding new item option and compare select option labels', async ({ api }) => {
         // Add two computers
         await api.createItem('Computer', {
