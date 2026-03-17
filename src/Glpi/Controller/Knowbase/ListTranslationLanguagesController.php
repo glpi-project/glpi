@@ -55,7 +55,7 @@ final class ListTranslationLanguagesController extends AbstractController
     )]
     public function __invoke(Request $request): JsonResponse
     {
-        $id = (int) $request->get('knowbaseitems_id');
+        $id = $request->attributes->getInt('knowbaseitems_id');
 
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {

@@ -54,8 +54,8 @@ final class GetTranslationContentController extends AbstractController
     )]
     public function __invoke(Request $request): JsonResponse
     {
-        $id = (int) $request->get('knowbaseitems_id');
-        $language = $request->get('language');
+        $id = $request->attributes->getInt('knowbaseitems_id');
+        $language = $request->attributes->getString('language');
 
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
