@@ -2402,12 +2402,13 @@ class MailCollector extends CommonDBTM
         $pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
-            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
+            . '(-(?<itemtype>[a-z\-]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
             . '\/(?<event>[a-z_]+)' // event
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
             . '/i';
         if (preg_match($pattern, $header, $values) === 1) {
+            $values['itemtype'] = str_replace('-', '\\', $values['itemtype']); // restore backslashes in namespaced classes
             $values += $defaults;
             return $values;
         }
