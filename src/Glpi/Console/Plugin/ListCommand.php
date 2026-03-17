@@ -75,7 +75,7 @@ class ListCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $plug     = new Plugin();
-        $pluglist = $plug->find([], "name, directory");
+        $pluglist = $plug->find([], ['name', 'directory']);
         $data = [];
         foreach ($pluglist as $plugin) {
             $record = [];
