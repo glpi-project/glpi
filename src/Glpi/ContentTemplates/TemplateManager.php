@@ -114,7 +114,7 @@ class TemplateManager
         $parameters = $itil_item->getContentTemplatesParametersClassInstance();
 
         $parameters_value = $parameters->getValues($itil_item);
-        foreach (array_keys($PLUGIN_HOOKS[Hooks::GET_CONTENT_TEMPLATE_VALUE]) as $plugin) {
+        foreach (array_keys($PLUGIN_HOOKS[Hooks::GET_CONTENT_TEMPLATE_VALUE] ?? []) as $plugin) {
             $plugin_parameters = Plugin::doOneHook((string) $plugin, Hooks::GET_CONTENT_TEMPLATE_VALUE, ['node_name' => $parameters->getDefaultNodeName(), 'id' => $itil_item->fields['id']]);
             if (is_array($plugin_parameters)) {
                 foreach ($plugin_parameters as $key => $value) {

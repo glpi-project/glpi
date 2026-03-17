@@ -135,7 +135,7 @@ class TemplateDocumentation
         $references = [];
 
         //additional parameters
-        foreach (array_keys($PLUGIN_HOOKS[Hooks::GET_CONTENT_TEMPLATE_PARAMETER]) as $plugin) {
+        foreach (array_keys($PLUGIN_HOOKS[Hooks::GET_CONTENT_TEMPLATE_PARAMETER] ?? []) as $plugin) {
             $plugin_parameters = Plugin::doOneHook((string) $plugin, Hooks::GET_CONTENT_TEMPLATE_PARAMETER, $fields_prefix);
             if (is_array($plugin_parameters)) {
                 foreach ($plugin_parameters as $plugin_parameter) {
