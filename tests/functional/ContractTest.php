@@ -123,7 +123,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => "2024-07-01",
+                'expected' => "2026-07-01",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -153,7 +153,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01',
+                'expected' => '2026-07-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -163,7 +163,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-09-30',
+                'expected' => '2025-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -183,7 +183,82 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-09-30',
+                'expected' => '2025-06-30',
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => '2022-01-01',
+                    'duration' => 6,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12,
+                ],
+                'expected' => '2026-07-01',
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => '2026-01-01',
+                    'duration' => 6,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12,
+                ],
+                'expected' => '2026-07-01',
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 2,
+                    'renewal' => \Contract::RENEWAL_NEVER,
+                    'periodicity' => 0,
+                ],
+                'expected' => "<span class='red'>2020-04-30</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 3,
+                    'renewal' => \Contract::RENEWAL_NEVER,
+                    'periodicity' => 12,
+                ],
+                'expected' => "<span class='red'>2020-03-31</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 2,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 0,
+                ],
+                'expected' => "2026-05-01",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 3,
+                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'periodicity' => 0,
+                ],
+                'expected' => "<span class='red'>2020-03-31</span>",
+            ],  
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2026-01-01',
+                    'duration' => 6,
+                    'notice' => 4,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12,
+                ],
+                'expected' => "<span class='red'>2026-03-01</span>",
             ],
         ];
     }
