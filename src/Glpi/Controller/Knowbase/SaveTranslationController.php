@@ -36,7 +36,6 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
 use KnowbaseItem;
@@ -83,14 +82,12 @@ final class SaveTranslationController extends AbstractController
         }
 
         // Make sure answer content is not empty if specified
-        if ($answer !== null) {
-            $answer = strip_tags(trim($answer));
-            if ($answer === '') {
-                return new JsonResponse([
-                    'success' => false,
-                    'message' => __('Content cannot be empty'),
-                ], Response::HTTP_BAD_REQUEST);
-            }
+        $answer = strip_tags(trim($answer));
+        if ($answer === '') {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __('Content cannot be empty'),
+            ], Response::HTTP_BAD_REQUEST);
         }
         $answer = RichText::getSafeHtml($answer);
 

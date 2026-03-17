@@ -36,7 +36,6 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem;
 use KnowbaseItemTranslation;
