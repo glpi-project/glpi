@@ -87,7 +87,7 @@ export async function get(url)
 
         const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
         if (!response.ok) {
-            throw new Error("POST request failed");
+            throw new Error("GET request failed");
         }
 
         return response;
