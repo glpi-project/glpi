@@ -36,6 +36,7 @@
 namespace Glpi\Dashboard;
 
 use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\TooManyResultsException;
 use Ramsey\Uuid\Uuid;
@@ -325,6 +326,53 @@ class Dashboard extends CommonDBTM
         }
     }
 
+    /**
+     * Reset the current dashboard to a default state.
+     * @param string $default_dashboard_key The key of the dashboard in the default data to use as the source of the state.
+     * @return bool true on success, false on failure
+     */
+    public function resetToDefault(string $default_dashboard_key): bool
+    {
+        $this->load();
+        if ($this->fields['context'] !== 'core' && $this->fields['context'] !== 'mini_core') {
+            return false;
+        }
+
+        $target_dashboard = null;
+
+        foreach (self::getDefaults() as $dashboard) {
+            if ($dashboard['key'] === $default_dashboard_key && $dashboard['context'] === $this->fields['context']) {
+                $target_dashboard = $dashboard;
+                break;
+            }
+        }
+
+        if ($target_dashboard === null || $target_dashboard['context'] !== $this->fields['context']) {
+            return false;
+        }
+
+        $this->saveFilter('');
+        $this->saveRights([]);
+        $this->saveItems($target_dashboard['items']);
+
+        return true;
+    }
+
+    public function showResetForm(): void
+    {
+        $this->load();
+        $default_dashboards = [];
+        foreach (self::getDefaults() as $dashboard) {
+            if ($dashboard['context'] !== $this->fields['context']) {
+                continue;
+            }
+            $default_dashboards[$dashboard['key']] = $dashboard['name'];
+        }
+        TemplateRenderer::getInstance()->display('components/dashboard/reset.html.twig', [
+            'dashboard' => $this,
+            'default_dashboards' => $default_dashboards,
+        ]);
+    }
 
     public function cleanDBonPurge()
     {
