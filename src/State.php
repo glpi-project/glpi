@@ -362,19 +362,14 @@ class State extends CommonTreeDropdown
         global $CFG_GLPI;
         $itemtype_options = [];
 
+        // Asset definition (native + custom)
         if (!empty($CFG_GLPI['state_types']) && is_array($CFG_GLPI['state_types'])) {
             foreach ($CFG_GLPI['state_types'] as $itemtype) {
                 // Ensure the itemtype/class exists and provides a type name
-                if (class_exists($itemtype) && method_exists($itemtype, 'getTypeName')) {
+                if (is_a($itemtype, CommonDBTM::class, true)) {
                     $itemtype_options[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
                 }
             }
-        }
-
-        // Add custom asset definitions
-        foreach (AssetDefinitionManager::getInstance()->getDefinitions(only_active: true) as $definition) {
-            $asset_class = $definition->getAssetClassName();
-            $itemtype_options[$asset_class] = $definition->getFriendlyName() ?: $asset_class;
         }
 
         echo __s('Asset type') . '<br>';
@@ -416,9 +411,6 @@ class State extends CommonTreeDropdown
                 // Validate itemtypes against allowed types and skip processing for invalid ones
                 global $CFG_GLPI;
                 $allowed_itemtypes = $CFG_GLPI['state_types'] ?? [];
-                foreach (AssetDefinitionManager::getInstance()->getDefinitions(only_active: true) as $definition) {
-                    $allowed_itemtypes[] = $definition->getAssetClassName();
-                }
 
                 foreach ($visible_itemtypes as $visible_itemtype) {
                     if ($visible_itemtype !== '' && !in_array($visible_itemtype, $allowed_itemtypes, true)) {
@@ -922,7 +914,7 @@ class State extends CommonTreeDropdown
                 ],
                 'massiveaction'      => false,
             ];
-        };
+        }
 
         return $tab;
     }
@@ -1000,9 +992,9 @@ class State extends CommonTreeDropdown
             $fields[$type] = 'is_visible_' . strtolower($type);
         }
 
-        // Add custom assets
+        // Add custom assets (they are not included in $CFG_GLPI['state_types']) if not active
         foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
-            $fields[$definition->getAssetClassName()] = strtolower(str_replace('\'', '_', 'is_visible_' . $definition->getAssetClassName()));
+            $fields[$definition->getAssetClassName()] = strtolower('is_visible_' . $definition->getAssetClassName());
         }
 
         return $fields;
