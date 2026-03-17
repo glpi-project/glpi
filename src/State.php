@@ -980,7 +980,7 @@ class State extends CommonTreeDropdown
     }
 
     /**
-     * Get visibility fields from conf
+     * Get visibility fields for active asset types
      *
      * @return array<class-string<CommonDBTM>,string>
      */
@@ -990,11 +990,6 @@ class State extends CommonTreeDropdown
         $fields = [];
         foreach ($CFG_GLPI['state_types'] as $type) {
             $fields[$type] = 'is_visible_' . strtolower($type);
-        }
-
-        // Add custom assets (they are not included in $CFG_GLPI['state_types']) if not active
-        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
-            $fields[$definition->getAssetClassName()] = strtolower('is_visible_' . $definition->getAssetClassName());
         }
 
         return $fields;
