@@ -2335,7 +2335,6 @@ TWIG, $twig_params);
 
         $values = [
             'id'     => $this->getID(),
-            'name'   => $revision->fields['name'],
             'answer' => $revision->fields['answer'],
         ];
 

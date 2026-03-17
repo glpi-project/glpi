@@ -73,23 +73,16 @@ final class CompareRevisionController extends AbstractController
         }
 
         // Old = revision content, New = current article content
-        $old_name = $revision->fields['name'];
-        $new_name = $kb->fields['name'];
-
         $old_answer = RichText::getEnhancedHtml($revision->fields['answer'], ['text_maxsize' => 0]);
         $new_answer = RichText::getEnhancedHtml($kb->fields['answer'], ['text_maxsize' => 0]);
 
         // Normalize non-breaking spaces (same as the former JS normalizeHtml)
-        $old_name   = $this->normalizeHtml($old_name);
-        $new_name   = $this->normalizeHtml($new_name);
         $old_answer = $this->normalizeHtml($old_answer);
         $new_answer = $this->normalizeHtml($new_answer);
 
-        $title_diff   = (new Diff($old_name, $new_name))->build();
         $content_diff = (new Diff($old_answer, $new_answer))->build();
 
         return new JsonResponse([
-            'title_diff'   => $title_diff,
             'content_diff' => $content_diff,
         ]);
     }

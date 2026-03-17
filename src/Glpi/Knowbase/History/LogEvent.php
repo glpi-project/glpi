@@ -76,11 +76,11 @@ final class LogEvent implements HistoryEventInterface
 
     public function getNewValue(): ?string
     {
-        return $this->new_value;
+        return $this->new_value !== null ? strip_tags($this->new_value) : null;
     }
 
     public function getOldValue(): ?string
     {
-        return $this->old_value;
+        return $this->old_value !== null ? strip_tags($this->old_value) : null;
     }
 }

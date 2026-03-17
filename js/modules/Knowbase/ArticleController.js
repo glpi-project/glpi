@@ -85,11 +85,6 @@ export class GlpiKnowbaseArticleController
     };
 
     /**
-     * @type {string|null} Original subject HTML (saved before diff mode)
-     */
-    #originalSubject = null;
-
-    /**
      * @type {string|null} Original content HTML (saved before diff mode)
      */
     #originalContent = null;
@@ -163,25 +158,22 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
-     * @param {{title_diff: string, content_diff: string}} detail
+     * @param {{content_diff: string}} detail
      */
-    #showDiff({title_diff, content_diff})
+    #showDiff({content_diff})
     {
-        const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
         const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
 
-        if (!subjectEl || !contentEl) {
+        if (!contentEl) {
             return;
         }
 
         // Save original content on first activation
-        if (this.#originalSubject === null) {
-            this.#originalSubject = subjectEl.innerHTML;
+        if (this.#originalContent === null) {
             this.#originalContent = contentEl.innerHTML;
         }
 
         // Replace with diff
-        subjectEl.innerHTML = title_diff;
         contentEl.innerHTML = content_diff;
 
         // Add diff-mode class for styling
@@ -199,12 +191,8 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        const subjectEl = this.#container.querySelector('[data-glpi-kb-subject]');
         const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
 
-        if (subjectEl && this.#originalSubject !== null) {
-            subjectEl.innerHTML = this.#originalSubject;
-        }
         if (contentEl && this.#originalContent !== null) {
             contentEl.innerHTML = this.#originalContent;
         }
@@ -214,7 +202,6 @@ export class GlpiKnowbaseArticleController
             article.classList.remove('kb-article--diff-mode');
         }
 
-        this.#originalSubject = null;
         this.#originalContent = null;
         this.#isDiffMode = false;
     }
