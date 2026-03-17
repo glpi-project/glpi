@@ -367,6 +367,7 @@ class State extends CommonTreeDropdown
             foreach ($CFG_GLPI['state_types'] as $itemtype) {
                 // Ensure the itemtype/class exists and provides a type name
                 if (is_a($itemtype, CommonDBTM::class, true)) {
+                    /** @var class-string<CommonDBTM> $itemtype */
                     $itemtype_options[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
                 }
             }
