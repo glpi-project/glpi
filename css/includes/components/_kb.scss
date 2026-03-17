@@ -210,6 +210,34 @@
     }
 }
 
+// KB permission owner footer (full-width, differentiated background)
+.kb-permission-owner {
+    background-color: var(--tblr-body-bg);
+    margin: 0 calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+    padding: var(--tblr-modal-padding);
+    border-top: 1px solid var(--tblr-border-color);
+    border-radius: 0 0 var(--tblr-modal-inner-border-radius) var(--tblr-modal-inner-border-radius);
+}
+
+// KB permission visibility fields (AJAX-loaded from visibility.php)
+.kb-permission-visibility {
+    // Override the inline d-flex from visibility.php to stack fields
+    > .d-flex {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    // Override the legacy table from subvisibility.php
+    .tab_format {
+        width: 100%;
+
+        td {
+            padding: 0.25rem 0.375rem;
+            white-space: nowrap;
+        }
+    }
+}
 
 // KB modal tabs navigation
 .kb-modal-nav {

@@ -35,18 +35,13 @@
 namespace Glpi\Knowbase\SidePanel;
 
 use Dropdown;
-use Entity;
 use Entity_KnowbaseItem;
-use Group;
 use Group_KnowbaseItem;
-use Html;
 use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Override;
-use Profile;
 use Session;
-use User;
 
 final class PermissionsRenderer implements RendererInterface
 {
@@ -68,8 +63,9 @@ final class PermissionsRenderer implements RendererInterface
         $id = $item->getID();
         $can_edit = $item->canEdit($id);
         $rand = mt_rand();
+        $owner_id = (int) $item->fields['users_id'];
 
-        $entries = $this->buildEntries($item);
+        $entries = $this->buildEntries($item, $owner_id);
 
         $visiblity_dropdown_params = [
             'type'  => '__VALUE__',
@@ -83,32 +79,28 @@ final class PermissionsRenderer implements RendererInterface
             $visiblity_dropdown_params['is_recursive'] = $item->fields['is_recursive'];
         }
 
-        $massive_action_params = [
-            'num_displayed' => count($entries),
-            'container' => 'mass' . KnowbaseItem::class . $rand,
-            'specific_actions' => ['delete' => _x('button', 'Delete permanently')],
-        ];
-        if ($item->fields['users_id'] !== Session::getLoginUserID()) {
-            $massive_action_params['confirm'] = __('Caution! You are not the author of this item. Deleting targets can result in loss of access.');
-        }
-
         return [
             'id' => $id,
             'rand' => $rand,
             'can_edit' => $can_edit,
+            'is_owner' => ($owner_id === Session::getLoginUserID()),
+            'owner' => [
+                'name' => getUserName($owner_id),
+                'users_id' => $owner_id,
+            ],
             'entries' => $entries,
             'visiblity_dropdown_params' => $visiblity_dropdown_params,
-            'massive_action_params' => $massive_action_params,
         ];
     }
 
     /**
-     * Build entries array for the permissions datatable
+     * Build entries array for the permissions list
      *
      * @param KnowbaseItem $item
-     * @return array<int, array{itemtype: string, id: int, type: string, recipient: string}>
+     * @param int $owner_id
+     * @return array<int, array{itemtype: string, id: int, type: string, name: string, icon: string, badge_class: string, entity_name: ?string, is_recursive: bool, users_id: ?int}>
      */
-    private function buildEntries(KnowbaseItem $item): array
+    private function buildEntries(KnowbaseItem $item, int $owner_id): array
     {
         $id = $item->getID();
         $entries = [];
@@ -116,11 +108,19 @@ final class PermissionsRenderer implements RendererInterface
         $users = KnowbaseItem_User::getUsers($id);
         foreach ($users as $val) {
             foreach ($val as $data) {
+                if ((int) $data['users_id'] === $owner_id) {
+                    continue; // Owner displayed separately in footer
+                }
                 $entries[] = [
-                    'itemtype' => 'KnowbaseItem_User',
-                    'id' => $data['id'],
-                    'type' => User::getTypeName(1),
-                    'recipient' => htmlescape(getUserName($data['users_id'])),
+                    'itemtype'     => KnowbaseItem_User::class,
+                    'id'           => $data['id'],
+                    'type'         => 'User',
+                    'name'         => getUserName($data['users_id']),
+                    'users_id'     => (int) $data['users_id'],
+                    'icon'         => 'ti-user',
+                    'badge_class'  => 'bg-azure-lt',
+                    'entity_name'  => null,
+                    'is_recursive' => false,
                 ];
             }
         }
@@ -128,37 +128,20 @@ final class PermissionsRenderer implements RendererInterface
         $groups = Group_KnowbaseItem::getGroups($id);
         foreach ($groups as $val) {
             foreach ($val as $data) {
-                $name = Dropdown::getDropdownName('glpi_groups', $data['groups_id']);
-                $tooltip = Dropdown::getDropdownComments('glpi_groups', (int) $data['groups_id']);
-                $recipient = sprintf(
-                    __s('%1$s %2$s'),
-                    htmlescape($name),
-                    Html::showToolTip($tooltip, ['display' => false])
-                );
+                $entity_name = null;
                 if ($data['entities_id'] !== null) {
-                    $recipient = sprintf(
-                        __s('%1$s / %2$s'),
-                        $recipient,
-                        htmlescape(
-                            Dropdown::getDropdownName(
-                                'glpi_entities',
-                                $data['entities_id']
-                            )
-                        )
-                    );
-                    if ($data['is_recursive']) {
-                        $recipient = sprintf(
-                            __s('%1$s %2$s'),
-                            $recipient,
-                            "<span class='fw-bold'>(" . __s('R') . ")</span>"
-                        );
-                    }
+                    $entity_name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                 }
                 $entries[] = [
-                    'itemtype' => 'Group_KnowbaseItem',
-                    'id' => $data['id'],
-                    'type' => Group::getTypeName(1),
-                    'recipient' => $recipient,
+                    'itemtype'     => Group_KnowbaseItem::class,
+                    'id'           => $data['id'],
+                    'type'         => 'Group',
+                    'name'         => Dropdown::getDropdownName('glpi_groups', $data['groups_id']),
+                    'users_id'     => null,
+                    'icon'         => 'ti-users-group',
+                    'badge_class'  => 'bg-green-lt',
+                    'entity_name'  => $entity_name,
+                    'is_recursive' => (bool) $data['is_recursive'],
                 ];
             }
         }
@@ -166,25 +149,16 @@ final class PermissionsRenderer implements RendererInterface
         $entities = Entity_KnowbaseItem::getEntities($id);
         foreach ($entities as $val) {
             foreach ($val as $data) {
-                $name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-                $tooltip = Dropdown::getDropdownComments('glpi_entities', (int) $data['entities_id']);
-                $recipient = sprintf(
-                    __s('%1$s %2$s'),
-                    htmlescape($name),
-                    Html::showToolTip($tooltip, ['display' => false])
-                );
-                if ($data['is_recursive']) {
-                    $recipient = sprintf(
-                        __s('%1$s %2$s'),
-                        $recipient,
-                        "<span class='fw-bold'>(" . __s('R') . ")</span>"
-                    );
-                }
                 $entries[] = [
-                    'itemtype' => 'Entity_KnowbaseItem',
-                    'id' => $data['id'],
-                    'type' => Entity::getTypeName(1),
-                    'recipient' => $recipient,
+                    'itemtype'     => Entity_KnowbaseItem::class,
+                    'id'           => $data['id'],
+                    'type'         => 'Entity',
+                    'name'         => Dropdown::getDropdownName('glpi_entities', $data['entities_id']),
+                    'users_id'     => null,
+                    'icon'         => 'ti-building',
+                    'badge_class'  => 'bg-yellow-lt',
+                    'entity_name'  => null,
+                    'is_recursive' => (bool) $data['is_recursive'],
                 ];
             }
         }
@@ -192,37 +166,20 @@ final class PermissionsRenderer implements RendererInterface
         $profiles = KnowbaseItem_Profile::getProfiles($id);
         foreach ($profiles as $val) {
             foreach ($val as $data) {
-                $name = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id']);
-                $tooltip = Dropdown::getDropdownComments('glpi_profiles', (int) $data['profiles_id']);
-                $recipient = sprintf(
-                    __s('%1$s %2$s'),
-                    htmlescape($name),
-                    Html::showToolTip($tooltip, ['display' => false])
-                );
+                $entity_name = null;
                 if ($data['entities_id'] !== null) {
-                    $recipient = sprintf(
-                        __s('%1$s / %2$s'),
-                        $recipient,
-                        htmlescape(
-                            Dropdown::getDropdownName(
-                                'glpi_entities',
-                                $data['entities_id']
-                            )
-                        )
-                    );
-                    if ($data['is_recursive']) {
-                        $recipient = sprintf(
-                            __s('%1$s %2$s'),
-                            $recipient,
-                            "<span class='fw-bold'>(" . __s('R') . ")</span>"
-                        );
-                    }
+                    $entity_name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                 }
                 $entries[] = [
-                    'itemtype' => 'KnowbaseItem_Profile',
-                    'id' => $data['id'],
-                    'type' => Profile::getTypeName(1),
-                    'recipient' => $recipient,
+                    'itemtype'     => KnowbaseItem_Profile::class,
+                    'id'           => $data['id'],
+                    'type'         => 'Profile',
+                    'name'         => Dropdown::getDropdownName('glpi_profiles', $data['profiles_id']),
+                    'users_id'     => null,
+                    'icon'         => 'ti-id-badge-2',
+                    'badge_class'  => 'bg-purple-lt',
+                    'entity_name'  => $entity_name,
+                    'is_recursive' => (bool) $data['is_recursive'],
                 ];
             }
         }
