@@ -338,7 +338,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $onglets = [];
         // Tabs known by the object
-        if ($this->isNewItem()) {
+        if ($this->isNewItem() || (isset($options['withtemplate']) && $options['withtemplate'] == 2)) {
             $this->addDefaultFormTab($onglets);
         } else {
             $onglets = $this->defineTabs($options);
@@ -707,27 +707,6 @@ class CommonGLPI implements CommonGLPIInterface
 
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;
-                }
-
-                // Check if we're creating an object from template and this is not the main tab
-                if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
-                    // Display generic message for template creation
-                    $template = <<<HTML
-                    <div class="alert alert-warning d-flex">
-                        <div class="me-2">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                        <div>
-                            <strong>%s</strong><br>
-                            %s
-                        </div>
-                    </div>
-                    HTML;
-                    echo sprintf(
-                        $template,
-                        __s('Creating from template'),
-                        __s('You are currently creating an object from a template. You need to save it, in the main tab, before editing data in other tabs.')
-                    );
                 }
 
                 if ($obj = getItemForItemtype($itemtype)) {
