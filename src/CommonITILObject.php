@@ -10795,7 +10795,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // set groups of associated items - $input['_groups_id_of_item']
+        // set group of first fetched associated item - $input['_groups_id_of_item']
         if (isset($input["items_id"])) {
             $items = is_array($input["items_id"]) ? $input["items_id"] : [$input["items_id"]];
             foreach ($items as $itemtype => $items_ids) {
@@ -10804,13 +10804,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 $item = getItemForItemtype($itemtype);
-                if (false === $item || !($item instanceof CommonDBTM)) {
+                if (!($item instanceof CommonDBTM)) {
                     continue;
                 }
 
                 foreach ($items_ids as $id) {
                     if ($item->getFromDB($id) && isset($item->fields['groups_id'])) {
                         $input['_groups_id_of_item'] = $item->fields['groups_id'];
+                        break 2;
                     }
                 }
             }
