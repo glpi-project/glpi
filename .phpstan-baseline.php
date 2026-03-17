@@ -1184,30 +1184,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/itilsolution.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method KnowbaseItem\\:\\:showForm\\(\\) expects int, array\\|float\\|int\\|string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'knowbaseitems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,

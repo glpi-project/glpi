@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, */
+/* global glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
@@ -103,15 +103,18 @@ export class GlpiKnowbaseArticleController
      * @param {HTMLElement} container
      * @param {HTMLElement} side_panel_container
      * @param {HTMLElement} offcanvas_container
+     * @param {string} mode
      */
-    constructor(container, side_panel_container, offcanvas_container)
+    constructor(container, side_panel_container, offcanvas_container, mode)
     {
         this.#container = container;
-        this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
-            side_panel_container,
-            offcanvas_container,
-            this.#container.querySelector('[data-glpi-knowbase-article-content]'),
-        );
+        if (mode === "edit") {
+            this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
+                side_panel_container,
+                offcanvas_container,
+                this.#container.querySelector('[data-glpi-knowbase-article-content]'),
+            );
+        }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
 
         this.#initEventListeners();
@@ -119,11 +122,16 @@ export class GlpiKnowbaseArticleController
         this.#initDiffListeners();
         this.#initIllustrationPicker();
 
-        // Enable dots menu once listeners are ready
-        const dots = this.#container.querySelector('[data-glpi-kb-dots]');
-        if (dots) {
-            dots.classList.remove('pointer-events-none');
+        if (mode === 'add') {
+            this.#enableEditMode();
+            const add_button = this.#container.parentElement?.querySelector('[data-glpi-kb-add-article]');
+            if (add_button) {
+                add_button.addEventListener('click', () => this.#addArticle());
+            }
         }
+
+        // Enable interactions once all listeners are registered
+        this.#container.classList.remove('pe-none');
     }
 
     #initEventListeners()
@@ -402,7 +410,7 @@ export class GlpiKnowbaseArticleController
         const save_button = this.#container.querySelector('[data-action="save"]');
         const cancel_button = this.#container.querySelector('[data-action="cancel"]');
 
-        if (!editor_element || !edit_button) {
+        if (!editor_element) {
             return;
         }
 
@@ -416,29 +424,37 @@ export class GlpiKnowbaseArticleController
         }
 
         // Toggle edit mode (lazy load editor on first click)
-        edit_button.addEventListener('click', async () => {
-            await this.#enableEditMode(editor_element, edit_button, save_button, cancel_button);
-        });
+        if (edit_button) {
+            edit_button.addEventListener('click', async () => {
+                await this.#enableEditMode();
+            });
+        }
 
         // Cancel editing
-        cancel_button.addEventListener('click', () => {
-            this.#editor.setContent(this.#original_content);
-            this.#editor.setEditable(false);
+        if (cancel_button) {
+            cancel_button.addEventListener('click', () => {
+                this.#editor.setContent(this.#original_content);
+                this.#editor.setEditable(false);
 
-            this.#disableTitleEditing(true);
+                this.#disableTitleEditing(true);
 
-            edit_button.classList.remove('d-none');
-            save_button.classList.add('d-none');
-            cancel_button.classList.add('d-none');
-        });
+                edit_button.classList.remove('d-none');
+                save_button.classList.add('d-none');
+                cancel_button.classList.add('d-none');
+            });
+        }
 
         // Save content
-        save_button.addEventListener('click', async () => {
-            await this.#saveContent(edit_button, save_button, cancel_button);
-        });
+        if (save_button && edit_button && cancel_button) {
+            save_button.addEventListener('click', async () => {
+                await this.#saveContent(edit_button, save_button, cancel_button);
+            });
+        }
 
         // Enable edit button once editor is ready
-        edit_button.classList.remove('pointer-events-none');
+        if (edit_button) {
+            edit_button.classList.remove('pointer-events-none');
+        }
     }
 
     #initIllustrationPicker()
@@ -486,13 +502,14 @@ export class GlpiKnowbaseArticleController
 
     /**
      * Enable edit mode, loading the editor lazily if needed
-     * @param {HTMLElement} editor_element
-     * @param {HTMLElement} edit_button
-     * @param {HTMLElement} save_button
-     * @param {HTMLElement} cancel_button
      */
-    async #enableEditMode(editor_element, edit_button, save_button, cancel_button)
+    async #enableEditMode()
     {
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+        const edit_button = this.#container.querySelector('[data-action="toggle-edit"]');
+        const save_button = this.#container.querySelector('[data-action="save"]');
+        const cancel_button = this.#container.querySelector('[data-action="cancel"]');
+
         // Lazy load editor on first use
         if (this.#editor === null) {
             const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
@@ -508,9 +525,15 @@ export class GlpiKnowbaseArticleController
         this.#enableTitleEditing();
 
         this.#editor.focus();
-        edit_button.classList.add('d-none');
-        save_button.classList.remove('d-none');
-        cancel_button.classList.remove('d-none');
+        if (edit_button) {
+            edit_button.classList.add('d-none');
+        }
+        if (save_button) {
+            save_button.classList.remove('d-none');
+        }
+        if (cancel_button) {
+            cancel_button.classList.remove('d-none');
+        }
     }
 
     #enableTitleEditing()
@@ -596,5 +619,44 @@ export class GlpiKnowbaseArticleController
             save_button.disabled = false;
             save_button.innerHTML = original_button_html;
         }
+    }
+
+    async #addArticle()
+    {
+        const title = this.#title_element
+            ? this.#title_element.textContent.trim()
+            : '';
+        const answer = this.#editor ? this.#editor.getHTML() : '';
+
+        if (title.length === 0) {
+            glpi_toast_error(__("Title cannot be empty"));
+            if (this.#title_element) {
+                this.#title_element.focus();
+            }
+            return;
+        }
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `${CFG_GLPI.root_doc}/front/knowbaseitem.form.php`;
+        form.style.display = 'none';
+
+        const fields = {
+            add: '1',
+            name: title,
+            answer: answer,
+            _glpi_csrf_token: getAjaxCsrfToken(),
+        };
+
+        for (const [key, value] of Object.entries(fields)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
     }
 }

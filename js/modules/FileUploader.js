@@ -92,6 +92,7 @@ export class FileUploader
         }
 
         this.#bindEvents();
+        this.#dropZone.classList.remove('pe-none');
     }
 
     /**
