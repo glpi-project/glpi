@@ -66,11 +66,6 @@
       <input type="hidden" name="_problems_id" value="{{ params['problems_id'] ?? params['_problems_id'] }}" />
    {% endif %}
 
-   {% if params['_add_fromitem'] is defined %}
-      <input type="hidden" name="_from_items_id" value="{{ params['_from_items_id'] ?? 0 }}" />
-      <input type="hidden" name="_from_itemtype" value="{{ params['_from_itemtype'] ?? '' }}" />
-   {% endif %}
-
    {% if params['_promoted_fup_id'] is defined and params['_promoted_fup_id'] > 0 %}
       <input type="hidden" name="_promoted_fup_id" value="{{ params['_promoted_fup_id'] }}" />
    {% endif %}
