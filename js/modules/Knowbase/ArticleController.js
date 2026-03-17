@@ -138,7 +138,10 @@ export class GlpiKnowbaseArticleController
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
-        this.#initTranslationMode();
+
+        if (mode === "edit") {
+            this.#initTranslationMode();
+        }
 
         if (mode === 'add') {
             this.#enableEditMode();

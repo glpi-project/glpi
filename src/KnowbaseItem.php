@@ -872,7 +872,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
             // Translations informations
             $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
-            $params['existing_translations'] = KnowbaseItemTranslation::getAlreadyTranslatedForItem($this);
+            $params['existing_translations'] = array_values(KnowbaseItemTranslation::getAlreadyTranslatedForItem($this));
             $params['default_language']      = $CFG_GLPI['language'];
 
             // Add actions
