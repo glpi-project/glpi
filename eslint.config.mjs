@@ -5,6 +5,7 @@ import js from "@eslint/js";
 import cypress from "eslint-plugin-cypress/flat";
 import playwright from 'eslint-plugin-playwright';
 import tsParser from "@typescript-eslint/parser";
+import tseslint from "@typescript-eslint/eslint-plugin";
 
 export default [
     {
@@ -180,8 +181,13 @@ export default [
     {
         ...playwright.configs['flat/recommended'],
         files: ['tests/e2e/**'],
+        plugins: {
+            "@typescript-eslint": tseslint,
+            "playwright": playwright,
+        },
         rules: {
             ...playwright.configs['flat/recommended'].rules,
+            "@typescript-eslint/no-floating-promises": "error",
             "playwright/no-force-option": "error",
             "playwright/no-raw-locators": "error",
             "playwright/expect-expect": [
