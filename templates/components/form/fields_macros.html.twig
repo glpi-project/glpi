@@ -329,7 +329,7 @@
    {% if options.can_regenerate %}
       {% set regenerate_chk %}
          <div class="d-flex align-items-center gap-1 mt-1">
-             <input class="form-check-input" type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}">&nbsp;<label class="form-check-label" for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+             <input class="form-check-input" type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}"><label class="form-check-label" for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
          </div>
       {% endset %}
       {% set field = field ~ regenerate_chk %}
