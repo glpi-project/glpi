@@ -129,17 +129,16 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
-        this.#default_language = container.dataset.glpiKbDefaultLanguage;
-        this.#existing_translations = JSON.parse(
-            container.dataset.glpiKbExistingTranslations
-        );
-
         this.#initEventListeners();
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
 
         if (mode === "edit") {
+            this.#default_language = container.dataset.glpiKbDefaultLanguage;
+            this.#existing_translations = JSON.parse(
+                container.dataset.glpiKbExistingTranslations
+            );
             this.#initTranslationMode();
         }
 

@@ -35,8 +35,10 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
-    data-glpi-kb-default-language="{{ default_language }}"
-    data-glpi-kb-existing-translations="{{ existing_translations|json_encode }}"
+    {% if mode == 'edit' %}
+        data-glpi-kb-default-language="{{ default_language }}"
+        data-glpi-kb-existing-translations="{{ existing_translations|json_encode }}"
+    {% endif %}
 >
     <article
         class="col-12 ms-0 px-4 py-3 kb-article"
