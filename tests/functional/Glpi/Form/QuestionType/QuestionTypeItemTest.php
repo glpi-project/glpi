@@ -54,12 +54,11 @@ final class QuestionTypeItemTest extends DbTestCase
      * returns a description array:
      *
      *   [
-     *     'itemtype'    => class-string,
-     *     'items_id'    => int,
-     *     'extra_data'  => string (JSON),
-     *     'question'    => string,
-     *     'contains'    => string,   // substring that MUST appear in ticket content
-     *     'not_contains'=> ?string,  // substring that MUST NOT appear (optional)
+     *     'itemtype'   => class-string,
+     *     'items_id'   => int,
+     *     'extra_data' => string (JSON),
+     *     'question'   => string,
+     *     'content'    => string, // expected content in the ticket description (after stripping HTML tags)
      *   ]
      */
     public static function itemAnswerInTicketProvider(): array
