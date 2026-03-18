@@ -26,6 +26,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_Revision` is now final
 
 #### Deprecated
+- Usage of coma separated list of fields in `ORDER BY` clause.
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
 - `Glpi\Features\Inventoriable::showInventoryInfo()`
 - `Glpi\Features\Inventoriable::displayAgentInformation()`

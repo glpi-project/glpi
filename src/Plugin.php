@@ -1641,7 +1641,7 @@ class Plugin extends CommonDBTM
         $content = '';
 
         $plug     = new Plugin();
-        $pluglist = $plug->find([], "state, name, directory");
+        $pluglist = $plug->find([], ['state', 'name', 'directory']);
         foreach ($pluglist as $plugin) {
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
