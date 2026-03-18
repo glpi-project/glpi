@@ -435,7 +435,7 @@ describe("Ticket Form", () => {
 
         cy.get('.itil-timeline div[data-itemtype="TicketTask"]:last').within(() => {
             cy.get('.read-only-content .rich_text_container').should('contain.text', 'Test task content');
-            cy.get('.todo-list-state .state').should('have.attr', 'title', 'Done');
+            cy.get('.todo-list-state input.task-state-checkbox').should('be.checked');
             cy.get('.timeline-header .is-private .ti-eye-off').should('be.visible');
             cy.get('span.actiontime').should('contain.text', '1 hours 30 minutes 0 seconds');
         });

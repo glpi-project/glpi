@@ -59,11 +59,6 @@ use TaskCategory;
 use Ticket;
 use User;
 
-/* Test for inc/search.class.php */
-
-/**
- * @engine isolate
- */
 class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
@@ -2730,7 +2725,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '>100',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` > 100",
+                'expected' => "AND `glpi_items_disks`.`freesize` > '100'",
             ],
             [
                 'link' => ' AND ',
@@ -2740,7 +2735,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '<10000',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
+                'expected' => "AND `glpi_items_disks`.`freesize` < '10000'",
             ],
             [
                 'link' => ' AND ',
@@ -4301,13 +4296,13 @@ class SearchTest extends DbTestCase
             foreach ([15, 2.3, 1.125] as $value) {
                 $searched_values = [
                     // positive values, with or without spaces
-                    "{$operator}{$value}"       => "{$value}",
-                    " {$operator}  {$value} "   => "{$value}",
+                    "{$operator}{$value}"       => "'{$value}'",
+                    " {$operator}  {$value} "   => "'{$value}'",
 
                     // negative values, with or without spaces
-                    "{$operator}-{$value}"      => "-{$value}",
-                    " {$operator} -{$value} "   => "-{$value}",
-                    "{$operator} - {$value} "   => "-{$value}",
+                    "{$operator}-{$value}"      => "'-{$value}'",
+                    " {$operator} -{$value} "   => "'-{$value}'",
+                    "{$operator} - {$value} "   => "'-{$value}'",
                 ];
                 $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
 
@@ -4335,8 +4330,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_115` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_115` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=decimal
@@ -4353,8 +4348,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 11, // totalcost
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Contract_11` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Contract_11` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=count (usehaving=true)
@@ -4362,8 +4357,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_27` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_27` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=mio (usehaving=true)
@@ -4371,8 +4366,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_111` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_111` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=progressbar (with computation)
@@ -4398,8 +4393,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_49` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_49` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} {$signed_value}",
                     ];
                 }
             }

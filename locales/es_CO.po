@@ -19,6 +19,7 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # Haider López <hlopez@itsoluciones.com.co>, 2026
+# Sistemas Tecnologia, 2026
 # 
 #, fuzzy
 msgid ""
@@ -27,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-22 07:57+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Haider López <hlopez@itsoluciones.com.co>, 2026\n"
+"Last-Translator: Sistemas Tecnologia, 2026\n"
 "Language-Team: Spanish (Colombia) (https://app.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -92,11 +93,11 @@ msgstr "Seleccione una base de datos:"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database:"
-msgstr ""
+msgstr "Crear nueva base de datos:"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr ""
+msgstr "O use una existente:"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
@@ -105,21 +106,24 @@ msgstr "Seleccione una base de datos para actualizar:"
 #: templates/install/install.install_required.html.twig install/update.php:99
 #: install/update.php:119 install/install.php:67 install/install.php:89
 msgid "GLPI setup"
-msgstr ""
+msgstr "Configuración de GLPI"
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr ""
+msgstr "La base de datos de GLPI primero debe ser configurada e instalada."
 
 #: templates/install/install.install_required.html.twig
 msgid "Go to install page"
-msgstr ""
+msgstr "Ir a la página de instalación"
 
 #: templates/install/install.install_required.html.twig
 msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
 msgstr ""
+"Si esta viendo esta página cuando la instalación ya se ha terminado, "
+"siginifica que el archivo de  configuración de la base de datos de GLPI ha "
+"sido quitado o dañado."
 
 #: templates/install/post_update_step.html.twig
 #: src/Glpi/Console/Database/UpdateCommand.php:283
@@ -132,7 +136,7 @@ msgstr ""
 #: src/Glpi/Console/Database/UpdateCommand.php:285
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
-msgstr ""
+msgstr "Se recomienda ejecutar el comando \" 1%s \" para ver las diferencias."
 
 #: templates/install/post_update_step.html.twig
 #: templates/install/step7.html.twig
@@ -146,11 +150,11 @@ msgstr "Utilizar GLPI"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Verificando el acceso de escritura a los archivos de configuración"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Acceso de escritura denegado para los archivos de configuración"
 
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:477
 #, php-format
@@ -162,6 +166,8 @@ msgstr ""
 msgid ""
 "Write access to these files can be removed once the operation is finished."
 msgstr ""
+"El acceso de escritura a estos archivos puede eliminarse una vez finalizada "
+"la operación."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -267,6 +273,8 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
+"El código fuente de GLPI ha sido actualizado. Es necesario actualizar la "
+"base de datos de GLPI."
 
 #: templates/install/update.need_update.html.twig
 #: templates/install/step0.html.twig src/Plugin.php:2918
@@ -582,7 +590,7 @@ msgstr "Otras imágenes"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "User menu"
-msgstr ""
+msgstr "Menú de usuario"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
@@ -638,6 +646,8 @@ msgstr "Cerrar"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y algunas CORRECCIONES DE SEGURIDAD pueden no "
+"estar incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -673,11 +683,11 @@ msgstr "A la derecha"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:440
 msgid "On top"
-msgstr ""
+msgstr "Parte superior"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:444
 msgid "On bottom"
-msgstr ""
+msgstr "Parte inferior"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig
 #, php-format
@@ -785,12 +795,12 @@ msgstr "Configuración"
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import forms"
-msgstr ""
+msgstr "Importar formularios"
 
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "Seleccionar la entidad %1s con todas sus subentidades"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -816,7 +826,7 @@ msgstr "privado"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
-msgstr ""
+msgstr "Modo sólo lectura"
 
 #: templates/layout/parts/objectlock_message.html.twig
 #: templates/components/notepad/form.html.twig
@@ -832,7 +842,7 @@ msgstr "Editar"
 #: templates/layout/parts/objectlock_message.html.twig
 #, php-format
 msgid "Locked: %1$s by %2$s"
-msgstr ""
+msgstr "Bloqueado: %1$s por %2$s"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Ask for unlock"
@@ -859,11 +869,11 @@ msgstr "Tablero"
 #: templates/layout/parts/page_footer.html.twig
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
-msgstr ""
+msgstr "MODO MANTENIMIENTO"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Change profile"
-msgstr ""
+msgstr "Cambiar perfil"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Profiles"
@@ -12618,7 +12628,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Browse help articles"
-msgstr ""
+msgstr "Explorar artículos de ayuda"
 
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
@@ -26686,7 +26696,7 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:102
 msgid "Browse help articles"
-msgstr ""
+msgstr "Explorar artículos de ayuda"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:103
 msgid "See all available help articles and our FAQ."
@@ -26698,7 +26708,7 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:124
 msgid "See your tickets"
-msgstr ""
+msgstr "Ver tus casos"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:125
 msgid "View all the tickets that you have created."

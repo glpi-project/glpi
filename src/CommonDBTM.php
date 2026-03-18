@@ -4875,7 +4875,7 @@ class CommonDBTM extends CommonGLPI
 
                     case "weblink":
                         $orig_link = trim($value);
-                        if (!empty($orig_link)) {
+                        if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
                             // strip begin of link
                             $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                             $link = preg_replace('/\/$/', '', $link);
@@ -4940,7 +4940,7 @@ class CommonDBTM extends CommonGLPI
                         break;
 
                     case "language":
-                        if (isset($CFG_GLPI['languages'][$value])) {
+                        if (isset($CFG_GLPI['languages'][$value ?? ''])) {
                             return htmlescape($CFG_GLPI['languages'][$value][0]);
                         }
                         return __s('Default value');

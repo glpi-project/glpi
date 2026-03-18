@@ -97,7 +97,7 @@ class ProjectCost extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Project) {
-            return self::showForProject($item, $withtemplate);
+            return self::showForProject($item);
         }
         return false;
     }
@@ -311,7 +311,7 @@ class ProjectCost extends CommonDBChild
 
         $rand   = mt_rand();
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand(btn) {\n";
@@ -380,7 +380,7 @@ class ProjectCost extends CommonDBChild
                 printf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
-                    Html::showToolTip(htmlescape($data['comment']), ['display' => false])
+                    !empty($data['comment']) ? Html::showToolTip(htmlescape($data['comment']), ['display' => false]) : ''
                 );
                 if ($canedit) {
                     $js = "function viewEditCost" . $project_id . "_" . $cost_id . "_$rand() {";

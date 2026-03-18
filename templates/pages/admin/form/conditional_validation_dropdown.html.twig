@@ -43,6 +43,7 @@
     <div
         data-glpi-form-editor-validation-dropdown-container
         data-glpi-form-editor-question-extra-details
+        data-testid="validation-dropdown-container"
 
         {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\ValidationStrategy').NO_VALIDATION %}
         class="btn-group ms-1 {{ hide ? 'd-none' : '' }}"

@@ -239,6 +239,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $count = 0;
         $twig_params = [
             'rand'               => $rand,
+            'itil_class'         => static::$itemtype_1,
             'item_class'         => static::class,
             'can_edit'           => $canedit,
             'my_items_dropdown'  => '',

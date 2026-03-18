@@ -76,3 +76,56 @@ test('Can reorder options of a dropdown question and keep the order after saving
     await expect(options.nth(2)).toHaveValue('Option 2');
     await expect(options.nth(3)).toHaveValue('');
 });
+
+for (const questionType of ['Radio', 'Checkbox', 'Dropdown']) {
+    test(`Can paste multi-line text to create multiple options for ${questionType} question`, async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const form = new FormPage(page);
+
+        // Create a form and navigate to its editor
+        const uuid = randomUUID();
+        const form_id = await api.createItem('Glpi\\Form\\Form', {
+            name: `Form - ${uuid}`,
+            entities_id: getWorkerEntityId(),
+        });
+        await form.goto(form_id);
+
+        const question = await form.addQuestion(`${questionType} question`);
+        await form.setQuestionType(question, questionType);
+
+        // Simulate pasting multi-line text into the first option
+        const firstOption = question.getByRole('textbox', { name: 'Selectable option' }).last();
+        await firstOption.click();
+
+        const pastedText = "Option A\nOption B\nOption C";
+        await firstOption.evaluate((input, text) => {
+            const clipboardData = new DataTransfer();
+            clipboardData.setData('text/plain', text);
+            const pasteEvent = new ClipboardEvent('paste', {
+                clipboardData,
+                bubbles: true,
+                cancelable: true,
+            });
+            input.dispatchEvent(pasteEvent);
+        }, pastedText);
+
+        // Assert that three options were created from the pasted text
+        const options = question.getByRole('textbox', { name: 'Selectable option' });
+        await expect(options.nth(0)).toHaveValue('Option A');
+        await expect(options.nth(1)).toHaveValue('Option B');
+        await expect(options.nth(2)).toHaveValue('Option C');
+
+        // Save and reload the form
+        await form.doSaveFormEditor();
+        await form.goto(form_id);
+
+        // Focus on the question to load its options
+        await form.getLastQuestion().click({ position: { x: 0, y: 0 } });
+
+        // Assert that all options are preserved after reload
+        const savedOptions = question.getByRole('textbox', { name: 'Selectable option' });
+        await expect(savedOptions.nth(0)).toHaveValue('Option A');
+        await expect(savedOptions.nth(1)).toHaveValue('Option B');
+        await expect(savedOptions.nth(2)).toHaveValue('Option C');
+    });
+}

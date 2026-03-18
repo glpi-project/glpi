@@ -309,11 +309,15 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $used  = [];
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
-                $iterator = self::getUsedPeripherals($itemtype);
+                $iterator = self::getPeripheralAssets($asset, $itemtype);
+                $usediterator = self::getUsedPeripherals($itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
                     $datas[]           = $data;
+                }
+
+                foreach ($usediterator as $data) {
                     $used[$itemtype][] = $data['id'];
                 }
             }
@@ -334,7 +338,10 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'source_itemtype' => $asset::class,
                 'source_items_id' => $asset->getID(),
                 'link_types' => $CFG_GLPI['directconnect_types'],
+                'generic_source' => true,
                 'generic_target' => true,
+                'source_suffix' => '_asset',
+                'target_suffix' => '_peripheral',
                 'dropdown_options' => [
                     'entity'      => $asset->getEntityID(),
                     'entity_sons' => $asset->isRecursive(),

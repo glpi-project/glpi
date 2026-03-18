@@ -42,6 +42,7 @@ use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\SocketModel;
 
 use function Safe\json_encode;
@@ -2997,7 +2998,7 @@ HTML;
                         // Prevent overriding criteria groups sharing the same key
                         $where[] = [$key => $value];
                     } else {
-                        // Keep the criteria key at the rrot level to be able to override defaults.
+                        // Keep the criteria key at the root level to be able to override defaults.
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
@@ -3031,8 +3032,10 @@ HTML;
                             "$table.completename" => ['LIKE', $search],
                         ],
                     ];
-                    if ($item->isField('code')) {
-                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    if (Session::getCurrentInterface() === 'central') {
+                        if ($item->isField('code')) {
+                            $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                        }
                     }
                     if ($item->isField('alias')) {
                         $swhere["OR"]["$table.alias"] = ['LIKE', $search];
@@ -3346,9 +3349,9 @@ HTML;
                             $outputval = $data['alias'];
                             $title     = $data['alias'];
                         }
-                        if (isset($data['code']) && !empty($data['code'])) {
+                        if ((Session::getCurrentInterface() === 'central') && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
-                            $title     .= ' - ' . $data['code'];
+                            $title .= ' - ' . $data['code'];
                         }
 
                         $selection_text = $title;
@@ -3587,11 +3590,11 @@ HTML;
                     $itemtype_class = $post['itemtype'];
                     if (!Session::haveRight($itemtype_class::$rightname, $itemtype_class::READALL)) {
                         $unused_ref = [];
-                        $joins_str = Search::addDefaultJoin($itemtype_class, $itemtype_class::getTable(), $unused_ref);
-                        if (!empty($joins_str)) {
-                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        $default_join = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
+                        if ($default_join !== []) {
+                            $criteria = array_merge_recursive($criteria, $ljoin, $default_join);
                         }
-                        $where[] = new QueryExpression(Search::addDefaultWhere($itemtype_class));
+                        $where[] = SQLProvider::getDefaultWhereCriteria($itemtype_class);
                     }
                     break;
 
@@ -4184,6 +4187,7 @@ HTML;
         }
 
         $all_devices = [];
+        $found_items = [];
 
         // My items
         foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
@@ -4258,6 +4262,7 @@ HTML;
                             ];
                         }
 
+                        $found_items[$itemtype][] = $data['id'];
                         $all_devices[$itemtype]['children'][] = [
                             'id' => $itemtype . "_" . $data["id"],
                             'text' => $output,
@@ -4327,6 +4332,10 @@ HTML;
                             'GROUPBY' => $itemtable . '.id',
                             'ORDER'  => $item->getNameField(),
                         ];
+
+                        if (!empty($found_items[$itemtype])) {
+                            $criteria['WHERE'][] = ['NOT' => ["$itemtable.id" => $found_items[$itemtype]]];
+                        }
 
                         if ($item->maybeDeleted()) {
                             $criteria['WHERE']['is_deleted'] = 0;

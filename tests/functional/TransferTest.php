@@ -1236,4 +1236,154 @@ class TransferTest extends DbTestCase
         ]);
         $this->assertCount(0, $docItems);
     }
+
+    /**
+     * Test the transfer of tickets with associated contracts.
+     * Verifies that:
+     * - With keep_contract = 1: The ticket AND contract are transferred to the destination entity
+     * - With keep_contract = 0: The ticket-contract link is removed and the contract is deleted (if orphaned)
+     */
+    public function testTicketWithContractTransfer()
+    {
+        $this->login();
+
+        $entity_source = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        $entity_destination = (int) getItemByTypeName('Entity', '_test_child_2', true);
+
+        $contract = $this->createItem(\Contract::class, [
+            'name' => 'contract for ticket preserve',
+            'entities_id' => $entity_source,
+        ]);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'ticket with contract preserve',
+            'content'     => 'ticket content',
+            'entities_id' => $entity_source,
+        ]);
+        $ticket_id = $ticket->getID();
+
+        $this->createItem(\Ticket_Contract::class, [
+            'tickets_id' => $ticket_id,
+            'contracts_id' => $contract->getID(),
+        ]);
+
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $transfer->fields['keep_contract'] = 1;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $transfer->moveItems([\Ticket::class => [$ticket_id => $ticket_id]], $entity_destination, $transfer->fields);
+
+        $ticket->getFromDB($ticket_id);
+        $this->assertEquals($entity_destination, $ticket->fields['entities_id']);
+
+        $contract->getFromDB($contract->getID());
+        $this->assertEquals($entity_destination, $contract->fields['entities_id']);
+
+        $contract2 = $this->createItem(\Contract::class, [
+            'name' => 'contract for ticket delete',
+            'entities_id' => $entity_destination,
+        ]);
+
+        $ticket2 = $this->createItem(\Ticket::class, [
+            'name' => 'ticket for contract delete',
+            'content' => 'ticket content',
+            'entities_id' => $entity_destination,
+        ]);
+        $ticket2_id = $ticket2->getID();
+
+
+        $this->createItem(\Ticket_Contract::class, [
+            'tickets_id' => $ticket2_id,
+            'contracts_id' => $contract2->getID(),
+        ]);
+        $contract2_id = $contract2->getID();
+
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $transfer->fields['keep_contract'] = 0;
+        $transfer->fields['clean_contract'] = 0;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $transfer->moveItems([\Ticket::class => [$ticket2_id => $ticket2_id]], $entity_destination, $transfer->fields);
+
+        $ticket_contracts = new \Ticket_Contract();
+        $this->assertCount(0, $ticket_contracts->find([
+            'tickets_id' => $ticket2_id,
+            'contracts_id' => $contract2_id,
+        ]));
+
+        $this->assertCount(0, $contract2->find(['id' => $contract2_id]));
+    }
+
+    /**
+     * When "add to transfer list" is executed on Document_Item records, the transfer list
+     * must contain the related Documents (not the Document_Item relations themselves).
+     * The Document_Item:add_transfer_list action key ensures the Document_Item processor
+     * handles the dispatch and can redirect to the entity-owning peer (the Document).
+     */
+    public function testAddTransferListResolvesRelationToEntityOwner(): void
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Test document linked to FAQ',
+            'entities_id' => $entity_id,
+        ]);
+
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'        => 'Test FAQ article',
+            'answer'      => 'Test answer content',
+            'is_faq'      => 1,
+            'entities_id' => $entity_id,
+        ]);
+
+        $doc_item = $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_item->getID(),
+            'entities_id'  => $entity_id,
+        ]);
+
+        // Verify the action is registered under Document_Item processor, not MassiveAction.
+        $actions = (new \Document_Item())->getSpecificMassiveActions();
+        $this->assertArrayNotHasKey(
+            \MassiveAction::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list',
+            $actions
+        );
+        $this->assertArrayHasKey(
+            \Document_Item::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list',
+            $actions
+        );
+
+        // Verify that processing the action adds the Document to the transfer list.
+        unset($_SESSION['glpitransfer_list']);
+
+        \Document_Item::processMassiveActionsForOneItemtype(
+            $this->createMassiveActionMock('add_transfer_list'),
+            new \Document_Item(),
+            [$doc_item->getID()]
+        );
+
+        $this->assertArrayNotHasKey(\Document_Item::class, $_SESSION['glpitransfer_list'] ?? []);
+        $this->assertArrayHasKey(\Document::class, $_SESSION['glpitransfer_list'] ?? []);
+        $this->assertArrayHasKey(
+            $document->getID(),
+            $_SESSION['glpitransfer_list'][\Document::class]
+        );
+
+        unset($_SESSION['glpitransfer_list']);
+    }
+
+    private function createMassiveActionMock(string $action): \MassiveAction
+    {
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'itemDone', 'setRedirect'])
+            ->getMock();
+        $ma->method('getAction')->willReturn($action);
+        return $ma;
+    }
 }

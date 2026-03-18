@@ -37,6 +37,9 @@ namespace tests\units;
 use AbstractITILChildTemplate;
 use Glpi\Tests\AbstractITILChildTemplateTest;
 use TaskTemplate;
+use Ticket;
+use TicketTask;
+use User;
 
 class TaskTemplateTest extends AbstractITILChildTemplateTest
 {
@@ -166,5 +169,33 @@ class TaskTemplateTest extends AbstractITILChildTemplateTest
 
         $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', 0);
         $this->assertEquals(' AND (`glpi_tasktemplates`.`use_current_user` = 0 AND `glpi_tasktemplates`.`users_id_tech` = 0)', $condition);
+    }
+
+    public function testTemplateWithCurrentUserAsAuthor(): void
+    {
+        // Arrange: create a task template with the "current user" as author
+        $template = $this->createItem(TaskTemplate::class, [
+            'name' => 'my template',
+            'content' => '<p>test</p>',
+            'users_id_tech' => -1,
+        ]);
+
+        // Act: use the template to create a ticket with this task
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'My ticket',
+            'content' => 'My content',
+            '_tasktemplates_id' => [$template->getID()],
+        ]);
+
+        // Assert: task is created with the current user
+        $task = new TicketTask();
+        $task->getFromDBByCrit([
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $this->assertEquals(
+            getItemByTypeName(User::class, TU_USER, true),
+            $task->fields['users_id_tech']
+        );
     }
 }

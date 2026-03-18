@@ -326,10 +326,10 @@ TWIG;
                 // Item is formatted as [itemtype, item_id]
                 $itemtype = $device[0];
                 $item_id = $device[1];
-            } elseif (\is_string($device) && preg_match('/^([A-Za-z]+)_\d+$/', $device, $matches)) {
+            } elseif (\is_string($device) && preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $matches)) {
                 // Item is formatted as "itemtype_item_id"
-                $itemtype = $matches[1];
-                $item_id = substr($device, strlen($itemtype) + 1); // Get the ID part after the itemtype
+                $itemtype = $matches['itemtype'];
+                $item_id = $matches['id'];
             } else {
                 continue;
             }

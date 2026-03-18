@@ -3332,6 +3332,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDevice.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method CommonDevice\\:\\:displayFullPageForItem\\(\\) has parameter \\$menus with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDevice.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonDevice\\:\\:getDeviceTypes\\(\\) should return array\\<array\\<class\\-string\\<CommonDevice\\>\\>\\|class\\-string\\<CommonDevice\\>\\> but returns array\\<int\\<0, max\\>\\|string, array\\<int\\<0, max\\>, class\\-string\\<CommonDevice\\>\\|CommonDevice\\>\\|class\\-string\\<CommonDevice\\>\\|CommonDevice\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3820,7 +3826,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getForeignKeyFieldForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -5552,6 +5558,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method Document\\:\\:getCategoryItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Document\\:\\:getTreeCategoryList\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6362,12 +6374,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$ref_table of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getDefaultJoinCriteria\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$string of function explode expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -6818,19 +6824,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Glpi\\\\Api\\\\HL\\\\GraphQL\\:\\:hideOrRemoveProperty\\(\\) expects class\\-string\\<CommonDBTM\\>\\|null, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_subclass_of expects object\\|string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method withHeader\\(\\) on Glpi\\\\Http\\\\Response\\|null\\.$#',
+	'message' => '#^Cannot call method withHeader\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugResponseMiddleware.php',
@@ -6842,7 +6836,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/ResultFormatterMiddleware.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method withHeader\\(\\) on Glpi\\\\Http\\\\Response\\|null\\.$#',
+	'message' => '#^Cannot call method withHeader\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/SecurityResponseMiddleware.php',
@@ -7052,13 +7046,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method withBody\\(\\) on Glpi\\\\Http\\\\Response\\|null\\.$#',
+	'message' => '#^Cannot call method withBody\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Router\\:\\:handleRequest\\(\\) should return Glpi\\\\Http\\\\Response but returns Glpi\\\\Http\\\\Response\\|null\\.$#',
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Router\\:\\:handleRequest\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
@@ -7084,12 +7078,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method maybeRecursive\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Search\\:\\:getSearchCriteria\\(\\) should return array\\<array\\> but returns array\\<array\\|int\\>\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
@@ -7174,7 +7162,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method get\\(\\) on Psr\\\\SimpleCache\\\\CacheInterface\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/ImportMapGenerator.php',
 ];
 $ignoreErrors[] = [
@@ -7905,12 +7893,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DatabaseTablesEngine constructor expects DBmysql, DBmysql\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
@@ -10050,12 +10032,6 @@ $ignoreErrors[] = [
 	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeFile.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'items_id\' on array\\|bool\\|float\\|int\\|string\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
@@ -13562,18 +13538,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string and \' \\<\\> \' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string and \' \\= \' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'id\' on non\\-empty\\-array\\<non\\-empty\\-string, string\\|null\\>\\|int\\<1, max\\>\\|string\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -13666,19 +13630,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$expression of class Glpi\\\\DBAL\\\\QueryExpression constructor expects string, array\\<string\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$expression of static method Glpi\\\\DBAL\\\\QueryFunction\\:\\:convert\\(\\) expects Glpi\\\\DBAL\\\\QueryExpression\\|string, array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$field of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:makeTextCriteria\\(\\) expects string, array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -13754,12 +13706,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$size of static method Toolbox\\:\\:getMioSizeFromString\\(\\) expects string, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$val of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:makeTextSearchValue\\(\\) expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
@@ -13814,27 +13760,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Part \\$date_computation \\(array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\|null\\) of encapsed string cannot be cast to string\\.$#',
-	'identifier' => 'encapsedStringPart.nonString',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Part \\$tocompute \\(array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\) of encapsed string cannot be cast to string\\.$#',
-	'identifier' => 'encapsedStringPart.nonString',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Part \\$token \\(array\\<int\\>\\|int\\|string\\|null\\) of encapsed string cannot be cast to string\\.$#',
 	'identifier' => 'encapsedStringPart.nonString',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type array\\<string\\>\\|Glpi\\\\DBAL\\\\QueryExpression\\|string\\.$#',
-	'identifier' => 'array.invalidKey',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -15422,6 +15350,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Variable \\$peer_column might not be defined\\.$#',
+	'identifier' => 'variable.undefined',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Devices.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_Disk\\:\\:getEncryptionStatusDropdown\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -15783,6 +15717,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getForeignKeyFieldForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method KnowbaseItem\\:\\:getCategoryItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
@@ -17073,12 +17013,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$error of static method NotificationEventMailing\\:\\:handleFailedSend\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationEventMailing.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$width of static method Document\\:\\:getResizedImagePath\\(\\) expects int, float\\|int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
@@ -20558,12 +20492,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$ref_table of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getDefaultJoinCriteria\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$to_type of static method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getMetaLeftJoinCriteria\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -20703,6 +20631,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:getDatas\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method Software\\:\\:getCategoryItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Software.php',
@@ -21597,6 +21531,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Search\\:\\:getDatas\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of static method User\\:\\:getCategoryItem\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',

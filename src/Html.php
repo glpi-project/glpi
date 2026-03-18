@@ -1000,7 +1000,7 @@ HTML;
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
@@ -3791,7 +3791,7 @@ JS;
                                 target.closest('.tox-menu').length > 0;
 
                             if (!isEditorElementClicked) {
-                                $('.tox-tbtn.tox-tbtn--enabled').trigger('click').trigger('blur');
+                                $('.tox-tbtn.tox-tbtn--enabled[data-mce-name="overflow-button"]').trigger('click').trigger('blur');
                             }
                         });
                     }
@@ -5393,7 +5393,7 @@ HTML;
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -5405,7 +5405,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png)$/i"
+            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),
@@ -5551,11 +5551,17 @@ JS;
         $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
+                $filepath = GLPI_TMP_DIR . '/' . $upload;
+                if (!file_exists($filepath)) {
+                    trigger_error(sprintf('Uploaded temp file %s not found, skipping.', $filepath), E_USER_WARNING);
+                    continue;
+                }
+
                 $prefix  = substr($upload, 0, 23);
                 $displayName = substr($upload, 23);
 
                 // get the extension icon
-                $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+                $extension = pathinfo($filepath, PATHINFO_EXTENSION);
                 $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
                 if (!is_readable(GLPI_ROOT . $extensionIcon)) {
                     $extensionIcon = '/pics/icones/defaut-dist.png';
@@ -5567,7 +5573,7 @@ JS;
                     'name'    => $upload,
                     'id'      => 'doc' . $p['name'] . mt_rand(),
                     'display' => $displayName,
-                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'size'    => filesize($filepath),
                     'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];
@@ -6664,6 +6670,8 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
+        $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
+
         return self::getScssCompileDir($root_dir) . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
@@ -6676,7 +6684,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return $root_dir . '/public/css_compiled';
+        return str_replace(DIRECTORY_SEPARATOR, '/', $root_dir) . '/public/css_compiled';
     }
 
     /**

@@ -120,6 +120,13 @@
                 field_options
             ) }}
 
+            {{ fields.dropdownYesNo(
+                "attach_ticket_documents_to_mail",
+                config('attach_ticket_documents_to_mail'),
+                __('Add documents into ticket notifications'),
+                field_options
+            ) }}
+
             {{ fields.nullField() }}
 
             {{ fields.textareaField(

@@ -4742,7 +4742,7 @@ HTML;
                     if ($data[$field_user] == $ID) {
                         $linktypes[] = self::getTypeName(1);
                     }
-                    if (isset($groups[$data['groups_id']])) {
+                    if (isset($groups[$data['groups_id'] ?? ''])) {
                         $linktypes[] = sprintf(
                             __('%1$s = %2$s'),
                             Group::getTypeName(1),

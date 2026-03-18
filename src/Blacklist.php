@@ -558,7 +558,7 @@ class Blacklist extends CommonDropdown
             if (
                 !is_numeric($value->$key)
                 && preg_match('/^.+models_id/', $key)
-                && '' == $this->process(self::MODEL, $value->$key)
+                && '' == $this->process(self::MODEL, $value->$key ?? '')
             ) {
                 unset($value->$key);
             }

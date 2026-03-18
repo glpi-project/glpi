@@ -34,7 +34,7 @@
 
 {% macro log_entry(log) %}
     {% apply spaceless %}
-        <div class="log_entry d-flex border-bottom" id="{{ log['id'] }}">
+        <div class="log_entry d-flex border-bottom" id="{{ log['id'] }}" data-testid="log-entry">
             {% set has_more = log['text']|split("\n")|length > 2 %}
             <button class="btn btn-icon btn-sm bg-transparent pt-3 d-flex align-items-start border-0 expand-log-entry {{ not has_more ? 'invisible' : '' }}"
                 title="{{ __('Expand') }}" aria-label="{{ __('Expand') }}">
@@ -152,7 +152,7 @@
                 <i class="ti ti-player-track-next fa-rotate-90" aria-hidden="true"></i>
             </a>
         </div>
-        <div class="log-entries card-body">
+        <div class="log-entries card-body" data-testid="log-entries">
             {{ _self.log_entries(log_entries) }}
         </div>
         <div class="card-footer d-flex justify-content-between">

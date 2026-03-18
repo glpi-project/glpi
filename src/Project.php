@@ -632,6 +632,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -640,6 +641,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -991,6 +993,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1005,6 +1008,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1407,15 +1411,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Show team for a project
      * @param Project $project
-     * @param int $withtemplate
      * @return true
      **/
-    public function showTeam(Project $project, $withtemplate = 0)
+    public function showTeam(Project $project)
     {
         $ID      = $project->fields['id'];
         $canedit = $project->can($ID, UPDATE);
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             $twig_params = [
                 'id' => $ID,
                 'label' => __('Add a team member'),

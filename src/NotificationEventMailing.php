@@ -195,6 +195,9 @@ class NotificationEventMailing extends NotificationEventAbstract
                 $documents_ids = [];
                 $documents_to_attach = [];
 
+                $user = new User();
+                $is_anonymous_requester = !$user->getFromDBbyEmail($current->fields['recipient']);
+
                 if ($is_html || $current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
                     if ($current->fields['attach_documents'] === NotificationSetting::ATTACH_FROM_TRIGGER_ONLY) {
                         $itemtype_for_docs = $current->fields['itemtype_trigger'];
@@ -228,7 +231,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                             ) {
                                 $user = new User();
                                 $user->getFromDBbyEmail($current->fields['recipient']);
-                                $doc_crit = $item_for_docs->getAssociatedDocumentsCriteria(false, $user);
+                                $doc_crit = $item_for_docs->getAssociatedDocumentsCriteria(false, $is_anonymous_requester ? null : $user, $is_anonymous_requester);
                             }
 
                             if ($is_html) {
@@ -255,7 +258,10 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 if (!$is_html) {
                     $mail->text($current->fields['body_text']);
-                    if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
+                    if (
+                        $current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT
+                        && (!$is_anonymous_requester || $CFG_GLPI['attach_documents_to_notifications_for_anonymous'])
+                    ) {
                         // Attach all documents
                         $documents_to_attach = $documents_ids;
                     }
@@ -285,7 +291,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
-                            if ($current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT) {
+                            if (
+                                $current->fields['attach_documents'] !== NotificationSetting::ATTACH_NO_DOCUMENT
+                                && (!$is_anonymous_requester || $CFG_GLPI['attach_documents_to_notifications_for_anonymous'])
+                            ) {
                                 // Attach only documents that are not inlined images
                                 $documents_to_attach[] = $document_id;
                             }

@@ -293,7 +293,7 @@ abstract class InventoryAsset
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $new_id = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
-                            $value->$key,
+                            $value->$key ?? '',
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
@@ -517,7 +517,7 @@ abstract class InventoryAsset
     {
         $input = ['_auto' => 1];
         if (property_exists($value, '_inventory_users')) {
-            $input = ['_inventory_users' => $value->_inventory_users];
+            $input['_inventory_users'] = $value->_inventory_users;
         }
 
         $locks = [];
