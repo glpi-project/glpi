@@ -41,6 +41,7 @@ use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Form\Category;
 use Glpi\Tests\DbTestCase;
+use Glpi\UI\IllustrationManager;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use KnowbaseItem_Revision;
@@ -899,5 +900,71 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertInstanceOf(RevisionEvent::class, $events[2]);
         $this->assertEquals("Version 1", $events[2]->getLabel());
+    }
+
+    public function testNativeIllustrationChangeAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+            'illustration' => 'kb-faq',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'illustration' => 'browse-kb',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Illustration updated", $events[0]->getLabel());
+        $this->assertEquals("Native illustration set by", $events[0]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
+    public function testCustomIllustrationChangeAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+            'illustration' => 'kb-faq',
+        ]);
+
+        $custom_illustration = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX . 'my-custom-icon';
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'illustration' => $custom_illustration,
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Illustration updated", $events[0]->getLabel());
+        $this->assertEquals("Custom illustration set by", $events[0]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
     }
 }
