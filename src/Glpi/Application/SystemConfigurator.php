@@ -213,7 +213,27 @@ final class SystemConfigurator
 
         // Handle deprecated/obsolete constants
         if (defined('PLUGINS_DIRECTORIES') && !defined('GLPI_PLUGINS_DIRECTORIES')) {
-            define('GLPI_PLUGINS_DIRECTORIES', PLUGINS_DIRECTORIES);
+            if (!is_array(PLUGINS_DIRECTORIES)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Configuration "%s" must be an array, %s given.',
+                        'PLUGINS_DIRECTORIES',
+                        get_debug_type(PLUGINS_DIRECTORIES),
+                    )
+                );
+            }
+
+            define('GLPI_PLUGINS_DIRECTORIES', array_values(array_unique(PLUGINS_DIRECTORIES)));
+        }
+
+        if (defined('GLPI_PLUGINS_DIRECTORIES') && !is_array(GLPI_PLUGINS_DIRECTORIES)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Configuration "%s" must be an array, %s given.',
+                    'GLPI_PLUGINS_DIRECTORIES',
+                    get_debug_type(GLPI_PLUGINS_DIRECTORIES),
+                )
+            );
         }
 
         // Configure environment type if not defined by user.
@@ -249,7 +269,17 @@ final class SystemConfigurator
                     $constants[GLPI_ENVIRONMENT_TYPE][$name] ?? $constants['default'][$name]
                 );
 
-                if ($name === 'GLPI_PLUGINS_DIRECTORIES' && is_array($value)) {
+                if ($name === 'GLPI_PLUGINS_DIRECTORIES') {
+                    if (!is_array($value)) {
+                        throw new \InvalidArgumentException(
+                            sprintf(
+                                'Configuration "%s" must be an array, %s given.',
+                                $name,
+                                get_debug_type($value),
+                            )
+                        );
+                    }
+
                     $value = array_values(array_unique($value));
                 }
 
