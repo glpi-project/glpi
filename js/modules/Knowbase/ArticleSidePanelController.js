@@ -46,7 +46,7 @@ export class GlpiKnowbaseArticleSidePanelController
     /**
      * @type {HTMLElement}
      */
-    #container;
+    #sidepanel_container;
 
     /**
      * @type {HTMLElement}
@@ -63,16 +63,21 @@ export class GlpiKnowbaseArticleSidePanelController
      * @param {HTMLElement} offcanvas_container
      * @param {HTMLElement} article
      */
-    constructor(container, offcanvas_container, article)
+    constructor(sidepanel_container, offcanvas_container, article)
     {
-        this.#container = container;
+        this.#sidepanel_container = sidepanel_container;
         this.#offcanvas_container = offcanvas_container;
         this.#article = article;
         this.#initEventListeners();
 
-        new GlpiKnowbaseCommentsPanelController(this.#container);
-        new GlpiKnowbaseServiceCatalogPanelController(this.#container);
-        new GlpiKnowbaseRevisionsPanelController(this.#container);
+        // For each handlers, we define two instances that will each handle
+        // a possible container as the content can be displayed in two possible
+        // area depending on the screen size.
+        for (const container of [this.#sidepanel_container, this.#offcanvas_container]) {
+            new GlpiKnowbaseCommentsPanelController(container);
+            new GlpiKnowbaseServiceCatalogPanelController(container);
+            new GlpiKnowbaseRevisionsPanelController(container);
+        }
     }
 
     /**
@@ -85,7 +90,7 @@ export class GlpiKnowbaseArticleSidePanelController
 
     #initEventListeners()
     {
-        this.#container.addEventListener('click', (e) => {
+        this.#sidepanel_container.addEventListener('click', (e) => {
             if (e.target.closest('[data-glpi-knowbase-side-panel-close]')) {
                 this.#close();
             }
@@ -104,7 +109,7 @@ export class GlpiKnowbaseArticleSidePanelController
             const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(this.#offcanvas_container);
             offcanvas.show();
         } else {
-            this.#container.classList.remove('closed');
+            this.#sidepanel_container.classList.remove('closed');
             this.#article.classList.remove('col-12');
             this.#article.classList.add('col-9');
         }
@@ -118,7 +123,7 @@ export class GlpiKnowbaseArticleSidePanelController
                 offcanvas.hide();
             }
         } else {
-            this.#container.classList.add('closed');
+            this.#sidepanel_container.classList.add('closed');
             this.#article.classList.remove('col-9');
             this.#article.classList.add('col-12');
         }
@@ -141,7 +146,7 @@ export class GlpiKnowbaseArticleSidePanelController
         const html = await response.text();
         const target = this.#isSmallScreen()
             ? this.#offcanvas_container.querySelector('.offcanvas-body')
-            : this.#container;
+            : this.#sidepanel_container;
 
         // jQuery's .html() trigger scripts execution, which is needed for select2 and tinymce
         $(target).html(html);
