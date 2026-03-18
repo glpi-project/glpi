@@ -2037,7 +2037,9 @@ HTML;
 
             // The notice is X months before the end of the period (without subtracting 1 day)
             $notice_months = $period_end_months - $deletenotice;
-            $timestamp = strtotime("$from+$notice_months month");
+            $notice_date = new DateTime($from);
+            $notice_date->add(new DateInterval("P{$notice_months}M"));
+            $timestamp = $notice_date->getTimestamp();
 
             // For TACIT contracts with notice: find the current or next notice
             if ($auto_renew) {
@@ -2048,8 +2050,12 @@ HTML;
                 // Otherwise, we advance to the next future notice
                 while ($notice_end_timestamp < $current_time) {
                     $notice_months += $renewal_period;
-                    $timestamp = strtotime("$from+$notice_months month");
-                    $notice_end_timestamp = strtotime(date("Y-m-d", $timestamp) . " +{$deletenotice} month");
+                    $notice_date = new DateTime($from);
+                    $notice_date->add(new DateInterval("P{$notice_months}M"));
+                    $timestamp = $notice_date->getTimestamp();
+                    $notice_end_date = clone $notice_date;
+                    $notice_end_date->add(new DateInterval("P{$deletenotice}M"));
+                    $notice_end_timestamp = $notice_end_date->getTimestamp();
                 }
             }
         } else {
@@ -2089,7 +2095,9 @@ HTML;
                 }
             } else {
                 // For EXPIRATION (without notice)
-                $timestamp = strtotime("$from+$addwarranty month");
+                $expiration_date = new DateTime($from);
+                $expiration_date->add(new DateInterval("P{$addwarranty}M"));
+                $timestamp = $expiration_date->getTimestamp();
             }
         }
 
@@ -2100,10 +2108,14 @@ HTML;
             while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
-                $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$renewal_period month");
+                $datetime->add(new DateInterval("P{$renewal_period}M"));
+                $timestamp = $datetime->getTimestamp();
             }
         } elseif ($deletenotice == 0) {
-            $timestamp = strtotime(date("Y-m-d", $timestamp) . " -1 day");
+            $datetime = new DateTime();
+            $datetime->setTimestamp($timestamp);
+            $datetime->sub(new DateInterval("P1D"));
+            $timestamp = $datetime->getTimestamp();
         }
 
         $date = Html::convDate(date("Y-m-d", $timestamp));
