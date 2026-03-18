@@ -35,7 +35,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 
 /**
  * Test class for Budget item counter functionality
