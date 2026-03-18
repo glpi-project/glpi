@@ -1993,7 +1993,7 @@ HTML;
      * @return string Expiration date automatically converted to the user's preferred date format.
      *                The returned value is a safe HTML string.
      **/
-    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0): string
+    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
     {
 
         // Life warranty
@@ -2126,9 +2126,9 @@ HTML;
         }
 
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
-            return "<span class='red'>" . $date . "</span>";
+            return "<span class='red'>" . htmlescape($date) . "</span>";
         }
-        return $date;
+        return htmlescape($date);
     }
 
 
