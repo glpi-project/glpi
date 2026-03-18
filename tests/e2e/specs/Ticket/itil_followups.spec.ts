@@ -30,27 +30,43 @@
  * ---------------------------------------------------------------------
  */
 
-describe("ITIL Followups", () => {
-    it("can add a followup to a new ticket", () => {
-        cy.createWithAPI("Ticket", {
-            name: "Open ticket",
-            content: "",
-        }).then((id) => {
-            cy.login();
-            cy.visit(`/front/ticket.form.php?id=${id}`);
-            cy.findByRole('button', {name: "Answer"}).should('exist');
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { TicketPage } from '../../pages/TicketPage';
+import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
+
+test.describe('ITIL Followups', () => {
+    test('Can add a followup to a new ticket', async ({
+        profile,
+        page,
+        api
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const id = await api.createItem('Ticket', {
+            name: 'Open ticket',
+            content: '',
+            entities_id: getWorkerEntityId(),
         });
+        const ticket = new TicketPage(page);
+        await ticket.goto(id);
+        await expect(ticket.getButton('Answer')).toBeVisible();
     });
 
-    it("can't add a followup to a closed ticket", () => {
-        cy.createWithAPI("Ticket", {
-            name: "Closed ticket",
-            content: "",
+    test("Can't add a followup to a closed ticket", async ({
+        profile,
+        page,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const id = await api.createItem('Ticket', {
+            name: 'Closed ticket',
+            content: '',
             status: 6,
-        }).then((id) => {
-            cy.login();
-            cy.visit(`/front/ticket.form.php?id=${id}`);
-            cy.findByRole('button', {name: "Answer"}).should('not.exist');
+            entities_id: getWorkerEntityId(),
         });
+
+        const ticket = new TicketPage(page);
+        await ticket.goto(id);
+        await expect(ticket.getButton('Answer')).not.toBeAttached();
     });
 });
