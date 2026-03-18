@@ -2212,6 +2212,15 @@ TWIG, $twig_params);
             'datatype'           => 'dropdown',
         ];
 
+        $tab[] = [
+            'id'                 => '88',
+            'table'              => self::getTable(),
+            'field'              => 'illustration',
+            'name'               => __("Illustration"),
+            'datatype'           => 'text',
+            'search'             => false,
+        ];
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
