@@ -299,7 +299,7 @@ class Budget extends CommonDropdown
 
         // Use the same criteria as showItems() but without pagination
         $count_criteria = [
-            'FROM' => $item->getItemListCriteria(),
+            'FROM'  => new \QuerySubQuery($item->getSqlUnionQuery(), 'cpt_table'),
             'COUNT' => 'cpt',
         ];
 
