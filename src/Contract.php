@@ -452,7 +452,7 @@ class Contract extends CommonDBTM implements StateInterface
             'renewal' => htmlescape(self::getContractRenewalName((int) $values[$field])),
             '_virtual_expiration' => Infocom::getWarrantyExpir(
                 $values['begin_date'],
-                $values['renewal'] == self::RENEWAL_EXPRESS ? $values['duration'] + $values['periodicity'] : $values['duration'],
+                $values['duration'],
                 0,
                 true,
                 (int) $values['renewal'] === self::RENEWAL_TACIT,
@@ -460,7 +460,7 @@ class Contract extends CommonDBTM implements StateInterface
             ),
 	    '_virtual_expire_notice' => Infocom::getWarrantyExpir(
                 $values['begin_date'],
-                $values['renewal'] == self::RENEWAL_EXPRESS ? $values['duration'] + $values['periodicity'] : $values['duration'],
+                $values['duration'],
                 $values['notice'],
                 true,
                 (int) $values['renewal'] === self::RENEWAL_TACIT,

@@ -173,7 +173,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2029-01-01',
+                'expected' => '2027-01-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -267,7 +267,7 @@ class ContractTest extends DbTestCase
     public function testGetSpecificValueToDisplay($field, $values, $expected)
     {
         $this->login();
-        $_SESSION['glpi_currenttime'] = '2024-04-22 10:00:00';
+        $_SESSION['glpi_currenttime'] = '2026-03-17 10:00:00';
         $this->setEntity('_test_root_entity', true);
         $contract = new \Contract();
         $this->assertEquals($expected, $contract->getSpecificValueToDisplay($field, $values));
