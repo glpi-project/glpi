@@ -96,6 +96,19 @@ export class KnowbaseItemPage extends GlpiPage
         await response_promise;
     }
 
+    public get childEntitiesCheckbox(): Locator
+    {
+        return this.page.getByRole('checkbox', { name: 'Child entities' });
+    }
+
+    public async doToggleChildEntities(): Promise<void>
+    {
+        // Wait for ArticleController to finish initialization (it removes pe-none after attaching all listeners)
+        // eslint-disable-next-line playwright/no-raw-locators -- No semantic alternative for article container
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.childEntitiesCheckbox.click();
+    }
+
     public async doOpenCommentsPanel(): Promise<void>
     {
         await this.page.getByTitle('More actions').click();

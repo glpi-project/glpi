@@ -155,7 +155,9 @@
                {% if not disabled %}<input form="main-form" type="hidden" name="is_recursive" value="0" />{% endif %}
                <input form="main-form" class="form-check-input" type="checkbox" name="is_recursive" value="1"
                   {% if item.isRecursive() %}checked="checked"{% endif %}
-                  {% if disabled %}disabled="disabled"{% endif %} />
+                  {% if disabled %}disabled="disabled"{% endif %}
+                  data-glpi-child-entities-checkbox
+               />
                {% if item is instanceof('CommonDBChild') and item.isNewItem() and item.isRecursive() %}
                   {# Send value on hidden field to ensure creation will use inherited recursivity on CommonDBChild #}
                   <input form="main-form" type="hidden" name="is_recursive" value="1" />

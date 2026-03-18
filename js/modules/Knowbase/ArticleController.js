@@ -116,6 +116,7 @@ export class GlpiKnowbaseArticleController
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
+        this.#initRecursiveToggle();
 
         if (mode === 'add') {
             this.#enableEditMode();
@@ -484,6 +485,32 @@ export class GlpiKnowbaseArticleController
 
         await post(`Knowbase/${this.#item_id}/UpdateIllustration`, {
             illustration: illustration,
+        });
+    }
+
+    #initRecursiveToggle()
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        const checkbox = document.querySelector('[data-glpi-child-entities-checkbox]');
+        if (!checkbox || checkbox.disabled) {
+            return;
+        }
+
+        checkbox.addEventListener('change', async () => {
+            const value = checkbox.checked;
+            try {
+                await post(`Knowbase/${this.#item_id}/ToggleField`, {
+                    field: 'is_recursive',
+                    value: value,
+                });
+                glpi_toast_info(value ? __('Child entities enabled') : __('Child entities disabled'));
+            } catch (e) {
+                checkbox.checked = !value;
+                throw e;
+            }
         });
     }
 
