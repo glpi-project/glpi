@@ -58,6 +58,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['networkports_id_list']) && is_string($input['networkports_id_list'])) {
+            $input['networkports_id_list'] = importArrayFromDB($input['networkports_id_list']);
+        }
         if ((isset($input['networkports_id_list']))) {
             $input['networkports_id_list'] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input['networkports_id_list'] ?: [], 'intval')

@@ -34,6 +34,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use CommonDBTM;
 use Entity;
 use FQDN;
 use Glpi\Api\HL\Doc as Doc;
@@ -50,6 +51,8 @@ use NetworkAlias;
 use NetworkInterface;
 use NetworkName;
 use NetworkPort;
+use NetworkPort_NetworkPort;
+use NetworkPort_Vlan;
 use NetworkPortAggregate;
 use NetworkPortAlias;
 use NetworkPortConnectionLog;
@@ -57,6 +60,7 @@ use NetworkPortDialup;
 use NetworkPortEthernet;
 use NetworkPortFiberchannel;
 use NetworkPortFiberchannelType;
+use NetworkPortInstantiation;
 use NetworkPortLocal;
 use NetworkPortMetrics;
 use NetworkPortWifi;
@@ -69,8 +73,6 @@ final class NetworkController extends AbstractController
     protected static function getRawKnownSchemas(): array
     {
         $schemas = [];
-
-        //TODO Identify which properties are required in all of these schemas
 
         $schemas['NetworkPort'] = [
             'x-version-introduced' => '2.0',
@@ -123,6 +125,32 @@ final class NetworkController extends AbstractController
                 'trunk' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'vlans' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'x-version-introduced' => '2.3.0',
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'VLAN',
+                        'x-join' => [
+                            'table' => Vlan::getTable(),
+                            'fkey' => Vlan::getForeignKeyField(),
+                            'field' => 'id',
+                            'primary-property' => 'id',
+                            'ref-join' => [
+                                'table' => NetworkPort_Vlan::getTable(),
+                                'fkey' => 'id',
+                                'field' => NetworkPort::getForeignKeyField(),
+                            ],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
+                        ]
+                    ]
+                ],
             ],
         ];
 
@@ -318,8 +346,8 @@ EOT,
                     'readOnly' => true,
                 ],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
-                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100, 'required' => true],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'required' => true],
                 'version' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
@@ -334,21 +362,25 @@ EOT,
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The first part of the IP address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'binary_1' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The second part of the IP address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'binary_2' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The third part of the IP address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'binary_3' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The fourth part of the IP address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
@@ -381,7 +413,6 @@ EOT,
                 'name' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'maxLength' => 255,
-                    'pattern' => Doc\Schema::PATTERN_IP_ADDRESS,
                 ],
                 'address' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -392,21 +423,25 @@ EOT,
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The first part of the network address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'address_1' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The second part of the network address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'address_2' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The third part of the network address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'address_3' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The fourth part of the network address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'netmask' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -417,21 +452,25 @@ EOT,
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The first part of the netmask in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'netmask_1' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The second part of the netmask in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'netmask_2' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The third part of the netmask in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'netmask_3' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The fourth part of the netmask in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'gateway' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -442,21 +481,25 @@ EOT,
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The first part of the gateway address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'gateway_1' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The second part of the gateway address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'gateway_2' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The third part of the gateway address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'gateway_3' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'description' => 'The fourth part of the gateway address in binary format. This can be useful for sorting.',
+                    'readOnly' => true,
                 ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -500,7 +543,7 @@ EOT,
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'fqdn' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'fqdn' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'required' => true],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -613,21 +656,32 @@ EOT,
             ],
         ];
 
-        //TODO glpi_networkports_networkports
-        //TODO glpi_networkports_vlans
+        $schemas['NetworkPort_NetworkPort'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => NetworkPort_NetworkPort::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port_1' => self::getDropdownTypeSchema(class: NetworkPort::class, field: 'networkports_id_1', full_schema: 'NetworkPort'),
+                'network_port_2' => self::getDropdownTypeSchema(class: NetworkPort::class, field: 'networkports_id_2', full_schema: 'NetworkPort'),
+            ],
+        ];
         return $schemas;
     }
 
     /**
      * @return string[]
      */
-    public static function getNetworkEndpointTypes23(): array
+    public static function  getNetworkEndpointTypes23(): array
     {
         return [
             'NetworkPort', 'NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortAggregate', 'NetworkPortAlias',
             'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel', 'IPAddress', 'IPNetwork',
-            'NetworkAlias', 'FQDN', 'NetworkInterface', 'NetworkName', 'NetworkPortConnectionLog',
-            'NetworkPortMetrics', 'VLAN',
+            'NetworkAlias', 'FQDN', 'NetworkInterface', 'NetworkName', 'VLAN',
         ];
     }
 
@@ -654,10 +708,16 @@ EOT,
     public function getItem23(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype, $this->getAPIVersion($request));
+        $schema_itemtype = $schema['x-itemtype'];
+        $id_field = is_subclass_of($schema_itemtype, NetworkPortInstantiation::class) ? 'network_port' : 'id';
+        $request->setAttribute($id_field, $request->getAttribute('id'));
+
         return ResourceAccessor::getOneBySchema(
-            schema: $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            schema: $schema,
             request_attrs: $request->getAttributes(),
-            request_params: $request->getParameters()
+            request_params: $request->getParameters(),
+            field: $id_field,
         );
     }
 
@@ -669,10 +729,19 @@ EOT,
     public function createItem23(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype, $this->getAPIVersion($request));
+
+        $extra_get_route_params = [
+            'mapped' => [
+                'itemtype' => $itemtype,
+            ],
+        ];
+
         return ResourceAccessor::createBySchema(
-            schema: $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            schema: $schema,
             request_params: $request->getParameters() + ['itemtype' => $itemtype],
             get_route: [self::class, 'getItem23'],
+            extra_get_route_params: $extra_get_route_params,
         );
     }
 
@@ -685,10 +754,16 @@ EOT,
     public function updateItem23(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype, $this->getAPIVersion($request));
+        $schema_itemtype = $schema['x-itemtype'];
+        $id_field = is_subclass_of($schema_itemtype, NetworkPortInstantiation::class) ? 'network_port' : 'id';
+        $request->setAttribute($id_field, $request->getAttribute('id'));
+
         return ResourceAccessor::updateBySchema(
-            schema: $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            schema: $schema,
             request_attrs: $request->getAttributes(),
             request_params: $request->getParameters(),
+            field: $id_field,
         );
     }
 
@@ -701,10 +776,16 @@ EOT,
     public function deleteItem23(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype, $this->getAPIVersion($request));
+        $schema_itemtype = $schema['x-itemtype'];
+        $id_field = is_subclass_of($schema_itemtype, NetworkPortInstantiation::class) ? 'network_port' : 'id';
+        $request->setAttribute($id_field, $request->getAttribute('id'));
+
         return ResourceAccessor::deleteBySchema(
-            schema: $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            schema: $schema,
             request_attrs: $request->getAttributes(),
             request_params: $request->getParameters(),
+            field: $id_field,
         );
     }
 }

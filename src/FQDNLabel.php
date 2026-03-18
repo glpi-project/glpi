@@ -127,7 +127,7 @@ abstract class FQDNLabel extends CommonDBChild
      **/
     public function prepareLabelInput($input)
     {
-        if (isset($input['name']) && !empty($input['name'])) {
+        if (!empty($input['name'])) {
             // Empty names are allowed
 
             $input['name'] = strtolower($input['name']);
@@ -154,7 +154,7 @@ abstract class FQDNLabel extends CommonDBChild
     {
 
         //getIPNetwork from IPV4 if not set
-        if (!isset($input['ipnetworks_id']) || (isset($input['ipnetworks_id']) && $input['ipnetworks_id'] == 0)) {
+        if (!isset($input['ipnetworks_id']) || (int) $input['ipnetworks_id'] === 0) {
             if (isset($input['_ipaddresses'])) {
                 foreach ($input['_ipaddresses'] as $value) {
                     //if its an ipv4, find it's IPNetwork

@@ -279,9 +279,15 @@ class IPNetwork extends CommonImplicitTreeDropdown
      */
     public function prepareInput($input)
     {
-
-        // In case of entity transfer, $input['network'] is not defined
-        if (!isset($input['network']) && isset($this->fields['network'])) {
+        if (!isset($input['network']) && (isset($input['address']) || isset($input['netmask']))) {
+            // handle API inputs which may specify the address and netmask instead of the network field
+            $input['network'] = sprintf(
+                '%s/%s',
+                    $input['address'] ?? $this->fields['address'],
+                $input['netmask'] ?? $this->fields['netmask']
+            );
+        } elseif (!isset($input['network'])) {
+            // In case of entity transfer, $input['network'] is not defined
             $input['network'] = $this->fields['network'];
         }
 
