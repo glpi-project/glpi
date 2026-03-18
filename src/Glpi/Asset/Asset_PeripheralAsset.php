@@ -271,33 +271,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
     }
 
-    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
-    {
-        global $CFG_GLPI;
-
-        $items = $ma->getItems();
-
-        if (
-            count(array_intersect(
-                array_keys($items),
-                $CFG_GLPI['directconnect_types']
-            )) > 0
-        ) {
-            return 1;
-        }
-
-        if (
-            empty(array_diff(
-                array_keys($items),
-                self::getPeripheralHostItemtypes()
-            ))
-        ) {
-            return 2;
-        }
-
-        return parent::getRelationMassiveActionsPeerForSubForm($ma);
-    }
-
     public static function getRelationMassiveActionsSpecificities()
     {
         global $CFG_GLPI;
@@ -875,6 +848,33 @@ TWIG, $twig_params);
         }
 
         return $tab;
+    }
+
+    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
+    {
+        global $CFG_GLPI;
+
+        $items = $ma->getItems();
+
+        if (
+            count(array_intersect(
+                array_keys($items),
+                $CFG_GLPI['directconnect_types']
+            )) > 0
+        ) {
+            return 1;
+        }
+
+        if (
+            empty(array_diff(
+                array_keys($items),
+                self::getPeripheralHostItemtypes()
+            ))
+        ) {
+            return 2;
+        }
+
+        return parent::getRelationMassiveActionsPeerForSubForm($ma);
     }
 
     /**
