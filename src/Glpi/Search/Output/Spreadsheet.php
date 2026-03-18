@@ -38,9 +38,11 @@ namespace Glpi\Search\Output;
 use Dropdown;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
 use PhpOffice\PhpSpreadsheet\Writer\IWriter;
+use Safe\DateTime;
 use Session;
 
 /**
@@ -151,8 +153,48 @@ abstract class Spreadsheet extends ExportSearchOutput
                 ++$col_num;
                 $colkey = "{$col['itemtype']}_{$col['id']}";
 
-                $value = DataExport::normalizeValueForTextExport($row[$colkey]['displayname'] ?? '');
-                $worksheet->setCellValue([$col_num, $line_num], $value);
+                $is_date = in_array($col['searchopt']['datatype'] ?? '', ['date', 'datetime']);
+                $raw_val = $row[$colkey][0]['name'] ?? null;
+                $is_single_value = ($row[$colkey]['count'] ?? 0) === 1;
+
+                if ($is_date && $is_single_value && !empty($raw_val) && $raw_val !== 'NULL') {
+                    try {
+                        $dateTime = new DateTime($raw_val);
+                        $glpiFormat = (int) ($_SESSION["glpidate_format"] ?? 0);
+
+                        $formatMap = [
+                            0 => ['php' => 'd-m-Y', 'excel' => 'dd-mm-yyyy'],
+                            1 => ['php' => 'm-d-Y', 'excel' => 'mm-dd-yyyy'],
+                            2 => ['php' => 'Y-m-d', 'excel' => 'yyyy-mm-dd'],
+                        ];
+                        $selected = $formatMap[$glpiFormat] ?? $formatMap[2];
+
+                        if ($this instanceof Csv || $this instanceof Ods) {
+                            // For CSV and ODS, use a formatted string.
+                            // The ODS writer in PhpSpreadsheet fails to apply custom number formats to numeric dates,
+                            // resulting in raw integers. Using a string guarantees the visual format.
+                            $phpFormat = $selected['php'] . (($col['searchopt']['datatype'] === 'datetime') ? ' H:i' : '');
+                            $worksheet->setCellValue([$col_num, $line_num], $dateTime->format($phpFormat));
+                        } else {
+                            // For XLSX, use PHPToExcel for native date support
+                            $excelDateValue = Date::PHPToExcel($dateTime);
+                            $worksheet->setCellValue([$col_num, $line_num], $excelDateValue);
+
+                            $excelFormat = $selected['excel'] . (($col['searchopt']['datatype'] === 'datetime') ? ' hh:mm' : '');
+
+                            // Apply the number format style
+                            $worksheet->getStyle([$col_num, $line_num])
+                                ->getNumberFormat()
+                                ->setFormatCode($excelFormat);
+                        }
+                    } catch (\Throwable $e) {
+                        $value = DataExport::normalizeValueForTextExport($row[$colkey]['displayname'] ?? '');
+                        $worksheet->setCellValue([$col_num, $line_num], $value);
+                    }
+                } else {
+                    $value = DataExport::normalizeValueForTextExport($row[$colkey]['displayname'] ?? '');
+                    $worksheet->setCellValue([$col_num, $line_num], $value);
+                }
             }
 
             if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
