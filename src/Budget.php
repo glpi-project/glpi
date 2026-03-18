@@ -105,8 +105,7 @@ class Budget extends CommonDropdown
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $count = self::countForBudget($item);
                     }
-                    return [
-                        1 => self::createTabEntry(__('Main')),
+                    return [1 => self::createTabEntry(__('Main')),
                         2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $count, $item::class, 'ti ti-package'),
                     ];
             }
