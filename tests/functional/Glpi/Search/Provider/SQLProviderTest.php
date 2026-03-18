@@ -77,4 +77,51 @@ class SQLProviderTest extends DbTestCase
             $it->analyseJoins($item_item_revert_join)
         );
     }
+
+    public function testHtmlTextSearchWithSpaces()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'    => 'Test with strong text',
+            'content' => '<strong>1) Option: <strong>option1',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $ticket_loaded = new \Ticket();
+        $this->assertTrue($ticket_loaded->getFromDB($tickets_id));
+        $this->assertStringContainsString('1) Option:', $ticket_loaded->fields['content']);
+        $this->assertStringContainsString('option1', $ticket_loaded->fields['content']);
+
+        $data = \Search::getDatas('Ticket', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => 21,  // ticket content (Richtext provider)
+                    'searchtype' => 'contains',
+                    'value'      => '1) Option: option1',
+                ],
+            ],
+        ]);
+
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('totalcount', $data['data']);
+        $this->assertGreaterThan(
+            0,
+            $data['data']['totalcount'],
+        );
+
+        $found = false;
+        foreach ($data['data']['rows'] as $row) {
+            if ($row['raw']['id'] == $tickets_id) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue($found);
+    }
 }

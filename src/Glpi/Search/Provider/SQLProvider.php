@@ -2336,13 +2336,15 @@ final class SQLProvider implements SearchProviderInterface
             ];
         }
 
-        if (isset($opt['htmltext']) && $opt['htmltext'] && !empty($val) && str_contains($val, ' ')) {
-            // This handles cases like "<b>text</b> suite" when searching for "text suite"
-            $val_with_tags = str_replace(' ', '%', $val);
+        if (
+            !empty($opt['htmltext'])
+            && str_contains((string) $val, ' ')
+        ) {
+            $val_with_wildcards = str_replace(' ', '%', (string) $val);
             return [
                 'OR' => [
-                    new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, '')),
-                    new QueryExpression(self::makeTextCriteria($tocompute, $val_with_tags, $nott, '')),
+                    new QueryExpression(self::makeTextCriteria($tocompute, (string) $val, $nott, '')),
+                    new QueryExpression(self::makeTextCriteria($tocompute, $val_with_wildcards, $nott, '')),
                 ],
             ];
         }
