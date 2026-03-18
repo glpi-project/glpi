@@ -1309,7 +1309,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         $olalevels_id = OlaLevel::getFirstOlaLevel($slas_id);
 
         $ola = new OLA();
-        if ($ola->getFromDB($slas_id)) {
+        if (
+            $ola->getFromDB($slas_id)
+            && in_array($this->fields['status'], array_merge($this->getNewStatusArray(), $this->getProcessStatusArray()))
+        ) {
             $ola->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
