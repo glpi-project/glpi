@@ -820,6 +820,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function showFull($options = [])
     {
+        global $CFG_GLPI;
+
         if (!$this->can($this->fields['id'], READ)) {
             return false;
         }
@@ -867,6 +869,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['views']        = $this->fields['view'];
             $params['can_edit']     = $can_update;
             $params['illustration'] = $this->fields['illustration'] ?: 'kb-faq';
+
+            // Translations informations
+            $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
+            $params['existing_translations'] = array_values(KnowbaseItemTranslation::getAlreadyTranslatedForItem($this));
+            $params['default_language']      = $CFG_GLPI['language'];
 
             // Add actions
             $params['actions'] = $mode === "edit" ? $this->getEditorActions() : [];

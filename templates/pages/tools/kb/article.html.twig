@@ -35,11 +35,54 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
+    {% if mode == 'edit' %}
+        data-glpi-kb-default-language="{{ default_language }}"
+        data-glpi-kb-existing-translations="{{ existing_translations|json_encode }}"
+    {% endif %}
 >
     <article
         class="col-12 ms-0 px-4 py-3 kb-article"
         data-glpi-knowbase-article-content
     >
+        {# Translation mode alert #}
+        <div
+            class="alert alert-info d-none align-items-center mb-3 gap-1"
+            data-testid="translation-mode-alert"
+            data-glpi-kb-translation-alert
+        >
+            <i class="ti ti-language me-2 fs-3"></i>
+            <span>{{ __("Translation mode enabled, currently editing") }}</span>
+            <select
+                class="form-select form-select-sm d-inline-block w-auto ms-2 me-auto"
+                data-testid="translation-language-select"
+                data-glpi-kb-translation-language
+            >
+            </select>
+            <button
+                type="button"
+                class="btn btn-sm btn-ghost-danger d-none"
+                data-testid="translation-delete-btn"
+                data-glpi-kb-translation-delete title="{{ __('Delete this translation') }}"
+            >
+                <i class="ti ti-trash"></i>
+            </button>
+            <button
+                type="button"
+                class="btn btn-sm btn-primary me-2"
+                data-testid="translation-save-btn"
+                data-glpi-kb-translation-save
+            >
+                <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+            </button>
+            <button
+                type="button"
+                class="btn-close"
+                data-testid="translation-mode-close"
+                data-glpi-kb-translation-close
+                aria-label="{{ __('Close') }}"
+            ></button>
+        </div>
+
         <div class="d-flex align-items-center mb-3">
             {% if mode == 'edit' or mode == 'view' %}
                 <div class="me-3 flex-shrink-0" data-glpi-kb-illustration-container>
@@ -191,6 +234,19 @@
                             {{ _n("%s view", "%s views", views)|format(views|formatted_integer) }}
                         {% endif %}
                     </span>
+                </div>
+
+                {# Translations count #}
+                <div class="d-flex align-items-center">
+                    <i class="ti ti-language me-1 fs-3"></i>
+                    <a
+                        href="#"
+                        class="text-muted pointer-events-none"
+                        data-testid="translations-count"
+                        data-glpi-kb-toggle-translation-mode
+                    >
+                        {{ _n("%s translation", "%s translations", translations_count)|format(translations_count) }}
+                    </a>
                 </div>
 
                 {# Documents count #}
