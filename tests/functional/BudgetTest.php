@@ -53,7 +53,7 @@ class BudgetTest extends DbTestCase
         $budget = new \Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
             'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
@@ -67,7 +67,7 @@ class BudgetTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name'        => 'Test Computer ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -91,7 +91,7 @@ class BudgetTest extends DbTestCase
         $computer2 = new \Computer();
         $computers_id2 = $computer2->add([
             'name'        => 'Test Computer 2 ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $this->assertGreaterThan(0, $computers_id2);
 
@@ -121,7 +121,7 @@ class BudgetTest extends DbTestCase
         $budget = new \Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
             'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
@@ -131,7 +131,7 @@ class BudgetTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name'        => 'Test Computer ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -183,7 +183,7 @@ class BudgetTest extends DbTestCase
         $budget = new \Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
             'value'       => 50000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
@@ -193,7 +193,7 @@ class BudgetTest extends DbTestCase
         $contract = new \Contract();
         $contracts_id = $contract->add([
             'name'        => 'Test Contract ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $this->assertGreaterThan(0, $contracts_id);
 
@@ -224,7 +224,7 @@ class BudgetTest extends DbTestCase
         $budget = new \Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
             'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
@@ -233,7 +233,7 @@ class BudgetTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name'        => 'Test Computer ' . $this->getUniqueString(),
-            'entities_id' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
