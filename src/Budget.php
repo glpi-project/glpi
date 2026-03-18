@@ -298,7 +298,9 @@ class Budget extends CommonDropdown
         }
 
         $count_criteria = [
-            'FROM'  => new \QuerySubQuery($item->getItemListCriteria(), 'cpt_table'),
+            'FROM'  => new \QuerySubQuery([
+                'FROM' => $item->getItemListCriteria()
+            ], 'cpt_table'),
             'COUNT' => 'cpt',
         ];
 
