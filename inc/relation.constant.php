@@ -1654,6 +1654,7 @@ $RELATION = [
         '_glpi_rssfeeds_users'          => 'users_id',
         '_glpi_savedsearches'           => 'users_id',
         '_glpi_savedsearches_users'     => 'users_id',
+        'glpi_sharetokens'              => 'users_id',
         'glpi_softwarelicenses'         => [
             'users_id_tech',
             'users_id',

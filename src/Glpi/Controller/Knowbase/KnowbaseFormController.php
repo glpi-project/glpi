@@ -52,7 +52,6 @@ use KnowbaseItem_User;
 use Profile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use User;
 
 final class KnowbaseFormController extends GenericFormController
@@ -63,7 +62,6 @@ final class KnowbaseFormController extends GenericFormController
     // when no session is active (route compilation time), so the central interface URL
     // must be registered explicitly. See also: glpi-project/glpi#23544
     #[ItemtypeFormRoute(KnowbaseItem::class)]
-    #[Route('/front/knowbaseitem.form.php', name: 'glpi_knowbaseitem_form_central')]
     public function __invoke(Request $request): Response
     {
         $request->attributes->set('class', KnowbaseItem::class);

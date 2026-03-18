@@ -1,0 +1,132 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div data-glpi-sharing-panel
+     data-glpi-itemtype="{{ itemtype }}"
+     data-glpi-items-id="{{ id }}"
+>
+    {# Create new link button + inline form #}
+    {% if can_edit %}
+        <div data-glpi-share-create-section>
+            <button type="button"
+                    class="btn btn-sm btn-ghost-secondary mb-3"
+                    data-glpi-share-create-btn>
+                <i class="ti ti-plus me-1"></i>{{ __('Create a sharing link') }}
+            </button>
+            <div class="d-none mb-3" data-glpi-share-create-form>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="text"
+                           class="form-control form-control-sm"
+                           placeholder="{{ __('Link name (optional)') }}"
+                           data-glpi-share-create-name>
+                    <button type="button"
+                            class="btn btn-sm btn-primary btn-icon"
+                            data-glpi-share-create-submit
+                            title="{{ __('Create') }}"
+                            data-bs-toggle="tooltip">
+                        <i class="ti ti-check"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-sm btn-ghost-secondary btn-icon"
+                            data-glpi-share-create-cancel
+                            title="{{ __('Cancel') }}"
+                            data-bs-toggle="tooltip">
+                        <i class="ti ti-x"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Tokens list #}
+    {% if tokens is not empty %}
+        <div>
+            {% for token in tokens %}
+                <div class="mb-4" data-glpi-token-id="{{ token.id }}">
+                    {# Name row: icon + name ... toggle on the right #}
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="ti ti-link text-secondary"></i>
+                        <label class="form-check-label fw-medium flex-grow-1 text-truncate"
+                               for="sharing-toggle-{{ token.id }}">
+                            {{ token.name ? token.name : __('Link %d')|format(loop.index) }}
+                        </label>
+
+                        <div class="form-check form-switch mb-0 ms-auto">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="sharing-toggle-{{ token.id }}"
+                                   {{ token.is_active ? 'checked' : '' }}
+                                   {{ not can_edit ? 'disabled' : '' }}
+                                   data-glpi-share-toggle>
+                        </div>
+                    </div>
+
+                    {# URL row with copy + delete (only if active) #}
+                    {% if token.is_active %}
+                        {% set share_url = config('url_base') ~ '/Share/' ~ token.token %}
+                        <div class="d-flex align-items-center gap-1 mt-1">
+                            <div class="input-icon cursor-pointer flex-grow-1"
+                                 data-glpi-clipboard-text="{{ share_url }}"
+                                 data-bs-toggle="tooltip"
+                                 data-bs-placement="top"
+                                 title="{{ __('Click to copy to clipboard') }}">
+                                <input type="text"
+                                       class="form-control form-control-sm cursor-pointer"
+                                       readonly
+                                       value="{{ share_url }}"
+                                       data-glpi-share-url>
+                                <span class="input-icon-addon">
+                                    <i class="ti ti-copy"></i>
+                                </span>
+                            </div>
+                            {% if can_edit %}
+                                <button type="button"
+                                        class="btn btn-ghost-secondary btn-sm btn-icon"
+                                        data-glpi-share-delete
+                                        title="{{ __('Delete') }}"
+                                        aria-label="{{ __('Delete') }}"
+                                        data-bs-toggle="tooltip">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-secondary text-center py-3">
+            <i class="ti ti-link-off mb-1 fs-2"></i>
+            <div class="small">{{ __('No sharing links yet') }}</div>
+        </div>
+    {% endif %}
+</div>
