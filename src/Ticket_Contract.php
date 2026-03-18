@@ -160,6 +160,7 @@ TWIG, $twig_params);
             $formatters = [
                 'name' => 'raw_html',
                 'begin_date' => 'date', // No formatter for end_date as Infocom::getWarrantyExpir() already returns a formatted date
+                'end_date' => 'raw_html',
             ];
 
             $entries = [];
