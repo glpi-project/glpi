@@ -96,11 +96,11 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
     }
 
     /**
-     * Get all columns that are not the expected schema.
+     * Get all columns that have an unexpected type.
      * @param string $table_name
-     * @return array
+     * @return array<string, string>
      */
-    public function getInvalidFields(string $table_name): array
+    public function getInvalidFieldsTypes(string $table_name): array
     {
         $invalid_columns = [];
 
@@ -111,7 +111,7 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
                 continue;
             }
             if ($this->getColumnType($table_name, $column_name) !== 'varchar(255)') {
-                $invalid_columns[] = $column_name;
+                $invalid_columns[$column_name] = 'varchar(255)';
             }
         }
 

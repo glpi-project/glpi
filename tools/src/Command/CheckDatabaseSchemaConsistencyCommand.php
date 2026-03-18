@@ -42,16 +42,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
 {
-    /**
-     * Error code returned when missing fields are found.
-     *
-     * @var int
-     */
-    public const ERROR_FOUND_MISSING_FIELDS = 1;
-
-    /** @var int */
-    public const ERROR_FOUND_INVALID_FIELDS = 2;
-
     protected function configure()
     {
         parent::configure();
@@ -64,7 +54,7 @@ final class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
     {
 
         $checker = new DatabaseSchemaConsistencyChecker($this->db);
-        $error = 0;
+        $error = false;
 
         $table_iterator = $this->db->listTables('glpi\_%', ['NOT' => ['table_name' => ['LIKE', 'glpi\_plugin\_%']]]);
         foreach ($table_iterator as $table_data) {
@@ -73,7 +63,7 @@ final class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
             $missing_fields  = $checker->getMissingfields($table_name);
             if (count($missing_fields) > 0) {
                 ksort($missing_fields);
-                $error |= self::ERROR_FOUND_MISSING_FIELDS;
+                $error = true;
                 $message = sprintf(
                     __('Table "%s" has missing fields: `%s`'),
                     $table_name,
@@ -82,25 +72,30 @@ final class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
                 $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             }
 
-            $invalid_fields = $checker->getInvalidFields($table_name);
-            if (count($invalid_fields) > 0) {
-                ksort($invalid_fields);
-                $error |= self::ERROR_FOUND_INVALID_FIELDS;
-                $message = sprintf(
-                    __('Table "%s" has invalid fields: `%s`'),
-                    $table_name,
-                    implode('`,`', $invalid_fields)
-                );
-                $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+            $invalid_fields_types = $checker->getInvalidFieldsTypes($table_name);
+
+            if (count($invalid_fields_types) > 0) {
+                ksort($invalid_fields_types);
+                $error = true;
+
+                foreach ($invalid_fields_types as $field_name => $expected_type) {
+                    $message = sprintf(
+                        __('Field "%s.%s" has not the expected `%s` type'),
+                        $table_name,
+                        $field_name,
+                        $expected_type
+                    );
+                    $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
+                }
             }
         }
 
-        if ($error !== 0) {
-            return $error;
+        if ($error) {
+            return self::FAILURE;
         }
 
         $output->writeln('<info>' . __('Database schema is consistent.') . '</info>');
 
-        return 0; // Success
+        return self::SUCCESS;
     }
 }

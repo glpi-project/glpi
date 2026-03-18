@@ -100,7 +100,7 @@ SQL,
         $this->assertEquals($expected_missing, $missing_fields);
     }
 
-    public static function invalidFieldsProvider(): iterable
+    public static function invalidFieldsTypesProvider(): iterable
     {
         yield [
             'create_table_sql' => <<<SQL
@@ -123,24 +123,23 @@ CREATE TABLE `%s` (
 ) ENGINE=InnoDB
 SQL,
             'expected_invalid' => [
-                'itemtype',
+                'itemtype' => 'varchar(255)',
             ],
         ];
     }
 
-    #[DataProvider('invalidFieldsProvider')]
-    public function testGetInvalidFields(
+    #[DataProvider('invalidFieldsTypesProvider')]
+    public function testGetInvalidFieldsTypes(
         string $create_table_sql,
         array $expected_invalid
-    )
-    {
+    ) {
         global $DB;
 
         $table_name = sprintf('glpitests_%s', uniqid());
 
         $instance = new DatabaseSchemaConsistencyChecker($DB);
         $DB->doQuery(sprintf($create_table_sql, $table_name));
-        $invalid_fields = $instance->getInvalidFields($table_name);
+        $invalid_fields = $instance->getInvalidFieldsTypes($table_name);
         $DB->doQuery(sprintf('DROP TABLE `%s`', $table_name));
 
         $this->assertEquals($expected_invalid, $invalid_fields);
