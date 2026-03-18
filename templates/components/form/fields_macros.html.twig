@@ -1079,6 +1079,7 @@
                     <div
                         {% if is_custom_file %}
                             data-glpi-icon-picker-value-preview-custom
+                            data-testid="illustration-custom-preview"
                         {% else %}
                             data-glpi-icon-picker-value-preview-native
                         {% endif %}
@@ -1100,6 +1101,7 @@
                         <div
                             class="d-none"
                             data-glpi-icon-picker-value-preview-custom
+                            data-testid="illustration-custom-preview"
                         >
                            {{ render_illustration(custom_icon_prefix, 100) }}
                         </div>
