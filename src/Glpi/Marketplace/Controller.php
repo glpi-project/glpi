@@ -386,18 +386,22 @@ class Controller extends CommonGLPI
     {
         $api          = self::getAPI();
         $api_plugin   = $api->getPlugin($this->plugin_key);
+
+        if ($plugin_inst === null) {
+            $plugin_inst = new Plugin();
+        }
+
         $local_plugin = $plugin_inst->fields;
 
         $api_version   = $api_plugin['version'] ?? "";
         $local_version = $local_plugin['version'] ?? "";
 
-        if ($plugin_inst === null) {
-            $plugin_inst = new Plugin();
+        if (isset($local_plugin['id'])) {
+            $plugin_inst->update([
+                'id'                        => $local_plugin['id'],
+                'highest_available_version' => $api_version,
+            ]);
         }
-        $plugin_inst->update([
-            'id'                        => $local_plugin['id'],
-            'highest_available_version' => $api_version,
-        ]);
 
         if (strlen($api_version) && version_compare($api_version, $local_version, '>')) {
             return $api_version;
