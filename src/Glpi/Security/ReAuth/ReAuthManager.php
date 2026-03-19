@@ -66,12 +66,7 @@ final class ReAuthManager
      */
     public function redirect(): never
     {
-        $this->setSuccessRedirectURL(
-            ($_SERVER['REDIRECT_URL'] ?? '')
-            . (isset($_SERVER['REDIRECT_QUERY_STRING']) && $_SERVER['REDIRECT_QUERY_STRING'] !== ''
-                ? '?' . $_SERVER['REDIRECT_QUERY_STRING']
-                : '')
-        );
+        $this->setSuccessRedirectURL($_SERVER['HTTP_REFERER'] ?? '/'); // @todo use \Html::getRefererUrl() ?
         $this->setPostDataForRedirect($_POST);
 
         throw new RedirectException('/ReAuth/Prompt');

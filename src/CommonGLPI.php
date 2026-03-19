@@ -180,18 +180,18 @@ class CommonGLPI implements CommonGLPIInterface
      */
     final public static function isUserReauthenticationNeeded(): bool
     {
-        // reauthentication only for front requests, not for API or CLI
+        // no reauthentication for http requests (not for API or CLI)
         if (isAPI() || isCommandLine()) {
-            return true;
+            return false;
         }
 
-        // Itemtype does not need re-authentication
+        // Itemtype doesn't need re-authentication
         if (!static::itemTypeRequiresReauthentication()) {
-            return true;
+            return false;
         }
 
         // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
-        return (new ReAuthManager())->isReAuthenticated();
+        return !(new ReAuthManager())->isReAuthenticated();
     }
 
     /**
@@ -229,12 +229,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
-        $reauth_needed = !static::isUserReauthenticationNeeded();
-        if ($right === UPDATE && $reauth_needed) {
-            return false;
-        }
+        $_reauth_needed = static::isUserReauthenticationNeeded();
 
-        return match ($right) {
+        $allowed = match ($right) {
             READ => static::canView(),
             UPDATE => static::canUpdate(),
             DELETE => static::canDelete(),
@@ -242,6 +239,22 @@ class CommonGLPI implements CommonGLPIInterface
             CREATE => static::canCreate(),
             default => false,
         };
+
+        // allowed
+        if($allowed) {
+            // but need reauth
+            if($_reauth_needed) {
+                $reauth_needed = true;
+                return false;
+            }
+            return true;
+        }
+
+        // not allowed
+        $reauth_needed = false;
+
+        return false;
+
     }
 
     /**
