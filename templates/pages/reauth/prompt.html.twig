@@ -1,0 +1,61 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'layout/page_card_notlogged.html.twig' %}
+
+{% block header_block %}
+   <span class="card-title">{{ __('Re-authentication required') }}</span>
+{% endblock %}
+
+{% block content_block %}
+   {% if error is defined and error %}
+      <div class="alert alert-danger mb-3">
+         {{ error }}
+      </div>
+   {% endif %}
+
+   <form method="post" action="{{ action }}" data-submit-once autocomplete="off">
+      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+      <input type="hidden" name="redirect" value="{{ redirect }}" />
+
+      <div class="mb-3">
+         <label class="form-label">{{ label }}</label>
+         {% include template %}
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+         <a href="{{ redirect }}" class="btn btn-outline-secondary">{{ __('Cancel') }}</a>
+         <button type="submit" class="btn btn-primary">{{ __('Verify') }}</button>
+      </div>
+   </form>
+{% endblock %}
+
