@@ -39,6 +39,7 @@ namespace Glpi\Controller\Security;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\RedirectException;
+use Glpi\Exception\RedirectPostException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
@@ -66,7 +67,7 @@ class ReAuthController extends AbstractController
         name: "reauth_prompt",
         methods: ['GET']
     )]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // @todo strategy de fw à def aussi
     public function prompt(Request $request): Response
     {
         return new Response(
@@ -82,7 +83,7 @@ class ReAuthController extends AbstractController
     )]
     public function verify(Request $request): Response
     {
-        $user_input = $request->get('user_input');
+        $user_input = $request->request->get('user_input');
         if (is_array($user_input)) {
             $user_input = implode('', $user_input);
         }
@@ -90,7 +91,7 @@ class ReAuthController extends AbstractController
         if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
 
-            throw new RedirectException($this->reAuthManager->getRedirectSuccessURL());
+            throw new RedirectPostException($this->reAuthManager->getRedirectSuccessURL(), $this->reAuthManager->getPostDataForRedirect());
         }
 
         return new Response(

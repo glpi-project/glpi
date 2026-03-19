@@ -6890,6 +6890,12 @@ HTML;
         return count($errors) === 0;
     }
 
+    #[Override]
+    public static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     /**
      * Check if this User is the last super-admin user.
      * A "super-admin user" is a user that can edit GLPI's profiles.
