@@ -10,7 +10,7 @@ If you found a security issue, please send an email to \[glpi-security AT ow2.or
 
 You should provide us all details about the issue and the way to reproduce it.
 You may also provide a script that can be used to check the issue exists.
-Please alos ensure the issue can really be exploited.
+Please also ensure the issue can really be exploited.
 
 Once the report will be handled, and if the issue is not yet fixed (or in progress)
 we'll add it to the GitHub security tab, and add you as observer. Meanwhile,
