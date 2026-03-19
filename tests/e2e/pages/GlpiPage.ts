@@ -283,16 +283,6 @@ export class GlpiPage
         return values;
     }
 
-    public async getDropdownSelectedOption(
-        dropdown: Locator,
-    ): Promise<Locator | null> {
-        await dropdown.click(); // Open dropdown to ensure selected option is in the DOM
-        const selected_option = dropdown.getByRole('option', {selected: true});
-
-        await dropdown.click(); // Close dropdown
-        return selected_option;
-    }
-
     /**
      * Locate the original <textarea> item using its label.
      * TinyMCE's container is the div right after the textarea.
