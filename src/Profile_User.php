@@ -1234,7 +1234,7 @@ TWIG, $avatar_params) . $username;
             $user = new User();
             $user->update([
                 'id' => $this->fields['users_id'],
-                'profiles_id' => 0
+                'profiles_id' => 0,
             ]);
         }
         $this->logOperation('delete');
