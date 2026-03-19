@@ -6531,7 +6531,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename(
                                     !empty($data[$ID][$k]['trans_completename'])
                                         ? $data[$ID][$k]['trans_completename']
-                                        : $data[$ID][$k]['name']
+                                        : $name
                                 );
                                 $chunks = \explode(' > ', $name);
                                 $completename = '';
