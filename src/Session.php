@@ -113,7 +113,7 @@ class Session
     }
 
     /**
-     * Init session for the user is defined
+     * Init user session
      *
      * @param Auth $auth Auth object to init session
      *
@@ -123,123 +123,98 @@ class Session
     {
         global $CFG_GLPI;
 
-        if ($auth->auth_succeded) {
-            // Restart GLPI session : complete destroy to prevent lost datas
-            $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
-                'glpiskipMaintenance',
-                'glpi_remote_user',
-            ];
-            $save   = [];
-            foreach ($tosave as $t) {
-                if (isset($_SESSION[$t])) {
-                    $save[$t] = $_SESSION[$t];
-                }
-            }
-            self::destroy();
-            if (!defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
-                session_regenerate_id();
-            }
-            self::start();
-            $_SESSION = $save;
-            $_SESSION['valid_id'] = session_id();
-            // Define default time :
-            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+        if (!$auth->auth_succeded) {
+            return;
+        }
 
-            // Normal mode for this request
-            $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
-            // Check ID exists and load complete user from DB (plugins...)
-            if (
-                isset($auth->user->fields['id'])
-                && $auth->user->getFromDB($auth->user->fields['id'])
-            ) {
-                if (
-                    !$auth->user->fields['is_deleted']
-                    && ($auth->user->fields['is_active']
-                    && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
-                        || is_null($auth->user->fields['begin_date']))
-                    && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
-                        || is_null($auth->user->fields['end_date'])))
-                ) {
-                    $_SESSION["glpiID"]              = $auth->user->fields['id'];
-                    $_SESSION["glpifriendlyname"]    = $auth->user->getFriendlyName();
-                    $_SESSION["glpiname"]            = $auth->user->fields['name'];
-                    $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
-                    $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
-                    $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
-                    $_SESSION["glpiextauth"]         = $auth->extauth;
-                    if (isset($_SESSION['phpCAS']['user'])) {
-                        $_SESSION["glpiauthtype"]     = Auth::CAS;
-                        $_SESSION["glpiextauth"]      = 0;
-                    } else {
-                        $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
-                    }
-                    $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
-                    $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
-                    $_SESSION["glpicrontimer"]       = time();
-                    // Default tab
-                    // $_SESSION['glpi_tab']=1;
-                    $_SESSION['glpi_tabs']           = [];
+        self::reset();
 
-                    $auth->user->computePreferences();
-                    foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                        if (isset($auth->user->fields[$field])) {
-                            $_SESSION["glpi$field"] = $auth->user->fields[$field];
-                        }
-                    }
+        // Check user exists
+        if ($auth->userExists(['glpi_users.id' => $auth->user->fields['id'] ?? null]) === Auth::USER_DOESNT_EXIST) {
+            $auth->auth_succeded = false;
+            $auth->addToError(__("You don't have right to connect"));
 
-                    if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
-                        Session::setActiveTab("central", "Central$" . $_SESSION['glpidefault_central_tab']);
-                    }
-                    // Do it here : do not reset on each page, cause export issue
-                    if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
-                        $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
-                    }
-                    // Init not set value for language
-                    if (empty($_SESSION["glpilanguage"])) {
-                        $_SESSION["glpilanguage"] = self::getPreferredLanguage();
-                    }
-                    $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+            return;
+        }
 
-                    self::loadLanguage();
+        // check user can log in
+        if (!$auth->canUserLogin()) {
+            $auth->auth_succeded = false;
+            $auth->addToError(__("You don't have access to this application because your account was deactivated or removed"));
 
-                    if ($auth->password_expired) {
-                        // Make sure we are not in debug mode, as it could trigger some ajax request that would
-                        // fail the session check (as we use a special partial session here without profiles) and thus
-                        // destroy the session (which would make the "password expired" form impossible to submit as the
-                        // csrf check would fail as the session data would be empty).
-                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
-                        $_SESSION['glpi_password_expired'] = 1;
-                        // Do not init profiles, as user has to update its password to be able to use GLPI
-                        return;
-                    }
+            return;
+        }
 
-                    // glpiprofiles -> other available profile with link to the associated entities
-                    Plugin::doHook(Hooks::INIT_SESSION);
+        $_SESSION["glpiID"]              = $auth->user->fields['id'];
+        $_SESSION["glpifriendlyname"]    = $auth->user->getFriendlyName();
+        $_SESSION["glpiname"]            = $auth->user->fields['name'];
+        $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
+        $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
+        $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
+        $_SESSION["glpiextauth"]         = $auth->extauth;
+        if (isset($_SESSION['phpCAS']['user'])) {
+            $_SESSION["glpiauthtype"]     = Auth::CAS;
+            $_SESSION["glpiextauth"]      = 0;
+        } else {
+            $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
+        }
+        $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
+        $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
+        $_SESSION["glpicrontimer"]       = time();
+        // Default tab
+        // $_SESSION['glpi_tab']=1;
+        $_SESSION['glpi_tabs']           = [];
 
-                    self::initEntityProfiles(self::getLoginUserID());
-
-                    // Use default profile if exist
-                    if (isset($_SESSION['glpiprofiles'][$auth->user->fields['profiles_id']])) {
-                        self::changeProfile($auth->user->fields['profiles_id']);
-                    } else { // Else use first
-                        self::changeProfile(key($_SESSION['glpiprofiles']));
-                    }
-
-                    if (!Session::getCurrentInterface()) {
-                        $auth->auth_succeded = false;
-                        $auth->addToError(__("You don't have right to connect"));
-                    }
-                } else {
-                    $auth->auth_succeded = false;
-                    $auth->addToError(__("You don't have access to this application because your account was deactivated or removed"));
-                }
-            } else {
-                $auth->auth_succeded = false;
-                $auth->addToError(__("You don't have right to connect"));
+        $auth->user->computePreferences();
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (isset($auth->user->fields[$field])) {
+                $_SESSION["glpi$field"] = $auth->user->fields[$field];
             }
         }
-    }
 
+        if (isset($_SESSION['glpidefault_central_tab']) && $_SESSION['glpidefault_central_tab']) {
+            Session::setActiveTab("central", "Central$" . $_SESSION['glpidefault_central_tab']);
+        }
+        // Do it here : do not reset on each page, cause export issue
+        if ($_SESSION["glpilist_limit"] > $CFG_GLPI['list_limit_max']) {
+            $_SESSION["glpilist_limit"] = $CFG_GLPI['list_limit_max'];
+        }
+        // Init not set value for language
+        if (empty($_SESSION["glpilanguage"])) {
+            $_SESSION["glpilanguage"] = self::getPreferredLanguage();
+        }
+        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
+
+        self::loadLanguage();
+
+        if ($auth->password_expired) {
+            // Make sure we are not in debug mode, as it could trigger some ajax request that would
+            // fail the session check (as we use a special partial session here without profiles) and thus
+            // destroy the session (which would make the "password expired" form impossible to submit as the
+            // csrf check would fail as the session data would be empty).
+            $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
+            $_SESSION['glpi_password_expired'] = 1;
+            // Do not init profiles, as user has to update its password to be able to use GLPI
+            return;
+        }
+
+        // glpiprofiles -> other available profile with link to the associated entities
+        Plugin::doHook(Hooks::INIT_SESSION);
+
+        self::initEntityProfiles(self::getLoginUserID());
+
+        // Use default profile if exist
+        if (isset($_SESSION['glpiprofiles'][$auth->user->fields['profiles_id']])) {
+            self::changeProfile($auth->user->fields['profiles_id']);
+        } else { // Else use first
+            self::changeProfile(key($_SESSION['glpiprofiles']));
+        }
+
+        if (!Session::getCurrentInterface()) {
+            $auth->auth_succeded = false;
+            $auth->addToError(__("You don't have right to connect"));
+        }
+    }
 
     /**
      * Set the directory where are store the session file
@@ -294,6 +269,33 @@ class Session
         if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
             $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
         }
+    }
+
+    private static function reset(): void
+    {
+        // Restart GLPI session : complete destroy to prevent lost datas
+        $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+            'glpiskipMaintenance',
+            'glpi_remote_user',
+        ];
+        $save   = [];
+        foreach ($tosave as $t) {
+            if (isset($_SESSION[$t])) {
+                $save[$t] = $_SESSION[$t];
+            }
+        }
+        self::destroy();
+        if (!defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
+            session_regenerate_id();
+        }
+        self::start();
+        $_SESSION = $save;
+        $_SESSION['valid_id'] = session_id();
+        // Define default time :
+        $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+
+        // Normal mode for this request
+        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
     }
 
 
