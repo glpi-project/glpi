@@ -124,4 +124,42 @@ class SQLProviderTest extends DbTestCase
         }
         $this->assertTrue($found);
     }
+
+    public function testHtmlTextSearchWithPartialWords()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'    => 'Test with red light',
+            'content' => 'When the red light starts flashing, you have less than 10 seconds to cut the blue cable.',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $data = \Search::getDatas('Ticket', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => 21,
+                    'searchtype' => 'contains',
+                    'value'      => 'red cable',
+                ],
+            ],
+        ]);
+
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('totalcount', $data['data']);
+
+        $found = false;
+        foreach ($data['data']['rows'] as $row) {
+            if ($row['raw']['id'] == $tickets_id) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertFalse($found);
+    }
 }
