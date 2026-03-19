@@ -30,22 +30,36 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Tabs', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-    });
-    it('can use the "forcetab" URL parameter to land on a specific tab', () => {
-        cy.visit("/front/user.form.php?id=2&forcetab=Change$1");
-        cy.findByRole('tab', { name: 'Created changes' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Created problems' })
-            .should('not.have.attr', 'aria-selected', 'true');
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { Profiles } from '../../utils/Profiles';
+import { UserPage } from '../../pages/UserPage';
 
-        cy.visit("/front/user.form.php?id=2&forcetab=Problem$1");
-        cy.findByRole('tab', { name: 'Created problems' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Created changes' })
-            .should('not.have.attr', 'aria-selected', 'true');
+test.describe('Tabs', () => {
+    test('Can use the "forcetab" URL parameter to land on a specific tab', async ({
+        page,
+        profile,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const user_page = new UserPage(page);
+
+        await user_page.gotoUserForm(2, 'Change$1');
+        await expect(user_page.getTab('Created changes')).toHaveAttribute(
+            'aria-selected',
+            'true',
+        );
+        await expect(user_page.getTab('Created problems')).not.toHaveAttribute(
+            'aria-selected',
+            'true',
+        );
+
+        await user_page.gotoUserForm(2, 'Problem$1');
+        await expect(user_page.getTab('Created problems')).toHaveAttribute(
+            'aria-selected',
+            'true',
+        );
+        await expect(user_page.getTab('Created changes')).not.toHaveAttribute(
+            'aria-selected',
+            'true',
+        );
     });
 });
