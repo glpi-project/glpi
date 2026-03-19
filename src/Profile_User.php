@@ -1229,6 +1229,14 @@ TWIG, $avatar_params) . $username;
 
     public function post_deleteFromDB()
     {
+        $selected_user = User::getById($this->fields['users_id']);
+        if ($selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
+            $user = new User();
+            $user->update([
+                'id' => $this->fields['users_id'],
+                'profiles_id' => 0
+            ]);
+        }
         $this->logOperation('delete');
     }
 

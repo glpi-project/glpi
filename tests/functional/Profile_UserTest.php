@@ -438,4 +438,41 @@ class Profile_UserTest extends DbTestCase
         $this->assertStringContainsString('<span class="badge glpi-badge">3</span>', $profile_user->getTabNameForItem($profile));
 
     }
+
+    public function testDeleteProfileUserWhenIsTheDefaultProfile(): void
+    {
+        // When a Profile_User entry is deleted and it corresponds to the default profile of the user, the default profile should be set to 0
+        $this->login();
+        $profile = getItemByTypeName(Profile::class, 'Technician');
+        $user = getItemByTypeName(User::class, 'glpi');
+
+        // Set the profile for the user and add it as default profile
+        $this->assertNotFalse((new Profile_User())->add([
+            'users_id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+            'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+        ]));
+        $user->update([
+            'id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+        ]);
+
+        $this->assertEquals($profile->getId(), $user->fields['profiles_id']);
+
+        $profile_user = new Profile_User();
+        $this->assertTrue($profile_user->deleteByCriteria([
+            'users_id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+        ]));
+
+        //Check that the Profile_User entry has been deleted
+        $this->assertEquals(0, countElementsInTable($profile_user->getTable(), [
+            'users_id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+        ]));
+
+        //Check that the default profile of the user has been set to 0
+        $user->getFromDB($user->getId());
+        $this->assertEquals(0, $user->fields['profiles_id']);
+    }
 }
