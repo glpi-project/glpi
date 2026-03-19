@@ -183,7 +183,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 3,
                 ],
-                'expected' => "<span class='red'>2029-06-30</span>",
+                'expected' => "2029-06-30",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -258,7 +258,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => "<span class='red'>2026-02-31</span>",
+                'expected' => "<span class='red'>2026-02-28</span>",
             ],
             [
                 'field' => '_virtual_expire_notice',
@@ -269,7 +269,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 6,
                 ],
-                'expected' => "<span class='red'>2029-03-31</span>",
+                'expected' => "2029-03-31",
             ],
         ];
     }
