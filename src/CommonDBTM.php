@@ -2963,6 +2963,9 @@ class CommonDBTM extends CommonGLPI
         }
 
         // reauth
+        $reauth_needed = !static::isUserReauthenticationNeeded();
+
+        // reauth
         $_reauth_needed = static::isUserReauthenticationNeeded();
         $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
