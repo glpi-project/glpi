@@ -123,7 +123,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => "2026-07-01",
+                'expected' => "2026-06-30",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -143,7 +143,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_NEVER,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-06-30',
+                'expected' => "<span class='red'>2025-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -153,7 +153,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => '2026-07-01',
+                'expected' => '2026-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -163,7 +163,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-06-30',
+                'expected' => "<span class='red'>2025-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -173,17 +173,17 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2027-01-01',
+                'expected' => '2026-12-31',
             ],
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => '2025-01-01',
+                    'begin_date' => '2029-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-06-30',
+                'expected' => "<span class='red'>2029-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -193,7 +193,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2026-07-01',
+                'expected' => '2026-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -203,7 +203,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2026-07-01',
+                'expected' => '2026-06-30',
             ],
             [
                 'field' => '_virtual_expire_notice',
@@ -236,7 +236,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => "2026-05-01",
+                'expected' => "2026-04-30",
             ],
             [
                 'field' => '_virtual_expire_notice',
@@ -258,7 +258,18 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => "<span class='red'>2026-03-01</span>",
+                'expected' => "<span class='red'>2026-02-31</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2029-01-01',
+                    'duration' => 6,
+                    'notice' => 3,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 6,
+                ],
+                'expected' => "<span class='red'>2029-03-31</span>",
             ],
         ];
     }
