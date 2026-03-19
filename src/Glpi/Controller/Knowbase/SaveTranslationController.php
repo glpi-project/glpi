@@ -82,8 +82,7 @@ final class SaveTranslationController extends AbstractController
         }
 
         // Make sure answer content is not empty if specified
-        $answer = strip_tags(trim($answer));
-        if ($answer === '') {
+        if (strip_tags(trim($answer)) === '') {
             return new JsonResponse([
                 'success' => false,
                 'message' => __('Content cannot be empty'),

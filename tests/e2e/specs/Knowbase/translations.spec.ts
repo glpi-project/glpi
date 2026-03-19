@@ -201,3 +201,60 @@ test('Can delete a translation', async ({ page, profile, api }) => {
     const translations_link = page.getByTestId('translations-count');
     await expect(translations_link).toContainText('0');
 });
+
+test('Translation preserves formatting after page reload', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Formatted Translation Test',
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Original content</p>',
+    });
+
+    await kb.goto(id);
+
+    // Enter translation mode
+    const translations_link = page.getByTestId('translations-count');
+    await translations_link.click();
+    await expect(page.getByTestId('translation-mode-alert')).toBeVisible();
+
+    // Select French language
+    const language_select = page.getByTestId('translation-language-select');
+    await language_select.selectOption('fr_FR');
+
+    // Type translated title
+    const subject = page.getByTestId('subject');
+    await subject.click();
+    await page.keyboard.press('Control+a');
+    await page.keyboard.type('Article avec formatage');
+
+    // Type translated content with bold formatting
+    const editor = kb.editor.getEditor();
+    await editor.click();
+    await page.keyboard.press('Control+a');
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type('Texte normal ');
+    await page.keyboard.press('Control+b');
+    await page.keyboard.type('texte en gras');
+    await page.keyboard.press('Control+b');
+
+    // Save the translation
+    const save_button = page.getByTestId('translation-save-btn');
+    await save_button.click();
+    await expect(kb.getAlert('Translation saved successfully')).toBeVisible();
+
+    // Reload the page
+    await page.reload({ waitUntil: 'domcontentloaded' });
+
+    // Enter translation mode again
+    await page.getByTestId('translations-count').click();
+    await expect(page.getByTestId('translation-mode-alert')).toBeVisible();
+
+    // French should be selected
+    await expect(page.getByTestId('translation-language-select')).toHaveValue('fr_FR');
+
+    // Verify bold formatting is preserved in the editor
+    // eslint-disable-next-line playwright/no-raw-locators
+    await expect(editor.locator('strong')).toContainText('texte en gras');
+});
