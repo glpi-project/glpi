@@ -1231,7 +1231,7 @@ TWIG, $avatar_params) . $username;
     {
         $selected_user = User::getById($this->fields['users_id']);
 
-        if ($selected_user instanceof User && $selected_user != false && $selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
+        if ($selected_user instanceof User && $selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
             $user = new User();
             $user->update([
                 'id' => $this->fields['users_id'],
