@@ -42,6 +42,7 @@ use Glpi\Event;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Exception\TooManyResultsException;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
@@ -52,6 +53,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
@@ -2944,11 +2946,14 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-    public function can($ID, int $right, ?array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
         if (Session::isInventory()) {
             return true;
         }
+
+        // reauth
+        $reauth_needed = !static::isUserReauthenticationNeeded();
 
         // Create process
         if (static::isNewID($ID)) {
@@ -3006,6 +3011,9 @@ class CommonDBTM extends CommonGLPI
                 return (static::canView() && $this->canViewItem());
 
             case UPDATE:
+                if ($reauth_needed) {
+                    return false;
+                }
                 // Personal item
                 if (
                     $this->isPrivate()
@@ -3075,6 +3083,10 @@ class CommonDBTM extends CommonGLPI
      * @param ?array<string,mixed> $input array of input data (used for adding item) (default NULL)
      *
      * @return void
+     *
+     * @throws RedirectException
+     * @throws AccessDeniedHttpException
+     * @throws NotFoundHttpException
      **/
     public function check($ID, int $right, ?array &$input = null): void
     {
@@ -3082,7 +3094,12 @@ class CommonDBTM extends CommonGLPI
         if (!$this->checkIfExistOrNew($ID)) {
             throw new NotFoundHttpException();
         } else {
-            if (!$this->can($ID, $right, $input)) {
+            $require_reauth = null;
+            if (!$this->can($ID, $right, $input, $require_reauth)) {
+                if ($require_reauth) {
+                    self::checkReAuthenticationOrRedirect();
+                }
+
                 /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = static::class;
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
@@ -3173,11 +3190,13 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function canGlobal(int $right): bool
+    public function canGlobal(int $right, &$reauth_needed = null): bool
     {
+        $reauth_needed = self::isUserReauthenticationNeeded();
+
         return match ($right) {
             READ => static::canView(),
-            UPDATE => static::canUpdate(),
+            UPDATE => !$reauth_needed && static::canUpdate(),
             CREATE => static::canCreate(),
             DELETE => static::canDelete(),
             PURGE => static::canPurge(),
@@ -6514,9 +6533,15 @@ class CommonDBTM extends CommonGLPI
             $menus = $menus[$interface];
         }
 
+        // New item, check create rights
         if (static::isNewID($id)) {
-            // New item, check create rights
-            if (!static::canCreate()) {
+            $reauth_needed = null;
+            if (!static::can($id, CREATE, reauth_needed: $reauth_needed)) {
+                // redirect to reauth prompt
+                if ($reauth_needed === true) {
+                    self::checkReAuthenticationOrRedirect();
+                }
+
                 throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
             }
 
@@ -6528,7 +6553,12 @@ class CommonDBTM extends CommonGLPI
                 throw new NotFoundHttpException();
             }
 
-            if (!$item->can($id, READ)) {
+            $require_reauth = null;
+            if (!$item->can($id, READ, reauth_needed: $require_reauth)) {
+                if ($require_reauth) {
+                    (new ReAuthManager())->redirect();
+                }
+
                 throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
             }
 
