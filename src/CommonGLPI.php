@@ -180,6 +180,51 @@ class CommonGLPI implements CommonGLPIInterface
      */
     final public static function isUserReauthenticationNeeded(): bool
     {
+        // reauthentication only for front requests, not for API or CLI
+        if (isAPI() || isCommandLine()) {
+            return true;
+        }
+
+        // Itemtype does not need re-authentication
+        if (!static::itemTypeRequiresReauthentication()) {
+            return true;
+        }
+
+        // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
+        return (new ReAuthManager())->isReAuthenticated();
+    }
+
+    /**
+     * @throws RedirectException
+     */
+    final public static function checkReAuthenticationOrRedirect(): true
+    {
+        if (static::itemTypeRequiresReauthentication()) {
+            (new ReAuthManager())->checkReAuthenticationOrRedirect();
+        }
+
+        return true;
+    }
+
+    /**
+     * Override this method to return true in itemtypes that need re-authentication
+     * @return bool
+     */
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Should the user reauthenticate ?
+     *
+     * Depends on
+     * - context : always false on api & cli contexts
+     * - itemtype : may require it ( static::itemTypeRequiresReauthentication() )
+     * - user has a valid reauthentication (new ReAuthManager())->isReAuthenticated()
+     */
+    final public static function isUserReauthenticationNeeded(): bool
+    {
         // no reauthentication for http requests (not for API or CLI)
         if (isAPI() || isCommandLine()) {
             return false;

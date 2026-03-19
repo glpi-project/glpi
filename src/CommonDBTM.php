@@ -53,6 +53,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
@@ -2952,6 +2953,9 @@ class CommonDBTM extends CommonGLPI
         }
 
         // reauth
+        $reauth_needed = !static::isUserReauthenticationNeeded();
+
+        // reauth
         $_reauth_needed = static::isUserReauthenticationNeeded();
         $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
@@ -3011,26 +3015,17 @@ class CommonDBTM extends CommonGLPI
                 return (static::canView() && $this->canViewItem());
 
             case UPDATE:
+                if ($reauth_needed) {
+                    return false;
+                }
                 // Personal item
-                $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
-                if ($allowed) {
-                    if ($_reauth_needed) {
-                        $reauth_needed = true;
-                        return false;
-                    }
+                if (
+                    $this->isPrivate()
+                    && ($this->fields['users_id'] === Session::getLoginUserID())
+                ) {
                     return true;
                 }
-
-                // non personnal item
-                $allowed =  (static::canUpdate() && $this->canUpdateItem());
-                if ($allowed) {
-                    if ($_reauth_needed) {
-                        $reauth_needed = true;
-                        return false;
-                    }
-                    return true;
-                }
-                return false;
+                return (static::canUpdate() && $this->canUpdateItem());
 
             case DELETE:
                 // Personal item
@@ -6547,7 +6542,7 @@ class CommonDBTM extends CommonGLPI
         // New item, check create rights
         if (static::isNewID($id)) {
             $reauth_needed = null;
-            if (!(new static())->can($id, CREATE, $options, $reauth_needed)) {
+            if (!(new static())->can($id, CREATE, $options, $reauth_needed)) { // @todo bonne usage de la static ? effet ed bord ?
                 // redirect to reauth prompt
                 if ($reauth_needed === true) {
                     self::checkReAuthenticationOrRedirect();
