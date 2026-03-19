@@ -182,16 +182,21 @@ export class GlpiFormServiceCatalogController
         breadcrumbContainer.innerHTML = '';
 
         this.breadcrumb.forEach((item, index) => {
+            const isActive = index === this.breadcrumb.length - 1;
             const li = document.createElement('li');
             li.className = 'breadcrumb-item text-truncate';
-            if (index === this.breadcrumb.length - 1) {
+            if (isActive) {
                 li.classList.add('active');
             }
 
             const a = document.createElement('a');
             a.href = `?${item.params}`;
             a.textContent = item.title;
-            if (index < this.breadcrumb.length - 1) {
+            if (isActive) {
+                a.setAttribute('aria-current', 'page');
+                a.setAttribute('aria-disabled', 'true');
+                a.removeAttribute('href');
+            } else {
                 a.dataset.childrenUrlParameters = item.params;
                 a.dataset.breadcrumbItem = '';
             }

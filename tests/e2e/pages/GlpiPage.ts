@@ -105,6 +105,7 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
         exact: boolean = true,
+        check_value: boolean = true,
     ):  Promise<void> {
         await dropdown.click();
 
@@ -119,7 +120,10 @@ export class GlpiPage
         ;
 
         await simple_dropdown.or(dropdown_with_groups).click();
-        await expect(dropdown).toContainText(value);
+        
+        if (check_value) {
+            await expect(dropdown).toContainText(value);
+        }
     }
 
     public async doClearDropdownValue(
@@ -277,6 +281,16 @@ export class GlpiPage
         );
         await dropdown.click(); // Close dropdown
         return values;
+    }
+
+    public async getDropdownSelectedOption(
+        dropdown: Locator,
+    ): Promise<Locator | null> {
+        await dropdown.click(); // Open dropdown to ensure selected option is in the DOM
+        const selected_option = dropdown.getByRole('option', {selected: true});
+
+        await dropdown.click(); // Close dropdown
+        return selected_option;
     }
 
     /**
