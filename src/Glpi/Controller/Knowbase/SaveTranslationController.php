@@ -104,15 +104,14 @@ final class SaveTranslationController extends AbstractController
 
         // Try to find a row for the given language
         $translation = new KnowbaseItemTranslation();
-        $existing = $translation->find([
+        $exists = $translation->getFromDBByCrit([
             'knowbaseitems_id' => $id,
             'language' => $language,
         ]);
 
-        if (count($existing) > 0) {
-            $existing_data = array_shift($existing);
+        if ($exists) {
             $update_data = [
-                'id' => $existing_data['id'],
+                'id' => $translation->getID(),
                 'answer' => $answer,
             ];
             if ($name !== null) {
@@ -120,10 +119,9 @@ final class SaveTranslationController extends AbstractController
             }
             $this->update(
                 KnowbaseItemTranslation::class,
-                $existing_data['id'],
+                $translation->getID(),
                 $update_data,
             );
-            $translation->update($update_data);
         } else {
             $input = [
                 'knowbaseitems_id' => $id,
