@@ -3654,13 +3654,13 @@ TWIG, $twig_params);
                 $entity->getFromDB($_REQUEST['entities_id'])
                 && $entity->fields['authldaps_id'] > 0
             ) {
-                $authldap->getFromDB($_REQUEST['authldaps_id']);
-
                 if ($_REQUEST['authldaps_id'] === 0) {
                     // authldaps_id wasn't submitted by the user -> take entity config
                     $_REQUEST['authldaps_id'] = $entity->fields['authldaps_id'];
                 }
 
+                $authldap->getFromDB($_REQUEST['authldaps_id']);
+                
                 $_REQUEST['basedn']       = $entity->fields['ldap_dn'];
 
                 // No dn specified in entity : use standard one
