@@ -2341,10 +2341,26 @@ final class SQLProvider implements SearchProviderInterface
             && str_contains((string) $val, ' ')
         ) {
             $val_with_wildcards = str_replace(' ', '%', (string) $val);
+
             return [
                 'OR' => [
-                    new QueryExpression(self::makeTextCriteria($tocompute, (string) $val, $nott, '')),
-                    new QueryExpression(self::makeTextCriteria($tocompute, $val_with_wildcards, $nott, '')),
+                    new QueryExpression(
+                        self::makeTextCriteria($tocompute, (string) $val, $nott, '')
+                    ),
+                    [
+                        'AND' => [
+                            new QueryExpression(
+                                self::makeTextCriteria($tocompute, $val_with_wildcards, $nott, '')
+                            ),
+                            new QueryExpression(
+                                sprintf(
+                                    "REGEXP_REPLACE(REGEXP_REPLACE(%s, '<[^>]+>', ' '), '\\\\s+', ' ') LIKE %s",
+                                    $DB->quoteName('content'),
+                                    $DB->quoteValue('%' . $val . '%')
+                                )
+                            ),
+                        ],
+                    ],
                 ],
             ];
         }
