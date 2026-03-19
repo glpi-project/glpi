@@ -2948,7 +2948,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         // reauth
-        $reauth_needed = !static::isUserReauthenticationNeeded();
+        $_reauth_needed = static::isUserReauthenticationNeeded();
+        $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
         // Create process
         if (static::isNewID($ID)) {
@@ -3006,17 +3007,27 @@ class CommonDBTM extends CommonGLPI
                 return (static::canView() && $this->canViewItem());
 
             case UPDATE:
-                if ($reauth_needed) {
-                    return false;
-                }
                 // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
+                $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
+                if ($allowed)
+                {
+                    if($_reauth_needed) {
+                        $reauth_needed = true;
+                        return false;
+                    }
                     return true;
                 }
-                return (static::canUpdate() && $this->canUpdateItem());
+
+                // non personnal item
+                $allowed =  (static::canUpdate() && $this->canUpdateItem());
+                if($allowed) {
+                    if($_reauth_needed) {
+                        $reauth_needed = true;
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
 
             case DELETE:
                 // Personal item
@@ -3092,7 +3103,7 @@ class CommonDBTM extends CommonGLPI
             $require_reauth = null;
             if (!$this->can($ID, $right, $input, $require_reauth)) {
                 if ($require_reauth) {
-                    self::checkReAuthenticationOrRedirect();
+                    self::checkReAuthenticationOrRedirect(); // @todo faire redirect() directement
                 }
 
                 /** @var class-string<CommonDBTM> $itemtype */
@@ -6531,7 +6542,7 @@ class CommonDBTM extends CommonGLPI
         // New item, check create rights
         if (static::isNewID($id)) {
             $reauth_needed = null;
-            if (!static::can($id, CREATE, reauth_needed: $reauth_needed)) {
+            if (!$item->can($id, CREATE, reauth_needed: $reauth_needed)) {
                 // redirect to reauth prompt
                 if ($reauth_needed === true) {
                     self::checkReAuthenticationOrRedirect();
@@ -6548,12 +6559,7 @@ class CommonDBTM extends CommonGLPI
                 throw new NotFoundHttpException();
             }
 
-            $require_reauth = null;
-            if (!$item->can($id, READ, reauth_needed: $require_reauth)) {
-                if ($require_reauth) {
-                    (new ReAuthManager())->redirect();
-                }
-
+            if (!$item->can($id, READ)) {
                 throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
             }
 

@@ -35,6 +35,9 @@
 {% set canedit      = params['canedit'] ?? true %}
 {% set id           = item.fields['id'] ?? -1 %}
 
+{#{{ dump(canedit) }}#}
+{#</hr>#}
+
 {% if item is defined %}
 
      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
@@ -71,7 +74,11 @@
                {% set candel = false %}
             {% endif %}
 
-            {% if canedit and item.can(id, constant('UPDATE')) %}
+            {% set reauth_needed = null %}
+             {{ dump(canedit) }}
+            {% set _canedit = canedit and item.can(id, constant('UPDATE'), {}, reauth_needed) %}
+             {{ dump( canedit, _canedit, reauth_needed) }}
+            {% if canedit or reauth_needed %}
                <button
                   class="btn btn-primary me-2"
                   type="submit"
