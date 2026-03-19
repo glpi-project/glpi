@@ -850,6 +850,7 @@ TWIG, $twig_params);
         return $tab;
     }
 
+    #[Override]
     public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
     {
         global $CFG_GLPI;
