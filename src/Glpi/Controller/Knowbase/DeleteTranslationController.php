@@ -67,20 +67,19 @@ final class DeleteTranslationController extends AbstractController
         }
 
         $translation = new KnowbaseItemTranslation();
-        $found = $translation->find([
+        $exists = $translation->getFromDBByCrit([
             'knowbaseitems_id' => $id,
             'language' => $language,
         ]);
 
-        if (count($found) === 0) {
+        if (!$exists) {
             return new JsonResponse([
                 'success' => false,
                 'message' => __('Translation not found'),
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $existing_data = array_shift($found);
-        $this->delete(KnowbaseItemTranslation::class, $existing_data['id']);
+        $this->delete(KnowbaseItemTranslation::class, $translation->getID());
 
         return new JsonResponse([
             'success' => true,

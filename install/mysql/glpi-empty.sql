@@ -4193,7 +4193,7 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `item` (`knowbaseitems_id`,`language`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`,`language`),
   KEY `users_id` (`users_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),

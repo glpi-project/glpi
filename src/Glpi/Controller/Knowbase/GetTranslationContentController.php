@@ -64,13 +64,13 @@ final class GetTranslationContentController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $found = (new KnowbaseItemTranslation())->find([
+        $translation = new KnowbaseItemTranslation();
+        $exists = $translation->getFromDBByCrit([
             'knowbaseitems_id' => $id,
             'language' => $language,
         ]);
-        if (count($found) > 0) {
-            $data = array_shift($found);
-            $translation = $this->read(KnowbaseItemTranslation::class, $data['id']);
+        if ($exists) {
+            $translation = $this->read(KnowbaseItemTranslation::class, $translation->getID());
             return new JsonResponse([
                 'exists' => true,
                 'name' => $translation->fields['name'],
