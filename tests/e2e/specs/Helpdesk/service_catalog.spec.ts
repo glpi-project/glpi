@@ -75,7 +75,7 @@ test.describe('Service Catalog Page', () => {
     test.afterEach(async ({profile, api}) => {
         // Ensure we reset `expand_service_catalog` to false after tests that set it to true
         await profile.set(Profiles.SuperAdmin);
-        api.updateItem('Entity', getWorkerEntityId(), {'expand_service_catalog': false});
+        await api.updateItem('Entity', getWorkerEntityId(), {'expand_service_catalog': false});
     });
 
     test(`Can filter and go to a form using the service catalog`, async ({page, profile}) => {
