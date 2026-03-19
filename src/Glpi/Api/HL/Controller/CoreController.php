@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Change;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
@@ -55,13 +56,16 @@ use Html;
 use JsonException;
 use Laminas\I18n\Translator\TextDomain;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Problem;
 use Profile;
 use ProfileRight;
 use Session;
 use Throwable;
+use Ticket;
 use Transfer;
 use User;
 
+use function Safe\array_replace_recursive;
 use function Safe\fclose;
 use function Safe\file_get_contents;
 use function Safe\fopen;
@@ -103,6 +107,10 @@ EOT,
 - 2: Keep
 EOT,
         ];
+
+        $ticket_statuses = array_keys(Ticket::getAllStatusArray());
+        $change_statuses = array_keys(Change::getAllStatusArray());
+        $problem_statuses = array_keys(Problem::getAllStatusArray());
 
         $session_schema = [
             'x-version-introduced' => '2.0',
@@ -154,6 +162,51 @@ EOT,
                             'type' => Doc\Schema::TYPE_STRING,
                             'x-version-introduced' => '2.3',
                             'description' => 'A JSON-encoded string which indicates the IDs of domain record types that the user can manage. An array element with a value of -1 indicates that the user can manage all domain record types.',
+                        ],
+                        'ticket_status' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'Indicates the status transitions the user can perform for tickets. For example, if the user can close a ticket that is solved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
+                            'properties' => array_reduce($ticket_statuses, static function ($acc, $status) use ($ticket_statuses) {
+                                $acc[$status] = [
+                                    'type' => Doc\Schema::TYPE_OBJECT,
+                                    'properties' => array_reduce($ticket_statuses, static function ($acc2, $target_status) {
+                                        $acc2[$target_status] = ['type' => Doc\Schema::TYPE_BOOLEAN];
+                                        return $acc2;
+                                    }, []),
+                                ];
+                                return $acc;
+                            }, [])
+                        ],
+                        'change_status' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'Indicates the status transitions the user can perform for changes. For example, if the user can close a change that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
+                            'properties' => array_reduce($change_statuses, static function ($acc, $status) use ($change_statuses) {
+                                $acc[$status] = [
+                                    'type' => Doc\Schema::TYPE_OBJECT,
+                                    'properties' => array_reduce($change_statuses, static function ($acc2, $target_status) {
+                                        $acc2[$target_status] = ['type' => Doc\Schema::TYPE_BOOLEAN];
+                                        return $acc2;
+                                    }, []),
+                                ];
+                                return $acc;
+                            }, [])
+                        ],
+                        'problem_status' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'Indicates the status transitions the user can perform for problems. For example, if the user can close a problem that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
+                            'properties' => array_reduce($problem_statuses, static function ($acc, $status) use ($problem_statuses) {
+                                $acc[$status] = [
+                                    'type' => Doc\Schema::TYPE_OBJECT,
+                                    'properties' => array_reduce($problem_statuses, static function ($acc2, $target_status) {
+                                        $acc2[$target_status] = ['type' => Doc\Schema::TYPE_BOOLEAN];
+                                        return $acc2;
+                                    }, []),
+                                ];
+                                return $acc;
+                            }, [])
                         ],
                     ],
                 ],
@@ -539,10 +592,48 @@ HTML;
         // Convert current_time YYYY-MM-DD HH-mm-ss to RFC3339 datetime
         $session['current_time'] = date(DATE_RFC3339, strtotime($session['current_time']));
         $active_profile = $_SESSION['glpiactiveprofile'];
+
+        /** @var array<string, array<string, boolean>> $default_ticket_status */
+        $default_ticket_status = array_reduce(array_keys(Ticket::getAllStatusArray()), static function ($acc, $status) {
+            $acc[$status] = array_reduce(array_keys(Ticket::getAllStatusArray()), static function ($acc2, $target_status) {
+                $acc2[$target_status] = true;
+                return $acc2;
+            }, []);
+            return $acc;
+        }, []);
+        $ticket_status = array_map(static function ($transitions) {
+            return array_map(static fn($allowed) => $allowed === 1, $transitions);
+        }, $active_profile['ticket_status'] ?? []);
+
+        $default_change_status = array_reduce(array_keys(Change::getAllStatusArray()), static function ($acc, $status) {
+            $acc[$status] = array_reduce(array_keys(Change::getAllStatusArray()), static function ($acc2, $target_status) {
+                $acc2[$target_status] = true;
+                return $acc2;
+            }, []);
+            return $acc;
+        }, []);
+        $change_status = array_map(static function ($transitions) {
+            return array_map(static fn($allowed) => $allowed === 1, $transitions);
+        }, $active_profile['change_status'] ?? []);
+
+        $default_problem_status = array_reduce(array_keys(Problem::getAllStatusArray()), static function ($acc, $status) {
+            $acc[$status] = array_reduce(array_keys(Problem::getAllStatusArray()), static function ($acc2, $target_status) {
+                $acc2[$target_status] = true;
+                return $acc2;
+            }, []);
+            return $acc;
+        }, []);
+        $problem_status = array_map(static function ($transitions) {
+            return array_map(static fn($allowed) => $allowed === 1, $transitions);
+        }, $active_profile['problem_status'] ?? []);
+
         $session['active_profile'] = [
             'id' => $active_profile['id'],
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
+            'ticket_status' => array_replace_recursive($default_ticket_status, $ticket_status),
+            'change_status' => array_replace_recursive($default_change_status, $change_status),
+            'problem_status' => array_replace_recursive($default_problem_status, $problem_status),
         ];
 
         if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
