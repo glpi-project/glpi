@@ -503,7 +503,13 @@ class Html
      */
     public static function getRefererUrl(): ?string
     {
-        $referer = URL::sanitizeURL($_SERVER['HTTP_REFERER'] ?? '');
+        // When a POST request is replayed after re-authentication via an auto-submit form,
+        // the browser sends Referer: /ReAuth/Verify (the page that served the form).
+        // To get the correct "back" URL, we check a dedicated POST field injected by
+        // RedirectPostExceptionListener instead of the HTTP_REFERER header.
+        $raw = $_POST['_glpi_http_referer'] ?? $_SERVER['HTTP_REFERER'] ?? '';
+
+        $referer = URL::sanitizeURL($raw);
 
         $referer_host = parse_url($referer, PHP_URL_HOST);
         $referer_path = parse_url($referer, PHP_URL_PATH);
