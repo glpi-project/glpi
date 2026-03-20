@@ -5389,6 +5389,7 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
+                      data-testid='file-upload-" . htmlescape($p['name']) . "'
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
