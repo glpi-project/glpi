@@ -47,6 +47,15 @@ export class GlpiPage
     public readonly dashboards_widgets: Locator;
     public readonly active_entity: Locator;
 
+    // Layout locators (common to all authenticated pages)
+    public readonly sidebar: Locator;
+    public readonly main_header: Locator;
+    public readonly sidebar_menu_toggles: Locator;
+    public readonly user_menu_dropdown: Locator;
+    public readonly entity_menu_toggle: Locator;
+    public readonly entity_menu_dropdown: Locator;
+    public readonly about_link: Locator;
+
     // Notes tab locators
     public readonly add_note_button: Locator;
     public readonly submit_note_button: Locator;
@@ -69,6 +78,15 @@ export class GlpiPage
         // .first() because we always display this information twice, with only
         // one being shown depending on the screen size.
         this.active_entity = page.getByTestId("current-entity").first();
+
+        // Layout locators
+        this.sidebar              = page.getByTestId('sidebar');
+        this.main_header          = page.getByTestId('main-header');
+        this.sidebar_menu_toggles = page.getByTestId('sidebar-menu-toggle');
+        this.user_menu_dropdown   = page.getByTestId('user-menu-dropdown').filter({ visible: true });
+        this.entity_menu_toggle   = page.getByRole('link', { name: 'Select the desired entity' });
+        this.entity_menu_dropdown = page.getByTestId('entity-menu-dropdown').filter({ visible: true });
+        this.about_link           = page.getByTestId('about-link').filter({ visible: true });
 
         // Notes tab locators
         this.add_note_button = this.getButton("Add a note");
