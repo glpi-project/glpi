@@ -3660,7 +3660,6 @@ TWIG, $twig_params);
                 }
 
                 $authldap->getFromDB($_REQUEST['authldaps_id']);
-                
                 $_REQUEST['basedn']       = $entity->fields['ldap_dn'];
 
                 // No dn specified in entity : use standard one
