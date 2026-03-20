@@ -226,14 +226,17 @@ final class SystemConfigurator
             define('GLPI_PLUGINS_DIRECTORIES', array_values(array_unique(PLUGINS_DIRECTORIES)));
         }
 
-        if (defined('GLPI_PLUGINS_DIRECTORIES') && !is_array(GLPI_PLUGINS_DIRECTORIES)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    'Configuration "%s" must be an array, %s given.',
-                    'GLPI_PLUGINS_DIRECTORIES',
-                    get_debug_type(GLPI_PLUGINS_DIRECTORIES),
-                )
-            );
+        if (defined('GLPI_PLUGINS_DIRECTORIES')) {
+            $plugin_directories = constant('GLPI_PLUGINS_DIRECTORIES');
+            if (!is_array($plugin_directories)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Configuration "%s" must be an array, %s given.',
+                        'GLPI_PLUGINS_DIRECTORIES',
+                        get_debug_type($plugin_directories),
+                    )
+                );
+            }
         }
 
         // Configure environment type if not defined by user.
