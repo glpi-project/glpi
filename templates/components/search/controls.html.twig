@@ -79,7 +79,8 @@
                     {% if not user_pref('show_search_form') %}
                         {% set active_filter_class = is_filter_active ? "btn-active-search" : "btn-ghost-secondary" %}
                         <button class="btn btn-sm py-1 show-search-filters {{ active_filter_class }} btn-ghost-secondary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                data-testid="search-filters-button">
                             <i class="ti ti-list-search"></i>
                             {% if active_search_name|length %}
                                 <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ active_search_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
@@ -89,7 +90,8 @@
                                 <span class="d-none d-xl-inline-block">{{ __('Search') }}</span>
                             {% endif %}
                         </button>
-                        <div class="dropdown-menu dropdown-menu-card {{ animation_cls }}" style="width: max-content; max-width: 100vw;">
+                        <div class="dropdown-menu dropdown-menu-card {{ animation_cls }}" style="width: max-content; max-width: 100vw;"
+                             data-testid="search-filters-panel">
                             {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, original_params]) %}
                         </div>
                     {% endif %}
@@ -98,14 +100,16 @@
                 {% if data['search']['as_map']|default(false) != 1 %}
                     {% set active_sort_class = active_sort ? "btn-active-sort" : "" %}
                     <button class="btn btn-sm py-1 show-search-sorts {{ active_sort_class }} btn-ghost-secondary dropdown-toggle me-1 me-xl-2" type="button"
-                                data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                                data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                data-testid="search-sorts-button">
                         <i class="ti ti-arrows-sort"></i>
                         {% set sort_names = (active_sort_name|length ? active_sort_name : __("Sort")) %}
                         <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ sort_names }}" data-bs-toggle="tooltip" data-bs-placement="top">
                             {{ sort_names }}
                         </span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-card {{ animation_cls }}" style="width: max-content; max-width: 100vw;">
+                    <div class="dropdown-menu dropdown-menu-card {{ animation_cls }}" style="width: max-content; max-width: 100vw;"
+                         data-testid="search-sorts-panel">
                         {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSort', [itemtype, original_params]) %}
                     </div>
                 {% endif %}
