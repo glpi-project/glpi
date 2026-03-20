@@ -410,7 +410,7 @@
 
             {% set pending_reasons %}
                {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
-               {% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
+               {% if item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) and call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
                   <span
                      class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
                      id="pending-reasons-control-{{ rand }}"
