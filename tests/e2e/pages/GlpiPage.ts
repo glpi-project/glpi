@@ -123,6 +123,7 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
         exact: boolean = true,
+        check_value: boolean = true,
     ):  Promise<void> {
         await dropdown.click();
 
@@ -137,7 +138,10 @@ export class GlpiPage
         ;
 
         await simple_dropdown.or(dropdown_with_groups).click();
-        await expect(dropdown).toContainText(value);
+        
+        if (check_value) {
+            await expect(dropdown).toContainText(value);
+        }
     }
 
     public async doClearDropdownValue(

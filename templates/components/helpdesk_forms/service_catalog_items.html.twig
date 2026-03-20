@@ -142,6 +142,7 @@
                             href="?{{ {'category': category_id, 'filter': filter, 'page': page}|url_encode }}"
                             data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': page}|url_encode }}"
                             data-pagination-item
+                            {{ page == current_page ? 'aria-current="page"' : '' }}
                         >
                             {{ page }}
                         </a>
