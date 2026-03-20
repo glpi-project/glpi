@@ -475,7 +475,9 @@ TWIG, $params);
             'rand' => $rand,
             'grid_cols' => $this->grid_cols,
             'grid_rows' => $this->grid_rows,
+            'cell_margin'   => $this->cell_margin,
             'js_params' => [
+                'mini'          => $mini,
                 'current'       => $this->current,
                 'cols'          => $this->grid_cols,
                 'rows'          => $this->grid_rows,
@@ -506,7 +508,7 @@ TWIG, $params);
                 id="grid-stack-{{ rand }}"
                 gs-column="{{ grid_cols }}"
                 gs-min-row="{{ grid_rows }}"
-                style="width: 100%">
+                style="width: 100%; --gs-col-count: {{ grid_cols }}; --gs-row-count: {{ grid_rows }}; --gs-cell-margin: {{ cell_margin }}px;">
                     {{ grid_guide|raw }}
                     {{ gridstack_items|raw }}
                 </div>
