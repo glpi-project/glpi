@@ -62,6 +62,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Features\AssignableItemInterface;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -3587,6 +3589,94 @@ final class SQLProvider implements SearchProviderInterface
                 $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $relation_table_alias => 'items_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
+        if ($to_type === Form::class && is_a($from_referencetype, CommonITILObject::class, true)) {
+            // From CommonITILObject to Form
+            $dest_items_table = AnswersSet_FormDestinationItem::getTable();
+            $dest_items_alias = $dest_items_table . $alias_suffix;
+            if (!in_array($dest_items_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $dest_items_alias;
+                $joins['LEFT JOIN']["`$dest_items_table` AS `$dest_items_alias`"] = [
+                    'ON' => [
+                        $dest_items_alias => 'items_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$dest_items_alias.itemtype" => $from_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            $answerssets_table = AnswersSet::getTable();
+            $answerssets_alias = $answerssets_table . $alias_suffix;
+            if (!in_array($answerssets_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $answerssets_alias;
+                $joins['LEFT JOIN']["`$answerssets_table` AS `$answerssets_alias`"] = [
+                    'ON' => [
+                        $answerssets_alias => 'id',
+                        $dest_items_alias => 'forms_answerssets_id',
+                    ],
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $answerssets_alias => 'forms_forms_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
+        if ($from_referencetype === Form::class && is_a($to_type, CommonITILObject::class, true)) {
+            // From Form to CommonITILObject
+            $answerssets_table = AnswersSet::getTable();
+            $answerssets_alias = $answerssets_table . $alias_suffix;
+            if (!in_array($answerssets_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $answerssets_alias;
+                $joins['LEFT JOIN']["`$answerssets_table` AS `$answerssets_alias`"] = [
+                    'ON' => [
+                        $answerssets_alias => 'forms_forms_id',
+                        $from_table => 'id',
+                    ],
+                ];
+            }
+            $dest_items_table = AnswersSet_FormDestinationItem::getTable();
+            $dest_items_alias = $dest_items_table . $alias_suffix;
+            if (!in_array($dest_items_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $dest_items_alias;
+                $joins['LEFT JOIN']["`$dest_items_table` AS `$dest_items_alias`"] = [
+                    'ON' => [
+                        $dest_items_alias => 'forms_answerssets_id',
+                        $answerssets_alias => 'id',
+                        [
+                            'AND' => [
+                                "$dest_items_alias.itemtype" => $to_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $dest_items_alias => 'items_id',
                         $to_table_alias => 'id',
                         [
                             'AND' => $to_entity_restrict_criteria + $to_criteria,
