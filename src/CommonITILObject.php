@@ -7696,7 +7696,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $followup->fields = $followup_row;
                 $followup->post_getFromDB();
 
-                Toolbox::logDebug($followup_row);
                 if (!$params['check_view_rights'] || $followup->canViewItem()) {
                     $followup_row['can_edit'] = $followup->canUpdateItem();
                     $followup_row['can_promote']
@@ -7706,10 +7705,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ;
 
                     if (!isset($followup_row['sourceitems_id'])) {
-                        $followup_row['sourceitems_id'] = 0;
+                        $followup_row['sourceitems_id'] = $this->getID();
                     }
                     if (!isset($followup_row['sourceof_items_id'])) {
-                        $followup_row['sourceof_items_id'] = 0;
+                        $followup_row['sourceof_items_id'] = $this->getID();
                     }
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type'     => ITILFollowup::class,
