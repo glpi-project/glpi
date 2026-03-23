@@ -224,9 +224,7 @@ final class SystemConfigurator
             }
 
             define('GLPI_PLUGINS_DIRECTORIES', array_values(array_unique(PLUGINS_DIRECTORIES)));
-        }
-
-        if (defined('GLPI_PLUGINS_DIRECTORIES')) {
+        } elseif (defined('GLPI_PLUGINS_DIRECTORIES')) {
             $plugin_directories = constant('GLPI_PLUGINS_DIRECTORIES');
             if (!is_array($plugin_directories)) {
                 throw new \InvalidArgumentException(
