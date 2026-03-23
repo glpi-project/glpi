@@ -84,7 +84,7 @@ test.describe('Item form question type', () => {
 
         await form.getDropdownByLabel('Select an item', persisted_question).click();
         await expect(form.page.getByRole('option', { name: 'Computer 1' })).toBeVisible();
-        await expect(form.page.getByRole('option', { name: 'Computer 2 - 654321 - 123456' })).toBeVisible();
+        await expect(form.page.getByRole('option', { name: 'Computer 2 - 123456 - 654321' })).toBeVisible();
 
         const new_question = await form.addQuestion('Item question');
         await form.setQuestionType(new_question, 'Item');
@@ -93,6 +93,6 @@ test.describe('Item form question type', () => {
 
         await form.getDropdownByLabel('Select an item', new_question).click();
         await expect(form.page.getByRole('option', { name: 'Computer 1' })).toBeVisible();
-        await expect(form.page.getByRole('option', { name: 'Computer 2 - 654321 - 123456' })).toBeVisible();
+        await expect(form.page.getByRole('option', { name: 'Computer 2 - 123456 - 654321' })).toBeVisible();
     });
 });
