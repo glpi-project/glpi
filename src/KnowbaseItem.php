@@ -842,6 +842,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['documents_count'] = count($documents);
             $params['can_add_documents'] = $can_update;
 
+            // Data for document linking dropdown
+            $used_document_ids = array_column($documents, 'id');
+            $params['used_document_ids']    = $used_document_ids;
+            $params['document_idor_token']  = \Session::getNewIDORToken('Document', [
+                'entity_restrict' => -1,
+            ]);
+
             // Add associated items info
             $items                         = $this->getAssociatedItemsInfo();
             $params['related_items']       = $items;
