@@ -31,7 +31,7 @@
  */
 
 import { test, expect } from '../../fixtures/glpi_fixture';
-import { LoginPage } from '../../pages/OAuthPage';
+import { LoginPage } from '../../pages/LoginPage';
 import { Constants } from '../../utils/Constants';
 
 const OAUTH_CLIENT_ID     = 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
