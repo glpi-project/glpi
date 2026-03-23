@@ -108,10 +108,6 @@ EOT,
 EOT,
         ];
 
-        $ticket_statuses = array_keys(Ticket::getAllStatusArray());
-        $change_statuses = array_keys(Change::getAllStatusArray());
-        $problem_statuses = array_keys(Problem::getAllStatusArray());
-
         $session_schema = [
             'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -570,9 +566,7 @@ HTML;
             }, []);
             return $acc;
         }, []);
-        $ticket_status = array_map(static function ($transitions) {
-            return array_map(static fn($allowed) => $allowed === 1, $transitions);
-        }, $active_profile['ticket_status'] ?? []);
+        $ticket_status = array_map(static fn($transitions) => array_map(static fn($allowed) => $allowed === 1, $transitions), $active_profile['ticket_status'] ?? []);
 
         $default_change_status = array_reduce(array_keys(Change::getAllStatusArray()), static function ($acc, $status) {
             $acc[$status] = array_reduce(array_keys(Change::getAllStatusArray()), static function ($acc2, $target_status) {
@@ -581,9 +575,7 @@ HTML;
             }, []);
             return $acc;
         }, []);
-        $change_status = array_map(static function ($transitions) {
-            return array_map(static fn($allowed) => $allowed === 1, $transitions);
-        }, $active_profile['change_status'] ?? []);
+        $change_status = array_map(static fn($transitions) => array_map(static fn($allowed) => $allowed === 1, $transitions), $active_profile['change_status'] ?? []);
 
         $default_problem_status = array_reduce(array_keys(Problem::getAllStatusArray()), static function ($acc, $status) {
             $acc[$status] = array_reduce(array_keys(Problem::getAllStatusArray()), static function ($acc2, $target_status) {
@@ -592,9 +584,7 @@ HTML;
             }, []);
             return $acc;
         }, []);
-        $problem_status = array_map(static function ($transitions) {
-            return array_map(static fn($allowed) => $allowed === 1, $transitions);
-        }, $active_profile['problem_status'] ?? []);
+        $problem_status = array_map(static fn($transitions) => array_map(static fn($allowed) => $allowed === 1, $transitions), $active_profile['problem_status'] ?? []);
 
         $session['active_profile'] = [
             'id' => $active_profile['id'],
