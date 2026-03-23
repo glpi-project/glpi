@@ -313,11 +313,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 'documents_id' => $this->fields['id'],
                 'itemtype'     => $this->input["itemtype"],
                 'items_id'     => $this->input["items_id"],
+                'is_private'   => (bool) ($this->input['is_private'] ?? false),
             ];
-
-            if (isset($this->input['is_private'])) {
-                $docitem_input['is_private'] = $this->input['is_private'];
-            }
 
             $docitem->add($docitem_input);
 

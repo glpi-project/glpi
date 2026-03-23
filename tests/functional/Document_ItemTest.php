@@ -688,4 +688,57 @@ class Document_ItemTest extends DbTestCase
         $this->assertContains('Public document for notification test', $document_names_with_private);
         $this->assertContains('Private document for notification test', $document_names_with_private);
     }
+
+    public function testPrivateDocumentVisibilityOnNonItilItem()
+    {
+        $this->login();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name' => 'Test private doc computer',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $doc_id = $this->createItem(\Document::class, [
+            'name' => 'Private doc on computer',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $doc_item = $this->createItem(Document_Item::class, [
+            'items_id'     => $computer->getID(),
+            'itemtype'     => \Computer::class,
+            'documents_id' => $doc_id,
+            'is_private'   => 1,
+        ]);
+        $doc_item_id = $doc_item->getID();
+
+        // Super-admin has SEEPRIVATE and can see any private document
+        $doc_item->getFromDB($doc_item_id);
+        $this->assertTrue($doc_item->canViewItem());
+
+        // Create a user without SEEPRIVATE right
+        $user_id = (new \User())->add([
+            'name'      => 'user_no_seeprivate_computer',
+            'password'  => 'test_password',
+            'password2' => 'test_password',
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        $profile_id = $this->createItem(\Profile::class, [
+            'name' => 'Profile no SEEPRIVATE computer',
+        ])->getID();
+
+        $this->createItem(\Profile_User::class, [
+            'users_id'    => $user_id,
+            'profiles_id' => $profile_id,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->login('user_no_seeprivate_computer', 'test_password', false);
+
+        $doc_item_check = new Document_Item();
+        $doc_item_check->getFromDB($doc_item_id);
+        $this->assertFalse($doc_item_check->canViewItem());
+
+        $this->login();
+    }
 }

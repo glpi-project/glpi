@@ -2035,11 +2035,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'documents_id' => $input["document"],
                     'itemtype'     => static::class,
                     'items_id'     => $input["id"],
+                    'is_private'   => (bool) ($input['is_private'] ?? false),
                 ];
-
-                if (isset($input['is_private'])) {
-                    $docitem_input['is_private'] = $input['is_private'];
-                }
 
                 if ($docitem->add($docitem_input)) {
                     // Force date_mod of tracking
@@ -7874,7 +7871,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 // Check visibility for private documents
-                if ($params['check_view_rights'] && !empty($document_item['is_private'])) {
+                if ($params['check_view_rights'] && (bool) $document_item['is_private']) {
                     if (
                         !Session::haveRight('document', Document_Item::SEEPRIVATE)
                         && (int) ($document_item['users_id'] ?? 0) !== Session::getLoginUserID()
@@ -7882,7 +7879,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         continue;
                     }
                 }
-                if ($params['hide_private_items'] && !empty($document_item['is_private'])) {
+                if ($params['hide_private_items'] && (bool) $document_item['is_private']) {
                     continue;
                 }
 
@@ -7893,7 +7890,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item['date_mod'] = $document_item['date_mod'];
                 $item['users_id'] = $document_item['users_id'];
                 $item['documents_item_id'] = $document_item['id'];
-                $item['is_private'] = $document_item['is_private'] ?? 0;
+                $item['is_private'] = $document_item['is_private'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
                 $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();

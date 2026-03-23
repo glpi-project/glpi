@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-
 /**
  * @var DBmysql $DB
  * @var Migration $migration
@@ -54,11 +52,4 @@ $migration->addKey('glpi_documents_items', 'is_private');
 
 // Add SEEPRIVATE right (8192) to profiles that have UPDATE right on documents
 // This preserves existing behavior where technicians can see all documents
-$DB->update(
-    'glpi_profilerights',
-    ['rights' => new QueryExpression($DB->quoteName('rights') . ' | ' . Document_Item::SEEPRIVATE)],
-    [
-        'name'   => 'document',
-        'rights' => ['&', UPDATE],
-    ]
-);
+$migration->giveRight('document', 8192, ['document' => UPDATE]);
