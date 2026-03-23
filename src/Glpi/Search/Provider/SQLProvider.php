@@ -3599,7 +3599,7 @@ final class SQLProvider implements SearchProviderInterface
             return $joins;
         }
 
-        if ($to_type === Form::class && is_a($from_referencetype, CommonITILObject::class, true)) {
+        if ($to_type === Form::class && $from_referencetype && is_a($from_referencetype, CommonITILObject::class, true)) {
             // From CommonITILObject to Form
             $dest_items_table = AnswersSet_FormDestinationItem::getTable();
             $dest_items_alias = $dest_items_table . $alias_suffix;
@@ -3643,7 +3643,7 @@ final class SQLProvider implements SearchProviderInterface
             return $joins;
         }
 
-        if ($from_referencetype === Form::class && is_a($to_type, CommonITILObject::class, true)) {
+        if ($from_referencetype === Form::class && $to_type && is_a($to_type, CommonITILObject::class, true)) {
             // From Form to CommonITILObject
             $answerssets_table = AnswersSet::getTable();
             $answerssets_alias = $answerssets_table . $alias_suffix;
