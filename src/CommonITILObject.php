@@ -7696,6 +7696,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $followup->fields = $followup_row;
                 $followup->post_getFromDB();
 
+                Toolbox::logDebug($followup_row);
                 if (!$params['check_view_rights'] || $followup->canViewItem()) {
                     $followup_row['can_edit'] = $followup->canUpdateItem();
                     $followup_row['can_promote']
@@ -7703,6 +7704,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+
+                    if (!isset($followup_row['sourceitems_id'])) {
+                        $followup_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($followup_row['sourceof_items_id'])) {
+                        $followup_row['sourceof_items_id'] = 0;
+                    }
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type'     => ITILFollowup::class,
                         'item'     => $followup_row,
@@ -7733,6 +7741,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+                    // Initialize fields that only exist for TicketTask
+                    if (!isset($task_row['sourceitems_id'])) {
+                        $task_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($task_row['sourceof_items_id'])) {
+                        $task_row['sourceof_items_id'] = 0;
+                    }
                     $timeline[$tltask::getType() . "_" . $tasks_id] = [
                         'type'     => $taskClass,
                         'item'     => $task_row,
