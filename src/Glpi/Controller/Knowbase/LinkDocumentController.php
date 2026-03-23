@@ -36,6 +36,7 @@ namespace Glpi\Controller\Knowbase;
 
 use Document_Item;
 use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
@@ -43,8 +44,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\json_decode;
+
 final class LinkDocumentController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/{id}/LinkDocuments",
         name: "knowbase_link_documents",
@@ -76,16 +81,16 @@ final class LinkDocumentController extends AbstractController
                 continue;
             }
 
-            $document_item = new Document_Item();
-            $result = $document_item->add([
-                'documents_id'      => $doc_id,
-                'itemtype'          => KnowbaseItem::class,
-                'items_id'          => $id,
-                'timeline_position' => 0,
-            ]);
-
-            if ($result) {
+            try {
+                $this->add(Document_Item::class, [
+                    'documents_id' => $doc_id,
+                    'itemtype'     => KnowbaseItem::class,
+                    'items_id'     => $id,
+                ]);
                 $linked_count++;
+            } catch (\RuntimeException) {
+                // Skip documents that fail (duplicates, permission issues, etc.)
+                continue;
             }
         }
 

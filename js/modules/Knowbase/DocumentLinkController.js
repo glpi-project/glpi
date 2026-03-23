@@ -239,7 +239,6 @@ export class DocumentLinkController
             this.#onSuccess(result.linked_count);
         } catch (error) {
             console.error('Document linking failed:', error);
-            glpi_toast_error(__('Failed to link documents'));
         } finally {
             this.#setLoading(false);
         }
