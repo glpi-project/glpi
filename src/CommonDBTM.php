@@ -4451,7 +4451,7 @@ class CommonDBTM extends CommonGLPI
             }
 
             $double_text = '';
-            if ($item->canView() && $item->canViewItem()) {
+            if (Session::getLoginUserID(false) && $item->canView() && $item->canViewItem()) {
                 $double_text = $item->getLink();
             }
 
