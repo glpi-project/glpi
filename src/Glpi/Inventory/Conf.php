@@ -72,6 +72,7 @@ use ItemVirtualMachine;
 use Monitor;
 use NetworkPort;
 use NetworkPortType;
+use OAuthClient;
 use Peripheral;
 use Plugin;
 use Printer;
@@ -139,6 +140,8 @@ class Conf extends CommonGLPI
     public const STALE_AGENT_ACTION_STATUS = 1;
 
     public const STALE_AGENT_ACTION_TRASHBIN = 2;
+
+    public const NO_AUTH = 'none';
 
     public const CLIENT_CREDENTIALS = 'client_credentials';
 
@@ -396,18 +399,50 @@ class Conf extends CommonGLPI
             echo "</tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            echo "<i class='ti ti-cloud-lock me-2'></i>";
-            echo "<label for='auth'>" . __s('Authorization header') . "</label>";
+            $auth_rand = mt_rand();
+            echo "<i class='ti ti-shield me-2'></i>";
+            echo "<label for='dropdown_auth_required{$auth_rand}'>" . __s('Authorization header') . "</label>";
+            echo "<span class='required'>*</span>";
             echo "</td>";
-            echo "<td>";
+            echo "<td colspan='3'>";
             Dropdown::showFromArray('auth_required', [
-                'none' => __('None'),
+                '' => Dropdown::EMPTY_VALUE,
                 self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
                 self::BASIC_AUTH => __s('Basic Authentication'),
+                self::NO_AUTH => __('None (not recommended)'),
             ], [
-                'value' => $config['auth_required'] ?? 'none',
+                'value' => $config['auth_required'] ?? '',
+                'required' => true,
+                'rand' => $auth_rand,
             ]);
+            echo "<div id='oauth_client_hint_row' class='mt-1'>";
+            echo "<div class='alert alert-info d-inline-flex align-items-center mb-0 py-2' role='note'>";
+            echo "<i class='ti ti-info-circle flex-shrink-0 me-1'></i>";
+            echo "<span>";
+            echo __s('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.');
+            echo '<br>';
+            echo sprintf(
+                __s('The generated client ID and secret must then be set in the GLPI Agent configuration using the %s and %s parameters.'),
+                '<code>oauth-client-id</code>',
+                '<code>oauth-client-secret</code>'
+            );
+            echo ' <a href="' . htmlescape(OAuthClient::getFormURL()) . '">';
+            echo __s('Add an OAuth client');
+            echo ' <i class="ti ti-external-link ms-1"></i>';
+            echo '</a>';
+            echo "</span>";
+            echo "</div>";
+            echo "</div>";
+            echo "<div id='no_auth_warning_row' class='mt-1'>";
+            echo "<div class='alert alert-warning d-inline-flex align-items-center mb-0 py-2' role='alert'>";
+            echo "<i class='ti ti-alert-triangle flex-shrink-0 me-1'></i>";
+            echo "<span>";
+            echo __s('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.');
+            echo "</span>";
+            echo "</div>";
+            echo "</div>";
             echo "</td></tr>";
+
             echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
             echo "<td>";
             echo "<i class='ti ti-abc me-2'></i>";
@@ -437,13 +472,14 @@ class Conf extends CommonGLPI
             echo "</tr>";
             echo Html::scriptBlock("
                 function toggleDisplayLoginInputs(select) {
-                    let displayedInputs = false;
                     const selectedValue = $(select).val();
-                    if (selectedValue == '" . self::BASIC_AUTH . "') {
-                        displayedInputs = true;
-                    }
-                    $('#basic_auth_login_row').toggle(displayedInputs);
-                    $('#basic_auth_password_row').toggle(displayedInputs);
+                    const isBasicAuth = selectedValue == '" . self::BASIC_AUTH . "';
+                    const isOAuth = selectedValue == '" . self::CLIENT_CREDENTIALS . "';
+                    const isNoAuth = selectedValue == '" . self::NO_AUTH . "';
+                    $('#basic_auth_login_row').toggle(isBasicAuth);
+                    $('#basic_auth_password_row').toggle(isBasicAuth);
+                    $('#oauth_client_hint_row').toggle(isOAuth);
+                    $('#no_auth_warning_row').toggle(isNoAuth);
                 }
 
                 const selectAuthHeader = $(`select[name='auth_required']`);
@@ -1306,7 +1342,7 @@ class Conf extends CommonGLPI
             'stale_agents_status'            => 0,
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
-            'auth_required'                  => 'none',
+            'auth_required'                  => '',
             'basic_auth_login'               => '',
             'basic_auth_password'            => '',
         ];
