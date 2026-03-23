@@ -396,7 +396,7 @@ final class SQLProvider implements SearchProviderInterface
                             expression: QueryFunction::concat([
                                 "{$table}{$addtable}.completename",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
+                                "glpi_profiles_users{$addtable2}.profiles_id",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_recursive",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
