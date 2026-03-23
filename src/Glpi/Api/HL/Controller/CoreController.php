@@ -164,49 +164,19 @@ EOT,
                             'description' => 'A JSON-encoded string which indicates the IDs of domain record types that the user can manage. An array element with a value of -1 indicates that the user can manage all domain record types.',
                         ],
                         'ticket_status' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'type' => Doc\Schema::TYPE_STRING,
                             'x-version-introduced' => '2.3',
-                            'description' => 'Indicates the status transitions the user can perform for tickets. For example, if the user can close a ticket that is solved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
-                            'properties' => array_reduce($ticket_statuses, static function ($acc, $status) use ($ticket_statuses) {
-                                $acc[$status] = [
-                                    'type' => Doc\Schema::TYPE_OBJECT,
-                                    'properties' => array_reduce($ticket_statuses, static function ($acc2, $target_status) {
-                                        $acc2[$target_status] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-                                        return $acc2;
-                                    }, []),
-                                ];
-                                return $acc;
-                            }, [])
+                            'description' => 'JSON encoded object which indicates the status transitions the user can perform for tickets. For example, if the user can close a ticket that is solved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
                         ],
                         'change_status' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'type' => Doc\Schema::TYPE_STRING,
                             'x-version-introduced' => '2.3',
-                            'description' => 'Indicates the status transitions the user can perform for changes. For example, if the user can close a change that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
-                            'properties' => array_reduce($change_statuses, static function ($acc, $status) use ($change_statuses) {
-                                $acc[$status] = [
-                                    'type' => Doc\Schema::TYPE_OBJECT,
-                                    'properties' => array_reduce($change_statuses, static function ($acc2, $target_status) {
-                                        $acc2[$target_status] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-                                        return $acc2;
-                                    }, []),
-                                ];
-                                return $acc;
-                            }, [])
+                            'description' => 'JSON encoded object which indicates the status transitions the user can perform for changes. For example, if the user can close a change that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
                         ],
                         'problem_status' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'type' => Doc\Schema::TYPE_STRING,
                             'x-version-introduced' => '2.3',
-                            'description' => 'Indicates the status transitions the user can perform for problems. For example, if the user can close a problem that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
-                            'properties' => array_reduce($problem_statuses, static function ($acc, $status) use ($problem_statuses) {
-                                $acc[$status] = [
-                                    'type' => Doc\Schema::TYPE_OBJECT,
-                                    'properties' => array_reduce($problem_statuses, static function ($acc2, $target_status) {
-                                        $acc2[$target_status] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-                                        return $acc2;
-                                    }, []),
-                                ];
-                                return $acc;
-                            }, [])
+                            'description' => 'JSON encoded object which indicates the status transitions the user can perform for problems. For example, if the user can close a problem that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
                         ],
                     ],
                 ],
@@ -593,7 +563,6 @@ HTML;
         $session['current_time'] = date(DATE_RFC3339, strtotime($session['current_time']));
         $active_profile = $_SESSION['glpiactiveprofile'];
 
-        /** @var array<string, array<string, boolean>> $default_ticket_status */
         $default_ticket_status = array_reduce(array_keys(Ticket::getAllStatusArray()), static function ($acc, $status) {
             $acc[$status] = array_reduce(array_keys(Ticket::getAllStatusArray()), static function ($acc2, $target_status) {
                 $acc2[$target_status] = true;
@@ -631,9 +600,9 @@ HTML;
             'id' => $active_profile['id'],
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
-            'ticket_status' => array_replace_recursive($default_ticket_status, $ticket_status),
-            'change_status' => array_replace_recursive($default_change_status, $change_status),
-            'problem_status' => array_replace_recursive($default_problem_status, $problem_status),
+            'ticket_status' => json_encode(array_replace_recursive($default_ticket_status, $ticket_status)),
+            'change_status' => json_encode(array_replace_recursive($default_change_status, $change_status)),
+            'problem_status' => json_encode(array_replace_recursive($default_problem_status, $problem_status)),
         ];
 
         if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
