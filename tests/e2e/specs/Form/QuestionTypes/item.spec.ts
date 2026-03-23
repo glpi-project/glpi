@@ -51,7 +51,7 @@ test.describe('Item form question type', () => {
         });
 
         // Switch to the new entity and refresh session to ensure the new entity is taken into account in the session
-        entity.switchToWithoutRecursion(entity_id);
+        await entity.switchToWithoutRecursion(entity_id);
         api.refreshSession();
 
         const info = await formImporter.importForm('question_types/item-editor-test.json');
@@ -62,7 +62,7 @@ test.describe('Item form question type', () => {
 
     test.afterEach(async ({ entity, api }) => {
         // Reset entity to default one to avoid issues with other tests in the same worker
-        entity.resetToDefaultWorkerEntity();
+        await entity.resetToDefaultWorkerEntity();
         api.refreshSession();
     });
 
@@ -82,7 +82,7 @@ test.describe('Item form question type', () => {
         const persisted_question = form.getLastQuestion();
         await persisted_question.click({ position: { x: 0, y: 0 } });
 
-        form.getDropdownByLabel('Select an item', persisted_question).click();
+        await form.getDropdownByLabel('Select an item', persisted_question).click();
         await expect(form.page.getByRole('option', { name: 'Computer 1' })).toBeVisible();
         await expect(form.page.getByRole('option', { name: 'Computer 2 - 654321 - 123456' })).toBeVisible();
 
@@ -91,7 +91,7 @@ test.describe('Item form question type', () => {
         await form.setSubQuestionType(new_question, 'GLPI Objects');
         await form.setItemTypeForItemQuestion(new_question, 'Computers');
 
-        form.getDropdownByLabel('Select an item', new_question).click();
+        await form.getDropdownByLabel('Select an item', new_question).click();
         await expect(form.page.getByRole('option', { name: 'Computer 1' })).toBeVisible();
         await expect(form.page.getByRole('option', { name: 'Computer 2 - 654321 - 123456' })).toBeVisible();
     });
