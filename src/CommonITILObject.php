@@ -7704,11 +7704,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && Ticket::canCreate()
                     ;
 
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
                     if (!isset($followup_row['sourceitems_id'])) {
-                        $followup_row['sourceitems_id'] = $this->getID();
+                        $followup_row['sourceitems_id'] = 0;
                     }
                     if (!isset($followup_row['sourceof_items_id'])) {
-                        $followup_row['sourceof_items_id'] = $this->getID();
+                        $followup_row['sourceof_items_id'] = 0;
                     }
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type'     => ITILFollowup::class,
@@ -7740,12 +7742,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
-                    // Initialize fields that only exist for TicketTask
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
                     if (!isset($task_row['sourceitems_id'])) {
-                        $task_row['sourceitems_id'] = $this->getID();
+                        $task_row['sourceitems_id'] = 0;
                     }
                     if (!isset($task_row['sourceof_items_id'])) {
-                        $task_row['sourceof_items_id'] = $this->getID();
+                        $task_row['sourceof_items_id'] = 0;
                     }
                     $timeline[$tltask::getType() . "_" . $tasks_id] = [
                         'type'     => $taskClass,
