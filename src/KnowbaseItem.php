@@ -846,7 +846,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             if ($can_update) {
                 $used_document_ids = array_column($documents, 'id');
                 $params['used_document_ids']    = $used_document_ids;
-                $params['document_idor_token']  = \Session::getNewIDORToken('Document', [
+                $params['document_idor_token']  = Session::getNewIDORToken('Document', [
                     'entity_restrict' => -1,
                 ]);
             }
