@@ -7742,10 +7742,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ;
                     // Initialize fields that only exist for TicketTask
                     if (!isset($task_row['sourceitems_id'])) {
-                        $task_row['sourceitems_id'] = 0;
+                        $task_row['sourceitems_id'] = $this->getID();
                     }
                     if (!isset($task_row['sourceof_items_id'])) {
-                        $task_row['sourceof_items_id'] = 0;
+                        $task_row['sourceof_items_id'] = $this->getID();
                     }
                     $timeline[$tltask::getType() . "_" . $tasks_id] = [
                         'type'     => $taskClass,
