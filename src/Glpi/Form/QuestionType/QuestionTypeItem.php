@@ -321,7 +321,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'itemtypes'        => $this->getAllowedItemtypes(),
                 'aria_label'       => $this->items_id_aria_label,
                 'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question),
-                'displaywith'      => $this->getDisplayWith($default_itemtype),
+                'displaywith'      => Dropdown::getDisplayWith($default_itemtype),
             ]
         );
     }
@@ -357,51 +357,10 @@ class QuestionTypeItem extends AbstractQuestionType implements
         );
     }
 
-    /**
-     * Compute the list of additional fields to display alongside item names in dropdowns.
-     *
-     * @param string|null $itemtype The itemtype to compute displaywith for.
-     * @return array<string>
-     */
-    public function getDisplayWith(?string $itemtype): array
-    {
-        global $CFG_GLPI;
-
-        if ($itemtype === null || $itemtype === '0') {
-            return [];
-        }
-
-        $displaywith = [];
-        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
-        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
-
-        if ($is_itil_type && !$id_already_visible) {
-            $displaywith[] = 'id';
-        }
-
-        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
-            $item = getItemForItemtype($itemtype);
-            if ($item) {
-                if ($item->isField('otherserial')) {
-                    $displaywith[] = 'otherserial';
-                }
-                if ($item->isField('serial')) {
-                    $displaywith[] = 'serial';
-                }
-                if ($item->isField('users_id')) {
-                    $displaywith[] = 'users_id';
-                }
-            }
-        }
-
-        return $displaywith;
-    }
-
     #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
         $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
-        $displaywith = $this->getDisplayWith($itemtype);
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
@@ -413,7 +372,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'aria_label'                  => $question->fields['name'],
                 'sub_types'                   => $this->getSubTypes(),
                 'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
-                'displaywith'                 => $displaywith,
+                'displaywith'                 => Dropdown::getDisplayWith($itemtype),
             ]
         );
     }
