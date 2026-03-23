@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - New endpoints/schemas for Email authentication servers, ldap replicates, email collectors, field unicity, and automatic actions in High-Level API v2.3.
 
 ### Changed
+- State visiblity data is now writable in the High-Level API. **This change affects all API versions**.
 
 ### Deprecated
 
