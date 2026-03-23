@@ -6,7 +6,7 @@ Critical and high advisories are published one month after the release. All othe
 
 ## Reporting a Vulnerability
 
-If you found a security issue, please send an email to \[glpi-security AT ow2.org\].
+If you found a security issue, please send an email to \[security AT lpi-project.org\].
 
 You should provide us all details about the issue and the way to reproduce it.
 You may also provide a script that can be used to check the issue exists.
