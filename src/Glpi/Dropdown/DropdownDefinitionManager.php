@@ -146,6 +146,7 @@ use Glpi\\Dropdown\\Dropdown;
 final class {$definition->getDropdownClassName(false)} extends Dropdown {
     protected static string \$definition_system_name = '{$definition->fields['system_name']}';
     public static \$rightname = '{$rightname}';
+    public \$can_be_translated = true;
 }
 PHP
         );

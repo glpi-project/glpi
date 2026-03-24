@@ -2788,6 +2788,9 @@ final class SQLProvider implements SearchProviderInterface
         // Auto link
         if ($ref_table === $new_table && empty($complexjoin) && !$is_fkey_composite_on_self) {
             $transitemtype = getItemTypeForTable($new_table);
+            if ($transitemtype !== $itemtype && str_starts_with($itemtype, 'Glpi\CustomDropdown\\')) {
+                $transitemtype = $itemtype;
+            }
             if (Session::haveTranslations($transitemtype, $field)) {
                 $transAS            = $nt . '_trans_' . $field;
                 return self::getDropdownTranslationJoinCriteria(
