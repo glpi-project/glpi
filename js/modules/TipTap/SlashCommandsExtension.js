@@ -59,20 +59,22 @@ function showImageDialog(editor, existing_attrs = null) {
     const body = document.createElement('div');
     body.className = 'image-dialog-body';
 
+    const uid = Math.random().toString(36).slice(2, 9);
+
     // Source field
-    const source_group = createField(__('Source'), 'text', 'image-src', existing_attrs?.src || '');
+    const source_group = createField(__('Source'), 'text', `image-src-${uid}`, existing_attrs?.src || '');
     body.appendChild(source_group);
 
     // Alt field
-    const alt_group = createField(__('Alternative description'), 'text', 'image-alt', existing_attrs?.alt || '');
+    const alt_group = createField(__('Alternative description'), 'text', `image-alt-${uid}`, existing_attrs?.alt || '');
     body.appendChild(alt_group);
 
     // Width / Height row
     const size_row = document.createElement('div');
     size_row.className = 'image-dialog-size-row';
 
-    const width_group = createField(__('Width'), 'number', 'image-width', existing_attrs?.width || '');
-    const height_group = createField(__('Height'), 'number', 'image-height', existing_attrs?.height || '');
+    const width_group = createField(__('Width'), 'number', `image-width-${uid}`, existing_attrs?.width || '');
+    const height_group = createField(__('Height'), 'number', `image-height-${uid}`, existing_attrs?.height || '');
 
     const lock_btn = document.createElement('button');
     lock_btn.type = 'button';
@@ -147,10 +149,20 @@ function showImageDialog(editor, existing_attrs = null) {
     // Focus the source input
     src_input.focus();
 
+    const alt_input = alt_group.querySelector('input');
+
     const close = () => {
+        document.removeEventListener('keydown', handle_keydown);
         overlay.remove();
         editor.commands.focus();
     };
+
+    const handle_keydown = (e) => {
+        if (e.key === 'Escape') {
+            close();
+        }
+    };
+    document.addEventListener('keydown', handle_keydown);
 
     cancel_btn.addEventListener('click', close);
     title.querySelector('.image-dialog-close').addEventListener('click', close);
@@ -168,7 +180,7 @@ function showImageDialog(editor, existing_attrs = null) {
         }
 
         const attrs = { src };
-        const alt = source_group.parentElement.querySelector('#image-alt')?.value.trim();
+        const alt = alt_input.value.trim();
         if (alt) {
             attrs.alt = alt;
         }

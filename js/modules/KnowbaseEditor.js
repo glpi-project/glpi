@@ -56,9 +56,6 @@ class KnowbaseEditor {
     /** @type {HTMLElement|null} */
     #bubbleMenuElement = null;
 
-    /** @type {Array<{name: string, prefix: string, display: string}>} */
-    #pendingFiles = [];
-
     /**
      * @param {HTMLElement} element - The DOM element to attach the editor to
      * @param {object} options - Editor options
@@ -66,7 +63,7 @@ class KnowbaseEditor {
      * @param {boolean} options.readonly - Start in readonly mode
      * @param {string} options.placeholder - Placeholder text
      * @param {function} options.onUpdate - Callback when content changes
-     * @param {number|null} options.itemId - KB article ID (null for new articles)
+     * @param {number|null} options.item_id - KB article ID (null for new articles)
      */
     constructor(element, options = {}) {
         this.#element = element;
@@ -75,7 +72,7 @@ class KnowbaseEditor {
             readonly: true,
             placeholder: __('Start writing...'),
             onUpdate: null,
-            itemId: null,
+            item_id: null,
             ...options
         };
 
@@ -142,20 +139,22 @@ class KnowbaseEditor {
             TiptapTableCell,
         ];
 
-        // Add FileHandler for image drag & drop and paste
-        extensions.push(TiptapFileHandler.configure({
-            allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/bmp'],
-            onDrop: (editor, files, pos) => {
-                for (const file of files) {
-                    this.#uploadAndInsertImage(editor, file, pos);
-                }
-            },
-            onPaste: (editor, files) => {
-                for (const file of files) {
-                    this.#uploadAndInsertImage(editor, file);
-                }
-            },
-        }));
+        // Add FileHandler for image drag & drop and paste (only for existing articles)
+        if (this.#options.item_id) {
+            extensions.push(TiptapFileHandler.configure({
+                allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/bmp'],
+                onDrop: (editor, files, pos) => {
+                    for (const file of files) {
+                        this.#uploadAndInsertImage(editor, file, pos);
+                    }
+                },
+                onPaste: (editor, files) => {
+                    for (const file of files) {
+                        this.#uploadAndInsertImage(editor, file);
+                    }
+                },
+            }));
+        }
 
         // Add SlashCommands extension if available
         if (slashCommandsExt) {
@@ -407,29 +406,19 @@ class KnowbaseEditor {
                 display: file_info.display || '',
             };
 
-            // Step 2: Create Document or store for later
-            const item_id = this.#options.itemId;
-            let image_url;
-
-            if (item_id) {
-                // Existing article: create Document immediately
-                const doc_response = await post(
-                    `Knowbase/${item_id}/UploadInlineImage`,
-                    {
-                        filename: temp_info.name,
-                        prefix: temp_info.prefix,
-                    }
-                );
-                const doc_data = await doc_response.json();
-                if (!doc_data.success) {
-                    throw new Error(doc_data.message || 'Document creation failed');
+            // Step 2: Create Document via controller
+            const doc_response = await post(
+                `Knowbase/${this.#options.item_id}/UploadInlineImage`,
+                {
+                    filename: temp_info.name,
+                    prefix: temp_info.prefix,
                 }
-                image_url = doc_data.url;
-            } else {
-                // New article: store for later, use blob URL temporarily
-                this.#pendingFiles.push(temp_info);
-                image_url = URL.createObjectURL(file);
+            );
+            const doc_data = await doc_response.json();
+            if (!doc_data.success) {
+                throw new Error(doc_data.message || 'Document creation failed');
             }
+            const image_url = doc_data.url;
 
             // Step 3: Insert image in editor
             const attrs = { src: image_url };
@@ -445,14 +434,6 @@ class KnowbaseEditor {
             glpi_toast_error(__('Image upload failed'));
             console.error('Image upload error:', error);
         }
-    }
-
-    /**
-     * Get pending files for new article submission
-     * @returns {Array<{name: string, prefix: string, display: string}>}
-     */
-    getPendingFiles() {
-        return [...this.#pendingFiles];
     }
 
     /**

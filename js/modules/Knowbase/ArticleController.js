@@ -777,7 +777,7 @@ export class GlpiKnowbaseArticleController
                 content: this.#original_content,
                 readonly: false,
                 placeholder: __("Start writing..."),
-                itemId: this.#item_id,
+                item_id: this.#item_id,
             });
         } else {
             this.#editor.setEditable(true);
@@ -920,22 +920,6 @@ export class GlpiKnowbaseArticleController
             input.name = key;
             input.value = value;
             form.appendChild(input);
-        }
-
-        // Append pending image files for Document creation via addFiles()
-        if (this.#editor) {
-            const pending_files = this.#editor.getPendingFiles();
-            for (const file_info of pending_files) {
-                const add_field = (name, value) => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = name;
-                    input.value = value;
-                    form.appendChild(input);
-                };
-                add_field('_filename[]', file_info.name);
-                add_field('_prefix_filename[]', file_info.prefix);
-            }
         }
 
         document.body.appendChild(form);

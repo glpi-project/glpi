@@ -38,6 +38,7 @@ use CommonITILObject;
 use Document;
 use Document_Item;
 use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -53,6 +54,7 @@ use function Safe\realpath;
 
 final class UploadInlineImageController extends AbstractController
 {
+    use CrudControllerTrait;
     #[Route(
         "/Knowbase/{knowbaseitems_id}/UploadInlineImage",
         name: "knowbase_upload_inline_image",
@@ -131,13 +133,19 @@ final class UploadInlineImageController extends AbstractController
 
         // Link Document to KnowbaseItem, hidden from documents list
         $doc_item = new Document_Item();
-        $doc_item->add([
+        $link_id = $doc_item->add([
             'documents_id'      => $doc_id,
             'itemtype'          => KnowbaseItem::class,
             'items_id'          => $knowbaseitems_id,
             'timeline_position' => CommonITILObject::NO_TIMELINE,
             'users_id'          => \Session::getLoginUserID(),
         ]);
+        if (!$link_id) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __('Failed to link document to article'),
+            ], 500);
+        }
 
         // Build the document serving URL
         $url = Html::getPrefixedUrl(
