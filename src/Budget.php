@@ -278,7 +278,7 @@ class Budget extends CommonDropdown
      * Count the number of items associated with a budget
      *
      * This method counts all items linked to the budget through infocoms
-     * and cost tables, respecting entity restrictions and user permissions.
+     * and cost tables.
      *
      * @param CommonGLPI $item The budget item to count items for
      * @return int The total number of items associated with the budget
