@@ -409,7 +409,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_9->getFieldType()->getSearchOption();
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test bool', $opt['name']);
-        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '1')", (string) $opt['computation']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '1') = 'true'", (string) $opt['computation']);
         $this->assertEquals('bool', $opt['datatype']);
     }
 
