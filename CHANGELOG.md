@@ -13,6 +13,7 @@ The present file will list all changes made to the project; according to the
 ### Deprecated
 
 ### Removed
+- "Associate to an appliance" and "Remove from a rack" actions removed for templates.
 
 ### API changes
 
