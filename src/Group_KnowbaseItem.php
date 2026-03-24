@@ -57,7 +57,7 @@ class Group_KnowbaseItem extends CommonDBRelation
                     'WHERE' => [
                         'knowbaseitems_id' => $input['knowbaseitems_id'],
                         'groups_id'        => $input['groups_id'],
-                        'entities_id'      => $input['entities_id'],
+                        'entities_id'      => $input['entities_id'] ?? null,
                     ],
                     'LIMIT' => 1,
                 ]
