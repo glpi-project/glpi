@@ -50,7 +50,6 @@ class BudgetTest extends DbTestCase
 
         $rc = new \ReflectionClass(Budget::class);
         $method = $rc->getMethod('getItemListCriteria');
-        $method->setAccessible(true);
 
         $budget = $this->createItem(Budget::class, [
             'name' => __FUNCTION__,
