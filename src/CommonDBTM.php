@@ -4136,14 +4136,16 @@ class CommonDBTM extends CommonGLPI
                 MassiveAction::getAddTransferList($actions);
             }
 
-            if (in_array(static::getType(), Appliance::getTypes(true))) {
-                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
-            }
+            if ($checkitem === null || $checkitem->isNewItem() || !$checkitem->isTemplate()) {
+                if (in_array(static::getType(), Appliance::getTypes(true))) {
+                    $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                        = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
+                }
 
-            if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
-                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+                    $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
+                        = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                }
             }
         }
 
