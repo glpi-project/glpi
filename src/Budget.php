@@ -283,7 +283,7 @@ class Budget extends CommonDropdown
      * @param CommonGLPI $item The budget item to count items for
      * @return int The total number of items associated with the budget
      */
-    public static function countForBudget(CommonGLPI $item): int
+    public static function countForBudget(Budget $item): int
     {
         /** @var DBmysql $DB */
         global $DB;
