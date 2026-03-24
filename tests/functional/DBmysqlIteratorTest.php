@@ -207,16 +207,16 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => ['`a`', 'b ASC', 'c DESC']]);
         $this->assertSame('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar, baz ASC']);
+        $it = @$this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar, baz ASC']);
         $this->assertSame('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar, baz ASC']);
+        $it = @$this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar, baz ASC']);
         $this->assertSame('SELECT * FROM `foo` ORDER BY `bar`, `baz` ASC', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar DESC, baz ASC']);
+        $it = @$this->it->execute(['FROM' => 'foo', 'ORDERBY' => 'bar DESC, baz ASC']);
         $this->assertSame('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC', $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar DESC, baz ASC']);
+        $it = @$this->it->execute(['FROM' => 'foo', 'ORDER' => 'bar DESC, baz ASC']);
         $this->assertSame('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC', $it->getSql());
 
         $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
@@ -225,7 +225,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
         $this->assertSame("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC", $it->getSql());
 
-        $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
+        $it = @$this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
         $this->assertSame("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC", $it->getSql());
 
         $it = $this->it->execute(['FROM' => 'foo', 'ORDER' => [new QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);

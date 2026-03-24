@@ -210,7 +210,7 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         if (
             !($this instanceof CommonDBTM)
-            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
+            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID(), 'is_reserved' => 0])
         ) {
             return null;
         }
@@ -225,7 +225,7 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         if (
             !($this instanceof CommonDBTM)
-            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
+            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID(), 'is_reserved' => 0])
         ) {
             return null;
         }

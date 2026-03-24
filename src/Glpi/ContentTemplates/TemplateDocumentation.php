@@ -36,7 +36,9 @@
 namespace Glpi\ContentTemplates;
 
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\MarkdownBuilder;
+use Plugin;
 
 /**
  * Class used to build the twig variable documentation for a given set of
@@ -107,6 +109,8 @@ class TemplateDocumentation
         array $parameters,
         ?string $fields_prefix = null
     ) {
+        global $PLUGIN_HOOKS;
+
         // Check if this section is already defined, needed as some parameters
         // might have the same references
         if (isset($this->sections[$title])) {
@@ -129,6 +133,16 @@ class TemplateDocumentation
 
         // Keep track of parameters needing aditionnal references
         $references = [];
+
+        //additional parameters
+        foreach (array_keys($PLUGIN_HOOKS[Hooks::GET_CONTENT_TEMPLATE_PARAMETER] ?? []) as $plugin) {
+            $plugin_parameters = Plugin::doOneHook((string) $plugin, Hooks::GET_CONTENT_TEMPLATE_PARAMETER, $fields_prefix);
+            if (is_array($plugin_parameters)) {
+                foreach ($plugin_parameters as $plugin_parameter) {
+                    $parameters[] = $plugin_parameter;
+                }
+            }
+        }
 
         // Add a row for each parameters
         foreach ($parameters as $parameter) {

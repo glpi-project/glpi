@@ -49,9 +49,6 @@ class KnowbaseItemTranslation extends CommonDBChild
     public bool $dohistory       = true;
     public static bool $logs_for_parent = false;
 
-    public static string $rightname       = 'knowbase';
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Translation', 'Translations', $nb);

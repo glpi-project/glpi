@@ -3355,7 +3355,7 @@ JS;
                                 target.closest('.tox-menu').length > 0;
 
                             if (!isEditorElementClicked) {
-                                $('.tox-tbtn.tox-tbtn--enabled').trigger('click').trigger('blur');
+                                $('.tox-tbtn.tox-tbtn--enabled[data-mce-name="overflow-button"]').trigger('click').trigger('blur');
                             }
                         });
                     }

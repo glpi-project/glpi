@@ -79,8 +79,9 @@ final class KnowbaseItem_RevisionTest extends DbTestCase
         $this->assertTrue(
             $kb1->update(
                 [
-                    'id'   => $kb1->getID(),
-                    'name' => '_knowbaseitem01-01',
+                    'id'     => $kb1->getID(),
+                    'name'   => '_knowbaseitem01-01',
+                    'answer' => 'Updated answer',
                 ]
             )
         );

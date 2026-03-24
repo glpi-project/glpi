@@ -35,8 +35,9 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
+use Glpi\Http\JSONResponse;
+use League\OAuth2\Server\Exception\OAuthServerException;
 
 use function Safe\inet_pton;
 
@@ -44,39 +45,54 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        $client = Router::getInstance()->getCurrentClient();
-        if (!$client || isCommandLine()) {
+        if (!\array_key_exists('REMOTE_ADDR', $_SERVER)) {
+            // If `$_SERVER['REMOTE_ADDR']` is not set, it means that the request is made in CLI context (i.e. inside test suite).
             $next($input);
             return;
         }
 
-        global $DB;
+        // Determine client_id from current route or request parameters
+        $client = Router::getInstance()->getCurrentClient();
+        if ($client !== null) {
+            $client_id = $client['client_id'];
+        } elseif ($input->request->hasParameter('client_id')) {
+            $client_id = $input->request->getParameter('client_id');
+        } else {
+            $client_id = null;
+        }
 
-        $request_ip = $_SERVER['REMOTE_ADDR'];
+        if ($client_id === null) {
+            $next($input);
+            return;
+        }
+
+        // Check if client is allowed for the remote IP
+        if (!$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'])) {
+            $input->response = OAuthServerException::accessDenied(
+                'Your IP address is not allowed to use this OAuth client.'
+            )->generateHttpResponse(new JSONResponse());
+            return;
+        }
+
+        $next($input);
+    }
+
+    private function isClientIPAllowed(string $client_id, string $ip): bool
+    {
+        global $DB;
 
         $result = $DB->request([
             'SELECT' => ['allowed_ips'],
             'FROM'   => 'glpi_oauthclients',
-            'WHERE'  => [
-                'identifier' => $client['client_id'],
-            ],
+            'WHERE'  => ['identifier' => $client_id],
         ])->current();
         $allowed_ips = $result['allowed_ips'] ?? [];
 
         if (empty($allowed_ips)) {
-            // No IP restriction
-            $next($input);
-            return;
+            return true;
         }
 
-        if (!$this->isIPAllowed($request_ip, $allowed_ips)) {
-            // IP doesn't match the allowed IPs
-            $input->response = AbstractController::getAccessDeniedErrorResponse();
-            return;
-        }
-
-        // IP was explicitly allowed
-        $next($input);
+        return $this->isIPAllowed($ip, $allowed_ips);
     }
 
     private function isIPAllowed(string $ip, string $allowed_ips): bool

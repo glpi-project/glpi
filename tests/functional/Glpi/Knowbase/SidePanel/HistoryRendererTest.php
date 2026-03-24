@@ -66,13 +66,16 @@ final class HistoryRendererTest extends DbTestCase
         $revisionNodes = $revisions->filter('[data-testid=history-event]');
         $this->assertEquals(2, $revisionNodes->count());
 
-        $currentVersion = $revisionNodes->first();
+        $renamed = $revisionNodes->eq(0);
+        $this->assertStringContainsString('Renamed', $renamed->text());
+        $tooltip = $renamed->filter('[data-bs-toggle="tooltip"]')->first();
+        $this->assertStringContainsString('Original title', $tooltip->attr('title'));
+        $this->assertStringContainsString('Updated title', $tooltip->attr('title'));
+        $this->assertEquals(0, $renamed->filter('[data-glpi-revert-revision]')->count());
+
+        $currentVersion = $revisionNodes->eq(1);
         $this->assertStringContainsString('Current version', $currentVersion->text());
         $this->assertEquals(0, $currentVersion->filter('[data-glpi-revert-revision]')->count());
-
-        $initialVersion = $revisionNodes->last();
-        $this->assertStringContainsString('Version 1', $initialVersion->text());
-        $this->assertEquals(1, $initialVersion->filter('[data-glpi-revert-revision]')->count());
     }
 
     private function renderRevisions(KnowbaseItem $kb): Crawler

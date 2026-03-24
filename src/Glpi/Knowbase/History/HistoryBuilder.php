@@ -36,6 +36,7 @@ namespace Glpi\Knowbase\History;
 
 use Document;
 use Entity;
+use Glpi\UI\IllustrationManager;
 use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
@@ -63,6 +64,8 @@ final class HistoryBuilder
         $this->addAssociatedItemChangesToHistory();
         $this->addDocumentChangesToHistory();
         $this->addPermissionChangesToHistory();
+        $this->addNameChangesToHistory();
+        $this->addIllustrationChangesToHistory();
 
         $this->history->sort();
         return $this->history;
@@ -179,6 +182,34 @@ final class HistoryBuilder
                 description: $description,
                 date: $row['date_mod'],
                 author: $row['user_name'],
+            ));
+        }
+    }
+
+    private function addNameChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => ['date_mod', 'user_name', 'old_value', 'new_value'],
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'         => KnowbaseItem::class,
+                'items_id'         => $this->kb->getID(),
+                'linked_action'    => 0, // Update
+                'id_search_option' => 1, // Name
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $this->history->addEvent(new LogEvent(
+                label: __("Renamed"),
+                description: __("Updated by"),
+                date: $row['date_mod'],
+                author: $row['user_name'],
+                old_value: $row['old_value'],
+                new_value: $row['new_value'],
             ));
         }
     }
@@ -319,6 +350,46 @@ final class HistoryBuilder
 
             $this->history->addEvent(new LogEvent(
                 label: $label,
+                description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
+    private function addIllustrationChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => [
+                'date_mod',
+                'user_name',
+                'old_value',
+                'new_value',
+            ],
+            'FROM' => Log::getTable(),
+            'WHERE' => [
+                'itemtype'         => KnowbaseItem::class,
+                'items_id'         => $this->kb->getID(),
+                'linked_action'    => 0, // Update
+                'id_search_option' => 88, // illustration
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $is_custom = str_starts_with(
+                $row['new_value'],
+                IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX
+            );
+            $description = $is_custom
+                ? __("Custom illustration set by")
+                : __("Native illustration set by")
+            ;
+
+            $this->history->addEvent(new LogEvent(
+                label: __("Illustration updated"),
                 description: $description,
                 date: $row['date_mod'],
                 author: $row['user_name'],

@@ -1,0 +1,106 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+import { randomUUID } from "crypto";
+import { test, expect } from '../../../fixtures/glpi_fixture';
+import { Profiles } from "../../../utils/Profiles";
+import { getWorkerEntityId } from '../../../utils/WorkerEntities';
+import { FormPage } from "../../../pages/FormPage";
+
+test.describe('ITILCategory configuration', () => {
+    let form_page: FormPage;
+    let itilcategory_name: string;
+
+    test.beforeEach(async ({ page, profile, api, formImporter }) => {
+        await profile.set(Profiles.SuperAdmin);
+        form_page = new FormPage(page);
+        const entity_id = getWorkerEntityId();
+        const info = await formImporter.importForm('destination_config_fields/itilcategory-config.json');
+
+        itilcategory_name = `Test ITIL Category - ${randomUUID()}`;
+        await api.createItem('ITILCategory', {
+            name: itilcategory_name,
+            entities_id: entity_id,
+            is_recursive: 1,
+            is_request: 1,
+            is_incident: 1,
+        });
+
+        await form_page.gotoDestinationTab(info.getId());
+    });
+
+    test('Can use all possible configuration options', async () => {
+        await form_page.doOpenDestinationAccordionItem('Properties');
+
+        const config = form_page.getRegion('ITIL category configuration');
+        const itilcategory_dropdown = form_page.getStrategyDropdown(config);
+
+        // Default value
+        await expect(itilcategory_dropdown).toHaveText('Answer to last "ITIL Category" dropdown question');
+        await expect(form_page.getDropdownByLabel('Select an ITIL category...', config)).toBeHidden();
+        await expect(form_page.getDropdownByLabel('Select a question...', config)).toBeHidden();
+
+        // Switch to "Specific ITIL category"
+        await form_page.doSetDropdownValue(itilcategory_dropdown, 'Specific ITIL category');
+        const specific_dropdown = form_page.getDropdownByLabel('Select an ITIL category...', config);
+        await form_page.doSearchAndClickDropdownValue(specific_dropdown, itilcategory_name, false);
+        await form_page.doSaveDestinationAndReopenAccordion('Properties');
+        await expect(itilcategory_dropdown).toHaveText('Specific ITIL category');
+        await expect(specific_dropdown).toHaveText(itilcategory_name);
+
+        // Switch to "Answer from a specific question"
+        await form_page.doSetDropdownValue(itilcategory_dropdown, 'Answer from a specific question');
+        const question_dropdown = form_page.getDropdownByLabel('Select a question...', config);
+        await form_page.doSetDropdownValue(question_dropdown, 'My ITILCategory question');
+        await form_page.doSaveDestinationAndReopenAccordion('Properties');
+        await expect(itilcategory_dropdown).toHaveText('Answer from a specific question');
+        await expect(question_dropdown).toHaveText('My ITILCategory question');
+    });
+
+    test('Can create ticket using default configuration', async ({ page }) => {
+        // Go to preview
+        await page.getByRole('tab', { name: 'Form', exact: true }).click();
+        await form_page.doPreviewForm();
+
+        // Fill the form
+        await form_page.doSearchAndClickDropdownValue(
+            form_page.getDropdownByLabel('My ITILCategory question'),
+            itilcategory_name,
+            false
+        );
+        await form_page.getButton('Submit').click();
+        await page.getByRole('link', { name: 'My test form' }).click();
+
+        // Check ticket values
+        await expect(form_page.getDropdownByLabel('Category')).toHaveText(itilcategory_name);
+    });
+});

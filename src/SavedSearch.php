@@ -42,7 +42,6 @@ use Glpi\Toolbox\ArrayNormalizer;
 use Safe\DateTime;
 
 use function Safe\parse_url;
-use function Safe\preg_replace;
 
 /**
  * Saved searches class
@@ -101,8 +100,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                      = "<i class='ti ti-star'></i>" . __s('Unset as default');
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
                      = "<i class='ti ti-adjustments-alt'></i>" . __s('Change count method');
-        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
-                     = "<i class='ti ti-eye-search'></i>" . __s('Change visibility');
+        if (Session::haveRight(self::$rightname, UPDATE)) {
+            // Everyone can create/update a private search but only users with permission to update can change visibility to public
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
+                = "<i class='ti ti-eye-search'></i>" . __s('Change visibility');
+        }
         if (Session::haveRight('transfer', READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
                      = "<i class='ti ti-corner-right-up'></i>" . __s('Change entity');
@@ -234,7 +236,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 foreach ($ids as $id) {
                     $saved_search = new SavedSearch();
                     if ($saved_search->getFromDB($id)) {
-                        if ($saved_search->can($id, UPDATE)) {
+                        // The right is checked directly because everyone can update their own private search but only users with UPDATE right should be able to change visibility to public
+                        if (Session::haveRight(self::$rightname, UPDATE) && $saved_search->can($id, UPDATE)) {
                             $success = $saved_search->update([
                                 'id' => $id,
                                 'is_private' => $input['is_private'],
@@ -416,7 +419,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function prepareInputForAdd($input)
     {
-
+        if (isset($input['is_private']) && (int) $input['is_private'] === 0 && !Session::haveRight(self::$rightname, UPDATE)) {
+            return false;
+        }
         if (!isset($input['url']) || !isset($input['type'])) {
             return false;
         }
@@ -427,7 +432,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function prepareInputForUpdate($input)
     {
-
+        if (isset($input['is_private']) && (int) $input['is_private'] === 0 && !Session::haveRight(self::$rightname, UPDATE)) {
+            return false;
+        }
         if (isset($input['url']) && $input['type']) {
             $input = $this->prepareSearchUrlForDB($input);
         }
@@ -1174,31 +1181,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
             Session::addMessageAfterRedirect(__s('Notification has been created!'), false, INFO);
         }
-    }
-
-    /**
-     * Return visibility SQL restriction to add
-     *
-     * @return string restrict to add
-     **/
-    public static function addVisibilityRestrict()
-    {
-        //not deprecated because used in Search
-        if (Session::haveRight('config', UPDATE)) {
-            return '';
-        }
-
-        //get and clean criteria
-        $criteria = self::getVisibilityCriteria();
-        unset($criteria['LEFT JOIN']);
-        $criteria['FROM'] = self::getTable();
-
-        $it = new DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-        return $sql;
     }
 
     private static function getVisibilityCriteriaForMine(): array

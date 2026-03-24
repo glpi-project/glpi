@@ -34,8 +34,10 @@
 
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
+use CommonDropdown;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Controller\DropdownFormController;
+use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Event;
@@ -66,7 +68,10 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
         $listener->onKernelRequest($event);
 
         if (\str_contains($path_info, '.form.php')) {
-            self::assertSame(DropdownFormController::class, $request->attributes->get('_controller'));
+            $expected_controller = is_a($expected_class_name, CommonDropdown::class, true)
+                ? DropdownFormController::class
+                : GenericFormController::class;
+            self::assertSame($expected_controller, $request->attributes->get('_controller'));
         } else {
             self::assertSame(GenericListController::class, $request->attributes->get('_controller'));
         }

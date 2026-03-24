@@ -89,6 +89,8 @@ trait ParentStatus
                 '_accepted' => true,
             ];
 
+            $update['_trigger'] = $this;
+
             // Use update method for history
             $parentitem->update($update);
         }
@@ -169,6 +171,8 @@ trait ParentStatus
 
             if ($needupdateparent) {
                 $update['id'] = $parentitem->fields['id'];
+
+                $update['_trigger'] = $this;
 
                 // Use update method for history
                 $parentitem->update($update);

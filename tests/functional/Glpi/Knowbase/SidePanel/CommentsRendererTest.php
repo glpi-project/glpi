@@ -88,6 +88,14 @@ final class CommentsRendererTest extends DbTestCase
             ],
             $comments->filter('[data-testid=comment-content]')->each(fn($node) => $node->text()),
         );
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'My article without comments',
+        ]);
+        $comments = $this->renderComments($kb);
+        $this->assertStringContainsString('No comments yet', $comments->html());
     }
 
     private function renderComments(KnowbaseItem $kb): Crawler

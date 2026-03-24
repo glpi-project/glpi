@@ -34,9 +34,11 @@
 
 namespace tests\units\Glpi\Features;
 
+use Computer;
 use DCRoom;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Tests\DbTestCase;
+use Item_Rack;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rack;
 
@@ -67,5 +69,39 @@ class DCBreadcrumbTest extends DbTestCase
     public function testClassUsesTrait($class)
     {
         $this->assertTrue(in_array(DCBreadcrumb::class, class_uses($class, true)));
+    }
+
+    public function testGetParentRackAndPosition()
+    {
+        $rack_1 = $this->createItem(Rack::class, [
+            'name' => __FUNCTION__ . '_1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'number_units' => 10,
+        ]);
+        $rack_2 = $this->createItem(Rack::class, [
+            'name' => __FUNCTION__ . '_2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'number_units' => 10,
+        ]);
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+
+        $this->createItem(Item_Rack::class, [
+            'racks_id' => $rack_1->getID(),
+            'items_id' => $computer->getID(),
+            'itemtype' => Computer::class,
+            'is_reserved' => 1,
+            'position' => 1,
+        ]);
+        $this->createItem(Item_Rack::class, [
+            'racks_id' => $rack_2->getID(),
+            'items_id' => $computer->getID(),
+            'itemtype' => Computer::class,
+            'is_reserved' => 0,
+            'position' => 4,
+        ]);
+
+        $this->assertEquals($rack_2->getID(), $computer->getParentRack()->getID());
+        $this->assertEquals(4, $computer->getPositionInRack());
     }
 }

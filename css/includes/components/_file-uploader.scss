@@ -1,0 +1,119 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+// Drop Zone
+.file-uploader-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 1.5rem;
+    border: 2px dashed var(--tblr-border-color);
+    border-radius: 0.5rem;
+    background-color: var(--tblr-bg-surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &.dragging {
+        border-color: var(--tblr-primary);
+        background-color: rgb(var(--tblr-primary-rgb) / 5%);
+
+        .file-uploader-dropzone-icon {
+            color: var(--tblr-primary);
+            transform: translateY(-4px);
+        }
+    }
+}
+
+.file-uploader-dropzone-content {
+    text-align: center;
+}
+
+.file-uploader-dropzone-icon {
+    font-size: 2.5rem;
+    color: var(--tblr-secondary);
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.file-uploader-dropzone-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.file-uploader-dropzone-hint {
+    font-size: 0.8125rem;
+    margin-bottom: 0;
+}
+
+// File Preview List
+.file-uploader-preview {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.file-uploader-item {
+    background-color: var(--tblr-bg-surface);
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    .file-uploader-remove {
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .min-width-0 {
+        min-width: 0;
+    }
+}
+
+// Upload progress bar
+.file-uploader-progress {
+    height: 4px;
+    background-color: var(--tblr-border-color);
+    border-radius: 2px;
+    overflow: hidden;
+
+    .file-uploader-progress-bar {
+        height: 100%;
+        background-color: var(--tblr-primary);
+        transition: width 0.3s ease;
+    }
+}

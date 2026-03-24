@@ -41,6 +41,7 @@ use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Form\Category;
 use Glpi\Tests\DbTestCase;
+use Glpi\UI\IllustrationManager;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use KnowbaseItem_Revision;
@@ -275,6 +276,40 @@ final class HistoryBuilderTest extends DbTestCase
         ], $events);
     }
 
+    public function testNameChangeAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Updated title',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // Name-only change should not create a revision, just a Renamed event
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Renamed", $events[0]->getLabel());
+        $this->assertEquals("Updated by", $events[0]->getDescription());
+        $this->assertEquals("Original title", $events[0]->getOldValue());
+        $this->assertEquals("Updated title", $events[0]->getNewValue());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
     public function testPermissionRemoved(): void
     {
         $this->login();
@@ -323,6 +358,51 @@ final class HistoryBuilderTest extends DbTestCase
                 author: 2,
             ),
         ], $events);
+    }
+
+    public function testMultipleNameChanges(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Title v1',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Title v2',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Title v3',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // 3 events: 2 Renamed + Creation (no revisions for name-only changes)
+        $this->assertCount(3, $events);
+
+        $renamed_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Renamed"
+        ));
+
+        $this->assertCount(2, $renamed_events);
+        $this->assertEquals("Updated by", $renamed_events[0]->getDescription());
+        $this->assertEquals("Title v2", $renamed_events[0]->getOldValue());
+        $this->assertEquals("Title v3", $renamed_events[0]->getNewValue());
+        $this->assertEquals("2026-01-15 12:00:00", $renamed_events[0]->getDate());
+        $this->assertEquals("Updated by", $renamed_events[1]->getDescription());
+        $this->assertEquals("Title v1", $renamed_events[1]->getOldValue());
+        $this->assertEquals("Title v2", $renamed_events[1]->getNewValue());
+        $this->assertEquals("2026-01-15 11:00:00", $renamed_events[1]->getDate());
     }
 
     public function testMultiplePermissionTypes(): void
@@ -380,6 +460,46 @@ final class HistoryBuilderTest extends DbTestCase
                 author: 2,
             ),
         ], $events);
+    }
+
+    public function testNameChangeWithContentRevision(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Version 1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'New title',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'answer' => 'Version 2',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        // 3 events: Current version (content), Renamed, Creation
+        $this->assertCount(3, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Current version", $events[0]->getLabel());
+
+        $this->assertInstanceOf(LogEvent::class, $events[1]);
+        $this->assertEquals("Renamed", $events[1]->getLabel());
+        $this->assertEquals("Original title", $events[1]->getOldValue());
+        $this->assertEquals("New title", $events[1]->getNewValue());
+
+        $this->assertInstanceOf(RevisionEvent::class, $events[2]);
     }
 
     public function testFaqChanges(): void
@@ -780,5 +900,71 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertInstanceOf(RevisionEvent::class, $events[2]);
         $this->assertEquals("Version 1", $events[2]->getLabel());
+    }
+
+    public function testNativeIllustrationChangeAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+            'illustration' => 'kb-faq',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'illustration' => 'browse-kb',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Illustration updated", $events[0]->getLabel());
+        $this->assertEquals("Native illustration set by", $events[0]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
+    public function testCustomIllustrationChangeAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+            'illustration' => 'kb-faq',
+        ]);
+
+        $custom_illustration = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX . 'my-custom-icon';
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'illustration' => $custom_illustration,
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Illustration updated", $events[0]->getLabel());
+        $this->assertEquals("Custom illustration set by", $events[0]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
     }
 }

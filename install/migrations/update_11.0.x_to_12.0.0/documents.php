@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+/**
+ * @var DBmysql $DB
+ * @var Migration $migration
+ */
+
+$condition = ['NOT' => ['filepath' => null]];
+if (!$DB->fieldExists('glpi_documents', 'filesize', false)) {
+    $migration->addField('glpi_documents', 'filesize', 'int DEFAULT NULL');
+} else {
+    $condition['filesize'] = null;
+}
+
+$to_compute = countElementsInTable('glpi_documents', $condition);
+
+if ($to_compute > 0) {
+    $migration->addWarningMessage(
+        sprintf(__('%d documents do not have their size recorded in the database.'), $to_compute)
+        . ' '
+        . sprintf(__('Run the "%1$s" command to compute them.'), 'php bin/console migration:compute_documents_size')
+    );
+}

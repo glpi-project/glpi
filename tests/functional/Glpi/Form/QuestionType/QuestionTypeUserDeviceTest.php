@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -59,12 +60,38 @@ final class QuestionTypeUserDeviceTest extends DbTestCase
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Computer" => 'Computer_' . $computer->getID(),
+            "Computer" => Computer::class . '_' . $computer->getID(),
         ]);
 
         $this->assertStringContainsString(
             "1) Computer: My computer",
             strip_tags($ticket->fields['content']),
         );
+    }
+
+    public function testMandatoryValidationAcceptsNamespacedDeviceKey(): void
+    {
+        $this->login();
+
+        $definition = $this->initAssetDefinition();
+        $asset_class = $definition->getAssetClassName();
+        $asset = $this->createItem($asset_class, [
+            'name'       => 'My custom asset',
+            'entities_id' => Session::getActiveEntity(),
+            'users_id'   => Session::getLoginUserID(),
+        ]);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion("Device", QuestionTypeUserDevice::class, is_mandatory: true);
+        $form = $this->createForm($builder);
+
+        $question_id = $this->getQuestionId($form, "Device");
+
+        $result = AnswersHandler::getInstance()->validateAnswers(
+            $form,
+            [$question_id => $asset_class . '_' . $asset->getID()]
+        );
+
+        $this->assertTrue($result->isValid());
     }
 }

@@ -114,7 +114,7 @@ export class AssetDefinitionPage extends GlpiPage
             await dialog.getByLabel('Allow images').check();
         }
 
-        await dialog.getByRole('button', { name: 'Add' }).click();
+        await dialog.getByRole('button', { name: 'Add', exact: true }).click();
         await expect(dialog).not.toBeAttached();
 
         const key = `custom_${label.toLowerCase().replace(' ', '_')}`;

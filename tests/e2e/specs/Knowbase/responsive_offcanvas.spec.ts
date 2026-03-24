@@ -76,6 +76,10 @@ test('Side panel displays as offcanvas on small screens', async ({
         'visible': true,
     })).toBeAttached();
 
+    // Try to add a comment to validate that actions are working
+    await kb.getNewCommentTextarea().fill("My comment");
+    await kb.getButton("Add comment").click();
+
     // Close the offcanvas
     const close_button = offcanvas.getByTestId('side-panel-close');
     await close_button.click();
@@ -121,6 +125,10 @@ test('Side panel displays normally on large screens', async ({
     await expect(side_panel.getByText('Test comment for responsive view').filter({
         'visible': true,
     })).toBeAttached();
+
+    // Try to add a comment to validate that actions are working
+    await kb.getNewCommentTextarea().fill("My comment");
+    await kb.getButton("Add comment").click();
 
     // Close the side panel
     const close_button = side_panel.getByTestId('side-panel-close');

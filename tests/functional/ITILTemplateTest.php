@@ -621,4 +621,190 @@ class ITILTemplateTest extends DbTestCase
         // Check that the hidden field is deleted
         $this->assertEmpty($hidden->getFromDB($hidden_id));
     }
+
+    /**
+     * Check that when category or type of an itilobject is changed, the template is updated accordingly
+     */
+    public function testTemplateUpdatesWhenCategoryAndTypeChanges(): void
+    {
+        $this->login();
+
+        // Create two templates for each ITIL type, and two categories linked to these templates
+        [$ticket_template_a, $ticket_template_b, $ticket_template_c] = $this->createItems(\TicketTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+            ['name' => 'Template C'],
+        ]);
+
+        [$change_template_a, $change_template_b] = $this->createItems(\ChangeTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+        ]);
+
+        [$problem_template_a, $problem_template_b] = $this->createItems(\ProblemTemplate::class, [
+            ['name' => 'Template A'],
+            ['name' => 'Template B'],
+        ]);
+
+        [$cat_a, $cat_b] = $this->createItems(\ITILCategory::class, [
+            [
+                'name'                        => 'Category for template A',
+                'tickettemplates_id_demand'   => $ticket_template_a->getID(),
+                'tickettemplates_id_incident' => $ticket_template_c->getID(),
+                'changetemplates_id'          => $change_template_a->getID(),
+                'problemtemplates_id'         => $problem_template_a->getID(),
+                'is_request'                  => 1,
+                'is_incident'                 => 1,
+            ],
+            [
+                'name'                        => 'Category for template B',
+                'tickettemplates_id_demand'   => $ticket_template_b->getID(),
+                'tickettemplates_id_incident' => $ticket_template_b->getID(),
+                'changetemplates_id'          => $change_template_b->getID(),
+                'problemtemplates_id'         => $problem_template_b->getID(),
+                'is_request'                  => 1,
+                'is_incident'                 => 1,
+            ],
+        ]);
+
+        // Create an item for each ITIL type with category A, and check that template A is used
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'              => 'Ticket',
+            'itilcategories_id' => $cat_a->getID(),
+            'type'              => \Ticket::DEMAND_TYPE,
+            'entities_id'       => 0,
+            \Ticket::getTemplateClass()::getForeignKeyField()  => $ticket_template_a->getID(),
+        ]);
+
+        $change = $this->createItem(\Change::class, [
+            'name'              => 'Change',
+            'itilcategories_id' => $cat_a->getID(),
+            'entities_id'       => 0,
+            \Change::getTemplateClass()::getForeignKeyField()  => $change_template_a->getID(),
+        ]);
+
+        $problem = $this->createItem(\Problem::class, [
+            'name'              => 'Problem',
+            'itilcategories_id' => $cat_a->getID(),
+            'entities_id'       => 0,
+            \Problem::getTemplateClass()::getForeignKeyField()  => $problem_template_a->getID(),
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must reflect Template A after creation with category A'
+        );
+
+        $this->assertEquals(
+            $change_template_a->getID(),
+            (int) $change->fields['changetemplates_id'],
+            'changetemplates_id must reflect Template A after creation with category A'
+        );
+
+        $this->assertEquals(
+            $problem_template_a->getID(),
+            (int) $problem->fields['problemtemplates_id'],
+            'problemtemplates_id must reflect Template A after creation with category A'
+        );
+
+        // Update the category of each item to category B, and check that template B is now used
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'itilcategories_id' => $cat_b->getID(),
+        ]);
+
+        $change = $this->updateItem(\Change::class, $change->getID(), [
+            'itilcategories_id' => $cat_b->getID(),
+        ]);
+
+        $problem = $this->updateItem(\Problem::class, $problem->getID(), [
+            'itilcategories_id' => $cat_b->getID(),
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_b->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template B after category change'
+        );
+
+        $this->assertEquals(
+            $change_template_b->getID(),
+            (int) $change->fields['changetemplates_id'],
+            'changetemplates_id must be updated to Template B after category change'
+        );
+
+        $this->assertEquals(
+            $problem_template_b->getID(),
+            (int) $problem->fields['problemtemplates_id'],
+            'problemtemplates_id must be updated to Template B after category change'
+        );
+
+        // Update the category of each item to category A, specifying the old model B, and verify that template A is applied.
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'itilcategories_id' => $cat_a->getID(),
+            \Ticket::getTemplateFormFieldName() => $ticket_template_b->getID(),
+        ]);
+
+        $change = $this->updateItem(\Change::class, $change->getID(), [
+            'itilcategories_id' => $cat_a->getID(),
+            \Change::getTemplateFormFieldName() => $change_template_b->getID(),
+        ]);
+
+        $problem = $this->updateItem(\Problem::class, $problem->getID(), [
+            'itilcategories_id' => $cat_a->getID(),
+            \Problem::getTemplateFormFieldName() => $problem_template_b->getID(),
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template A after category change'
+        );
+
+        $this->assertEquals(
+            $change_template_a->getID(),
+            (int) $change->fields['changetemplates_id'],
+            'changetemplates_id must be updated to Template A after category change'
+        );
+
+        $this->assertEquals(
+            $problem_template_a->getID(),
+            (int) $problem->fields['problemtemplates_id'],
+            'problemtemplates_id must be updated to Template A after category change'
+        );
+
+        // Update the type of the ticket to incident, and check that template C is now used
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'type' => \Ticket::INCIDENT_TYPE,
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_c->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template C after type change'
+        );
+
+        // Update the type of the ticket back to demand, specifying the old model C, and verify that template A is applied.
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'type' => \Ticket::DEMAND_TYPE,
+            \Ticket::getTemplateFormFieldName() => $ticket_template_c->getID(),
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must be updated to Template A after type change'
+        );
+
+        // Check that the template is not changed when the category or type is not updated.
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'name' => 'Ticket updated',
+        ]);
+
+        $this->assertEquals(
+            $ticket_template_a->getID(),
+            (int) $ticket->fields['tickettemplates_id'],
+            'tickettemplates_id must not be updated if category or type is not updated'
+        );
+    }
 }

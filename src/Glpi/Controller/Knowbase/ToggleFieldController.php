@@ -48,7 +48,7 @@ final class ToggleFieldController extends AbstractController
 {
     use CrudControllerTrait;
 
-    private const ALLOWED_FIELDS = ['is_faq'];
+    private const ALLOWED_FIELDS = ['is_faq', 'is_recursive'];
 
     #[Route(
         "/Knowbase/{id}/ToggleField",

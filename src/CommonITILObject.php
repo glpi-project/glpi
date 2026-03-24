@@ -1891,7 +1891,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
-        if ($tt && count($tt->mandatory)) {
+
+        if (!$tt) {
+            return $input;
+        }
+
+        $tpl_class = static::getTemplateClass();
+        $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+        $input[static::getTemplateFormFieldName()] = $tt->getID();
+
+        if (count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
             foreach ($tt->mandatory as $key => $val) {
@@ -5231,7 +5240,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
             self::ASSIGNED, self::SOLVED, Change::EVALUATION => 'circle',
             self::PLANNED => 'calendar',
-            self::ACCEPTED => 'check-circle-filled',
+            self::ACCEPTED => 'circle-check-filled',
             self::OBSERVED => 'eye',
             self::APPROVAL, Change::TEST => 'help',
             Change::QUALIFICATION => 'circle',
@@ -8594,10 +8603,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
      * @param User|null $user           User for rights checking (default: null = current session rights)
+     * @param bool $for_anonymous_user Whether the user is an anonymous requester (default: false)
      *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null, bool $for_anonymous_user = false): array
     {
         global $DB; // Used to get subquery results - better performance
 
@@ -8631,24 +8641,31 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $bypass_rights
             || ITILFollowup::canView()
             || (
-                $user !== null
+                !$for_anonymous_user
+                && $user !== null
                 && $user->hasRightsOr(static::$rightname, $can_view_itilobject[static::class], $this->fields['entities_id'])
                 && $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC, $this->fields['entities_id'])
             )
+            || $for_anonymous_user // anonymous user
         ) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => static::class,
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
             if (!$bypass_rights) {
-                $can_seeprivate = $user === null
-                    ? Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)
-                    : $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE, $this->fields['entities_id']);
+                if ($for_anonymous_user) {
+                    // Anonymous user: can only see public followups
+                    $fup_crits[] = ['is_private' => 0];
+                } else {
+                    $can_seeprivate = $user === null
+                        ? Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)
+                        : $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE, $this->fields['entities_id']);
 
-                if (!$can_seeprivate) {
-                    $fup_crits[] = [
-                        'OR' => ['is_private' => 0, 'users_id' => $user_id],
-                    ];
+                    if (!$can_seeprivate) {
+                        $fup_crits[] = [
+                            'OR' => ['is_private' => 0, 'users_id' => $user_id],
+                        ];
+                    }
                 }
             }
 
@@ -8672,9 +8689,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $bypass_rights
             || ITILSolution::canView()
             || (
-                $user !== null
+                !$for_anonymous_user
+                && $user !== null
                 && $user->hasRightsOr(static::$rightname, $can_view_itilobject[static::class], $this->fields['entities_id'])
             )
+            || $for_anonymous_user // anonymous user
         ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
@@ -8740,10 +8759,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $bypass_rights
                 || $task_class::canView()
                 || (
-                    $user !== null
+                    !$for_anonymous_user
+                    && $user !== null
                     && $user->hasRightsOr(static::$rightname, $can_view_itilobject[static::class], $this->fields['entities_id'])
                     && $user->hasRight($task_class::$rightname, $task_class::SEEPUBLIC, $this->fields['entities_id'])
                 )
+                || $for_anonymous_user // anonymous user
             )
         ) {
             $tasks_crit = [
@@ -8752,16 +8773,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             if (!$bypass_rights) {
                 $private_task_crit = [];
-                $can_seeprivate = ($user === null)
-                    ? Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)
-                    : $user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE, $this->fields['entities_id']);
 
-                if (!$can_seeprivate) {
-                    $private_task_crit = [
-                        'is_private' => 0,
-                        'users_id' => $user_id,
-                        'users_id_tech' => $user_id,
-                    ];
+                if ($for_anonymous_user) {
+                    // Anonymous user: can only see public tasks
+                    $private_task_crit[] = ['is_private' => 0];
+                } else {
+                    $can_seeprivate = ($user === null)
+                        ? Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)
+                        : $user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE, $this->fields['entities_id']);
+
+                    if (!$can_seeprivate) {
+                        $private_task_crit = [
+                            'is_private' => 0,
+                            'users_id' => $user_id,
+                            'users_id_tech' => $user_id,
+                        ];
+                    }
                 }
                 if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
                     $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];

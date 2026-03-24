@@ -1315,4 +1315,75 @@ class TransferTest extends DbTestCase
 
         $this->assertCount(0, $contract2->find(['id' => $contract2_id]));
     }
+
+    /**
+     * When "add to transfer list" is executed on Document_Item records, the transfer list
+     * must contain the related Documents (not the Document_Item relations themselves).
+     * The Document_Item:add_transfer_list action key ensures the Document_Item processor
+     * handles the dispatch and can redirect to the entity-owning peer (the Document).
+     */
+    public function testAddTransferListResolvesRelationToEntityOwner(): void
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $document = $this->createItem(\Document::class, [
+            'name'        => 'Test document linked to FAQ',
+            'entities_id' => $entity_id,
+        ]);
+
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'        => 'Test FAQ article',
+            'answer'      => 'Test answer content',
+            'is_faq'      => 1,
+            'entities_id' => $entity_id,
+        ]);
+
+        $doc_item = $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kb_item->getID(),
+            'entities_id'  => $entity_id,
+        ]);
+
+        // Verify the action is registered under Document_Item processor, not MassiveAction.
+        $actions = (new \Document_Item())->getSpecificMassiveActions();
+        $this->assertArrayNotHasKey(
+            \MassiveAction::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list',
+            $actions
+        );
+        $this->assertArrayHasKey(
+            \Document_Item::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list',
+            $actions
+        );
+
+        // Verify that processing the action adds the Document to the transfer list.
+        unset($_SESSION['glpitransfer_list']);
+
+        \Document_Item::processMassiveActionsForOneItemtype(
+            $this->createMassiveActionMock('add_transfer_list'),
+            new \Document_Item(),
+            [$doc_item->getID()]
+        );
+
+        $this->assertArrayNotHasKey(\Document_Item::class, $_SESSION['glpitransfer_list'] ?? []);
+        $this->assertArrayHasKey(\Document::class, $_SESSION['glpitransfer_list'] ?? []);
+        $this->assertArrayHasKey(
+            $document->getID(),
+            $_SESSION['glpitransfer_list'][\Document::class]
+        );
+
+        unset($_SESSION['glpitransfer_list']);
+    }
+
+    private function createMassiveActionMock(string $action): \MassiveAction
+    {
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'itemDone', 'setRedirect'])
+            ->getMock();
+        $ma->method('getAction')->willReturn($action);
+        return $ma;
+    }
 }

@@ -3095,9 +3095,15 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      */
     public static function badgeCompletenameById(int $entity_id): ?string
     {
-        $entity = new self();
-        if ($entity->getFromDB($entity_id)) {
-            return self::badgeCompletename($entity->fields['completename']);
+        global $DB;
+        $it = $DB->request([
+            'SELECT' => 'completename',
+            'FROM'   => 'glpi_entities',
+            'WHERE'  => ['id' => $entity_id],
+            'LIMIT'  => 1,
+        ]);
+        if ($data = $it->current()) {
+            return self::badgeCompletename($data['completename']);
         }
         return null;
     }

@@ -68,6 +68,25 @@ trait CrudControllerTrait
     /**
      * @template T of CommonDBTM
      * @param class-string<T> $class
+     * @return T
+     */
+    private function read(string $class, int  $id): CommonDBTM
+    {
+        $item = getItemForItemtype($class);
+        if (!$item) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$item->can($id, READ)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $item;
+    }
+
+    /**
+     * @template T of CommonDBTM
+     * @param class-string<T> $class
      * @param array<mixed> $input
      * @return T
      */

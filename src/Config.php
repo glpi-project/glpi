@@ -48,6 +48,7 @@ use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
+use Safe\Exceptions\OpcacheException;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\chdir;
@@ -754,7 +755,12 @@ class Config extends CommonDBTM
 
         $opcache_info = false;
         $opcache_ext = 'Zend OPcache';
-        $opcache_enabled = extension_loaded($opcache_ext) && ($opcache_info = opcache_get_status(false));
+        $opcache_enabled = false;
+        try {
+            $opcache_enabled = extension_loaded($opcache_ext) && ($opcache_info = opcache_get_status(false));
+        } catch (OpcacheException) {
+            //empty catch
+        }
         $opcache_version = $opcache_enabled ? phpversion($opcache_ext) : '';
 
         $cache_manager = new CacheManager();

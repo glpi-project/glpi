@@ -1407,9 +1407,6 @@ HTML;
                 __('External authentications') => [
                     'SsoVariable' => null,
                 ],
-                __('Power management') => [
-                    'Plug' => null,
-                ],
                 __('Appliances') => [
                     'ApplianceType' => null,
                     'ApplianceEnvironment' => null,
@@ -4189,6 +4186,7 @@ HTML;
         }
 
         $all_devices = [];
+        $found_items = [];
 
         // My items
         foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
@@ -4263,6 +4261,7 @@ HTML;
                             ];
                         }
 
+                        $found_items[$itemtype][] = $data['id'];
                         $all_devices[$itemtype]['children'][] = [
                             'id' => $itemtype . "_" . $data["id"],
                             'text' => $output,
@@ -4332,6 +4331,10 @@ HTML;
                             'GROUPBY' => $itemtable . '.id',
                             'ORDER'  => $item->getNameField(),
                         ];
+
+                        if (!empty($found_items[$itemtype])) {
+                            $criteria['WHERE'][] = ['NOT' => ["$itemtable.id" => $found_items[$itemtype]]];
+                        }
 
                         if ($item->maybeDeleted()) {
                             $criteria['WHERE']['is_deleted'] = 0;

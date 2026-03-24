@@ -26,6 +26,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_Revision` is now final
 
 #### Deprecated
+- Usage of coma separated list of fields in `ORDER BY` clause.
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
 - `Glpi\Features\Inventoriable::showInventoryInfo()`
 - `Glpi\Features\Inventoriable::displayAgentInformation()`
@@ -98,6 +99,7 @@ The present file will list all changes made to the project; according to the
 - `Html::jsGetElementbyID()`
 - `Html::jsSetDropdownValue()`
 - `Html::progressBar()`
+- `Item_Plug` class
 - `ITILFollowup::ADDALLTICKET` constant
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDMYTICKET` constant
@@ -115,6 +117,8 @@ The present file will list all changes made to the project; according to the
 - `QueryParam` class
 - `QuerySubQuery` class
 - `QueryUnion` class
+- `Reminder::addVisibilityRestrict()`
+- `SavedSearch::addVisibilityRestrict()`
 - `Search::joinDropdownTranslations()`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
@@ -123,7 +127,6 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
-
 
 ## [11.0.7] unreleased
 
@@ -954,6 +957,27 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$cut` parameter in `formatUserName()` and `DbUtils::formatUserName()`.
 - Handling of the `delegate` right in `User::getSqlSearchResult()`.
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
+
+
+## [10.0.25] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
 
 
 ## [10.0.24] 2026-03-03

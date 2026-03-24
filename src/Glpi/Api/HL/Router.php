@@ -603,6 +603,9 @@ EOT;
     {
         global $CFG_GLPI;
 
+        // Reset client state so each request starts with a clean slate
+        $this->current_client = null;
+
         // Start an output buffer to capture any potential debug errors
         $current_output_buffer_level = ob_get_level();
         ob_start();
