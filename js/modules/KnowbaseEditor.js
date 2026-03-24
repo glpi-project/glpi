@@ -140,7 +140,7 @@ class KnowbaseEditor {
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)
-        if (this.#options.item_id) {
+        if (this.#options.item_id > 0) {
             extensions.push(TiptapFileHandler.configure({
                 allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/bmp'],
                 onDrop: (editor, files, pos) => {
