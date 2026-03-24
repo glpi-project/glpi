@@ -37,6 +37,12 @@
     cropper-canvas {
         min-height: 100px;
     }
+
+    &.auto-detect-active {
+        cropper-canvas {
+            cursor: crosshair;
+        }
+    }
 }
 
 .defined-zone {
@@ -65,5 +71,11 @@
             font-size: 15px;
             font-weight: normal;
         }
+    }
+}
+
+.auto-detect-tolerance-row {
+    .form-range {
+        vertical-align: middle;
     }
 }

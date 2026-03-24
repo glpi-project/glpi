@@ -33,7 +33,7 @@
 
 // Needed for JS lint validation
 /* eslint no-var: 0 */
-/* global _ */
+/* global _, StencilAutoDetect */
 
 /**
  * Creates a new StencilEditor instance.
@@ -51,7 +51,150 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     const croppers = [];
 
+    let auto_detect_active = false;
+    let last_detected_box = null;
+
     const _this = this;
+
+    /**
+     * Returns the current tolerance value from the tolerance input element.
+     * Falls back to 30 when the element is not present.
+     *
+     * @returns {number}
+     */
+    const getTolerance = function () {
+        const el = container.querySelector(`#auto-detect-tolerance-${rand}`);
+        return el ? parseInt(el.value, 10) : 30;
+    };
+
+    /**
+     * Reads pixel data from the <img> element backing a cropper instance by
+     * drawing it onto an off-screen canvas.
+     *
+     * @param {object} cropper   Cropper.js instance.
+     * @returns {{image_data: ImageData, natural_width: number, natural_height: number}|null}
+     */
+    const getCropperImageData = function (cropper) {
+        const cr_image = cropper.getCropperImage();
+        if (!cr_image) {
+            return null;
+        }
+
+        const img_el = cr_image.querySelector('img') ?? cr_image;
+        if (!img_el || !img_el.naturalWidth) {
+            return null;
+        }
+
+        const natural_width = img_el.naturalWidth;
+        const natural_height = img_el.naturalHeight;
+
+        const offscreen = document.createElement('canvas');
+        offscreen.width = natural_width;
+        offscreen.height = natural_height;
+        const ctx = offscreen.getContext('2d');
+        ctx.drawImage(img_el, 0, 0, natural_width, natural_height);
+
+        let image_data = null;
+        try {
+            image_data = ctx.getImageData(0, 0, natural_width, natural_height);
+        } catch (_e) {
+            // Cross-origin image – pixel data unavailable.
+            return null;
+        }
+
+        return { image_data, natural_width, natural_height };
+    };
+
+    /**
+     * Converts canvas-viewport coordinates (relative to the cropper canvas
+     * element) to natural-image coordinates.
+     *
+     * @param {object} cropper
+     * @param {number} canvas_x
+     * @param {number} canvas_y
+     * @returns {{x: number, y: number}|null}
+     */
+    const canvasToNaturalCoords = function (cropper, canvas_x, canvas_y) {
+        const cr_image = cropper.getCropperImage();
+        const cr_canvas = cropper.getCropperCanvas();
+        if (!cr_image || !cr_canvas) {
+            return null;
+        }
+
+        const canvas_rect = cr_canvas.getBoundingClientRect();
+        const img_rect = cr_image.getBoundingClientRect();
+
+        const rel_x = canvas_x - (img_rect.left - canvas_rect.left);
+        const rel_y = canvas_y - (img_rect.top - canvas_rect.top);
+
+        const scale_x = cr_image.querySelector('img')?.naturalWidth / img_rect.width ?? 1;
+        const scale_y = cr_image.querySelector('img')?.naturalHeight / img_rect.height ?? 1;
+
+        return {
+            x: rel_x * scale_x,
+            y: rel_y * scale_y,
+        };
+    };
+
+    /**
+     * Converts a bounding box expressed in natural-image pixels to percentages
+     * relative to the rendered image dimensions.
+     *
+     * @param {object} cropper
+     * @param {{x,y,width,height}} box   Natural-pixel bounding box.
+     * @returns {{x_pct, y_pct, w_pct, h_pct}|null}
+     */
+    const boxToPercent = function (cropper, box) {
+        const cr_image = cropper.getCropperImage();
+        if (!cr_image) {
+            return null;
+        }
+        const img_el = cr_image.querySelector('img') ?? cr_image;
+        const natural_width = img_el.naturalWidth;
+        const natural_height = img_el.naturalHeight;
+        if (!natural_width || !natural_height) {
+            return null;
+        }
+
+        return {
+            x_pct: (box.x / natural_width) * 100,
+            y_pct: (box.y / natural_height) * 100,
+            w_pct: (box.width / natural_width) * 100,
+            h_pct: (box.height / natural_height) * 100,
+        };
+    };
+
+    /**
+     * Converts a natural-pixel box to cropper-canvas selection coordinates.
+     *
+     * @param {object} cropper
+     * @param {{x,y,width,height}} box
+     * @returns {{x,y,width,height}|null}
+     */
+    const boxToCanvasCoords = function (cropper, box) {
+        const cr_image = cropper.getCropperImage();
+        const cr_canvas = cropper.getCropperCanvas();
+        if (!cr_image || !cr_canvas) {
+            return null;
+        }
+
+        const canvas_rect = cr_canvas.getBoundingClientRect();
+        const img_rect = cr_image.getBoundingClientRect();
+
+        const img_el = cr_image.querySelector('img') ?? cr_image;
+        const scale_x = img_rect.width / (img_el.naturalWidth || 1);
+        const scale_y = img_rect.height / (img_el.naturalHeight || 1);
+
+        const origin_x = img_rect.left - canvas_rect.left;
+        const origin_y = img_rect.top - canvas_rect.top;
+
+        return {
+            x: origin_x + box.x * scale_x,
+            y: origin_y + box.y * scale_y,
+            width: box.width * scale_x,
+            height: box.height * scale_y,
+        };
+    };
 
     _this.init = function () {
 
@@ -107,6 +250,18 @@ const StencilEditor = function (container, rand, zones_definition) {
             })
             .on('click', 'button[name="remove-zone"]', () => {
                 _this.removeZone();
+            })
+            .on('click', `#auto-detect-toggle-${rand}`, () => {
+                _this.toggleAutoDetect();
+            })
+            .on('click', `#grid-replicate-${rand}`, () => {
+                _this.openGridDialog();
+            })
+            .on('click', `#grid-apply-${rand}`, () => {
+                _this.applyGrid();
+            })
+            .on('click', `#grid-cancel-${rand}`, () => {
+                _this.closeGridDialog();
             });
 
         $(`#clear-data-${rand}`)
@@ -444,5 +599,181 @@ const StencilEditor = function (container, rand, zones_definition) {
                 _this.redoZones();
             },
         });
+    };
+
+    // toggle auto-detect (Magic Wand) mode
+    _this.toggleAutoDetect = function () {
+        auto_detect_active = !auto_detect_active;
+
+        const toggle_btn = $(`#auto-detect-toggle-${rand}`);
+        const tolerance_row = $(`#auto-detect-tolerance-row-${rand}`);
+
+        toggle_btn.toggleClass('btn-outline-info', !auto_detect_active);
+        toggle_btn.toggleClass('btn-info', auto_detect_active);
+        toggle_btn.attr('aria-pressed', auto_detect_active ? 'true' : 'false');
+        tolerance_row.toggleClass('d-none', !auto_detect_active);
+
+        croppers.forEach((cropper) => {
+            const canvas_el = cropper.getCropperCanvas();
+            $(canvas_el).closest('.cropper-container').toggleClass('auto-detect-active', auto_detect_active);
+        });
+
+        if (auto_detect_active) {
+            _this.bindAutoDetectClicks();
+        } else {
+            _this.unbindAutoDetectClicks();
+        }
+    };
+
+    // bind click events on cropper canvases for auto-detect
+    _this.bindAutoDetectClicks = function () {
+        croppers.forEach((cropper, side) => {
+            const canvas_el = cropper.getCropperCanvas();
+            $(canvas_el).on(`click.stencil-auto-detect-${rand}`, function (e) {
+                if (!auto_detect_active || !_this.isEditorActive()) {
+                    return;
+                }
+
+                const canvas_rect = canvas_el.getBoundingClientRect();
+                const click_x = e.clientX - canvas_rect.left;
+                const click_y = e.clientY - canvas_rect.top;
+
+                const natural = canvasToNaturalCoords(cropper, click_x, click_y);
+                if (!natural) {
+                    return;
+                }
+
+                const pixel_data = getCropperImageData(cropper);
+                if (!pixel_data) {
+                    return;
+                }
+
+                const detected = (typeof StencilAutoDetect !== 'undefined')
+                    ? StencilAutoDetect.detectBoundingBox(
+                        pixel_data.image_data,
+                        pixel_data.natural_width,
+                        pixel_data.natural_height,
+                        natural.x,
+                        natural.y,
+                        getTolerance()
+                    )
+                    : null;
+
+                if (!detected) {
+                    return;
+                }
+
+                last_detected_box = { box: detected, side: side, cropper: cropper };
+
+                const canvas_box = boxToCanvasCoords(cropper, detected);
+                if (!canvas_box) {
+                    return;
+                }
+
+                cropper.getCropperSelection().$change(
+                    canvas_box.x,
+                    canvas_box.y,
+                    canvas_box.width,
+                    canvas_box.height
+                );
+
+                $(`#grid-replicate-${rand}`).removeClass('d-none');
+            });
+        });
+    };
+
+    // unbind auto-detect click events
+    _this.unbindAutoDetectClicks = function () {
+        croppers.forEach((cropper) => {
+            const canvas_el = cropper.getCropperCanvas();
+            $(canvas_el).off(`.stencil-auto-detect-${rand}`);
+        });
+        $(`#grid-replicate-${rand}`).addClass('d-none');
+    };
+
+    // open grid replication dialog
+    _this.openGridDialog = function () {
+        $(`#grid-dialog-${rand}`).removeClass('d-none');
+    };
+
+    // close grid replication dialog
+    _this.closeGridDialog = function () {
+        $(`#grid-dialog-${rand}`).addClass('d-none');
+    };
+
+    // apply grid replication
+    _this.applyGrid = function () {
+        if (!last_detected_box) {
+            return;
+        }
+
+        const cols = parseInt($(`#grid-cols-${rand}`).val(), 10) || 1;
+        const rows = parseInt($(`#grid-rows-${rand}`).val(), 10) || 1;
+        const spacing_x = parseInt($(`#grid-spacing-x-${rand}`).val(), 10) || 0;
+        const spacing_y = parseInt($(`#grid-spacing-y-${rand}`).val(), 10) || 0;
+
+        const pixel_data = getCropperImageData(last_detected_box.cropper);
+        const img_width = pixel_data ? pixel_data.natural_width : Infinity;
+        const img_height = pixel_data ? pixel_data.natural_height : Infinity;
+
+        const boxes = (typeof StencilAutoDetect !== 'undefined')
+            ? StencilAutoDetect.generateGrid(
+                last_detected_box.box,
+                cols,
+                rows,
+                spacing_x,
+                spacing_y,
+                img_width,
+                img_height
+            )
+            : [];
+
+        const side = last_detected_box.side;
+        const cropper = last_detected_box.cropper;
+
+        boxes.forEach((box, idx) => {
+            const zone_buttons = $(container).find('button.set-zone-data');
+            const zone_index = zone_buttons.eq(idx).data('zone-index');
+            if (zone_index === undefined) {
+                return;
+            }
+
+            const pct = boxToPercent(cropper, box);
+            if (!pct) {
+                return;
+            }
+
+            const canvas_box = boxToCanvasCoords(cropper, box);
+            if (!canvas_box) {
+                return;
+            }
+
+            const cr_image = cropper.getCropperImage();
+            zones[zone_index] = {
+                'selection': {
+                    'x': canvas_box.x,
+                    'y': canvas_box.y,
+                    'height': canvas_box.height,
+                    'width': canvas_box.width,
+                },
+                'image': cr_image.$getTransform(),
+                'label': $(container).find(`.set-zone-data[data-zone-index="${CSS.escape(zone_index)}"]`).find('span').text() || String(zone_index),
+                'number': zone_index,
+                'side': side,
+                'x_percent': pct.x_pct,
+                'y_percent': pct.y_pct,
+                'width_percent': pct.w_pct,
+                'height_percent': pct.h_pct,
+            };
+
+            $(container).find(`.set-zone-data[data-zone-index="${CSS.escape(zone_index)}"]`)
+                .removeClass('btn-outline-secondary btn-warning')
+                .addClass('btn-success')
+                .find('i').removeClass('ti-file-unknown').addClass('ti-check');
+        });
+
+        _this.closeGridDialog();
+        _this.redoZones();
+        _this.sendDataForm();
     };
 };
