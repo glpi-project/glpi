@@ -44,6 +44,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use Group;
+use Session;
 use Group_KnowbaseItem;
 use Html;
 use KnowbaseItem;
@@ -74,12 +75,12 @@ final class KnowbaseFormController extends GenericFormController
     {
         $id = $request->request->getInt('knowbaseitems_id');
         $kb = new KnowbaseItem();
-        if (!$kb->can(UPDATE, $id)) {
+        if (!$kb->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
         $input = ['knowbaseitems_id' => $id];
-        $type = $request->request->getString("_type");
+        $type = $request->request->getString('_type');
         if (empty($type)) {
             throw new BadRequestHttpException();
         }
@@ -110,14 +111,22 @@ final class KnowbaseFormController extends GenericFormController
             $input['no_entity_restriction'] = 1;
         }
 
-        $this->add($class, $input);
-        Event::log(
-            $_POST["knowbaseitems_id"],
-            "knowbaseitem",
-            4,
-            "tools",
-            sprintf(__('%s adds a target'), $_SESSION["glpiname"])
-        );
+        $item = new $class();
+        if ($item->add($input)) {
+            Event::log(
+                $id,
+                "knowbaseitem",
+                4,
+                "tools",
+                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+            );
+        } else {
+            Session::addMessageAfterRedirect(
+                __s('This target already exists for this article.'),
+                false,
+                ERROR
+            );
+        }
 
         $back = Html::getBackUrl();
         if ($back) {

@@ -47,6 +47,28 @@ class KnowbaseItem_Profile extends CommonDBRelation
     public static bool $logs_for_item_2     = false;
 
 
+    public function prepareInputForAdd($input)
+    {
+        // Avoid duplicate entry
+        if (
+            countElementsInTable(
+                static::getTable(),
+                [
+                    'WHERE' => [
+                        'knowbaseitems_id' => $input['knowbaseitems_id'],
+                        'profiles_id'      => $input['profiles_id'],
+                        'entities_id'      => $input['entities_id'],
+                    ],
+                    'LIMIT' => 1,
+                ]
+            ) > 0
+        ) {
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
     /**
      * Get profiles for a knowbaseitem
      *
