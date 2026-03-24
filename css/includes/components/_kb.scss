@@ -616,3 +616,100 @@
         transition: width 0.3s ease;
     }
 }
+
+// Image insert/edit dialog
+.image-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+}
+
+.image-dialog {
+    background: var(--tblr-bg-surface);
+    border-radius: var(--tblr-border-radius-lg);
+    box-shadow: var(--tblr-box-shadow-lg);
+    width: 500px;
+    max-width: 90vw;
+}
+
+.image-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+    font-weight: 600;
+    font-size: 1rem;
+
+    .image-dialog-close {
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 0.25rem;
+        color: var(--tblr-secondary);
+        font-size: 1.1rem;
+
+        &:hover {
+            color: var(--tblr-body-color);
+        }
+    }
+}
+
+.image-dialog-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.image-dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--tblr-secondary);
+    }
+}
+
+.image-dialog-size-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+
+    .image-dialog-field {
+        flex: 1;
+    }
+
+    .image-dialog-lock {
+        border: 1px solid var(--tblr-border-color);
+        background: var(--tblr-bg-surface);
+        border-radius: var(--tblr-border-radius);
+        padding: 0.375rem 0.5rem;
+        cursor: pointer;
+        margin-bottom: 1px;
+        color: var(--tblr-secondary);
+
+        &.is-locked {
+            color: var(--tblr-primary);
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+}
+
+.image-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--tblr-border-color);
+}

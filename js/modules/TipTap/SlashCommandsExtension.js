@@ -40,6 +40,183 @@
 const { Extension } = TiptapCore;
 
 /**
+ * Show the Insert/Edit Image dialog (Source, Alt, Width, Height)
+ * @param {object} editor - TipTap editor instance
+ * @param {object|null} existing_attrs - Existing image attributes for editing (null for new)
+ */
+function showImageDialog(editor, existing_attrs = null) {
+    const overlay = document.createElement('div');
+    overlay.className = 'image-dialog-overlay';
+
+    const dialog = document.createElement('div');
+    dialog.className = 'image-dialog';
+
+    const title = document.createElement('div');
+    title.className = 'image-dialog-header';
+    title.innerHTML = `<span>${__('Insert/Edit Image')}</span><button type="button" class="image-dialog-close" aria-label="${__('Close')}"><i class="ti ti-x"></i></button>`;
+    dialog.appendChild(title);
+
+    const body = document.createElement('div');
+    body.className = 'image-dialog-body';
+
+    // Source field
+    const source_group = createField(__('Source'), 'text', 'image-src', existing_attrs?.src || '');
+    body.appendChild(source_group);
+
+    // Alt field
+    const alt_group = createField(__('Alternative description'), 'text', 'image-alt', existing_attrs?.alt || '');
+    body.appendChild(alt_group);
+
+    // Width / Height row
+    const size_row = document.createElement('div');
+    size_row.className = 'image-dialog-size-row';
+
+    const width_group = createField(__('Width'), 'number', 'image-width', existing_attrs?.width || '');
+    const height_group = createField(__('Height'), 'number', 'image-height', existing_attrs?.height || '');
+
+    const lock_btn = document.createElement('button');
+    lock_btn.type = 'button';
+    lock_btn.className = 'image-dialog-lock is-locked';
+    lock_btn.title = __('Constrain proportions');
+    lock_btn.innerHTML = '<i class="ti ti-lock"></i>';
+    let ratio_locked = true;
+    lock_btn.addEventListener('click', () => {
+        ratio_locked = !ratio_locked;
+        lock_btn.classList.toggle('is-locked', ratio_locked);
+        lock_btn.innerHTML = ratio_locked ? '<i class="ti ti-lock"></i>' : '<i class="ti ti-lock-open"></i>';
+    });
+
+    size_row.appendChild(width_group);
+    size_row.appendChild(lock_btn);
+    size_row.appendChild(height_group);
+    body.appendChild(size_row);
+
+    // Ratio tracking
+    let aspect_ratio = null;
+    const width_input = width_group.querySelector('input');
+    const height_input = height_group.querySelector('input');
+
+    const src_input = source_group.querySelector('input');
+    src_input.addEventListener('change', () => {
+        // Try to load image to get natural dimensions
+        const img = new Image();
+        img.onload = () => {
+            if (!width_input.value && !height_input.value) {
+                width_input.value = img.naturalWidth;
+                height_input.value = img.naturalHeight;
+            }
+            aspect_ratio = img.naturalWidth / img.naturalHeight;
+        };
+        img.src = src_input.value;
+    });
+
+    width_input.addEventListener('input', () => {
+        if (ratio_locked && aspect_ratio && width_input.value) {
+            height_input.value = Math.round(parseInt(width_input.value, 10) / aspect_ratio);
+        }
+    });
+    height_input.addEventListener('input', () => {
+        if (ratio_locked && aspect_ratio && height_input.value) {
+            width_input.value = Math.round(parseInt(height_input.value, 10) * aspect_ratio);
+        }
+    });
+
+    dialog.appendChild(body);
+
+    // Footer
+    const footer = document.createElement('div');
+    footer.className = 'image-dialog-footer';
+
+    const cancel_btn = document.createElement('button');
+    cancel_btn.type = 'button';
+    cancel_btn.className = 'btn btn-outline-secondary';
+    cancel_btn.textContent = __('Cancel');
+
+    const save_btn = document.createElement('button');
+    save_btn.type = 'button';
+    save_btn.className = 'btn btn-primary';
+    save_btn.textContent = __('Save');
+
+    footer.appendChild(cancel_btn);
+    footer.appendChild(save_btn);
+    dialog.appendChild(footer);
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // Focus the source input
+    src_input.focus();
+
+    const close = () => {
+        overlay.remove();
+        editor.commands.focus();
+    };
+
+    cancel_btn.addEventListener('click', close);
+    title.querySelector('.image-dialog-close').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            close();
+        }
+    });
+
+    save_btn.addEventListener('click', () => {
+        const src = src_input.value.trim();
+        if (!src) {
+            src_input.focus();
+            return;
+        }
+
+        const attrs = { src };
+        const alt = source_group.parentElement.querySelector('#image-alt')?.value.trim();
+        if (alt) {
+            attrs.alt = alt;
+        }
+        const width = width_input.value;
+        const height = height_input.value;
+        if (width) {
+            attrs.width = parseInt(width, 10);
+        }
+        if (height) {
+            attrs.height = parseInt(height, 10);
+        }
+
+        editor.chain().focus().setImage(attrs).run();
+        close();
+    });
+}
+
+/**
+ * Create a form field group
+ * @param {string} label_text
+ * @param {string} type
+ * @param {string} id
+ * @param {string} value
+ * @returns {HTMLElement}
+ */
+function createField(label_text, type, id, value) {
+    const group = document.createElement('div');
+    group.className = 'image-dialog-field';
+
+    const label = document.createElement('label');
+    label.htmlFor = id;
+    label.textContent = label_text;
+    group.appendChild(label);
+
+    const input = document.createElement('input');
+    input.type = type;
+    input.id = id;
+    input.className = 'form-control';
+    input.value = value;
+    if (type === 'number') {
+        input.min = '0';
+    }
+    group.appendChild(input);
+
+    return group;
+}
+
+/**
  * Available slash commands
  * Each command receives (editor, range) and must delete the range in the same chain
  * Uses insertContent to INSERT new blocks rather than transforming existing content
@@ -94,11 +271,8 @@ const SLASH_COMMANDS = [
         title: __('Image'),
         icon: 'ti ti-photo',
         command: (editor, range) => {
-            // TODO: Integrate with GLPI document picker
-            const url = window.prompt(__('Enter image URL'));
-            if (url) {
-                editor.chain().focus().deleteRange(range).insertContent({ type: 'image', attrs: { src: url } }).run();
-            }
+            editor.chain().focus().deleteRange(range).run();
+            showImageDialog(editor);
         },
     },
 ];

@@ -32,8 +32,10 @@
 
 /* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
+/* global TiptapFileHandler, getAjaxCsrfToken, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { post } from '/js/modules/Ajax.js';
 
 /**
  * Knowbase article editor based on Tiptap
@@ -54,6 +56,9 @@ class KnowbaseEditor {
     /** @type {HTMLElement|null} */
     #bubbleMenuElement = null;
 
+    /** @type {Array<{name: string, prefix: string, display: string}>} */
+    #pendingFiles = [];
+
     /**
      * @param {HTMLElement} element - The DOM element to attach the editor to
      * @param {object} options - Editor options
@@ -61,6 +66,7 @@ class KnowbaseEditor {
      * @param {boolean} options.readonly - Start in readonly mode
      * @param {string} options.placeholder - Placeholder text
      * @param {function} options.onUpdate - Callback when content changes
+     * @param {number|null} options.itemId - KB article ID (null for new articles)
      */
     constructor(element, options = {}) {
         this.#element = element;
@@ -69,6 +75,7 @@ class KnowbaseEditor {
             readonly: true,
             placeholder: __('Start writing...'),
             onUpdate: null,
+            itemId: null,
             ...options
         };
 
@@ -134,6 +141,21 @@ class KnowbaseEditor {
             TiptapTableHeader,
             TiptapTableCell,
         ];
+
+        // Add FileHandler for image drag & drop and paste
+        extensions.push(TiptapFileHandler.configure({
+            allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/bmp'],
+            onDrop: (editor, files, pos) => {
+                for (const file of files) {
+                    this.#uploadAndInsertImage(editor, file, pos);
+                }
+            },
+            onPaste: (editor, files) => {
+                for (const file of files) {
+                    this.#uploadAndInsertImage(editor, file);
+                }
+            },
+        }));
 
         // Add SlashCommands extension if available
         if (slashCommandsExt) {
@@ -342,6 +364,95 @@ class KnowbaseEditor {
      */
     focus() {
         this.#editor?.commands.focus();
+    }
+
+    /**
+     * Upload an image file and insert it into the editor
+     * @param {object} editor - TipTap editor instance
+     * @param {File} file - Image file
+     * @param {number|undefined} pos - Insert position (undefined = current cursor)
+     */
+    async #uploadAndInsertImage(editor, file, pos) {
+        try {
+            // Step 1: Upload to GLPI temp dir
+            const form_data = new FormData();
+            form_data.append('name', 'filename');
+            form_data.append('filename', file);
+
+            const upload_response = await fetch(
+                `${CFG_GLPI.root_doc}/ajax/fileupload.php`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                    },
+                    body: form_data,
+                }
+            );
+
+            if (!upload_response.ok) {
+                throw new Error('File upload failed');
+            }
+
+            const upload_result = await upload_response.json();
+            const file_info = upload_result.filename?.[0];
+            if (!file_info || file_info.error) {
+                throw new Error(file_info?.error || 'File upload failed');
+            }
+
+            const temp_info = {
+                name: file_info.name,
+                prefix: file_info.prefix || '',
+                display: file_info.display || '',
+            };
+
+            // Step 2: Create Document or store for later
+            const item_id = this.#options.itemId;
+            let image_url;
+
+            if (item_id) {
+                // Existing article: create Document immediately
+                const doc_response = await post(
+                    `Knowbase/${item_id}/UploadInlineImage`,
+                    {
+                        filename: temp_info.name,
+                        prefix: temp_info.prefix,
+                    }
+                );
+                const doc_data = await doc_response.json();
+                if (!doc_data.success) {
+                    throw new Error(doc_data.message || 'Document creation failed');
+                }
+                image_url = doc_data.url;
+            } else {
+                // New article: store for later, use blob URL temporarily
+                this.#pendingFiles.push(temp_info);
+                image_url = URL.createObjectURL(file);
+            }
+
+            // Step 3: Insert image in editor
+            const attrs = { src: image_url };
+            if (pos !== undefined) {
+                editor.chain().focus().insertContentAt(pos, {
+                    type: 'image',
+                    attrs,
+                }).run();
+            } else {
+                editor.chain().focus().setImage(attrs).run();
+            }
+        } catch (error) {
+            glpi_toast_error(__('Image upload failed'));
+            console.error('Image upload error:', error);
+        }
+    }
+
+    /**
+     * Get pending files for new article submission
+     * @returns {Array<{name: string, prefix: string, display: string}>}
+     */
+    getPendingFiles() {
+        return [...this.#pendingFiles];
     }
 
     /**
