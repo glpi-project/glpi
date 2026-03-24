@@ -2528,12 +2528,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/BlacklistedMailContent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access an offset on Glpi\\\\DBAL\\\\QueryExpression\\|list\\<string\\>\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Budget.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
