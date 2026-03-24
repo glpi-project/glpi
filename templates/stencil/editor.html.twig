@@ -48,46 +48,13 @@
             <input type="number" id="nb_zones-{{ rand }}" name="nb_zones" class="form-control d-inline-block" style="width: 65px" min="1" max="{{ stencil.getMaxZoneNumber() }}" value="{{ nb_zones }}">
 
         {% else %}
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <label class="form-label mb-0">
-                    {% if params.define_zones_label is defined %}
-                        {{ params['define_zones_label'] }}
-                    {% else %}
-                        {{ __("Define zone in image") }}
-                    {% endif %}
-                </label>
-
-                <button type="button"
-                        id="auto-detect-toggle-{{ rand }}"
-                        class="btn btn-sm btn-outline-info"
-                        aria-pressed="false"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        data-bs-title="{{ __('Auto-detect zone (Magic Wand)') }}"
-                        aria-label="{{ __('Auto-detect zone (Magic Wand)') }}">
-                    <i class="ti ti-wand"></i>
-                    <span>{{ __('Auto-detect') }}</span>
-                </button>
-            </div>
-
-            <div id="auto-detect-tolerance-row-{{ rand }}" class="auto-detect-tolerance-row d-none mb-2">
-                <div class="d-flex align-items-center gap-2">
-                    <label for="auto-detect-tolerance-{{ rand }}" class="form-label mb-0 text-nowrap">
-                        {{ __('Tolerance') }}
-                    </label>
-                    <input type="range"
-                           id="auto-detect-tolerance-{{ rand }}"
-                           class="form-range"
-                           min="0"
-                           max="255"
-                           value="30"
-                           style="max-width: 160px;"
-                           aria-label="{{ __('Detection tolerance') }}">
-                    <output for="auto-detect-tolerance-{{ rand }}"
-                            id="auto-detect-tolerance-output-{{ rand }}"
-                            class="badge bg-secondary">30</output>
-                </div>
-            </div>
+            <label class="form-label mb-1">
+                {% if params.define_zones_label is defined %}
+                    {{ params['define_zones_label'] }}
+                {% else %}
+                    {{ __("Define zone in image") }}
+                {% endif %}
+            </label>
 
             <div class="col-12 d-flex flex-wrap gap-1">
                 {% if nb_zones > 0 %}
@@ -142,6 +109,24 @@
                         {% endif %}
                         <div class="col-auto">
                             <input type="text" id="zone_number-{{ rand }}" class="form-control" placeholder="" form="zone-data-form-{{ rand }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto" id="auto-detect-tolerance-col-{{ rand }}">
+                    <div class="row align-items-center">
+                        <label for="auto-detect-tolerance-{{ rand }}" class="col-auto col-form-label text-nowrap">{{ __('Tolerance') }}</label>
+                        <div class="col-auto d-flex align-items-center gap-1">
+                            <input type="range"
+                                   id="auto-detect-tolerance-{{ rand }}"
+                                   class="form-range"
+                                   min="0"
+                                   max="100"
+                                   value="10"
+                                   style="max-width: 120px;"
+                                   aria-label="{{ __('Detection tolerance') }}">
+                            <output for="auto-detect-tolerance-{{ rand }}"
+                                    id="auto-detect-tolerance-output-{{ rand }}"
+                                    class="badge bg-secondary">10%</output>
                         </div>
                     </div>
                 </div>
@@ -245,15 +230,5 @@
 
     <script>
         new StencilEditor(document.getElementById('#stencil-editor-{{ rand }}'), {{ rand }}, {{ zones_json|raw }});
-
-        (function () {
-            var tolerance_input = document.getElementById('auto-detect-tolerance-{{ rand }}');
-            var tolerance_output = document.getElementById('auto-detect-tolerance-output-{{ rand }}');
-            if (tolerance_input && tolerance_output) {
-                tolerance_input.addEventListener('input', function () {
-                    tolerance_output.value = tolerance_input.value;
-                });
-            }
-        })();
     </script>
 </div>
