@@ -55,6 +55,7 @@ use function Safe\realpath;
 final class UploadInlineImageController extends AbstractController
 {
     use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/{knowbaseitems_id}/UploadInlineImage",
         name: "knowbase_upload_inline_image",
