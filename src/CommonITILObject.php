@@ -7974,7 +7974,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
-                $autoreminder_obj->fields['content'] ?? '',
+                htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])
             );
 
