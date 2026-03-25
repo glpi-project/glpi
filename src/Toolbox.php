@@ -2739,6 +2739,7 @@ class Toolbox
                     0 => 'Y-m-d',
                     1 => 'd-m-Y',
                     2 => 'm-d-Y',
+                    3 => 'd.m.Y',
                 ];
                 break;
             case 'php':
@@ -2746,6 +2747,7 @@ class Toolbox
                     0 => __('YYYY-MM-DD'),
                     1 => __('DD-MM-YYYY'),
                     2 => __('MM-DD-YYYY'),
+                    3 => __('DD.MM.YYYY'),
                 ];
                 break;
             default:
