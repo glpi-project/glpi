@@ -109,9 +109,9 @@ license-headers-check: ## Verify that the license headers is present all files
 	@$(CONSOLE) tools:licence_headers_check
 .PHONY: license-headers-check
 
-license-headers-fix: ## Add the missing license headers in all files
+license-headers: ## Add the missing license headers in all files
 	@$(CONSOLE) tools:licence_headers_check --fix
-.PHONY: license-headers-fix
+.PHONY: license-headers
 
 ## —— Database —————————————————————————————————————————————————————————————————
 db-install: ## Install local development's database
@@ -189,7 +189,7 @@ test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-
 	'
 .PHONY: test-db-clone
 
-e2e-db-install: ## Install e2e testing's database
+test-e2e-db-install: ## Install e2e testing's database
 	@$(CONSOLE) database:install \
 		-r -f \
 		--db-host=db \
@@ -200,16 +200,16 @@ e2e-db-install: ## Install e2e testing's database
 		--no-interaction \
 		--no-telemetry \
 		--env=e2e_testing
-.PHONY: e2e-db-install
+.PHONY: test-e2e-db-install
 
-e2e-db-update: ## Update e2e testing's database
+test-e2e-db-update: ## Update e2e testing's database
 	@$(CONSOLE) database:update \
 		-n \
 		--allow-unstable \
 		--force \
 		--skip-db-checks  \
 		--env=e2e_testing
-.PHONY: e2e-db-update
+.PHONY: test-e2e-db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
@@ -265,10 +265,10 @@ rector-check: ## Run rector with dry run
 	@$(PHP) php vendor/bin/rector --dry-run $(c)
 .PHONY: rector-check
 
-rector-apply: ## Run rector
+rector: ## Run rector
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/rector $(c)
-.PHONY: rector-apply
+.PHONY: rector
 
 cypress: ## Run cypress tests
 	@$(eval c ?=)
@@ -306,7 +306,7 @@ phpcsfixer-check: ## Check for php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
 .PHONY: phpcsfixer-check
 
-phpcsfixer-fix: ## Fix php coding standards issues
+phpcsfixer: ## Fix php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer fix
 .PHONY: phpcsfixer-fix
 
