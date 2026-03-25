@@ -42,6 +42,8 @@
             const next = $(this).next('input[name="totp_code[]"]');
             if (next.length) {
                next.focus();
+            } else {
+               $(this).closest('form').submit();
             }
          }
       }).on('input', function() {

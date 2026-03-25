@@ -85,9 +85,6 @@ class ReAuthController extends AbstractController
     public function verify(Request $request): Response
     {
         $user_input = $request->request->get('user_input');
-        if (is_array($user_input)) {
-            $user_input = implode('', $user_input);
-        }
 
         if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
