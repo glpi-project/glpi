@@ -66,7 +66,7 @@ final class ReAuthManager
      */
     public function redirect(): never
     {
-        $this->setSuccessRedirectURL($_SERVER['HTTP_REFERER'] ?? '/'); // @todo use \Html::getRefererUrl() ?
+        $this->setSuccessRedirectURL(\Html::getRefererUrl());
         $this->setPostDataForRedirect($_POST);
 
         throw new RedirectException('/ReAuth/Prompt');
@@ -75,7 +75,7 @@ final class ReAuthManager
     public function isReAuthenticated(): bool
     {
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
-        $calculated_limit_timestamp = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp();
+        $calculated_limit_timestamp = new DateTime($_SESSION['glpi_currenttime'])->getTimestamp();
 
         return $current_limit_timestamp !== null && $current_limit_timestamp > $calculated_limit_timestamp;
     }

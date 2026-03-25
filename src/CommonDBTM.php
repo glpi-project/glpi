@@ -3040,25 +3040,7 @@ class CommonDBTM extends CommonGLPI
                         $reauth_needed = true;
                         return false;
                     }
-                $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
-                if ($allowed) {
-                    if ($_reauth_needed) {
-                        $reauth_needed = true;
-                        return false;
-                    }
-                    return true;
                 }
-
-                // non personnal item
-                $allowed =  (static::canUpdate() && $this->canUpdateItem());
-                if ($allowed) {
-                    if ($_reauth_needed) {
-                        $reauth_needed = true;
-                        return false;
-                    }
-                    return true;
-                }
-                return false;
 
             case DELETE:
                 // Personal item
@@ -3134,7 +3116,7 @@ class CommonDBTM extends CommonGLPI
             $require_reauth = null;
             if (!$this->can($ID, $right, $input, $require_reauth)) {
                 if ($require_reauth) {
-                    self::checkReAuthenticationOrRedirect(); // @todo faire redirect() directement
+                    self::redirectToReauthPrompt();
                 }
 
                 /** @var class-string<CommonDBTM> $itemtype */
@@ -6578,7 +6560,7 @@ class CommonDBTM extends CommonGLPI
             if (!(new static())->can($id, CREATE, $options, $reauth_needed)) { // @todo bonne usage de la static ? effet ed bord ?
                 // redirect to reauth prompt
                 if ($reauth_needed === true) {
-                    self::checkReAuthenticationOrRedirect();
+                    self::redirectToReauthPrompt();
                 }
 
                 throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');

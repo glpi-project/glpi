@@ -197,13 +197,9 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * @throws RedirectException
      */
-    final public static function checkReAuthenticationOrRedirect(): true
+    final public function redirectToReauthPrompt(): never
     {
-        if (static::itemTypeRequiresReauthentication()) {
-            (new ReAuthManager())->checkReAuthenticationOrRedirect();
-        }
-
-        return true;
+        new ReAuthManager()->redirect();
     }
 
     /**
