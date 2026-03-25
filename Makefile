@@ -189,7 +189,7 @@ test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-
 	'
 .PHONY: test-db-clone
 
-test-e2e-db-install: ## Install e2e testing's database
+e2e-db-install: ## Install e2e testing's database
 	@$(CONSOLE) database:install \
 		-r -f \
 		--db-host=db \
@@ -200,16 +200,16 @@ test-e2e-db-install: ## Install e2e testing's database
 		--no-interaction \
 		--no-telemetry \
 		--env=e2e_testing
-.PHONY: test-e2e-db-install
+.PHONY: e2e-db-install
 
-test-e2e-db-update: ## Update e2e testing's database
+e2e-db-update: ## Update e2e testing's database
 	@$(CONSOLE) database:update \
 		-n \
 		--allow-unstable \
 		--force \
 		--skip-db-checks  \
 		--env=e2e_testing
-.PHONY: test-e2e-db-update
+.PHONY: e2e-db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
