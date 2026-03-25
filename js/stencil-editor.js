@@ -55,6 +55,8 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     let last_detected_box = null;
 
+    let last_auto_detect_seed = null;
+
     const _this = this;
 
     /**
@@ -200,6 +202,196 @@ const StencilEditor = function (container, rand, zones_definition) {
         };
     };
 
+    /**
+     * Returns true when GLPI debug mode is active (body has the debug-active class).
+     *
+     * @returns {boolean}
+     */
+    const isDebugMode = function () {
+        return document.body.classList.contains('debug-active');
+    };
+
+    /**
+     * Converts the current cropper selection to natural-image coordinates.
+     *
+     * @param {object} cropper
+     * @returns {{x: number, y: number, width: number, height: number}|null}
+     */
+    const selectionToNaturalBox = function (cropper) {
+        const cr_selection = cropper.getCropperSelection();
+        if (!cr_selection || cr_selection.width <= 0 || cr_selection.height <= 0) {
+            return null;
+        }
+
+        const top_left = canvasToNaturalCoords(cropper, cr_selection.x, cr_selection.y);
+        const bottom_right = canvasToNaturalCoords(
+            cropper,
+            cr_selection.x + cr_selection.width,
+            cr_selection.y + cr_selection.height
+        );
+
+        if (!top_left || !bottom_right) {
+            return null;
+        }
+
+        return {
+            x: Math.max(0, Math.round(top_left.x)),
+            y: Math.max(0, Math.round(top_left.y)),
+            width: Math.max(1, Math.round(bottom_right.x - top_left.x)),
+            height: Math.max(1, Math.round(bottom_right.y - top_left.y)),
+        };
+    };
+
+    /**
+     * Runs auto-detection from a given natural-image seed point using the current
+     * tolerance value, updates the cropper selection, and shows the tolerance
+     * slider.  Returns true on success.
+     *
+     * @param {object} cropper
+     * @param {number} side
+     * @param {number} natural_x
+     * @param {number} natural_y
+     * @returns {boolean}
+     */
+    const runAutoDetectAtPoint = function (cropper, side, natural_x, natural_y) {
+        const pixel_data = getCropperImageData(cropper);
+        if (!pixel_data) {
+            return false;
+        }
+
+        const tolerance = getTolerance();
+
+        if (isDebugMode()) {
+            console.log('[StencilEditor] Auto-detect at natural coords', {
+                x: natural_x,
+                y: natural_y,
+                tolerance_pct: Math.round((tolerance / MAX_COLOR_DISTANCE) * 100),
+            });
+        }
+
+        const detected = (typeof StencilAutoDetect !== 'undefined')
+            ? StencilAutoDetect.detectBoundingBox(
+                pixel_data.image_data,
+                pixel_data.natural_width,
+                pixel_data.natural_height,
+                natural_x,
+                natural_y,
+                tolerance
+            )
+            : null;
+
+        if (isDebugMode()) {
+            console.log('[StencilEditor] Auto-detect result', detected);
+        }
+
+        if (!detected) {
+            $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
+            return false;
+        }
+
+        last_detected_box = { box: detected, side, cropper };
+
+        const canvas_box = boxToCanvasCoords(cropper, detected);
+        if (!canvas_box) {
+            return false;
+        }
+
+        cropper.getCropperSelection().$change(
+            canvas_box.x,
+            canvas_box.y,
+            canvas_box.width,
+            canvas_box.height
+        );
+
+        $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
+        $(`#grid-replicate-${rand}`).removeClass('d-none');
+        return true;
+    };
+
+    /**
+     * Runs auto-detection based on the most prominent colour inside the current
+     * selection of the active cropper.  Stores the seed point so the tolerance
+     * slider can re-run detection on the fly.
+     */
+    const runAutoDetectFromSelection = function () {
+        let active_cropper = null;
+        let active_side = 0;
+        croppers.forEach((cropper, side) => {
+            const sel = cropper.getCropperSelection();
+            if (sel && sel.width > 0 && sel.height > 0) {
+                active_cropper = cropper;
+                active_side = side;
+            }
+        });
+
+        if (!active_cropper) {
+            if (isDebugMode()) {
+                console.log('[StencilEditor] Auto-detect from selection: no active selection');
+            }
+            return;
+        }
+
+        const nat_box = selectionToNaturalBox(active_cropper);
+        if (!nat_box) {
+            if (isDebugMode()) {
+                console.log('[StencilEditor] Auto-detect from selection: could not convert selection to natural coords');
+            }
+            return;
+        }
+
+        const pixel_data = getCropperImageData(active_cropper);
+        if (!pixel_data) {
+            if (isDebugMode()) {
+                console.log('[StencilEditor] Auto-detect from selection: could not get image pixel data (cross-origin?)');
+            }
+            return;
+        }
+
+        const x = Math.max(0, nat_box.x);
+        const y = Math.max(0, nat_box.y);
+        const w = Math.min(nat_box.width, pixel_data.natural_width - x);
+        const h = Math.min(nat_box.height, pixel_data.natural_height - y);
+
+        if (w <= 0 || h <= 0) {
+            if (isDebugMode()) {
+                console.log('[StencilEditor] Auto-detect from selection: selection out of image bounds', nat_box);
+            }
+            return;
+        }
+
+        if (isDebugMode()) {
+            console.log('[StencilEditor] Auto-detect from selection', { nat_box, image: { w: pixel_data.natural_width, h: pixel_data.natural_height } });
+        }
+
+        const prominent = (typeof StencilAutoDetect !== 'undefined')
+            ? StencilAutoDetect.getMostProminentColor(
+                pixel_data.image_data,
+                pixel_data.natural_width,
+                x, y, w, h
+            )
+            : null;
+
+        if (!prominent) {
+            if (isDebugMode()) {
+                console.log('[StencilEditor] Auto-detect from selection: no prominent colour found (transparent region?)');
+            }
+            return;
+        }
+
+        if (isDebugMode()) {
+            console.log('[StencilEditor] Dominant colour', prominent.color, 'seed', { x: prominent.seed_x, y: prominent.seed_y });
+        }
+
+        last_auto_detect_seed = {
+            natural_x: prominent.seed_x,
+            natural_y: prominent.seed_y,
+            cropper: active_cropper,
+            side: active_side,
+        };
+
+        runAutoDetectAtPoint(active_cropper, active_side, prominent.seed_x, prominent.seed_y);
+    };
+
     _this.init = function () {
 
         // define set of croppers (and initialize them)
@@ -263,14 +455,25 @@ const StencilEditor = function (container, rand, zones_definition) {
             })
             .on('click', `#grid-cancel-${rand}`, () => {
                 _this.closeGridDialog();
+            })
+            .on('click', `#auto-detect-btn-${rand}`, () => {
+                runAutoDetectFromSelection();
             });
 
-        // sync tolerance output display
+        // sync tolerance output display and re-run detection on change
         const tolerance_input = container.querySelector(`#auto-detect-tolerance-${rand}`);
         const tolerance_output = container.querySelector(`#auto-detect-tolerance-output-${rand}`);
         if (tolerance_input && tolerance_output) {
             tolerance_input.addEventListener('input', function () {
                 tolerance_output.value = tolerance_input.value + '%';
+                if (last_auto_detect_seed) {
+                    runAutoDetectAtPoint(
+                        last_auto_detect_seed.cropper,
+                        last_auto_detect_seed.side,
+                        last_auto_detect_seed.natural_x,
+                        last_auto_detect_seed.natural_y
+                    );
+                }
             });
         }
 
@@ -359,6 +562,8 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // ensure tolerance slider is visible when opening the editor
         $(container).find(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
+
+        last_auto_detect_seed = null;
 
         croppers.forEach((cropper, side) => {
             cropper.getCropperSelection()
@@ -664,43 +869,8 @@ const StencilEditor = function (container, rand, zones_definition) {
                     return;
                 }
 
-                const pixel_data = getCropperImageData(cropper);
-                if (!pixel_data) {
-                    return;
-                }
-
-                const detected = (typeof StencilAutoDetect !== 'undefined')
-                    ? StencilAutoDetect.detectBoundingBox(
-                        pixel_data.image_data,
-                        pixel_data.natural_width,
-                        pixel_data.natural_height,
-                        natural.x,
-                        natural.y,
-                        getTolerance()
-                    )
-                    : null;
-
-                if (!detected) {
-                    $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
-                    return;
-                }
-
-                last_detected_box = { box: detected, side: side, cropper: cropper };
-
-                const canvas_box = boxToCanvasCoords(cropper, detected);
-                if (!canvas_box) {
-                    return;
-                }
-
-                cropper.getCropperSelection().$change(
-                    canvas_box.x,
-                    canvas_box.y,
-                    canvas_box.width,
-                    canvas_box.height
-                );
-
-                $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
-                $(`#grid-replicate-${rand}`).removeClass('d-none');
+                last_auto_detect_seed = { natural_x: natural.x, natural_y: natural.y, cropper, side };
+                runAutoDetectAtPoint(cropper, side, natural.x, natural.y);
             });
         });
     };

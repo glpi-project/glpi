@@ -186,11 +186,90 @@ export function generateGrid(template_box, cols, rows, spacing_x, spacing_y, img
     return boxes;
 }
 
+/**
+ * Finds the most prominent (most frequently occurring) colour in a
+ * rectangular region of an ImageData object and returns both the colour
+ * and a seed pixel position (the pixel with that colour closest to the
+ * centre of the region).  Fully-transparent pixels (alpha = 0) are
+ * ignored.  Returns null when no opaque pixels are found.
+ *
+ * @param {ImageData} image_data
+ * @param {number}    width    Width of the full image in pixels.
+ * @param {number}    x        Left edge of the region (integer).
+ * @param {number}    y        Top edge of the region (integer).
+ * @param {number}    w        Width of the region (integer).
+ * @param {number}    h        Height of the region (integer).
+ * @returns {{color: number[], seed_x: number, seed_y: number}|null}
+ */
+export function getMostProminentColor(image_data, width, x, y, w, h) {
+    const QUANT = 16;
+    const color_counts = new Map();
+
+    for (let py = y; py < y + h; py++) {
+        for (let px = x; px < x + w; px++) {
+            const color = getColorAt(image_data, width, px, py);
+            if (color[3] === 0) {
+                continue;
+            }
+            const qr = Math.round(color[0] / QUANT) * QUANT;
+            const qg = Math.round(color[1] / QUANT) * QUANT;
+            const qb = Math.round(color[2] / QUANT) * QUANT;
+            const key = `${qr},${qg},${qb}`;
+            color_counts.set(key, (color_counts.get(key) || 0) + 1);
+        }
+    }
+
+    if (color_counts.size === 0) {
+        return null;
+    }
+
+    let best_key = null;
+    let best_count = 0;
+    for (const [key, count] of color_counts) {
+        if (count > best_count) {
+            best_count = count;
+            best_key = key;
+        }
+    }
+
+    const [qbr, qbg, qbb] = best_key.split(',').map(Number);
+    const cx = x + w / 2;
+    const cy = y + h / 2;
+    let best_dist = Infinity;
+    let seed_x = Math.round(cx);
+    let seed_y = Math.round(cy);
+    let seed_color = null;
+
+    for (let py = y; py < y + h; py++) {
+        for (let px = x; px < x + w; px++) {
+            const color = getColorAt(image_data, width, px, py);
+            if (color[3] === 0) {
+                continue;
+            }
+            const qr = Math.round(color[0] / QUANT) * QUANT;
+            const qg = Math.round(color[1] / QUANT) * QUANT;
+            const qb = Math.round(color[2] / QUANT) * QUANT;
+            if (qr === qbr && qg === qbg && qb === qbb) {
+                const dist = (px - cx) * (px - cx) + (py - cy) * (py - cy);
+                if (dist < best_dist) {
+                    best_dist = dist;
+                    seed_x = px;
+                    seed_y = py;
+                    seed_color = color;
+                }
+            }
+        }
+    }
+
+    return { color: seed_color, seed_x, seed_y };
+}
+
 if (typeof window !== 'undefined') {
     window.StencilAutoDetect = {
         getColorAt,
         colorDistance,
         detectBoundingBox,
         generateGrid,
+        getMostProminentColor,
     };
 }
