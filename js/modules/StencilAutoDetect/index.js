@@ -38,6 +38,7 @@
  */
 
 const MIN_REGION_PIXELS = 4;
+const COLOR_QUANTIZATION_STEP = 16;
 
 /**
  * Returns the [r, g, b, a] color at position (x, y) from an ImageData object.
@@ -202,7 +203,6 @@ export function generateGrid(template_box, cols, rows, spacing_x, spacing_y, img
  * @returns {{color: number[], seed_x: number, seed_y: number}|null}
  */
 export function getMostProminentColor(image_data, width, x, y, w, h) {
-    const QUANT = 16;
     const color_counts = new Map();
 
     for (let py = y; py < y + h; py++) {
@@ -211,9 +211,9 @@ export function getMostProminentColor(image_data, width, x, y, w, h) {
             if (color[3] === 0) {
                 continue;
             }
-            const qr = Math.round(color[0] / QUANT) * QUANT;
-            const qg = Math.round(color[1] / QUANT) * QUANT;
-            const qb = Math.round(color[2] / QUANT) * QUANT;
+            const qr = Math.round(color[0] / COLOR_QUANTIZATION_STEP) * COLOR_QUANTIZATION_STEP;
+            const qg = Math.round(color[1] / COLOR_QUANTIZATION_STEP) * COLOR_QUANTIZATION_STEP;
+            const qb = Math.round(color[2] / COLOR_QUANTIZATION_STEP) * COLOR_QUANTIZATION_STEP;
             const key = `${qr},${qg},${qb}`;
             color_counts.set(key, (color_counts.get(key) || 0) + 1);
         }
@@ -246,9 +246,9 @@ export function getMostProminentColor(image_data, width, x, y, w, h) {
             if (color[3] === 0) {
                 continue;
             }
-            const qr = Math.round(color[0] / QUANT) * QUANT;
-            const qg = Math.round(color[1] / QUANT) * QUANT;
-            const qb = Math.round(color[2] / QUANT) * QUANT;
+            const qr = Math.round(color[0] / COLOR_QUANTIZATION_STEP) * COLOR_QUANTIZATION_STEP;
+            const qg = Math.round(color[1] / COLOR_QUANTIZATION_STEP) * COLOR_QUANTIZATION_STEP;
+            const qb = Math.round(color[2] / COLOR_QUANTIZATION_STEP) * COLOR_QUANTIZATION_STEP;
             if (qr === qbr && qg === qbg && qb === qbb) {
                 const dist = (px - cx) * (px - cx) + (py - cy) * (py - cy);
                 if (dist < best_dist) {

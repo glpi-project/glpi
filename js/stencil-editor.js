@@ -285,7 +285,6 @@ const StencilEditor = function (container, rand, zones_definition) {
         }
 
         if (!detected) {
-            $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
             return false;
         }
 
@@ -303,7 +302,6 @@ const StencilEditor = function (container, rand, zones_definition) {
             canvas_box.height
         );
 
-        $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
         $(`#grid-replicate-${rand}`).removeClass('d-none');
         return true;
     };
@@ -390,6 +388,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         };
 
         runAutoDetectAtPoint(active_cropper, active_side, prominent.seed_x, prominent.seed_y);
+        $(`#auto-detect-tolerance-slider-col-${rand}`).removeClass('d-none');
     };
 
     _this.init = function () {
@@ -560,8 +559,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         $(container).find(`#zone_label-${rand}`).val(zone['label'] ?? current_zone);
         $(container).find(`#zone_number-${rand}`).val(zone['number'] ?? current_zone).data('zone-index', current_zone);
 
-        // ensure tolerance slider is visible when opening the editor
-        $(container).find(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
+        // reset tolerance slider visibility for the new zone
+        $(container).find(`#auto-detect-tolerance-slider-col-${rand}`).addClass('d-none');
 
         last_auto_detect_seed = null;
 
@@ -830,30 +829,6 @@ const StencilEditor = function (container, rand, zones_definition) {
         croppers.forEach((cropper, side) => {
             const canvas_el = cropper.getCropperCanvas();
 
-            // detect manual drag: hide tolerance slider when user draws a selection by hand
-            let drag_start_x = 0, drag_start_y = 0, is_dragging = false;
-            $(canvas_el)
-                .on(`pointerdown.stencil-drag-${rand}`, function (e) {
-                    drag_start_x = e.clientX;
-                    drag_start_y = e.clientY;
-                    is_dragging = false;
-                })
-                .on(`pointermove.stencil-drag-${rand}`, function (e) {
-                    if (e.buttons > 0) {
-                        const dx = e.clientX - drag_start_x;
-                        const dy = e.clientY - drag_start_y;
-                        if (Math.sqrt(dx * dx + dy * dy) > 4) {
-                            is_dragging = true;
-                        }
-                    }
-                })
-                .on(`pointerup.stencil-drag-${rand}`, function () {
-                    if (is_dragging) {
-                        $(`#auto-detect-tolerance-col-${rand}`).addClass('d-none');
-                    }
-                    is_dragging = false;
-                });
-
             // auto-detect on click
             $(canvas_el).on(`click.stencil-auto-detect-${rand}`, function (e) {
                 if (!_this.isEditorActive()) {
@@ -875,12 +850,11 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
     };
 
-    // unbind auto-detect click events and drag detection
+    // unbind auto-detect click events
     _this.unbindAutoDetectClicks = function () {
         croppers.forEach((cropper) => {
             const canvas_el = cropper.getCropperCanvas();
             $(canvas_el).off(`.stencil-auto-detect-${rand}`);
-            $(canvas_el).off(`.stencil-drag-${rand}`);
         });
         $(`#grid-replicate-${rand}`).addClass('d-none');
     };

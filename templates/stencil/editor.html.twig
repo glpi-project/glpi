@@ -113,30 +113,28 @@
                     </div>
                 </div>
                 <div class="col-auto" id="auto-detect-tolerance-col-{{ rand }}">
-                    <div class="row align-items-center gap-2">
-                        <div class="col-auto">
-                            <button type="button"
-                                    id="auto-detect-btn-{{ rand }}"
-                                    class="btn btn-sm btn-outline-primary"
-                                    aria-label="{{ __('Auto-Detect') }}">
-                                <i class="ti ti-scan"></i>
-                                <span>{{ __('Auto-Detect') }}</span>
-                            </button>
-                        </div>
-                        <label for="auto-detect-tolerance-{{ rand }}" class="col-auto col-form-label text-nowrap">{{ __('Tolerance') }}</label>
-                        <div class="col-auto d-flex align-items-center gap-1">
-                            <input type="range"
-                                   id="auto-detect-tolerance-{{ rand }}"
-                                   class="form-range"
-                                   min="0"
-                                   max="100"
-                                   value="10"
-                                   style="max-width: 120px;"
-                                   aria-label="{{ __('Detection tolerance') }}">
-                            <output for="auto-detect-tolerance-{{ rand }}"
-                                    id="auto-detect-tolerance-output-{{ rand }}"
-                                    class="badge bg-secondary">10%</output>
-                        </div>
+                    <button type="button"
+                            id="auto-detect-btn-{{ rand }}"
+                            class="btn btn-sm btn-outline-primary"
+                            aria-label="{{ __('Auto-Detect') }}">
+                        <i class="ti ti-scan"></i>
+                        <span>{{ __('Auto-Detect') }}</span>
+                    </button>
+                </div>
+                <div class="col-auto d-none" id="auto-detect-tolerance-slider-col-{{ rand }}">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="auto-detect-tolerance-{{ rand }}" class="col-form-label text-nowrap">{{ __('Tolerance') }}</label>
+                        <input type="range"
+                               id="auto-detect-tolerance-{{ rand }}"
+                               class="form-range"
+                               min="0"
+                               max="100"
+                               value="10"
+                               style="max-width: 120px;"
+                               aria-label="{{ __('Detection tolerance') }}">
+                        <output for="auto-detect-tolerance-{{ rand }}"
+                                id="auto-detect-tolerance-output-{{ rand }}"
+                                class="badge">10%</output>
                     </div>
                 </div>
                 <div class="col-auto">
