@@ -32,7 +32,6 @@
 
 {% extends "pages/setup/general/base_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block config_fields %}
    {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
@@ -59,7 +58,10 @@
 
     {{ fields.smallTitle(__('Legacy API')) }}
     {% if config['enable_api'] %}
-        {{ alerts.alert_warning(__('The Legacy API is enabled. It is recommended to only use the new API when possible.')) }}
+        {{ component('Alert', {
+            type: 'warning',
+            title: __('The Legacy API is enabled. It is recommended to only use the new API when possible.')
+        }) }}
     {% endif %}
     {{ fields.sliderField('enable_api', config['enable_api'], __("Enable Legacy REST API"), {
         additional_attributes: {

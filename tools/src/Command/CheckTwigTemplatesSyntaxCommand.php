@@ -44,6 +44,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Error\Error;
+use Twig\TwigFunction;
 
 final class CheckTwigTemplatesSyntaxCommand extends Command
 {
@@ -65,6 +66,18 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
     {
 
         $environment = TemplateRenderer::getInstance()->getEnvironment();
+
+        $environment->registerUndefinedFunctionCallback(
+            static function (string $name): TwigFunction|false {
+                if ($name !== 'component') {
+                    return false;
+                }
+
+                return new TwigFunction('component', static function (): string {
+                    return '';
+                });
+            }
+        );
 
         $error_messages = [];
 
