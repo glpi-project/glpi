@@ -52,34 +52,36 @@ class ReAuthController extends AbstractController
     private ReAuthManager $reAuthManager;
 
     public function __construct(
-        private readonly ?UrlGeneratorInterface $router = null // @todo initialiser dans le coeur pour cohérence ?
+        private readonly ?UrlGeneratorInterface $router = null
     ) {
         $this->reAuthManager = new ReAuthManager();
     }
 
-
-    /**
-     * // @todo strategy auth ?
-     */
     #[Route(
         path: "/ReAuth/Prompt",
         name: "reauth_prompt",
         methods: ['GET']
     )]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // @todo strategy de fw à def aussi
-    public function prompt(Request $request): Response
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function prompt(Request $request, string $error = ''): Response
     {
         return new Response(
-            TemplateRenderer::getInstance()->render('pages/reauth/prompt.html.twig', $this->buildTemplateContext())
+            TemplateRenderer::getInstance()->render(
+                'pages/reauth/prompt.html.twig',
+                [
+                    ...$this->buildTemplateContext(),
+                    'error' => $error,
+                ]
+            )
         );
     }
 
-    // // @todo strategy de fw à def aussi
     #[Route(
         path: "/ReAuth/Verify",
         name: "reauth_verify",
         methods: ['POST']
     )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function verify(Request $request): Response
     {
         $user_input = $request->request->get('user_input');
@@ -93,15 +95,7 @@ class ReAuthController extends AbstractController
             throw new RedirectPostException($this->reAuthManager->getRedirectSuccessURL(), $this->reAuthManager->getPostDataForRedirect());
         }
 
-        return new Response(
-            TemplateRenderer::getInstance()->render( // @todo utiliser $this->prompt() ?
-                'pages/reauth/prompt.html.twig',
-                [
-                    ...$this->buildTemplateContext(),
-                    'error' => __('Verification failed. Please try again.'),
-                ]
-            )
-        );
+        return $this->prompt($request, __('Verification failed. Please try again.'));
     }
 
     /**
