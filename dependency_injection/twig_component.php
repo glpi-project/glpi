@@ -43,7 +43,4 @@ return static function (ContainerConfigurator $container): void {
             ],
         ],
     ]);
-
-    $container->services()
-        ->alias('glpi.ux.twig_component_runtime', 'ux.twig_component.twig.component_runtime')->public();
 };
