@@ -38,7 +38,6 @@ namespace Glpi\Controller\Security;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\RedirectException;
 use Glpi\Exception\RedirectPostException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;

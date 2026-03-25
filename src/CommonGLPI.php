@@ -223,7 +223,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @param int                  $ID    ID of the item (-1 if new item)
      * @param int                  $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
      * @param ?array<string,mixed> $input array of input data (used for adding item)
-     * @param bool                 $reauth_needed set to true if re-authentication is required, false otherwise.
+     * @param null                 $reauth_needed param is used as a return value (modified by reference) to know if reauth is needed
      *
      * @return bool
      */
