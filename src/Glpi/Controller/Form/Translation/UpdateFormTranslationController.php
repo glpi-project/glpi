@@ -38,9 +38,9 @@ use Glpi\Controller\Translation\AbstractTranslationController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
-use Glpi\Http\RedirectResponse;
 use Glpi\ItemTranslation\CldrLanguage;
 use Glpi\ItemTranslation\ItemTranslation;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -64,14 +64,16 @@ final class UpdateFormTranslationController extends AbstractTranslationControlle
         $cldr_language = new CldrLanguage($language);
         $category_index = $cldr_language->getPluralKey(1);
 
-        $input = $request->request->all();
+        $input = $request->toArray();
         $input['translations'] = $this->remapFileUploadsToTranslations($category_index, $input);
 
         if ($this->processTranslations($input['translations'] ?? [], $language)) {
             $this->addSuccessMessage($language);
         }
 
-        return new RedirectResponse($this->getRedirectUrl());
+        return new JsonResponse([
+            'redirect' => $this->getRedirectUrl(),
+        ]);
     }
 
     protected function getTranslationClass(): ItemTranslation

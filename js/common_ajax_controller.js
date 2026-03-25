@@ -67,7 +67,7 @@ class GlpiCommonAjaxController
         // Send AJAX request
         try {
             const response = await $.ajax({
-                url: `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
+                url: form.data('ajaxSubmitUrl') || `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
                 method: 'POST',
                 contentType: 'application/json',
                 data: data,
