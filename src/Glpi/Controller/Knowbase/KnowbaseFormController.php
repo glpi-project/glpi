@@ -50,7 +50,6 @@ use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Profile;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use User;
@@ -119,12 +118,6 @@ final class KnowbaseFormController extends GenericFormController
                 4,
                 "tools",
                 sprintf(__('%s adds a target'), $_SESSION["glpiname"])
-            );
-        } else {
-            Session::addMessageAfterRedirect(
-                __s('This target already exists for this article.'),
-                false,
-                ERROR
             );
         }
 

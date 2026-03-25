@@ -62,6 +62,11 @@ class KnowbaseItem_User extends CommonDBRelation
                 ]
             ) > 0
         ) {
+            Session::addMessageAfterRedirect(
+                __s('This target already exists for this article.'),
+                false,
+                ERROR
+            );
             return false;
         }
 

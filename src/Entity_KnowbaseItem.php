@@ -49,7 +49,10 @@ class Entity_KnowbaseItem extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-        // Avoid duplicate entry
+        // Avoid duplicate entry.
+        // This application-level check is required because MySQL UNIQUE keys
+        // do not deduplicate NULL values (NULL != NULL), so the DB constraint
+        // alone cannot prevent duplicates when entities_id is NULL.
         if (
             countElementsInTable(
                 static::getTable(),
@@ -62,6 +65,11 @@ class Entity_KnowbaseItem extends CommonDBRelation
                 ]
             ) > 0
         ) {
+            Session::addMessageAfterRedirect(
+                __s('This target already exists for this article.'),
+                false,
+                ERROR
+            );
             return false;
         }
 
