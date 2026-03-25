@@ -83,4 +83,3 @@ final readonly class RedirectPostExceptionListener implements EventSubscriberInt
         $event->setResponse($response);
     }
 }
-
