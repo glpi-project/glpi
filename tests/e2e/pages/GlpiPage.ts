@@ -160,7 +160,7 @@ export class GlpiPage
     public async doLogout(): Promise<void>
     {
         await this.user_menu.click();
-        await this.logout_link.click();
+        await this.page.goto('/front/logout.php');
     }
 
     public async doChangeProfile(profile: string): Promise<void>

@@ -32,7 +32,7 @@
 
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { LoginPage } from '../../pages/LoginPage';
-import { Constants } from '../../utils/Constants';
+import { getWorkerLogin } from '../../utils/WorkerEntities';
 
 const OAUTH_CLIENT_ID     = 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789';
 const OAUTH_CLIENT_SECRET = 'fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210';
@@ -61,12 +61,10 @@ async function assertTokenExchange(oauth_page: LoginPage): Promise<void>
 }
 
 test('Should authorize without login session - no remember me', async ({ anonymousPage }) => {
-    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
-    const worker_login = `${Constants.E2E_WORKER_PREFIX}${worker_index}`;
-
     const oauth_page = new LoginPage(anonymousPage);
     await oauth_page.gotoOauthAuthorize(OAUTH_CLIENT_ID, OAUTH_SCOPE, OAUTH_REDIRECT_URI);
 
+    const worker_login = getWorkerLogin();
     await oauth_page.doLogin(worker_login, worker_login);
 
     await assertAuthorizationConsent(oauth_page);
@@ -74,12 +72,10 @@ test('Should authorize without login session - no remember me', async ({ anonymo
 });
 
 test('Should authorize without login session - remember me', async ({ anonymousPage }) => {
-    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
-    const worker_login = `${Constants.E2E_WORKER_PREFIX}${worker_index}`;
-
     const oauth_page = new LoginPage(anonymousPage);
     await oauth_page.gotoOauthAuthorize(OAUTH_CLIENT_ID, OAUTH_SCOPE, OAUTH_REDIRECT_URI);
 
+    const worker_login = getWorkerLogin();
     await oauth_page.doLogin(worker_login, worker_login, true);
 
     await assertAuthorizationConsent(oauth_page);
