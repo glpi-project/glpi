@@ -77,7 +77,6 @@
             {% set reauth_needed = null %}
              {{ dump(canedit) }}
             {% set _canedit = canedit and item.can(id, constant('UPDATE'), {}, reauth_needed) %}
-             {{ dump( canedit, _canedit, reauth_needed) }}
             {% if canedit or reauth_needed %}
                <button
                   class="btn btn-primary me-2"

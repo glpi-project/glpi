@@ -3033,9 +3033,8 @@ class CommonDBTM extends CommonGLPI
             case UPDATE:
                 // Personal item
                 $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
-                if ($allowed)
-                {
-                    if($_reauth_needed) {
+                if ($allowed) {
+                    if ($_reauth_needed) {
                         $reauth_needed = true;
                         return false;
                     }
@@ -3044,8 +3043,8 @@ class CommonDBTM extends CommonGLPI
 
                 // non personnal item
                 $allowed =  (static::canUpdate() && $this->canUpdateItem());
-                if($allowed) {
-                    if($_reauth_needed) {
+                if ($allowed) {
+                    if ($_reauth_needed) {
                         $reauth_needed = true;
                         return false;
                     }
@@ -6571,7 +6570,7 @@ class CommonDBTM extends CommonGLPI
         // New item, check create rights
         if (static::isNewID($id)) {
             $reauth_needed = null;
-            if (!$item->can($id, CREATE, reauth_needed: $reauth_needed)) {
+            if (!(new static())->can($id, CREATE, $options, $reauth_needed)) {
                 // redirect to reauth prompt
                 if ($reauth_needed === true) {
                     self::checkReAuthenticationOrRedirect();
