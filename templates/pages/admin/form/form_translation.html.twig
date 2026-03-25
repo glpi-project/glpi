@@ -232,23 +232,16 @@
                             <i class="ti ti-device-floppy me-2" aria-hidden="true"></i>
                             {{ __("Save") }}
                         </button>
-                        <form
-                            method="POST"
-                            action="{{ path('Form/Translation/' ~ form.getID() ~ '/' ~ form_translation.fields['language'] ~ '/Delete') }}"
-                            class="d-inline"
+                        <button
+                            class="btn btn-ghost-danger"
+                            name="delete"
+                            type="submit"
+                            form="form-translation-delete-{{ form_translation.fields['language'] }}"
+                            aria-label="{{ __('Delete translation') }}"
                         >
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                            <input type="hidden" name="form_translation_id" value="{{ form_translation.getID() }}" />
-                            <button
-                                class="btn btn-ghost-danger"
-                                name="delete"
-                                type="submit"
-                                aria-label="{{ __('Delete translation') }}"
-                            >
-                                <i class="ti ti-trash me-2" aria-hidden="true"></i>
-                                {{ __("Delete") }}
-                            </button>
-                        </form>
+                            <i class="ti ti-trash me-2" aria-hidden="true"></i>
+                            {{ __("Delete") }}
+                        </button>
                     </div>
                 {% else %}
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
@@ -258,5 +251,16 @@
                 {% endif %}
             </div>
         </form>
+        {% if can_update %}
+            <form
+                id="form-translation-delete-{{ form_translation.fields['language'] }}"
+                method="POST"
+                action="{{ path('Form/Translation/' ~ form.getID() ~ '/' ~ form_translation.fields['language'] ~ '/Delete') }}"
+                hidden
+            >
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="form_translation_id" value="{{ form_translation.getID() }}" />
+            </form>
+        {% endif %}
     </div>
 </div>
