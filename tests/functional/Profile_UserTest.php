@@ -422,20 +422,20 @@ class Profile_UserTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $profile = getItemByTypeName(Profile::class, 'Self-Service');
         $profile_user = new Profile_User();
-        $this->assertStringContainsString('<span class="badge glpi-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
             'is_deleted' => 1,
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
         $this->createItem(User::class, [
             'name' => __FUNCTION__ . '_not_deleted',
             '_profiles_id' => $profile->getId(),
             '_entities_id' => $this->getTestRootEntity(true),
         ]);
-        $this->assertStringContainsString('<span class="badge glpi-badge">3</span>', $profile_user->getTabNameForItem($profile));
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">3</span>', $profile_user->getTabNameForItem($profile));
 
     }
 }
