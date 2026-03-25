@@ -1295,7 +1295,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         // Security on default profile update
         if (isset($input['profiles_id'])) {
-            if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id'])) && $input['profiles_id'] != 0) {
+            if (
+                !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
+                && !in_array((int) $input['profiles_id'], $input['_ldap_rules']['rules_profiles_id_default'] ?? [])
+                && $input['profiles_id'] != 0
+            ) {
                 unset($input['profiles_id']);
             }
         }
@@ -1303,8 +1307,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
         // Security on default entity  update
         if (isset($input['entities_id'])) {
             if (
-                ($input['entities_id'] > 0)
-                && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+                $input['entities_id'] > 0
+                && !in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))
+                && !in_array((int) $input['entities_id'], $input['_ldap_rules']['rules_entities_id_default'] ?? [])
             ) {
                 unset($input['entities_id']);
             } elseif ($input['entities_id'] == -1) {

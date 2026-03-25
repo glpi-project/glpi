@@ -155,6 +155,67 @@ class RuleRightTest extends DbTestCase
         $this->assertFalse($found);
     }
 
+    public function testLocalAccountAssignAndDefaultProfileAndEntity()
+    {
+        $this->login();
+
+        $user = new \User();
+        $profile_user = new \Profile_User();
+        $rules = new \RuleRight();
+
+        // Create an entity and a profile to be assigned by the rule.
+        $entity = $this->createItem('Entity', [
+            'name'        => __FUNCTION__ . '_' . mt_rand(),
+            'entities_id' => 0,
+        ]);
+        $profile_id = getItemByTypeName('Profile', 'Technician', true);
+
+        // Prepare rule to assign the default profile and default entity.
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LOGIN', \Rule::PATTERN_IS, TU_USER)
+            ->addAction('assign', 'profiles_id', $profile_id)
+            ->addAction('assign', '_profiles_id_default', $profile_id)
+            ->addAction('assign', 'entities_id', $entity->getID())
+            ->addAction('assign', '_entities_id_default', $entity->getID());
+        $rule = $this->createRule($rule_builder);
+
+        // Get TU_USER id and check initial state.
+        $users_id = \User::getIdByName(TU_USER);
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check the user doesn't have the profile and entity assigned.
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertNotEquals($profile_id, $user->fields['profiles_id']);
+        $this->assertNotEquals($entity->getID(), $user->fields['entities_id']);
+
+        // Check the profile is not in the user profiles collection.
+        $profiles = $profile_user->getUserProfiles($users_id);
+        $this->assertNotContains($profile_id, $profiles);
+
+        // Login to trigger RuleRight processing.
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        // Check the user got the entity/profiles assigned.
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertEquals($profile_id, $user->fields['profiles_id']);
+        $this->assertEquals($entity->getID(), $user->fields['entities_id']);
+
+        // Check the profile is in the user profiles collection.
+        $profiles = $profile_user->getUserProfiles($users_id);
+        $this->assertContains($profile_id, $profiles);
+
+        // Cleanup
+        $rules->delete([
+            'id' => $rule->getID(),
+        ], true);
+
+        // Clean singleton to avoid polluting next tests.
+        \SingletonRuleList::getInstance('RuleRight', 0)->load = 0;
+        \SingletonRuleList::getInstance('RuleRight', 0)->list = [];
+    }
+
     public function testLocalAccountNoRules()
     {
         $testuser = [
