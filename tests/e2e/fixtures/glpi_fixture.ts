@@ -43,6 +43,7 @@ import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
+import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -53,6 +54,7 @@ export const test = baseTest.extend<{
     csrf: CsrfFetcher,
     formImporter: FormImporter,
     api: Api,
+    debug: DebugModeSwitcher,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
     workerSessionCache: WorkerSessionCache,
@@ -159,6 +161,11 @@ export const test = baseTest.extend<{
 
     formImporter: [async ({ request, csrf }, use) => {
         await use(new FormImporter(request, csrf));
+    }, { scope: 'test' }],
+
+    // Service used to switch debug mode on/off.
+    debug: [async ({ request, csrf }, use) => {
+        await use(new DebugModeSwitcher(request, csrf));
     }, { scope: 'test' }],
 
     // Store the state of the current session.

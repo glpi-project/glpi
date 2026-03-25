@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -8,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,30 +30,46 @@
  * ---------------------------------------------------------------------
  */
 
-if (Config::canUpdate()) {
-    if (isset($_POST['mode']) && in_array($_POST['mode'], [
-        Session::NORMAL_MODE,
-        Session::DEBUG_MODE,
-    ])) {
-        // Mode was manually specified
-        $mode = $_POST['mode'];
-    } else {
-        // Toggle
-        $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
-    }
+import { APIRequestContext } from 'playwright/test';
+import { CsrfFetcher } from './CsrfFetcher';
 
-    $user = new User();
-    $user->update(
-        [
-            'id'        => Session::getLoginUserID(),
-            'use_mode'  => $mode,
-        ]
-    );
-    Session::addMessageAfterRedirect(
-        $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
-         ? __s('Debug mode has been enabled!')
-         : __s('Debug mode has been disabled!')
-    );
+// Mirrors Session::NORMAL_MODE and Session::DEBUG_MODE constants from PHP.
+const enum DebugMode
+{
+    Normal = 0,
+    Debug  = 2,
 }
 
-Html::back();
+export class DebugModeSwitcher
+{
+    private request: APIRequestContext;
+
+    private csrf: CsrfFetcher;
+
+    public constructor(request: APIRequestContext, csrf: CsrfFetcher)
+    {
+        this.request = request;
+        this.csrf = csrf;
+    }
+
+    public async enable(): Promise<void>
+    {
+        await this.set(DebugMode.Debug);
+    }
+
+    public async disable(): Promise<void>
+    {
+        await this.set(DebugMode.Normal);
+    }
+
+    private async set(mode: DebugMode): Promise<void>
+    {
+        await this.request.post('/ajax/switchdebug.php', {
+            form: { mode },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': await this.csrf.get(),
+            },
+        });
+    }
+}
