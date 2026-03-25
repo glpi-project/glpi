@@ -4587,7 +4587,7 @@ class CommonDBTM extends CommonGLPI
                             $where['NOT'] = [static::getTable() . '.id' => $this->input['id']];
                         }
 
-                        $doubles = getAllDataFromTable(static::getTable(), $where);
+                        $doubles = getAllDataFromTable(static::getTable(), $where + static::getSystemSQLCriteria());
                         if (count($doubles) > 0) {
                             $message = [];
                             if (
