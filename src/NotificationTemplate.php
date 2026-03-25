@@ -269,6 +269,11 @@ class NotificationTemplate extends CommonDBTM
             $bak_language = $_SESSION["glpilanguage"];
             $_SESSION["glpilanguage"] = $language;
 
+            $bak_date_format = ($_SESSION["glpidate_format"] ?? null);
+            if (isset($additionnaloption['date_format'])) {
+                $_SESSION["glpidate_format"] = $additionnaloption['date_format'];
+            }
+
             //If event is raised by a plugin, load it in order to get the language file available
             if ($plug = isPluginItemType(get_class($target->obj))) {
                 Plugin::loadLang(strtolower($plug['plugin']), $language);
@@ -340,6 +345,12 @@ class NotificationTemplate extends CommonDBTM
                 $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations;
             } else {
                 unset($_SESSION['glpi_dropdowntranslations']);
+            }
+
+            if ($bak_date_format !== null) {
+                $_SESSION["glpidate_format"] = $bak_date_format;
+            } else {
+                unset($_SESSION["glpidate_format"]);
             }
             if ($plug = isPluginItemType(get_class($target->obj))) {
                 Plugin::loadLang(strtolower($plug['plugin']));
