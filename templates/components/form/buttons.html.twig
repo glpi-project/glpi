@@ -35,9 +35,6 @@
 {% set canedit      = params['canedit'] ?? true %}
 {% set id           = item.fields['id'] ?? -1 %}
 
-{#{{ dump(canedit) }}#}
-{#</hr>#}
-
 {% if item is defined %}
 
      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}

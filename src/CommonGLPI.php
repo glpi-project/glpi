@@ -241,9 +241,9 @@ class CommonGLPI implements CommonGLPIInterface
         };
 
         // allowed
-        if($allowed) {
+        if ($allowed) {
             // but need reauth
-            if($_reauth_needed) {
+            if ($_reauth_needed) {
                 $reauth_needed = true;
                 return false;
             }
