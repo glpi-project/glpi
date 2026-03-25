@@ -49,15 +49,16 @@ abstract class CommonITILRecurrentTest extends DbTestCase
      */
     protected function computeNextCreationDateProvider()
     {
-        $this->login();
+        $ref_time = strtotime($_SESSION['glpi_currenttime']);
+        $tomorrow = date('Y-m-d', strtotime('+1 day', $ref_time));
 
         $calendar    = new Calendar();
         $cal_holiday = new \Calendar_Holiday();
         $cal_segment = new CalendarSegment();
         $holiday     = new \Holiday();
 
-        $start_of_previous_month = date('Y-m-01 00:00:00', strtotime('-1 month'));
-        $end_of_next_year        = date('Y-m-d 23:59:59', strtotime('last day of next year'));
+        $start_of_previous_month = date('Y-m-01 00:00:00', strtotime('-1 month', $ref_time));
+        $end_of_next_year        = date('Y-m-d 23:59:59', strtotime('last day of next year', $ref_time));
 
         // Create a calendar where every day except today is a working day.
         // Used to test cases with periodicity smaller than one day.
@@ -65,7 +66,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         $this->assertGreaterThan(0, $calendar_id);
 
         for ($day = 0; $day <= 6; $day++) {
-            if ($day == date('w')) {
+            if ($day == date('w', $ref_time)) {
                 continue;
             }
 
@@ -144,7 +145,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'periodicity'    => HOUR_TIMESTAMP,
                 'create_before'  => 0,
                 'calendars_id'   => 0,
-                'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour')),
+                'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour', $ref_time)),
             ],
 
             // Item created every hour with anticipation and no calendar
@@ -154,7 +155,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'periodicity'    => HOUR_TIMESTAMP,
                 'create_before'  => HOUR_TIMESTAMP,
                 'calendars_id'   => 0,
-                'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour')),
+                'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour', $ref_time)),
             ],
 
             // Item created every hour with anticipation and with calendar, but no end date
@@ -164,29 +165,29 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'periodicity'    => HOUR_TIMESTAMP,
                 'create_before'  => HOUR_TIMESTAMP,
                 'calendars_id'   => $calendar_id,
-                'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow')),
+                'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow', $ref_time)),
             ],
 
             // Item created every hour with no anticipation and with calendar and having a begin date in the future
             // As begin date is inside working hours, first occurence should be on begin date.
             [
-                'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow')),
+                'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow', $ref_time)),
                 'end_date'       => $end_of_next_year,
                 'periodicity'    => HOUR_TIMESTAMP,
                 'create_before'  => 0,
                 'calendars_id'   => $calendar_id,
-                'expected_value' => date('Y-m-d 09:00:00', strtotime('tomorrow')),
+                'expected_value' => date('Y-m-d 09:00:00', strtotime('tomorrow', $ref_time)),
             ],
 
             // Item created every hour with anticipation and with calendar and having a begin date in the future
             // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
             [
-                'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow')),
+                'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow', $ref_time)),
                 'end_date'       => $end_of_next_year,
                 'periodicity'    => HOUR_TIMESTAMP,
                 'create_before'  => HOUR_TIMESTAMP,
                 'calendars_id'   => $calendar_id,
-                'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow')),
+                'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow', $ref_time)),
             ],
         ];
 
@@ -211,8 +212,8 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         $holiday_id = $holiday->add(
             [
                 'name'       => 'Today is a day off',
-                'begin_date' => date('Y-m-d'),
-                'end_date'   => date('Y-m-d'),
+                'begin_date' => date('Y-m-d', $ref_time),
+                'end_date'   => date('Y-m-d', $ref_time),
             ]
         );
         $this->assertGreaterThan(0, $holiday_id);
@@ -232,7 +233,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             'periodicity'    => DAY_TIMESTAMP,
             'create_before'  => 0,
             'calendars_id'   => 0,
-            'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 day')),
+            'expected_value' => date('Y-m-d 00:00:00', strtotime('+ 1 day', $ref_time)),
         ];
 
         // Item created every day with no anticipation and with calendar
@@ -244,7 +245,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             'periodicity'    => DAY_TIMESTAMP,
             'create_before'  => 0,
             'calendars_id'   => $calendar_id,
-            'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 09:00:00'),
+            'expected_value' => $this->getNextWorkingDayDate($working_days, $tomorrow, 'Y-m-d 09:00:00'),
         ];
 
         // Item created every day with anticipation and with calendar, but no end date
@@ -256,44 +257,44 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             'periodicity'    => DAY_TIMESTAMP,
             'create_before'  => HOUR_TIMESTAMP * 2,
             'calendars_id'   => $calendar_id,
-            'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 07:00:00'),
+            'expected_value' => $this->getNextWorkingDayDate($working_days, $tomorrow, 'Y-m-d 07:00:00'),
         ];
 
         // Item created every day with no anticipation and with calendar and having a begin date in the future
         // As begin date is inside working hours, first occurence should be on begin date.
         $data[] = [
-            'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow')),
+            'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow', $ref_time)),
             'end_date'       => $end_of_next_year,
             'periodicity'    => DAY_TIMESTAMP,
             'create_before'  => 0,
             'calendars_id'   => $calendar_id,
-            'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 09:00:00'),
+            'expected_value' => $this->getNextWorkingDayDate($working_days, $tomorrow, 'Y-m-d 09:00:00'),
         ];
 
         // Item created every day with anticipation and with calendar and having a begin date in the future
         // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
         $data[] = [
-            'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow')),
+            'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow', $ref_time)),
             'end_date'       => $end_of_next_year,
             'periodicity'    => DAY_TIMESTAMP,
             'create_before'  => HOUR_TIMESTAMP * 4,
             'calendars_id'   => $calendar_id,
-            'expected_value' => $this->getNextWorkingDayDate($working_days, 'tomorrow', 'Y-m-d 05:00:00'),
+            'expected_value' => $this->getNextWorkingDayDate($working_days, $tomorrow, 'Y-m-d 05:00:00'),
         ];
 
         // Item created every 7 days with no anticipation and with calendar.
         // We expect the item to be created every monday at 12:00.
         $data[] = [
-            'begin_date'     => date('Y-m-d 12:00:00', strtotime('last monday')),
+            'begin_date'     => date('Y-m-d 12:00:00', strtotime('last monday', $ref_time)),
             'end_date'       => $end_of_next_year,
             'periodicity'    => DAY_TIMESTAMP * 7,
             'create_before'  => 0,
             'calendars_id'   => $calendar_id,
             'expected_value' => $this->getNextWorkingDayDate(
                 $working_days,
-                (int) date('w') === 1 && (int) date('G') < 12
-                ? 'tomorrow' // postpone to tomorrow if we are on monday prior to 12:00, as today is a day off
-                : 'next monday',
+                (int) date('w', $ref_time) === 1 && (int) date('G', $ref_time) < 12
+                ? $tomorrow // postpone to tomorrow if we are on monday prior to 12:00, as today is a day off
+                : date('Y-m-d', strtotime('next monday', $ref_time)),
                 'Y-m-d 12:00:00'
             ),
         ];
@@ -355,8 +356,8 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
         // Item created every hour with anticipation and no calendar
         // Next time is "2 hours before tomorrow 00:00:00" ...
-        $next_time = strtotime(date('Y-m-d 22:00:00')); // 2 hours anticipation
-        if ($next_time < time()) {
+        $next_time = strtotime(date('Y-m-d 22:00:00', $ref_time)); // 2 hours anticipation
+        if ($next_time < $ref_time) {
             // ... unless "2 hours before tomorrow 00:00:00" is already passed
             $next_time = strtotime('+ 1 day', $next_time);
         }
@@ -372,7 +373,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Item created every month with anticipation and no calendar
         // Next time is "5 days before begin of next month" ...
         $next_time = strtotime('+ 2 month', strtotime($start_of_previous_month . ' - 5 days')); // 5 days anticipation
-        if ($next_time < time()) {
+        if ($next_time < $ref_time) {
             // ... unless "5 days before begin of next month" is already passed
             $next_time = strtotime('+ 1 month', $next_time);
         }
@@ -388,7 +389,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Item created every year with anticipation and no calendar
         // Next time is "4 days before 'now + 1 year'" ...
         $next_time = strtotime('+ 1 year', strtotime($start_of_previous_month . ' - 4 days')); // 4 days anticipation
-        if ($next_time < time()) {
+        if ($next_time < $ref_time) {
             // ... unless "4 days before 'now + 1 year'" is already passed
             $next_time = strtotime('+ 1 year', $next_time);
         }
@@ -417,9 +418,9 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             $this->assertGreaterThan(0, $cal_segment_id);
         }
 
-        $next_time = strtotime('+1 hour');
+        $next_time = strtotime('+1 hour', $ref_time);
         if (in_array(date('w', $next_time), ['0', '6'])) {
-            $next_time = strtotime('monday midnight');
+            $next_time = strtotime('next monday', $next_time);
         }
 
         $data[] = [
@@ -491,43 +492,31 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
     public function testComputeNextCreationDate()
     {
-        // Always use a known date to a get a determinist result.
-        // If there are some specific dates for which these tests always fails,
-        // it should be confirmed by using these dates as `current_date` in a
-        // new entry of the data provider (and be fixed properly).
-        $_SESSION['glpi_currenttime'] = "2025-01-27 15:57:00";
+        $this->login();
+
+        $default_time = "2025-01-27 15:57:00";
+        $_SESSION['glpi_currenttime'] = $default_time;
 
         $provider = $this->computeNextCreationDateProvider();
         foreach ($provider as $i => $row) {
-            $begin_date = $row['begin_date'];
-            $end_date = $row['end_date'];
-            $periodicity = $row['periodicity'];
-            $create_before = $row['create_before'];
-            $calendars_id = $row['calendars_id'];
-            $expected_value = $row['expected_value'];
-            $messages = $row['messages'] ?? null;
-            $current_date = $row['current_date'] ?? null;
-
-            // Handle dynamic date
-            if (!is_null($current_date)) {
-                $_SESSION['glpi_currenttime'] = $current_date;
-            }
+            // Reset to the default reference time, or use a case-specific date
+            $_SESSION['glpi_currenttime'] = $row['current_date'] ?? $default_time;
 
             $child_class = $this->getChildClass();
             $recurrent = new $child_class();
             $value = $recurrent->computeNextCreationDate(
-                $begin_date,
-                $end_date,
-                $periodicity,
-                $create_before,
-                $calendars_id
+                $row['begin_date'],
+                $row['end_date'],
+                $row['periodicity'],
+                $row['create_before'],
+                $row['calendars_id']
             );
 
-            $this->assertSame($expected_value, $value, 'Test case #' . $i);
-            if ($messages === null) {
+            $this->assertSame($row['expected_value'], $value, 'Test case #' . $i);
+            if (($row['messages'] ?? null) === null) {
                 $this->hasNoSessionMessage(ERROR);
             } else {
-                $this->hasSessionMessages(ERROR, $messages);
+                $this->hasSessionMessages(ERROR, $row['messages']);
             }
         }
     }
