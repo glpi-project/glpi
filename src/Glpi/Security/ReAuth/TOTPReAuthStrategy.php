@@ -54,7 +54,7 @@ final class TOTPReAuthStrategy implements ReAuthStrategyInterface
     }
 
     #[\Override]
-    public function isAvailable(int $users_id): bool
+    public function isAvailable(int $users_id, int $entities_id = 0): bool
     {
         return $this->totp_manager->is2FAEnabled($users_id);
     }

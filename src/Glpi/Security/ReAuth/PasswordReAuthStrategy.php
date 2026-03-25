@@ -53,7 +53,7 @@ final class PasswordReAuthStrategy implements ReAuthStrategyInterface
     }
 
     #[\Override]
-    public function isAvailable(int $users_id): bool
+    public function isAvailable(int $users_id, int $entities_id = 0): bool
     {
         $user = new User();
         if (!$user->getFromDB($users_id)) {

@@ -52,10 +52,8 @@ interface ReAuthStrategyInterface
      *
      * @param int $users_id The user ID
      * @return bool True if the strategy can be used for this user, false otherwise
-     *
-     * @todo Will consider entity context in the future
      */
-    public function isAvailable(int $users_id): bool;
+    public function isAvailable(int $users_id, int $entities_id = 0): bool;
 
     /**
      * Get a human-readable label for this strategy (used in UI).
