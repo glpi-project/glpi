@@ -199,9 +199,9 @@ phpcsfixer-check: ## Check for php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
 .PHONY: phpcsfixer-check
 
-phpcsfixer-fix: ## Fix php coding standards issues
+phpcsfixer: ## Fix php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer fix
-.PHONY: phpcsfixer-fix
+.PHONY: phpcsfixer
 
 ## —— Linters ——————————————————————————————————————————————————————————————————
 lint: lint-php lint-scss lint-twig lint-js ## Run all linters
