@@ -482,7 +482,7 @@ class Budget extends CommonDropdown
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
                     $tmpitem = getItemForItemtype($items[$itemtype]::$itemtype_2);
-                    if ($tmpitem->getFromDB($data['devices_id'])) {
+                    if ($tmpitem->getFromDB((int) $data['devices_id'])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }
                 } else {
