@@ -494,7 +494,8 @@ class Html
     }
 
     /**
-     * Return the referer URL.
+     * Return the referer URL from $_SERVER['HTTP_REFERER'] or $_POST['_glpi_http_referer'] if set
+     *
      * If the referer is invalid, return value will be null.
      *
      * @since 11.0.0
@@ -503,14 +504,9 @@ class Html
      */
     public static function getRefererUrl(): ?string
     {
-        // When a POST request is replayed after re-authentication via an auto-submit form,
-        // the browser sends Referer: /ReAuth/Verify (the page that served the form).
-        // To get the correct "back" URL, we check a dedicated POST field injected by
-        // RedirectPostExceptionListener instead of the HTTP_REFERER header.
         $raw = $_POST['_glpi_http_referer'] ?? $_SERVER['HTTP_REFERER'] ?? '';
 
         $referer = URL::sanitizeURL($raw);
-
         $referer_host = parse_url($referer, PHP_URL_HOST);
         $referer_path = parse_url($referer, PHP_URL_PATH);
 
@@ -521,7 +517,6 @@ class Html
 
         return $referer;
     }
-
 
     /**
      * Add confirmation on button or link before action

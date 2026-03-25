@@ -53,7 +53,6 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
-use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
@@ -3107,7 +3106,7 @@ class CommonDBTM extends CommonGLPI
             $require_reauth = null;
             if (!$this->can($ID, $right, $input, $require_reauth)) {
                 if ($require_reauth) {
-                    self::checkReAuthenticationOrRedirect(); // @todo faire redirect() directement
+                    self::redirectToReauthPrompt();
                 }
 
                 /** @var class-string<CommonDBTM> $itemtype */
@@ -6549,7 +6548,7 @@ class CommonDBTM extends CommonGLPI
             if (!(new static())->can($id, CREATE, $options, $reauth_needed)) {
                 // redirect to reauth prompt
                 if ($reauth_needed === true) {
-                    self::checkReAuthenticationOrRedirect();
+                    self::redirectToReauthPrompt();
                 }
 
                 throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
