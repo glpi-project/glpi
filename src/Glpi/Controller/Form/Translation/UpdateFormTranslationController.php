@@ -67,7 +67,7 @@ final class UpdateFormTranslationController extends AbstractTranslationControlle
         $input = $request->toArray();
         $input['translations'] = $this->remapFileUploadsToTranslations($category_index, $input);
 
-        if ($this->processTranslations($input['translations'] ?? [], $language)) {
+        if ($this->processTranslations($input['translations'], $language)) {
             $this->addSuccessMessage($language);
         }
 
