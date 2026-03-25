@@ -53,6 +53,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
@@ -3012,6 +3013,23 @@ class CommonDBTM extends CommonGLPI
 
             case UPDATE:
                 // Personal item
+                $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
+                if ($allowed)
+                {
+                    if($_reauth_needed) {
+                        $reauth_needed = true;
+                        return false;
+                    }
+                    return true;
+                }
+
+                // non personnal item
+                $allowed =  (static::canUpdate() && $this->canUpdateItem());
+                if($allowed) {
+                    if($_reauth_needed) {
+                        $reauth_needed = true;
+                        return false;
+                    }
                 $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
                 if ($allowed) {
                     if ($_reauth_needed) {
@@ -6541,6 +6559,15 @@ class CommonDBTM extends CommonGLPI
             // Load specific menus for this interface
             $menus = $menus[$interface];
         }
+
+        // New item, check create rights
+        if (static::isNewID($id)) {
+            $reauth_needed = null;
+            if (!$item->can($id, CREATE, reauth_needed: $reauth_needed)) {
+                // redirect to reauth prompt
+                if ($reauth_needed === true) {
+                    self::checkReAuthenticationOrRedirect();
+                }
 
         // New item, check create rights
         if (static::isNewID($id)) {
