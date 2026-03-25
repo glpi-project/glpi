@@ -4256,6 +4256,7 @@ HTML;
 
                         if (!isset($all_devices[$itemtype])) {
                             $all_devices[$itemtype] = [
+                                //TRANS: Always a plural form: My computers, My monitors
                                 'text' => sprintf(__('My %s'), $item->getTypeName(Session::getPluralNumber())),
                                 'children' => [],
                                 'itemtype' => $itemtype,
