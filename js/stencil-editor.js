@@ -117,7 +117,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         let image_data = null;
         try {
             image_data = ctx.getImageData(0, 0, natural_width, natural_height);
-        } catch (_e) {
+        } catch {
             // Cross-origin image – pixel data unavailable.
             return null;
         }
@@ -148,8 +148,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         const rel_y = canvas_y - (img_rect.top - canvas_rect.top);
 
         const shadow_img = getCropperImgEl(cr_image);
-        const scale_x = shadow_img?.naturalWidth / img_rect.width ?? 1;
-        const scale_y = shadow_img?.naturalHeight / img_rect.height ?? 1;
+        const scale_x = shadow_img?.naturalWidth ? shadow_img.naturalWidth / img_rect.width : 1;
+        const scale_y = shadow_img?.naturalHeight ? shadow_img.naturalHeight / img_rect.height : 1;
 
         return {
             x: rel_x * scale_x,
@@ -218,15 +218,6 @@ const StencilEditor = function (container, rand, zones_definition) {
     };
 
     /**
-     * Returns true when GLPI debug mode is active (body has the debug-active class).
-     *
-     * @returns {boolean}
-     */
-    const isDebugMode = function () {
-        return document.body.classList.contains('debug-active');
-    };
-
-    /**
      * Converts the current cropper selection to natural-image coordinates.
      *
      * @param {object} cropper
@@ -276,14 +267,6 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         const tolerance = getTolerance();
 
-        if (isDebugMode()) {
-            console.log('[StencilEditor] Auto-detect at natural coords', {
-                x: natural_x,
-                y: natural_y,
-                tolerance_pct: Math.round((tolerance / MAX_COLOR_DISTANCE) * 100),
-            });
-        }
-
         const detected = (typeof StencilAutoDetect !== 'undefined')
             ? StencilAutoDetect.detectBoundingBox(
                 pixel_data.image_data,
@@ -294,10 +277,6 @@ const StencilEditor = function (container, rand, zones_definition) {
                 tolerance
             )
             : null;
-
-        if (isDebugMode()) {
-            console.log('[StencilEditor] Auto-detect result', detected);
-        }
 
         if (!detected) {
             return false;
@@ -338,25 +317,19 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
 
         if (!active_cropper) {
-            if (isDebugMode()) {
-                console.log('[StencilEditor] Auto-detect from selection: no active selection');
-            }
             return;
         }
 
         const nat_box = selectionToNaturalBox(active_cropper);
         if (!nat_box) {
-            if (isDebugMode()) {
-                console.log('[StencilEditor] Auto-detect from selection: could not convert selection to natural coords');
-            }
+            const cr_sel = active_cropper.getCropperSelection();
+            console.warn('[StencilEditor] Auto-detect: could not convert selection to natural coords', { x: cr_sel?.x, y: cr_sel?.y, width: cr_sel?.width, height: cr_sel?.height });
             return;
         }
 
         const pixel_data = getCropperImageData(active_cropper);
         if (!pixel_data) {
-            if (isDebugMode()) {
-                console.log('[StencilEditor] Auto-detect from selection: could not get image pixel data (cross-origin?)');
-            }
+            console.error('[StencilEditor] Auto-detect: could not get image pixel data (cross-origin?)');
             return;
         }
 
@@ -366,14 +339,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         const h = Math.min(nat_box.height, pixel_data.natural_height - y);
 
         if (w <= 0 || h <= 0) {
-            if (isDebugMode()) {
-                console.log('[StencilEditor] Auto-detect from selection: selection out of image bounds', nat_box);
-            }
+            console.warn('[StencilEditor] Auto-detect: selection out of image bounds', { nat_box, image: { width: pixel_data.natural_width, height: pixel_data.natural_height } });
             return;
-        }
-
-        if (isDebugMode()) {
-            console.log('[StencilEditor] Auto-detect from selection', { nat_box, image: { w: pixel_data.natural_width, h: pixel_data.natural_height } });
         }
 
         const prominent = (typeof StencilAutoDetect !== 'undefined')
@@ -385,14 +352,8 @@ const StencilEditor = function (container, rand, zones_definition) {
             : null;
 
         if (!prominent) {
-            if (isDebugMode()) {
-                console.log('[StencilEditor] Auto-detect from selection: no prominent colour found (transparent region?)');
-            }
+            console.warn('[StencilEditor] Auto-detect: no prominent colour found (transparent region?)');
             return;
-        }
-
-        if (isDebugMode()) {
-            console.log('[StencilEditor] Dominant colour', prominent.color, 'seed', { x: prominent.seed_x, y: prominent.seed_y });
         }
 
         last_auto_detect_seed = {
@@ -478,8 +439,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         const tolerance_input = container.querySelector(`#auto-detect-tolerance-${rand}`);
         const tolerance_output = container.querySelector(`#auto-detect-tolerance-output-${rand}`);
         if (tolerance_input && tolerance_output) {
-            tolerance_input.addEventListener('input', function () {
-                tolerance_output.value = tolerance_input.value + '%';
+            tolerance_input.addEventListener('input', () => {
+                tolerance_output.value = `${tolerance_input.value}%`;
                 if (last_auto_detect_seed) {
                     runAutoDetectAtPoint(
                         last_auto_detect_seed.cropper,
@@ -855,7 +816,7 @@ const StencilEditor = function (container, rand, zones_definition) {
             if (!sel_el) {
                 return;
             }
-            $(sel_el).on(`change.stencil-selection-${rand}`, function () {
+            $(sel_el).on(`change.stencil-selection-${rand}`, () => {
                 if (sel_el.width > 0 && sel_el.height > 0) {
                     $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
                 } else {
