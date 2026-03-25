@@ -42,6 +42,9 @@ export class LoginPage extends GlpiPage
     public readonly login_source_dropdown: Locator;
     public readonly sign_in_button: Locator;
 
+    // 2FA form
+    public readonly continue_button: Locator;
+
     // OAuth authorization consent form
     public readonly oauth_authorization_heading: Locator;
     public readonly oauth_accept_button: Locator;
@@ -56,10 +59,16 @@ export class LoginPage extends GlpiPage
         this.remember_me_checkbox  = this.getCheckbox('Remember me');
         this.login_source_dropdown = this.getDropdownByLabel('Login source');
         this.sign_in_button        = this.getButton('Sign in');
+        this.continue_button       = this.getButton('Continue');
 
         this.oauth_authorization_heading = page.getByRole('heading', { name: /wants to access your GLPI account/ });
         this.oauth_accept_button         = this.getButton('Accept');
         this.oauth_deny_button           = this.getButton('Deny');
+    }
+
+    public async goto(): Promise<void>
+    {
+        await this.page.goto('/');
     }
 
     public async gotoOauthAuthorize(
@@ -121,5 +130,13 @@ export class LoginPage extends GlpiPage
             },
         });
         return response.json();
+    }
+
+    public async doFillTotpCode(token: string): Promise<void>
+    {
+        for (let i = 0; i < 6; i++) {
+            await this.page.getByRole('textbox', { name: `2FA code digit ${i + 1} of 6` }).fill(token[i]);
+        }
+        await this.page.getByRole('button', { name: 'Verify' }).click();
     }
 }
