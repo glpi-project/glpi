@@ -364,6 +364,7 @@
                                                         <i class="ti ti-upload me-1"></i>{{ __('Upload a file') }}
                                                     </button>
                                                 </li>
+                                                {% if document_idor_token is defined %}
                                                 <li class="nav-item" role="presentation">
                                                     <button
                                                         class="nav-link"
@@ -378,6 +379,7 @@
                                                         <i class="ti ti-link me-1"></i>{{ __('Link a document') }}
                                                     </button>
                                                 </li>
+                                                {% endif %}
                                             </ul>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                                         </div>
@@ -429,6 +431,7 @@
                                                         </div>
                                                     </form>
                                                 </div>
+                                                {% if document_idor_token is defined %}
                                                 <div
                                                     class="tab-pane fade"
                                                     id="kb-modal-link-pane"
@@ -467,6 +470,7 @@
                                                         </button>
                                                     </div>
                                                 </div>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>

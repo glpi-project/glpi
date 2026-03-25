@@ -35,43 +35,6 @@ import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
-test('Can link an existing document to a KB article', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const kb_id = await api.createItem('KnowbaseItem', {
-        name: 'KB article for link document test',
-        entities_id: getWorkerEntityId(),
-        answer: 'Test content',
-    });
-    const doc_name = `Link test doc - ${crypto.randomUUID()}`;
-    await api.createItem('Document', {
-        name: doc_name,
-        entities_id: getWorkerEntityId(),
-    });
-
-    await kb.goto(kb_id);
-
-    await page.getByRole('button', { name: 'Add Document' }).click();
-    const modal = page.getByRole('dialog');
-    await expect(modal).toBeVisible();
-
-    await modal.getByRole('tab', { name: 'Link a document' }).click();
-
-    const dropdown = modal.getByRole('combobox');
-    await dropdown.click();
-    await page.getByRole('listbox').getByRole('option', { name: doc_name, exact: false }).click();
-
-    await expect(modal.getByRole('listitem')).toHaveCount(1);
-    await expect(modal.getByRole('listitem').first()).toContainText(doc_name);
-
-    await modal.getByRole('button', { name: 'Link Documents' }).click();
-    await expect(modal).toBeHidden();
-    await page.waitForLoadState('load');
-
-    await expect(page.getByTestId('document-chip')).toHaveCount(1);
-});
-
 test('Can link multiple documents at once', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
