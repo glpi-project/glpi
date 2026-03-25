@@ -2952,7 +2952,7 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        // reauth
+        // reauth - store reauth status in $_reauth_needed, set it to $reauth_needed only if it's the sole missing requirement.
         $_reauth_needed = static::isUserReauthenticationNeeded();
         $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
@@ -3014,9 +3014,8 @@ class CommonDBTM extends CommonGLPI
             case UPDATE:
                 // Personal item
                 $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
-                if ($allowed)
-                {
-                    if($_reauth_needed) {
+                if ($allowed) {
+                    if ($_reauth_needed) {
                         $reauth_needed = true;
                         return false;
                     }
@@ -3025,8 +3024,8 @@ class CommonDBTM extends CommonGLPI
 
                 // non personnal item
                 $allowed =  (static::canUpdate() && $this->canUpdateItem());
-                if($allowed) {
-                    if($_reauth_needed) {
+                if ($allowed) {
+                    if ($_reauth_needed) {
                         $reauth_needed = true;
                         return false;
                     }
