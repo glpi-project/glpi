@@ -28,12 +28,6 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
- #
- # Minimal auto-submit page used after re-authentication to replay the
- # original POST request. This page is transient and should never be
- # visible to the user (requires JavaScript).
- #
- # ---------------------------------------------------------------------
  #}
 
 {# Recursive macro to render nested POST arrays as hidden inputs #}
@@ -59,9 +53,7 @@
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
         {{ _self.render_inputs(post_data, '') }}
     </form>
-{#    <script>document.getElementById('redirect-post-form').submit();</script>#}
-    <button form="redirect-post-form" type="submit">{{ __('Continue') }}</button>
-
+    <script>document.getElementById('redirect-post-form').submit();</script>
     <noscript>
         <button form="redirect-post-form" type="submit">{{ __('Continue') }}</button>
     </noscript>
