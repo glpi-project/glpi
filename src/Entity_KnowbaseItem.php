@@ -59,7 +59,7 @@ class Entity_KnowbaseItem extends CommonDBRelation
                 [
                     'WHERE' => [
                         'knowbaseitems_id' => $input['knowbaseitems_id'],
-                        'entities_id'      => $input['entities_id'],
+                        'entities_id'      => $input['entities_id'] ?? 0,
                     ],
                     'LIMIT' => 1,
                 ]

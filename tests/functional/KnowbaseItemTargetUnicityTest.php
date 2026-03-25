@@ -87,6 +87,7 @@ class KnowbaseItemTargetUnicityTest extends DbTestCase
         ]);
 
         $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
     }
 
     public function testKnowbaseItemUserOnDifferentKbSucceeds(): void
@@ -143,6 +144,7 @@ class KnowbaseItemTargetUnicityTest extends DbTestCase
         ]);
 
         $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
     }
 
     public function testGroupKnowbaseItemOnDifferentKbSucceeds(): void
@@ -201,6 +203,7 @@ class KnowbaseItemTargetUnicityTest extends DbTestCase
         ]);
 
         $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
     }
 
     public function testKnowbaseItemProfileOnDifferentKbSucceeds(): void
@@ -254,6 +257,7 @@ class KnowbaseItemTargetUnicityTest extends DbTestCase
         ]);
 
         $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
     }
 
     public function testEntityKnowbaseItemOnDifferentKbSucceeds(): void
@@ -273,5 +277,68 @@ class KnowbaseItemTargetUnicityTest extends DbTestCase
         ]);
 
         $this->assertGreaterThan(0, (int) $result);
+    }
+
+    public function testGroupKnowbaseItemNullEntityDuplicateAddFails(): void
+    {
+        $kb = $this->createKbArticle(__FUNCTION__);
+        $groups_id = $this->createItem(Group::class, ['name' => __FUNCTION__])->getID();
+
+        $this->createItem(Group_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'groups_id'        => $groups_id,
+            'entities_id'      => null,
+        ]);
+
+        $duplicate = new Group_KnowbaseItem();
+        $result = $duplicate->add([
+            'knowbaseitems_id' => $kb->getID(),
+            'groups_id'        => $groups_id,
+            'entities_id'      => null,
+        ]);
+
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
+    }
+
+    public function testKnowbaseItemProfileNullEntityDuplicateAddFails(): void
+    {
+        $kb = $this->createKbArticle(__FUNCTION__);
+        $profiles_id = getItemByTypeName(Profile::class, 'Admin', true);
+
+        $this->createItem(KnowbaseItem_Profile::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'profiles_id'      => $profiles_id,
+            'entities_id'      => null,
+        ]);
+
+        $duplicate = new KnowbaseItem_Profile();
+        $result = $duplicate->add([
+            'knowbaseitems_id' => $kb->getID(),
+            'profiles_id'      => $profiles_id,
+            'entities_id'      => null,
+        ]);
+
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
+    }
+
+    public function testEntityKnowbaseItemNullEntityDuplicateAddFails(): void
+    {
+        $kb = $this->createKbArticle(__FUNCTION__);
+
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => null,
+        ]);
+
+        $duplicate = new Entity_KnowbaseItem();
+        $result = $duplicate->add([
+            'knowbaseitems_id' => $kb->getID(),
+            'entities_id'      => null,
+        ]);
+
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['This target already exists for this article.']);
     }
 }

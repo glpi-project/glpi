@@ -60,7 +60,7 @@ class KnowbaseItem_Profile extends CommonDBRelation
                     'WHERE' => [
                         'knowbaseitems_id' => $input['knowbaseitems_id'],
                         'profiles_id'      => $input['profiles_id'],
-                        'entities_id'      => $input['entities_id'] ?? null,
+                        'entities_id'      => $input['entities_id'] ?? 0,
                     ],
                     'LIMIT' => 1,
                 ]
