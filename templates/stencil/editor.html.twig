@@ -87,7 +87,7 @@
         {% endif %}
 
         <div id="zone-data-{{ rand }}" class="row d-none mt-2">
-            <form id="zone-data-form-{{ rand }}">
+            <form id="zone-data-form-{{ rand }}" class="d-flex flex-wrap align-items-center gap-2">
                 <div class="col-auto">
                     <div class="row">
                         {% if params.zone_label is defined %}
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-auto" id="auto-detect-tolerance-col-{{ rand }}">
+                <div class="col-auto d-none" id="auto-detect-tolerance-col-{{ rand }}">
                     <button type="button"
                             id="auto-detect-btn-{{ rand }}"
                             class="btn btn-sm btn-outline-primary"

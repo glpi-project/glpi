@@ -51,6 +51,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     const croppers = [];
 
+    /** Maximum Euclidean distance between two RGB colours: √(255²+255²+255²) ≈ 441.67. Used to normalise the tolerance slider (0–100 %) to an absolute distance. */
     const MAX_COLOR_DISTANCE = Math.sqrt(3) * 255;
 
     let last_detected_box = null;
@@ -74,6 +75,19 @@ const StencilEditor = function (container, rand, zones_definition) {
     };
 
     /**
+     * Returns the backing <img> element from a cropper-image custom element,
+     * checking the shadow root first (CropperJS v2 uses an open shadow DOM).
+     *
+     * @param {Element} cr_image   The <cropper-image> element.
+     * @returns {HTMLImageElement|Element}
+     */
+    const getCropperImgEl = function (cr_image) {
+        return cr_image.shadowRoot?.querySelector('img')
+            ?? cr_image.querySelector('img')
+            ?? cr_image;
+    };
+
+    /**
      * Reads pixel data from the <img> element backing a cropper instance by
      * drawing it onto an off-screen canvas.
      *
@@ -86,8 +100,8 @@ const StencilEditor = function (container, rand, zones_definition) {
             return null;
         }
 
-        const img_el = cr_image.querySelector('img') ?? cr_image;
-        if (!img_el || !img_el.naturalWidth) {
+        const img_el = getCropperImgEl(cr_image);
+        if (!img_el.naturalWidth) {
             return null;
         }
 
@@ -133,8 +147,9 @@ const StencilEditor = function (container, rand, zones_definition) {
         const rel_x = canvas_x - (img_rect.left - canvas_rect.left);
         const rel_y = canvas_y - (img_rect.top - canvas_rect.top);
 
-        const scale_x = cr_image.querySelector('img')?.naturalWidth / img_rect.width ?? 1;
-        const scale_y = cr_image.querySelector('img')?.naturalHeight / img_rect.height ?? 1;
+        const shadow_img = getCropperImgEl(cr_image);
+        const scale_x = shadow_img?.naturalWidth / img_rect.width ?? 1;
+        const scale_y = shadow_img?.naturalHeight / img_rect.height ?? 1;
 
         return {
             x: rel_x * scale_x,
@@ -155,7 +170,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         if (!cr_image) {
             return null;
         }
-        const img_el = cr_image.querySelector('img') ?? cr_image;
+        const img_el = getCropperImgEl(cr_image);
         const natural_width = img_el.naturalWidth;
         const natural_height = img_el.naturalHeight;
         if (!natural_width || !natural_height) {
@@ -187,7 +202,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         const canvas_rect = cr_canvas.getBoundingClientRect();
         const img_rect = cr_image.getBoundingClientRect();
 
-        const img_el = cr_image.querySelector('img') ?? cr_image;
+        const img_el = getCropperImgEl(cr_image);
         const scale_x = img_rect.width / (img_el.naturalWidth || 1);
         const scale_y = img_rect.height / (img_el.naturalHeight || 1);
 
@@ -559,7 +574,8 @@ const StencilEditor = function (container, rand, zones_definition) {
         $(container).find(`#zone_label-${rand}`).val(zone['label'] ?? current_zone);
         $(container).find(`#zone_number-${rand}`).val(zone['number'] ?? current_zone).data('zone-index', current_zone);
 
-        // reset tolerance slider visibility for the new zone
+        // reset Auto-Detect button and tolerance slider visibility for the new zone
+        $(container).find(`#auto-detect-tolerance-col-${rand}`).addClass('d-none');
         $(container).find(`#auto-detect-tolerance-slider-col-${rand}`).addClass('d-none');
 
         last_auto_detect_seed = null;
@@ -587,7 +603,15 @@ const StencilEditor = function (container, rand, zones_definition) {
             }
         });
 
-        _this.bindAutoDetectClicks();
+        _this.bindSelectionChangeHandlers();
+
+        // if an existing selection was already restored, show the Auto-Detect button now
+        croppers.forEach((cropper) => {
+            const sel = cropper.getCropperSelection();
+            if (sel && sel.width > 0 && sel.height > 0) {
+                $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
+            }
+        });
     };
 
     // save zone definition
@@ -683,7 +707,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
     // reset definition and close controls
     _this.editorDisable = function () {
-        _this.unbindAutoDetectClicks();
+        _this.unbindSelectionChangeHandlers();
 
         croppers.forEach((cropper) => {
             cropper.getCropperSelection()
@@ -822,39 +846,33 @@ const StencilEditor = function (container, rand, zones_definition) {
         });
     };
 
-    // bind click events on cropper canvases for auto-detect and drag detection
-    _this.bindAutoDetectClicks = function () {
-        _this.unbindAutoDetectClicks();
+    // bind selection-change events on croppers for Auto-Detect button visibility
+    _this.bindSelectionChangeHandlers = function () {
+        _this.unbindSelectionChangeHandlers();
 
-        croppers.forEach((cropper, side) => {
-            const canvas_el = cropper.getCropperCanvas();
-
-            // auto-detect on click
-            $(canvas_el).on(`click.stencil-auto-detect-${rand}`, function (e) {
-                if (!_this.isEditorActive()) {
-                    return;
+        croppers.forEach((cropper) => {
+            const sel_el = cropper.getCropperSelection();
+            if (!sel_el) {
+                return;
+            }
+            $(sel_el).on(`change.stencil-selection-${rand}`, function () {
+                if (sel_el.width > 0 && sel_el.height > 0) {
+                    $(`#auto-detect-tolerance-col-${rand}`).removeClass('d-none');
+                } else {
+                    $(`#auto-detect-tolerance-col-${rand}`).addClass('d-none');
+                    $(`#auto-detect-tolerance-slider-col-${rand}`).addClass('d-none');
                 }
-
-                const canvas_rect = canvas_el.getBoundingClientRect();
-                const click_x = e.clientX - canvas_rect.left;
-                const click_y = e.clientY - canvas_rect.top;
-
-                const natural = canvasToNaturalCoords(cropper, click_x, click_y);
-                if (!natural) {
-                    return;
-                }
-
-                last_auto_detect_seed = { natural_x: natural.x, natural_y: natural.y, cropper, side };
-                runAutoDetectAtPoint(cropper, side, natural.x, natural.y);
             });
         });
     };
 
-    // unbind auto-detect click events
-    _this.unbindAutoDetectClicks = function () {
+    // unbind selection-change events
+    _this.unbindSelectionChangeHandlers = function () {
         croppers.forEach((cropper) => {
-            const canvas_el = cropper.getCropperCanvas();
-            $(canvas_el).off(`.stencil-auto-detect-${rand}`);
+            const sel_el = cropper.getCropperSelection();
+            if (sel_el) {
+                $(sel_el).off(`.stencil-selection-${rand}`);
+            }
         });
         $(`#grid-replicate-${rand}`).addClass('d-none');
     };
