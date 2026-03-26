@@ -109,6 +109,7 @@ test.describe('Session', () => {
     test('can change profile', async ({ page, profile }) => {
         const glpi_page = new GlpiPage(page);
         await profile.set(Profiles.SuperAdmin);
+        await profile.invalidateCachedProfile(); // This test will do some manual profiles changes
         await page.goto('/front/computer.form.php');
 
         await expect(glpi_page.user_menu).toContainText('Super-Admin');

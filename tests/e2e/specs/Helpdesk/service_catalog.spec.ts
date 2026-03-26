@@ -385,7 +385,7 @@ test.describe('Service Catalog Page - Isolated', () => {
         await profile.set(Profiles.SuperAdmin);
 
         // Switch back to the worker entity
-        await entity.switchToWithoutRecursion(getWorkerEntityId());
+        await entity.resetToDefaultWorkerEntity();
         api.refreshSession();
     });
 
