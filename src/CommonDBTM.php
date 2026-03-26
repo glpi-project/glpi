@@ -42,7 +42,6 @@ use Glpi\Event;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Exception\RedirectException;
 use Glpi\Exception\TooManyResultsException;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
@@ -2945,6 +2944,7 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
+    #[\Override]
     public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
         if (Session::isInventory()) {
@@ -3090,12 +3090,6 @@ class CommonDBTM extends CommonGLPI
      * @param int                  $ID    ID of the item (-1 if new item)
      * @param int                  $right Right to check
      * @param ?array<string,mixed> $input array of input data (used for adding item) (default NULL)
-     *
-     * @return void
-     *
-     * @throws RedirectException
-     * @throws AccessDeniedHttpException
-     * @throws NotFoundHttpException
      **/
     public function check($ID, int $right, ?array &$input = null): void
     {
