@@ -24,6 +24,14 @@ The present file will list all changes made to the project; according to the
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final
 - `KnowbaseItem_Revision` is now final
+- Use of the `users_id_validate` field for `CommonITILValidation` is no longer supported. Use `items_id_target` and `itemtype_target` instead.
+- Passing additional URL parameters in `Document::getDownloadLink()` is no longer supported.
+- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use `_categories` array instead.
+- Use of the `certificates` and `entities_id` options in `NotificationTargetCertificate` is no longer supported. These values are automatically computed based on the linked certificate.
+- Use of the `domains` and `entities_id` options in `NotificationTargetDomain` is no longer supported. These values are automatically computed based on the linked domain.
+- Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
+- `Ticket:link_to_problem` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
+- `Ticket_Ticket:add` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
