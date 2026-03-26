@@ -370,7 +370,7 @@ TWIG, $twig_params);
                 'type' => _n('Type', 'Types', 1),
                 'supplier' => Supplier::getTypeName(1),
                 'begin_date' => __('Start date'),
-                'duration' => __('Initial contract period'),
+                'duration' => __('Expiration'),
             ],
             'formatters' => [
                 'name' => 'raw_html',

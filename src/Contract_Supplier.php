@@ -210,7 +210,7 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'type' => ContractType::getTypeName(1),
                 'begin_date' => __('Start date'),
-                'duration' => __('Initial contract period'),
+                'duration' => __('Expiration'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
