@@ -114,8 +114,10 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
         $favorite = new KnowbaseItem_Favorite();
         $this->assertGreaterThan(0, (int) $favorite->add($criteria));
 
-        if (countElementsInTable(KnowbaseItem_Favorite::getTable(), $criteria) === 0) {
+        try {
             $favorite->add($criteria);
+        } catch (\RuntimeException) {
+            // Expected: DB unique constraint prevents duplicate
         }
 
         $this->assertSame(

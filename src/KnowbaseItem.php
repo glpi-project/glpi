@@ -1049,7 +1049,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
             $actions[] = new EditorAction(
-                label: "Add to FAQ",
+                label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",
                 type: EditorActionType::TOGGLE_VALUE,
                 params: [
