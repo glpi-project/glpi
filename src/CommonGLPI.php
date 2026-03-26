@@ -200,7 +200,7 @@ class CommonGLPI implements CommonGLPIInterface
      */
     final public static function redirectToReauthPrompt(): never
     {
-        new ReAuthManager()->redirect();
+        (new ReAuthManager())->redirect();
     }
 
     /**
