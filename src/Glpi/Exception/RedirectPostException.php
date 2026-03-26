@@ -40,6 +40,9 @@ use Exception;
 
 class RedirectPostException extends Exception
 {
+    /**
+     * @param array<string, string> $post
+     */
     public function __construct(
         private readonly string $url,
         private readonly array $post,
@@ -52,6 +55,9 @@ class RedirectPostException extends Exception
         return $this->url;
     }
 
+    /**
+     * @return array<string, string> $post
+     */
     public function getPost(): array
     {
         return $this->post;

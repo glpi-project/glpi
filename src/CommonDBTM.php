@@ -3195,11 +3195,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get global right on an object
      *
-     * @param int $right Right to check: READ / UPDATE / CREATE / DELETE
+     * @param int  $right         Right to check: READ / UPDATE / CREATE / DELETE
+     * @param null $reauth_needed always pass null. use reference to get reauth status. see @param-out tag.
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
      *
-     * @return bool
      **/
-    public function canGlobal(int $right, &$reauth_needed = null): bool
+    public function canGlobal(int $right, null &$reauth_needed = null): bool
     {
         $reauth_needed = self::isUserReauthenticationNeeded();
 
