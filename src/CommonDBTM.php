@@ -2947,7 +2947,7 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-    #[\Override]
+    #[Override]
     public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
         if (Session::isInventory()) {
