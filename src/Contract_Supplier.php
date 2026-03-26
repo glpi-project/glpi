@@ -198,12 +198,12 @@ TWIG, $twig_params);
             }
             $entry['duration'] = $duration;
             $entry['expiration'] = Infocom::getWarrantyExpir(
-                $con->fields["begin_date"],
-                $con->fields["duration"],
+                $data["begin_date"],
+                $data["duration"],
                 0,
                 true,
-                $con->fields["renewal"]==1,
-                $con->fields["periodicity"]
+                $data["renewal"]==1,
+                $data["periodicity"]
             );
             $entries[] = $entry;
         }
