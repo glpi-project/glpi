@@ -39,9 +39,9 @@ The present file will list all changes made to the project; according to the
 - `countElementsInTableForMyEntities()` / `DbUtils::countElementsInTableForMyEntities()`
 - `getTreeValueName()` / `DbUtils::getTreeValueName()`
 - `getTreeForItem()` / `DbUtils::getTreeForItem()`
-- `contructTreeFromList()` / `DbUtils::contructTreeFromList()`
-- `contructListFromTree()` / `DbUtils::contructListFromTree()`
-- `get_hour_from_sql()` / `DbUtils::getHourFromSql()`
+- `contructTreeFromList()` / `DbUtils::constructTreeFromList()`
+- `contructListFromTree()` / `DbUtils::constructListFromTree()`
+- `get_hour_from_sql()`
 - `$withcomment` and `$translate` parameters of `getTreeLeafValueName()` and `DbUtils::getTreeLeafValueName()`
 
 #### Removed

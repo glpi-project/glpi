@@ -529,41 +529,6 @@ class DbUtilsTest extends DbTestCase
         );
     }
 
-    public static function dataCountMyEntities()
-    {
-        return [
-            ['_test_root_entity', true, 'glpi_computers', [], 9],
-            ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc11'], 1],
-            ['_test_root_entity', true, 'glpi_computers', ['name' => '_test_pc01'], 1],
-
-            ['_test_root_entity', false, 'glpi_computers', [], 4],
-            ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc11'], 0],
-            ['_test_root_entity', false, 'glpi_computers', ['name' => '_test_pc01'], 1],
-
-            ['_test_child_1', false, 'glpi_computers', [], 3],
-            ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc11'], 1],
-            ['_test_child_1', false, 'glpi_computers', ['name' => '_test_pc01'], 0],
-        ];
-    }
-
-    #[DataProvider('dataCountMyEntities')]
-    public function testCountElementsInTableForMyEntities(
-        $entity,
-        $recursive,
-        $table,
-        $condition,
-        $count
-    ) {
-        $this->login();
-        $this->setEntity($entity, $recursive);
-
-        $instance = new \DbUtils();
-        $this->assertSame($count, $instance->countElementsInTableForMyEntities($table, $condition));
-
-        //keep testing old method from db.function
-        $this->assertSame($count, countElementsInTableForMyEntities($table, $condition));
-    }
-
     public static function dataCountEntities()
     {
         return [

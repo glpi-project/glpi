@@ -641,6 +641,7 @@ final class DbUtils
      * @param string|array<mixed, mixed> $condition filtering criteria
      *
      * @return int Number of elements in table
+     * @deprecated 12.0.0
      */
     public function countElementsInTableForMyEntities($table, $condition = [])
     {
@@ -1512,6 +1513,7 @@ final class DbUtils
      * @param int     $level     current level of recursion (default 0)
      *
      * @return array{0: string, 1:int}
+     * @deprecated 12.0.0
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
@@ -1551,6 +1553,7 @@ final class DbUtils
      * @param int     $IDf   The ID of the father
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+     * @deprecated 12.0.0
      */
     public function getTreeForItem($table, $IDf)
     {
@@ -1614,6 +1617,7 @@ final class DbUtils
      * @param int                                           $root root of the tree
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+     * @deprecated 12.0.0
      */
     public function constructTreeFromList($list, $root)
     {
@@ -1636,6 +1640,7 @@ final class DbUtils
      * @param int                                        $parent root of the tree
      *
      * @return array<int, int> list of items in the tree
+     * @deprecated 12.0.0
      */
     public function constructListFromTree($tree, $parent = 0)
     {

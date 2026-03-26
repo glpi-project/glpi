@@ -236,6 +236,7 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  * @param string|array<mixed, mixed> $condition filtering criteria
  *
  * @return int Number of elements in table
+ * @deprecated 12.0.0
  */
 function countElementsInTableForMyEntities($table, $condition = [])
 {
@@ -335,7 +336,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @param int     $level     current level of recursion (default 0)
  *
  * @return array{0: string, 1:int}
- *
+ * @deprecated 12.0.0
  */
 function getTreeValueName($table, $ID, $wholename = "", $level = 0)
 {
@@ -398,6 +399,7 @@ function getSonsAndAncestorsOf($table, $IDf)
  * @param int     $IDf   The ID of the father
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+ * @deprecated 12.0.0
  */
 function getTreeForItem($table, $IDf)
 {
@@ -413,6 +415,7 @@ function getTreeForItem($table, $IDf)
  * @param int                                           $root root of the tree
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+ * @deprecated 12.0.0
  */
 function contructTreeFromList($list, $root)
 {
@@ -428,6 +431,7 @@ function contructTreeFromList($list, $root)
  * @param int                                        $parent root of the tree
  *
  * @return array<int, int> list of items in the tree
+ * @deprecated 12.0.0
  */
 function contructListFromTree($tree, $parent = 0)
 {
@@ -618,6 +622,7 @@ function importArrayFromDB($DATA)
  * @param string $time datetime time
  *
  * @return string
+ * @deprecated 12.0.0
  */
 function get_hour_from_sql($time)
 {
