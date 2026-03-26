@@ -61,12 +61,13 @@ final class ReAuthManager
     /**
      * Redirect to reauth prompt and save current request data (url + post data)
      *
-     * @return never
      * @throws RedirectException
      */
     public function redirect(): never
     {
-        $this->setSuccessRedirectURL(\Html::getRefererUrl());
+        global $CFG_GLPI;
+
+        $this->setSuccessRedirectURL(\Html::getRefererUrl() ?? $CFG_GLPI['url_base']);
         $this->setPostDataForRedirect($_POST);
 
         throw new RedirectException('/ReAuth/Prompt');
@@ -163,11 +164,13 @@ final class ReAuthManager
         $_SESSION['glpi_reauth_redirect'] = $url;
     }
 
+    /** @param array<string, string> $post */
     private function setPostDataForRedirect(array $post): void
     {
         $_SESSION['glpi_reauth_postdata'] = $post;
     }
 
+    /** @return array<string, string> */
     public function getPostDataForRedirect(): array
     {
         return $_SESSION['glpi_reauth_postdata'] ?? [];
