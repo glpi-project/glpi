@@ -34,7 +34,26 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Twig\Extra\Markdown\LeagueMarkdown;
+use Twig\Extra\Markdown\MarkdownExtension;
+use Twig\Extra\Markdown\MarkdownInterface;
+use Twig\Extra\Markdown\MarkdownRuntime;
+use Twig\Extra\String\StringExtension;
+
 return static function (ContainerConfigurator $container): void {
+    // Without Symfony Flex, twig/extra-* packages are not auto-configured.
+    // Each one must be registered here: extension (twig.extension tag) and,
+    // when the filter uses a runtime, the runtime class (twig.runtime tag)
+    // plus any interface binding it depends on.
+    // Remember to update this block whenever a new twig/* extra package is added to composer.json.
+    // Switching to sf-flex would help a lot for reliability and ease of use
+    $services = $container->services();
+    $services->set(StringExtension::class)->tag('twig.extension');
+    $services->set(MarkdownExtension::class)->tag('twig.extension');
+    $services->set(LeagueMarkdown::class);
+    $services->alias(MarkdownInterface::class, LeagueMarkdown::class);
+    $services->set(MarkdownRuntime::class)->tag('twig.runtime');
+
     $container->extension('twig_component', [
         'anonymous_template_directory' => 'twig_components',
         'defaults' => [

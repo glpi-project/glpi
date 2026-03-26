@@ -46,6 +46,7 @@ use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -176,6 +177,23 @@ final class Kernel extends BaseKernel
         parent::reboot($warmupDir);
 
         $this->in_reboot = false;
+    }
+
+    #[Override()]
+    protected function build(ContainerBuilder $container): void
+    {
+        // TemplateRenderer retrieves the DI-managed Twig environment via the compiled
+        // container at runtime ($kernel->getContainer()->get('twig')).
+        // TwigBundle registers 'twig' as private; this compiler pass forces it public
+        // so it survives compilation and is accessible in Sf components.
+        $container->addCompilerPass(new class implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                if ($container->hasDefinition('twig')) {
+                    $container->getDefinition('twig')->setPublic(true);
+                }
+            }
+        });
     }
 
     #[Override()]
