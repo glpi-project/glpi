@@ -42,7 +42,6 @@ The present file will list all changes made to the project; according to the
 - `contructTreeFromList()` / `DbUtils::contructTreeFromList()`
 - `contructListFromTree()` / `DbUtils::contructListFromTree()`
 - `get_hour_from_sql()` / `DbUtils::getHourFromSql()`
-- `getEntitiesRestrictRequest()` / `DbUtils::getEntitiesRestrictRequest()`
 - `$withcomment` and `$translate` parameters of `getTreeLeafValueName()` and `DbUtils::getTreeLeafValueName()`
 
 #### Removed

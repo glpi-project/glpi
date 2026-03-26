@@ -652,6 +652,7 @@ function getDbRelations()
  *                                        when have acces to all entities (used for reminders)
  *
  * @return string the WHERE clause to restrict
+ * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
  */
 function getEntitiesRestrictRequest(
     $separator = "AND",
