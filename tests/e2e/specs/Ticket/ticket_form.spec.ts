@@ -36,8 +36,6 @@ import { TicketPage } from '../../pages/TicketPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId, getWorkerUserId } from '../../utils/WorkerEntities';
 
-const rand = randomUUID();
-
 test('TODO List', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {
@@ -137,7 +135,7 @@ test('Search for Solution', async ({ profile, page, api }) => {
     // View KB entry
     await kb_modal.getByTitle('Preview').first().click();
     await expect(kb_modal.getByText('Subject')).toBeVisible();
-    await expect(kb_modal.getByText('Content')).toBeVisible();
+    await expect(kb_modal.getByText('Content', { exact: true })).toBeVisible();
     await expect(kb_modal.getByRole('listitem')).toHaveCount(0);
 
     // Go back to search and use the KB entry
@@ -183,6 +181,7 @@ test('Search for Solution', async ({ profile, page, api }) => {
 
 test('Validation step template without validation step set', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID();
     const ticket_id = await api.createItem('Ticket', {
         name: 'Test ticket validation step',
         content: 'Test ticket',
@@ -217,6 +216,7 @@ test('Validation step template without validation step set', async ({ profile, p
 
 test('Validation step template with validation step set', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID();
     const ticket_id = await api.createItem('Ticket', {
         name: 'Test ticket validation step set',
         content: 'Test ticket',
@@ -250,6 +250,7 @@ test('Validation step template with validation step set', async ({ profile, page
 
 test('Switch between validation templates', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID();
     const ticket_id = await api.createItem('Ticket', {
         name: 'Test ticket switch validation templates',
         content: 'Test ticket',
@@ -366,8 +367,8 @@ test('Enter key in requester field reloads new ticket form', async ({ profile, p
 
     const requester_dropdown = ticket.getDropdownByLabel('Requester');
     await requester_dropdown.click();
-    await page.keyboard.type('tec');
-    await expect(page.getByRole('option', { name: /tech/i }).first()).toBeVisible();
+    await page.keyboard.type('glp');
+    await expect(page.getByRole('option', { name: /glpi/i }).first()).toBeVisible();
     await requester_dropdown.press('Enter');
 
     const response = await response_promise;
@@ -408,6 +409,7 @@ test('Items tab loads', async ({ profile, page, api }) => {
 
 test('Create/update a ticket using a template with readonly fields', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID();
     const ticket_template_name = `test template ${rand}`;
 
     const template_id = await api.createItem('TicketTemplate', {
