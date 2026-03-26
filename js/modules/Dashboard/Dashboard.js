@@ -720,6 +720,9 @@ class GLPIDashboard {
 
     refreshDashboard() {
         const gridstack = $(this.elem_id+" .grid-stack");
+        document.querySelectorAll('div[_echarts_instance_]').forEach((el) => {
+            window.echarts.getInstanceByDom(el)?.dispose();
+        });
         this.grid.removeAll();
 
         const data = {
