@@ -2178,6 +2178,19 @@ TWIG, $twig_params);
         ];
 
         $tab[] = [
+            'id'                 => '89',
+            'table'              => KnowbaseItem_Favorite::getTable(),
+            'field'              => 'users_id',
+            'name'               => __('Is favorite'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'  => 'child',
+                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+            ],
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
             'id'   => 'service_catalog',
             'name' => __('Service catalog'),
         ];
