@@ -725,6 +725,19 @@ class Contract extends CommonDBTM implements StateInterface
             ],
         ];
 
+
+        $tab[] = [
+            'id'            => '73',
+            'table'         =>  Contract_Item::getTable(),
+            'field'         => 'items_id',
+            'name'               => _n('Associated item', 'Associated items', 2),
+            'nosearch'           => true,
+            'massiveaction' => false,
+            'forcegroupby'  =>  true,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'    => ['jointype' => 'child'],
+        ];
+
         $tab[] = [
             'id'                 => '29',
             'table'              => 'glpi_suppliers',
