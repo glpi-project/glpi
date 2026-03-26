@@ -390,6 +390,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             [
                 Entity_KnowbaseItem::class,
                 Group_KnowbaseItem::class,
+                KnowbaseItem_Favorite::class,
                 KnowbaseItem_KnowbaseItemCategory::class,
                 KnowbaseItem_Item::class,
                 KnowbaseItem_Profile::class,
@@ -1038,6 +1039,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
 
             $actions[] = new EditorActionSeparator();
+            $actions[] = new EditorAction(
+                label: __("Add to favorites"),
+                icon: "ti ti-star",
+                type: EditorActionType::TOGGLE_FAVORITE,
+                params: [
+                    'id'      => $this->fields['id'],
+                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']),
+                ],
+            );
             $actions[] = new EditorAction(
                 label: "Add to FAQ",
                 icon: "ti ti-bookmark",

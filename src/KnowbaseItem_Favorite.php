@@ -32,13 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase;
-
-enum EditorActionType: string
+class KnowbaseItem_Favorite extends CommonDBRelation
 {
-    case LOAD_SIDE_PANEL = 'LOAD_SIDE_PANEL';
-    case TOGGLE_VALUE = 'TOGGLE_VALUE';
-    case TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
-    case DELETE_ARTICLE = 'DELETE_ARTICLE';
-    case OPEN_MODAL = 'OPEN_MODAL';
+    // From CommonDBRelation
+    public static ?string $itemtype_1 = KnowbaseItem::class;
+    public static ?string $items_id_1 = 'knowbaseitems_id';
+    public static ?string $itemtype_2 = User::class;
+    public static ?string $items_id_2 = 'users_id';
+
+    public static int $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static bool $logs_for_item_2 = false;
+
+    public static function isFavoriteForCurrentUser(int $knowbaseitems_id): bool
+    {
+        return countElementsInTable(self::getTable(), [
+            'knowbaseitems_id' => $knowbaseitems_id,
+            'users_id'         => Session::getLoginUserID(),
+        ]) > 0;
+    }
 }

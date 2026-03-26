@@ -172,7 +172,7 @@
                                                 >{{ action.counter }}</span>
                                             {% endif %}
 
-                                            {% if action.type.value == "TOGGLE_VALUE" %}
+                                            {% if action.type.value == "TOGGLE_VALUE" or action.type.value == "TOGGLE_FAVORITE" %}
                                                 <label class="form-check form-switch ms-auto mb-0">
                                                     <input
                                                         type="checkbox"

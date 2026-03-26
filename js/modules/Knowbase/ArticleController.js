@@ -285,6 +285,18 @@ export class GlpiKnowbaseArticleController
                 }
                 break;
             }
+            case 'TOGGLE_FAVORITE': {
+                event.stopPropagation();
+                const toggle = element.querySelector('input[type="checkbox"]');
+                if (toggle) {
+                    const clicked_on_toggle = target === toggle;
+                    if (!clicked_on_toggle) {
+                        toggle.checked = !toggle.checked;
+                    }
+                    this.#toggleFavorite(params.id, toggle);
+                }
+                break;
+            }
             case 'DELETE_ARTICLE':
                 this.#deleteItem(params.id);
                 break;
@@ -308,6 +320,21 @@ export class GlpiKnowbaseArticleController
         }
 
         return params;
+    }
+
+    /**
+     * @param {number} id
+     * @param {HTMLInputElement} toggle
+     */
+    async #toggleFavorite(id, toggle)
+    {
+        const value = toggle.checked;
+        try {
+            await post(`Knowbase/${id}/ToggleFavorite`, { value: value });
+        } catch (e) {
+            toggle.checked = !value;
+            throw e;
+        }
     }
 
     /**

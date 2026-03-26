@@ -553,6 +553,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 Change_User::class,
                 Group_User::class,
                 Item_Kanban::class,
+                KnowbaseItem_Favorite::class,
                 KnowbaseItem_User::class,
                 Problem_User::class,
                 Profile_User::class,
