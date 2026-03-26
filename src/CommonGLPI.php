@@ -197,14 +197,13 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * @throws RedirectException
      */
-    final public function redirectToReauthPrompt(): never
+    final public static function redirectToReauthPrompt(): never
     {
         new ReAuthManager()->redirect();
     }
 
     /**
      * Override this method to return true in itemtypes that need re-authentication
-     * @return bool
      */
     protected static function itemTypeRequiresReauthentication(): bool
     {
@@ -216,12 +215,13 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * Parameter $reauth_needed value changes depending if reauthentication is needed
      *
-     * @param int                  $ID    ID of the item (-1 if new item)
-     * @param int                  $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
-     * @param ?array<string,mixed> $input array of input data (used for adding item)
+     * @param int                  $ID            ID of the item (-1 if new item)
+     * @param int                  $right         Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
+     * @param ?array<string,mixed> $input         array of input data (used for adding item)
      * @param null                 $reauth_needed param is used as a return value (modified by reference) to know if reauth is needed
      *
-     * @return bool
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
+     *
      */
     public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
@@ -241,8 +241,11 @@ class CommonGLPI implements CommonGLPIInterface
             // but need reauth
             if ($_reauth_needed) {
                 $reauth_needed = true;
+
                 return false;
             }
+            $reauth_needed = false;
+
             return true;
         }
 
@@ -250,7 +253,6 @@ class CommonGLPI implements CommonGLPIInterface
         $reauth_needed = false;
 
         return false;
-
     }
 
     /**
