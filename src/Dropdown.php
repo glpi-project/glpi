@@ -5040,6 +5040,7 @@ HTML;
                 'searchText'          => $post['searchText'],
                 'entity_restrict'     => $entity_restrict,
                 'condition'           => $post['condition'],
+                'page'                => 1,
             ], false);
             foreach ($groups['results'] as $group) {
                 if (isset($group['children'])) {
@@ -5114,11 +5115,19 @@ HTML;
         $start = ($post['page'] - 1) * $post['page_limit'];
         $results = array_slice($results, $start, $post['page_limit']);
 
+        $elementsCount = 0;
+        foreach ($results as $element) {
+            $elementsCount++;
+            if(isset($element['children'])) {
+                $elementsCount+= count($element['children']);
+            }
+        }
+
         $return = [
             'results' => $results,
-            'count'   => count($results),
+            'count'   => $elementsCount,
         ];
-        if (count($results) >= $post['page_limit']) {
+        if ($elementsCount >= $post['page_limit']) {
             $return['pagination'] = [
                 'more' => true,
             ];
