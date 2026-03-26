@@ -80,7 +80,7 @@ final class ReAuthManager
         }
 
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
-        $calculated_limit_timestamp = new DateTime($_SESSION['glpi_currenttime'])->getTimestamp();
+        $calculated_limit_timestamp = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp();
 
         return $current_limit_timestamp !== null && $current_limit_timestamp > $calculated_limit_timestamp;
     }
