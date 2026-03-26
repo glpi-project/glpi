@@ -382,6 +382,10 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      # See: https://github.com/ctrf-io/github-test-reporter?tab=readme-ov-file#available-inputs
       - name: Publish test summary results
         if: ${{ !cancelled() }}
-        run: npx github-actions-ctrf ctrf/ctrf-report.json
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: ctrf/ctrf-report.json
+          collapse-large-reports: true
