@@ -87,6 +87,7 @@
     define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
     define('GLPI_PLUGINS_DIRECTORIES', [dirname(__FILE__, 2) . '/plugins', dirname(__FILE__, 2) . '/marketplace']);
     define('GLPI_SERVERSIDE_URL_ALLOWLIST', $random_val([[], ['/^.*$/']]));
+    define('GLPI_DISABLE_REAUTH', $random_val([false, true]));
     define('GLPI_SKIP_UPDATES', $random_val([false, true]));
     define('GLPI_STRICT_ENV', $random_val([false, true]));
     define('GLPI_SYSTEM_CRON', $random_val([false, true]));
