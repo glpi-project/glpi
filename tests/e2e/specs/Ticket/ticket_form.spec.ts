@@ -366,7 +366,9 @@ test('Enter key in requester field reloads new ticket form', async ({ profile, p
     );
 
     const requester_dropdown = ticket.getDropdownByLabel('Requester');
-    await requester_dropdown.click();
+    // Click the inline search input directly to avoid hitting the link to the
+    // requester's ongoing tickets which sits at the center of the combobox.
+    await requester_dropdown.getByRole('searchbox').click();
     await page.keyboard.type('glp');
     await expect(page.getByRole('option', { name: /glpi/i }).first()).toBeVisible();
     await requester_dropdown.press('Enter');
