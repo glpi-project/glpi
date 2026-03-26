@@ -73,15 +73,17 @@
 
    {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
       {% set notice_info %}
-         <i class="fas fa-arrow-right"></i>
-         {{ call('Infocom::getWarrantyExpir', [
-            item.fields['begin_date'],
-            item.fields['duration'],
-            item.fields['notice'],
-            true,
-            item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'),
-            item.fields['periodicity']
-         ])|raw }}
+          <span title="{{ __('Start date of notice period') }}" data-bs-toggle="tooltip">
+            <i class="ti ti-arrow-right"></i>
+            {{ call('Infocom::getWarrantyExpir', [
+                item.fields['begin_date'],
+                item.fields['duration'],
+                item.fields['notice'],
+                true,
+                item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'),
+                item.fields['periodicity']
+            ])|raw }}
+         </span>
       {% endset %}
    {% endif %}
    {{ fields.dropdownNumberField('notice', item.fields['notice'], __('Notice'), {

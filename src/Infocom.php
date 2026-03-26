@@ -1785,16 +1785,121 @@ class Infocom extends CommonDBChild
             return "";
         }
 
-        $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
-
         $periodicity = ($periodicity > 0) ? $periodicity : $addwarranty;
 
-        if ($auto_renew && $periodicity > 0) {
+        // For notice calculation with periodicity, we need to find the current period
+        if ($deletenotice > 0 && $periodicity > 0 && $periodicity != $addwarranty) {
+            $current_time = strtotime($_SESSION['glpi_currenttime']);
+
+            // Calculate the number of months elapsed since the beginning
+            $current = new DateTime($_SESSION['glpi_currenttime']);
+            $start = new DateTime($from);
+            $interval = $start->diff($current);
+            $months_elapsed = ($interval->y * 12) + $interval->m;
+
+            // For TACIT contracts: renewal is based on addwarranty, not periodicity
+            // For EXPRESS contracts: renewal is based on periodicity
+            $renewal_period = $auto_renew ? $addwarranty : $periodicity;
+
+            // Find which period we are in
+            $current_period = floor($months_elapsed / $renewal_period);
+
+            // Calculate the end of the current period
+            $period_end_months = ($current_period + 1) * $renewal_period;
+
+            // Do not exceed the total duration of the contract
+            if ($period_end_months > $addwarranty && !$auto_renew) {
+                $period_end_months = $addwarranty;
+            }
+
+            // The notice is X months before the end of the period (without subtracting 1 day)
+            $notice_months = $period_end_months - $deletenotice;
+            $notice_date = new DateTime($from);
+            $notice_date->add(new DateInterval("P{$notice_months}M"));
+            $timestamp = $notice_date->getTimestamp();
+
+            // For TACIT contracts with notice: find the current or next notice
+            if ($auto_renew) {
+                // Calculate the end of the notice period (start + deletenotice)
+                $notice_end_timestamp = strtotime(date("Y-m-d", $timestamp) . " +{$deletenotice} month");
+
+                // If the notice period is not yet finished, we keep this date
+                // Otherwise, we advance to the next future notice
+                while ($notice_end_timestamp < $current_time) {
+                    $notice_months += $renewal_period;
+                    $notice_date = new DateTime($from);
+                    $notice_date->add(new DateInterval("P{$notice_months}M"));
+                    $timestamp = $notice_date->getTimestamp();
+                    $notice_end_date = clone $notice_date;
+                    $notice_end_date->add(new DateInterval("P{$deletenotice}M"));
+                    $notice_end_timestamp = $notice_end_date->getTimestamp();
+                }
+            }
+        } else {
+            // Standard calculation
+            if ($deletenotice > 0) {
+                // For NOTICE: duration - notice (WITHOUT subtracting 1 day)
+                $initial_notice_timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
+
+                // For TACIT contracts: calculate the next FUTURE notice
+                if ($auto_renew && $periodicity > 0) {
+                    $current_time = strtotime($_SESSION['glpi_currenttime']);
+
+                    $start_date = new DateTime($from);
+                    $first_notice_date = clone $start_date;
+                    $first_notice_date->modify("+{$addwarranty} month");
+                    $first_notice_date->modify("-{$deletenotice} month");
+
+                    $timestamp = $first_notice_date->getTimestamp();
+
+                    // Advance by periods until finding the current or next notice
+                    // If we are in the notice period, we keep this date
+                    while ($timestamp < $current_time) {
+                        // Calculate the end of the notice period
+                        $notice_end_date = clone $first_notice_date;
+                        $notice_end_date->modify("+{$deletenotice} month");
+
+                        // If the notice period is not yet finished, we stop
+                        if ($notice_end_date->getTimestamp() >= $current_time) {
+                            break;
+                        }
+                        // Otherwise we advance to the next period
+                        $first_notice_date->modify("+{$periodicity} month");
+                        $timestamp = $first_notice_date->getTimestamp();
+                    }
+                } else {
+                    $timestamp = $initial_notice_timestamp;
+                }
+            } else {
+                // For EXPIRATION (without notice)
+                $expiration_date = new DateTime($from);
+                $expiration_date->add(new DateInterval("P{$addwarranty}M"));
+                $timestamp = $expiration_date->getTimestamp();
+            }
+        }
+
+        if ($auto_renew && $periodicity > 0 && $deletenotice == 0) {
+            // Renewal occurs every addwarranty months (initial duration)
+            $renewal_period = ($periodicity != $addwarranty) ? $addwarranty : $periodicity;
+
             while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
-                $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$periodicity month");
+                $datetime->add(new DateInterval("P{$renewal_period}M"));
+                $timestamp = $datetime->getTimestamp();
             }
+        } elseif ($deletenotice == 0) {
+            $datetime = new DateTime();
+            $datetime->setTimestamp($timestamp);
+            $datetime->sub(new DateInterval("P1D"));
+            $timestamp = $datetime->getTimestamp();
+        }
+
+        $date = Html::convDate(date("Y-m-d", $timestamp));
+
+        // Ensure we never return null, fallback to empty string if convDate returns null
+        if ($date === null) {
+            $date = '';
         }
 
         if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {

@@ -112,7 +112,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_NEVER,
                     'periodicity' => 0,
                 ],
-                'expected' => "<span class='red'>2020-07-01</span>",
+                'expected' => "<span class='red'>2020-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -132,7 +132,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 0,
                 ],
-                'expected' => "<span class='red'>2020-07-01</span>",
+                'expected' => "<span class='red'>2020-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -142,7 +142,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_NEVER,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01',
+                'expected' => '2025-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -162,7 +162,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01',
+                'expected' => '2025-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -172,7 +172,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2025-01-01',
+                'expected' => '2029-01-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -182,7 +182,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-10-01',
+                'expected' => '2025-09-30',
             ],
         ];
     }
@@ -197,5 +197,54 @@ class ContractTest extends DbTestCase
         $this->setEntity('_test_root_entity', true);
         $contract = new \Contract();
         $this->assertEquals($expected, $contract->getSpecificValueToDisplay($field, $values));
+    }
+
+
+    public function testContractExpirationWithEdgeDates()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        $test_cases = [
+            [
+                'name' => 'Contract start 01/31 for 12 months should end on 01/30',
+                'begin_date' => '2025-01-31',
+                'duration' => 12,
+                'expected_date' => '2026-01-30',
+            ],
+            [
+                'name' => 'Contract start 03/01 for 12 months should end on 02/28',
+                'begin_date' => '2025-03-01',
+                'duration' => 12,
+                'expected_date' => '2026-02-28',
+            ],
+            [
+                'name' => 'Contract starting on 03/01/2031 for 12 months should end on 02/29',
+                'begin_date' => '2031-03-01',
+                'duration' => 12,
+                'expected_date' => '2032-02-29',
+            ],
+            [
+                'name' => 'Contract start 05/31 for 6 months should end on 11/30',
+                'begin_date' => '2025-05-31',
+                'duration' => 6,
+                'expected_date' => '2025-11-30',
+            ],
+        ];
+
+        foreach ($test_cases as $test_case) {
+            $expiration = \Infocom::getWarrantyExpir(
+                $test_case['begin_date'],
+                $test_case['duration'],
+            );
+
+            $formatted_expected = \Html::convDate($test_case['expected_date']);
+
+            $this->assertEquals(
+                $formatted_expected,
+                $expiration,
+                $test_case['name'] . " - Expected: {$formatted_expected}, Got: {$expiration}"
+            );
+        }
     }
 }
