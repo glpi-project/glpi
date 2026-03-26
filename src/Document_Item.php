@@ -293,7 +293,6 @@ class Document_Item extends CommonDBRelation
                     Document::canView()
                     || ($item::class === Ticket::class)
                     || ($item::class === Reminder::class)
-                    || ($item::class === KnowbaseItem::class)
                 ) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nbitem = self::countForItem($item);
@@ -503,7 +502,6 @@ TWIG, $twig_params);
 
         if (
             ($item::class !== Ticket::class)
-            && ($item::class !== KnowbaseItem::class)
             && ($item::class !== Reminder::class)
             && !Document::canView()
         ) {
