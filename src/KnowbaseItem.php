@@ -1044,8 +1044,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 icon: "ti ti-star",
                 type: EditorActionType::TOGGLE_FAVORITE,
                 params: [
-                    'id'      => $this->fields['id'],
-                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']),
+                    'id'      => (string) $this->fields['id'],
+                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']) ? '1' : '0',
                 ],
             );
             $actions[] = new EditorAction(
@@ -1053,9 +1053,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 icon: "ti ti-bookmark",
                 type: EditorActionType::TOGGLE_VALUE,
                 params: [
-                    'id' => $this->fields['id'],
-                    'field' => 'is_faq',
-                    'checked' => $this->fields['is_faq'],
+                    'id'      => (string) $this->fields['id'],
+                    'field'   => 'is_faq',
+                    'checked' => $this->fields['is_faq'] ? '1' : '0',
                 ],
             );
             $actions[] = new EditorAction(

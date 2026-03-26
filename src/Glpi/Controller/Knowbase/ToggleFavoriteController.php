@@ -36,6 +36,7 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
 use KnowbaseItem_Favorite;
@@ -68,8 +69,11 @@ final class ToggleFavoriteController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // Load item and check READ permission
-        $this->read(KnowbaseItem::class, $id);
+        // Load item and check UPDATE permission
+        $item = $this->read(KnowbaseItem::class, $id);
+        if (!$item->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
 
         $user_id = Session::getLoginUserID();
         $criteria = [
