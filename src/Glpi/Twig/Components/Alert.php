@@ -39,6 +39,9 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent(name: 'Alert', template: 'components/Alert.html.twig')]
 final class Alert
 {
+    /**
+     * @var 'success'|'info'|'warning'|'danger'
+     */
     public string $type = 'info';
 
     public string $title = '';
