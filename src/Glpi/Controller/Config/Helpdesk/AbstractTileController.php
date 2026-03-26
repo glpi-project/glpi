@@ -62,7 +62,6 @@ abstract class AbstractTileController extends AbstractController
         $linked_item = getItemForItemtype($linked_itemtype);
         if (
             !$linked_item instanceof LinkableToTilesInterface
-            || !$linked_item instanceof CommonDBTM
             || !$linked_item->getFromDB($linked_items_id)
         ) {
             // Invalid database data
@@ -96,7 +95,6 @@ abstract class AbstractTileController extends AbstractController
         $linked_item = getItemForItemtype($linked_itemtype);
         if (
             !$linked_item instanceof LinkableToTilesInterface
-            || !$linked_item instanceof CommonDBTM
             || !$linked_item->getFromDB($linked_items_id)
         ) {
             throw new BadRequestHttpException();
@@ -115,7 +113,6 @@ abstract class AbstractTileController extends AbstractController
         $tile = getItemForItemtype($tile_itemtype);
         if (
             !$tile instanceof TileInterface
-            || !$tile instanceof CommonDBTM
             || !$tile->getFromDB($tile_id)
         ) {
             throw new BadRequestHttpException();

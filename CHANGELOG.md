@@ -33,6 +33,10 @@ The present file will list all changes made to the project; according to the
 - Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
 - `Ticket:link_to_problem` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
 - `Ticket_Ticket:add` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
+- `countElementsInTable()` / `DbUtils::countElementsInTable()` method signatures changed.
+- `countDistinctElementsInTable` / `DbUtils::countDistinctElementsInTable()` method signatures changed.
+- `getAllDataFromTable` / `DbUtils::getAllDataFromTable()` method signatures changed.
+- Methods in `Dbutils` and the global counterparts in `src/autoload/dbutils-aliases.php` now have strict type declarations except for methods that have been deprecated.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.

@@ -747,10 +747,7 @@ class QueuedNotification extends CommonDBTM
             return false;
         }
 
-        if ($item instanceof CommonDBTM) {
-            $item->getFromDB($this->fields['items_id']);
-        }
-
+        $item->getFromDB($this->fields['items_id']);
         $target = NotificationTarget::getInstanceByType($item::class);
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/queued_notification.html.twig', [

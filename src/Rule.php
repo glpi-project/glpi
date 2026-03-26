@@ -2364,7 +2364,7 @@ TWIG, $twig_params);
                         return (($tmp == '') ? NOT_AVAILABLE : $tmp);
 
                     case "dropdown_users":
-                        return getUserName($pattern);
+                        return getUserName($pattern ?? 0);
 
                     case "dropdown_assets_itemtype":
                     case "dropdown_tracking_itemtype":

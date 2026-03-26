@@ -671,7 +671,7 @@ abstract class API
                     unset($device['is_deleted']);
                 }
 
-                if (!empty($found_devices)) {
+                if ($found_devices !== []) {
                     $all_devices[$device_type] = $found_devices;
                 }
             }

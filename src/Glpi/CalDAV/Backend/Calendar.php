@@ -107,7 +107,7 @@ class Calendar extends AbstractBackend
 
         if ($principal_item instanceof User) {
             $user_params = importArrayFromDB($principal_item->fields['plannings']);
-            $user_calendars = is_array($user_params) && array_key_exists('plannings', $user_params)
+            $user_calendars = array_key_exists('plannings', $user_params)
             ? $user_params['plannings']
             : [];
             foreach ($user_calendars as $key => $calendar_params) {
