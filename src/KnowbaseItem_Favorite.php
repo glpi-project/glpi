@@ -41,13 +41,19 @@ class KnowbaseItem_Favorite extends CommonDBRelation
     public static ?string $items_id_2 = 'users_id';
 
     public static int $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static bool $logs_for_item_1 = false;
     public static bool $logs_for_item_2 = false;
 
     public static function isFavoriteForCurrentUser(int $knowbaseitems_id): bool
     {
+        $user_id = Session::getLoginUserID();
+        if ($user_id === false) {
+            return false;
+        }
+
         return countElementsInTable(self::getTable(), [
             'knowbaseitems_id' => $knowbaseitems_id,
-            'users_id'         => Session::getLoginUserID(),
+            'users_id'         => $user_id,
         ]) > 0;
     }
 }
