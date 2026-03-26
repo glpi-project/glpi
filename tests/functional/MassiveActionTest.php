@@ -34,6 +34,8 @@
 
 namespace tests\units;
 
+use Change;
+use Change_Ticket;
 use CommonDBTM;
 use Contract;
 use Glpi\Search\SearchOption;
@@ -45,9 +47,11 @@ use MassiveAction;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Problem_Ticket;
 use Session;
 use Software;
 use Ticket;
+use TicketTask;
 use User;
 use UserEmail;
 
@@ -1458,6 +1462,7 @@ class MassiveActionTest extends DbTestCase
             'items_id' => $ticket_id3,
         ]));
     }
+
     public function testProcessMassiveActionsForOneItemtype_AssociateGroup()
     {
         $this->login();
@@ -1561,5 +1566,93 @@ class MassiveActionTest extends DbTestCase
                 "Group 2 should still be associated for software $sid"
             );
         }
+    }
+
+    public function testAddTaskMassiveActionOnProblemTicketCreatesTicketTask(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket for problem task',
+            'content' => 'content',
+        ]);
+
+        $problem = $this->createItem(Problem::class, [
+            'name'    => 'problem with linked ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItem(Problem_Ticket::class, [
+            'tickets_id'  => $ticket->getID(),
+            'problems_id' => $problem->getID(),
+        ]);
+
+        $ticket_item = new Ticket();
+
+        $this->processMassiveActionsForOneItemtype(
+            'add_task',
+            $ticket_item,
+            [$ticket->getID()],
+            [
+                'taskcategories_id' => 0,
+                'actiontime'        => 0,
+                'content'           => 'task from massive action',
+            ],
+            1,
+            0,
+            Problem_Ticket::class
+        );
+
+        $this->assertSame(
+            1,
+            countElementsInTable(TicketTask::getTable(), [
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'task from massive action',
+            ])
+        );
+    }
+
+    public function testAddTaskMassiveActionOnChangeTicketCreatesTicketTask(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket for change task',
+            'content' => 'content',
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name'    => 'change with linked ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItem(Change_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'changes_id' => $change->getID(),
+        ]);
+
+        $ticket_item = new Ticket();
+
+        $this->processMassiveActionsForOneItemtype(
+            'add_task',
+            $ticket_item,
+            [$ticket->getID()],
+            [
+                'taskcategories_id' => 0,
+                'actiontime'        => 0,
+                'content'           => 'task from change massive action',
+            ],
+            1,
+            0,
+            Change_Ticket::class
+        );
+
+        $this->assertSame(
+            1,
+            countElementsInTable(TicketTask::getTable(), [
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'task from change massive action',
+            ])
+        );
     }
 }
