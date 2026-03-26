@@ -117,10 +117,13 @@ class Session
      * Init session for the user is defined
      *
      * @param Auth $auth Auth object to init session
+     * @param bool $regenerate_session_id Whether to regenerate the session ID (default true).
+     *                                    Should be false when switching between users (e.g. impersonation)
+     *                                    to avoid breaking server-side session stores (e.g. GssapiUseSessions).
      *
      * @return void
      **/
-    public static function init(Auth $auth)
+    public static function init(Auth $auth, bool $regenerate_session_id = true)
     {
         global $CFG_GLPI;
 
@@ -137,7 +140,7 @@ class Session
                 }
             }
             self::destroy();
-            if (!defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
+            if ($regenerate_session_id && !defined('TU_USER')) { //FIXME: no idea why this fails with phpunit... :(
                 session_regenerate_id();
             }
             self::start();
@@ -2077,7 +2080,7 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
-        Session::init($auth);
+        Session::init($auth, false);
 
         // Force usage of current user lang and session mode
         $_SESSION['glpilanguage'] = $lang;
@@ -2120,7 +2123,7 @@ class Session
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
-        Session::init($auth);
+        Session::init($auth, false);
 
         // Restore previous user values
         if (!empty($impersonator_info)) {
