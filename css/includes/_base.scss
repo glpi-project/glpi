@@ -511,13 +511,39 @@ body pre {
     }
 }
 
-.itil-object-fields .col-12.glpi-full-width {
-    .col-form-label {
-        width: 28%;
+.itil-object-fields {
+    .accordion-body {
+        padding-inline: 0.5rem;
     }
 
-    .field-container {
-        width: 72%;
+    .col-12.glpi-full-width {
+        .form-control-plaintext {
+            padding-block: 0;
+        }
+
+        .col-form-label {
+            width: 28%;
+        }
+
+        .field-container {
+            width: 72%;
+        }
+    }
+}
+
+@media (max-width: 1400px) {
+    .itil-object-fields {
+        .col-12.glpi-full-width {
+            .col-form-label {
+                padding-block-start: 0.5rem;
+                padding-block-end: 0.25rem;
+            }
+
+            .col-form-label,
+            .field-container {
+                width: 100%;
+            }
+        }
     }
 }
 
