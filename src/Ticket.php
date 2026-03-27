@@ -920,19 +920,23 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
 
         // sourceof_items_id / sourceitems_id are not named properly for foreign keys so they cannot be handled by relation.constant.php
-        $DB->update(ITILFollowup::getTable(),
+        $DB->update(
+            ITILFollowup::getTable(),
             ['sourceof_items_id' => 0],
             ['sourceof_items_id' => $this->fields['id']]
         );
-        $DB->update(ITILFollowup::getTable(),
+        $DB->update(
+            ITILFollowup::getTable(),
             ['sourceitems_id' => 0],
             ['sourceitems_id' => $this->fields['id']]
         );
-        $DB->update(TicketTask::getTable(),
+        $DB->update(
+            TicketTask::getTable(),
             ['sourceof_items_id' => 0],
             ['sourceof_items_id' => $this->fields['id']]
         );
-        $DB->update(TicketTask::getTable(),
+        $DB->update(
+            TicketTask::getTable(),
             ['sourceitems_id' => 0],
             ['sourceitems_id' => $this->fields['id']]
         );
