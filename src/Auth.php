@@ -180,6 +180,7 @@ class Auth extends CommonGLPI
     /**
      * Check user existence in DB
      *
+     * @phpstan-impure $this->user_dn can be altered
      * @global DBmysql $DB
      * @param  array   $options conditions : array('name'=>'glpi')
      *                                    or array('email' => 'test at test.com')
