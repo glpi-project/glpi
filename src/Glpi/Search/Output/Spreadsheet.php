@@ -163,20 +163,18 @@ abstract class Spreadsheet extends ExportSearchOutput
                         $glpiFormat = (int) ($_SESSION["glpidate_format"] ?? 0);
 
                         $formatMap = [
-                            0 => ['php' => 'd-m-Y', 'excel' => 'dd-mm-yyyy'],
-                            1 => ['php' => 'm-d-Y', 'excel' => 'mm-dd-yyyy'],
-                            2 => ['php' => 'Y-m-d', 'excel' => 'yyyy-mm-dd'],
+                            0 => ['php' => 'Y-m-d', 'excel' => 'yyyy-mm-dd'],
+                            1 => ['php' => 'd-m-Y', 'excel' => 'dd-mm-yyyy'],
+                            2 => ['php' => 'm-d-Y', 'excel' => 'mm-dd-yyyy'],
                         ];
-                        $selected = $formatMap[$glpiFormat] ?? $formatMap[2];
+                        $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
 
-                        if ($this instanceof Csv || $this instanceof Ods) {
-                            // For CSV and ODS, use a formatted string.
-                            // The ODS writer in PhpSpreadsheet fails to apply custom number formats to numeric dates,
-                            // resulting in raw integers. Using a string guarantees the visual format.
+                        if (!$this->supportsNativeDateType()) {
+                            // For formats without native date type support, use a formatted string.
                             $phpFormat = $selected['php'] . (($col['searchopt']['datatype'] === 'datetime') ? ' H:i' : '');
                             $worksheet->setCellValue([$col_num, $line_num], $dateTime->format($phpFormat));
                         } else {
-                            // For XLSX, use PHPToExcel for native date support
+                            // For formats supporting native date type, use PHPToExcel
                             $excelDateValue = Date::PHPToExcel($dateTime);
                             $worksheet->setCellValue([$col_num, $line_num], $excelDateValue);
 
@@ -568,4 +566,5 @@ abstract class Spreadsheet extends ExportSearchOutput
 
     abstract public function getMime(): string;
     abstract public function getFileName(): string;
+    abstract protected function supportsNativeDateType(): bool;
 }

@@ -52,4 +52,9 @@ final class Xlsx extends Spreadsheet
     {
         return "glpi.xlsx";
     }
+
+    protected function supportsNativeDateType(): bool
+    {
+        return true;
+    }
 }

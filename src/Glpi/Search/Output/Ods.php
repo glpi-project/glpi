@@ -61,4 +61,9 @@ final class Ods extends Spreadsheet
     {
         return "glpi.ods";
     }
+
+    protected function supportsNativeDateType(): bool
+    {
+        return false;
+    }
 }

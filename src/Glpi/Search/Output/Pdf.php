@@ -80,4 +80,9 @@ final class Pdf extends Spreadsheet
     {
         return "glpi.pdf";
     }
+
+    protected function supportsNativeDateType(): bool
+    {
+        return false;
+    }
 }
