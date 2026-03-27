@@ -16192,11 +16192,17 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Certificate\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 4,
+	'count' => 6,
 	'path' => __DIR__ . '/src/NotificationTargetCertificate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on Certificate\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetCertificate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method isNewItem\\(\\) on Certificate\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetCertificate.php',
@@ -16456,7 +16462,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Domain\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 2,
+	'count' => 4,
+	'path' => __DIR__ . '/src/NotificationTargetDomain.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method isNewItem\\(\\) on Domain\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetDomain.php',
 ];
 $ignoreErrors[] = [
