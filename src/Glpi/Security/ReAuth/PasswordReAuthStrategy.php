@@ -37,8 +37,8 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Auth;
-use User;
 use Override;
+use User;
 
 final class PasswordReAuthStrategy implements ReAuthStrategyInterface
 {
