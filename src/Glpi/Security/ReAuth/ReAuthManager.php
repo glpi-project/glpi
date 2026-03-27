@@ -75,7 +75,7 @@ final class ReAuthManager
 
     public function isReAuthenticated(): bool
     {
-        if (GLPI_DISABLE_REAUTH) {
+        if (GLPI_REAUTH) {
             return true;
         }
 
