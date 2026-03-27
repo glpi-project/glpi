@@ -101,7 +101,7 @@
       {% endif %}
 
       {% if is_private %}
-         <span class="is-private ms-2" title="{{ __('This entry is "internal" (visible only to technicians)') }}"
+         <span class="is-private ms-2" title="{{ __('This entry is "internal" (visible only to technicians)') }}" data-testid="private-followup-hint"
                data-bs-toggle="tooltip" data-bs-placement="bottom">
             <i class="ti ti-eye-off" aria-label="{{ __('Private') }}"></i>
          </span>

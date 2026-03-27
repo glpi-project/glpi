@@ -49,9 +49,14 @@ export class TicketPage extends GlpiPage
         await this.page.goto(`/front/ticket.form.php`);
     }
 
-    public async goto(id: number): Promise<void>
+    public async goto(id: number, tab?: string): Promise<void>
     {
-        await this.page.goto(`/front/ticket.form.php?id=${id}`);
+        let url = `/front/ticket.form.php?id=${id}`;
+        if (!tab) {
+            tab = 'Ticket$main';
+        }
+        url += `&forcetab=${tab}`;
+        await this.page.goto(url);
     }
 
     public async doSetEntityDropdown(value: string): Promise<void>
