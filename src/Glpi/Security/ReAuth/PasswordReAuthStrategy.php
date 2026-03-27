@@ -38,10 +38,11 @@ namespace Glpi\Security\ReAuth;
 
 use Auth;
 use User;
+use Override;
 
 final class PasswordReAuthStrategy implements ReAuthStrategyInterface
 {
-    #[\Override]
+    #[Override]
     public function verify(int $users_id, string $user_input): bool
     {
         $user = new User();
@@ -52,7 +53,7 @@ final class PasswordReAuthStrategy implements ReAuthStrategyInterface
         return Auth::checkPassword($user_input, $user->fields['password']);
     }
 
-    #[\Override]
+    #[Override]
     public function isAvailable(int $users_id, int $entities_id = 0): bool
     {
         $user = new User();
@@ -64,19 +65,19 @@ final class PasswordReAuthStrategy implements ReAuthStrategyInterface
             && !empty($user->fields['password']);
     }
 
-    #[\Override]
+    #[Override]
     public function getLabel(): string
     {
         return __('Password');
     }
 
-    #[\Override]
+    #[Override]
     public function getPromptTemplate(): string
     {
         return 'pages/reauth/password_form.html.twig';
     }
 
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return 50;
