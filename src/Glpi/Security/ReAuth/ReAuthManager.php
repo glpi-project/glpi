@@ -42,7 +42,7 @@ use Safe\DateTime;
 
 final class ReAuthManager
 {
-    public const REAUTH_DELAY_SECONDS = 15 * MINUTE_TIMESTAMP;
+    public const int REAUTH_DELAY_SECONDS = 15 * MINUTE_TIMESTAMP;
 
     private ?ReAuthStrategyInterface $strategy = null;
 
