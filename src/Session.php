@@ -123,8 +123,8 @@ class Session
 
         self::reset();
 
-        // Check user exists
-        if ($auth->userExists(['glpi_users.id' => $auth->user->fields['id'] ?? null]) === Auth::USER_DOESNT_EXIST) {
+        // Check user exists - cannot use $auth->userExists() which has side effects
+        if (!isset($auth->user->fields['id']) || !$auth->user->getFromDB($auth->user->fields['id'])) {
             $auth->auth_succeded = false;
             $auth->addToError(__("You don't have right to connect"));
 
