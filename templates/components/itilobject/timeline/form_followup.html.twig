@@ -144,6 +144,7 @@
                               'on_change': 'itilfollowuptemplate_update' ~ rand ~ '(this.value)',
                               'entity': item.fields['entities_id'],
                               'rand': rand,
+                              'aria_label': _n('Followup template', 'Followup templates', 1),
                            }
                         ) }}
 
@@ -225,7 +226,8 @@
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
                                     {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
-                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
+                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}"
+                                    data-testid="pending-checkbox" />
                            </label>
                         </span>
 
