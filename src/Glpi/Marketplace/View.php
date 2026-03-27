@@ -554,7 +554,7 @@ JS;
             'buttons'       => self::getButtons($plugin_key),
             'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
             'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
-            'updatable'     => !$must_be_cleaned && version_compare($plugin['version'], $plugin['highest_available_version'] ?? '0', '<'),
+            'updatable'     => !$must_be_cleaned && version_compare($plugin['version'] ?? '0', $plugin['highest_available_version'] ?? '0', '<'),
         ];
         return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
             'tab'    => $tab,
