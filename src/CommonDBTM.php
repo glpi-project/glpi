@@ -3196,16 +3196,26 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canGlobal(int $right, null &$reauth_needed = null): bool
     {
-        $reauth_needed = self::isUserReauthenticationNeeded();
+        $_reauth_needed = self::isUserReauthenticationNeeded();
 
-        return match ($right) {
+        $allowed = match ($right) {
             READ => static::canView(),
-            UPDATE => !$reauth_needed && static::canUpdate(),
+            UPDATE => static::canUpdate(),
             CREATE => static::canCreate(),
             DELETE => static::canDelete(),
             PURGE => static::canPurge(),
             default => false,
         };
+
+        // for update right, return false if reauth needed
+        if ($allowed && $right === UPDATE) {
+            if ($_reauth_needed) {
+                $reauth_needed = true;
+                return false;
+            }
+        }
+
+        return $allowed;
     }
 
 
