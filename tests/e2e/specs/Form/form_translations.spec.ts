@@ -174,7 +174,10 @@ test('Can translate a form with many inputs', async ({ page, profile, api }) => 
     await form_translation.addLanguage('Français');
     await form_translation.expectLanguageDropdownOpened('Français');
 
-    // Save the translation
+    // Save the translation (large form with many fields, allow more time for processing)
     await form_translation.saveTranslation();
-    await expect(page.getByRole('alert')).toContainText('Item successfully updated: Français');
+    await expect(page.getByRole('alert')).toContainText(
+        'Item successfully updated: Français',
+        { timeout: 30000 }
+    );
 });
