@@ -91,15 +91,11 @@ final class UploadInlineImageController extends AbstractController
         try {
             $real_path = realpath($file_path);
             $real_tmp_dir = realpath(GLPI_TMP_DIR);
-        } catch (FilesystemException) {
-            throw new BadRequestHttpException();
-        }
-        if (!str_starts_with($real_path, $real_tmp_dir)) {
-            throw new BadRequestHttpException();
-        }
 
-        // Validate file is an image
-        if (!Document::isImage($real_path)) {
+            if (!str_starts_with($real_path, $real_tmp_dir) || !Document::isImage($real_path)) {
+                throw new BadRequestHttpException();
+            }
+        } catch (FilesystemException) {
             throw new BadRequestHttpException();
         }
 
@@ -116,7 +112,7 @@ final class UploadInlineImageController extends AbstractController
             '_filename'               => [$filename],
             '_only_if_upload_succeed'  => 1,
             'entities_id'             => $kbitem->fields['entities_id'] ?? 0,
-            'is_recursive'            => $kbitem->fields['is_recursive'] ?? 1,
+            'is_recursive'            => $kbitem->fields['is_recursive'] ?? 0,
             'name'                    => $display_name,
         ];
         // Only pass prefix if it's a real prefix (shorter than filename)
