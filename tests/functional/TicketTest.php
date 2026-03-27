@@ -72,6 +72,7 @@ use Ticket;
 use Ticket_Contract;
 use Ticket_User;
 use TicketSatisfaction;
+use TicketTask;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
 use TicketValidation;
@@ -10228,5 +10229,58 @@ HTML,
         ]);
 
         $this->checkActors($ticket, []);
+    }
+
+    /**
+     * Test that sourceof_items_id / sourceitems_id references in followups and tasks are cleaned when a ticket is purged
+     * @return void
+     */
+    public function testSourceOfSourceItemCleanup(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Ticket with source item',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name' => 'Another ticket',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket2->getID(),
+            'content' => 'Followup content',
+        ]);
+
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket2->getID(),
+            'content' => 'Task content',
+        ]);
+
+        $followup->update([
+            'id' => $followup->getID(),
+            'sourceof_items_id' => $ticket->getID(),
+            'sourceitems_id' => $ticket->getID(),
+        ]);
+        $task->update([
+            'id' => $task->getID(),
+            'sourceof_items_id' => $ticket->getID(),
+            'sourceitems_id' => $ticket->getID(),
+        ]);
+
+        $this->assertTrue($ticket->delete(['id' => $ticket->getID()], true));
+
+        $this->assertTrue($followup->getFromDB($followup->getID()));
+        $task->getFromDB($task->getID());
+
+        $this->assertEquals(0, $followup->fields['sourceof_items_id']);
+        $this->assertEquals(0, $task->fields['sourceof_items_id']);
+        $this->assertEquals(0, $followup->fields['sourceitems_id']);
+        $this->assertEquals(0, $task->fields['sourceitems_id']);
     }
 }

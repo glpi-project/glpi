@@ -899,6 +899,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function cleanDBonPurge()
     {
+        global $DB;
 
         // OlaLevel_Ticket does not extends CommonDBConnexity
         $olaLevel_ticket = new OlaLevel_Ticket();
@@ -917,6 +918,24 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // CommonITILTask does not extends CommonDBConnexity
         $tt = new TicketTask();
         $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+        // sourceof_items_id / sourceitems_id are not named properly for foreign keys so they cannot be handled by relation.constant.php
+        $DB->update(ITILFollowup::getTable(),
+            ['sourceof_items_id' => 0],
+            ['sourceof_items_id' => $this->fields['id']]
+        );
+        $DB->update(ITILFollowup::getTable(),
+            ['sourceitems_id' => 0],
+            ['sourceitems_id' => $this->fields['id']]
+        );
+        $DB->update(TicketTask::getTable(),
+            ['sourceof_items_id' => 0],
+            ['sourceof_items_id' => $this->fields['id']]
+        );
+        $DB->update(TicketTask::getTable(),
+            ['sourceitems_id' => 0],
+            ['sourceitems_id' => $this->fields['id']]
+        );
 
         $this->deleteChildrenAndRelationsFromDb(
             [
