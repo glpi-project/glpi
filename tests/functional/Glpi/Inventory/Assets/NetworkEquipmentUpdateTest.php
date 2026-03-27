@@ -185,7 +185,6 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         new Inventory($data);
         $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
-        $found = $networkEquipment->find();
         $this->assertCount(1, $networkEquipment->find(['name' => 'switchr2d2']));
     }
 

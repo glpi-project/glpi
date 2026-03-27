@@ -68,15 +68,29 @@ switch ($action) {
     case 'get_items_from_itemtype':
         if (array_key_exists($_POST['itemtype'], Webhook::getSubItemForAssistance())) {
             $object = getItemForItemtype($_POST['itemtype']);
-            $data = $object->find();
+            $itil_type = null;
+            $foreign_key = null;
+            global $DB;
+            $select = [
+                'id',
+                'itemtype',
+                'items_id',
+            ];
+            if ($object instanceof CommonITILTask || $object instanceof CommonITILValidation) {
+                $itil_type = $object::getItilObjectItemType();
+                $foreign_key = getForeignKeyFieldForItemType($itil_type);
+                $select[] = $foreign_key;
+            }
+            $it = $DB->request([
+                'SELECT' => $select,
+                'FROM'   => $object::class,
+            ]);
             $values = [];
-            foreach ($data as $items_id => $items_data) {
+            foreach ($it as $items_data) {
                 if ($object instanceof CommonITILTask || $object instanceof CommonITILValidation) {
-                    $itil_type = $object::getItilObjectItemType();
-                    $foreign_key = getForeignKeyFieldForItemType($itil_type);
-                    $values[$items_id] = $itil_type::getTypeName(0) . " " . $items_data[$foreign_key] . " => " . $object::getTypeName(0) . " " . $items_id;
+                    $values[$items_data['id']] = $itil_type::getTypeName(0) . " " . $items_data[$foreign_key] . " => " . $object::getTypeName(0) . " " . $items_data['id'];
                 } else {
-                    $values[$items_id] = $items_data['itemtype']::getTypeName(0) . " " . $items_data['items_id'] . " => " . $object::getTypeName(0) . " " . $items_id;
+                    $values[$items_data['id']] = $items_data['itemtype']::getTypeName(0) . " " . $items_data['items_id'] . " => " . $object::getTypeName(0) . " " . $items_data['id'];
                 }
             }
             echo Dropdown::showFromArray('items_id', $values, [

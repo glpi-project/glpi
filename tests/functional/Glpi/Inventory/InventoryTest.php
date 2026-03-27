@@ -1159,9 +1159,7 @@ class InventoryTest extends InventoryTestCase
         $this->checkComputer1Batteries($computer);
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(3, $found);
+        $this->assertEquals(3, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -1230,8 +1228,10 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame($agenttype['id'], $agent['agenttypes_id']);
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $mrules_found = $mlogs->find();
+        $mrules_found = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => \RuleMatchedLog::getTable(),
+        ]);
         $this->assertCount(2, $mrules_found);
 
         $mrules_criteria = [
@@ -1884,8 +1884,8 @@ class InventoryTest extends InventoryTestCase
 
         //check matchedlogs
         $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find(['NOT' => ['id' => array_keys($mrules_found)]]);
-        $mrules_criteria['WHERE'] = ['NOT' => [\RuleMatchedLog::getTable() . '.id' => array_keys($mrules_found)]];
+        $found = $mlogs->find(['NOT' => ['id' => array_column($mrules_found, 'id')]]);
+        $mrules_criteria['WHERE'] = ['NOT' => [\RuleMatchedLog::getTable() . '.id' => array_column($mrules_found, 'id')]];
         $this->assertCount(3, $found);
 
         $monitor_criteria = $mrules_criteria;
@@ -2219,9 +2219,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(6, $found);//1 equipment, 5 unmanageds
+        $this->assertEquals(6, countElementsInTable(\RuleMatchedLog::getTable()));//1 equipment, 5 unmanageds
 
         $mrules_criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -2721,9 +2719,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }*/
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(48, $found);
+        $this->assertEquals(48, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $mrules_criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -2874,9 +2870,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(2, $found);
+        $this->assertEquals(2, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $mrules_criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -2900,6 +2894,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $this->assertSame(Request::INVENT_QUERY, $neteq['method']);
         }
     }
+
     public function testImportNetworkEquipmentMultiConnections()
     {
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'networkequipment_3.json'));
@@ -3546,9 +3541,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(61, $found);
+        $this->assertEquals(61, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $mrules_criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -3929,9 +3922,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount($expected_eq_count + count($unmanageds), $found);
+        $this->assertEquals($expected_eq_count + count($unmanageds), countElementsInTable(\RuleMatchedLog::getTable()));
 
         $mrules_criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -4471,9 +4462,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertEquals($expected, $result);
 
         //check no matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(0, $found);
+        $this->assertEquals(0, countElementsInTable(\RuleMatchedLog::getTable()));
 
         //test inventory from refused equipment, will be accepted since rules has been reset ;)
         $refused = new \RefusedEquipment();
@@ -4507,9 +4496,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame('glpixps', $computer->fields['name']);
 
         //check no matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(3, $found);
+        $this->assertEquals(3, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -5342,9 +5329,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertGreaterThan(0, $agent['items_id']);
 
         //check matchedlogs
-        $mlogs = new \RuleMatchedLog();
-        $found = $mlogs->find();
-        $this->assertCount(1, $found);
+        $this->assertEquals(1, countElementsInTable(\RuleMatchedLog::getTable()));
 
         $criteria = [
             'FROM' => \RuleMatchedLog::getTable(),
@@ -8603,8 +8588,7 @@ JSON;
         $this->assertCount(1, $nports);
         $nport_ref = $nports->current();
         $this->assertSame('2', $nport_ref['ifinternalstatus']);
-        $netname = new \NetworkName();
-        $this->assertCount(0, $netname->find());
+        $this->assertEquals(0, countElementsInTable(\NetworkName::getTable()));
 
         //make partial, change vpn status, and redo inventory
         $json = json_decode($json_str);
@@ -8835,7 +8819,7 @@ JSON;
             ])
         );
         $ip = new \IPAddress();
-        $this->assertCount(1, $ip->find(), 'More than one IP found :/');
+        $this->assertEquals(1, countElementsInTable(\IPAddress::getTable()), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
@@ -8875,7 +8859,7 @@ JSON;
             ])
         );
         $ip = new \IPAddress();
-        $this->assertCount(1, $ip->find(), 'More than one IP found :/');
+        $this->assertEquals(1, countElementsInTable(\IPAddress::getTable()), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
@@ -8987,7 +8971,7 @@ JSON;
             ])
         );
         $ip = new \IPAddress();
-        $this->assertCount(1, $ip->find(), 'More than one IP found :/');
+        $this->assertEquals(1, countElementsInTable(\IPAddress::getTable()), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
@@ -9028,7 +9012,7 @@ JSON;
             ])
         );
         $ip = new \IPAddress();
-        $this->assertCount(1, $ip->find(), 'More than one IP found :/');
+        $this->assertEquals(1, countElementsInTable(\IPAddress::getTable()), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
                 'itemtype' => $netname::getType(),
@@ -9590,7 +9574,7 @@ JSON;
             'name' => 'New location from test',
         ]);
         $this->assertGreaterThan(0, $locations_id);
-        $count_locations = count($location->find());
+        $count_locations = countElementsInTable(\Location::getTable());
 
         $rule = new \Rule();
         $input = [
@@ -9668,7 +9652,7 @@ JSON;
         $this->assertTrue($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']));
         $this->assertSame($locations_id, $neteq->fields['locations_id']);
         //check no location has been added
-        $this->assertCount($count_locations, $location->find());
+        $this->assertEquals($count_locations, countElementsInTable(\Location::getTable()));
     }
 
     public function testRuleLocationStackedEquipment(): void
@@ -9680,7 +9664,7 @@ JSON;
             'name' => 'New location from test',
         ]);
         $this->assertGreaterThan(0, $locations_id);
-        $count_locations = count($location->find());
+        $count_locations = countElementsInTable(\Location::getTable());
 
         $rule = new \Rule();
         $input = [
@@ -9729,7 +9713,7 @@ JSON;
         }
 
         //check no location has been added
-        $this->assertCount($count_locations, $location->find());
+        $this->assertEquals($count_locations, countElementsInTable(\Location::getTable()));
     }
 
     public function testManufacturersRegexpRules()

@@ -980,9 +980,14 @@ HTML,
                 ],
             ]);
 
-            // Validate notification queue size
-            $queue = (new QueuedNotification())->find();
-            $emails = array_column($queue, 'recipient');
+            $queue = $DB->request([
+                'SELECT' => ['recipient'],
+                'FROM' => QueuedNotification::getTable(),
+            ]);
+            $emails = [];
+            foreach ($queue as $data) {
+                $emails[] = $data['recipient'];
+            }
             sort($emails);
             sort($expected_queue);
             $this->assertEquals($expected_queue, $emails);

@@ -1399,9 +1399,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
     {
         global $CFG_GLPI;
 
-        //checks there are no unmanageds
         $unmanaged = new \Unmanaged();
-        $this->assertCount(0, $unmanaged->find());
+        $this->assertEquals(0, countElementsInTable(\Unmanaged::getTable()));
 
         //create a network equipment with 00:01:23:45:67:89 MAC
         $equipment1 = new \NetworkEquipment();
@@ -1445,7 +1444,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         );
 
         //8 connections on port, but one related to existing equipment
-        $this->assertCount(7, $unmanaged->find());
+        $this->assertEquals(7, countElementsInTable(\Unmanaged::getTable()));
     }
 
     public function testNetworkEquipmentsNoConnections()
@@ -1460,8 +1459,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         global $CFG_GLPI;
 
         //checks there are no unmanageds
-        $unmanaged = new \Unmanaged();
-        $this->assertCount(0, $unmanaged->find());
+        $this->assertEquals(0, countElementsInTable(\Unmanaged::getTable()));
 
         // Import the network equipment
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
@@ -1485,16 +1483,16 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         );
 
         //still no unmanageds
-        $this->assertCount(0, $unmanaged->find());
+        $this->assertEquals(0, countElementsInTable(\Unmanaged::getTable()));
     }
 
     public function testNetworkEquipmentsConnectionsConverted(): void
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         //checks there are no unmanageds
         $unmanaged = new \Unmanaged();
-        $this->assertCount(0, $unmanaged->find());
+        $this->assertEquals(0, countElementsInTable(\Unmanaged::getTable()));
 
         // Import the network equipment
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
@@ -1518,10 +1516,10 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         );
 
         //8 connections on port + one hub
-        $this->assertCount(9, $unmanaged->find());
+        $this->assertEquals(9, countElementsInTable(\Unmanaged::getTable()));
 
         $port = new \NetworkPort();
-        $this->assertTrue($port->getFromDBByCrit(['itemtype' => $unmanaged->getType(), 'mac' => '00:01:23:45:67:89']));
+        $this->assertTrue($port->getFromDBByCrit(['itemtype' => \Unmanaged::class, 'mac' => '00:01:23:45:67:89']));
         $this->assertTrue($unmanaged->getFromDB($port->fields['items_id']));
 
         //convert to NetworkEquipment
@@ -1538,12 +1536,15 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         \Unmanaged::processMassiveActionsForOneItemtype($ma, $unmanaged, [$unmanaged->fields['id']]);
 
         //8 connections on port + one hub - 1 converted
-        $unmanageds = $unmanaged->find();
+        $unmanageds = $DB->request([
+            'SELECT' => 'id',
+            'FROM' => \Unmanaged::getTable(),
+        ]);
         $this->assertCount(8, $unmanageds);
         foreach ($unmanageds as $toremove) {
             $this->assertTrue($unmanaged->delete(['id' => $toremove['id']], true, false));
         }
-        $this->assertCount(0, $unmanaged->find());
+        $this->assertEquals(0, countElementsInTable(\Unmanaged::getTable()));
 
         // Import the network equipment again
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/connected_switch.xml');
@@ -1562,7 +1563,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertSame([], $inventory->getErrors());
 
         //8 connections on port, but one related to existing equipment
-        $this->assertCount(7, $unmanaged->find());
+        $this->assertEquals(7, countElementsInTable(\Unmanaged::getTable()));
     }
 
     public function testDefaultInstantiationType()

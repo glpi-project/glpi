@@ -145,8 +145,7 @@ class PowerSupplyTest extends AbstractInventoryAsset
         $computers_id = $computer->fields['id'];
 
         //we have 1 power supply
-        $pws = $device_ps->find();
-        $this->assertCount(1, $pws);
+        $this->assertEquals(1, countElementsInTable(\DevicePowerSupply::getTable()));
 
         //we have 1 power supply items linked to the computer
         $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -754,9 +754,15 @@ trait FormTesterTrait
 
     protected function disableExistingForms(): void
     {
-        $forms = (new Form())->find([]);
+        global $DB;
+
+        $forms = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Form::getTable(),
+        ]);
+
+        $form = new Form();
         foreach ($forms as $row) {
-            $form = new Form();
             $form->update([
                 'id' => $row['id'],
                 'is_active' => false,

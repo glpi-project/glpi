@@ -89,12 +89,12 @@ class NetworkPortConnectionLogTest extends DbTestCase
 
         //check connection log has been created
         $connection_log = new \NetworkPortConnectionLog();
-        $logs = $connection_log->find();
+        $logs = $connection_log->find([
+            'connected' => 1,
+            'networkports_id_source' => $ports_id_1,
+            'networkports_id_destination' => $ports_id_2,
+        ]);
         $this->assertCount(1, $logs);
-        $log = array_pop($logs);
-        $this->assertSame(1, $log['connected']);
-        $this->assertSame($ports_id_1, $log['networkports_id_source']);
-        $this->assertSame($ports_id_2, $log['networkports_id_destination']);
 
         //check for display
         ob_start();

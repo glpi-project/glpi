@@ -256,8 +256,7 @@ class ControllerTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 controllers
-        $controllers = $device_control->find();
-        $this->assertCount(3, $controllers);
+        $this->assertEquals(3, countElementsInTable(\DeviceControl::getTable()));
 
         //we still have 3 controllers items linked to the computer
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -302,8 +301,7 @@ class ControllerTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 controllers
-        $controllers = $device_control->find();
-        $this->assertCount(3, $controllers);
+        $this->assertEquals(3, countElementsInTable(\DeviceControl::getTable()));
 
         //we now have 2 controllers linked to computer only
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

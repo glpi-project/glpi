@@ -253,8 +253,7 @@ class SensorTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 sensors (+ 1 from bootstrap)
-        $sensors = $device_sensor->find();
-        $this->assertCount(3 + 1, $sensors);
+        $this->assertEquals(3 + 1, countElementsInTable(\DeviceSensor::getTable()));
 
         //we still have 3 sensors items linked to the computer
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -294,8 +293,7 @@ class SensorTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         //we still have 3 sensors (+1 from bootstrap)
-        $sensors = $device_sensor->find();
-        $this->assertCount(3 + 1, $sensors);
+        $this->assertEquals(3 + 1, countElementsInTable(\DeviceSensor::getTable()));
 
         //we now have 2 sensors linked to computer only
         $sensors = $item_sensor->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

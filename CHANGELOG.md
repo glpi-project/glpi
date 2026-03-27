@@ -24,6 +24,7 @@ The present file will list all changes made to the project; according to the
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final
 - `KnowbaseItem_Revision` is now final
+- `CommonDBTM::find` now requires a non-empty condition
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.

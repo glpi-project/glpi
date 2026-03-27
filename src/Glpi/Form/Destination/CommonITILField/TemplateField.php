@@ -150,8 +150,13 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
 
     private function getTemplateValuesForDropdown(Form $form): array
     {
+        global $DB;
+
         $values = [];
-        $templates = getItemForItemtype($this->itil_template_class)->find();
+        $templates = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => $this->itil_template_class::getTable(),
+        ]);
 
         foreach ($templates as $template) {
             $values[$template['id']] = $template['name'];
