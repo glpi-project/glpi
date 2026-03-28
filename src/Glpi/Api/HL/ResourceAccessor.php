@@ -390,6 +390,7 @@ final class ResourceAccessor
         }
         return new JSONResponse($results['results'], $has_more ? 206 : 200, [
             'Content-Range' => $results['start'] . '-' . $end . '/' . $results['total'],
+            'GLPI-After-Cursor' => $results['cursor_after'] ?? null,
         ]);
     }
 

@@ -50,7 +50,9 @@ final class RecordSet
     public function __construct(
         private Search $search,
         /** @var array<string, array> */
-        private array $records
+        private array $records,
+        /** @var array The criteria used to fetch this record set. Will be used to generate a cursor. */
+        private array $criteria
     ) {}
 
     private function getJoinNameForFKey(string $fkey): string
@@ -418,5 +420,47 @@ final class RecordSet
                 ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
+    }
+
+    /**
+     * @param list<mixed> $hydrated_records
+     * @return string A cursor that can be used to fetch the next page of results based on the search criteria sorts
+     * @throws \JsonException
+     */
+    public function getCursor(array $hydrated_records): string
+    {
+        // Return a base64 encoded json string to represent the cursor
+        $last_record = end($hydrated_records);
+        if ($last_record === false) {
+            return '';
+        }
+        $sort = [];
+        foreach ($this->criteria['ORDERBY'] ?? [] as $k => $order) {
+            if (is_array($order)) {
+                $sort[$k] = $order['order'] ?? 'ASC';
+            } else {
+                $parts = explode(' ', $order);
+                $sort[$parts[0]] = $parts[1] ?? 'ASC';
+            }
+        }
+        // Always add id as the last sort to ensure a stable sort
+        if (!isset($sort['id'])) {
+            $sort['id'] = 'ASC';
+        }
+        $cursor = [];
+        foreach ($sort as $field => $direction) {
+            $field_path = str_replace(chr(0x1F), '.', $field);
+            $value = ArrayPathAccessor::getElementByArrayPath($last_record, $field_path);
+            if (is_array($value)) {
+                // We can't handle array values in the cursor
+                $value = null;
+            }
+            $cursor[] = [
+                'field' => $field,
+                'direction' => $direction,
+                'value' => $value,
+            ];
+        }
+        return base64_encode(json_encode($cursor, JSON_THROW_ON_ERROR));
     }
 }
