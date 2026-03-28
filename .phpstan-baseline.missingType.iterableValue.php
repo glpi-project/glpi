@@ -10856,52 +10856,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Cache\\\\ConfigureCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Cache/ConfigureCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Cache\\\\SetNamespacePrefixCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Cache/SetNamespacePrefixCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Command\\\\ConfigurationCommandInterface\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Command/ConfigurationCommandInterface.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\CommandLoader\\:\\:getCommandFromFile\\(\\) has parameter \\$prefixes with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\ConfigureCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/ConfigureCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\EnableTimezonesCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\InstallCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\UpdateCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Diagnostic\\\\CheckDocumentsIntegrityCommand\\:\\:getDetailedError\\(\\) has parameter \\$document_row with no value type specified in iterable type array\\.$#',
@@ -11018,52 +10976,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\MigrateAllCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MigrateAllCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\MyIsamToInnoDbCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:\\$elements_mapping type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\TimestampsCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\UnsignedKeysCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\Utf8mb4Command\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Plugin\\\\InstallCommand\\:\\:getAdditionnalParameters\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Security\\\\ChangekeyCommand\\:\\:getConfigurationFilesToUpdate\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Security/ChangekeyCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\ContentTemplates\\\\Parameters\\\\AbstractParameters\\:\\:defineValues\\(\\) return type has no value type specified in iterable type array\\.$#',
