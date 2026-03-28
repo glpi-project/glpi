@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\SMTP\OauthConfig;
+use Symfony\Component\Mailer\Exception\LogicException;
+use Symfony\Component\Mailer\Transport\Dsn;
+use Symfony\Component\Mailer\Transport\NativeTransportFactory;
 
 use function Safe\json_decode;
 
@@ -152,7 +155,9 @@ class NotificationMailingSetting extends NotificationSetting
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
         $is_mail_function_available = true;
-        if (!function_exists('mail')) {
+        try {
+            (new NativeTransportFactory())->create(Dsn::fromString('native://default'));
+        } catch (LogicException) {
             unset($mail_methods[MAIL_MAIL]);
             $is_mail_function_available = false;
         }
