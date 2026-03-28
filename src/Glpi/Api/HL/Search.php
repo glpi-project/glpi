@@ -491,7 +491,42 @@ final class Search
         // Handle pagination
         $start = $this->context->getRequestParameter('start');
         $limit = $this->context->getRequestParameter('limit');
-        if (is_numeric($start)) {
+        // Parameter for cursor-based pagination
+        $after = $this->context->getRequestParameter('after');
+
+        if ($after !== null) {
+            // cursor is an encoded array of fields and values to start after (to work with multiple sort fields) in the order of the sort fields.
+            $after = json_decode(base64_decode($after), true, 512, JSON_THROW_ON_ERROR);
+            $tuple_comparison = [];
+            // Build the criteria to start after the specified values
+            /** @var array{field: string, direction: string, value: mixed} $field */
+            foreach ($after as $field) {
+                $field_name = $field['field'];
+                $direction = strtoupper($field['direction']) === 'DESC' ? 'DESC' : 'ASC';
+                $value = $field['value'];
+                // Verify the property is valid
+                if (!isset($this->context->getFlattenedProperties()[$field_name])) {
+                    throw new APIException(
+                        message: 'Invalid property for cursor-based pagination: ' . $field_name,
+                        user_message: 'Invalid property for cursor-based pagination: ' . $field_name,
+                        code: 400,
+                    );
+                }
+                $sql_field = $this->getSQLFieldForProperty($field_name);
+                // Append the criteria as a tuple comparison (key 0 = left, key 1 = right)
+                // Tuple comparison will always use >, so DESC fields should put the value on the left side.
+                if ($direction === 'ASC') {
+                    $tuple_comparison[0][] = $this->db_read::quoteName($sql_field);
+                    $tuple_comparison[1][] = $this->db_read::quoteValue($value);
+                } else {
+                    $tuple_comparison[0][] = $this->db_read::quoteValue($value);
+                    $tuple_comparison[1][] = $this->db_read::quoteName($sql_field);
+                }
+            }
+            if (!empty($tuple_comparison)) {
+                $criteria['WHERE'][] = [new QueryExpression('(' . implode(',', $tuple_comparison[0]) . ') > (' . implode(',', $tuple_comparison[1]) . ')')];
+            }
+        } elseif (is_numeric($start)) {
             $criteria['START'] = (int) $start;
         }
         if (is_numeric($limit)) {
@@ -719,7 +754,7 @@ final class Search
             return (int) $row['count'];
         }
 
-        return new RecordSet($this, $records);
+        return new RecordSet($this, $records, $criteria);
     }
 
     public function getItemRecordPath(string $join_name, mixed $id, array $hydrated_record): array
@@ -795,6 +830,7 @@ final class Search
         Profiler::getInstance()->stop('Get matching records');
         Profiler::getInstance()->start('Hydrate matching records', Profiler::CATEGORY_HLAPI);
         $results = $record_set->hydrate();
+        $cursor = $record_set->getCursor($results);
         Profiler::getInstance()->stop('Hydrate matching records');
 
         $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn($prop) => isset($prop['x-mapper']));
@@ -852,6 +888,7 @@ final class Search
             'results' => array_values($results),
             'start' => $criteria['START'] ?? 0,
             'limit' => $criteria['LIMIT'] ?? count($results),
+            'cursor_after' => $cursor,
             'total' => $total,
         ];
     }
