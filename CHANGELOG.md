@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
+- CLI command `security:change_oauth_key` to (re)generate the OAuth keys. This can be used to change keys or to create them in the case they fail to be created during the installation/update process.
 
 ### Changed
 
