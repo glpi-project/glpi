@@ -5420,12 +5420,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract_User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CronTask\\:\\:cronInfo\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CronTask\\:\\:getForbiddenStandardMassiveAction\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

@@ -16,6 +16,7 @@ The present file will list all changes made to the project; according to the
 ### Removed
 
 ### API changes
+- Type declarations for some `CronTask` methods have been added.
 
 #### Added
 
