@@ -6777,14 +6777,12 @@ final class SQLProvider implements SearchProviderInterface
                     return __('Default value');
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
-                        $progressbar_data = array_map(function ($entry) {
-                            return [
-                                'percent'      => ltrim(($entry['name'] ?? ""), "0"),
-                                'percent_text' => ltrim(($entry['name'] ?? ""), "0"),
-                                'color'        => 'green',
-                                'text'         => '',
-                            ];
-                        }, array_filter($data[$ID], static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY));
+                        $progressbar_data = array_map(fn($entry) => [
+                            'percent'      => ltrim(($entry['name'] ?? ""), "0"),
+                            'percent_text' => ltrim(($entry['name'] ?? ""), "0"),
+                            'color'        => 'green',
+                            'text'         => '',
+                        ], array_filter($data[$ID], static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY));
                     } elseif (array_key_exists('percent', $progressbar_data)) {
                         // progressbar data is only a single entry
                         $progressbar_data = [$progressbar_data];
