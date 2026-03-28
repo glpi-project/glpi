@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Api\HL;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
+use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Router;
 use Glpi\Tests\DbTestCase;
@@ -214,12 +215,12 @@ class ResourceAccessorTest extends DbTestCase
         $this->assertArrayNotHasKey('date_sync', $filtered['properties']);
 
         $this->login('tech', 'tech');
-        $result = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['limit' => 1])->getBody(), true);
+        $result = json_decode((string)ResourceAccessor::searchBySchema($user_schema, ['limit' => 1])->getBody(), true);
         $this->assertArrayHasKey('id', $result[0]);
         $this->assertArrayHasKey('username', $result[0]);
         $this->assertArrayNotHasKey('date_sync', $result[0]);
 
-        $result = json_decode((string) ResourceAccessor::getOneBySchema($user_schema, ['id' => 2], [])->getBody(), true);
+        $result = json_decode((string)ResourceAccessor::getOneBySchema($user_schema, ['id' => 2], [])->getBody(), true);
         $this->assertArrayHasKey('id', $result);
         $this->assertArrayHasKey('username', $result);
         $this->assertArrayNotHasKey('date_sync', $result);
@@ -277,11 +278,102 @@ class ResourceAccessorTest extends DbTestCase
         );
 
         // Sorting by the date_sync field should be ignored for the tech user
-        $response = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['sort' => 'date_sync'])->getBody(), true);
+        $response = json_decode((string)ResourceAccessor::searchBySchema($user_schema, ['sort' => 'date_sync'])->getBody(), true);
         $this->assertEquals("Invalid property for sorting: date_sync", $response['title']);
 
         // Filtering by the date_sync field should be ignored for the tech user
-        $response = json_decode((string) ResourceAccessor::searchBySchema($user_schema, ['filter' => 'date_sync=gt="2040-01-01"'])->getBody(), true);
+        $response = json_decode((string)ResourceAccessor::searchBySchema($user_schema, ['filter' => 'date_sync=gt="2040-01-01"'])->getBody(), true);
         $this->assertGreaterThan(5, count($response));
+    }
+
+    public function testSearchCursors(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $test_entity_id = $this->getTestRootEntity(true);
+        for ($i = 0; $i < 30; $i++) {
+            $DB->insert('glpi_computers', [
+                'name' => __FUNCTION__ . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'entities_id' => $test_entity_id,
+            ]);
+        }
+
+        $prefix = __FUNCTION__;
+        $schema = AssetController::getKnownSchemas(null)['Computer'];
+        $fn_search = static function (array $params) use ($schema, $prefix) {
+            $response = ResourceAccessor::searchBySchema($schema, $params + [
+                'filter' => 'name=like=' . $prefix . '*',
+                'limit' => 10,
+            ]);
+            return [
+                array_column(json_decode((string) $response->getBody(), true), 'name'),
+                $response->getHeaders(),
+                $response->getStatusCode(),
+            ];
+        };
+        $fn_names = static fn(int $from, int $to) => array_map(
+            static fn($i) => $prefix . str_pad($i, 3, '0', STR_PAD_LEFT),
+            range($from, $to)
+        );
+
+        // First page (offset-based)
+        [$names, $headers, $status] = $fn_search([]);
+        $this->assertEquals($fn_names(0, 9), $names);
+        $this->assertEquals(206, $status);
+        $this->assertEquals('0-9/30', $headers['Content-Range'][0]);
+        $this->assertArrayNotHasKey('GLPI-Previous-Cursor', $headers);
+        $this->assertArrayHasKey('GLPI-Next-Cursor', $headers);
+
+        // Second page
+        [$names, $headers, $status] = $fn_search(['cursor' => $headers['GLPI-Next-Cursor'][0]]);
+        $this->assertEquals($fn_names(10, 19), $names);
+        $this->assertEquals(206, $status);
+        $this->assertArrayNotHasKey('Content-Range', $headers);
+        $this->assertArrayHasKey('GLPI-Previous-Cursor', $headers);
+        $this->assertArrayHasKey('GLPI-Next-Cursor', $headers);
+
+        // Third (last) page
+        [$names, $headers, $status] = $fn_search(['cursor' => $headers['GLPI-Next-Cursor'][0]]);
+        $this->assertEquals($fn_names(20, 29), $names);
+        $this->assertEquals(200, $status);
+        $this->assertArrayHasKey('GLPI-Previous-Cursor', $headers);
+        $this->assertArrayNotHasKey('GLPI-Next-Cursor', $headers);
+
+        // Back to the second page
+        [$names, $headers] = $fn_search(['cursor' => $headers['GLPI-Previous-Cursor'][0]]);
+        $this->assertEquals($fn_names(10, 19), $names);
+        $this->assertArrayHasKey('GLPI-Previous-Cursor', $headers);
+        $this->assertArrayHasKey('GLPI-Next-Cursor', $headers);
+
+        // Back to the first page
+        [$names, $headers] = $fn_search(['cursor' => $headers['GLPI-Previous-Cursor'][0]]);
+        $this->assertEquals($fn_names(0, 9), $names);
+        $this->assertArrayNotHasKey('GLPI-Previous-Cursor', $headers);
+        $this->assertArrayHasKey('GLPI-Next-Cursor', $headers);
+
+        // Descending sort
+        [$names, $headers] = $fn_search(['sort' => 'name:desc']);
+        $this->assertEquals(array_reverse($fn_names(20, 29)), $names);
+        [$names, $headers] = $fn_search(['sort' => 'name:desc', 'cursor' => $headers['GLPI-Next-Cursor'][0]]);
+        $this->assertEquals(array_reverse($fn_names(10, 19)), $names);
+        [$names] = $fn_search(['sort' => 'name:desc', 'cursor' => $headers['GLPI-Previous-Cursor'][0]]);
+        $this->assertEquals(array_reverse($fn_names(20, 29)), $names);
+
+        // Cursor used with a different sort than it was generated for
+        $response = ResourceAccessor::searchBySchema($schema, [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'limit' => 10,
+            'cursor' => $headers['GLPI-Next-Cursor'][0],
+        ]);
+        $this->assertEquals(400, $response->getStatusCode());
+
+        // Invalid cursor
+        $response = ResourceAccessor::searchBySchema($schema, [
+            'filter' => 'name=like=' . __FUNCTION__ . '*',
+            'cursor' => 'not a cursor',
+        ]);
+        $this->assertEquals(400, $response->getStatusCode());
     }
 }

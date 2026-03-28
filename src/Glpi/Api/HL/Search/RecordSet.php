@@ -52,7 +52,9 @@ final class RecordSet
     public function __construct(
         private Search $search,
         /** @var array<string, array> */
-        private array $records
+        private array $records,
+        /** Whether there are more records after this set in the direction they were read (backwards when using a previous cursor) */
+        private bool $has_more = false
     ) {}
 
     private function getJoinNameForFKey(string $fkey): string
@@ -424,5 +426,45 @@ final class RecordSet
                 ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
+    }
+
+    /**
+     * @param list<array> $hydrated_records
+     * @return array{prev_cursor: string|null, next_cursor: string|null} Cursors that can be used to fetch the previous and next page of results based on the search sorts.
+     * A cursor is null if there is no page in that direction.
+     * @throws APIException
+     * @internal
+     */
+    public function getCursors(array $hydrated_records): array
+    {
+        $cursors = [
+            'prev_cursor' => null,
+            'next_cursor' => null,
+        ];
+        if ($hydrated_records === [] || $this->search->getContext()->isUnionSearchMode()) {
+            return $cursors;
+        }
+
+        $cursor_type = $this->search->getCursorType();
+        if ($cursor_type === CursorPagination::TYPE_PREVIOUS) {
+            $has_previous = $this->has_more;
+            // We came from a later page
+            $has_next = true;
+        } else {
+            $has_next = $this->has_more;
+            $start = $this->search->getContext()->getRequestParameter('start');
+            // We came from an earlier page
+            $has_previous = $cursor_type === CursorPagination::TYPE_NEXT || (is_numeric($start) && (int) $start > 0);
+        }
+
+        $sort = $this->search->getSortOrder(true);
+        //TODO Allow generating cursors for adjacent pages (given a value of 2 for adjacency, generate tokens for 2 pages back and 2 pages forward)
+        if ($has_previous) {
+            $cursors['prev_cursor'] = CursorPagination::generateCursorToken(CursorPagination::TYPE_PREVIOUS, reset($hydrated_records), $sort);
+        }
+        if ($has_next) {
+            $cursors['next_cursor'] = CursorPagination::generateCursorToken(CursorPagination::TYPE_NEXT, end($hydrated_records), $sort);
+        }
+        return $cursors;
     }
 }
