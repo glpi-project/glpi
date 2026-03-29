@@ -66,8 +66,8 @@ class CsvResponseTest extends DbTestCase
 
         // Parse CSV
         $csv = explode("\r\n", trim(ob_get_clean()));
-        $header = str_getcsv(array_shift($csv), $_SESSION["glpicsv_delimiter"] ?? ";");
-        $records = array_map(static fn($line) =>  str_getcsv($line, $_SESSION["glpicsv_delimiter"] ?? ";"), $csv);
+        $header = str_getcsv(array_shift($csv), $_SESSION["glpicsv_delimiter"] ?? ";", '"', "\\");
+        $records = array_map(static fn($line) =>  str_getcsv($line, $_SESSION["glpicsv_delimiter"] ?? ";", '"', "\\"), $csv);
         $this->assertCount(5, $header);
         $this->assertCount(1, $records);
         $record = array_pop($records);
