@@ -6777,24 +6777,28 @@ final class SQLProvider implements SearchProviderInterface
                     return __('Default value');
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
-                        $bar_color = 'green';
-                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), "0");
-                        $progressbar_data = [
-                            'percent'      => $percent,
-                            'percent_text' => $percent,
-                            'color'        => $bar_color,
+                        $progressbar_data = array_map(fn($entry) => [
+                            'percent'      => ltrim(($entry['name'] ?? ""), "0"),
+                            'percent_text' => ltrim(($entry['name'] ?? ""), "0"),
+                            'color'        => 'green',
                             'text'         => '',
-                        ];
+                        ], array_filter($data[$ID], static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY));
+                    } elseif (array_key_exists('percent', $progressbar_data)) {
+                        // progressbar data is only a single entry
+                        $progressbar_data = [$progressbar_data];
                     }
 
-                    $out = '<span class="text-nowrap">' . \htmlescape($progressbar_data['text']) . '</span>'
-                        . '<div class="progress" style="height: 16px">'
-                        . '<div class="progress-bar progress-bar-striped" role="progressbar"'
-                        . ' style="width:' . \htmlescape($progressbar_data['percent']) . '%; background-color:' . \htmlescape($progressbar_data['color']) . ';"'
-                        . ' aria-valuenow="' . \htmlescape($progressbar_data['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
-                        . \htmlescape($progressbar_data['percent_text']) . '%'
-                        . '</div>'
-                        . '</div>';
+                    $out = '';
+                    foreach ($progressbar_data as $k => $v) {
+                        $out .= '<div class="mb-1"><span class="text-nowrap">' . \htmlescape($v['text']) . '</span>'
+                            . '<div class="progress" style="height: 16px">'
+                            . '<div class="progress-bar progress-bar-striped" role="progressbar"'
+                            . ' style="width:' . \htmlescape($v['percent']) . '%; background-color:' . \htmlescape($v['color']) . ';"'
+                            . ' aria-valuenow="' . \htmlescape($v['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
+                            . \htmlescape($v['percent_text']) . '%'
+                            . '</div>'
+                            . '</div></div>';
+                    }
 
                     return $out;
                 case 'color':
