@@ -368,7 +368,11 @@ class NotificationTarget extends CommonDBChild
 
         $reference_event = null;
         if ($is_item_related) {
-            $message_id .= sprintf('-%s-%d', str_replace(['\\', '/'], '-', $itemtype), $items_id);
+            $message_id .= sprintf(
+                '-%s-%d',
+                str_replace('\\', '-', $itemtype), // RFC 2822 does not allow backslashes (namespaced classes)
+                $items_id
+            );
             $reference_event = $itemtype::getMessageReferenceEvent($event);
         }
 
@@ -718,6 +722,9 @@ class NotificationTarget extends CommonDBChild
             if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
                 $notificationoption['timezone'] = $user->fields['timezone'];
             }
+
+            // retrieve date_format preference of the user, fall back to global config if not set
+            $notificationoption['date_format'] = (int) ($user->fields['date_format'] ?? $CFG_GLPI['date_format'] ?? 0);
         }
 
         // Pass user type as argument ? forced for specific cases

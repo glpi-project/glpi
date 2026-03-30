@@ -2256,7 +2256,7 @@ class MailCollector extends CommonDBTM
         $new_pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
-            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
+            . '(-(?<itemtype>[a-z\-]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
             . '\/(?<event>[a-z_]+)' // event
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
@@ -2265,7 +2265,7 @@ class MailCollector extends CommonDBTM
         if (preg_match($new_pattern, $header, $values) === 1) {
             return [
                 'uuid'     => $values['uuid'],
-                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'itemtype' => !empty($values['itemtype']) ? str_replace('-', '\\', $values['itemtype']) : null, // restore backslashes in namespaced classes
                 'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
                 'event'    => $values['event'],
             ];
