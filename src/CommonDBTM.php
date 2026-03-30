@@ -3207,6 +3207,7 @@ class CommonDBTM extends CommonGLPI
     public function canGlobal(int $right, null &$reauth_needed = null): bool
     {
         $_reauth_needed = self::isUserReauthenticationNeeded();
+        $reauth_needed = false;
 
         $allowed = match ($right) {
             READ => static::canView(),
@@ -3221,6 +3222,7 @@ class CommonDBTM extends CommonGLPI
         if ($allowed && $right === UPDATE) {
             if ($_reauth_needed) {
                 $reauth_needed = true;
+
                 return false;
             }
         }
