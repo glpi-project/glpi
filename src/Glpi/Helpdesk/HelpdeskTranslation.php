@@ -39,6 +39,8 @@ use Config;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -80,16 +82,11 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof Config) {
-            $translations = array_reduce(
-                self::getTranslationsForHelpdesk(),
-                fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
-                []
-            );
-
-            return self::createTabEntry(
-                self::getTypeName(),
-                count($translations)
-            );
+            $count = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $count = self::countTranslationsForHelpdesk();
+            }
+            return self::createTabEntry(self::getTypeName(), $count);
         }
 
         return '';
@@ -140,24 +137,56 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
         return array_merge(...$entities_handlers, ...$tiles_handlers);
     }
 
+    /**
+     * @return array<string, mixed> SQL criteria to get translations related to the helpdesk (entities and tiles)
+     */
+    private static function getTranslationsForHelpdeskCriteria(): array
+    {
+        return [
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'OR' => [
+                    ['itemtype' => Entity::class],
+                    [
+                        'itemtype' => new QuerySubQuery([
+                            'SELECT' => ['itemtype_tile'],
+                            'DISTINCT' => true,
+                            'FROM' => Item_Tile::getTable(),
+                        ]),
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private static function countTranslationsForHelpdesk(): int
+    {
+        global $DB;
+        $criteria = self::getTranslationsForHelpdeskCriteria();
+        $criteria['COUNT'] = 'cpt';
+        $criteria['SELECT'] = 'language';
+        $criteria['DISTINCT'] = true;
+        return $DB->request($criteria)->current()['cpt'] ?? 0;
+    }
+
+    /**
+     * Get all translations related to the helpdesk (entities and tiles)
+     *
+     * @return ItemTranslation[]
+     */
     public static function getTranslationsForHelpdesk(): array
     {
-        $tiles_manager = TilesManager::getInstance();
-        $entities = array_map(
-            fn($entity_id) => Entity::getById($entity_id),
-            array_keys((new Entity())->find())
-        );
+        global $DB;
 
-        return array_merge(
-            ...array_map(
-                fn($entity) => self::getTranslationsForItem($entity),
-                $entities
-            ),
-            ...array_map(
-                fn($item) => self::getTranslationsForItem($item),
-                $tiles_manager->getAllTiles()
-            )
-        );
+        $it = $DB->request(self::getTranslationsForHelpdeskCriteria());
+        $translations = [];
+
+        foreach ($it as $data) {
+            $translation = new self();
+            $translation->getFromResultSet($data);
+            $translations[] = $translation;
+        }
+        return $translations;
     }
 
     /**
