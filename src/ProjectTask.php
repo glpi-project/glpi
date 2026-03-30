@@ -1201,7 +1201,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void|false
      **/
-    public static function showFor($item, int $withtemplate = 0)
+    public static function showFor($item)
     {
         global $DB;
 
@@ -1265,7 +1265,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
 
-        $canedit = $item::class === Project::class && $item->canEdit($ID) && $withtemplate != 2;
+        $canedit = $item::class === Project::class && $item->canEdit($ID);
 
         switch ($item::class) {
             case Project::class:
@@ -1278,7 +1278,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 return;
         }
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             TemplateRenderer::getInstance()->display(
                 'components/tab/addlink_block.html.twig',
                 [
@@ -1288,7 +1288,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             );
         }
 
-        if ($item::class === self::class && $item->can($ID, UPDATE) && $withtemplate != 2) {
+        if ($item::class === self::class && $item->can($ID, UPDATE)) {
             $twig_params = [
                 'projects_id' => $item->fields['projects_id'],
                 'projecttasks_id' => $ID,
@@ -1437,7 +1437,7 @@ TWIG, $twig_params);
         switch ($item::class) {
             case Project::class:
             case self::class:
-                self::showFor($item, $withtemplate);
+                self::showFor($item);
                 break;
         }
         return true;

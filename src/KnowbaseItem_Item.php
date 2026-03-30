@@ -145,7 +145,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         }
 
         $rand = mt_rand();
-        if ($canedit && $ok_state && $withtemplate != 2) {
+        if ($canedit && $ok_state) {
             if ($item::class === KnowbaseItem::class) {
                 $used_items = [];
                 foreach (self::getItems($item, 0, 0) as $data) {

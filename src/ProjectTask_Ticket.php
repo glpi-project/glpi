@@ -208,6 +208,11 @@ class ProjectTask_Ticket extends CommonDBRelation
             $t['item_id'] = $t['id'];
             return $t;
         }, $tickets));
+        $entries = array_map(static function ($entry) {
+            $entry['itemtype'] = self::class;
+            $entry['id'] = $entry['linkid'];
+            return $entry;
+        }, $entries);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,

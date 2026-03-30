@@ -4893,6 +4893,7 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
+                      data-testid='file-upload-" . htmlescape($p['name']) . "'
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
@@ -5055,11 +5056,17 @@ JS;
         $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
+                $filepath = GLPI_TMP_DIR . '/' . $upload;
+                if (!file_exists($filepath)) {
+                    trigger_error(sprintf('Uploaded temp file %s not found, skipping.', $filepath), E_USER_WARNING);
+                    continue;
+                }
+
                 $prefix  = substr($upload, 0, 23);
                 $displayName = substr($upload, 23);
 
                 // get the extension icon
-                $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+                $extension = pathinfo($filepath, PATHINFO_EXTENSION);
                 $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
                 if (!is_readable(GLPI_ROOT . $extensionIcon)) {
                     $extensionIcon = '/pics/icones/defaut-dist.png';
@@ -5071,7 +5078,7 @@ JS;
                     'name'    => $upload,
                     'id'      => 'doc' . $p['name'] . mt_rand(),
                     'display' => $displayName,
-                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'size'    => filesize($filepath),
                     'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];

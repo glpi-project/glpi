@@ -33,7 +33,7 @@
 
 /* eslint prefer-template: 0 */
 /* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
-/* global glpi_ajax_dialog, glpi_close_all_dialogs */
+/* global glpi_ajax_dialog, glpi_close_all_dialogs, glpi_toast_info, glpi_toast_error */
 
 window.GLPI = window.GLPI || {};
 window.GLPI.Dashboard = {
@@ -73,6 +73,7 @@ window.GLPI.Dashboard = {
  * @property {{}[]} [all_cards] All cards
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
+ * @property {boolean} [mini] Whether the dashboard is in mini mode (for ticket search page)
  */
 
 class GLPIDashboard {
@@ -149,7 +150,7 @@ class GLPIDashboard {
         const elem_domRect = this.elem_dom.getBoundingClientRect();
         const width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
 
-        this.grid = GridStack.init({
+        const gridstack_options = {
             column: options.cols,
             maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
             margin : this.cell_margin,
@@ -161,7 +162,8 @@ class GLPIDashboard {
             // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
             // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
             // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
-        }, `#grid-stack-${options.rand}`);
+        };
+        this.grid = GridStack.init(gridstack_options, `#grid-stack-${options.rand}`);
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
@@ -469,6 +471,41 @@ class GLPIDashboard {
                 .show('fade').delay(2000).hide('fade');
         });
 
+        // reset dashboard
+        $(document).on('click', 'button.reset-dashboard ', (event) => {
+            event.preventDefault();
+            this.resetDashboard();
+        });
+        $(document).on('click', 'button[name="confirm-reset-dashboard"]', (event) => {
+            event.preventDefault();
+            const btn = $(event.target);
+            const selected_dashboard = btn
+                .closest('.dashboard-reset-container')
+                .find('select[name="default_dashboard_key"]');
+            $.ajax({
+                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                method: 'POST',
+                data: {
+                    action: 'reset',
+                    dashboard: this.current_name,
+                    default_dashboard_key: selected_dashboard.val(),
+                }
+            }).then(() => {
+                glpi_toast_info(__('Dashboard has been reset to default'));
+                if (window.reloadTab !== undefined) {
+                    window.glpi_close_all_dialogs();
+                    window.reloadTab();
+                } else {
+                    this.initFilters();
+                    this.refreshDashboard();
+                    window.glpi_close_all_dialogs();
+                }
+            }, () => {
+                glpi_toast_error(__('An error occurred while resetting the dashboard'));
+                glpi_close_all_dialogs();
+            });
+        });
+
         // display widget types after selecting a card
         $(document).on('select2:select', '.display-widget-form select[name=card_id]', (event) => {
             const select2_data      = event.params.data;
@@ -683,6 +720,9 @@ class GLPIDashboard {
 
     refreshDashboard() {
         const gridstack = $(this.elem_id+" .grid-stack");
+        document.querySelectorAll('div[_echarts_instance_]').forEach((el) => {
+            window.echarts.getInstanceByDom(el)?.dispose();
+        });
         this.grid.removeAll();
 
         const data = {
@@ -789,6 +829,17 @@ class GLPIDashboard {
         }).then(() => {
             if (force_refresh) {
                 this.refreshDashboard();
+            }
+        });
+    }
+
+    resetDashboard() {
+        glpi_ajax_dialog({
+            title: __("Reset to default"),
+            url: `${CFG_GLPI.root_doc}/ajax/dashboard.php`,
+            params: {
+                action: 'prepare_reset',
+                dashboard: this.current_name,
             }
         });
     }
