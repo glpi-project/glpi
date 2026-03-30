@@ -52,13 +52,18 @@ use KnowbaseItem_User;
 use Profile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 use User;
 
 final class KnowbaseFormController extends GenericFormController
 {
     use CrudControllerTrait;
 
+    // KnowbaseItem::getFormURL() is session-dependent: it returns /front/helpdesk.faq.php
+    // when no session is active (route compilation time), so the central interface URL
+    // must be registered explicitly. See also: glpi-project/glpi#23544
     #[ItemtypeFormRoute(KnowbaseItem::class)]
+    #[Route('/front/knowbaseitem.form.php', name: 'glpi_knowbaseitem_form_central')]
     public function __invoke(Request $request): Response
     {
         $request->attributes->set('class', KnowbaseItem::class);
@@ -110,16 +115,14 @@ final class KnowbaseFormController extends GenericFormController
             $input['no_entity_restriction'] = 1;
         }
 
-        $item = new $class();
-        if ($item->add($input)) {
-            Event::log(
-                $id,
-                "knowbaseitem",
-                4,
-                "tools",
-                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
-            );
-        }
+        $this->add($class, $input);
+        Event::log(
+            $id,
+            "knowbaseitem",
+            4,
+            "tools",
+            sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+        );
 
         $back = Html::getBackUrl();
         if ($back) {

@@ -38,7 +38,6 @@ use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use KnowbaseItem;
 use KnowbaseItem_Favorite;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,25 +68,23 @@ final class ToggleFavoriteController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // Load item and check UPDATE permission
-        $item = $this->read(KnowbaseItem::class, $id);
-        if (!$item->can($id, UPDATE)) {
+        $user_id = Session::getLoginUserID();
+        if ($user_id === false) {
             throw new AccessDeniedHttpException();
         }
 
-        $user_id = Session::getLoginUserID();
         $criteria = [
             'knowbaseitems_id' => $id,
             'users_id'         => $user_id,
         ];
 
-        $favorite = new KnowbaseItem_Favorite();
         if ($value) {
-            if (countElementsInTable(KnowbaseItem_Favorite::getTable(), $criteria) === 0) {
-                $favorite->add($criteria);
-            }
+            $this->add(KnowbaseItem_Favorite::class, $criteria);
         } else {
-            $favorite->deleteByCriteria($criteria);
+            $favorite = new KnowbaseItem_Favorite();
+            if ($favorite->getFromDBByCrit($criteria)) {
+                $this->purge(KnowbaseItem_Favorite::class, $favorite->getID());
+            }
         }
 
         return new Response(); // OK

@@ -824,6 +824,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'subject' => $this->fields['name'],
             'answer'  => $this->getAnswer(),
             'mode'    => $mode,
+            'actions' => [],
         ];
 
         if ($mode === "edit" || $mode === "view") {
@@ -869,7 +870,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['default_language']      = $CFG_GLPI['language'];
 
             // Add actions
-            $params['actions'] = $mode === "edit" ? $this->getEditorActions() : [];
+            $params['actions'] = $this->getEditorActions();
         } elseif ($mode === "add") {
             $params['can_edit'] = $this->can(-1, CREATE);
         }
@@ -997,7 +998,24 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     private function getEditorActions(): array
     {
         $actions = [];
+
+        if (KnowbaseItem_Favorite::canCreate()) {
+            $actions[] = new EditorAction(
+                label: __("Add to favorites"),
+                icon: "ti ti-star",
+                type: EditorActionType::TOGGLE_FAVORITE,
+                params: [
+                    'id'      => (string) $this->fields['id'],
+                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']) ? '1' : '0',
+                ],
+            );
+        }
+
         if ($this->can($this->fields['id'], UPDATE)) {
+            if ($actions !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
+
             $actions[] = new EditorAction(
                 label: __("History"),
                 icon: "ti ti-history",
@@ -1039,15 +1057,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
 
             $actions[] = new EditorActionSeparator();
-            $actions[] = new EditorAction(
-                label: __("Add to favorites"),
-                icon: "ti ti-star",
-                type: EditorActionType::TOGGLE_FAVORITE,
-                params: [
-                    'id'      => (string) $this->fields['id'],
-                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']) ? '1' : '0',
-                ],
-            );
             $actions[] = new EditorAction(
                 label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",

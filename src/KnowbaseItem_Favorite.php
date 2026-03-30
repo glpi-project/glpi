@@ -40,6 +40,7 @@ class KnowbaseItem_Favorite extends CommonDBRelation
     public static ?string $itemtype_2 = User::class;
     public static ?string $items_id_2 = 'users_id';
 
+    public static int $checkItem_1_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
     public static int $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
     public static bool $logs_for_item_1 = false;
     public static bool $logs_for_item_2 = false;
