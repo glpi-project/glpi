@@ -14,7 +14,7 @@ Please note that current repository is about GLPI core only. All related plugins
 
 Many people have the idea to propose code modifications from IA Agents, verbatim (or almost). We recently get lots of this kind of contributions. **That kind of IA only contribution will be refused.**
 
-You can of course take help from any way you want (including IA agents), but a **human must** review and test proposision; we do not want to debate with an AI bot.
+You can of course take help from any way you want (including IA agents), but a **human must** review and test the proposal; we do not want to debate with an AI bot.
 
 
 ## Bugs
