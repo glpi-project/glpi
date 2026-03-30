@@ -36,7 +36,7 @@ namespace Glpi\Knowbase;
 
 final readonly class EditorAction
 {
-    /** @param array<string, string> $params */
+    /** @param array<string, string|int> $params */
     public function __construct(
         public string $label,
         public string $icon,

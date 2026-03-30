@@ -36,6 +36,14 @@ import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 
+const EditorActionType = Object.freeze({
+    LOAD_SIDE_PANEL: 'LOAD_SIDE_PANEL',
+    TOGGLE_VALUE:    'TOGGLE_VALUE',
+    TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
+    DELETE_ARTICLE:  'DELETE_ARTICLE',
+    OPEN_MODAL:      'OPEN_MODAL',
+});
+
 export class GlpiKnowbaseArticleController
 {
     /**
@@ -270,10 +278,10 @@ export class GlpiKnowbaseArticleController
         const params = this.#extractParamsFromDataset(element.dataset);
 
         switch (type) {
-            case 'LOAD_SIDE_PANEL':
+            case EditorActionType.LOAD_SIDE_PANEL:
                 this.#side_panel.load(params.id, params.key);
                 break;
-            case 'TOGGLE_VALUE': {
+            case EditorActionType.TOGGLE_VALUE: {
                 event.stopPropagation();
                 const toggle = element.querySelector('input[type="checkbox"]');
                 if (toggle) {
@@ -285,7 +293,7 @@ export class GlpiKnowbaseArticleController
                 }
                 break;
             }
-            case 'TOGGLE_FAVORITE': {
+            case EditorActionType.TOGGLE_FAVORITE: {
                 event.stopPropagation();
                 const toggle = element.querySelector('input[type="checkbox"]');
                 if (toggle) {
@@ -297,10 +305,10 @@ export class GlpiKnowbaseArticleController
                 }
                 break;
             }
-            case 'DELETE_ARTICLE':
+            case EditorActionType.DELETE_ARTICLE:
                 this.#deleteItem(params.id);
                 break;
-            case 'OPEN_MODAL':
+            case EditorActionType.OPEN_MODAL:
                 this.#openModal(params.id, params.key, params.title);
                 break;
         }
