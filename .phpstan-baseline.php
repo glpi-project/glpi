@@ -4454,12 +4454,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\+" between int and 604800\\|string results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -4468,7 +4462,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method CronTask\\:\\:getSpecificValueToSelect\\(\\) should return string but returns int\\|string\\.$#',
 	'identifier' => 'return.type',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
