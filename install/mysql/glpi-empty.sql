@@ -2937,7 +2937,7 @@ CREATE TABLE `glpi_entities_knowbaseitems` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`,`entities_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -3140,7 +3140,7 @@ CREATE TABLE `glpi_groups_knowbaseitems` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`,`groups_id`,`entities_id`),
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
@@ -4160,7 +4160,7 @@ CREATE TABLE `glpi_knowbaseitems_profiles` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`,`profiles_id`,`entities_id`),
   KEY `profiles_id` (`profiles_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
@@ -4175,7 +4175,7 @@ CREATE TABLE `glpi_knowbaseitems_users` (
   `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`,`users_id`),
   KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

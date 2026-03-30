@@ -47,6 +47,36 @@ class KnowbaseItem_Profile extends CommonDBRelation
     public static bool $logs_for_item_2     = false;
 
 
+    public function prepareInputForAdd($input)
+    {
+        // Avoid duplicate entry.
+        // This application-level check is required because MySQL UNIQUE keys
+        // do not deduplicate NULL values (NULL != NULL), so the DB constraint
+        // alone cannot prevent duplicates when entities_id is NULL.
+        if (
+            countElementsInTable(
+                static::getTable(),
+                [
+                    'WHERE' => [
+                        'knowbaseitems_id' => $input['knowbaseitems_id'],
+                        'profiles_id'      => $input['profiles_id'],
+                        'entities_id'      => $input['entities_id'] ?? 0,
+                    ],
+                    'LIMIT' => 1,
+                ]
+            ) > 0
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('This target already exists for this article.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
     /**
      * Get profiles for a knowbaseitem
      *
