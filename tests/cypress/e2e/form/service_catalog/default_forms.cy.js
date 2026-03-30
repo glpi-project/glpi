@@ -56,7 +56,7 @@ function testDefaultForm({ profile, formId }) {
     cy.getDropdownByLabelText('Observers').selectDropdownValue('glpi');
     cy.getDropdownByLabelText('Location').selectDropdownValue(`»Test Location - ${uuid}`);
     cy.findByRole('textbox', { name: "Title" }).type("My title");
-    cy.findByLabelText("Description").awaitTinyMCE().type("My description");
+    cy.findByRole('region', {'name' : "Description"}).findByLabelText("Description").awaitTinyMCE().type("My description");
 
     cy.findByRole('button', { name: "Submit" }).click();
     cy.findByRole('alert').should('contain.text', 'Item successfully created');

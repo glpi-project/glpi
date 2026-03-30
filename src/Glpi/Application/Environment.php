@@ -243,6 +243,7 @@ enum Environment: string
         return match ($this) {
             default           => false,
             self::TESTING     => true,
+            self::E2E         => true,
         };
     }
 
