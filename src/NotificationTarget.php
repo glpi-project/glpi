@@ -630,6 +630,9 @@ class NotificationTarget extends CommonDBChild
             if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
                 $notificationoption['timezone'] = $user->fields['timezone'];
             }
+
+            // retrieve date_format preference of the user, fall back to global config if not set
+            $notificationoption['date_format'] = (int) ($user->fields['date_format'] ?? $CFG_GLPI['date_format'] ?? 0);
         }
 
         // Pass user type as argument ? forced for specific cases
