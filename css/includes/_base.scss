@@ -192,6 +192,21 @@ body.in_modal {
     }
 }
 
+.page > header .breadcrumb-item + .breadcrumb-item::before {
+    // Bootstrap and Tabler both have terrible RTL support and are doing literally anything except the right thing.
+    // We are always cleaning up their mess... limitng this to the GLPI header only in case someone wants the breadcrumbs elsewhere and don't want this fix.
+    padding: 0;
+    padding-inline-end: var(--tblr-breadcrumb-item-padding-x);
+    float: unset;
+    transform: scale(1);
+}
+
+[dir="rtl"] {
+    .page > header .breadcrumb-item + .breadcrumb-item::before {
+        --tblr-breadcrumb-divider: "\\";
+    }
+}
+
 .ti {
     font-size: 1.25em;
     text-align: left;
