@@ -43,17 +43,12 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
 {
     private function createKbItem(): KnowbaseItem
     {
-        $kb = new KnowbaseItem();
-        $this->assertGreaterThan(
-            0,
-            (int) $kb->add([
-                'name'     => $this->getUniqueString(),
-                'answer'   => 'KB answer',
-                'is_faq'   => 0,
-                'users_id' => getItemByTypeName(User::class, TU_USER, true),
-            ])
-        );
-        return $kb;
+        return $this->createItem(KnowbaseItem::class, [
+            'name'     => $this->getUniqueString(),
+            'answer'   => 'KB answer',
+            'is_faq'   => 0,
+            'users_id' => getItemByTypeName(User::class, TU_USER, true),
+        ]);
     }
 
     public function testIsFavoriteReturnsFalseByDefault(): void
@@ -69,14 +64,10 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
         $this->login();
         $kb = $this->createKbItem();
 
-        $favorite = new KnowbaseItem_Favorite();
-        $this->assertGreaterThan(
-            0,
-            (int) $favorite->add([
-                'knowbaseitems_id' => $kb->getID(),
-                'users_id'         => getItemByTypeName(User::class, TU_USER, true),
-            ])
-        );
+        $this->createItem(KnowbaseItem_Favorite::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => getItemByTypeName(User::class, TU_USER, true),
+        ]);
 
         $this->assertTrue(KnowbaseItem_Favorite::isFavoriteForCurrentUser($kb->getID()));
     }
@@ -87,15 +78,12 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
         $kb = $this->createKbItem();
 
         $users_id = getItemByTypeName(User::class, TU_USER, true);
-        $criteria = [
+        $favorite = $this->createItem(KnowbaseItem_Favorite::class, [
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => $users_id,
-        ];
+        ]);
 
-        $favorite = new KnowbaseItem_Favorite();
-        $this->assertGreaterThan(0, (int) $favorite->add($criteria));
-
-        $favorite->deleteByCriteria($criteria);
+        $this->deleteItem(KnowbaseItem_Favorite::class, $favorite->getID());
 
         $this->assertFalse(KnowbaseItem_Favorite::isFavoriteForCurrentUser($kb->getID()));
     }
@@ -111,19 +99,11 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
             'users_id'         => $users_id,
         ];
 
-        $favorite = new KnowbaseItem_Favorite();
-        $this->assertGreaterThan(0, (int) $favorite->add($criteria));
+        $this->createItem(KnowbaseItem_Favorite::class, $criteria);
 
-        try {
-            $favorite->add($criteria);
-        } catch (\RuntimeException) {
-            // Expected: DB unique constraint prevents duplicate
-        }
-
-        $this->assertSame(
-            1,
-            (int) countElementsInTable(KnowbaseItem_Favorite::getTable(), $criteria)
-        );
+        $this->expectException(\RuntimeException::class);
+        $duplicate = new KnowbaseItem_Favorite();
+        $duplicate->add($criteria);
     }
 
     public function testPurgingKnowbaseItemDeletesFavorites(): void
@@ -132,16 +112,12 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
         $kb = $this->createKbItem();
 
         $users_id = getItemByTypeName(User::class, TU_USER, true);
-        $favorite = new KnowbaseItem_Favorite();
-        $this->assertGreaterThan(
-            0,
-            (int) $favorite->add([
-                'knowbaseitems_id' => $kb->getID(),
-                'users_id'         => $users_id,
-            ])
-        );
+        $this->createItem(KnowbaseItem_Favorite::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $users_id,
+        ]);
 
-        $this->assertTrue($kb->delete(['id' => $kb->getID()], true));
+        $this->deleteItem(KnowbaseItem::class, $kb->getID(), true);
 
         $this->assertSame(
             0,
@@ -156,27 +132,19 @@ final class KnowbaseItem_FavoriteTest extends DbTestCase
         $this->login();
         $kb = $this->createKbItem();
 
-        $user = new User();
-        $this->assertGreaterThan(
-            0,
-            (int) $user->add([
-                'name'     => $this->getUniqueString(),
-                'password' => 'test',
-                'password2' => 'test',
-            ])
-        );
+        $user = $this->createItem(User::class, [
+            'name'      => $this->getUniqueString(),
+            'password'  => 'test',
+            'password2' => 'test',
+        ], ['password', 'password2']);
         $users_id = $user->getID();
 
-        $favorite = new KnowbaseItem_Favorite();
-        $this->assertGreaterThan(
-            0,
-            (int) $favorite->add([
-                'knowbaseitems_id' => $kb->getID(),
-                'users_id'         => $users_id,
-            ])
-        );
+        $this->createItem(KnowbaseItem_Favorite::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $users_id,
+        ]);
 
-        $this->assertTrue($user->delete(['id' => $users_id], true));
+        $this->deleteItem(User::class, $users_id, true);
 
         $this->assertSame(
             0,
