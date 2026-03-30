@@ -354,16 +354,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $input["status"]          = self::WAITING;
 
         if (
-            (!isset($input['itemtype_target']) || empty($input['itemtype_target']))
-            && (isset($input['users_id_validate']) && !empty($input['users_id_validate']))
-        ) {
-            Toolbox::deprecated('Defining "users_id_validate" field during creation is deprecated in "CommonITILValidation".');
-            $input['itemtype_target'] = User::class;
-            $input['items_id_target'] = $input['users_id_validate'];
-            unset($input['users_id_validate']);
-        }
-
-        if (
             !isset($input['itemtype_target']) || empty($input['itemtype_target'])
             || !isset($input["items_id_target"]) || $input["items_id_target"] <= 0
         ) {
@@ -977,13 +967,6 @@ abstract class CommonITILValidation extends CommonDBChild
                             'comment_submission'   => $input['comment_submission'],
                         ];
                         if ($valid->can(-1, CREATE, $input2)) {
-                            if (array_key_exists('users_id_validate', $input)) {
-                                Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "itemtype_target"/"items_id_target" instead.');
-                                $input['itemtype_target'] = User::class;
-                                $input['items_id_target'] = $input['users_id_validate'];
-                                unset($input['users_id_validate']);
-                            }
-
                             $itemtype  = $input['itemtype_target'];
                             $items_ids = $input['items_id_target'];
 

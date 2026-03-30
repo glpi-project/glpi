@@ -415,12 +415,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         global $CFG_GLPI, $DB;
 
         $link_params = '';
-        if (is_string($linked_item)) {
-            // Old behaviour.
-            Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.', true, '11.0');
-            $linked_item = null;
-            $link_params = $linked_item;
-        } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
+        if ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
             throw new InvalidArgumentException();
         } elseif ($linked_item !== null) {
             $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item::class, $linked_item->getID());
