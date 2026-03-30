@@ -43,6 +43,7 @@ The present file will list all changes made to the project; according to the
 - `jquery-prettytextdiff` JS library
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
+- `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
