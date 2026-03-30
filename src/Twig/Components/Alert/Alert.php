@@ -32,45 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Twig\Components\Alert;
+namespace Twig\Components\Alert;
 
-abstract class AbstractAlert
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
+
+/**
+ * Default Alert compononent so users can <twig:Alert>...</twig:Alert>
+ */
+#[AsTwigComponent(name: 'Alert', template: 'twig_components/Alert/Info.html.twig')]
+class Alert extends AbstractAlert
 {
-    /**
-     * Var is exposed in the template, for the backward compatibility.
-     * So type can be used with {{ component('Alert', {type: 'warning') }}
-     *
-     * @var 'success'|'info'|'warning'|'danger'
-     */
     public string $type = 'info';
-
-    public string $title = '';
-
-    /**
-     * @var iterable<mixed>|string
-     */
-    public iterable|string $messages = [];
-
-    public string $icon = '';
-
-    public bool $important = false;
-
-    public function getResolvedIcon(): string
-    {
-        if ($this->icon !== '') {
-            return $this->icon;
-        }
-
-        return match ($this->type) {
-            'success' => 'ti ti-check',
-            'warning' => 'ti ti-alert-triangle',
-            'danger' => 'ti ti-exclamation-circle',
-            default => 'ti ti-info-circle',
-        };
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
 }

@@ -32,15 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Twig\Components\Alert;
+namespace Twig\Components\Alert;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-/**
- * Default Alert compononent so users can <twig:Alert>...</twig:Alert>
- */
-#[AsTwigComponent(name: 'Alert', template: 'twig_components/Alert/Info.html.twig')]
-class Alert extends AbstractAlert
+#[AsTwigComponent(template: 'twig_components/Alert/Info.html.twig')]
+final class Success extends AbstractAlert
 {
-    public string $type = 'info';
+    public string $type = 'success';
 }

@@ -32,12 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Twig\Components\Alert;
+namespace Twig\Components\Alert;
 
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-#[AsTwigComponent()] // No name needed, it will match to Alert:Info and twig_components/Alert/Info.html.twig
-class Info extends AbstractAlert
+#[AsTwigComponent(template: 'twig_components/Alert/Info.html.twig')]
+final class Danger extends AbstractAlert
 {
-    public string $type = 'info';
+    public string $type = 'danger';
 }

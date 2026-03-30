@@ -38,7 +38,7 @@ return static function (ContainerConfigurator $container): void {
     $container->extension('twig_component', [
         'anonymous_template_directory' => 'twig_components',
         'defaults' => [
-            'Glpi\\Twig\\Components\\' => [
+            'Twig\\Components\\' => [
                 'template_directory' => 'twig_components',
             ],
         ],

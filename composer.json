@@ -182,6 +182,7 @@
         ],
         "psr-4": {
             "Glpi\\": "src/Glpi/",
+            "Twig\\": "src/Twig/",
             "": "src/"
         }
     },
