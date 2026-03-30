@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\SMTP\OauthConfig;
 use Symfony\Component\Mailer\Exception\LogicException;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mailer\Transport\Dsn;
 use Symfony\Component\Mailer\Transport\NativeTransportFactory;
 
@@ -157,7 +158,7 @@ class NotificationMailingSetting extends NotificationSetting
         $is_mail_function_available = true;
         try {
             (new NativeTransportFactory())->create(Dsn::fromString('native://default'));
-        } catch (LogicException) {
+        } catch (LogicException|TransportException) {
             unset($mail_methods[MAIL_MAIL]);
             $is_mail_function_available = false;
         }
