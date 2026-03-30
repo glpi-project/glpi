@@ -43,13 +43,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ChangeOAuthKeyCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
-    /**
-     * Error code returned when unable to renew key.
-     *
-     * @var int
-     */
-    public const ERROR_UNABLE_TO_RENEW_KEY = 1;
-
     protected function configure()
     {
         parent::configure();
@@ -65,7 +58,7 @@ class ChangeOAuthKeyCommand extends AbstractCommand implements ConfigurationComm
         $force = $input->getOption('force');
         if (!$force && Server::checkKeys()) {
             $output->writeln('<comment>' . __('OAuth keys already exist. Use --force option to regenerate them.') . '</comment>', OutputInterface::VERBOSITY_QUIET);
-            return 0;
+            return self::SUCCESS;
         }
 
         $this->askForConfirmation();
@@ -73,12 +66,12 @@ class ChangeOAuthKeyCommand extends AbstractCommand implements ConfigurationComm
         if (!Server::generateKeys($force)) {
             $output->writeln('<error>' . __('Unable to generate OAuth keys.') . '</error>', OutputInterface::VERBOSITY_QUIET);
 
-            return self::ERROR_UNABLE_TO_RENEW_KEY;
+            return self::FAILURE;
         }
 
         $this->output->write(PHP_EOL);
         $output->writeln('<info>' . __('OAuth keys have been successfully generated.') . '</info>');
-        return 0;
+        return self::SUCCESS;
     }
 
     public function getConfigurationFilesToUpdate(InputInterface $input): array
