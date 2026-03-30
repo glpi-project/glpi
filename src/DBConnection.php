@@ -597,7 +597,12 @@ class DBConnection extends CommonGLPI
                 } else {
                     $data['source']['error'] = $db_main->error();
                 }
-            } catch (Exception) {
+            } catch (Exception $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    $e->getMessage(),
+                    ['exception' => $e]
+                );
                 $data['source']['error'] = 'Unable to get binary log status. Check if the binary log is enabled on the database server and the database user has the necessary permissions for your specific database to access it (REPLICATION CLIENT, BINLOG MONITOR, etc).';
             }
         } else {
@@ -634,7 +639,12 @@ class DBConnection extends CommonGLPI
                     } else {
                         $data['replica'][$num]['error'] = $db_replica->error();
                     }
-                } catch (Exception) {
+                } catch (Exception $e) {
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        $e->getMessage(),
+                        ['exception' => $e]
+                    );
                     $data['replica'][$num]['error'] = 'Unable to get replica status. Check if the database user has the necessary permissions for your specific database to access it (REPLICATION CLIENT, REPLICA MONITOR, etc).';
                 }
             } else {
