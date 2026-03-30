@@ -1754,6 +1754,7 @@ class Contract extends CommonDBTM
         $items[_x('phone', 'Number')] = "num";
         $items[__('Start date')] = "begin_date";
         $items[__('End date')] = "end_date";
+        $items[__('Expiration date')] = "expiration_date";
         $items[__('Comments')] = "comment";
 
         foreach (array_keys($items) as $key) {
@@ -1823,6 +1824,18 @@ class Contract extends CommonDBTM
 
             $end_date = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
             echo Search::showItem($p['output_type'], $end_date, $item_num, $p['row_num'], $align);
+
+            $expiration_date = Infocom::getWarrantyExpir(
+                $item->fields['begin_date'],
+                $item->fields['renewal'] == self::RENEWAL_EXPRESS
+                    ? $item->fields['duration'] + $item->fields['periodicity']
+                    : $item->fields['duration'],
+                0,
+                true,
+                (int) $item->fields['renewal'] === self::RENEWAL_TACIT,
+                $item->fields['periodicity']
+            );
+            echo Search::showItem($p['output_type'], $expiration_date, $item_num, $p['row_num'], $align);
 
             $comment = $item->fields['comment'];
             echo Search::showItem($p['output_type'], $comment, $item_num, $p['row_num'], $align);
