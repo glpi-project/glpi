@@ -5041,6 +5041,7 @@ HTML;
                 'entity_restrict'     => $entity_restrict,
                 'condition'           => $post['condition'],
                 'page'                => 1,
+                'page_limit'          => 0, // so it's basically get's all of the groups here
             ], false);
             foreach ($groups['results'] as $group) {
                 if (isset($group['children'])) {
