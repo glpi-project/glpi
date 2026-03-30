@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
 
 class RuleTicket extends Rule
 {
@@ -458,7 +457,6 @@ class RuleTicket extends Rule
                             }
 
                             if (!is_null($regexvalue)) {
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $target_itilcategory = ITILCategory::getITILCategoryIDByCode($regexvalue);
                                 if ($target_itilcategory != -1) {
                                     $output["itilcategories_id"] = $target_itilcategory;
@@ -470,7 +468,6 @@ class RuleTicket extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $group = new Group();
                                 if (
                                     $group->getFromDBByCrit(["name" => $regexvalue,
@@ -486,7 +483,6 @@ class RuleTicket extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $group = new Group();
                                 if (
                                     $group->getFromDBByCrit(["name" => $regexvalue,
@@ -502,7 +498,6 @@ class RuleTicket extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $group = new Group();
                                 if (
                                     $group->getFromDBByCrit(["name" => $regexvalue,
@@ -525,7 +520,6 @@ class RuleTicket extends Rule
                             }
 
                             if (!is_null($regexvalue)) {
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $appliances = new Appliance();
                                 $target_appliances = $appliances->find(["name" => $regexvalue, "is_helpdesk_visible" => true]);
 
@@ -550,7 +544,6 @@ class RuleTicket extends Rule
                             }
 
                             if (!is_null($regexvalue)) {
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $projects = new Project();
                                 $target_projects = $projects->find(["name" => $regexvalue]);
 
@@ -575,7 +568,6 @@ class RuleTicket extends Rule
                             }
 
                             if (!is_null($regexvalue)) {
-                                $regexvalue = Sanitizer::sanitize($regexvalue);
                                 $contracts = new Contract();
                                 $target_contract = $contracts->find(["name" => $regexvalue, "entities_id" => $output['entities_id']]);
 

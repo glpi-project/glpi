@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -486,7 +488,7 @@ class RuleAction extends CommonDBChild
                 }
             }
         }
-        return $action;
+        return Sanitizer::sanitize($action);
     }
 
 
