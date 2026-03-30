@@ -33,14 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-// Needed for signal handler to handle SIGTERM in CLI mode
-declare(ticks=1);
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
 
@@ -75,6 +73,11 @@ class CronTask extends CommonDBTM
     public const STATE_WAITING = 1;
     /** The automatic action was started and hasn't returned to the waiting state yet */
     public const STATE_RUNNING = 2;
+    /** @var int The automatic action has failed repeatedly on consecutive runs and needs manually reset */
+    public const STATE_ERROR = 3;
+
+    /** @var int Maximum number of consecutive errors before considering that the task is in error state and needs administrator intervention */
+    public const MAX_ERROR_COUNT = 5;
 
     /** The automatic action is run internally (run by GLPI via a hidden image src) */
     public const MODE_INTERNAL = 1;
@@ -215,22 +218,36 @@ class CronTask extends CommonDBTM
      *
      * @param int $signo Signal number
      * @since 9.1
-     * @todo Is there an alternative way to handle this? ext-pcntl is not enabled by default in PHP and isn't available on Windows.
-     *
      * @return void
      */
     public function signal(int $signo): void
     {
         if ($signo === SIGTERM) {
             pcntl_signal(SIGTERM, SIG_DFL);
+            $this->handleAbnormalTermination();
+        }
+    }
 
-            // End of this task
-            $this->end(null);
+    /**
+     * Handle cases where the PHP process is terminated before a task is properly ended.
+     *
+     * This may happen if the CLI process receives a termination signal and the pcntl extension is not available, or if the shutdown function is triggered for any reason while the task is running.
+     * @return void
+     */
+    private function handleAbnormalTermination(): void
+    {
+        if (!isset($_SESSION["glpicronuserrunning"])) {
+            return;
+        }
 
-            // End of this cron
-            $_SESSION["glpicronuserrunning"] = '';
-            self::release_lock();
-            Toolbox::logInFile('cron', __('Action aborted') . "\n");
+        // End of this task
+        $this->end(null);
+
+        // End of this cron
+        $_SESSION["glpicronuserrunning"] = '';
+        self::release_lock();
+        Toolbox::logInFile('cron', __('Action aborted') . "\n");
+        if (isCommandLine()) {
             exit(); // @phpstan-ignore glpi.forbidExit (CLI context)
         }
     }
@@ -249,8 +266,11 @@ class CronTask extends CommonDBTM
         }
 
         if (isCommandLine() && function_exists('pcntl_signal')) {
+            pcntl_async_signals(true);
             pcntl_signal(SIGTERM, [$this, 'signal']);
         }
+        // Shutdown handler will be used for normal terminations (exit, exception, etc)
+        register_shutdown_function($this->handleAbnormalTermination(...));
 
         $DB->update(
             self::getTable(),
@@ -318,6 +338,38 @@ class CronTask extends CommonDBTM
     }
 
     /**
+     * Calculate the next run date of a task.
+     *
+     * In the case of a task that failed, an exponential backoff strategy is applied with some random jitter to avoid cases where many tasks are launched at the same time overloading an external system like a mail server which could potentially put them all back in a failed state.
+     * The maximum delay is capped to 30 minutes to avoid too long delays before retrying a failed task.
+     * @return DateTime
+     * @see self::MAX_ERROR_COUNT
+     * @see self::STATE_ERROR
+     * @link https://en.wikipedia.org/wiki/Exponential_backoff
+     * @link https://en.wikipedia.org/wiki/Thundering_herd_problem
+     */
+    private function calculateNextRunDateTime(): DateTime
+    {
+        $consecutive_errors = $this->fields['error_count'] ?? 0;
+
+        if ($consecutive_errors === 0) {
+            // No error, normal scheduling
+            $next_run = new DateTime($this->fields['lastrun']);
+            $next_run->modify('+' . $this->fields['frequency'] . ' seconds');
+            return $next_run;
+        }
+
+        $min_delay = 60; // 1 minute
+        $max_delay = 60 * 30; // 30 minutes. 1 failure = 1 minute, 2 failures = 2 minutes, 3 failures = 4 minutes, 4 failures = 8 minutes, 5 failures = 16 minutes, more than 5 failures = 30 minutes
+        $jitter = random_int(0, 2 * 60); // Random delay between 0 and 2 minutes in case multiple tasks failed for the same reason to avoid thundering herd effect
+
+        $delay = min($min_delay * (2 ** $consecutive_errors) + $jitter, $max_delay);
+        $next_run = new DateTime();
+        $next_run->modify('+' . $delay . ' seconds');
+        return $next_run;
+    }
+
+    /**
      * End a task, timer, stat, log, ...
      *
      * @param int|null $retcode
@@ -326,7 +378,7 @@ class CronTask extends CommonDBTM
      *    <li>0: Nothing to do</li>
      *   <li>&gt; 0: Ok</li>
      * </ul>
-     * @param int $log_state
+     * @param CronTaskLog::STATE_* $log_state
      *
      * @return bool : true if ok (not start by another)
      *
@@ -342,10 +394,25 @@ class CronTask extends CommonDBTM
             return false;
         }
 
+        if (is_null($retcode) || $log_state === CronTaskLog::STATE_ERROR) {
+            $this->fields['error_count'] = ($this->fields['error_count'] ?? 0) + 1;
+        } else {
+            $this->fields['error_count'] = 0;
+        }
+
+        if ($this->fields['error_count'] >= self::MAX_ERROR_COUNT) {
+            $this->fields['state'] = self::STATE_ERROR;
+            $this->sendNotificationOnError();
+        } else {
+            $this->fields['state'] = self::STATE_WAITING;
+        }
+
         $DB->update(
             self::getTable(),
             [
                 'state'  => $this->fields['state'],
+                'next_run' => $this->calculateNextRunDateTime()->format('Y-m-d H:i:s'),
+                'error_count' => $this->fields['error_count'] ?? 0,
             ],
             [
                 'id'     => $this->fields['id'],
@@ -477,7 +544,7 @@ class CronTask extends CommonDBTM
                 $WHERE[] = ['NOT' => ['name' => $locks]];
             }
 
-            // Build query for frequency and allowed hour
+            // Build query for next_run and allowed hour
             $WHERE[] = ['OR' => [
                 ['AND' => [
                     ['hourmin'   => ['<', new QueryExpression($DB::quoteName('hourmax'))]],
@@ -498,7 +565,7 @@ class CronTask extends CommonDBTM
             $WHERE[] = [
                 'OR' => [
                     'lastrun'   => null,
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + ' . $DB::quoteName('frequency') . ' <= ' . QueryFunction::unixTimestamp()),
+                    new QueryExpression(QueryFunction::unixTimestamp('next_run') . ' <= ' . QueryFunction::unixTimestamp()),
                 ],
             ];
         }
@@ -517,7 +584,7 @@ class CronTask extends CommonDBTM
             // Core task before plugins
             'ORDER'  => [
                 'ISPLUGIN',
-                new QueryExpression(QueryFunction::unixTimestamp($DB::quoteName('lastrun')) . ' + ' . $DB::quoteName('frequency')),
+                QueryFunction::unixTimestamp('next_run'),
             ],
         ]);
 
@@ -612,7 +679,7 @@ class CronTask extends CommonDBTM
         if (empty($this->fields['lastrun'])) {
             $next_run_display = __('As soon as possible');
         } else {
-            $next = strtotime($this->fields['lastrun']) + $this->fields['frequency'];
+            $next = $this->fields['next_run'];
             $h    = date('H', $next);
             $deb  = ($this->fields['hourmin'] < 10 ? "0" . $this->fields['hourmin']
                                                 : $this->fields['hourmin']);

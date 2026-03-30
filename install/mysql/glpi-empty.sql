@@ -1628,6 +1628,8 @@ CREATE TABLE `glpi_crontasks` (
   `comment` text,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
+  `error_count` int NOT NULL DEFAULT '0',
+  `next_run` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`name`),
   KEY `name` (`name`),
