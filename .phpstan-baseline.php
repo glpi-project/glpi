@@ -10238,12 +10238,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/HelpdeskTranslation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\ItemTranslation\\\\ItemTranslation\\:\\:getTranslationsForItem\\(\\) expects CommonDBTM, Entity\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Helpdesk/HelpdeskTranslation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$entity of method Glpi\\\\Helpdesk\\\\Tile\\\\TilesManager\\:\\:getTilesForEntityRecursive\\(\\) expects Entity, Entity\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 3,
