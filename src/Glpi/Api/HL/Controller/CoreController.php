@@ -311,17 +311,35 @@ EOT,
         $swagger_content .= Html::script('/lib/swagger-ui.js');
         $swagger_content .= Html::css('/lib/swagger-ui.css');
         $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
-        $api_version = $this->getAPIVersion($request);
-        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/v' . $api_version . '/doc.json';
+
+        $hlapi_versions = array_filter(Router::getAPIVersions(), static fn($v) => $v['api_version'] !== '1');
+        //$doc_json_paths = json_encode(array_map(static fn($v) => ['url' => $CFG_GLPI['root_doc'] . '/api.php/v' . $v['version'] . '/doc.json', 'name' => $v['version']], $hlapi_versions));
+        $doc_json_paths = [];
+        foreach ($hlapi_versions as $version_info) {
+            $is_deprecated = $version_info['deprecated'] ?? false;
+            $doc_json_paths[] = [
+                'url' => $CFG_GLPI['root_doc'] . '/api.php/v' . $version_info['version'] . '/doc.json',
+                'name' => 'v' . $version_info['version'] . ($is_deprecated ? ' (deprecated)' : ''),
+            ];
+        }
+        $doc_json_paths = json_encode($doc_json_paths, JSON_THROW_ON_ERROR);
+
+//        $api_version = $this->getAPIVersion($request);
+//        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/v' . $api_version . '/doc.json';
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
-        <body>
+        <body style="margin:0; padding:0;">
             <div id="swagger-ui"></div>
             <script>
                 const ui = window.SwaggerUIBundle({
-                    url: '{$doc_json_path}',
+                    urls: {$doc_json_paths},
                     dom_id: '#swagger-ui',
+                    presets: [
+                      SwaggerUIBundle.presets.apis,
+                      SwaggerUIStandalonePreset
+                    ],
+                    layout: 'StandaloneLayout',
                     docExpansion: 'none',
                     validatorUrl: 'none',
                     filter: true,

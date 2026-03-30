@@ -141,6 +141,14 @@ The High-Level REST API documentation shown here is dynamically generated from t
 If a plugin is not enabled, its routes will not be shown here.
 EOT;
 
+        $api_versions = Router::getAPIVersions();
+        foreach ($api_versions as $version_info) {
+            if ($version_info['version'] === $this->api_version && ($version_info['deprecated'] ?? false)) {
+                $description = "DEPRECATED - " . $description;
+                break;
+            }
+        }
+
         return [
             'title' => 'GLPI High-Level REST API',
             'description' => $description,
