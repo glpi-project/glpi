@@ -440,7 +440,7 @@
                                                     data-glpi-kb-link-item-id="{{ item_id }}"
                                                     data-glpi-kb-link-idor-token="{{ document_idor_token }}"
                                                     data-glpi-kb-link-used-ids="{{ used_document_ids|json_encode }}"
-                                                    data-glpi-kb-link-ajax-url="{{ config('root_doc') }}/ajax/getDropdownValue.php"
+                                                    data-glpi-kb-link-ajax-url="{{ path('/ajax/getDropdownValue.php') }}"
                                                 >
                                                     {# Document search dropdown #}
                                                     <div class="mb-3">
