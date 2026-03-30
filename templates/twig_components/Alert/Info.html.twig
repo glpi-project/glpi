@@ -30,7 +30,7 @@
 # ---------------------------------------------------------------------
 #}
 
-{% set _classes = 'alert alert-' ~ type %}
+{% set _classes = 'alert alert-' ~ this.type %}
 {% if important|default(false) %}
     {% set _classes = _classes ~ ' alert-important' %}
 {% endif %}

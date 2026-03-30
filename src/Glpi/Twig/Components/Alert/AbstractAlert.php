@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Twig\Components;
+namespace Glpi\Twig\Components\Alert;
 
-use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
-
-#[AsTwigComponent(name: 'Alert', template: 'components/Alert.html.twig')]
-final class Alert
+abstract class AbstractAlert
 {
     /**
+     * Var is exposed in the template, for the backward compatibility.
+     * So type can be used with {{ component('Alert', {type: 'warning') }}
+     *
      * @var 'success'|'info'|'warning'|'danger'
      */
     public string $type = 'info';
@@ -67,5 +67,10 @@ final class Alert
             'danger' => 'ti ti-exclamation-circle',
             default => 'ti ti-info-circle',
         };
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

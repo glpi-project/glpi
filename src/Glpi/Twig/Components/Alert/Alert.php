@@ -32,18 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace Glpi\Twig\Components\Alert;
 
-return static function (ContainerConfigurator $container): void {
-    $container->extension('twig_component', [
-        'anonymous_template_directory' => 'twig_components',
-        'defaults' => [
-            'Glpi\\Twig\\Components\\' => [
-                'template_directory' => 'twig_components',
-            ],
-        ],
-    ]);
+use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
-    $container->services()
-        ->alias('glpi.ux.twig_component_runtime', 'ux.twig_component.twig.component_runtime')->public();
-};
+/**
+ * Default Alert compononent so users can <twig:Alert>...</twig:Alert>
+ */
+#[AsTwigComponent(name: 'Alert', template: 'twig_components/Alert/Info.html.twig')]
+class Alert extends AbstractAlert
+{
+    public string $type = 'info';
+}
