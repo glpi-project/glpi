@@ -141,7 +141,7 @@
             {% set extra_options = {} %}
             {% if not is_mail_function_available %}
                 {% set extra_options = {
-                    'helper': __('No way of sending emails available in PHP mode. Maybe there is a bad PHP sendmail configuration?') ~ '\n' ~ __('The use of an SMTP option is needed.')
+                    'helper': __('No way of sending emails available in PHP mode. Maybe there is a bad PHP configuration?') ~ '\n' ~ __('The use of an SMTP option is needed.')
                 } %}
             {% endif %}
             {{ fields.dropdownArrayField(
