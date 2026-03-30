@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\RuleBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/RuleRight.class.php */
 
@@ -155,56 +156,238 @@ class RuleRightTest extends DbTestCase
         $this->assertFalse($found);
     }
 
-    public function testLocalAccountAssignAndDefaultProfileAndEntity()
+    public static function ruleAccountAssignAndDefaultProfileAndEntityProvider()
+    {
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                'profiles_id' => 'Profile1',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                '_profiles_id_default' => 'Profile1',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 0,
+                '_entities_id_default' => 0,
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                'entities_id' => 'Entity1',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                '_entities_id_default' => 'Entity1',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 0,
+                '_entities_id_default' => 'Entity1',
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile2',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity2',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+            'actions' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ]
+        ];
+
+        yield [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+            'actions' => [
+                'profiles_id' => 'Profile2',
+                '_profiles_id_default' => 'Profile2',
+                'entities_id' => 'Entity2',
+                '_entities_id_default' => 'Entity2',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile2',
+                '_profiles_id_default' => 'Profile2',
+                'entities_id' => 'Entity2',
+                '_entities_id_default' => 'Entity2',
+            ]
+        ];
+    }
+
+    #[DataProvider('ruleAccountAssignAndDefaultProfileAndEntityProvider')]
+    public function testRuleAccountAssignAndDefaultProfileAndEntity(array $user_data, array $actions, array $expected)
     {
         $this->login();
 
-        $user = new \User();
         $profile_user = new \Profile_User();
         $rules = new \RuleRight();
 
         // Create an entity and a profile to be assigned by the rule.
-        $entity = $this->createItem('Entity', [
-            'name'        => __FUNCTION__ . '_' . mt_rand(),
-            'entities_id' => 0,
+        [$entity1, $entity2] = $this->createItems(\Entity::class, [
+            [
+                'name'        => 'Entity1',
+                'entities_id' => 0,
+            ],
+            [
+                'name'        => 'Entity2',
+                'entities_id' => 0,
+            ]
         ]);
-        $profile_id = getItemByTypeName('Profile', 'Technician', true);
+        [$profile1, $profile2] = $this->createItems(\Profile::class, [
+            ['name' => 'Profile1'],
+            ['name' => 'Profile2']
+       ]);
+
+        // Replace search keys by created items ids in actions, expected and user data.
+        $search_keys = ['Profile1', 'Profile2', 'Entity1', 'Entity2'];
+        $replace_ids = [$profile1->getID(), $profile2->getID(), $entity1->getID(), $entity2->getID()];
+
+        foreach ($actions as $key => $value) {
+            $actions[$key] = intval(str_replace($search_keys, $replace_ids, $value));
+        }
+        foreach ($expected as $key => $value) {
+            $expected[$key] = intval(str_replace($search_keys, $replace_ids, $value));
+        }
+        foreach ($user_data as $key => $value) {
+            $user_data[$key] = intval(str_replace($search_keys, $replace_ids, $value));
+        }
+
+        $user = $this->createItem(\User::class, [
+            'name'      => __FUNCTION__ . '_user',
+            'password'  => 'test',
+            'password2' => 'test',
+            'profiles_id' => $user_data['_profiles_id_default'],
+            'entities_id' => $user_data['_entities_id_default'],
+        ], ['password', 'password2']);
+
+        $this->createItem(\Profile_User::class, [
+            'users_id' => $user->getID(),
+            'profiles_id' => $user_data['profiles_id'],
+            'entities_id' => $user_data['entities_id'],
+        ]);
 
         // Prepare rule to assign the default profile and default entity.
         $rule_builder = new RuleBuilder(__FUNCTION__, \RuleRight::class);
         $rule_builder->setEntity(0)
-            ->setIsRecursive(1)
-            ->addCriteria('LOGIN', \Rule::PATTERN_IS, TU_USER)
-            ->addAction('assign', 'profiles_id', $profile_id)
-            ->addAction('assign', '_profiles_id_default', $profile_id)
-            ->addAction('assign', 'entities_id', $entity->getID())
-            ->addAction('assign', '_entities_id_default', $entity->getID());
+            ->addCriteria('LOGIN', \Rule::PATTERN_IS, $user->fields['name'])
+            ->setIsRecursive(1);
+        foreach ($actions as $key => $value) {
+            $rule_builder->addAction('assign', $key, $value);
+        }
         $rule = $this->createRule($rule_builder);
 
-        // Get TU_USER id and check initial state.
-        $users_id = \User::getIdByName(TU_USER);
-        $this->assertGreaterThan(0, $users_id);
-
-        // Check the user doesn't have the profile and entity assigned.
-        $this->assertTrue($user->getFromDB($users_id));
-        $this->assertNotEquals($profile_id, $user->fields['profiles_id']);
-        $this->assertNotEquals($entity->getID(), $user->fields['entities_id']);
-
-        // Check the profile is not in the user profiles collection.
-        $profiles = $profile_user->getUserProfiles($users_id);
-        $this->assertNotContains($profile_id, $profiles);
-
         // Login to trigger RuleRight processing.
-        $this->realLogin(TU_USER, TU_PASS, false);
+        $this->realLogin($user->fields['name'], 'test', false);
 
         // Check the user got the entity/profiles assigned.
-        $this->assertTrue($user->getFromDB($users_id));
-        $this->assertEquals($profile_id, $user->fields['profiles_id']);
-        $this->assertEquals($entity->getID(), $user->fields['entities_id']);
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertEquals($expected['_profiles_id_default'], $user->fields['profiles_id']);
+        $this->assertEquals($expected['_entities_id_default'], $user->fields['entities_id']);
 
         // Check the profile is in the user profiles collection.
-        $profiles = $profile_user->getUserProfiles($users_id);
-        $this->assertContains($profile_id, $profiles);
+        $profiles = $profile_user->getUserProfiles($user->getID());
+        $this->assertContains($expected['profiles_id'], $profiles);
 
         // Cleanup
         $rules->delete([

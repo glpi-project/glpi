@@ -1293,12 +1293,42 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $_SESSION["glpidefault_entity"] = $input["entities_id"];
         }
 
+        // Prepare default profiles and entities for security checks
+        $default_profile_ids = [];
+        $default_entity_id = [];
+
+        // Check if LDAP rules are set in input
+        if (isset($input['_ldap_rules'])) {
+            // Check if LDAP rules contain entity and profile affectations
+            if (isset($input['_ldap_rules']['rules_entities_rights'])) {
+                foreach ($input['_ldap_rules']['rules_entities_rights'] as $rule) {
+                    $default_entity_id[] = $rule[0];
+                    $default_profile_ids[] = $rule[1];
+                }
+            }
+
+            // Check if LDAP rules contain entity affectations
+            if (isset($input['_ldap_rules']['rules_entities'])) {
+                foreach ($input['_ldap_rules']['rules_entities'] as $rule) {
+                    $default_entity_id[] = $rule[0];
+                }
+            }
+
+            // Check if LDAP rules contain profile affectations. One entity is required to be able to apply profile affectation.
+            if (isset($input['_ldap_rules']['rules_profiles']) && count($default_entity_id) > 0) {
+                foreach ($input['_ldap_rules']['rules_profiles'] as $rule) {
+                    $default_profile_ids[] = $rule[0];
+                }
+            }
+        }
+
         // Security on default profile update
         if (isset($input['profiles_id'])) {
             if (
                 !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
                 && !in_array((int) $input['profiles_id'], $input['_ldap_rules']['rules_profiles_id_default'] ?? [])
                 && $input['profiles_id'] != 0
+                && !in_array($input['profiles_id'], $default_profile_ids)
             ) {
                 unset($input['profiles_id']);
             }
@@ -1309,7 +1339,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             if (
                 $input['entities_id'] > 0
                 && !in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))
-                && !in_array((int) $input['entities_id'], $input['_ldap_rules']['rules_entities_id_default'] ?? [])
+                && !in_array($input['entities_id'], $default_entity_id)
             ) {
                 unset($input['entities_id']);
             } elseif ($input['entities_id'] == -1) {

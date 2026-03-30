@@ -179,16 +179,6 @@ class RuleRight extends Rule
                 $output["_ldap_rules"]["rules_rights"][] = $right;
             }
 
-            // Store default entity and profile to be used
-            if (isset($output['entities_id'])) {
-                $output["_ldap_rules"]["rules_entities_id_default"][] = $output['entities_id'];
-            }
-
-            if (isset($output['profiles_id'])) {
-                $output["_ldap_rules"]["rules_profiles_id_default"][] = $output['profiles_id'];
-            }
-
-
             return $output;
         }
         return $output_src;
