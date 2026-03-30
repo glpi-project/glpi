@@ -295,7 +295,8 @@ class CronTaskTest extends DbTestCase
         ]);
 
         // Simulate what CronTask::start() and CronTask::stop() do: add CronTaskLog entries
-        $this->createItem(\CronTaskLog::class,
+        $this->createItem(
+            \CronTaskLog::class,
             [
                 'crontasks_id'    => $crontask->getID(),
                 'date'            => date('Y-m-d H:i:s'),
@@ -306,7 +307,8 @@ class CronTaskTest extends DbTestCase
                 'elapsed'         => 0.0,
             ]
         );
-        $this->createItem(\CronTaskLog::class,
+        $this->createItem(
+            \CronTaskLog::class,
             [
                 'crontasks_id'    => $crontask->getID(),
                 'date'            => date('Y-m-d H:i:s'),
