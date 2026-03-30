@@ -2914,7 +2914,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         $fkeys = array_filter($params['add_keys_names'], isForeignKeyField(...));
 
         foreach ($fkeys as $kn_fkey) {
-            if (!isset($data[$kn_fkey])) {
+            if ($kn_fkey !== "id" && !isset($data[$kn_fkey])) {
                 trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
                 continue;
             }
