@@ -243,6 +243,14 @@
       $("#right-actions").hide();
    });
 
+   $('#itil-footer .form-buttons button[name="update"]').on('click', () => {
+       const has_opened_new_form = $('#new-itilobject-form .collapse.show').length > 0
+           || $('.timeline-item .edit-content').filter((i, c) => c.textContent.trim().length > 0).length > 0;
+       if (has_opened_new_form) {
+          return confirm('{{ __("You have unsaved changes in the timeline. Are you sure you want to continue?")|e('js') }}');
+       }
+   });
+
    $(function() {
       // when close button of new answer block is clicked, show again the new answer button (and the itil object actions)
       $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
