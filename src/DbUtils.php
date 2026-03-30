@@ -2089,6 +2089,7 @@ final class DbUtils
      * @param string $time datetime time
      *
      * @return string
+     * @deprecated 12.0.0
      */
     public function getHourFromSql($time)
     {

@@ -240,7 +240,6 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  */
 function countElementsInTableForMyEntities($table, $condition = [])
 {
-    Toolbox::deprecated();
     $dbu = new DbUtils();
     return $dbu->countElementsInTableForMyEntities($table, $condition);
 }
