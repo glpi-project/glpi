@@ -268,6 +268,27 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return $actions;
     }
 
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        switch ($ma->getAction()) {
+            case 'update':
+                $input = $ma->getInput();
+                if (isset($input['id_field']) && strpos($input['id_field'], ':71') !== false) {
+                    Dropdown::show('Group', [
+                        'name'      => 'groups_id',
+                        'condition' => ['is_itemgroup' => 1],
+                        'multiple'  => true,
+                        'values'    => [],
+                    ]);
+                    echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction', 'class' => 'btn btn-primary mt-3']);
+                    return true;
+                }
+                break;
+        }
+
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -347,6 +368,67 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 }
 
                 return;
+
+            case 'update':
+                $input = $ma->getInput();
+                if (isset($input['id_field']) && strpos($input['id_field'], ':71') !== false) {
+                    // Vérifier qu'au moins un groupe est sélectionné
+                    if (
+                        !isset($input['groups_id'])
+                        || (is_array($input['groups_id']) && count($input['groups_id']) === 0)
+                        || (!is_array($input['groups_id']) && $input['groups_id'] <= 0)
+                    ) {
+                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->addMessage(__('No group selected'));
+                        return;
+                    }
+
+                    // Convertir en tableau si ce n'est pas déjà le cas
+                    $groups_to_add = is_array($input['groups_id']) ? $input['groups_id'] : [$input['groups_id']];
+                    $group_item = new Group_Item();
+
+                    foreach ($ids as $id) {
+                        if ($item->can($id, UPDATE)) {
+                            // Supprimer tous les groupes existants
+                            $existing = $group_item->find([
+                                'items_id'  => $id,
+                                'itemtype'  => $item->getType(),
+                                'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                            ]);
+
+                            foreach ($existing as $old_group) {
+                                $group_item->delete(['id' => $old_group['id']], true);
+                            }
+
+                            // Ajouter les nouveaux groupes sélectionnés
+                            $success = true;
+                            foreach ($groups_to_add as $group_id) {
+                                $input_group = [
+                                    'items_id'  => $id,
+                                    'itemtype'  => $item->getType(),
+                                    'groups_id' => $group_id,
+                                    'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                                ];
+
+                                if (!$group_item->add($input_group)) {
+                                    $success = false;
+                                }
+                            }
+
+                            if ($success) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        }
+                    }
+                    return;
+                }
+                break;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
@@ -476,7 +558,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 ],
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false,
+            'massiveaction'      => true,
             'datatype'           => 'dropdown',
         ];
 
