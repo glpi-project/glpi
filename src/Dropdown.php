@@ -5118,14 +5118,14 @@ HTML;
         $elementsCount = 0;
         foreach ($results as $element) {
             $elementsCount++;
-            if(isset($element['children'])) {
-                $elementsCount+= count($element['children']);
+            if (isset($element['children'])) {
+                $elementsCount += count($element['children']);
             }
         }
 
         $return = [
             'results' => $results,
-            'count'   => $elementsCount,
+            'count' => $elementsCount,
         ];
         if ($elementsCount >= $post['page_limit']) {
             $return['pagination'] = [
