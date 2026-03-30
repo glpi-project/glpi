@@ -172,8 +172,7 @@
                                                 >{{ action.counter }}</span>
                                             {% endif %}
 
-                                            {% if action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_VALUE')
-                                                        or action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_FAVORITE') %}
+                                            {% if action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_VALUE') or action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_FAVORITE') %}
                                                 <label class="form-check form-switch ms-auto mb-0">
                                                     <input
                                                         type="checkbox"
