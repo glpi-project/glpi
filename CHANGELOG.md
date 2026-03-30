@@ -15,6 +15,14 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
 - Password policy and 2FA settings moved from `Setup > General` to `Setup > Security`.
+- New `ERROR` status for automatic actions that have repeatedly failed.
+  Action failure is tracked based on a shutdown handler that checks if the action has completed normally.
+  When an action failure is caught, it will go back to a scheduled status and increment an error counter. If the action fails 5 times, the action gets put in an ERROR status and it will need manual intervention.
+  Failed actions get rescheduled using a backoff strategy starting at 1 minute and doubling for each failure up to a max delay of 30 minutes, plus a random delay between 0 and 2 minutes.
+- New `ABORTED` status for automatic actions terminated externally (ex: killed process). These actions are scheduled to re-run as soon as possible.
+- `status_msg` property for the cronttask (automatic actions) service in the status checker format changed from "RUNNING: %d, STUCK: %d, TOTAL: %d" to "RUNNING: %d, STUCK: %d, ERROR: %d, TOTAL: %d".
+  If your monitoring relies on parsing this string, make sure it can handle the new format.
+- New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 
 ### Deprecated
 

@@ -468,6 +468,7 @@ final class StatusChecker
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'stuck' => [],
+                'errored' => [],
             ];
             if (self::isDBAvailable()) {
                 global $DB;
@@ -478,8 +479,18 @@ final class StatusChecker
                 foreach ($stuck_crontasks as $ct) {
                     $status['stuck'][] = $ct['name'];
                 }
-                $status['status'] = count($status['stuck']) ? self::STATUS_PROBLEM : self::STATUS_OK;
-                $status['status_msg'] = sprintf(_x('glpi_status', 'RUNNING: %d, STUCK: %d, TOTAL: %d'), $running, count($stuck_crontasks), count($crontasks));
+                $errored_crontasks = array_filter($crontasks, static fn($crontask) => $crontask['state'] === CronTask::STATE_ERROR);
+                foreach ($errored_crontasks as $ct) {
+                    $status['errored'][] = $ct['name'];
+                }
+                $status['status'] = (count($status['stuck']) + count($status['errored'])) ? self::STATUS_PROBLEM : self::STATUS_OK;
+                $status['status_msg'] = sprintf(
+                    _x('glpi_status', 'RUNNING: %d, STUCK: %d, ERRORED: %d, TOTAL: %d'),
+                    $running,
+                    count($stuck_crontasks),
+                    count($errored_crontasks),
+                    count($crontasks)
+                );
             }
             self::$cached_status['crontasks'] = $status;
         }
