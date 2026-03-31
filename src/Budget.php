@@ -100,7 +100,7 @@ class Budget extends CommonDropdown
 
         if (!$withtemplate) {
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     $count = 0;
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $count = self::countForBudget($item);
