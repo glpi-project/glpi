@@ -285,17 +285,17 @@ class Budget extends CommonDropdown
      */
     public static function countForBudget(Budget $item): int
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // Use the same criteria as showItems() but without pagination
         $count_criteria = [
             'FROM' => $item->getItemListCriteria(),
-            'COUNT' => 'cpt'
+            'COUNT' => 'cpt',
         ];
 
         $result = $DB->request($count_criteria)->current();
-        return (int)($result['cpt'] ?? 0);
+        return (int) ($result['cpt'] ?? 0);
     }
 
     /**
