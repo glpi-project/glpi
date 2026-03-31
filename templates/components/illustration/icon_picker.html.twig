@@ -77,7 +77,7 @@
             <div
                 {% if is_custom_file %}
                     data-glpi-icon-picker-value-preview-custom
-                    data-testid="custom-illustration-preview"
+                    data-testid="illustration-custom-preview"
                 {% else %}
                     data-glpi-icon-picker-value-preview-native
                 {% endif %}
@@ -89,7 +89,7 @@
                     {{ render_illustration('', size) }}
                 </div>
             {% else %}
-                <div class="d-none" data-glpi-icon-picker-value-preview-custom data-testid="custom-illustration-preview">
+                <div class="d-none" data-glpi-icon-picker-value-preview-custom data-testid="illustration-custom-preview">
                     {{ render_illustration(custom_icon_prefix, size) }}
                 </div>
             {% endif %}
