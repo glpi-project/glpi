@@ -117,7 +117,7 @@ class KnowbaseEditor {
             }),
             TiptapImage.configure({
                 inline: false,
-                allowBase64: false,
+                allowBase64: true,
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
@@ -125,6 +125,7 @@ class KnowbaseEditor {
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
                 appendTo: () => document.body,
+                shouldShow: ({ editor, state }) => !state.selection.empty && !editor.isActive('image'),
                 options: {
                     placement: 'top',
                     offset: 8,

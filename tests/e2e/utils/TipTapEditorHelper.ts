@@ -44,10 +44,6 @@ export class TipTapEditorHelper {
     }
 
     async enterEditMode(): Promise<Locator> {
-        // Wait for ArticleController to finish initialization (it removes pe-none after attaching all listeners)
-        // eslint-disable-next-line playwright/no-raw-locators
-        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
-
         const editButton = this.page.getByTestId('edit-button');
         await editButton.click();
 

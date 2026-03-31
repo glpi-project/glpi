@@ -99,9 +99,6 @@ final class UploadInlineImageController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // Create Document
-        $doc = new Document();
-
         // Compute display name: strip prefix from filename if a real prefix exists
         $display_name = $filename;
         if (!empty($prefix) && $prefix !== $filename && str_starts_with($filename, $prefix)) {
@@ -111,6 +108,7 @@ final class UploadInlineImageController extends AbstractController
         $doc_input = [
             '_filename'               => [$filename],
             '_only_if_upload_succeed'  => 1,
+            '_no_message'             => 1,
             'entities_id'             => $kbitem->fields['entities_id'] ?? 0,
             'is_recursive'            => $kbitem->fields['is_recursive'] ?? 0,
             'name'                    => $display_name,
@@ -120,29 +118,22 @@ final class UploadInlineImageController extends AbstractController
             $doc_input['_prefix_filename'] = [$prefix];
         }
 
-        $doc_id = $doc->add($doc_input);
-        if (!$doc_id) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => __('Failed to create document'),
-            ], 500);
-        }
+        // Create Document (checks CREATE right on Document)
+        $doc = $this->add(Document::class, $doc_input);
+        $doc_id = $doc->getID();
 
-        // Link Document to KnowbaseItem, hidden from documents list
-        $doc_item = new Document_Item();
-        $link_id = $doc_item->add([
+        // Link Document to KnowbaseItem, hidden from documents list (checks CREATE right on Document_Item)
+        $this->add(Document_Item::class, [
             'documents_id'      => $doc_id,
             'itemtype'          => KnowbaseItem::class,
             'items_id'          => $knowbaseitems_id,
             'timeline_position' => CommonITILObject::NO_TIMELINE,
             'users_id'          => \Session::getLoginUserID(),
         ]);
-        if (!$link_id) {
-            return new JsonResponse([
-                'success' => false,
-                'message' => __('Failed to link document to article'),
-            ], 500);
-        }
+
+        // Discard any session flash messages produced by the add() calls above —
+        // they are meaningless in an AJAX context and would appear on the next page load.
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
         // Build the document serving URL
         $url = Html::getPrefixedUrl(
