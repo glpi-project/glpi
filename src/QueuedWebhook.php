@@ -188,7 +188,11 @@ class QueuedWebhook extends CommonDBChild
 
         if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
-            $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], (string) $queued_webhook->fields['body'], $webhook->fields['secret']);
+            $result = $webhook::validateCRAChallenge(
+                $queued_webhook->fields['url'],
+                $queued_webhook->fields['body'] ?: sha1((string) $queued_webhook->getID()),
+                $webhook->fields['secret']
+            );
             if ($result['status'] !== true) {
                 Toolbox::logInFile('webhook', "CRA challenge failed for webhook {$webhook->fields['name']} ({$webhook->getID()})");
                 return false;
