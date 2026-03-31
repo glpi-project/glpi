@@ -2011,8 +2011,8 @@ HTML;
         $current = new DateTime($_SESSION['glpi_currenttime']);
         $start = new DateTime($from);
         // differenciate between tacit renewal contract (auto_renew = true) that already started and all others contracts
-        if($auto_renew && $current > $start){
-            
+        if ($auto_renew && $current > $start) {
+
             // Calculate the number of months elapsed since the beginning
             $interval = $start->diff($current);
             $months_elapsed = ($interval->y * 12) + $interval->m;
@@ -2031,7 +2031,7 @@ HTML;
             $timestamp = $start;
             $timestamp->add(new DateInterval("P{$notice_months}M"));
             $timestamp->sub(new DateInterval("P1D"));
-        }else{
+        } else {
             // For all other contracts, take the start date, add the duration of the contract, remove the eventual notice period, and remove 1 day
             $timestamp = $start;
             $timestamp->add(new DateInterval("P{$addwarranty}M"));

@@ -248,7 +248,7 @@ class ContractTest extends DbTestCase
                     'periodicity' => 0,
                 ],
                 'expected' => "<span class='red'>2020-03-31</span>",
-            ],  
+            ],
             [
                 'field' => '_virtual_expire_notice',
                 'values' => [

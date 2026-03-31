@@ -208,7 +208,7 @@ TWIG, $twig_params);
                 $contract->fields["duration"],
                 0,
                 true,
-                $contract->fields["renewal"]==1,
+                $contract->fields["renewal"] == 1,
                 $contract->fields["periodicity"]
             );
             $entries[] = $entry;

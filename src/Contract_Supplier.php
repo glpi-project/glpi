@@ -202,7 +202,7 @@ TWIG, $twig_params);
                 $data["duration"],
                 0,
                 true,
-                $data["renewal"]==1,
+                $data["renewal"] == 1,
                 $data["periodicity"]
             );
             $entries[] = $entry;

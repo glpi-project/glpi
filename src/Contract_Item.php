@@ -362,7 +362,7 @@ TWIG, $twig_params);
                 $con->fields["duration"],
                 0,
                 true,
-                $con->fields["renewal"]==1,
+                $con->fields["renewal"] == 1,
                 $con->fields["periodicity"]
             );
             $entries[] = $entry;
