@@ -65,7 +65,6 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await dialog.getByRole('button', { name: 'Save' }).click();
 
             await expect(dialog).toBeHidden();
-            // eslint-disable-next-line playwright/no-raw-locators
             await expect(kb.editor.contentContainer.locator(`img[src="${dataUri}"]`)).toBeVisible();
         });
 
