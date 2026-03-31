@@ -57,7 +57,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await kb.slashMenu.open();
             await kb.slashMenu.selectByClick('Image');
 
-            const dialog = page.getByTestId('image-dialog');
+            const dialog = kb.imageDialog;
             await expect(dialog).toBeVisible();
 
             const dataUri = `data:image/png;base64,${TEST_IMAGE_BASE64}`;
@@ -86,7 +86,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await kb.slashMenu.open();
             await kb.slashMenu.selectByClick('Image');
 
-            const dialog = page.getByTestId('image-dialog');
+            const dialog = kb.imageDialog;
             await expect(dialog).toBeVisible();
 
             await dialog.getByRole('button', { name: 'Cancel' }).click();
@@ -112,7 +112,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await kb.slashMenu.open();
             await kb.slashMenu.selectByClick('Image');
 
-            const dialog = page.getByTestId('image-dialog');
+            const dialog = kb.imageDialog;
             await expect(dialog).toBeVisible();
 
             await page.keyboard.press('Escape');
@@ -136,7 +136,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             await kb.slashMenu.open();
             await kb.slashMenu.selectByClick('Image');
 
-            const dialog = page.getByTestId('image-dialog');
+            const dialog = kb.imageDialog;
             await expect(dialog).toBeVisible();
 
             await dialog.getByRole('button', { name: 'Save' }).click();

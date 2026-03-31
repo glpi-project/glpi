@@ -50,7 +50,6 @@ function showImageDialog(editor, existing_attrs = null) {
 
     const dialog = document.createElement('div');
     dialog.className = 'image-dialog';
-    dialog.dataset.testid = 'image-dialog';
 
     const title = document.createElement('div');
     title.className = 'image-dialog-header';
