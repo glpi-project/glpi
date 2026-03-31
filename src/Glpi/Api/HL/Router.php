@@ -169,16 +169,19 @@ EOT;
                 'api_version' => '2',
                 'version' => '2.0.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
+                'deprecated' => true,
             ],
             [
                 'api_version' => '2',
                 'version' => '2.1.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
+                'deprecated' => true,
             ],
             [
                 'api_version' => '2',
                 'version' => '2.2.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
+                'deprecated' => true,
             ],
             [
                 'api_version' => '2',
