@@ -36,9 +36,11 @@
 namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
+use Cluster;
 use CommonDBTM;
 use CommonTreeDropdown;
 use ConsumableItem;
+use Datacenter;
 use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
@@ -59,6 +61,7 @@ use LogicException;
 use Override;
 use PassiveDCEquipment;
 use PDU;
+use Rack;
 use Session;
 use Software;
 use TicketRecurrent;
@@ -168,6 +171,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                     Line::class,
                     PassiveDCEquipment::class,
                     PDU::class,
+                    Rack::class,
                 ]
             ),
             __('Assistance') => array_merge(
@@ -176,7 +180,13 @@ class QuestionTypeItem extends AbstractQuestionType implements
                     TicketRecurrent::class,
                 ]
             ),
-            __('Management') => $CFG_GLPI['management_types'],
+            __('Management') => array_merge(
+                $CFG_GLPI['management_types'],
+                [
+                    Cluster::class,
+                    Datacenter::class,
+                ],
+            ),
             __('Tools') => $CFG_GLPI['tools_types'],
             __('Administration') => $CFG_GLPI['admin_types'],
         ];
