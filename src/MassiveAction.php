@@ -853,7 +853,7 @@ class MassiveAction
             case 'associate_group':
             case 'dissociate_group':
                 $values = [
-                    'groups_id'      => __('Group'),
+                    'groups_id'      => _n('Group', 'Groups', 0),
                     'groups_id_tech' => __('Group in charge'),
                 ];
                 Dropdown::showFromArray('fieldname', $values);
