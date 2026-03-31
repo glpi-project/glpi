@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ class NotificationMailing implements NotificationInterface
      * @param mixed $value   The data to check (may differ for every notification mode)
      * @param array $options Optionnal special options (may be needed)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function check($value, $options = [])
     {
@@ -60,14 +60,14 @@ class NotificationMailing implements NotificationInterface
      * @param array  $options options used (by default 'checkdns'=>false)
      *     - checkdns :check dns entry
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
-       //drop sanitize...
+        //drop sanitize...
         $isValid = GLPIMailer::validateAddress($address);
 
-        $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
+        $checkdns = ($options['checkdns'] ?? false);
         if ($checkdns) {
             $domain    = substr($address, strrpos($address, '@') + 1);
             if (
@@ -89,7 +89,6 @@ class NotificationMailing implements NotificationInterface
      */
     public static function testNotification(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $sender = Config::getEmailSender();
@@ -101,7 +100,15 @@ class NotificationMailing implements NotificationInterface
             ];
         }
 
-        $mmail = new GLPIMailer();
+        try {
+            $mmail = new GLPIMailer();
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'error'   => sprintf(__('Cannot initialize mailer, error is: %s'), "\n" . $e->getMessage()),
+                'debug'   => null,
+            ];
+        }
         $mail = $mmail->getEmail();
 
         $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
@@ -112,6 +119,7 @@ class NotificationMailing implements NotificationInterface
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
+            Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
             //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
             //add original email address to message body
@@ -131,10 +139,9 @@ class NotificationMailing implements NotificationInterface
         ];
     }
 
-
+    #[Override]
     public function sendNotification($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $data = [];
@@ -188,7 +195,7 @@ class NotificationMailing implements NotificationInterface
             Session::addMessageAfterRedirect(__s('Error inserting email to queue'), true, ERROR);
             return false;
         } else {
-           //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
             Toolbox::logInFile(
                 "mail",
                 sprintf(
@@ -200,6 +207,12 @@ class NotificationMailing implements NotificationInterface
                     $options['subject'] . "\n"
                 )
             );
+
+            $itemtype = (string) $queue->fields['itemtype'];
+            $event    = (string) $queue->fields['event'];
+            if (NotificationTarget::shouldNotificationBeSentImmediately($itemtype, $event)) {
+                NotificationEventMailing::send([$queue->fields]);
+            }
         }
 
         return true;

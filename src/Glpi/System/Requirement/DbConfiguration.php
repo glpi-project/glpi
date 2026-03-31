@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace Glpi\System\Requirement;
 
 use DBmysql;
+use mysqli_result;
 
 /**
  * @since 10.0.0
@@ -62,15 +63,12 @@ class DbConfiguration extends AbstractRequirement
     {
         $query = 'SELECT @@GLOBAL.' . $this->db->quoteName('innodb_page_size as innodb_page_size');
 
-        if (($db_config_res = $this->db->doQuery($query)) === false) {
-            $this->validated = false;
-            $this->validation_messages[] = __('Unable to validate database configuration variables.');
-        }
-
+        /** @var mysqli_result $db_config_res */
+        $db_config_res = $this->db->doQuery($query);
         $db_config = $db_config_res->fetch_assoc();
 
         $incompatibilities = [];
-        if ((int)$db_config['innodb_page_size'] < 8192) {
+        if ((int) $db_config['innodb_page_size'] < 8192) {
             $incompatibilities[] = '"innodb_page_size" must be >= 8KB.';
         }
 

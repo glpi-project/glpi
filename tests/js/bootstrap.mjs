@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,9 @@ await import('@tabler/core');
 await import('select2/dist/js/select2.full').then((select2) => {
     // Select2 exports a function that registers itself as a jQuery plugin
     select2.default();
+});
+await import('lodash').then((lodash) => {
+    window._ = lodash.default;
 });
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
@@ -168,9 +170,25 @@ class AjaxMock {
             }
         }
         if (result !== undefined) {
+            if (settings.async === false) {
+                if (resolve_type === 'success' && settings.success) {
+                    settings.success(result);
+                } else if (resolve_type !== 'success' && settings.error) {
+                    settings.error(result);
+                }
+                return Promise.resolve();
+            }
             if (resolve_type === 'success') {
+                if (settings.success) {
+                    settings.success(result);
+                    return Promise.resolve();
+                }
                 result = Promise.resolve(result);
             } else {
+                if (settings.error) {
+                    settings.error(result);
+                    return Promise.resolve();
+                }
                 result = Promise.reject(result);
             }
             return result;
@@ -178,7 +196,7 @@ class AjaxMock {
             /* eslint-disable no-console */
             console.dir({
                 request_data: settings.data,
-                responses: window.AjaxMock.response_stack
+                responses: JSON.stringify(window.AjaxMock.response_stack)
             });
             throw `No mock response found for ${url}`;
         }

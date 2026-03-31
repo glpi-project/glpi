@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -73,7 +73,7 @@ final class TagListController extends AbstractController
         }
 
         $form = Form::getById($forms_id);
-        if (!$form) {
+        if (!$form instanceof Form) {
             throw new NotFoundHttpException();
         }
 

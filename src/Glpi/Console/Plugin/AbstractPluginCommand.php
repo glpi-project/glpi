@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,8 @@
 namespace Glpi\Console\Plugin;
 
 use Glpi\Console\AbstractCommand;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -49,7 +51,7 @@ abstract class AbstractPluginCommand extends AbstractCommand
      *
      * @var string
      */
-    const DIRECTORY_ALL = '*';
+    public const DIRECTORY_ALL = '*';
 
     protected function configure()
     {
@@ -76,16 +78,16 @@ abstract class AbstractPluginCommand extends AbstractCommand
         $directories = $input->getArgument('directory');
 
         if ($all && !empty($directories)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --all is not compatible with usage of directory argument.')
             );
         }
 
         if ($all) {
-           // Set wildcard value in directory argument
+            // Set wildcard value in directory argument
             $input->setArgument('directory', [self::DIRECTORY_ALL]);
-        } else if (empty($directories)) {
-           // Ask for plugin list if directory argument is empty
+        } elseif (empty($directories)) {
+            // Ask for plugin list if directory argument is empty
             $choices = $this->getDirectoryChoiceChoices();
 
             if (!empty($choices)) {
@@ -94,8 +96,7 @@ abstract class AbstractPluginCommand extends AbstractCommand
                     $choices
                 );
 
-                /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
+                $question_helper = new QuestionHelper();
                 $question = new ChoiceQuestion(
                     $this->getDirectoryChoiceQuestion(),
                     $choices

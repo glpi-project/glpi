@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Debug\Profile;
+use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\UI\ThemeManager;
+
+use function Safe\json_encode;
+use function Safe\session_write_close;
 
 Html::header_nocache();
 
@@ -43,12 +48,12 @@ if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
     throw new AccessDeniedHttpException();
 }
 
-\Glpi\Debug\Profiler::getInstance()->disable();
+Profiler::getInstance()->disable();
 
 if (isset($_GET['ajax_id'])) {
     // Get debug data for a specific ajax call
     $ajax_id = $_GET['ajax_id'];
-    $profile = \Glpi\Debug\Profile::pull($ajax_id);
+    $profile = Profile::pull($ajax_id);
 
     // Close session ASAP to not block other requests.
     // DO NOT do it before call to `\Glpi\Debug\Profile::pull()`,
@@ -100,20 +105,18 @@ if (isset($_GET['action'])) {
         }
         try {
             /** @var CommonGLPI $item */
-            $item = new $_GET['itemtype']();
+            $item = getItemForItemtype($_GET['itemtype']);
             $options = Search::getOptions($item::getType());
         } catch (Throwable $e) {
             $options = [];
         }
-        $options = array_filter($options, static function ($k) {
-            return is_numeric($k);
-        }, ARRAY_FILTER_USE_KEY);
+        $options = array_filter($options, static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
         echo json_encode($options);
         return;
     }
     if ($action === 'get_themes') {
         header('Content-Type: application/json');
-        $themes = \Glpi\UI\ThemeManager::getInstance()->getAllThemes();
+        $themes = ThemeManager::getInstance()->getAllThemes();
         echo json_encode($themes);
         return;
     }

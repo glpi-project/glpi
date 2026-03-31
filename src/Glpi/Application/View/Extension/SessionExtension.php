@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,9 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonDBTM;
 use CommonGLPI;
+use Exception;
 use Profile_User;
 use Session;
 use Twig\Extension\AbstractExtension;
@@ -83,7 +85,7 @@ class SessionExtension extends AbstractExtension
      */
     public function getCurrentUser(): ?User
     {
-        if (($user = User::getById(Session::getLoginUserID())) !== false) {
+        if (($user = User::getById(Session::getLoginUserID())) instanceof User) {
             return $user;
         }
         return null;
@@ -100,10 +102,10 @@ class SessionExtension extends AbstractExtension
     public function hasItemtypeRight(string $itemtype, int $right): bool
     {
         if (!is_a($itemtype, CommonGLPI::class, true)) {
-            throw new \Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
+            throw new Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
         }
 
-        /** @var \CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         return $item->canGlobal($right);
     }
@@ -118,7 +120,6 @@ class SessionExtension extends AbstractExtension
      */
     public function userPref(string $name, bool $decode = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $data = $_SESSION['glpi' . $name] ?? $CFG_GLPI[$name] ?? null;

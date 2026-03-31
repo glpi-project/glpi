@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,7 @@
 
 /* eslint prefer-template: 0 */
 /* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
-/* global glpi_ajax_dialog, glpi_close_all_dialogs */
+/* global glpi_ajax_dialog, glpi_close_all_dialogs, glpi_toast_info, glpi_toast_error */
 
 window.GLPI = window.GLPI || {};
 window.GLPI.Dashboard = {
@@ -73,6 +73,7 @@ window.GLPI.Dashboard = {
  * @property {{}[]} [all_cards] All cards
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
+ * @property {boolean} [mini] Whether the dashboard is in mini mode (for ticket search page)
  */
 
 class GLPIDashboard {
@@ -126,8 +127,8 @@ class GLPIDashboard {
         };
         options = Object.assign({}, default_options, options);
 
-        this.rand         = options.rand;
-        this.elem_id      = "#dashboard-" + options.rand;
+        this.rand         = parseInt(options.rand);
+        this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
         this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;
@@ -149,7 +150,7 @@ class GLPIDashboard {
         const elem_domRect = this.elem_dom.getBoundingClientRect();
         const width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
 
-        this.grid = GridStack.init({
+        const gridstack_options = {
             column: options.cols,
             maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
             margin : this.cell_margin,
@@ -158,16 +159,26 @@ class GLPIDashboard {
             draggable: { // override jquery ui draggable options
                 'cancel': 'textarea' // avoid draggable on some child elements
             },
-            'minWidth': 768 -  width_offset, // breakpoint of one column mode (based on the dashboard container width), trying to reduce to match the `-md` breakpoint of bootstrap (this last is based on viewport width)
-        }, `#grid-stack-${options.rand}`);
+            // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
+            // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
+            // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
+        };
+        this.grid = GridStack.init(gridstack_options, `#grid-stack-${options.rand}`);
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
         // see https://github.com/gridstack/gridstack.js/issues/1229
         this.grid.setStatic(true);
 
-        // generate the css based on the grid width
-        this.generateCss();
+        this.mobile_threshold = Math.round(768 - width_offset);
+
+        // Apply mobile layout if needed on initial load
+        window.requestAnimationFrame(() => {
+            this.switchColumnLayout(options.cols);
+        });
+
+        // set the width of the select box to match the selected option
+        this.resizeSelect();
 
         // init filters from storage
         this.initFilters();
@@ -238,7 +249,7 @@ class GLPIDashboard {
         });
 
         // filter mode toggle
-        $("#dashboard-"+options.rand+" .toolbar .filter-dashboard").on('click', (e) => {
+        $(`${this.elem_id} .toolbar .filter-dashboard`).on('click', (e) => {
             const activate = !$(e.currentTarget).hasClass('active');
 
             this.setFilterMode(activate);
@@ -253,7 +264,7 @@ class GLPIDashboard {
             if (!document.webkitIsFullScreen
                 && !document.mozFullScreen
                 && !document.msFullscreenElement) {
-                this.disableFullscreenMode();
+                this.removeFullscreenModeClass();
             }
         });
 
@@ -292,7 +303,7 @@ class GLPIDashboard {
 
             window.clearTimeout(debounce);
             debounce = window.setTimeout(() => {
-                this.generateCss();
+                this.switchColumnLayout(this.cols);
 
                 // fit again numbers
                 this.fitNumbers();
@@ -339,12 +350,6 @@ class GLPIDashboard {
         this.grid.on('resizestop', (event, elem) => {
             this.saveDashboard();
 
-            // resize also chart if exists
-            const chart = $(elem).find('.ct-chart');
-            if (chart.length > 0 && chart[0].__chartist__ != undefined)  {
-                chart[0].__chartist__.update();
-            }
-
             // Used after "resize.fittext" event to reset our custom width "trick"
             // See computeWidth() function for more info on the trick
             this.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
@@ -367,7 +372,7 @@ class GLPIDashboard {
             const item = refresh_ctrl.closest('.grid-stack-item');
             const id = item.attr('gs-id');
 
-            this.getCardsAjax("[gs-id="+id+"]");
+            this.getCardsAjax(`[gs-id="${CSS.escape(id)}"]`);
         }).on('click', '.edit-item', (e) => {
             // edit item
             const edit_ctrl = $(e.target);
@@ -382,12 +387,13 @@ class GLPIDashboard {
                     dashboard:    this.current_name,
                     gridstack_id: item.attr('gs-id'),
                     card_id:      card_opt.card_id,
-                    x:            item.attr('gs-x'),
-                    y:            item.attr('gs-y'),
-                    width:        item.attr('gs-w'),
+                    x:            item.attr('gs-x') ?? 0,
+                    y:            item.attr('gs-y') ?? 0,
+                    width:        item.attr('gs-w') ?? 1,
                     height:       item.attr('gs-h') ?? 1,
                     card_options: card_opt,
                 },
+                modalclass: 'modal-lg',
             });
         }).on("click", '.cell-add', (e) => {
             // add new widget form
@@ -402,6 +408,7 @@ class GLPIDashboard {
                     x: add_ctrl.data('x'),
                     y: add_ctrl.data('y')
                 },
+                modalclass: 'modal-lg',
             });
         }).on("click", '.filters_toolbar .add-filter', () => {
             // add new filter
@@ -454,14 +461,49 @@ class GLPIDashboard {
         $(document).on('click', '.save-dashboard-name ', (event) => {
             event.preventDefault();
             // change in selector
-            $('.dashboard_select option[value='+this.current_name+']')
+            $('.dashboard_select option[value="' + CSS.escape(this.current_name) + '"]')
                 .text($(".dashboard-name").val());
             this.saveDashboard();
 
             $('.display-message')
                 .addClass('success')
-                .text(__("Saved"))
+                .text(_.unescape(__("Saved")))
                 .show('fade').delay(2000).hide('fade');
+        });
+
+        // reset dashboard
+        $(document).on('click', 'button.reset-dashboard ', (event) => {
+            event.preventDefault();
+            this.resetDashboard();
+        });
+        $(document).on('click', 'button[name="confirm-reset-dashboard"]', (event) => {
+            event.preventDefault();
+            const btn = $(event.target);
+            const selected_dashboard = btn
+                .closest('.dashboard-reset-container')
+                .find('select[name="default_dashboard_key"]');
+            $.ajax({
+                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                method: 'POST',
+                data: {
+                    action: 'reset',
+                    dashboard: this.current_name,
+                    default_dashboard_key: selected_dashboard.val(),
+                }
+            }).then(() => {
+                glpi_toast_info(__('Dashboard has been reset to default'));
+                if (window.reloadTab !== undefined) {
+                    window.glpi_close_all_dialogs();
+                    window.reloadTab();
+                } else {
+                    this.initFilters();
+                    this.refreshDashboard();
+                    window.glpi_close_all_dialogs();
+                }
+            }, () => {
+                glpi_toast_error(__('An error occurred while resetting the dashboard'));
+                glpi_close_all_dialogs();
+            });
         });
 
         // display widget types after selecting a card
@@ -476,7 +518,7 @@ class GLPIDashboard {
                 .show()
                 .find('input[type=radio]')
                 .next('label').css('display', 'none').end()
-                .filter("[value='"+available_widgets.join("'],[value='")+"']")
+                .filter(available_widgets.map((value) => `[value="${CSS.escape(value)}"]`).join(','))
                 .prop("checked", force_checked)
                 .trigger('change')
                 .next('label').css('display', 'inline-block');
@@ -523,7 +565,7 @@ class GLPIDashboard {
         });
 
         // Keep track of instance
-        window.GLPI.Dashboard.dashboards[options.rand] = this;
+        window.GLPI.Dashboard.dashboards[this.rand] = this;
     }
 
     /**
@@ -585,7 +627,7 @@ class GLPIDashboard {
             if (form_data.old_id === "0") {
                 return false;
             }
-            const item = $('.grid-stack-item[gs-id='+form_data.old_id+']')[0];
+            const item = $('.grid-stack-item[gs-id="' + CSS.escape(form_data.old_id) + '"]')[0];
             this.grid.removeWidget(item);
         }
 
@@ -678,6 +720,9 @@ class GLPIDashboard {
 
     refreshDashboard() {
         const gridstack = $(this.elem_id+" .grid-stack");
+        document.querySelectorAll('div[_echarts_instance_]').forEach((el) => {
+            window.echarts.getInstanceByDom(el)?.dispose();
+        });
         this.grid.removeAll();
 
         const data = {
@@ -743,7 +788,7 @@ class GLPIDashboard {
         $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
             const gridstack_item = $(elem).closest(".grid-stack-item");
             const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax("[gs-id="+card_id+"]");
+            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`);
         });
     }
 
@@ -765,9 +810,9 @@ class GLPIDashboard {
             return gs_id ? {
                 gridstack_id: $(v).attr('gs-id'),
                 card_id: options.card_id,
-                x: $(v).attr('gs-x'),
-                y: $(v).attr('gs-y'),
-                width: $(v).attr('gs-w'),
+                x: $(v).attr('gs-x') ?? 0,
+                y: $(v).attr('gs-y') ?? 0,
+                width: $(v).attr('gs-w') ?? 1,
                 height: $(v).attr('gs-h') ?? 1,
                 card_options: options
             } : null;
@@ -784,6 +829,17 @@ class GLPIDashboard {
         }).then(() => {
             if (force_refresh) {
                 this.refreshDashboard();
+            }
+        });
+    }
+
+    resetDashboard() {
+        glpi_ajax_dialog({
+            title: __("Reset to default"),
+            url: `${CFG_GLPI.root_doc}/ajax/dashboard.php`,
+            params: {
+                action: 'prepare_reset',
+                dashboard: this.current_name,
             }
         });
     }
@@ -829,6 +885,39 @@ class GLPIDashboard {
     }
 
     /**
+     * Switch between single-column (mobile) and multi-column (desktop) layout depending on the
+     * current grid container width vs the mobile threshold.
+     *
+     * GridStack v12 columnOpts triggers GridStackEngine._fixCollisions during column changes.
+     * With float:true enabled, this causes infinite recursion (moveNode <-> _fixCollisions).
+     * To prevent this, float is temporarily disabled during the column switch (pushing items
+     * down deterministically terminates), then restored afterwards.
+     *
+     * @param {number} desktop_cols - the original number of columns to restore on desktop
+     */
+    switchColumnLayout(desktop_cols) {
+        if (typeof this.grid?.getColumn !== 'function') {
+            return;
+        }
+
+        const grid_width = (this.grid.el?.clientWidth) || this.elem_dom.clientWidth;
+        const is_mobile  = grid_width > 0 && grid_width <= this.mobile_threshold;
+        const current    = this.grid.getColumn();
+
+        if (is_mobile && current !== 1) {
+            this.grid.float(false);
+            this.grid.column(1, 'compact');
+            this.grid.float(true);
+            this.grid.cellHeight(60, false);
+        } else if (!is_mobile && current === 1) {
+            this.grid.float(false);
+            this.grid.column(desktop_cols, 'moveScale');
+            this.grid.float(true);
+            this.grid.cellHeight('auto', false);
+        }
+    }
+
+    /**
      * Remove the custom width as it should only be used temporarily to 'trick'
      * fitText into using a different fontSize and should not be applied to the
      * actual text
@@ -848,7 +937,7 @@ class GLPIDashboard {
 
         // responsive mode
         if (this.dash_width <= 700
-            || $(this.grid.el).hasClass('grid-stack-one-column-mode')) {
+            || $(this.grid.el).hasClass('gs-1')) {
             text_offset = 1.8;
         }
 
@@ -943,8 +1032,7 @@ class GLPIDashboard {
     toggleFullscreenMode(fs_ctrl) {
         const fs_enabled = !fs_ctrl.hasClass('active');
 
-        this.element.toggleClass('fullscreen')
-            .find('.night-mode').toggle(fs_enabled);
+        this.element.toggleClass('fullscreen');
         fs_ctrl.toggleClass('active');
 
         // desactivate edit mode
@@ -960,13 +1048,10 @@ class GLPIDashboard {
         }
     }
 
-    disableFullscreenMode() {
+    removeFullscreenModeClass() {
         this.element
             .removeClass('fullscreen')
-            .find('.night-mode').hide().end()
             .find('.toggle-fullscreen').removeClass('active');
-
-        GoOutFullscreen();
     }
 
     /**
@@ -990,7 +1075,7 @@ class GLPIDashboard {
      * Delete current dashboard
      */
     delete() {
-        const confirm_msg = __("Are you sure you want to delete the dashboard %s ?")
+        const confirm_msg = __("Are you sure you want to delete the dashboard %s?")
             .replace('%s', this.current_name);
         if (window.confirm(confirm_msg, __("Delete this dashboard"))) {
             $.post({
@@ -1000,8 +1085,8 @@ class GLPIDashboard {
                     dashboard: this.current_name,
                 }
             }).then(() => {
-                $("#dashboard-"+this.rand+" .toolbar .dashboard_select")
-                    .find("option[value='"+this.current_name+"']").remove()
+                $(this.elem_id + " .toolbar .dashboard_select")
+                    .find(`option[value="${CSS.escape(this.current_name)}"]`).remove()
                     .end() // reset find filtering
                     .prop("selectedIndex", 0)
                     .trigger('change');
@@ -1014,7 +1099,7 @@ class GLPIDashboard {
      */
     addForm() {
         glpi_ajax_dialog({
-            title: __("Add a new dashboard"),
+            title: __("Add a dashboard"),
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             params: {
                 action: 'add_new',
@@ -1037,11 +1122,11 @@ class GLPIDashboard {
     }
 
     /**
-     * Add a new option to top left dashboard select
+     * Add a option to top left dashboard select
      */
     addNewDashbardInSelect(label, value) {
         const newOption = new Option(label, value, false, true);
-        $("#dashboard-"+this.rand+" .toolbar .dashboard_select")
+        $(this.elem_id + " .toolbar .dashboard_select")
             .append(newOption)
             .trigger('change');
     }
@@ -1111,7 +1196,7 @@ class GLPIDashboard {
                     this.fitNumbers(card);
                     this.animateNumbers(card);
                 }, () => {
-                    card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
                 }));
             });
 
@@ -1151,74 +1236,16 @@ class GLPIDashboard {
                         }
                     });
                     if (!has_result) {
-                        card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
                     }
                 });
             }, () => {
                 $.each(requested_cards, (i2, crd) => {
                     const card = crd.card_el;
-                    card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
                 });
             });
         }
-    }
-
-    easter() {
-        const items = $(this.elem_id+" .grid-stack .grid-stack-item .card");
-
-        setInterval(() => {
-            const color = "#"+((1<<24)*Math.random()|0).toString(16);
-            const no_item = Math.floor(Math.random() * items.length);
-            const item = items[no_item];
-            $(item).css('background-color', color);
-        }, 10);
-    }
-
-    generateCss() {
-        const dash_width    = Math.floor(this.element.width());
-        const cell_length   = (dash_width - 1) / this.cols;
-        let cell_height   = cell_length;
-        const cell_fullsize = (dash_width / this.cols);
-        const width_percent = 100 / this.cols;
-
-        let style = " \
-      "+this.elem_id+" .cell-add { \
-         width: "+cell_length+"px; \
-         height: "+cell_fullsize+"px; \
-      } \
-      "+this.elem_id+" .grid-guide { \
-         background-size: "+cell_length+"px "+cell_fullsize+"px; \
-         bottom: "+cell_fullsize+"px; \
-      }";
-
-        for (let i = 0; i < this.cols; i++) {
-            const left  = i * width_percent;
-            const width = (i+1) * width_percent;
-
-            style+= this.elem_id+" .grid-stack > .grid-stack-item[gs-x='"+i+"'] { \
-            left: "+left+"%; \
-         } \
-         "+this.elem_id+" .grid-stack > .grid-stack-item[gs-w='"+(i+1)+"'] { \
-            min-width: "+width_percent+"%; \
-            width: "+width+"%; \
-         }";
-        }
-
-        // remove old inline styles
-        $("#gs_inline_css_"+this.rand).remove();
-
-        // add new style
-        if (dash_width > 700) {
-            $("<style id='gs_inline_css_"+this.rand+"'></style>")
-                .prop("type", "text/css")
-                .html(style)
-                .appendTo("head");
-        } else {
-            cell_height = 60;
-        }
-
-        // apply new height to gridstack
-        this.grid.cellHeight(cell_height);
     }
 
     /**
@@ -1245,6 +1272,7 @@ class GLPIDashboard {
             data: {
                 "action": "get_dashboard_filters",
                 "filters": filters,
+                "dashboard": this.current_name,
             }
         }).then((html) => {
             $(this.filters_selector).html(html);
@@ -1276,6 +1304,12 @@ class GLPIDashboard {
      * Return saved filter from server side database
      */
     getFiltersFromDB() {
+        if (this.embed) {
+            // Embed dashboards are displayed inside an anonymous context,
+            // there is actually no stored filter data to fetch.
+            return [];
+        }
+
         let filters;
         $.ajax({
             method: 'GET',
@@ -1286,7 +1320,7 @@ class GLPIDashboard {
                 dashboard: this.current_name,
             },
             success: function(response) {
-                filters = JSON.parse(response);
+                filters = response;
             }
         });
 
@@ -1314,6 +1348,36 @@ class GLPIDashboard {
                 }),
             }
         });
+    }
+
+    /**
+     * Set the width of the select box to match the selected option
+     */
+    resizeSelect() {
+        const select = document.querySelector(`${this.elem_id} .dashboard_select`);
+
+        // mini dashboard doesn't have any filter/select
+        if (select === null) {
+            return;
+        }
+
+        select.addEventListener('change', (event) => {
+            const tempSelect = document.createElement('select');
+            const tempOption = document.createElement('option');
+            tempOption.textContent = event.target.options[event.target.selectedIndex].text;
+            tempSelect.style.cssText += `
+              visibility: hidden;
+              position: fixed;
+           `;
+            tempSelect.appendChild(tempOption);
+            event.target.after(tempSelect);
+
+            const tempSelectWidth = tempSelect.getBoundingClientRect().width;
+            event.target.style.width = `${tempSelectWidth}px`;
+            tempSelect.remove();
+        });
+
+        select.dispatchEvent(new Event('change'));
     }
 }
 window.GLPI.Dashboard.GLPIDashboard = GLPIDashboard;

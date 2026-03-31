@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -103,7 +102,9 @@ describe ('Import forms', () => {
         cy.get("@issues").eq(1).within(() => {
             cy.findByText("Missing entity").should('exist');
             cy.document().within(() => {
-                cy.getDropdownByLabelText("Replacement value for 'Missing entity'").selectDropdownValue("»E2ETestEntity");
+                cy.getDropdownByLabelText("Replacement value for 'Missing entity'")
+                    .should('have.text', 'Root entity > E2ETestEntity')
+                    .selectDropdownValue("»E2ETestEntity");
             });
         });
         cy.get("@issues").eq(2).within(() => {
@@ -179,5 +180,26 @@ describe ('Import forms', () => {
 
         // Check if we are back to the first step
         cy.findByLabelText("Select your file").should('exist');
+    });
+
+    it("can see errors on forms that can't be imported at all", () => {
+        // Step 1: file selection
+        cy.visit('/front/form/form.php');
+        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByLabelText("Select your file").selectFile(
+            "fixtures/forms/form-with-hammer-asset.json"
+        );
+
+        // Step 2: preview
+        cy.findByRole('button', {'name': "Preview import"}).click();
+        cy.findAllByRole('row').as('preview');
+        cy.get("@preview").eq(1).within(() => {
+            cy.findByText("Test form").should('exist');
+            cy.findByText("Unknown custom type: Glpi\\CustomAsset\\HammerAsset")
+                .should('exist')
+            ;
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
+        });
     });
 });

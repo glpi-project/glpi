@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL;
 
+use Exception;
 use Throwable;
 
 /**
@@ -42,7 +43,7 @@ use Throwable;
  * A user message can be provided to be displayed to the user.
  * Otherwise, only a generic message will be displayed to the user.
  */
-class APIException extends \Exception
+class APIException extends Exception
 {
     private string $user_message;
 

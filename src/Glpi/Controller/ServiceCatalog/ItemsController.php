@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,14 +34,18 @@
 
 namespace Glpi\Controller\ServiceCatalog;
 
+use Entity;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use LogicException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,10 +58,10 @@ final class ItemsController extends AbstractController
     public function __construct()
     {
         // TODO: replace by autowiring once dependency injection is fully implemented.
-        $this->service_catalog_manager = new ServiceCatalogManager();
+        $this->service_catalog_manager = ServiceCatalogManager::getInstance();
     }
 
-    #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[Route(
         "/ServiceCatalog/Items",
         name: "glpi_form_list",
@@ -66,11 +70,15 @@ final class ItemsController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Read category
-        $category = null;
-        $category_id = $request->query->getInt('category');
+        $category_id = $request->query->get('category', 0);
+
+        if (!is_numeric($category_id)) {
+            // Invalid input
+            throw new NotFoundHttpException();
+        }
+
         if ($category_id > 0) {
-            $category = Category::getById($category_id);
-            if (!$category) {
+            if (Category::getById($category_id) === false) {
                 throw new NotFoundHttpException();
             }
         }
@@ -78,25 +86,61 @@ final class ItemsController extends AbstractController
         // Read filter
         $filter = $request->query->getString('filter');
 
+        // Read pagination params
+        $page = max(1, $request->query->getInt('page', 1));
+        $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE;
+
+        // Read sort strategy
+        $sort_strategy = $request->query->getEnum(
+            'sort_strategy',
+            SortStrategyEnum::class,
+            SortStrategyEnum::getDefault()
+        );
+
         // Build session + url params
+        $session = Session::getCurrentSessionInfo();
         $parameters = new FormAccessParameters(
-            session_info: Session::getCurrentSessionInfo(),
+            session_info: $session,
             url_parameters: $request->query->all()
         );
+
+        // Load entity
+        $entity = Entity::getById($session->getCurrentEntityId());
+        if (!$entity) {
+            throw new LogicException();
+        }
+
+        // If we have a filter, we search in all categories
+        if (!empty($filter)) {
+            $category_id = null;
+        }
 
         // Get items from the service catalog
         $item_request = new ItemRequest(
             access_parameters: $parameters,
             filter: $filter,
-            category: $category,
+            category_id: $category_id,
+            page: $page,
+            items_per_page: $items_per_page,
+            sort_strategy: $sort_strategy
         );
-        $items = $this->service_catalog_manager->getItems($item_request);
+        $result = $this->service_catalog_manager->getItems($item_request);
+
+        $category_provider = new CategoryProvider();
+        $ancestors = $category_provider->getAncestors($item_request);
 
         return $this->render(
             'components/helpdesk_forms/service_catalog_items.html.twig',
             [
-                'items' => $items,
+                'category_id'       => $category_id,
+                'filter'            => $filter,
+                'ancestors'         => $ancestors,
+                'items'             => $result['items'],
+                'total'             => $result['total'],
+                'current_page'      => $page,
+                'items_per_page'    => $items_per_page,
                 'is_default_search' => false,
+                'expand_categories' => $entity->shouldExpandCategoriesInServiceCatalog(),
             ]
         );
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -52,7 +51,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         return;
     }
 
-   // Existing action
+    // Existing action
     if ($_POST['ruleactions_id'] > 0) {
         $already_used = false;
     } else { // New action
@@ -66,11 +65,11 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
 
     $action_type = $_POST["action_type"] ?? '';
 
-    $randaction = RuleAction::dropdownActions(['subtype'     => $_POST["sub_type"],
+    $randaction = (int) RuleAction::dropdownActions(['subtype'     => $_POST["sub_type"],
         'name'        => "action_type",
         'field'       => $_POST["field"],
         'value'       => $action_type,
-        'alreadyused' => $already_used
+        'alreadyused' => $already_used,
     ]);
 
     echo "<span id='action_type_span$randaction' class='d-inline-block'></span>";
@@ -78,7 +77,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     $paramsaction = ['action_type'                   => '__VALUE__',
         'field'                         => $_POST["field"],
         'sub_type'                      => $_POST["sub_type"],
-        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()]
+        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()],
     ];
 
     Ajax::updateItemOnSelectEvent(

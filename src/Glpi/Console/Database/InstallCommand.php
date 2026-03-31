@@ -7,8 +7,9 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2025 Kyndryl Inc.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,14 +40,21 @@ use DBConnection;
 use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
-use Symfony\Component\Console\Helper\ProgressBar;
+use LogicException;
+use mysqli;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Throwable;
 use Toolbox;
 
 class InstallCommand extends AbstractConfigureCommand implements ConfigurationCommandInterface
@@ -56,37 +64,37 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
     /**
      * Error code returned when failing to create database.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_CREATION_FAILED = 5;
+    public const ERROR_DB_CREATION_FAILED = 5;
 
     /**
      * Error code returned when trying to install and having a DB already containing glpi_* tables.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
+    public const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
 
     /**
      * Error code returned when failing to create database schema.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_SCHEMA_CREATION_FAILED = 7;
+    public const ERROR_SCHEMA_CREATION_FAILED = 7;
 
     /**
      * Error code returned when failing to create encryption key file.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
+    public const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
 
     /**
      * Error code returned if DB configuration is not compatible with large indexes.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
+    public const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
 
     protected function configure()
     {
@@ -117,11 +125,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-        $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
-
         parent::initialize($input, $output);
 
         $this->outputWarningOnMissingOptionnalRequirements();
@@ -135,8 +138,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             && $this->isInputContainingConfigValues($input, $output)
             && !$input->getOption('reconfigure')
         ) {
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $reconfigure = $question_helper->ask(
                 $input,
                 $output,
@@ -157,6 +159,9 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!$output instanceof ConsoleOutputInterface) {
+            throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
+        }
 
         $default_language = $input->getOption('default-language');
         $force            = $input->getOption('force');
@@ -166,8 +171,8 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             && $this->isInputContainingConfigValues($input, $output)
             && !$input->getOption('reconfigure')
         ) {
-           // Prevent overriding of existing DB when input contains configuration values and
-           // --reconfigure option is not used.
+            // Prevent overriding of existing DB when input contains configuration values and
+            // --reconfigure option is not used.
             $output->writeln(
                 '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>'
             );
@@ -178,7 +183,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $this->configureDatabase($input, $output, false);
 
             // Ensure global $DB is updated (used by GLPIKey)
-            /** @var \DBmysql $DB */
             global $DB;
             $DB = $this->db;
 
@@ -189,20 +193,19 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $db_user     = $input->getOption('db-user');
             $db_pass     = $input->getOption('db-password');
         } else {
-           // Ask to confirm installation based on existing configuration.
-            /** @var \DBmysql $DB */
+            // Ask to confirm installation based on existing configuration.
             global $DB;
 
-           // $DB->dbhost can be array when using round robin feature
+            // $DB->dbhost can be array when using round robin feature
             $db_hostport = is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost;
 
             $hostport = explode(':', $db_hostport);
             $db_host = $hostport[0];
             if (count($hostport) < 2) {
-               // Host only case
+                // Host only case
                 $db_port = null;
             } else {
-               // Host:port case or :Socket case
+                // Host:port case or :Socket case
                 $db_port = $hostport[1];
             }
 
@@ -221,7 +224,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $this->db = $DB;
         }
 
-       // Create security key
+        // Create security key
         $glpikey = new GLPIKey();
         if (!$glpikey->generate(update_db: false)) {
             $message = __('Security key cannot be generated!');
@@ -230,13 +233,23 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
         }
 
         mysqli_report(MYSQLI_REPORT_OFF);
-        $mysqli = new \mysqli();
+        $mysqli = new mysqli();
+        if ($this->db->dbssl) {
+            // set ssl config
+            $mysqli->ssl_set(
+                $this->db->dbsslkey,
+                $this->db->dbsslcert,
+                $this->db->dbsslca,
+                $this->db->dbsslcapath,
+                $this->db->dbsslcacipher
+            );
+        }
         if (intval($db_port) > 0) {
-           // Network port
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+            // Network port
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port);
         } else {
-           // Unix Domain Socket
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+            // Unix Domain Socket
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port);
         }
 
         if (0 !== $mysqli->connect_errno) {
@@ -249,11 +262,14 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             return self::ERROR_DB_CONNECTION_FAILED;
         }
 
-       // Check for compatibility with utf8mb4 usage.
+        // Check for compatibility with utf8mb4 usage.
         $db = new class ($mysqli) extends DBmysql {
+            /**
+             * @param mysqli $dbh
+             */
             public function __construct($dbh)
             {
-                  $this->dbh = $dbh;
+                $this->dbh = $dbh;
             }
         };
         $config_requirement = new DbConfiguration($db);
@@ -262,12 +278,12 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             foreach ($config_requirement->getValidationMessages() as $validation_message) {
                 $msg .= "\n" . '<error> - ' . $validation_message . '</error>';
             }
-            throw new \Glpi\Console\Exception\EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
+            throw new EarlyExitException($msg, self::ERROR_INCOMPATIBLE_DB_CONFIG);
         }
 
         DBConnection::setConnectionCharset($mysqli, true);
 
-       // Create database or select existing one
+        // Create database or select existing one
         $output->writeln(
             '<comment>' . __('Creating the database...') . '</comment>',
             OutputInterface::VERBOSITY_VERBOSE
@@ -285,7 +301,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             return self::ERROR_DB_CREATION_FAILED;
         }
 
-       // Prevent overriding of existing DB
+        // Prevent overriding of existing DB
         $tables_result = $mysqli->query(
             "SELECT COUNT(table_name)
           FROM information_schema.tables
@@ -294,7 +310,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
              AND table_name LIKE 'glpi\_%'"
         );
         if (!$tables_result) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException('Unable to check GLPI tables existence.');
+            throw new RuntimeException('Unable to check GLPI tables existence.');
         }
         if ($tables_result->fetch_array()[0] > 0 && !$force) {
             $output->writeln(
@@ -308,27 +324,13 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             OutputInterface::VERBOSITY_VERBOSE
         );
 
-        $progress_bar = new ProgressBar($output);
-        $progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
-        $progress_bar->setMessage(''); // Empty message on iteration start
-        $progress_bar->start();
-
+        $progress_indicator = new ConsoleProgressIndicator($output);
         try {
             $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
 
-            $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_bar) {
-                if ($max !== null) {
-                    $progress_bar->setMaxSteps($max);
-                }
-                if ($data !== null) {
-                    $progress_bar->setMessage($data);
-                }
-                $progress_bar->advance($current - $progress_bar->getProgress());
-            };
-
-            Toolbox::createSchema($default_language, $this->db, $progress_callback);
-        } catch (\Throwable $e) {
-            $progress_bar->finish();
+            Toolbox::createSchema($default_language, $this->db, $progress_indicator);
+        } catch (Throwable $e) {
+            $progress_indicator->fail();
 
             $message = sprintf(
                 __('An error occurred during the database initialization. The error was: %s'),
@@ -337,11 +339,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             return self::ERROR_SCHEMA_CREATION_FAILED;
         }
-
-        $progress_bar->setMessage(''); // Remove last message
-        $progress_bar->finish();
-
-        $output->writeln('<info>' . __('Installation done.') . '</info>');
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
 
@@ -362,26 +359,12 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
     }
 
     /**
-     * Check if DB config should be set by current command run.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @return boolean
-     */
-    private function shouldSetDBConfig(InputInterface $input, OutputInterface $output)
-    {
-
-        return $input->getOption('reconfigure') || !file_exists(GLPI_CONFIG_DIR . '/config_db.php');
-    }
-
-    /**
      * Check if input contains DB config options.
      *
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return boolean
+     * @return bool
      */
     private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output)
     {

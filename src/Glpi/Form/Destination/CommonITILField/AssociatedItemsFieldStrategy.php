@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -84,7 +84,8 @@ enum AssociatedItemsFieldStrategy: string
             return false;
         }
 
-        if (!in_array($value['itemtype'], CommonITILObject::getAllTypesForHelpdesk())) {
+        $valid_itemtypes = CommonITILObject::getAllTypesForHelpdesk();
+        if (!isset($valid_itemtypes[$value['itemtype']])) {
             return false;
         }
 
@@ -154,7 +155,7 @@ enum AssociatedItemsFieldStrategy: string
         }
 
         $values = array_filter($values, fn($value) => $this->isValidAnswer($value));
-        if (empty($values)) {
+        if ($values === []) {
             return null;
         }
 
@@ -179,7 +180,7 @@ enum AssociatedItemsFieldStrategy: string
             $values = [$values];
         }
 
-        if (empty($values)) {
+        if ($values === []) {
             return null;
         }
 

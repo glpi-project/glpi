@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../_check_webserver_config.php');
+
 use Glpi\Form\AccessControl\FormAccessControl;
+
+use function Safe\json_encode;
 
 /**
  * Ajax endpoint to update an access control item.
@@ -63,20 +67,20 @@ try {
         // Unknown request
         throw new InvalidArgumentException("Unknown action");
     }
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     // Log error
-    trigger_error(
-        // Insert POST data into logs to ease debugging
+    global $PHPLOGGER;
+    $PHPLOGGER->error(
         $e->getMessage() . ": " . json_encode($_POST),
-        E_USER_WARNING
+        ['exception' => $e]
     );
 
     Session::addMessageAfterRedirect(
-        __('An unexpected error occured.'),
+        __s('An unexpected error occurred'),
         false,
         ERROR
     );
-} finally {
-    // Redirect to previous page
-    Html::back();
 }
+
+// Redirect to previous page
+Html::back();

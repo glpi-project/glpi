@@ -1,0 +1,108 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 185,
+            "uuid": "7c3f91b8-238d-4dee-9f1b-0dba47fbf5f8",
+            "name": "Test form",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 165,
+                    "uuid": "145e3f8e-e4bf-4e8b-a29a-fa05775b99b0",
+                    "name": "Section 1",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                },
+                {
+                    "id": 166,
+                    "uuid": "26eaf51b-8829-47cf-beeb-12df9b1bcec8",
+                    "name": "Section 2",
+                    "description": "",
+                    "rank": 1,
+                    "visibility_strategy": "visible_if",
+                    "conditions": [
+                        {
+                            "item_uuid": "eb83233e-884e-4816-afb0-917c7bad815b",
+                            "item_type": "question",
+                            "value_operator": "equals",
+                            "logic_operator": "and",
+                            "value": {
+                                "itemtype": "Computer",
+                                "items_id": "My computer"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 209,
+                    "uuid": "eb83233e-884e-4816-afb0-917c7bad815b",
+                    "name": "My item question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": null,
+                    "extra_data": {
+                        "itemtype": "Computer",
+                        "root_items_id": 0,
+                        "subtree_depth": 0,
+                        "selectable_tree_root": false
+                    },
+                    "section_id": 165,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 170,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                },
+                {
+                    "itemtype": "Computer",
+                    "name": "My computer"
+                }
+            ]
+        }
+    ]
+}

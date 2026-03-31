@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,20 +35,36 @@
 
 namespace Glpi\Search\Output;
 
+use AllAssets;
+use CommonDBTM;
+use DefaultFilter;
+use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
+use Glpi\Features\TreeBrowse;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
+use Html;
+use MassiveAction;
 use Override;
+use Plugin;
 use SavedSearch;
+use Search;
+use Session;
 use Ticket;
+use Toolbox;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
 
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-abstract class HTMLSearchOutput extends AbstractSearchOutput
+class HTMLSearchOutput extends AbstractSearchOutput
 {
     #[Override]
     public function canDisplayResultsContainerWithoutExecutingSearch(): bool
@@ -60,7 +76,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
     {
         if (
             $itemtype === Ticket::class
-            && \Session::getCurrentInterface() === 'central'
+            && Session::getCurrentInterface() === 'central'
             && $default = Grid::getDefaultDashboardForMenu('mini_ticket', true)
         ) {
             $dashboard = new Grid($default, 33, 2);
@@ -70,7 +86,6 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
     public function displayData(array $data, array $params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $search_was_executed = $params['execute_search'] ?? true;
@@ -95,14 +110,14 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         }
 
         // Construct parameters
-        $globallinkto  = \Toolbox::append_params([
+        $globallinkto  = Toolbox::append_params([
             'criteria'     => $search['criteria'],
             'metacriteria' => $search['metacriteria'],
         ], '&');
 
         $parameters = http_build_query([
             'sort'   => $search['sort'],
-            'order'  => $search['order']
+            'order'  => $search['order'],
         ]);
 
         $parameters .= "&{$globallinkto}";
@@ -113,17 +128,17 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         // For plugin add new parameter if available
         if ($plug = isPluginItemType($data['itemtype'])) {
-            $out = \Plugin::doOneHook($plug['plugin'], 'addParamFordynamicReport', $data['itemtype']);
+            $out = Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_PARAM_FOR_DYNAMIC_REPORT, $data['itemtype']);
             if (is_array($out) && count($out)) {
-                $parameters .= \Toolbox::append_params($out, '&');
+                $parameters .= Toolbox::append_params($out, '&');
             }
         }
 
         $search['target'] = URL::sanitizeURL($search['target']);
-        $prehref = $search['target'] . (strpos($search['target'], "?") !== false ? "&" : "?");
+        $prehref = $search['target'] . (str_contains($search['target'], "?") ? "&" : "?");
         $href    = $prehref . $parameters;
 
-        \Session::initNavigateListItems($data['itemtype'], '', $href);
+        Session::initNavigateListItems($data['itemtype'], '', $href);
 
         // search if any saved search is active
         $soptions = SearchOption::getOptionsForItemtype($itemtype);
@@ -131,12 +146,16 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         $active_savedsearch = false;
         if (isset($_SESSION['glpi_loaded_savedsearch'])) {
             $savedsearch = new SavedSearch();
-            $savedsearch->getFromDB($_SESSION['glpi_loaded_savedsearch']);
-            if ($itemtype === $savedsearch->fields['itemtype']) {
-                $active_search_name = $savedsearch->getName();
-                $active_savedsearch = true;
+            if ($savedsearch->getFromDB($_SESSION['glpi_loaded_savedsearch'])) {
+                if ($itemtype === $savedsearch->fields['itemtype']) {
+                    $active_search_name = $savedsearch->getName();
+                    $active_savedsearch = true;
+                }
+            } else {
+                unset($_SESSION['glpi_loaded_savedsearch']);
             }
-        } else if (count($data['search']['criteria']) > 0) {
+        }
+        if (!$active_savedsearch && count($data['search']['criteria']) > 0) {
             // check if it isn't the default search
             $default = CriteriaFilter::getDefaultSearch($itemtype);
             if ($default != $data['search']['criteria']) {
@@ -157,7 +176,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 }
 
                 // check also if there is any default filters
-                if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
+                if ($defaultfilter = DefaultFilter::getSearchCriteria($itemtype)) {
                     array_unshift($used_soptions_names, $defaultfilter['name']);
                 }
 
@@ -213,22 +232,23 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'hide_controls'       => $params['hide_controls'] ?? false,
             'hide_search_toggle'  => $params['hide_criteria'] ?? false,
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
-                && $data['display_type'] != \Search::GLOBAL_SEARCH
-                && ($itemtype == \AllAssets::getType()
-                    || count(\MassiveAction::getAllMassiveActions($item, $is_deleted))
+                && $data['display_type'] != Search::GLOBAL_SEARCH
+                && (
+                    $itemtype == AllAssets::getType()
+                    || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
                 'num_displayed' => min($_SESSION['glpilist_limit'], $count),
                 'is_deleted'    => $is_deleted,
-                'container'     => "massform$itemtype$rand",
+                'container'     => "massform" . \str_replace('\\', '', $itemtype) . $rand,
             ],
-            'can_config'          => \Session::haveRightsOr('search_config', [
-                \DisplayPreference::PERSONAL,
-                \DisplayPreference::GENERAL
+            'can_config'          => Session::haveRightsOr('search_config', [
+                DisplayPreference::PERSONAL,
+                DisplayPreference::GENERAL,
             ]),
-            'may_be_deleted'      => $item instanceof \CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
-            'may_be_located'      => $item instanceof \CommonDBTM && $item->maybeLocated(),
-            'may_be_browsed'      => $item !== null && \Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
+            'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
+            'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
+            'may_be_browsed'      => $item !== null && Toolbox::hasTrait($item, TreeBrowse::class),
             'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),
             'original_params'     => $params,
             'active_savedsearch'  => $active_savedsearch,
@@ -240,13 +260,13 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         // Add items in item list
         if (isset($data['data']['rows'])) {
             foreach ($data['data']['rows'] as $row) {
-                if ($itemtype !== \AllAssets::class) {
-                    \Session::addToNavigateListItems($itemtype, $row["id"]);
+                if ($itemtype !== AllAssets::class) {
+                    Session::addToNavigateListItems($itemtype, $row["id"]);
                 } else {
                     // In case of a global search, reset and empty navigation list to ensure navigation in
                     // item header context is not shown. Indeed, this list does not support navigation through
                     // multiple itemtypes, so it should not be displayed in global search context.
-                    \Session::initNavigateListItems($row['TYPE'] ?? $data['itemtype']);
+                    Session::initNavigateListItems($row['TYPE'] ?? $data['itemtype']);
                 }
             }
         }
@@ -255,6 +275,12 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         $_SESSION['glpimassiveactionselected'] = [];
     }
 
+    /**
+     * @param bool $odd
+     * @param bool $is_deleted
+     *
+     * @return string
+     */
     public static function showNewLine($odd = false, $is_deleted = false): string
     {
         $class = " class='tab_bg_2" . ($is_deleted ? '_2' : '') . "' ";
@@ -264,7 +290,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         return "<tr $class>";
     }
 
-    public static function showEndLine(bool $is_header_line): string
+    public static function showEndLine(): string
     {
         return '</tr>';
     }
@@ -274,7 +300,13 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         return '<thead>';
     }
 
-    public static function showHeader($rows, $cols, $fixed = 0): string
+    /**
+     * @param int $rows
+     * @param int $cols
+     * @param bool $fixed
+     * @return string
+     */
+    public static function showHeader($rows, $cols, $fixed = false): string
     {
         if ($fixed) {
             return "<div class='text-center'><table class='table'>";
@@ -283,21 +315,31 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         return "<div class='text-center'><table class='table card-table table-hover'>";
     }
 
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
+    /**
+     * @param string $value
+     * @param int $num
+     * @param string $linkto
+     * @param bool $issort
+     * @param string $order
+     * @param string $options
+     *
+     * @return string
+     */
+    public static function showHeaderItem($value, &$num, $linkto = "", $issort = false, $order = "", $options = ""): string
     {
         $class = "";
         if ($issort) {
             $class = "order_$order";
         }
-        $out = "<th $options class='$class'>";
+        $out = "<th $options class='" . \htmlescape($class) . "'>";
         if (!empty($linkto)) {
-            $out .= "<a href=\"$linkto\">";
+            $out .= "<a href=\"" . \htmlescape($linkto) . "\">";
         }
         $out .= $value;
         if (!empty($linkto)) {
             $out .= "</a>";
         }
-        $out .= "</th>\n";
+        $out .= "</th>";
         $num++;
         return $out;
     }
@@ -307,57 +349,75 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         return '</thead>';
     }
 
+    /**
+     * @param string $value
+     * @param int $num
+     * @param int $row
+     * @param string $extraparam
+     *
+     * @return string
+     */
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $out = "<td $extraparam valign='top'>";
 
-        if (!preg_match('/' . \Search::LBHR . '/', $value)) {
-            $values = preg_split('/' . \Search::LBBR . '/i', $value);
+        if (!preg_match('/' . Search::LBHR . '/', $value)) {
+            $values = preg_split('/' . Search::LBBR . '/i', $value);
             $line_delimiter = '<br>';
         } else {
-            $values = preg_split('/' . \Search::LBHR . '/i', $value);
+            $values = preg_split('/' . Search::LBHR . '/i', $value);
             $line_delimiter = '<hr>';
         }
 
         if (
             count($values) > 1
-            && \Toolbox::strlen($value) > $CFG_GLPI['cut']
+            && Toolbox::strlen($value) > $CFG_GLPI['cut']
         ) {
             $value = '';
             foreach ($values as $v) {
                 $value .= $v . $line_delimiter;
             }
-            $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
-            $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
+            $value = preg_replace('/' . Search::LBBR . '/', '<br>', $value);
+            $value = preg_replace('/' . Search::LBHR . '/', '<hr>', $value);
             $value = '<div class="fup-popup">' . $value . '</div>';
-            $valTip = ' ' . \Html::showToolTip(
+            $valTip = ' ' . Html::showToolTip(
                 $value,
                 [
                     'awesome-class'   => 'fa-comments',
                     'display'         => false,
                     'autoclose'       => false,
-                    'onclick'         => true
+                    'onclick'         => true,
                 ]
             );
             $out .= $values[0] . $valTip;
         } else {
-            $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
-            $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
+            $value = preg_replace('/' . Search::LBBR . '/', '<br>', $value);
+            $value = preg_replace('/' . Search::LBHR . '/', '<hr>', $value);
             $out .= $value;
         }
         $out .= "</td>\n";
         return $out;
     }
 
+    /**
+     * @param string $title
+     * @param ?int $count
+     *
+     * @return string
+     */
     public static function showFooter($title = "", $count = null): string
     {
         return "</table></div>\n";
     }
 
+    /**
+     * @param string $message
+     *
+     * @return string
+     */
     public static function showError($message = ''): string
     {
-        return "<div class='center b'>$message</div>\n";
+        return "<div class='center b'>" . \htmlescape($message) . "</div>";
     }
 }

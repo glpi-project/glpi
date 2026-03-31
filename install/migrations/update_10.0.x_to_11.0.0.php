@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,6 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Update from 10.0.x to 11.0.0
  *
@@ -41,8 +43,8 @@
 function update100xto1100()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 
@@ -52,8 +54,6 @@ function update100xto1100()
     $DELFROMDISPLAYPREF        = [];
     $update_dir                = __DIR__ . '/update_10.0.x_to_11.0.0/';
 
-    //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '11.0.0'));
     $migration->setVersion('11.0.0');
 
     $update_scripts = scandir($update_dir);
@@ -65,29 +65,16 @@ function update100xto1100()
     }
 
     // ************ Keep it at the end **************
-    foreach ($ADDTODISPLAYPREF as $type => $tab) {
-        $rank = 1;
-        foreach ($tab as $newval) {
-            $DB->updateOrInsert(
-                'glpi_displaypreferences',
-                [
-                    'rank'      => $rank++
-                ],
-                [
-                    'users_id'  => '0',
-                    'itemtype'  => $type,
-                    'num'       => $newval,
-                ]
-            );
-        }
-    }
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    // @phpstan-ignore foreach.emptyArray (populated from child files)
     foreach ($ADDTODISPLAYPREF_HELPDESK as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert(
                 'glpi_displaypreferences',
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 [
                     'users_id'  => '0',
@@ -97,15 +84,6 @@ function update100xto1100()
                 ]
             );
         }
-    }
-    foreach ($DELFROMDISPLAYPREF as $type => $tab) {
-        $DB->delete(
-            'glpi_displaypreferences',
-            [
-                'itemtype'  => $type,
-                'num'       => $tab
-            ]
-        );
     }
 
     $migration->executeMigration();

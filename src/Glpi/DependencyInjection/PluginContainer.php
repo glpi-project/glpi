@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,16 +34,19 @@
 
 namespace Glpi\DependencyInjection;
 
+use Closure;
 use Glpi\Kernel\Kernel;
 use Glpi\Routing\PluginRoutesLoader;
 use Plugin;
 use Psr\Container\NotFoundExceptionInterface;
+use ReflectionObject;
+use RuntimeException;
 use Symfony\Component\Config\Builder\ConfigBuilderGenerator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -53,6 +56,7 @@ use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
 use Symfony\Component\Routing\Router;
+use UnitEnum;
 
 class PluginContainer implements ContainerInterface
 {
@@ -62,9 +66,12 @@ class PluginContainer implements ContainerInterface
     private Kernel $kernel;
 
     public function __construct(
-        #[Autowire(service: 'service_container')] Container $symfony_container,
-        #[Autowire(service: 'parameter_bag')] ParameterBag $container_parameters,
-        #[Autowire(service: 'kernel')] Kernel $kernel,
+        #[Autowire(service: 'service_container')]
+        Container $symfony_container,
+        #[Autowire(service: 'parameter_bag')]
+        ParameterBag $container_parameters,
+        #[Autowire(service: 'kernel')]
+        Kernel $kernel,
     ) {
         $this->symfony_container = $symfony_container;
         $this->container_parameters = $container_parameters;
@@ -81,7 +88,7 @@ class PluginContainer implements ContainerInterface
         return $this->internal_container->initialized($id);
     }
 
-    public function getParameter(string $name): \UnitEnum|float|array|bool|int|string|null
+    public function getParameter(string $name): UnitEnum|float|array|bool|int|string|null
     {
         return $this->internal_container->getParameter($name) ?? $this->symfony_container->getParameter($name);
     }
@@ -91,7 +98,7 @@ class PluginContainer implements ContainerInterface
         return $this->internal_container->hasParameter($name) || $this->symfony_container->hasParameter($name);
     }
 
-    public function setParameter(string $name, \UnitEnum|float|array|bool|int|string|null $value): void
+    public function setParameter(string $name, UnitEnum|float|array|bool|int|string|null $value): void
     {
         $this->internal_container->setParameter($name, $value);
     }
@@ -189,10 +196,15 @@ class PluginContainer implements ContainerInterface
 
         $loader = new DelegatingLoader($resolver);
 
-        $file = (new \ReflectionObject($this->kernel))->getFileName();
-        /* @var PhpFileLoader $kernelLoader */
+        $file = (new ReflectionObject($this->kernel))->getFileName();
         $kernelLoader = $loader->getResolver()->resolve($file);
-        $instanceof = \Closure::bind(fn &() => $this->instanceof, $kernelLoader, $kernelLoader)();
+
+        // Should never happen in theory but it helps with static analysis
+        if (!$kernelLoader instanceof PhpFileLoader) {
+            throw new RuntimeException();
+        }
+
+        $instanceof = Closure::bind(fn&() => $this->instanceof, $kernelLoader, $kernelLoader)();
         $configurator = new ContainerConfigurator($container, $kernelLoader, $instanceof, $file, $file, $this->kernel->getEnvironment());
 
         return $configurator;

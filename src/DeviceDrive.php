@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,20 +49,20 @@ class DeviceDrive extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'is_writer',
                 'label' => __('Writing ability'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
                 ['name'  => 'speed',
                     'label' => __('Speed'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 ['name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 ['name'  => 'devicedrivemodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -76,7 +76,7 @@ class DeviceDrive extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'is_writer',
             'name'               => __('Writing ability'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -92,7 +92,7 @@ class DeviceDrive extends CommonDevice
             'table'              => 'glpi_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -100,7 +100,7 @@ class DeviceDrive extends CommonDevice
             'table'              => 'glpi_devicedrivemodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -122,10 +122,10 @@ class DeviceDrive extends CommonDevice
 
         switch ($itemtype) {
             case 'Computer':
-                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-                $base->addHeader('devicedrive_writer', __('Writing ability'), $super, $father);
-                $base->addHeader('devicedrive_speed', __('Speed'), $super, $father);
-                InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+                $base->addHeader('devicedrive_writer', __s('Writing ability'), $super, $father);
+                $base->addHeader('devicedrive_speed', __s('Speed'), $super, $father);
+                InterfaceType::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 break;
         }
     }
@@ -148,7 +148,7 @@ class DeviceDrive extends CommonDevice
                 if ($this->fields["is_writer"]) {
                     $row->addCell(
                         $row->getHeaderByName('devicedrive_writer'),
-                        Dropdown::getYesNo($this->fields["is_writer"]),
+                        htmlescape(Dropdown::getYesNo($this->fields["is_writer"])),
                         $father
                     );
                 }
@@ -156,7 +156,7 @@ class DeviceDrive extends CommonDevice
                 if ($this->fields["speed"]) {
                     $row->addCell(
                         $row->getHeaderByName('devicedrive_speed'),
-                        $this->fields["speed"],
+                        htmlescape($this->fields["speed"]),
                         $father
                     );
                 }
@@ -171,12 +171,12 @@ class DeviceDrive extends CommonDevice
         return [
             'designation'       => 'equal',
             'manufacturers_id'  => 'equal',
-            'interfacetypes_id' => 'equal'
+            'interfacetypes_id' => 'equal',
         ];
     }
 
     public static function getIcon()
     {
-        return "far fa-hdd";
+        return "ti ti-server-2";
     }
 }

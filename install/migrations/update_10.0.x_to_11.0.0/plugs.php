@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,10 +33,9 @@
  */
 
 /**
- * @var \Migration $migration
- * @var \DBmysql $DB
+ * @var Migration $migration
+ * @var DBmysql $DB
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if ($DB->tableExists('glpi_pdus_plugs')) {
@@ -65,7 +63,7 @@ if (!$DB->fieldExists('glpi_items_plugs', 'items_id')) {
         'items_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-            'after' => 'itemtype'
+            'after' => 'itemtype',
         ]
     );
     $migration->migrationOneTable('glpi_items_plugs');

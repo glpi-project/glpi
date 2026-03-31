@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -76,7 +76,7 @@ class AuthLdapReplicate extends CommonDBTM
      * Form to add a replicate to a ldap server
      *
      * @param string  $target    target page for add new replicate
-     * @param integer $master_id master ldap server ID
+     * @param int $master_id master ldap server ID
      *
      * @return void
      */

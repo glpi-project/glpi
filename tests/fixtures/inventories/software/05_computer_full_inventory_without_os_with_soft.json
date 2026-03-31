@@ -1,0 +1,46 @@
+{
+    "action": "inventory",
+    "content": {
+        "bios": {
+            "assettag": "SYS_CHASSIS_ASSET_TAG_NUM_1",
+            "bdate": "2021-07-02",
+            "bmanufacturer": "Intel Corp.",
+            "bversion": "EBTGL357.0061.2021.0702.1707",
+            "mmanufacturer": "Intel Corporation",
+            "mmodel": "sdfsdf62651sdf",
+            "msn": "qsd54sdf456sdf",
+            "smanufacturer": "Intel(R) Client Systems",
+            "smodel": "sdfsdf62651sdf",
+            "ssn": "qsd5qs1d-5qs1d564qsd-qs5d4685q4sd"
+        },
+        "hardware": {
+            "chassis_type": "Mini PC",
+            "defaultgateway": "192.168.8.1",
+            "dns": "192.168.8.1",
+            "memory": 7817,
+            "name": "ARN4058",
+            "uuid": "dfdfg-dfg5156fdg-5df1g615dfg-54dfg5d4fg",
+            "vmsystem": "Physical",
+            "winlang": "1033",
+            "winowner": "User",
+            "workgroup": "WORKGROUP"
+        },
+        "softwares": [
+            {
+                "arch": "x86_64",
+                "from": "registry",
+                "guid": "Teclib_Software",
+                "install_date": "2025-05-19",
+                "name": "Teclib Software Software",
+                "publisher": "Teclib",
+                "system_category": "application",
+                "uninstall_string": " ",
+                "version": "2.20.4853.2486"
+            }
+        ],
+        "versionclient": "GLPI-Agent_v1.9"
+    },
+    "deviceid": "ARN4058",
+    "itemtype": "Computer",
+    "partial": true
+}

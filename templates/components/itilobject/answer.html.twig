@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -36,7 +35,8 @@
       {% set is_private = timeline_itemtype.item.fields['is_private'] ?? false %}
       {% set is_private_class = is_private ? "private-item" : "" %}
       <div class="timeline-item mb-1 ms-auto {{ is_private_class }} {{ timeline_itemtype.type }} collapse"
-        id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
+        id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form"
+        data-testid="new-{{ timeline_itemtype.class }}-block">
          <div class="row">
             <div class="col-auto todo-list-state"></div>
             <div class="col-auto d-flex flex-column user-part ms-0 order-sm-last">
@@ -55,7 +55,8 @@
                         {% if timeline_itemtype.template is defined %}
                            {{ include(timeline_itemtype.template, {
                               'item': item,
-                              'subitem': timeline_itemtype.item
+                              'subitem': timeline_itemtype.item,
+                              'mention_options': mention_options,
                            }) }}
                         {% else %}
                            {% set sf_options = {'parent': item} %}

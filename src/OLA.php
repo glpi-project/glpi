@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,13 @@
  **/
 class OLA extends LevelAgreement
 {
+    /**
+     * @var string
+     */
     protected static $prefix            = 'ola';
+    /**
+     * @var string
+     */
     protected static $prefixticket      = 'internal_';
     protected static $levelclass        = 'OlaLevel';
     protected static $levelticketclass  = 'OlaLevel_Ticket';
@@ -68,10 +74,9 @@ class OLA extends LevelAgreement
 
     public function showFormWarning()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";
+        echo "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/warning.png' alt='" . __s('Warning') . "'>";
         echo __s('The internal time is recalculated when assigning the OLA');
     }
 
@@ -79,7 +84,7 @@ class OLA extends LevelAgreement
     {
         return [
             __("The assignment of an OLA to a ticket causes the recalculation of the date."),
-            __("Escalations defined in the OLA will be triggered under this new date.")
+            __("Escalations defined in the OLA will be triggered under this new date."),
         ];
     }
 }

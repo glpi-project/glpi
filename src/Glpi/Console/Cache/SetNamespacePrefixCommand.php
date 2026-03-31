@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ namespace Glpi\Console\Cache;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +53,7 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
      *
      * @var int
      */
-    const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
+    public const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
     protected $requires_db = false;
 
@@ -83,11 +84,11 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
 
         $prefix = $input->getArgument('prefix');
 
-       // Store configuration
+        // Store configuration
         $success = $this->cache_manager->setNamespacePrefix($prefix);
 
         if (!$success) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to write cache configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_WRITE_CONFIG
             );

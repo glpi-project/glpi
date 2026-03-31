@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \DBmysql $DB */
 global $DB;
 
 /**
@@ -54,10 +55,11 @@ if (!$task->canView()) {
     throw new AccessDeniedHttpException();
 }
 
-$itemtype = $task::getItilObjectItemType();
-$fk       = getForeignKeyFieldForItemType($itemtype);
+$track = $task::getItilObjectItemInstance();
 
-$track = new $itemtype();
+$itemtype = $track::class;
+$fk       = $track::getForeignKeyField();
+
 $track->getFromDB($task->getField($fk));
 
 $redirect = null;
@@ -77,9 +79,9 @@ if (isset($_POST["add"])) {
     );
     $redirect = $itemtype::getFormURLWithID($task->getField($fk));
     $handled = true;
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
-    $task->delete($_POST, 1);
+    $task->delete($_POST, true);
 
     Event::log(
         $task->getField($fk),
@@ -90,7 +92,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges a task'), $_SESSION["glpiname"])
     );
     Html::redirect($itemtype::getFormURLWithID($task->getField($fk)));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $task->check($_POST["id"], UPDATE);
     $task->update($_POST);
 
@@ -104,7 +106,7 @@ if (isset($_POST["add"])) {
     );
     $redirect = $itemtype::getFormURLWithID($task->getField($fk));
     $handled = true;
-} else if (isset($_POST["unplan"])) {
+} elseif (isset($_POST["unplan"])) {
     $task->check($_POST["id"], UPDATE);
     $task->unplan();
 
@@ -123,7 +125,7 @@ if (isset($_POST["add"])) {
 if ($handled) {
     if ($track->can($task->getField($fk), READ)) {
         $toadd = '';
-       // Copy followup to KB redirect to KB
+        // Copy followup to KB redirect to KB
         if (isset($_POST['_task_to_kb']) && $_POST['_task_to_kb']) {
             $toadd = "&_task_to_kb=" . $task->getID();
         }

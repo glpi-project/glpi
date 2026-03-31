@@ -3,6 +3,9 @@ import globals from "globals";
 import vue from "eslint-plugin-vue";
 import js from "@eslint/js";
 import cypress from "eslint-plugin-cypress/flat";
+import playwright from 'eslint-plugin-playwright';
+import tsParser from "@typescript-eslint/parser";
+import tseslint from "@typescript-eslint/eslint-plugin";
 
 export default [
     {
@@ -19,10 +22,25 @@ export default [
             "public/lib/*",
             "tests/config/*",
             "vendor/*",
-            "**/*.min.js"
+            "**/*.min.js",
+            "tests/e2e/results/*"
         ],
     },
     js.configs.recommended,
+    {
+        files: ["tests/e2e/**/*.ts"],
+        languageOptions: {
+            parser: tsParser,
+            parserOptions: {
+                project: "./tsconfig.json",
+                ecmaVersion: 'latest',
+                sourceType: "module"
+            },
+            globals: {
+                ...globals.node,
+            }
+        },
+    },
     {
         languageOptions: {
             ecmaVersion: 13,
@@ -130,7 +148,6 @@ export default [
             sourceType: "module",
         },
         rules: {
-            "mocha/no-skipped-tests": "error",
             "mocha/no-exclusive-tests": "error"
         }
     },
@@ -148,7 +165,6 @@ export default [
             sourceType: "module",
         },
         rules: {
-            "mocha/no-skipped-tests": "error",
             "mocha/no-exclusive-tests": "error"
         }
     },
@@ -161,5 +177,29 @@ export default [
         "rules": {
             "prefer-template": "off",
         }
+    },
+    {
+        ...playwright.configs['flat/recommended'],
+        files: ['tests/e2e/**'],
+        plugins: {
+            "@typescript-eslint": tseslint,
+            "playwright": playwright,
+        },
+        rules: {
+            ...playwright.configs['flat/recommended'].rules,
+            "@typescript-eslint/no-floating-promises": "error",
+            "playwright/no-force-option": "error",
+            "playwright/no-raw-locators": "error",
+            "playwright/expect-expect": [
+                "warn",
+                {
+                    "assertFunctionPatterns": ["^expect.*", "^assert.*"]
+                }
+            ],
+
+            // See: https://typescript-eslint.io/rules/no-unused-vars/
+            "no-unused-vars": "off",
+            "@typescript-eslint/no-unused-vars": "error",
+        },
     }
 ];

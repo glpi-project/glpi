@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Debug;
 
+use Session;
+
 /**
  * Class that handles profiling sections of code.
  * The data is viewable in the debug bar only. If the current user is not in debug mode, the profiler is disabled.
@@ -44,6 +46,7 @@ final class Profiler
     /** @var ProfilerSection[] */
     private $current_sections = [];
 
+    /** @var bool */
     private $disabled = false;
 
     public const CATEGORY_BOOT = 'boot';
@@ -53,7 +56,9 @@ final class Profiler
     public const CATEGORY_TWIG = 'twig';
     public const CATEGORY_SEARCH = 'search';
     public const CATEGORY_CUSTOMOBJECTS = 'customobjects';
+    public const CATEGORY_HLAPI = 'hlapi';
 
+    /** @var ?self */
     private static $instance;
 
     public static function getInstance(): self
@@ -77,7 +82,7 @@ final class Profiler
      */
     public function start(string $name, string $category = self::CATEGORY_CORE): void
     {
-        $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE;
+        $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
         if ($this->disabled || !$debug_mode_or_pre_session) {
             return;
         }
@@ -88,7 +93,7 @@ final class Profiler
             $parent_id = array_key_last($this->current_sections);
             $parent_id = $this->current_sections[$parent_id]->getId();
         }
-        $this->current_sections[] = new ProfilerSection($category, $name, microtime(true) * 1000, $parent_id);
+        $this->current_sections[] = new ProfilerSection($category, $name, (int) (microtime(true) * 1000), $parent_id);
     }
 
     /**
@@ -99,9 +104,7 @@ final class Profiler
     public function pause(string $name): void
     {
         // get the last section with the given name and stop it
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $section = array_pop($section);
             $section->pause();
@@ -116,9 +119,7 @@ final class Profiler
     public function resume(string $name): void
     {
         // get the last section with the given name and stop it
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $section = array_pop($section);
             $section->resume();
@@ -128,21 +129,20 @@ final class Profiler
     /**
      * Stops a section started with Profiler::start()
      * @param string $name The name of the section to stop. This name must be the same as the one used in Profiler::start()
+     * @param bool $auto_ended Whether the section was automatically ended (e.g. at the end of the request)
      * @return int The duration of the section in milliseconds
      */
-    public function stop(string $name): int
+    public function stop(string $name, bool $auto_ended = false): int
     {
         // get the last section with the given name and stop it
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $k = array_key_last($section);
             $section = array_pop($section);
-            $section->end(microtime(true) * 1000);
+            $section->end((int) (microtime(true) * 1000));
             $duration = $section->getDuration();
             unset($this->current_sections[$k]);
-            Profile::getCurrent()->setData('profiler', $section->toArray());
+            Profile::getCurrent()->setData('profiler', $section->toArray() + ['auto_ended' => $auto_ended]);
         }
         return $duration ?? 0;
     }
@@ -154,9 +154,7 @@ final class Profiler
      */
     public function getCurrentDuration(string $name): int
     {
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         if (count($section)) {
             $section = array_pop($section);
             return $section->getDuration();
@@ -171,7 +169,7 @@ final class Profiler
     public function stopAll(): void
     {
         foreach ($this->current_sections as $section) {
-            $this->stop($section->getName());
+            $this->stop($section->getName(), true);
         }
     }
 
@@ -182,9 +180,7 @@ final class Profiler
      */
     public function isRunning(string $name): bool
     {
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
+        $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
         return count($section) > 0;
     }
 }

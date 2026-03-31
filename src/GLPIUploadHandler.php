@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,18 +33,26 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\unlink;
+
 /** GLPIUploadHandler class
  *
  * @since 9.2
  **/
 class GLPIUploadHandler extends UploadHandler
 {
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
     public static function uploadFiles($params = [])
     {
         $default_params = [
             'name'           => '',
             'showfilesize'   => false,
-            'print_response' => true
+            'print_response' => true,
         ];
         $params = array_merge($default_params, $params);
 
@@ -54,7 +62,7 @@ class GLPIUploadHandler extends UploadHandler
         $upload_handler = new self(['param_name' => $pname]);
         $response       = $upload_handler->post(false);
 
-       // clean compute display filesize
+        // clean compute display filesize
         if (isset($response[$pname]) && is_array($response[$pname])) {
             foreach ($response[$pname] as &$val) {
                 if (isset($val->error) && file_exists($upload_dir . $val->name)) {
@@ -75,7 +83,29 @@ class GLPIUploadHandler extends UploadHandler
             }
         }
 
-       // send answer
+        // send answer
         return $upload_handler->generate_response($response, $params['print_response']);
+    }
+
+    /**
+     * @param string $uploaded_file
+     * @param stdClass $file
+     * @param int $error
+     * @param int $index
+     * @param ?array $content_range
+     *
+     * @return bool
+     */
+    protected function validate($uploaded_file, $file, $error, $index, $content_range)
+    {
+        if (
+            !empty(GLPI_DISALLOWED_UPLOADS_PATTERN)
+            && preg_match(GLPI_DISALLOWED_UPLOADS_PATTERN, $file->name) === 1
+        ) {
+            $file->error = __('The file upload has been refused for security reasons.');
+            return false;
+        }
+
+        return parent::validate($uploaded_file, $file, $error, $index, $content_range);
     }
 }

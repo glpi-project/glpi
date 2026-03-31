@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@
  */
 class PendingReasonCron extends CommonDBTM
 {
-    const TASK_NAME = 'pendingreason_autobump_autosolve';
+    public const TASK_NAME = 'pendingreason_autobump_autosolve';
 
     /**
      * Get task description
@@ -50,6 +50,11 @@ class PendingReasonCron extends CommonDBTM
         return __("Send automated follow-ups on pending tickets and solve them if necessary");
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return [
@@ -61,10 +66,11 @@ class PendingReasonCron extends CommonDBTM
      * Run from cronTask
      *
      * @param CronTask $task
+     *
+     * @return int
      */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $config = Config::getConfigurationValues('core', ['system_user']);
@@ -86,7 +92,7 @@ class PendingReasonCron extends CommonDBTM
             Problem::getType(),
         ];
 
-        $now = date("Y-m-d H:i:s");
+        $now = $_SESSION['glpi_currenttime'];
 
         $data = $DB->request([
             'SELECT' => 'id',
@@ -94,15 +100,15 @@ class PendingReasonCron extends CommonDBTM
             'WHERE'  => [
                 'pendingreasons_id'  => ['>', 0],
                 'followup_frequency' => ['>', 0],
-                'itemtype'           => $targets
-            ]
+                'itemtype'           => $targets,
+            ],
         ]);
 
         foreach ($data as $row) {
             $pending_item = PendingReason_Item::getById($row['id']);
             $itemtype = $pending_item->fields['itemtype'];
             $item = $itemtype::getById($pending_item->fields['items_id']);
-            if (!$item) {
+            if (!$item instanceof $itemtype || !$pending_item instanceof PendingReason_Item) {
                 trigger_error("Failed to load item", E_USER_WARNING);
                 continue;
             }
@@ -135,12 +141,20 @@ class PendingReasonCron extends CommonDBTM
                 $success = $pending_item->update([
                     'id'             => $pending_item->getID(),
                     'bump_count'     => $pending_item->fields['bump_count'] + 1,
-                    'last_bump_date' => date("Y-m-d H:i:s"),
+                    'last_bump_date' => $_SESSION['glpi_currenttime'],
                 ]);
 
                 if (!$success) {
                     trigger_error("Can't bump, unable to update pending item", E_USER_WARNING);
                     continue;
+                }
+
+                $itilfup_template = ITILFollowupTemplate::getById(
+                    $pending_reason->fields['itilfollowuptemplates_id']
+                );
+                $content = '';
+                if ($itilfup_template instanceof ITILFollowupTemplate) {
+                    $content = $itilfup_template->getRenderedContent($item);
                 }
 
                 // Add reminder (new ITILReminder)
@@ -150,18 +164,16 @@ class PendingReasonCron extends CommonDBTM
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
                     'name' => $pending_reason->fields['name'],
-                    'content' => ITILFollowupTemplate::getById(
-                        $pending_reason->fields['itilfollowuptemplates_id']
-                    )->getRenderedContent($item),
+                    'content' => $content,
                 ]);
                 $task->addVolume(1);
 
                 // Send notification
-                \NotificationEvent::raiseEvent('auto_reminder', $item);
-            } else if ($resolve && $now > $resolve) {
+                NotificationEvent::raiseEvent('auto_reminder', $item);
+            } elseif ($resolve && $now > $resolve) {
                 // Load solution template
                 $solution_template = SolutionTemplate::getById($pending_reason->fields['solutiontemplates_id']);
-                if (!$solution_template) {
+                if (!$solution_template instanceof SolutionTemplate) {
                     trigger_error("Failed to load SolutionTemplate::{$pending_reason->fields['solutiontemplates_id']}", E_USER_WARNING);
                     continue;
                 }
@@ -184,14 +196,6 @@ class PendingReasonCron extends CommonDBTM
         return 1;
     }
 
-    /**
-     * Return the localized name of the current Type
-     * Should be overloaded in each new class
-     *
-     * @param integer $nb Number of items
-     *
-     * @return string
-     **/
     public static function getTypeName($nb = 0)
     {
         return __('Automatic followups / resolution');

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,7 +59,6 @@ class AssetParameters extends AbstractParameters
 
     protected function getTargetClasses(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $CFG_GLPI["asset_types"];
     }
@@ -71,6 +70,7 @@ class AssetParameters extends AbstractParameters
             new AttributeParameter("name", __('Name')),
             new AttributeParameter("itemtype", __('Itemtype')),
             new AttributeParameter("serial", __('Serial number')),
+            new AttributeParameter("comment", __('Comments')),
             new ObjectParameter(new EntityParameters()),
         ];
     }
@@ -84,9 +84,10 @@ class AssetParameters extends AbstractParameters
             'name'     => $fields['name'],
             'itemtype' => $asset->getType(),
             'serial'   => $fields['serial'],
+            'comment'  => $fields['comment'],
         ];
 
-       // Add asset's entity
+        // Add asset's entity
         if ($entity = Entity::getById($fields['entities_id'])) {
             $entity_parameters = new EntityParameters();
             $values['entity'] = $entity_parameters->getValues($entity);

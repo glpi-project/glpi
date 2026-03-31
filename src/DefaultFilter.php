@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
- use Glpi\Search\FilterableInterface;
- use Glpi\Search\FilterableTrait;
+use Glpi\Search\CriteriaFilter;
+use Glpi\Search\FilterableInterface;
+use Glpi\Search\FilterableTrait;
+
+use function Safe\json_decode;
 
 class DefaultFilter extends CommonDBTM implements FilterableInterface
 {
@@ -89,8 +92,8 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
             'id'            => '4',
             'table'         => self::getTable(),
             'field'         =>  'comment',
-            'name'          =>  __('Comments'),
-            'datatype'      =>  'text'
+            'name'          =>  _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'      =>  'text',
         ];
 
         $tab[] = [
@@ -100,12 +103,15 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
             'name'               => __('Itemtype'),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'globalsearch_types',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public function getAdditionalFields()
     {
         return [
@@ -114,17 +120,16 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                 'label' => __('Itemtype'),
                 'type'           => 'itemtypename',
                 'itemtype_list'      => 'globalsearch_types',
-            ]
+            ],
         ];
     }
 
     public static function getSearchCriteria(string $itemtype): ?array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $default_table = self::getTable();
-        $filter_table = \Glpi\Search\CriteriaFilter::getTable();
+        $filter_table = CriteriaFilter::getTable();
 
         $criteria = [
             'SELECT' => [
@@ -139,16 +144,16 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                         $filter_table => 'items_id',
                     ],
                     'AND'   => [
-                        "$filter_table.itemtype" => __CLASS__
-                    ]
-                ]
+                        "$filter_table.itemtype" => self::class,
+                    ],
+                ],
             ],
             'WHERE' => [
                 "$default_table.itemtype" => $itemtype,
                 "NOT" => [
-                    "$filter_table.search_criteria" => null
-                ]
-            ]
+                    "$filter_table.search_criteria" => null,
+                ],
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -163,12 +168,17 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
                 'search_criteria' => [
                     'link' => 'AND',
                     'criteria' => json_decode($item['search_criteria'], true),
-                ]
+                ],
             ];
         }
         return null;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     */
     private function prepareInput($input)
     {
         // Checks that the itemtype is not already in use

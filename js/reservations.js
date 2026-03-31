@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales */
 /* global glpi_ajax_dialog */
+/* global _ */
 
 var Reservations = function() {
     this.is_all      = true;
@@ -50,7 +51,9 @@ var Reservations = function() {
 
     my.init = function(config) {
         my.id           = config.id || 0;
+        // FIXME The use of '||' means you cannot specify 'false' values. It should be '??' operator
         my.is_all       = config.is_all || true;
+        //FIXME 'rand' should not default to true, but to a unique value
         my.rand         = config.rand || true;
         my.is_tab       = config.is_tab || false;
         my.dom_id       = `reservations_planning_${my.rand}`;
@@ -80,14 +83,6 @@ var Reservations = function() {
                 : my.currentv,
             height: function() {
                 var _newheight = $(window).height() - 272;
-                if ($('#debugajax').length > 0) {
-                    _newheight -= $('#debugajax').height();
-                }
-
-                if (my.is_tab) {
-                    // TODO .glpi_tabs not exists anymore
-                    _newheight = $('.glpi_tabs ').height() - 150;
-                }
 
                 //minimal size
                 var _minheight = 300;
@@ -175,7 +170,7 @@ var Reservations = function() {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
+                        .append(`&nbsp;<i class='${_.escape(extProps.icon)}' title='${_.escape(icon_alt)}'></i>`);
                 }
 
                 // detect ideal position
@@ -238,12 +233,13 @@ var Reservations = function() {
                         title: __("Add reservation"),
                         url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
                         params: {
-                            action: 'add_reservation_fromselect',
-                            id:     my.id,
-                            start:  info.start.toISOString(),
+                            action: 'add_edit_reservation_fromselect',
+                            id: 0,
+                            item:     [my.id],
+                            begin:  info.start.toISOString(),
                             end:    info.end.toISOString(),
                         },
-                        dialogclass: 'modal-lg',
+                        dialogclass: 'modal-xl',
                     });
                 }
 
@@ -263,8 +259,8 @@ var Reservations = function() {
 
                 glpi_ajax_dialog({
                     title: __("Edit reservation"),
-                    url: `${ajaxurl}&ajax=true`,
-                    dialogclass: 'modal-lg',
+                    url: `${ajaxurl}`,
+                    dialogclass: 'modal-xl',
                 });
             }
         });
@@ -312,3 +308,10 @@ var Reservations = function() {
           && date1.getDate() === date2.getDate();
     };
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        Reservations,
+    };
+}

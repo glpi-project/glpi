@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+
 abstract class RuleCommonITILObjectCollection extends RuleCollection
 {
     // From RuleCollection
     public $use_output_rule_process_as_next_input   = true;
 
     /**
-     * @param $entity (default 0)
+     * @param int $entity (default 0)
      **/
     public function __construct($entity = 0)
     {
@@ -49,7 +51,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
 
     /**
      * Get the ITIL Object itemtype that this rule collection is for
-     * @return string "Ticket", "Change" or "Problem"
+     * @return class-string<CommonITILObject> "Ticket", "Change" or "Problem"
      */
     public static function getItemtype(): string
     {
@@ -73,7 +75,6 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
     public function preProcessPreviewResults($output)
     {
         $output = parent::preProcessPreviewResults($output);
-        /** @var CommonITILObject $itemtype */
         $itemtype = static::getItemtype();
         return $itemtype::showPreviewAssignAction($output);
     }

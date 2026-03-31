@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,12 @@
 namespace Glpi\Toolbox;
 
 use League\CommonMark\Environment\Environment;
+use League\CommonMark\Exception\CommonMarkException;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
-use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\HeadingPermalink\HeadingPermalinkExtension;
 use League\CommonMark\Extension\TableOfContents\TableOfContentsExtension;
+use League\CommonMark\MarkdownConverter;
 
 class MarkdownRenderer
 {
@@ -51,7 +52,7 @@ class MarkdownRenderer
      *
      * @param string $md_content Markdown to render
      * @return string
-     * @throws \League\CommonMark\Exception\CommonMarkException
+     * @throws CommonMarkException
      */
     public function render(string $md_content): string
     {

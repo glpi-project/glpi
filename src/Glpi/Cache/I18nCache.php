@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,23 +44,39 @@ use Psr\SimpleCache\CacheInterface;
  */
 class I18nCache
 {
-    private $cache;
+    private CacheInterface $cache;
 
     public function __construct(CacheInterface $cache)
     {
         $this->cache = $cache;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
     public function getItem($key)
     {
         return $this->cache->get($key);
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return bool
+     */
     public function setItem($key, $value)
     {
         return $this->cache->set($key, $value);
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function removeItem($key)
     {
         return $this->cache->delete($key);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +36,7 @@ namespace Glpi\Console\User;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use User;
 
 class DeleteCommand extends AbstractUserCommand
 {
@@ -50,10 +51,10 @@ class DeleteCommand extends AbstractUserCommand
     protected function execute(InputInterface $input, OutputInterface $output): ?int
     {
         $username = $input->getArgument('username');
-        $user = new \User();
+        $user = new User();
         if ($user->getFromDBbyName($username)) {
             $user->delete([
-                'id' => $user->getID()
+                'id' => $user->getID(),
             ]);
             $output->writeln('<info>' . __('User deleted') . '</info>');
             return 0;

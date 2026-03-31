@@ -7,7 +7,7 @@
 #
 # http://glpi-project.org
 #
-# @copyright 2015-2025 Teclib' and contributors.
+# @copyright 2015-2026 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
 # @licence   https://www.gnu.org/licenses/gpl-3.0.html
 #
@@ -44,9 +44,9 @@ TESTS_SUITES=(
   "lint_js"
   "lint_scss"
   "lint_twig"
+  "security_scan"
   "install"
   "update"
-  "phpunit"
   "functional"
   "cache"
   "ldap"
@@ -72,7 +72,7 @@ while [[ $# -gt 0 ]]; do
   fi
 done
 
-# Flag to indicate wether services containers are usefull
+# Flag to indicate whether services containers are useful
 USE_SERVICES_CONTAINERS=0
 SELECTED_SCOPE="default"
 SELECTED_METHODS="all"
@@ -100,7 +100,7 @@ if [[ $# -gt 0 ]]; then
 
   # Ensure install test is executed if something else than "lint" or "javascript" is executed.
   # This is mandatory as database is initialized by this test suite.
-  # Also, check wether services containes are usefull.
+  # Also, check whether services containers are useful.
   for TEST_SUITE in "${SELECTED_TESTS_TO_RUN[@]}"; do
     if [[ ! " lint javascript " =~ " ${TEST_SUITE} " ]]; then
       USE_SERVICES_CONTAINERS=1
@@ -149,9 +149,9 @@ Available tests suites:
  - lint_js
  - lint_scss
  - lint_twig
+ - security_scan
  - install
  - update
- - phpunit
  - functional
  - cache
  - ldap
@@ -212,7 +212,7 @@ INSTALL_TESTS_RUN=false
 
 run_single_test () {
   local TEST_TO_RUN=$1
-  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
+  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "security_scan" "javascript")
   #Need reinstall if current test is not e2e and $NEED_DB_REINSTALL is true
   #e2e tests are written to not care about extra data in the database
   local REINSTALL_NOW=false
@@ -267,6 +267,10 @@ run_single_test () {
          docker compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
+    "security_scan")
+         docker compose exec -T app vendor/bin/psalm \
+      || LAST_EXIT_CODE=$?
+      ;;
     "install")
          docker compose exec -T app .github/actions/test_install.sh \
       || LAST_EXIT_CODE=$?
@@ -276,10 +280,6 @@ run_single_test () {
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker compose exec -T app .github/actions/test_update-from-9.5.sh \
-      || LAST_EXIT_CODE=$?
-      ;;
-    "phpunit")
-         docker compose exec -T app .github/actions/test_tests-phpunit.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
@@ -309,7 +309,8 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "e2e")
-         docker compose exec -T app .github/actions/test_tests-e2e.sh \
+        $APPLICATION_ROOT/.github/actions/init_initialize-ldap-fixtures.sh \
+      && docker compose exec -T app .github/actions/test_tests-e2e.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac

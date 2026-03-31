@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -89,6 +89,10 @@ header {
 
     h1 {
         font-size:3.7rem;
+
+        // The default `--tblr-line-height-h1` line height does not play well
+        // with the font size we apply here, it is better to remove it.
+        line-height: unset !important;
     }
 
     .search-bar-container {
@@ -98,16 +102,62 @@ header {
         // dropdown (1030).
         z-index: 1025;
     }
+
+    .search-bar-container-placeholder {
+        height: 130px;
+    }
 }
 
 .search-banner {
-    background:
-        url('../pics/serfservice-portal-header-1.svg') no-repeat bottom right,
-        url('../pics/serfservice-portal-header-2.svg') no-repeat bottom left
-    ;
     background-color: var(--glpi-helpdesk-header);
-    padding-top:150px;
-    padding-bottom:100px;
+    position: relative;
+
+    .search-banner-content {
+        padding-top:170px;
+        padding-bottom:80px;
+    }
+
+    .scene {
+        position:absolute;
+        bottom: 0;
+        width: 555px;
+        height:90%;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        z-index: 0;
+        overflow: hidden;
+
+        svg {
+            height: 393px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        // Hide for screens smaller than 1600px
+        @media (max-width: 1600px) {
+            display: none;
+        }
+    }
+
+    .scene-left {
+        left: 0;
+    }
+
+    .scene-right {
+        right: 0;
+    }
+
+    h1 {
+        // Make sure the title is always diplayed above the illustrations in case
+        // of overlap.
+        z-index: 1;
+        position: relative;
+    }
 }
 
 .search-overlay {
@@ -152,13 +202,13 @@ header {
 }
 
 .tiles-banner {
-    background: #f6f8fb;
+    background: var(--glpi-helpdesk-tiles-section-bg);
     padding-top:70px;
     padding-bottom:70px;
 }
 
 .tickets-banner {
-    background: #fff;
+    background: var(--glpi-helpdesk-tabs-section-bg);
     padding-top:70px;
     padding-bottom:70px;
     flex-grow: 1;
@@ -201,5 +251,37 @@ header {
         border-top: 0;
         padding-top: 16px;
         padding-bottom: 8px;
+    }
+
+    .search-results {
+        // Prevent double border issues
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
+}
+
+.search-result-container {
+    background-color: var(--glpi-tabs-bg);
+}
+
+.dashboard {
+    margin-top: 10px;
+
+    .filter-dashboard {
+        // This action is not accessible on the helpdesk
+        display: none;
+    }
+
+    .change-dashboard {
+        // Small adjustment to make sur it aligns with others UI elements specific to this page
+        margin-left: 4px;
+    }
+}
+
+#tabspanel {
+    border-bottom: 1px solid var(--tblr-border-color) !important;
+
+    a.active {
+        border-bottom: 1px solid var(--tblr-border-color) !important;
     }
 }

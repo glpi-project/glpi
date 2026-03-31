@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,20 +35,21 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
+
 /**
- * @implements \ArrayAccess<string, null|string|bool|Schema|SchemaReference>
+ * @implements ArrayAccess<string, null|string|bool|Schema|SchemaReference>
  */
-class Response implements \ArrayAccess
+class Response implements ArrayAccess
 {
     public function __construct(
-        private string $description,
-        private array $headers,
-        private Schema|SchemaReference $schema,
+        private Schema|SchemaReference|null $schema,
+        private string $description = '',
+        private array $headers = [],
         private array $examples = [],
         private string $media_type = 'application/json',
         private int $status_code = 200,
-    ) {
-    }
+    ) {}
 
     /**
      * @return string
@@ -67,9 +68,9 @@ class Response implements \ArrayAccess
     }
 
     /**
-     * @return Schema|SchemaReference
+     * @return Schema|SchemaReference|null
      */
-    public function getSchema(): Schema|SchemaReference
+    public function getSchema(): Schema|SchemaReference|null
     {
         return $this->schema;
     }

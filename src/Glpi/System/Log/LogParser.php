@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,21 @@
 namespace Glpi\System\Log;
 
 use CommonGLPI;
+use RuntimeException;
+use Safe\Exceptions\FilesystemException;
 use Toolbox;
+
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\filemtime;
+use function Safe\filesize;
+use function Safe\preg_match;
+use function Safe\preg_replace_callback;
+use function Safe\preg_split;
+use function Safe\readfile;
+use function Safe\realpath;
+use function Safe\scandir;
+use function Safe\unlink;
 
 final class LogParser extends CommonGLPI
 {
@@ -57,7 +71,7 @@ final class LogParser extends CommonGLPI
     public function __construct(string $directory = GLPI_LOG_DIR)
     {
         if (!is_dir($directory)) {
-            throw new \RuntimeException(sprintf('Invalid directory "%s".', $directory));
+            throw new RuntimeException(sprintf('Invalid directory "%s".', $directory));
         }
 
         $this->directory = $directory;
@@ -126,7 +140,6 @@ final class LogParser extends CommonGLPI
      */
     public function parseLogFile(string $filepath, ?int $max_nb_lines = null): ?array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $fullpath = $this->getFullPath($filepath);
@@ -236,7 +249,13 @@ final class LogParser extends CommonGLPI
             return false;
         }
 
-        return unlink($fullpath);
+        try {
+            unlink($fullpath);
+        } catch (FilesystemException) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -246,16 +265,24 @@ final class LogParser extends CommonGLPI
      *
      * @return string|null
      */
-    private function getFullPath(string $filepath): ?string
+    public function getFullPath(string $filepath): ?string
     {
-        $filepath = str_replace('\\', '/', $filepath);
+        try {
+            $logs_dir_path = realpath($this->directory);
+        } catch (FilesystemException) {
+            return null;
+        }
 
-        if (preg_match('/\/..\//', $filepath) === 1) {
+        try {
+            $fullpath = realpath($logs_dir_path . '/' . $filepath);
+        } catch (FilesystemException) {
+            return null;
+        }
+
+        if (!str_starts_with($fullpath, $logs_dir_path)) {
             return null; // Security check
         }
 
-        $fullpath = $this->directory . '/' . $filepath;
-
-        return file_exists($fullpath) && !is_dir($fullpath) ? $fullpath : null;
+        return !is_dir($fullpath) ? $fullpath : null;
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var \DBmysql $DB
- */
 global $DB;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -58,7 +52,7 @@ if ($_POST['softwares_id'] > 0) {
             $where = ['NOT' => ['glpi_softwareversions.id' => $used]];
         }
     }
-   // Make a select box
+    // Make a select box
     $iterator = $DB->request([
         'SELECT'    => ['glpi_softwareversions.*', 'glpi_states.name AS sname'],
         'DISTINCT'  => true,
@@ -67,11 +61,11 @@ if ($_POST['softwares_id'] > 0) {
             'glpi_states'  => [
                 'ON'  => [
                     'glpi_softwareversions' => 'states_id',
-                    'glpi_states'           => 'id'
-                ]
-            ]
+                    'glpi_states'           => 'id',
+                ],
+            ],
         ],
-        'WHERE'     => ['glpi_softwareversions.softwares_id' => $_POST['softwares_id']] + $where
+        'WHERE'     => ['glpi_softwareversions.softwares_id' => $_POST['softwares_id']] + $where,
     ]);
     $number = count($iterator);
 

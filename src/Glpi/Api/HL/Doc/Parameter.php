@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,12 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
+
 /**
- * @implements \ArrayAccess<string, null|string|bool|Schema>
+ * @implements ArrayAccess<string, null|string|bool|Schema>
  */
-class Parameter implements \ArrayAccess
+final readonly class Parameter implements ArrayAccess
 {
     public const LOCATION_QUERY = 'query';
     public const LOCATION_PATH = 'path';
@@ -48,13 +50,12 @@ class Parameter implements \ArrayAccess
 
     public function __construct(
         private string $name,
-        private string $description,
-        private string $location,
         private Schema|SchemaReference $schema,
+        private string $description = '',
+        private string $location = self::LOCATION_QUERY,
         private ?string $example = null,
         private bool $required = false
-    ) {
-    }
+    ) {}
 
     /**
      * @return string

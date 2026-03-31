@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
 <h3>{{ __('Test of the connection at the database') }}</h3>
@@ -50,7 +50,7 @@
 
       <input type="hidden" name="update" value="{{ update }}">
       <input type="hidden" name="install" value="Etape_1">
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+      {{ fields.csrfField() }}
    </form>
 {% else %}
    {{ alerts.alert_success(
@@ -111,7 +111,7 @@
                <input type="hidden" name="install" value="update_1">
             {% endif %}
 
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {{ fields.csrfField() }}
          </form>
       </div>
    {% endif %}

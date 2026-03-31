@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,11 @@
  */
 
 namespace Glpi\Toolbox;
+
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+
+use function Safe\preg_match;
 
 final class ArrayPathAccessor
 {
@@ -99,9 +104,6 @@ final class ArrayPathAccessor
         $path_array = explode($path_delimiter, $path);
         $current = &$array;
         foreach ($path_array as $key) {
-            if (!isset($current[$key])) {
-                $current[$key] = [];
-            }
             $current = &$current[$key];
         }
         $current = $value;
@@ -118,7 +120,7 @@ final class ArrayPathAccessor
     {
         // Get all paths including intermediate paths
         $paths = [];
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array), \RecursiveIteratorIterator::SELF_FIRST);
+        $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($array), RecursiveIteratorIterator::SELF_FIRST);
         foreach ($iterator as $leafValue) {
             $keys = [];
             foreach (range(0, $iterator->getDepth()) as $depth) {

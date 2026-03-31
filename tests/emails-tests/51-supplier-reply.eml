@@ -1,0 +1,17 @@
+Return-Path: supplier@glpi-project.org
+Received: from mail.glpi-project.org (localhost [127.0.0.1])
+	by mail.glpi-project.org (Postfix) with ESMTP id B74527E805E8
+	for <unittests@glpi-project.org>; Thu, 19 Dec 2025 10:00:00 +0100
+Subject: Re: [GLPI #0000100] Ticket for supplier reply test
+From: Test Supplier <supplier@glpi-project.org>
+To: GLPI Support <unittests@glpi-project.org>
+Message-ID: <supplier-reply-100@glpi-project.org>
+Date: Thu, 19 Dec 2025 10:00:00 +0100
+MIME-Version: 1.0
+In-Reply-To: <GLPI-Ticket-100.1734600000.1234567890@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+This is a reply from the assigned supplier.
+The supplier should be able to add a followup to this ticket.

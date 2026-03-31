@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,10 +37,10 @@ namespace Glpi\Controller\Session;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
+use Glpi\Http\RedirectResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Html;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -55,7 +55,6 @@ final class ChangeProfileController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Validate profile
@@ -67,14 +66,22 @@ final class ChangeProfileController extends AbstractController
         // Apply new profile
         Session::changeProfile($profile_id);
 
+        // If the profile change was made with an AJAX request, this mean this
+        // was some background script and we do not need to redirect it to
+        // another page.
+        if ($request->isXmlHttpRequest()) {
+            return new Response();
+        }
+
         // Compute redirection URL
         if (Session::getCurrentInterface() == "helpdesk") {
             $go_to_create_ticket = $_SESSION['glpiactiveprofile']['create_ticket_on_login'];
             $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Helpdesk";
             $redirect = $request->getBasePath() . $route;
         } else {
-            $_SESSION['_redirected_from_profile_selector'] = true;
             $redirect = Html::getBackUrl();
+            $separator = str_contains($redirect, '?') ? "&" : "?";
+            $redirect = $redirect . $separator . '_redirected_from_profile_selector=true';
         }
 
         return new RedirectResponse($redirect);

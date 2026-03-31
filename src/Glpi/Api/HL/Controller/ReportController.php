@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,25 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use CommonDevice;
+use Dropdown;
+use Entity;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\Api\HL\Doc as Doc;
+use Search;
+use Stat;
+
+use function Safe\mktime;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 class ReportController extends AbstractController
 {
@@ -72,7 +83,7 @@ class ReportController extends AbstractController
                             'type' => Doc\Schema::TYPE_STRING,
                         ],
                     ],
-                ]
+                ],
             ],
             'GlobalStats' => [
                 'x-version-introduced' => '2.0',
@@ -157,7 +168,7 @@ class ReportController extends AbstractController
                             'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
-                ]
+                ],
             ],
             'ITILStats' => [
                 'x-version-introduced' => '2.0',
@@ -174,7 +185,7 @@ class ReportController extends AbstractController
                             'name' => [
                                 'type' => Doc\Schema::TYPE_STRING,
                             ],
-                        ]
+                        ],
                     ],
                     'number_open' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -225,7 +236,7 @@ class ReportController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
-                ]
+                ],
             ],
             'AssetStats' => [
                 'x-version-introduced' => '2.0',
@@ -246,20 +257,20 @@ class ReportController extends AbstractController
                             'name' => [
                                 'type' => Doc\Schema::TYPE_STRING,
                             ],
-                            'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity') + [
+                            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
                                 'description' => 'The entity the item belongs to',
                             ],
                             'is_deleted' => [
                                 'type' => Doc\Schema::TYPE_BOOLEAN,
                                 'description' => 'Whether the item is deleted or not',
                             ],
-                        ]
+                        ],
                     ],
                     'number_open' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
-                ]
+                ],
             ],
             'AssetCharacteristicsStats' => [
                 'x-version-introduced' => '2.0',
@@ -318,7 +329,7 @@ class ReportController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -328,14 +339,12 @@ class ReportController extends AbstractController
     #[Doc\Route(
         description: 'List available assistance statistics',
         responses: [
-            [
-                'schema' => 'StatReport[]'
-            ]
+            new Doc\Response(schema: new Doc\SchemaReference('StatReport[]')),
         ]
     )]
     public function listStatisticReports(Request $request): Response
     {
-        $available_reports = \Stat::getAvailableStatistics();
+        $available_reports = Stat::getAvailableStatistics();
         $results = [];
         // We cannot handle stats from plugins here. Plugins should add their own routes to handle them such as `/Assistance/Stat/PluginName/ReportName`.
         // They could even use a response middleware to modify the response of this endpoint to let users discover the new reports in the same way.
@@ -346,9 +355,9 @@ class ReportController extends AbstractController
                     if (!preg_match($plugin_pattern, $key)) {
                         $group_fields = [];
                         if (stripos($key, '/front/stat.tracking.php') !== false) {
-                            $group_fields = \Stat::getITILStatFields($group);
+                            $group_fields = Stat::getITILStatFields($group);
                         } elseif (stripos($key, '/front/stat.location.php') !== false) {
-                            $group_fields = \Stat::getItemCharacteristicStatFields(); // Not actually about location...
+                            $group_fields = Stat::getItemCharacteristicStatFields(); // Not actually about location...
                         }
                         // flatten the grouped group_fields
                         $flattened_group_fields = [];
@@ -389,37 +398,29 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Global', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get global assistance statistics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ]
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
         ],
         responses: [
-            [
-                'schema' => 'GlobalStats'
-            ]
+            new Doc\Response(schema: new Doc\SchemaReference('GlobalStats')),
         ]
     )]
     public function getITILGlobalStats(Request $request): Response
@@ -428,16 +429,16 @@ class ReportController extends AbstractController
         $date_end = $request->getQueryParams()['date_end'] ?? date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
         $date_start = $request->getQueryParams()['date_start'] ?? date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
-        $nb_open_stats = \Stat::constructEntryValues($itemtype, 'inter_total', $date_start, $date_end);
-        $nb_solved_stats = \Stat::constructEntryValues($itemtype, 'inter_solved', $date_start, $date_end);
-        $nb_late_stats = \Stat::constructEntryValues($itemtype, 'inter_solved_late', $date_start, $date_end);
-        $nb_closed_stats = \Stat::constructEntryValues($itemtype, 'inter_closed', $date_start, $date_end);
-        $nb_opensatisfaction_stats = \Stat::constructEntryValues($itemtype, 'inter_opensatisfaction', $date_start, $date_end);
-        $nb_answersatisfaction_stats = \Stat::constructEntryValues($itemtype, 'inter_answersatisfaction', $date_start, $date_end);
-        $avg_satisfaction_stats = \Stat::constructEntryValues($itemtype, 'inter_avgsatisfaction', $date_start, $date_end);
-        $avg_solvedtime_stats = \Stat::constructEntryValues($itemtype, 'inter_avgsolvedtime', $date_start, $date_end);
-        $avg_closedtime_stats = \Stat::constructEntryValues($itemtype, 'inter_avgclosedtime', $date_start, $date_end);
-        $avg_actiontime_stats = \Stat::constructEntryValues($itemtype, 'inter_avgactiontime', $date_start, $date_end);
+        $nb_open_stats = Stat::constructEntryValues($itemtype, 'inter_total', $date_start, $date_end);
+        $nb_solved_stats = Stat::constructEntryValues($itemtype, 'inter_solved', $date_start, $date_end);
+        $nb_late_stats = Stat::constructEntryValues($itemtype, 'inter_solved_late', $date_start, $date_end);
+        $nb_closed_stats = Stat::constructEntryValues($itemtype, 'inter_closed', $date_start, $date_end);
+        $nb_opensatisfaction_stats = Stat::constructEntryValues($itemtype, 'inter_opensatisfaction', $date_start, $date_end);
+        $nb_answersatisfaction_stats = Stat::constructEntryValues($itemtype, 'inter_answersatisfaction', $date_start, $date_end);
+        $avg_satisfaction_stats = Stat::constructEntryValues($itemtype, 'inter_avgsatisfaction', $date_start, $date_end);
+        $avg_solvedtime_stats = Stat::constructEntryValues($itemtype, 'inter_avgsolvedtime', $date_start, $date_end);
+        $avg_closedtime_stats = Stat::constructEntryValues($itemtype, 'inter_avgclosedtime', $date_start, $date_end);
+        $avg_actiontime_stats = Stat::constructEntryValues($itemtype, 'inter_avgactiontime', $date_start, $date_end);
         return new JSONResponse([
             'sample_dates' => array_keys($nb_open_stats),
             'number_open' => array_values($nb_open_stats),
@@ -446,68 +447,58 @@ class ReportController extends AbstractController
             'number_closed' => array_values($nb_closed_stats),
             'satisfaction_surveys_open' => array_values($nb_opensatisfaction_stats),
             'satisfaction_surveys_answered' => array_values($nb_answersatisfaction_stats),
-            'satisfaction_surveys_avg_rating' => array_map(static fn ($v) => round((float) $v, 2), array_values($avg_satisfaction_stats)),
-            'time_solve_avg' => array_map(static fn ($v) => (int) $v, array_values($avg_solvedtime_stats)),
-            'time_close_avg' => array_map(static fn ($v) => (int) $v, array_values($avg_closedtime_stats)),
-            'time_treatment_avg' => array_map(static fn ($v) => (int) $v, array_values($avg_actiontime_stats)),
+            'satisfaction_surveys_avg_rating' => array_map(static fn($v) => round((float) $v, 2), array_values($avg_satisfaction_stats)),
+            'time_solve_avg' => array_map(static fn($v) => (int) $v, array_values($avg_solvedtime_stats)),
+            'time_close_avg' => array_map(static fn($v) => (int) $v, array_values($avg_closedtime_stats)),
+            'time_treatment_avg' => array_map(static fn($v) => (int) $v, array_values($avg_actiontime_stats)),
         ]);
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get assistance statistics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ]
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
         ],
         responses: [
-            [
-                'schema' => 'ITILStats[]'
-            ]
+            new Doc\Response(schema: new Doc\SchemaReference('ITILStats[]')),
         ]
     )]
     public function getITILStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->hasParameter('date_end') ?
-            $request->getParameter('date_end') :
-            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
-        $date_start = $request->hasParameter('date_start') ?
-            $request->getParameter('date_start') :
-            date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
+        $date_end = $request->hasParameter('date_end')
+            ? $request->getParameter('date_end')
+            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_start = $request->hasParameter('date_start')
+            ? $request->getParameter('date_start')
+            : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
         $field = $request->getParameter('field');
 
-        $items = \Stat::getItems(
+        $items = Stat::getItems(
             $itemtype,
             $date_start,
             $date_end,
@@ -521,15 +512,13 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = static function ($stat, $field, $items_id) use ($itemtype, $date_start, $date_end) {
-                return \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, 0);
-            };
+            $fn_get_stats = (static fn($stat, $field, $items_id) => Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $field, $items_id, ''));
 
             $result = [];
             if (isset($item['itemtype'])) {
                 $result['item'] = [
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, '')
+                    'name' => Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -575,64 +564,61 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics/Export', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Export assistance statistics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ],
-            [
-                'name' => 'Accept',
-                'description' => 'The format to export the statistics to',
-                'location' => 'header',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
-                ],
-            ]
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
+            new Doc\Parameter(
+                name: 'Accept',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: [
+                        'text/csv',
+                        'application/vnd.oasis.opendocument.spreadsheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/pdf',
+                    ]
+                ),
+                description: 'The format to export the statistics to',
+                location: Doc\Parameter::LOCATION_HEADER,
+            ),
         ]
     )]
     public function exportITILStats(Request $request): Response
     {
         $format = match ($request->getHeaderLine('Accept')) {
-            'text/csv' => \Search::CSV_OUTPUT,
-            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
-            default => \Search::PDF_OUTPUT_LANDSCAPE,
+            'text/csv' => Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => Search::XLSX_OUTPUT,
+            default => Search::PDF_OUTPUT_LANDSCAPE,
         };
         $ext = match ($format) {
-            \Search::CSV_OUTPUT => 'csv',
-            \Search::ODS_OUTPUT => 'ods',
-            \Search::XLSX_OUTPUT => 'xlsx',
+            Search::CSV_OUTPUT => 'csv',
+            Search::ODS_OUTPUT => 'ods',
+            Search::XLSX_OUTPUT => 'xlsx',
             default => 'pdf',
         };
 
@@ -640,28 +626,28 @@ class ReportController extends AbstractController
         $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
         $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
         $field = $request->getParameter('field');
-        $value = \Stat::getItems(
+        $value = Stat::getItems(
             $itemtype,
             $start,
             $end,
             $field
         );
         if (empty($start) && empty($end)) {
-            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $start = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
             $end = date("Y-m-d");
         }
 
         ob_start();
         $_GET['display_type'] = $format;
         $_GET['export_all'] = 1;
-        \Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
+        Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
         $export = ob_get_clean();
         $filename = 'assistance_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
         return new Response(200, [
             'Content-Type' => match ($format) {
-                \Search::CSV_OUTPUT => 'text/csv',
-                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
-                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                Search::CSV_OUTPUT => 'text/csv',
+                Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 default => 'application/pdf',
             },
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
@@ -669,50 +655,42 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get assistance statistics by asset',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
         ],
         responses: [
-            [
-                'schema' => 'AssetStats[]'
-            ]
+            new Doc\Response(schema: new Doc\SchemaReference('AssetStats[]')),
         ]
     )]
     public function getAssetStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->hasParameter('date_end') ?
-            $request->getParameter('date_end') :
-            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
-        $date_start = $request->hasParameter('date_start') ?
-            $request->getParameter('date_start') :
-            date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
+        $date_end = $request->hasParameter('date_end')
+            ? $request->getParameter('date_end')
+            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_start = $request->hasParameter('date_start')
+            ? $request->getParameter('date_start')
+            : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
-        $assets = \Stat::getAssetsWithITIL($date_start, $date_end, $itemtype);
+        $assets = Stat::getAssetsWithITIL($date_start, $date_end, $itemtype);
         $results = [];
 
         foreach ($assets as $asset) {
@@ -735,83 +713,82 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset/Export', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Export assistance statistics by asset',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'Accept',
-                'description' => 'The format to export the statistics to',
-                'location' => 'header',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
-                ],
-            ]
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'Accept',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: [
+                        'text/csv',
+                        'application/vnd.oasis.opendocument.spreadsheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/pdf',
+                    ]
+                ),
+                description: 'The format to export the statistics to',
+                location: Doc\Parameter::LOCATION_HEADER,
+            ),
         ]
     )]
     public function exportAssetStats(Request $request): Response
     {
         $format = match ($request->getHeaderLine('Accept')) {
-            'text/csv' => \Search::CSV_OUTPUT,
-            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
-            default => \Search::PDF_OUTPUT_LANDSCAPE,
+            'text/csv' => Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => Search::XLSX_OUTPUT,
+            default => Search::PDF_OUTPUT_LANDSCAPE,
         };
         $ext = match ($format) {
-            \Search::CSV_OUTPUT => 'csv',
-            \Search::ODS_OUTPUT => 'ods',
-            \Search::XLSX_OUTPUT => 'xlsx',
+            Search::CSV_OUTPUT => 'csv',
+            Search::ODS_OUTPUT => 'ods',
+            Search::XLSX_OUTPUT => 'xlsx',
             default => 'pdf',
         };
 
         $itemtype = $request->getAttribute('assistance_type');
         $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
         $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
-        $value = \Stat::getItems(
+        $value = Stat::getItems(
             $itemtype,
             $start,
             $end,
             'hardwares'
         );
         if (empty($start) && empty($end)) {
-            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $start = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
             $end = date("Y-m-d");
         }
 
         ob_start();
         $_GET['display_type'] = $format;
         $_GET['export_all'] = 1;
-        \Stat::showTable($itemtype, 'hardwares', $start, $end, 0, $value, 0);
+        Stat::showTable($itemtype, 'hardwares', $start, $end, 0, $value, 0);
         $export = ob_get_clean();
         $filename = 'assistance_asset_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
         return new Response(200, [
             'Content-Type' => match ($format) {
-                \Search::CSV_OUTPUT => 'text/csv',
-                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
-                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                Search::CSV_OUTPUT => 'text/csv',
+                Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 default => 'application/pdf',
             },
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
@@ -819,60 +796,50 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get assistance statistics by asset characteristics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The characteristic field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ]
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The characteristic field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
         ],
         responses: [
-            [
-                'schema' => 'AssetCharacteristicsStats[]'
-            ]
+            new Doc\Response(schema: new Doc\SchemaReference('AssetCharacteristicsStats[]')),
         ]
     )]
     public function getAssetCharacteristicsStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->hasParameter('date_end') ?
-            $request->getParameter('date_end') :
-            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
-        $date_start = $request->hasParameter('date_start') ?
-            $request->getParameter('date_start') :
-            date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
+        $date_end = $request->hasParameter('date_end')
+            ? $request->getParameter('date_end')
+            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_start = $request->hasParameter('date_start')
+            ? $request->getParameter('date_start')
+            : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
         $field = $request->getParameter('field');
 
-        $items = \Stat::getItems(
+        $items = Stat::getItems(
             $itemtype,
             $date_start,
             $date_end,
@@ -882,11 +849,11 @@ class ReportController extends AbstractController
         if (!$param_item) {
             return self::getInvalidParametersErrorResponse([
                 'invalid' => [
-                    'name' => 'field',
-                ]
+                    ['name' => 'field'],
+                ],
             ]);
         }
-        $param = $param_item instanceof \CommonDevice ? 'device' : 'comp_champ';
+        $param = $param_item instanceof CommonDevice ? 'device' : 'comp_champ';
 
         $results = [];
 
@@ -895,16 +862,14 @@ class ReportController extends AbstractController
                 continue;
             }
 
-            $fn_get_stats = static function ($stat, $field, $items_id) use ($itemtype, $date_start, $date_end, $param) {
-                return \Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $param, $items_id, $field);
-            };
+            $fn_get_stats = (static fn($stat, $field, $items_id) => Stat::constructEntryValues($itemtype, $stat, $date_start, $date_end, $param, $items_id, $field));
 
             $result = [];
             if (isset($item['itemtype'])) {
                 $result['item'] = [
                     'itemtype' => $param_item::getType(),
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, '')
+                    'name' => Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], false, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -951,64 +916,61 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics/Export', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Export assistance statistics by asset characteristics',
         parameters: [
-            [
-                'name' => 'date_start',
-                'description' => 'The start date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'date_end',
-                'description' => 'The end date of the statistics',
-                'location' => 'query',
-                'example' => '2024-01-30',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ],
-            [
-                'name' => 'field',
-                'description' => 'The field to group the statistics by',
-                'location' => 'query',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                ],
-                'required' => true,
-            ],
-            [
-                'name' => 'Accept',
-                'description' => 'The format to export the statistics to',
-                'location' => 'header',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
-                ],
-            ]
+            new Doc\Parameter(
+                name: 'date_start',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The start date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'date_end',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, format: Doc\Schema::FORMAT_STRING_DATE),
+                description: 'The end date of the statistics',
+                location: Doc\Parameter::LOCATION_QUERY,
+                example: '2024-01-30'
+            ),
+            new Doc\Parameter(
+                name: 'field',
+                schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+                description: 'The field to group the statistics by',
+                location: Doc\Parameter::LOCATION_QUERY,
+                required: true,
+            ),
+            new Doc\Parameter(
+                name: 'Accept',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING,
+                    enum: [
+                        'text/csv',
+                        'application/vnd.oasis.opendocument.spreadsheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/pdf',
+                    ]
+                ),
+                description: 'The format to export the statistics to',
+                location: Doc\Parameter::LOCATION_HEADER,
+            ),
         ]
     )]
     public function exportAssetCharacteristicsStats(Request $request): Response
     {
         $format = match ($request->getHeaderLine('Accept')) {
-            'text/csv' => \Search::CSV_OUTPUT,
-            'application/vnd.oasis.opendocument.spreadsheet' => \Search::ODS_OUTPUT,
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => \Search::XLSX_OUTPUT,
-            default => \Search::PDF_OUTPUT_LANDSCAPE,
+            'text/csv' => Search::CSV_OUTPUT,
+            'application/vnd.oasis.opendocument.spreadsheet' => Search::ODS_OUTPUT,
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => Search::XLSX_OUTPUT,
+            default => Search::PDF_OUTPUT_LANDSCAPE,
         };
         $ext = match ($format) {
-            \Search::CSV_OUTPUT => 'csv',
-            \Search::ODS_OUTPUT => 'ods',
-            \Search::XLSX_OUTPUT => 'xlsx',
+            Search::CSV_OUTPUT => 'csv',
+            Search::ODS_OUTPUT => 'ods',
+            Search::XLSX_OUTPUT => 'xlsx',
             default => 'pdf',
         };
 
@@ -1016,28 +978,28 @@ class ReportController extends AbstractController
         $start = $request->hasParameter('date_start') ? $request->getParameter('date_start') : null;
         $end = $request->hasParameter('date_end') ? $request->getParameter('date_end') : null;
         $field = $request->getParameter('field');
-        $value = \Stat::getItems(
+        $value = Stat::getItems(
             $itemtype,
             $start,
             $end,
             $field
         );
         if (empty($start) && empty($end)) {
-            $start = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+            $start = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
             $end = date("Y-m-d");
         }
 
         ob_start();
         $_GET['display_type'] = $format;
         $_GET['export_all'] = 1;
-        \Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
+        Stat::showTable($itemtype, $field, $start, $end, 0, $value, 0);
         $export = ob_get_clean();
         $filename = 'assistance_asset_characteristics_stats_' . date('Y-m-d_H-i-s') . '.' . $ext;
         return new Response(200, [
             'Content-Type' => match ($format) {
-                \Search::CSV_OUTPUT => 'text/csv',
-                \Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
-                \Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                Search::CSV_OUTPUT => 'text/csv',
+                Search::ODS_OUTPUT => 'application/vnd.oasis.opendocument.spreadsheet',
+                Search::XLSX_OUTPUT => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 default => 'application/pdf',
             },
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',

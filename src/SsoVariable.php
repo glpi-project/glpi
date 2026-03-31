@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,10 +59,6 @@ class SsoVariable extends CommonDropdown
         return static::canUpdate();
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         return static::canUpdate();
@@ -75,7 +71,7 @@ class SsoVariable extends CommonDropdown
         parent::cleanRelationData();
 
         if ($this->isUsedInAuth()) {
-            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+            $newval = ($this->input['_replace_by'] ?? 0);
 
             Config::setConfigurationValues(
                 'core',
@@ -101,7 +97,7 @@ class SsoVariable extends CommonDropdown
     /**
      * Check if variable is used in auth process.
      *
-     * @return boolean
+     * @return bool
      */
     private function isUsedInAuth()
     {

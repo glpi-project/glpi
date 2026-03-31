@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@
 /// @since 0.83
 class Group_Reminder extends CommonDBRelation
 {
-   // From CommonDBRelation
-    public static $itemtype_1          = 'Reminder';
+    // From CommonDBRelation
+    public static $itemtype_1 = Reminder::class;
     public static $items_id_1          = 'reminders_id';
-    public static $itemtype_2          = 'Group';
+    public static $itemtype_2 = Group::class;
     public static $items_id_2          = 'groups_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
@@ -50,21 +50,20 @@ class Group_Reminder extends CommonDBRelation
     /**
      * Get groups for a reminder
      *
-     * @param integer $reminders_id ID of the reminder
+     * @param int $reminders_id ID of the reminder
      *
      * @return array of groups linked to a reminder
      **/
     public static function getGroups($reminders_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $groups = [];
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'reminders_id' => $reminders_id
-            ]
+                'reminders_id' => $reminders_id,
+            ],
         ]);
 
         foreach ($iterator as $data) {

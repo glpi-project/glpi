@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,18 +44,19 @@ use Glpi\Team\Team;
  **/
 class ProjectTaskTeam extends CommonDBRelation
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                  = true;
     public $no_form_page               = true;
 
-   // From CommonDBRelation
-    public static $itemtype_1          = 'ProjectTask';
+    // From CommonDBRelation
+    public static $itemtype_1 = ProjectTask::class;
     public static $items_id_1          = 'projecttasks_id';
 
     public static $itemtype_2          = 'itemtype';
     public static $items_id_2          = 'items_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
+    /** @var class-string<CommonDBTM>[] */
     public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
@@ -73,6 +74,10 @@ class ProjectTaskTeam extends CommonDBRelation
         return _n('Task team', 'Task teams', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-users';
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -115,12 +120,12 @@ class ProjectTaskTeam extends CommonDBRelation
     public function post_addItem()
     {
         if (!isset($this->input['_disablenotif'])) {
-           // Read again to be sure that the data is up to date
+            // Read again to be sure that the data is up to date
             $this->getFromDB($this->fields['id']);
-           // Get linked task
+            // Get linked task
             $task = new ProjectTask();
             $task->getFromDB($this->fields['projecttasks_id']);
-           // Raise update event on task
+            // Raise update event on task
             NotificationEvent::raiseEvent("update", $task);
         }
     }
@@ -129,17 +134,16 @@ class ProjectTaskTeam extends CommonDBRelation
     /**
      * Get team for a project task
      *
-     * @param $tasks_id
+     * @param int $tasks_id
      * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
-     * @return array
+     * @return array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>>
      **/
     public static function getTeamFor($tasks_id, bool $expand = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $team = [];
-       // Define empty types
+        // Define empty types
         foreach (static::$available_types as $type) {
             if (!isset($team[$type])) {
                 $team[$type] = [];
@@ -148,7 +152,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         $criteria = [
             'FROM'   => self::getTable(),
-            'WHERE'  => ['projecttasks_id' => $tasks_id]
+            'WHERE'  => ['projecttasks_id' => $tasks_id],
         ];
         $iterator = $DB->request($criteria);
 
@@ -158,7 +162,7 @@ class ProjectTaskTeam extends CommonDBRelation
         }
 
         if ($expand) {
-           // This call is purposefully going to ProjectTeam because the code would be the same for both it and this (ProjectTaskTeam)
+            // This call is purposefully going to ProjectTeam because the code would be the same for both it and this (ProjectTaskTeam)
             $team = ProjectTeam::expandTeamData($team);
         }
 
@@ -167,7 +171,6 @@ class ProjectTaskTeam extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($input['itemtype'])) {
@@ -211,22 +214,22 @@ class ProjectTaskTeam extends CommonDBRelation
                 $group_iterator = $DB->request([
                     'SELECT' => 'users_id',
                     'FROM'   => Group_User::getTable(),
-                    'WHERE'  => ['groups_id' => $input['items_id']]
+                    'WHERE'  => ['groups_id' => $input['items_id']],
                 ]);
                 foreach ($group_iterator as $row) {
-                     Planning::checkAlreadyPlanned(
-                         $row['users_id'],
-                         $task->fields['plan_start_date'],
-                         $task->fields['plan_end_date']
-                     );
+                    Planning::checkAlreadyPlanned(
+                        $row['users_id'],
+                        $task->fields['plan_start_date'],
+                        $task->fields['plan_end_date']
+                    );
                 }
                 break;
             case Supplier::getType():
             case Contact::getType():
-               //only Users can be checked for planning conflicts
+                //only Users can be checked for planning conflicts
                 break;
             default:
-                throw new \RuntimeException($input['itemtype'] . " is not (yet?) handled.");
+                throw new RuntimeException($input['itemtype'] . " is not (yet?) handled.");
         }
 
         return $input;

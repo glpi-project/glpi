@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,13 +37,23 @@ namespace Glpi\Form\Export\Specification;
 
 final class QuestionContentSpecification implements ContentSpecificationInterface
 {
+    public int $id;
+    public string $uuid;
     public string $name;
     public string $type;
     public bool $is_mandatory;
     public int $vertical_rank;
-    public ?int $horizontal_rank;
-    public ?string $description;
-    public ?string $default_value;
-    public ?string $extra_data;
-    public int $section_rank;
+    public ?int $horizontal_rank = null;
+    public ?string $description = null;
+    public mixed $default_value;
+    public ?array $extra_data = null;
+    public int $section_id;
+    public string $visibility_strategy;
+    public string $validation_strategy;
+
+    /** @var ConditionDataSpecification[] $conditions */
+    public array $conditions;
+    /** @var ConditionDataSpecification[] $validation_conditions */
+    public array $validation_conditions;
+
 }

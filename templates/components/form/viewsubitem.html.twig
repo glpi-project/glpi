@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -30,10 +30,13 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set rand = rand|default(random()) %}
+{% set rand = rand|default(random())|safe_dom_id %}
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
+{% set ajax_form_submit = ajax_form_submit|default(false) %}
+{% set reload_tab = reload_tab|default(false) %}
 {% set as_modal = as_modal|default(false) %}
 {% set add_new_label = add_new_label|default(__('Add')) %}
+{% set add_new_inline = add_new_inline|default(false) %}
 
 {% if as_modal %}
 <div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
@@ -55,29 +58,31 @@
 
 <script>
     function viewAddEditSubItem{{ rand }}(id) {
-        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
-        modal_el[0].addEventListener('shown.bs.modal', (event) => {
-            event.target.setAttribute('data-cy-ready', 'true');
-        });
-        modal_el[0].addEventListener('hidden.bs.modal', (event) => {
-            event.target.removeAttribute('data-cy-ready');
-        });
+        const modal_el = $('#{{ (subitem_container_id ~ '_modal')|e('css')|e('js') }}');
+        if (modal_el.length) {
+            modal_el[0].addEventListener('shown.bs.modal', (event) => {
+                event.target.setAttribute('data-cy-ready', 'true');
+            });
+            modal_el[0].addEventListener('hidden.bs.modal', (event) => {
+                event.target.removeAttribute('data-cy-ready');
+            });
+        }
         $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
             type: "{{ type|e('js') }}",
             parenttype: "{{ parenttype|e('js') }}",
-        {{ items_id }}: {{ id }},
-        id: id
-    }, () => {
+            '{{ items_id|e('js') }}': {{ id|json_encode|raw }},
+            id: id
+        }, () => {
             if (modal_el.length) {
                 modal_el.modal('show');
             }
         });
     }
     $(() => {
-        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+        const modal_el = $('#{{ (subitem_container_id ~ '_modal')|e('css')|e('js') }}');
 
         {% if datatable_id is defined %}
-            $('#{{ datatable_id }}').on('click', 'tbody tr', (e) => {
+            $('#{{ datatable_id|e('css')|e('js') }}').on('click', 'tbody tr', (e) => {
                 if ($(e.target).closest('td').find('.massive_action_checkbox').length > 0) {
                     return;
                 }
@@ -91,7 +96,7 @@
         $('#addsubitem{{ rand }}').on('click', (e) => {
             viewAddEditSubItem{{ rand }}(-1);
         });
-        const subitem_container = $('#{{ subitem_container_id }}');
+        const subitem_container = $('#{{ subitem_container_id|e('css')|e('js') }}');
         subitem_container.on('submit', 'form', (e) => {
             {% if ajax_form_submit %}
                 e.preventDefault();
@@ -111,6 +116,9 @@
                         submitter: submit_btn,
                     });
                     on_finish();
+                    {% if reload_tab %}
+                        window.reloadTab();
+                    {% endif %}
                 };
                 const on_error = () => {
                     $(e.target).trigger('glpi:submit:error', {
@@ -124,13 +132,10 @@
     });
 </script>
 {% if cancreate %}
-    {% if not add_new_inline %}
-        <div class="text-center mt-1 mb-3">
-    {% endif %}
-        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }}">
-            {{ add_new_label }}
-        </button>
-    {% if not add_new_inline %}
-        </div>
-    {% endif %}
+    {% include 'components/tab/addlink_block.html.twig' with {
+        add_link: 'javascript:return false;',
+        button_label: add_new_label,
+        button_id: 'addsubitem' ~ rand,
+        button_class: 'btn ' ~ add_new_btn_class|default('btn-primary') ~ ' ms-1'
+    } %}
 {% endif %}

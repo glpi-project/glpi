@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 /**
  * @since 0.84
@@ -45,7 +48,12 @@ Session::checkCentralAccess();
 $group_user = new Group_User();
 
 if (isset($_POST["add"])) {
-    $group_user->check(-1, CREATE, $_POST);
+    try {
+        $group_user->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
+        Html::back();
+    }
+
     if ($group_user->add($_POST)) {
         Event::log(
             $_POST["groups_id"],
@@ -56,6 +64,7 @@ if (isset($_POST["add"])) {
             sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"])
         );
     }
+
     Html::back();
 }
 

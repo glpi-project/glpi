@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\ContentTemplates;
 
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface;
 use Glpi\Toolbox\MarkdownBuilder;
 
 /**
@@ -82,7 +83,7 @@ class TemplateDocumentation
     {
         $content = "";
 
-       // Build header
+        // Build header
         $header = new MarkdownBuilder();
         $header->addH1(sprintf(__("Available variables (%s)"), $this->context));
         $content .= $header->getMarkdown();
@@ -101,25 +102,27 @@ class TemplateDocumentation
      * @param string $title              Section's title
      * @param array $parameters          Parameters to be displayed in this section
      * @param string|null $fields_prefix Prefix to happen to the parameters fields name
+     *
+     * @return void
      */
     public function addSection(
         string $title,
         array $parameters,
         ?string $fields_prefix = null
     ) {
-       // Check if this section is already defined, needed as some parameters
-       // might have the same references
+        // Check if this section is already defined, needed as some parameters
+        // might have the same references
         if (isset($this->sections[$title])) {
             return;
         }
 
-       // Keep track of this section in the summary
+        // Keep track of this section in the summary
         $this->summary[] = $title;
 
         $new_section = new MarkdownBuilder();
         $new_section->addH2($title);
 
-       // Set table header
+        // Set table header
         $new_section->addTableHeader([
             __("Variable"),
             __("Label"),
@@ -127,12 +130,12 @@ class TemplateDocumentation
             __("References"),
         ]);
 
-       // Keep track of parameters needing aditionnal references
+        // Keep track of parameters needing aditionnal references
         $references = [];
 
-       // Add a row for each parameters
+        // Add a row for each parameters
         foreach ($parameters as $parameter) {
-            /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
+            /** @var ParameterTypeInterface $parameter */
             $row = [
                 $parameter->getDocumentationField(),
                 $parameter->getDocumentationLabel(),
@@ -150,7 +153,7 @@ class TemplateDocumentation
 
         $this->sections[$title] = $new_section;
 
-       // Add sections for each references
+        // Add sections for each references
         foreach ($references as $reference) {
             $this->addSection(
                 $reference->getObjectLabel(),

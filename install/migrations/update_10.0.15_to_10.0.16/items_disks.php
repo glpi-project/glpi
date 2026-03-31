@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,9 +33,8 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // same as update_10.0.14_to_10.0.15/items_disks.php
 // see #16992
 $migration->changeField('glpi_items_disks', 'totalsize', 'totalsize', 'bigint NOT NULL DEFAULT "0"');

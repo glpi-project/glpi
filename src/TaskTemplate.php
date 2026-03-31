@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Glpi\Features\Clonable;
  **/
 class TaskTemplate extends AbstractITILChildTemplate
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM
@@ -49,7 +50,12 @@ class TaskTemplate extends AbstractITILChildTemplate
 
     public static $rightname          = 'tasktemplate';
 
-
+    public function post_getFromDB()
+    {
+        if (isset($this->fields['use_current_user']) && $this->fields['use_current_user']) {
+            $this->fields['users_id_tech'] = -1;
+        }
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -71,33 +77,33 @@ class TaskTemplate extends AbstractITILChildTemplate
             ['name'  => 'taskcategories_id',
                 'label' => TaskCategory::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ],
             ['name'  => 'state',
                 'label' => __('Status'),
-                'type'  => 'state'
+                'type'  => 'state',
             ],
             ['name'  => 'is_private',
                 'label' => __('Private'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'actiontime',
                 'label' => __('Duration'),
-                'type'  => 'actiontime'
+                'type'  => 'actiontime',
             ],
             ['name'  => 'users_id_tech',
                 'label' => __('By'),
-                'type'  => 'users_id_tech'
+                'type'  => 'users_id_tech',
             ],
             ['name'  => 'groups_id_tech',
                 'label' => Group::getTypeName(1),
-                'type'  => 'groups_id_tech'
+                'type'  => 'groups_id_tech',
             ], [
                 'name'  => 'pendingreasons_id',
                 'label' => PendingReason::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
-            ]
+                'list'  => true,
+            ],
         ];
     }
 
@@ -112,7 +118,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -120,7 +126,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'name'               => TaskCategory::getTypeName(1),
             'field'              => 'name',
             'table'              => getTableForItemType('TaskCategory'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -128,17 +134,20 @@ class TaskTemplate extends AbstractITILChildTemplate
             'table'              => $this->getTable(),
             'field'              => 'is_private',
             'name'               => __('Private'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => 'glpi_users',
-            'field'              => 'name',
-            'linkfield'          => 'users_id_tech',
+            'table'              => $this->getTable(),
+            'field'              => 'users_id_tech',
             'name'               => __('By'),
-            'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'searchtype'         => [
+                '0'                  => 'equals',
+                '1'                  => 'notequals',
+            ],
+            'datatype'           => 'specific',
+            'additionalfields'   => ['use_current_user'],
         ];
 
         $tab[] = [
@@ -148,7 +157,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'linkfield'          => 'groups_id_tech',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_task' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -157,7 +166,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'actiontime',
             'name'               => __('Total duration'),
             'datatype'           => 'timestamp',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -166,7 +175,15 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'state',
             'name'               => __('Status'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
+        ];
+
+        $tab[] = [
+            'id'                 => '11',
+            'name'               => PendingReason::getTypeName(1),
+            'field'              => 'name',
+            'table'              => getTableForItemType('PendingReason'),
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -181,7 +198,13 @@ class TaskTemplate extends AbstractITILChildTemplate
 
         switch ($field) {
             case 'state':
-                return Planning::getState($values[$field]);
+                return htmlescape(Planning::getState($values[$field]));
+            case 'users_id_tech':
+                if (isset($values['use_current_user']) && $values['use_current_user'] == 1) {
+                    return __s('Current logged-in user');
+                }
+
+                return getUserLink($values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -198,6 +221,21 @@ class TaskTemplate extends AbstractITILChildTemplate
         switch ($field) {
             case 'state':
                 return Planning::dropdownState($name, $values[$field], false);
+            case 'users_id_tech':
+                return User::dropdown([
+                    'name'   => $name,
+                    'aria_label' => __('By'),
+                    'right'  => 'own_ticket',
+                    'value'  => $values[$field],
+                    'width'  => '100%',
+                    'display' => false,
+                    'toadd'  => [
+                        [
+                            'id'   => -1,
+                            'text' => __('Current logged-in user'),
+                        ],
+                    ],
+                ]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
@@ -214,10 +252,17 @@ class TaskTemplate extends AbstractITILChildTemplate
             case 'users_id_tech':
                 User::dropdown([
                     'name'   => "users_id_tech",
+                    'aria_label' => __('By'),
                     'right'  => "own_ticket",
                     'value'  => $this->fields["users_id_tech"],
                     'entity' => $this->fields["entities_id"],
                     'width'  => '100%',
+                    'toadd'  => [
+                        [
+                            'id'   => -1,
+                            'text' => __('Current logged-in user'),
+                        ],
+                    ],
                 ]);
                 break;
             case 'groups_id_tech':
@@ -250,13 +295,107 @@ class TaskTemplate extends AbstractITILChildTemplate
         }
     }
 
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        $input = $this->prepareInput($input);
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        $input = $this->prepareInput($input);
+
+        return $input;
+    }
+
+    private function prepareInput(array|false $input): array|false
+    {
+        if ($input === false) {
+            return false;
+        }
+
+        if (isset($input['users_id_tech']) && (int) $input['users_id_tech'] == -1) {
+            $input['use_current_user'] = 1;
+            $input['users_id_tech'] = 0;
+        } elseif (isset($input['users_id_tech'])) {
+            $input['use_current_user'] = 0;
+        }
+
+        return $input;
+    }
+
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 
     public function getCloneRelations(): array
     {
         return [];
+    }
+
+    /**
+     * @param string $link
+     * @param int $nott
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $ID
+     * @param string $searchtype
+     * @param int|string $val
+     *
+     * @return false|string
+     */
+    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val)
+    {
+        if ($itemtype !== self::class) {
+            return false;
+        }
+
+        $searchopt = Search::getOptions($itemtype);
+        if (!isset($searchopt[$ID]['field'])) {
+            return false;
+        }
+
+        $field = $searchopt[$ID]['field'];
+        $table = self::getTable();
+
+        if ($field === 'users_id_tech') {
+            $positive_condition = ($nott == 0 && $searchtype == 'equals') || ($nott == 1 && $searchtype == 'notequals') || ($nott == 0 && $searchtype == 'empty');
+            $table_use_current_user = "`$table`.`use_current_user`";
+            $table_users_id_tech = "`$table`.`users_id_tech`";
+            $int_val = (int) $val;
+
+            if ($val == -1) {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 1)";
+                } else {
+                    return " $link ($table_use_current_user = 0)";
+                }
+            } elseif ($val == 0) {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
+                } else {
+                    return " $link ($table_use_current_user = 1 OR $table_users_id_tech != 0)";
+                }
+            } elseif ($val == 'null' && $searchtype == 'empty') {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
+                } else {
+                    return " $link ($table_use_current_user = 1 OR $table_users_id_tech != 0)";
+                }
+            } else {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 0 AND $table_users_id_tech = $int_val)";
+                } else {
+                    return " $link ($table_use_current_user = 1 OR $table_users_id_tech != $int_val)";
+                }
+            }
+        }
+
+        return false;
     }
 }

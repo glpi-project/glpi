@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,11 +43,17 @@
  **/
 class SLA extends LevelAgreement
 {
+    /**
+     * @var string
+     */
     protected static $prefix            = 'sla';
+    /**
+     * @var string
+     */
     protected static $prefixticket      = '';
-    protected static $levelclass        = 'SlaLevel';
-    protected static $levelticketclass  = 'SlaLevel_Ticket';
-    protected static $forward_entity_to = ['SlaLevel'];
+    protected static $levelclass        = SlaLevel::class;
+    protected static $levelticketclass  = SlaLevel_Ticket::class;
+    protected static $forward_entity_to = [SlaLevel::class];
 
     public static function getTypeName($nb = 0)
     {
@@ -70,15 +76,13 @@ class SLA extends LevelAgreement
         return SLM::getIcon();
     }
 
-    public function showFormWarning()
-    {
-    }
+    public function showFormWarning() {}
 
     public function getAddConfirmation(): array
     {
         return [
             __("The assignment of a SLA to a ticket causes the recalculation of the date."),
-            __("Escalations defined in the SLA will be triggered under this new date.")
+            __("Escalations defined in the SLA will be triggered under this new date."),
         ];
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\ZonableModelPicture;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 class Stencil extends CommonDBChild implements ZonableModelPicture
 {
@@ -95,7 +98,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      */
     public static function getStencilFromID(int $id): ?Stencil
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -230,7 +232,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         // Remove zones with id > $nbZones
         $zones = array_filter(
             json_decode($this->fields['zones'] ?? '{}', true),
-            fn ($id) => $id <= $nbZones,
+            fn($id) => $id <= $nbZones,
             ARRAY_FILTER_USE_KEY
         );
 
@@ -279,9 +281,9 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             return '';
         }
 
-        $nb = count(json_decode($this->getStencilFromItem($item)->fields['zones'] ?? '{}', true));
+        $nb = count(json_decode(static::getStencilFromItem($item)->fields['zones'] ?? '{}', true));
 
-        return self::createTabEntry($this->getTypeName(), $nb, $item::getType());
+        return self::createTabEntry(static::getTypeName(), $nb, $item::getType());
     }
 
     public function displayStencil(): void
@@ -306,9 +308,8 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             $pictures[] = $item->getItemtypeOrModelPicture($picture_field)[0]['src'];
         }
 
-        $model_class   = $item->getModelClass();
         $model_fk      = $item->getModelForeignKeyField();
-        $model         = new $model_class();
+        $model         = $item->getModelClassInstance();
         $model->getFromDB($item->fields[$model_fk]);
         $model_stencil = self::getStencilFromItem($model);
 
@@ -337,7 +338,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         $pictures = [];
         foreach ($this->getPicturesFields() as $picture_field) {
             $picture = $item->getItemtypeOrModelPicture($picture_field);
-            if (!empty($picture) && isset($picture[0]['src'])) {
+            if ($picture !== [] && isset($picture[0]['src'])) {
                 $pictures[] = $picture[0]['src'];
             }
         }

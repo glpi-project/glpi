@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,10 +33,9 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
@@ -59,14 +57,14 @@ if ($DB->fieldExists('glpi_knowbaseitems', 'knowbaseitemcategories_id')) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'knowbaseitemcategories_id'],
         'FROM'   => 'glpi_knowbaseitems',
-        'WHERE'  => ['knowbaseitemcategories_id' => ['>', 0]]
+        'WHERE'  => ['knowbaseitemcategories_id' => ['>', 0]],
     ]);
     if (count($iterator)) {
-       //migrate existing data
+        //migrate existing data
         foreach ($iterator as $row) {
             $DB->insert("glpi_knowbaseitems_knowbaseitemcategories", [
                 'knowbaseitemcategories_id'   => $row['knowbaseitemcategories_id'],
-                'knowbaseitems_id'            => $row['id']
+                'knowbaseitems_id'            => $row['id'],
             ]);
         }
     }

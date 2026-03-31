@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,11 +36,15 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Config;
+use Glpi\Asset\CapacityConfig;
 use Impact;
 use ImpactItem;
 use ImpactRelation;
 use Override;
 use Toolbox;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 class HasImpactCapacity extends AbstractCapacity
 {
@@ -65,8 +69,8 @@ class HasImpactCapacity extends AbstractCapacity
         return countElementsInTable(ImpactRelation::getTable(), [
             'OR' => [
                 'itemtype_source' => $classname,
-                'itemtype_impacted' => $classname
-            ]
+                'itemtype_impacted' => $classname,
+            ],
         ]);
     }
 
@@ -104,9 +108,8 @@ class HasImpactCapacity extends AbstractCapacity
         return sprintf(__('%1$s impact relations involving %2$s assets'), $impact_count, $asset_count);
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI['impact_asset_types'][$classname] = Toolbox::getPictureUrl(
@@ -117,23 +120,22 @@ class HasImpactCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Impact::class, 2);
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
-        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
+        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED), true) ?? [];
         if (!in_array($classname, $enabled_types, true)) {
             $enabled_types[] = $classname;
             Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
         }
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         unset($CFG_GLPI['impact_asset_types'][$classname]);
 
-        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
+        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED), true) ?? [];
         if (in_array($classname, $enabled_types, true)) {
             $enabled_types = \array_values(\array_diff($enabled_types, [$classname]));
             Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
@@ -145,7 +147,7 @@ class HasImpactCapacity extends AbstractCapacity
                 'OR' => [
                     'itemtype_source' => $classname,
                     'itemtype_impacted' => $classname,
-                ]
+                ],
             ],
             force: true,
             history: false

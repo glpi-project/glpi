@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,18 +34,28 @@
  */
 
 if (Config::canUpdate()) {
-    $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
+    if (isset($_POST['mode']) && in_array($_POST['mode'], [
+        Session::NORMAL_MODE,
+        Session::DEBUG_MODE,
+    ])) {
+        // Mode was manually specified
+        $mode = $_POST['mode'];
+    } else {
+        // Toggle
+        $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
+    }
+
     $user = new User();
     $user->update(
         [
             'id'        => Session::getLoginUserID(),
-            'use_mode'  => $mode
+            'use_mode'  => $mode,
         ]
     );
     Session::addMessageAfterRedirect(
-        $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ?
-         __s('Debug mode has been enabled!') :
-         __s('Debug mode has been disabled!')
+        $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+         ? __s('Debug mode has been enabled!')
+         : __s('Debug mode has been disabled!')
     );
 }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,20 +35,21 @@
 namespace Glpi\Form;
 
 use CommonTreeDropdown;
+use DropdownTranslation;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\UI\IllustrationManager;
 use Override;
 
-final class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
+class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
 {
     public $can_be_translated = true;
 
     public static $rightname = 'form';
 
     /** @var ServiceCatalogItemInterface[] $children */
-    private array $children;
+    private array $children = [];
 
     #[Override]
     public static function getTypeName($nb = 0): string
@@ -59,7 +60,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public static function getIcon(): string
     {
-        return "ti ti-folder";
+        return "ti ti-tags";
     }
 
     #[Override]
@@ -76,10 +77,11 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     {
         $fields = parent::getAdditionalFields();
         $fields[] = [
-            'name'  => 'description',
-            'label' => __('Description'),
-            'type'  => 'richtext',
-            'list'  => false,
+            'name'        => 'description',
+            'label'       => __('Description'),
+            'type'        => 'tinymce',
+            'form_params' => ['enable_images' => false, 'full_width' => false],
+            'list'        => false,
         ];
         $fields[] = [
             'name'  => 'illustration',
@@ -92,21 +94,75 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     }
 
     #[Override]
+    public function rawSearchOptions(): array
+    {
+        $options = parent::rawSearchOptions();
+        $options[] = [
+            'id'                => '3',
+            'table'             => $this->getTable(),
+            'field'             => 'description',
+            'name'              => __('Description'),
+            'datatype'          => 'text',
+        ];
+
+        $options[] = [
+            'id'                => '4',
+            'table'             => $this->getTable(),
+            'field'             => 'illustration',
+            'name'              => __('Illustration'),
+            'massiveaction'      => false,
+            'nosearch'          => true,
+            'datatype'          => 'specific',
+        ];
+
+        return $options;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'illustration':
+                return (new IllustrationManager())->renderIcon($values[$field], 32);
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    #[Override]
     public function getServiceCatalogItemTitle(): string
     {
-        return $this->fields['name'];
+        return DropdownTranslation::getTranslatedValue(
+            $this->fields['id'],
+            self::class,
+            'name',
+            value: $this->fields['name'],
+        );
     }
 
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'];
+        return DropdownTranslation::getTranslatedValue(
+            $this->fields['id'],
+            self::class,
+            'description',
+            value: $this->fields['description'] ?? ''
+        );
     }
 
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
         return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
+    }
+
+    #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return false;
     }
 
     #[Override]
@@ -121,7 +177,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     ): ItemRequest {
         return new ItemRequest(
             access_parameters: $item_request->getFormAccessParameters(),
-            category: $this,
+            category_id: $this->getID(),
         );
     }
 

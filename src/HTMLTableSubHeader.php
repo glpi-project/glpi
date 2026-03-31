@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,9 +36,10 @@
 /**
  * @since 0.84
  **/
-class HTMLTableSubHeader extends HTMLTableHeader
+class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
-   // The headers of each column
+    // The headers of each column
+    /** @var HTMLTableSuperHeader The headers of each column */
     private $header;
     public $numberOfSubHeaders;
 
@@ -71,7 +72,8 @@ class HTMLTableSubHeader extends HTMLTableHeader
         $subheader_name = $this->getName();
     }
 
-    public function getCompositeName()
+    #[Override]
+    public function getCompositeName(): string
     {
         return $this->header->getCompositeName() . $this->getName();
     }
@@ -81,6 +83,9 @@ class HTMLTableSubHeader extends HTMLTableHeader
         return $this->header->getTable();
     }
 
+    /**
+     * @return HTMLTableSuperHeader
+     */
     public function getHeader()
     {
         return $this->header;
@@ -88,7 +93,9 @@ class HTMLTableSubHeader extends HTMLTableHeader
 
     /**
      * @param int $numberOfSubHeaders
-     **/
+     *
+     * @return void
+     */
     public function updateColSpan($numberOfSubHeaders)
     {
         $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);

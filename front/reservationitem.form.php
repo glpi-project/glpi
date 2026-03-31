@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkCentralAccess();
@@ -44,10 +46,6 @@ if (!isset($_GET["id"])) {
 
 $ri = new ReservationItem();
 if (isset($_POST["add"])) {
-    if (str_contains($_POST['itemtype'], '%5C')) {
-        //TODO Remove when ReservationItem::showActivationFormForItem rewritten in Twig. Param is urlencoded by Html::getSimpleForm currently.
-        $_POST['itemtype'] = urldecode($_POST['itemtype']);
-    }
     $ri->check(-1, CREATE, $_POST);
     if ($newID = $ri->add($_POST)) {
         Event::log(
@@ -64,7 +62,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $ri->check($_POST["id"], DELETE);
     $ri->delete($_POST);
 
@@ -77,9 +75,9 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $ri->check($_POST["id"], PURGE);
-    $ri->delete($_POST, 1);
+    $ri->delete($_POST, true);
 
     Event::log(
         $_POST['id'],
@@ -90,7 +88,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $ri->check($_POST["id"], UPDATE);
     $ri->update($_POST);
     Event::log(

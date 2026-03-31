@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -34,12 +34,13 @@
 
 <div class="col-12 col-sm-6 col-md-4 d-flex">
     <a
-        class="card mx-2 my-2 flex-grow-1 border-0 rounded-4"
+        class="card mx-2 my-2 flex-grow-1 border-0 rounded-4 hover-no-shadow hover-bg"
         {% if child is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
-            href="{{ path(child.getServiceCatalogLink()) }}"
+            href="{{ child.getServiceCatalogLink() }}"
         {% elseif child is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
             href="?{{ child.getChildrenUrlParameters() }}"
             data-children-url-parameters="{{ child.getChildrenUrlParameters() }}"
+            data-composite-item
         {% endif %}
     >
         <section
@@ -54,7 +55,7 @@
                 <div class="ms-4">
                     <h2
                         id="{{ unique_dom_id }}"
-                        class="card-title mb-2"
+                        class="card-title mb-2 text-break"
                     >
                         {{ child.getServiceCatalogItemTitle() }}
                     </h2>

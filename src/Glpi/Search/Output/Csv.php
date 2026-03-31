@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,6 @@
 
 namespace Glpi\Search\Output;
 
-use PhpOffice\PhpSpreadsheet\Writer\Ods\Mimetype;
-
 final class Csv extends Spreadsheet
 {
     public function __construct()
@@ -46,6 +44,7 @@ final class Csv extends Spreadsheet
         $this->writer
             ->setDelimiter($_SESSION["glpicsv_delimiter"])
             ->setEnclosure('"')
+            ->setUseBOM(true)
             ->setLineEnding("\r\n")
             ->setSheetIndex(0);
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,10 +35,7 @@
 namespace Glpi\Controller;
 
 use Glpi\Api\APIRest;
-use Glpi\Http\Firewall;
 use Glpi\Http\HeaderlessStreamedResponse;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -52,12 +49,11 @@ final class ApiRestController extends AbstractController
             'request_parameters' => '.*',
         ]
     )]
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
+        // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
         return new HeaderlessStreamedResponse(function () {
             $api = new APIRest();
             $api->call();

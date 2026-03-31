@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,10 +38,15 @@ namespace Glpi\Form\ServiceCatalog\Provider;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 
 /**
- * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface
+ * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface
+ * @extends ItemProviderInterface<T>
  */
 interface LeafProviderInterface extends ItemProviderInterface
 {
     /** @return T[] */
     public function getItems(ItemRequest $item_request): array;
+
+    public function getItemsLabel(): string;
+
+    public function getWeight(): int;
 }

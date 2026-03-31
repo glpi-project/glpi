@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Item_SoftwareLicense;
 use Item_SoftwareVersion;
 use Override;
@@ -81,7 +81,6 @@ class HasSoftwaresCapacity extends AbstractCapacity
 
     public function getCapacityUsageDescription(string $classname): string
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $assets_ids = [];
@@ -106,24 +105,24 @@ class HasSoftwaresCapacity extends AbstractCapacity
                     'ON' => [
                         $item_v_table   => 'softwareversions_id',
                         $versions_table => 'id',
-                    ]
+                    ],
                 ],
                 $software_table => [
                     'ON' => [
                         $versions_table => 'softwares_id',
                         $software_table => 'id',
-                    ]
+                    ],
                 ],
                 $asset_table => [
                     'ON' => [
                         $item_v_table   => 'items_id',
                         $asset_table    => 'id',
-                    ]
+                    ],
                 ],
             ],
             'WHERE'      => [
                 'itemtype' => $classname,
-            ]
+            ],
         ]);
         foreach ($versions_iterator as $version_data) {
             if (!in_array($version_data['softwares_id'], $softwares_ids, true)) {
@@ -146,24 +145,24 @@ class HasSoftwaresCapacity extends AbstractCapacity
                     'ON' => [
                         $item_l_table   => 'softwarelicenses_id',
                         $licences_table => 'id',
-                    ]
+                    ],
                 ],
                 $software_table => [
                     'ON' => [
                         $licences_table => 'softwares_id',
                         $software_table => 'id',
-                    ]
+                    ],
                 ],
                 $asset_table => [
                     'ON' => [
                         $item_l_table   => 'items_id',
                         $asset_table    => 'id',
-                    ]
+                    ],
                 ],
             ],
             'WHERE'  => [
                 'itemtype' => $classname,
-            ]
+            ],
         ]);
         foreach ($versions_iterator as $version_data) {
             if (!in_array($version_data['softwares_id'], $softwares_ids, true)) {
@@ -175,20 +174,20 @@ class HasSoftwaresCapacity extends AbstractCapacity
         }
 
         return sprintf(
-            __('%1$s software(s) attached to %2$s assets'),
+            __('%1$s software attached to %2$s assets'),
             count($softwares_ids),
             count($assets_ids)
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('software_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Item_SoftwareVersion::class, 85);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from software types
         $this->unregisterFromTypeConfig('software_types', $classname);
@@ -197,7 +196,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
         $softwares_version = new Item_SoftwareVersion();
         $softwares_version->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false
@@ -206,7 +205,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
         $software_licenses = new Item_SoftwareLicense();
         $software_licenses->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

@@ -1,0 +1,105 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 11,
+            "uuid": "4aa1ea37-0e4a-4c8e-867b-94da824a3b22",
+            "name": "Form with checkbox question",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 29,
+                    "uuid": "a0c2841a-7dbd-48d7-8c12-d863e56c34c5",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 144,
+                    "uuid": "26b447a4-c477-4a33-ab18-0f0cd91fe01a",
+                    "name": "My question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeCheckbox",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": {
+                        "options": {
+                            "01fd9300-1fce-49ed-b5db-409e25bb813e": "Option 1",
+                            "e02c4f56-f17a-41f7-825f-279c40521681": "Option 2",
+                            "2c1754e6-7430-4abe-95a5-a6ee3c7a2af4": "Option 3",
+                            "4486e5bd-4055-4a5f-bff9-10434d720999": "Option 4"
+                        }
+                    },
+                    "section_id": 29,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 145,
+                    "uuid": "cc4c1774-1cc6-4139-a372-4aaa182621c2",
+                    "name": "Another question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 29,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 47,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

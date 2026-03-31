@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,12 +49,12 @@ class DeviceMotherboard extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'chipset',
                 'label' => __('Chipset'),
-                'type'  => 'text'
+                'type'  => 'text',
             ],
                 ['name'  => 'devicemotherboardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -76,7 +76,7 @@ class DeviceMotherboard extends CommonDevice
             'table'              => 'glpi_devicemotherboardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -98,7 +98,7 @@ class DeviceMotherboard extends CommonDevice
 
         switch ($itemtype) {
             case 'Computer':
-                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 break;
         }
     }
@@ -129,10 +129,15 @@ class DeviceMotherboard extends CommonDevice
         return [
             'designation'      => 'equal',
             'manufacturers_id' => 'equal',
-            'chipset'          => 'equal'
+            'chipset'          => 'equal',
         ];
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
@@ -148,9 +153,33 @@ class DeviceMotherboard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicemotherboards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '1328',
+            'table'              => 'glpi_items_devicemotherboards',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1329',
+            'table'              => 'glpi_items_devicemotherboards',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;

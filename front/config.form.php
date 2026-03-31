@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Cache\CacheManager;
 
 Session::checkRight("config", READ);
@@ -52,6 +54,11 @@ if (!empty($_POST["update_auth"])) {
 }
 if (!empty($_POST["update"])) {
     $config->update($_POST);
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+}
+if (!empty($_POST['reset_registration_key'])) {
+    $config->checkGlobal(UPDATE);
+    Config::setConfigurationValues('core', ['glpinetwork_registration_key' => '']);
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 if (!empty($_POST['reset_opcache'])) {
@@ -79,5 +86,5 @@ if (!empty($_POST['reset_translation_cache'])) {
 }
 
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
-    'formoptions'  => "data-track-changes=true"
+    'formoptions'  => "data-track-changes=true",
 ]);

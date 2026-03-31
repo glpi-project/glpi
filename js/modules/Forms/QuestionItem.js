@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ export class GlpiFormQuestionTypeItem {
      *
      * @param {string} question_type The question type.
      */
-    constructor(question_type) {
+    constructor(question_type, empty_label) {
         this.#question_type = question_type;
 
         $(document).on('glpi-form-editor-question-type-changed', (event, question, type) => {
@@ -61,7 +61,7 @@ export class GlpiFormQuestionTypeItem {
                 return;
             }
 
-            const select = question.find('[data-glpi-form-editor-question-type-specific] select');
+            const select = question.find('[data-glpi-form-editor-question-type-specific] select[name="default_value"], [data-glpi-form-editor-question-type-specific] select[data-glpi-form-editor-original-name="default_value"]');
             const container = select.parent();
 
             // Add a flag to all children to mark them as to be removed
@@ -71,10 +71,16 @@ export class GlpiFormQuestionTypeItem {
             container.load(
                 `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
                 {
-                    'idtable'   : sub_type,
-                    'width'     : '100%',
-                    'name'      : select.data('glpi-form-editor-original-name') || select.attr('name'),
-                    'aria_label': select.attr('aria-label'),
+                    'idtable'            : sub_type,
+                    'width'              : '100%',
+                    'name'               : select.data('glpi-form-editor-original-name') || select.attr('name'),
+                    'aria_label'         : select.attr('aria-label'),
+                    'display_emptychoice': 0,
+                    'value'              : -1,
+                    'valuename'          : empty_label,
+                    'toadd'              : {
+                        '-1': empty_label
+                    },
                 },
                 () => container.find('[data-to-remove]').remove()
             );

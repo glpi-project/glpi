@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,26 @@
 
 namespace Glpi\Exception;
 
-class PasswordTooWeakException extends \Exception
+use Exception;
+
+class PasswordTooWeakException extends Exception
 {
+    /** @var array */
     private $messages = [];
 
+    /**
+     * @param string $message
+     *
+     * @return void
+     */
     public function addMessage($message)
     {
         $this->messages[] = $message;
     }
 
+    /**
+     * @return array
+     */
     public function getMessages()
     {
         return $this->messages;

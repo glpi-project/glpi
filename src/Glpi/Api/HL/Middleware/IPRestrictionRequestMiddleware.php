@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,46 +35,64 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
+use Glpi\Http\JSONResponse;
+use League\OAuth2\Server\Exception\OAuthServerException;
+
+use function Safe\inet_pton;
 
 class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        $client = Router::getInstance()->getCurrentClient();
-        if (!$client || isCommandLine()) {
+        if (!\array_key_exists('REMOTE_ADDR', $_SERVER)) {
+            // If `$_SERVER['REMOTE_ADDR']` is not set, it means that the request is made in CLI context (i.e. inside test suite).
             $next($input);
             return;
         }
 
-        /** @var \DBmysql $DB */
+        // Determine client_id from current route or request parameters
+        $client = Router::getInstance()->getCurrentClient();
+        if ($client !== null) {
+            $client_id = $client['client_id'];
+        } elseif ($input->request->hasParameter('client_id')) {
+            $client_id = $input->request->getParameter('client_id');
+        } else {
+            $client_id = null;
+        }
+
+        if ($client_id === null) {
+            $next($input);
+            return;
+        }
+
+        // Check if client is allowed for the remote IP
+        if (!$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'])) {
+            $input->response = OAuthServerException::accessDenied(
+                'Your IP address is not allowed to use this OAuth client.'
+            )->generateHttpResponse(new JSONResponse());
+            return;
+        }
+
+        $next($input);
+    }
+
+    private function isClientIPAllowed(string $client_id, string $ip): bool
+    {
         global $DB;
 
-        $request_ip = $_SERVER['REMOTE_ADDR'];
-
-        $allowed_ips = $DB->request([
+        $result = $DB->request([
             'SELECT' => ['allowed_ips'],
             'FROM'   => 'glpi_oauthclients',
-            'WHERE'  => [
-                'identifier' => $client['client_id']
-            ]
-        ])->current()['allowed_ips'];
+            'WHERE'  => ['identifier' => $client_id],
+        ])->current();
+        $allowed_ips = $result['allowed_ips'] ?? [];
 
         if (empty($allowed_ips)) {
-            // No IP restriction
-            $next($input);
-            return;
+            return true;
         }
 
-        if (!$this->isIPAllowed($request_ip, $allowed_ips)) {
-            // IP doesn't match the allowed IPs
-            $input->response = AbstractController::getAccessDeniedErrorResponse();
-            return;
-        }
-
-        // IP was explicitly allowed
-        $next($input);
+        return $this->isIPAllowed($ip, $allowed_ips);
     }
 
     private function isIPAllowed(string $ip, string $allowed_ips): bool
@@ -85,7 +103,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
                 if ($this->isCidrMatch($ip, $allowed_ip)) {
                     return true;
                 }
-            } else if ($ip === $allowed_ip) {
+            } elseif ($ip === $allowed_ip) {
                 return true;
             }
         }
@@ -105,7 +123,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         [$subnet, $mask] = explode('/', $range);
         $subnet = inet_pton($subnet);
         $ip = inet_pton($ip);
-        $mask = $mask === '' ? $max_mask : (int)$mask;
+        $mask = $mask === '' ? $max_mask : (int) $mask;
         $subnet = substr($subnet, 0, $mask / 8);
         $ip = substr($ip, 0, $mask / 8);
         return $subnet === $ip;

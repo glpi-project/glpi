@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Chang Template class
  *
- * since version 9.5.0
+ * @since 9.5.0
  **/
 class ChangeTemplate extends ITILTemplate
 {
-    use Glpi\Features\Clonable;
+    /** @use Clonable<static> */
+    use Clonable;
+
+    #[Override]
+    public static function getPredefinedFields(): ITILTemplatePredefinedField
+    {
+        return new ChangeTemplatePredefinedField();
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -62,6 +71,17 @@ class ChangeTemplate extends ITILTemplate
         ];
     }
 
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                ChangeTemplateHiddenField::class,
+                ChangeTemplateMandatoryField::class,
+                ChangeTemplatePredefinedField::class,
+            ]
+        );
+    }
+
     public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $change = new Change();
@@ -71,7 +91,7 @@ class ChangeTemplate extends ITILTemplate
             $change->getSearchOptionIDByField('field', 'controlistcontent', 'glpi_changes')  => 'controlistcontent',
             $change->getSearchOptionIDByField('field', 'rolloutplancontent', 'glpi_changes') => 'rolloutplancontent',
             $change->getSearchOptionIDByField('field', 'backoutplancontent', 'glpi_changes') => 'backoutplancontent',
-            $change->getSearchOptionIDByField('field', 'checklistcontent', 'glpi_changes')   => 'checklistcontent'
+            $change->getSearchOptionIDByField('field', 'checklistcontent', 'glpi_changes')   => 'checklistcontent',
         ];
     }
 }

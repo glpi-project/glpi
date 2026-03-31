@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +36,9 @@ namespace Glpi\Log;
 
 use Monolog\Level;
 use Monolog\LogRecord;
+use Override;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Throwable;
 
 class ErrorLogHandler extends AbstractLogHandler
 {
@@ -47,7 +49,7 @@ class ErrorLogHandler extends AbstractLogHandler
         $this->setFormatter(new ErrorLogLineFormatter());
     }
 
-    #[\Override()]
+    #[Override()]
     public function isHandling(LogRecord $record): bool
     {
         // Do not log "Notified event {...}" messages.
@@ -61,9 +63,9 @@ class ErrorLogHandler extends AbstractLogHandler
         }
 
         // Do not log access errors.
-        // @see \Glpi\Log\AccessLogHandler::canHandle()
+        // 4xx errors logging is done by the `\Glpi\Log\AccessLogHandler` handler.
         if (isset($record->context['exception'])) {
-            /** @var \Throwable $exception */
+            /** @var Throwable $exception */
             $exception = $record->context['exception'];
             if (
                 $exception instanceof HttpExceptionInterface

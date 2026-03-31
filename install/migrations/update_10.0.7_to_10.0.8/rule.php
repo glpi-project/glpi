@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,16 +33,14 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 //move criteria 'os_name' to 'name' for 'RuleDictionnaryOperatingSystem'
 //move criteria 'os_version' to 'name' for 'RuleDictionnaryOperatingSystemVersion'
 //move criteria 'os_edition' to 'name' for 'RuleDictionnaryOperatingSystemEdition'
 //move criteria 'arch_name' to 'name' for 'RuleDictionnaryOperatingSystemArchitecture'
 //move criteria 'servicepack_name' to 'name' for 'RuleDictionnaryOperatingSystemServicePack'
-
 $sub_types = [
     'servicepack_name' => 'RuleDictionnaryOperatingSystemServicePack',
     'os_edition' => 'RuleDictionnaryOperatingSystemEdition',
@@ -67,7 +64,7 @@ foreach ($sub_types as $criteria => $sub_type) {
                             'glpi_rules' => 'id',
                             [
                                 'AND' => ['glpi_rules.sub_type' => $sub_type],
-                            ]
+                            ],
                         ],
                     ],
                 ],

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Exception;
 use Glpi\Form\Question;
 use Group;
 use Override;
@@ -81,7 +82,7 @@ final class QuestionTypeObserver extends AbstractQuestionTypeActors
             if ($actor['itemtype'] === Group::class) {
                 // Check if the group can be assigned
                 if (Group::getById($actor['items_id'])->fields['is_watcher'] !== 1) {
-                    throw new \Exception('Invalid actor: must be an observer');
+                    throw new Exception('Invalid actor: must be an observer');
                 }
             }
         }

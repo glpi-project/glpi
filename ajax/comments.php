@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -63,7 +57,7 @@ if (
             if ($_POST['value'] == 0) {
                 $link = $CFG_GLPI['root_doc'] . "/front/user.php";
             } else {
-                $user = new \User();
+                $user = new User();
                 if (is_array($_POST["value"])) {
                     foreach ($_POST["value"] as $users_id) {
                         if ($user->getFromDB($users_id) && $user->canView()) {
@@ -85,8 +79,8 @@ if (
                 echo Html::scriptBlock(
                     sprintf(
                         '$("#%s").attr("href", "%s");',
-                        htmlescape($_POST['withlink']),
-                        htmlescape($link)
+                        jsescape($_POST['withlink']),
+                        jsescape($link)
                     )
                 );
             }
@@ -94,7 +88,7 @@ if (
 
         case Group::getType():
             if ($_POST['value'] != 0) {
-                $group = new \Group();
+                $group = new Group();
                 if (!is_array($_POST["value"]) && $group->getFromDB($_POST['value']) && $group->canView()) {
                     $group_params = [
                         'id' => $group->getID(),
@@ -108,12 +102,42 @@ if (
             }
             break;
 
+        case Supplier::getType():
+            $tmpname = [
+                'comment' => "",
+            ];
+            if ($_POST['value'] != 0) {
+                $supplier = new Supplier();
+                if (!is_array($_POST["value"]) && $supplier->getFromDB($_POST['value']) && $supplier->canView()) {
+                    $supplier_params = [
+                        'id' => $supplier->getID(),
+                        'supplier_name' => $supplier->fields['name'],
+                        'comment' => $supplier->fields['comment'],
+                        'address' => $supplier->fields['address'],
+                        'postcode' => $supplier->fields['postcode'],
+                        'town' => $supplier->fields['town'],
+                        'email' => $supplier->fields['email'],
+                        'fax' => $supplier->fields['fax'],
+                        'registration_number' => $supplier->fields['registration_number'],
+                        'phonenumber' => $supplier->fields['phonenumber'],
+                    ];
+                    $comment = TemplateRenderer::getInstance()->render('components/supplier/info_card.html.twig', [
+                        'supplier' => $supplier_params,
+                    ]);
+                    $tmpname = [
+                        'comment' => $comment,
+                    ];
+                }
+            }
+            echo($tmpname["comment"]);
+            break;
+
         default:
             if ($_POST["value"] > 0) {
                 if (
                     !Session::validateIDOR([
                         'itemtype'    => $_POST['itemtype'],
-                        '_idor_token' => $_POST['_idor_token'] ?? ""
+                        '_idor_token' => $_POST['_idor_token'] ?? "",
                     ])
                 ) {
                     return;
@@ -132,8 +156,8 @@ if (
                     echo Html::scriptBlock(
                         sprintf(
                             '$("#%s").attr("href", "%s");',
-                            htmlescape($_POST['withlink']),
-                            htmlescape($_POST['itemtype']::getFormURLWithID($_POST["value"]))
+                            jsescape($_POST['withlink']),
+                            jsescape($_POST['itemtype']::getFormURLWithID($_POST["value"]))
                         )
                     );
                 }
@@ -148,9 +172,9 @@ if (
                     ) {
                         echo Html::scriptBlock(
                             sprintf(
-                                '$("#%s").html("href", "&nbsp;<a class=\'fas fa-crosshairs\' href=\'%s\'></a>");',
-                                htmlescape($_POST['with_dc_position']),
-                                htmlescape($rack->getLinkURL())
+                                '$("#%s").html("href", "&nbsp;<a class=\'ti ti-crosshairs\' href=\'%s\'></a>");',
+                                jsescape($_POST['with_dc_position']),
+                                jsescape(htmlescape($rack->getLinkURL()))
                             )
                         );
                     } else {
@@ -158,7 +182,7 @@ if (
                         echo Html::scriptBlock(
                             sprintf(
                                 '$("#%s").empty();',
-                                htmlescape($_POST['with_dc_position'])
+                                jsescape($_POST['with_dc_position'])
                             )
                         );
                     }

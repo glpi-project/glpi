@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use function Safe\preg_grep;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -49,12 +49,11 @@ if (count($actor_keys) !== 1) {
 }
 
 $actor_key = reset($actor_keys);
-$actor_id  = (int)$_REQUEST[$actor_key];
+$actor_id  = (int) $_REQUEST[$actor_key];
 
 // check if user is allowed to see the item (only if not current connected user)
 if ($actor_id != Session::getLoginUserID()) {
-    $itemtype = getItemtypeForForeignKeyField($actor_key);
-    $item     = new $itemtype();
+    $item = getItemForForeignKeyField($actor_key);
     if (!$item->getFromDB($actor_id) || !$item->canView()) {
         // Unable to get item or no rights to see the item
         return;
@@ -116,13 +115,20 @@ $options2 = [
 
 $ticket = new Ticket();
 
-$url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
+$url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&');
 $nb  = (int) $ticket->{$method}($actor_id);
 
 if ($only_number) {
-    echo "<a href='$url'>" . $nb . "</a>";
+    echo sprintf(
+        '<a href="%s">%d</a>',
+        htmlescape($url),
+        $nb
+    );
 } else {
-    echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-    printf(__s('%1$s: %2$s'), __('Processing'), $nb);
-    echo ")</a>";
+    echo sprintf(
+        '&nbsp;<a href="%s" title="%s">(%s)</a>',
+        htmlescape($url),
+        __s('Processing'),
+        sprintf(__s('%1$s: %2$s'), __s('Processing'), $nb)
+    );
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Form;
 use Override;
 
-final class CommentDescriptionTagProvider implements TagProviderInterface
+final class CommentDescriptionTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -73,12 +73,29 @@ final class CommentDescriptionTagProvider implements TagProviderInterface
         return $comment->fields['description'];
     }
 
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Comment::class;
+    }
+
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $comment = Comment::getById((int) $value);
+        if (!$comment) {
+            return null;
+        }
+
+        return $this->getDescriptionTagForComment($comment);
+    }
+
     public function getDescriptionTagForComment(Comment $comment): Tag
     {
         return new Tag(
             label: sprintf(__('Comment description: %s'), $comment->fields['description']),
             value: $comment->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

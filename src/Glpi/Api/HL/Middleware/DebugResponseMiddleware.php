@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,15 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\RoutePath;
 use Glpi\Http\JSONResponse;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
 use GuzzleHttp\Psr7\Utils;
+use Safe\Exceptions\OutcontrolException;
+use Session;
 use Symfony\Component\DomCrawler\Crawler;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\ob_get_clean;
 
 class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMiddlewareInterface
 {
@@ -52,22 +55,23 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
             $next($input);
             return;
         }
-        $use_mode = isset($_SESSION['glpi_use_mode']) ? (int) $_SESSION['glpi_use_mode'] : \Session::NORMAL_MODE;
-        if ($use_mode !== \Session::DEBUG_MODE) {
+        $use_mode = isset($_SESSION['glpi_use_mode']) ? (int) $_SESSION['glpi_use_mode'] : Session::NORMAL_MODE;
+        if ($use_mode !== Session::DEBUG_MODE) {
             $next($input);
             return;
         }
         $outputs = [];
         // Go through all output buffers
         while (ob_get_level() > 0) {
-            $outputs[] = ob_get_clean();
+            try {
+                $outputs[] = ob_get_clean();
+            } catch (OutcontrolException $e) {
+                //just contineu, seems not an error.
+            }
         }
         $debug_messages = [];
         // If the output matches an HTML debug alert, extract the inner text and add it to the array
         foreach ($outputs as $output) {
-            if (!is_string($output)) {
-                continue;
-            }
             $crawler = new Crawler($output);
             $node = $crawler->filter('div.glpi-debug-alert');
             if ($node->count() > 0) {
@@ -89,9 +93,11 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
 
         // Pretty print JSON responses
         if ($input->response instanceof JSONResponse) {
-            $content = $input->response->getBody();
-            $pretty_print_json = json_encode(json_decode($content), JSON_PRETTY_PRINT);
-            $input->response = $input->response->withBody(Utils::streamFor($pretty_print_json));
+            $content = (string) $input->response->getBody();
+            if (!empty($content)) {
+                $pretty_print_json = json_encode(json_decode($content), JSON_PRETTY_PRINT);
+                $input->response = $input->response->withBody(Utils::streamFor($pretty_print_json));
+            }
         }
 
         // Call the next middleware

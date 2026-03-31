@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
-use Glpi\Inventory\Conf;
+use Item_DeviceSensor;
 
 class Sensor extends Device
 {
@@ -46,7 +45,7 @@ class Sensor extends Device
         $mapping = [
             'manufacturer' => 'manufacturers_id',
             'type'         => 'devicesensortypes_id',
-            'name'         => 'designation'
+            'name'         => 'designation',
         ];
 
         foreach ($this->data as &$val) {
@@ -64,6 +63,6 @@ class Sensor extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceSensor::class;
+        return Item_DeviceSensor::class;
     }
 }

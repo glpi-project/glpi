@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,23 @@
 
 namespace Glpi\Form\Export\Specification;
 
+use CommonDBTM;
+use CommonTreeDropdown;
+
 final class DataRequirementSpecification
 {
     public function __construct(
         public string $itemtype = "",
         public string $name = "",
-    ) {
+    ) {}
+
+    public static function fromItem(CommonDBTM $item): self
+    {
+        if ($item instanceof CommonTreeDropdown) {
+            $name = $item->getName(['complete' => true]);
+        } else {
+            $name = $item->getName();
+        }
+        return new self($item::class, $name);
     }
 }

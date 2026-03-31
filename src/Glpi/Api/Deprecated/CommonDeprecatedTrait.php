@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,11 @@
 
 namespace Glpi\Api\Deprecated;
 
+use ReflectionClass;
+
 /**
  * @since 9.5
  */
-
 trait CommonDeprecatedTrait
 {
     abstract public function getType(): string;
@@ -50,7 +51,7 @@ trait CommonDeprecatedTrait
      */
     private function getDeprecatedClass(): string
     {
-        return (new \ReflectionClass(static::class))->getShortName();
+        return (new ReflectionClass(static::class))->getShortName();
     }
 
     /**
@@ -84,12 +85,12 @@ trait CommonDeprecatedTrait
     {
         $soptions = array_map(function ($soption) {
             if (isset($soption['uid'])) {
-                  $new_uid = str_replace(
-                      $this->getType(),
-                      $this->getDeprecatedClass(),
-                      $soption['uid']
-                  );
-                 $soption['uid'] = $new_uid;
+                $new_uid = str_replace(
+                    $this->getType(),
+                    $this->getDeprecatedClass(),
+                    $soption['uid']
+                );
+                $soption['uid'] = $new_uid;
             }
 
             return $soption;
@@ -108,12 +109,12 @@ trait CommonDeprecatedTrait
     {
         $soptions = array_map(function ($soption) {
             if (isset($soption['table'])) {
-                  $new_table = str_replace(
-                      getTableForItemType($this->getType()),
-                      getTableForItemType($this->getDeprecatedClass()),
-                      $soption['table']
-                  );
-                 $soption['table'] = $new_table;
+                $new_table = str_replace(
+                    getTableForItemType($this->getType()),
+                    getTableForItemType($this->getDeprecatedClass()),
+                    $soption['table']
+                );
+                $soption['table'] = $new_table;
             }
 
             return $soption;
@@ -136,7 +137,7 @@ trait CommonDeprecatedTrait
             if (!isset($fields->$name)) {
                 $fields->$name = $value;
             }
-        } else if (is_array($fields)) {
+        } elseif (is_array($fields)) {
             if (!isset($fields[$name])) {
                 $fields[$name] = $value;
             }
@@ -160,7 +161,7 @@ trait CommonDeprecatedTrait
                 $fields->$new = $fields->$old;
                 unset($fields->$old);
             }
-        } else if (is_array($fields)) {
+        } elseif (is_array($fields)) {
             if (isset($fields[$old])) {
                 $fields[$new] = $fields[$old];
                 unset($fields[$old]);
@@ -183,7 +184,7 @@ trait CommonDeprecatedTrait
             if (isset($fields->$name)) {
                 unset($fields->$name);
             }
-        } else if (is_array($fields)) {
+        } elseif (is_array($fields)) {
             if (isset($fields[$name])) {
                 unset($fields[$name]);
             }

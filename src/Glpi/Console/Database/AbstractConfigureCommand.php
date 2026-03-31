@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,51 +39,56 @@ use Config;
 use DBConnection;
 use DBmysql;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
 use mysqli;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 abstract class AbstractConfigureCommand extends AbstractCommand
 {
     /**
      * Error code returned if DB configuration succeed.
      *
-     * @var integer
+     * @var int
      */
-    const SUCCESS = 0;
+    public const SUCCESS = 0;
 
     /**
      * Error code returned if DB connection initialization fails.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_CONNECTION_FAILED = 1;
+    public const ERROR_DB_CONNECTION_FAILED = 1;
 
     /**
      * Error code returned if DB engine is unsupported.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_ENGINE_UNSUPPORTED = 2;
+    public const ERROR_DB_ENGINE_UNSUPPORTED = 2;
 
     /**
      * Error code returned when trying to configure and having a DB config already set.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_CONFIG_ALREADY_SET = 3;
+    public const ERROR_DB_CONFIG_ALREADY_SET = 3;
 
     /**
      * Error code returned when failing to save database configuration file.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
+    public const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
     protected $requires_db_up_to_date = false;
 
@@ -159,8 +164,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         foreach ($questions as $name => $question) {
             if (null === $input->getOption($name)) {
-                /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-                $question_helper = $this->getHelper('question');
+                $question_helper = new QuestionHelper();
                 $value = $question_helper->ask($input, $output, $question);
                 $input->setOption($name, $value);
             }
@@ -202,7 +206,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
             // Prevent overriding of existing DB
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>',
                 self::ERROR_DB_CONFIG_ALREADY_SET
             );
@@ -234,7 +238,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 $mysqli->connect_errno,
                 $mysqli->connect_error
             );
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_DB_CONNECTION_FAILED
             );
@@ -247,7 +251,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $checkdb = Config::displayCheckDbEngine(false, $db_version_data[0]);
         $message = ob_get_clean();
         if ($checkdb > 0) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_DB_ENGINE_UNSUPPORTED
             );
@@ -261,13 +265,19 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         } else {
             // Instanciate DB to be able to compute boolean properties flags.
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
+                /**
+                 * @param string $dbhost
+                 * @param string $dbuser
+                 * @param string $dbpassword
+                 * @param string $dbdefault
+                 */
                 public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
                 {
-                      $this->dbhost     = $dbhost;
-                      $this->dbuser     = $dbuser;
-                      $this->dbpassword = $dbpassword;
-                      $this->dbdefault  = $dbdefault;
-                      parent::__construct();
+                    $this->dbhost     = $dbhost;
+                    $this->dbuser     = $dbuser;
+                    $this->dbpassword = $dbpassword;
+                    $this->dbdefault  = $dbdefault;
+                    parent::__construct();
                 }
             };
             $config_flags = $db->getComputedConfigBooleanFlags();
@@ -304,7 +314,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 __('Cannot write configuration file "%s".'),
                 GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php'
             );
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_DB_CONFIG_FILE_NOT_SAVED
             );
@@ -322,6 +332,17 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $allow_datetime,
             $allow_signed_keys
         ) extends DBmysql {
+            /**
+             * @param string $dbhost
+             * @param string $dbuser
+             * @param string $dbpassword
+             * @param string $dbdefault
+             * @param bool $use_timezones
+             * @param bool $log_deprecation_warnings
+             * @param bool $use_utf8mb4
+             * @param bool $allow_datetime
+             * @param bool $allow_signed_keys
+             */
             public function __construct(
                 $dbhost,
                 $dbuser,
@@ -333,19 +354,19 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 $allow_datetime,
                 $allow_signed_keys
             ) {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
 
-                  $this->use_timezones     = $use_timezones;
-                  $this->use_utf8mb4       = $use_utf8mb4;
-                  $this->allow_datetime    = $allow_datetime;
-                  $this->allow_signed_keys = $allow_signed_keys;
+                $this->use_timezones     = $use_timezones;
+                $this->use_utf8mb4       = $use_utf8mb4;
+                $this->allow_datetime    = $allow_datetime;
+                $this->allow_signed_keys = $allow_signed_keys;
 
-                  $this->log_deprecation_warnings = $log_deprecation_warnings;
+                $this->log_deprecation_warnings = $log_deprecation_warnings;
 
-                  $this->clearSchemaCache();
+                $this->clearSchemaCache();
             }
         };
     }
@@ -353,7 +374,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Check if DB is already configured.
      *
-     * @return boolean
+     * @return bool
      */
     protected function isDbAlreadyConfigured()
     {
@@ -366,6 +387,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      *
      * @param InputInterface $input
      *
+     * @return void
      * @throws InvalidArgumentException
      */
     protected function validateConfigInput(InputInterface $input)
@@ -376,20 +398,20 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $db_pass = $input->getOption('db-password');
 
         if (empty($db_name)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Database name defined by --db-name option cannot be empty.')
             );
         }
 
         if (empty($db_user)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Database user defined by --db-user option cannot be empty.')
             );
         }
 
         if (null === $db_pass) {
             // Will be null if option used without value and without interaction
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('--db-password option value cannot be null.')
             );
         }
@@ -434,9 +456,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     {
 
         $db = new class ($mysqli) extends DBmysql {
+            /**
+             * @param mysqli $dbh
+             */
             public function __construct($dbh)
             {
-                  $this->dbh = $dbh;
+                $this->dbh = $dbh;
             }
         };
         $timezones_requirement = new DbTimezones($db);
@@ -451,11 +476,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_QUIET
             );
             if ($this->input->getOption('no-interaction')) {
-                 $message = sprintf(
-                     __('Fix them and run the "%1$s" command to enable timezones.'),
-                     'php bin/console database:enable_timezones'
-                 );
-                 $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
+                $message = sprintf(
+                    __('Fix them and run the "%1$s" command to enable timezones.'),
+                    'php bin/console database:enable_timezones'
+                );
+                $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
             } else {
                 $this->askForConfirmation();
             }

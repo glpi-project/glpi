@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,12 +34,15 @@
 
 namespace Glpi\Exception;
 
-class AuthenticationFailedException extends \Exception
+use Exception;
+use Throwable;
+
+class AuthenticationFailedException extends Exception
 {
     public function __construct(
         string $message = '',
         int $code = 0,
-        ?\Throwable $previous = null,
+        ?Throwable $previous = null,
         private array $authentication_errors = []
     ) {
         parent::__construct($message, $code, $previous);

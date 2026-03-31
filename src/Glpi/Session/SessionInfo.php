@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Session;
 
+use Entity;
+use LogicException;
 use Profile;
 
 final class SessionInfo
@@ -48,8 +50,8 @@ final class SessionInfo
         private int $profile_id = 0,
         /** @var int[] $entities_ids */
         private array $active_entities_ids = [],
-    ) {
-    }
+        private int $current_entity_id = 0,
+    ) {}
 
     public function getUserId(): int
     {
@@ -70,6 +72,21 @@ final class SessionInfo
     public function getActiveEntitiesIds(): array
     {
         return $this->active_entities_ids;
+    }
+
+    public function getCurrentEntityId(): int
+    {
+        return $this->current_entity_id;
+    }
+
+    public function getCurrentEntity(): Entity
+    {
+        $entity = Entity::getById($this->current_entity_id);
+        if ($entity === false) {
+            throw new LogicException(); // Can't happen
+        }
+
+        return $entity;
     }
 
     public function hasRight(string $right, int $action): bool
@@ -113,7 +130,7 @@ final class SessionInfo
 
         if ($this->profile === null) {
             $profile = Profile::getById($this->profile_id);
-            if (!$profile) {
+            if (!$profile instanceof Profile) {
                 return null;
             }
 

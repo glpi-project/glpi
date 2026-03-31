@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,21 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Controller\LegacyFileLoadController;
-
 /** @var int|bool|null $AJAX_INCLUDE */
 global $AJAX_INCLUDE;
 if (isset($AJAX_INCLUDE)) {
-    \Toolbox::deprecated('The global `$AJAX_INCLUDE` variable usage is deprecated. Use "$this->setAjax()" from your controllers instead.');
-    if ($this instanceof LegacyFileLoadController) {
-        $this->setAjax();
-    }
+    trigger_error(
+        'The global `$AJAX_INCLUDE` variable has no effect anymore.',
+        E_USER_WARNING
+    );
 }
 
 /** @var string|null $SECURITY_STRATEGY */
 global $SECURITY_STRATEGY;
 if (isset($SECURITY_STRATEGY)) {
-    throw new \RuntimeException('The global `$SECURITY_STRATEGY` variable has no effect anymore.');
+    throw new RuntimeException('The global `$SECURITY_STRATEGY` variable has no effect anymore.');
 }
 
 /**

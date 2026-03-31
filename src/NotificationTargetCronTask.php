@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,26 @@
 
 /**
  * NotificationTargetCronTask Class
+ *
+ * @extends NotificationTarget<CronTask>
  **/
 class NotificationTargetCronTask extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Monitoring of automatic actions')];
     }
 
+    #[Override]
+    public function getEventsToSendImmediately(): array
+    {
+        return [
+            'alert',
+        ];
+    }
 
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
 
@@ -76,38 +87,38 @@ class NotificationTargetCronTask extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
 
         $tags = ['crontask.action'      => __('Monitoring of automatic actions'),
             'crontask.url'         => __('URL'),
             'crontask.name'        => __('Name'),
-            'crontask.description' => __('Description')
+            'crontask.description' => __('Description'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'crontasks',
             'label'   => __('Automatic actions list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
-       //Tags with just lang
+        //Tags with just lang
         $tags = ['crontask.warning'
-                     => __('The following automatic actions are in error. They require intervention.')
+                     => __('The following automatic actions are in error. They require intervention.'),
         ];
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
         asort($this->tag_descriptions);

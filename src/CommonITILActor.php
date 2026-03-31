@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,11 +47,17 @@ abstract class CommonITILActor extends CommonDBRelation
     public const ASSIGN    = 2;
     public const OBSERVER  = 3;
 
+    /**
+     * @return ?string
+     */
     public function getActorForeignKey()
     {
         return static::$items_id_2;
     }
 
+    /**
+     * @return ?string
+     */
     public static function getItilObjectForeignKey()
     {
         return static::$items_id_1;
@@ -81,7 +87,6 @@ abstract class CommonITILActor extends CommonDBRelation
      **/
     public function getActors(int $items_id): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id <= 0) {
@@ -92,7 +97,7 @@ abstract class CommonITILActor extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
-            'ORDER'  => 'id ASC'
+            'ORDER'  => 'id ASC',
         ]);
         foreach ($iterator as $data) {
             $users[$data['type']][] = $data;
@@ -100,24 +105,67 @@ abstract class CommonITILActor extends CommonDBRelation
         return $users;
     }
 
+    final protected function getForceLogOption(): int
+    {
+        if ($this->_force_log_option !== 0) {
+            // if _force_log_option is already set by other code
+            // parts just return it to not change existing behavior
+            return $this->_force_log_option;
+        }
+
+        $type = $this->input['type'] ?? $this->fields['type'] ?? null;
+
+        if ($type === null) {
+            // keep existing behavior if type is not explicitly set
+            return $this->_force_log_option;
+        }
+
+        // Values from CommonITILObject::getSearchOptionsActors()
+        if (static::$itemtype_2 === User::class) {
+            switch ($type) {
+                case CommonITILActor::REQUESTER:
+                    return 4;
+                case CommonITILActor::OBSERVER:
+                    return 66;
+                case CommonITILActor::ASSIGN:
+                    return 5;
+            }
+        } elseif (static::$itemtype_2 === Group::class) {
+            switch ($type) {
+                case CommonITILActor::REQUESTER:
+                    return 71;
+                case CommonITILActor::OBSERVER:
+                    return 65;
+                case CommonITILActor::ASSIGN:
+                    return 8;
+            }
+        } elseif (static::$itemtype_2 === Supplier::class) {
+            // Suppliers are special the can only be assigned, not observe or request
+            switch ($type) {
+                case CommonITILActor::ASSIGN:
+                    return 6;
+            }
+        }
+        return $this->_force_log_option; // again just return default
+    }
     /**
-     * @param $items_id
-     * @param $email
+     * @param int $items_id
+     * @param string $email
+     *
      * @return bool
      */
     public function isAlternateEmailForITILObject($items_id, $email)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::getItilObjectForeignKey()   => $items_id,
-                'alternative_email'                 => $email
+                'alternative_email'                 => $email,
             ],
             'START'  => 0,
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
         return count($iterator) > 0;
     }
@@ -138,7 +186,6 @@ abstract class CommonITILActor extends CommonDBRelation
 
     public function post_deleteFromDB()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
@@ -159,7 +206,7 @@ abstract class CommonITILActor extends CommonDBRelation
                 }
                 $item->update([
                     'id'     => $this->fields[static::getItilObjectForeignKey()],
-                    'status' => $status
+                    'status' => $status,
                 ]);
             } else {
                 $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
@@ -173,7 +220,11 @@ abstract class CommonITILActor extends CommonDBRelation
                 }
             }
         }
+
+        $current_log_option = $this->_force_log_option;
+        $this->_force_log_option = $this->getForceLogOption();
         parent::post_deleteFromDB();
+        $this->_force_log_option = $current_log_option;
     }
 
     public function prepareInputForAdd($input)
@@ -186,8 +237,7 @@ abstract class CommonITILActor extends CommonDBRelation
             $actor_id        = $input[$fk_field];
 
             // check if the actor exists in database
-            $itemtype = getItemtypeForForeignKeyField($fk_field);
-            $actor = new $itemtype();
+            $actor = getItemForForeignKeyField($fk_field);
             if (!$actor->getFromDB($actor_id)) {
                 return false;
             }
@@ -207,7 +257,7 @@ abstract class CommonITILActor extends CommonDBRelation
 
         if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
             $input['alternative_email'] = '';
-        } else if ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+        } elseif ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
             Session::addMessageAfterRedirect(
                 __s('Invalid email address'),
                 false,
@@ -252,17 +302,21 @@ abstract class CommonITILActor extends CommonDBRelation
 
     public function post_addItem()
     {
-        $item = new static::$itemtype_1();
+        $item = getItemForItemtype(static::$itemtype_1);
+
+        if (!($item instanceof CommonITILObject)) {
+            throw new RuntimeException();
+        }
 
         $no_stat_computation = true;
         if ($this->input['type'] == CommonITILActor::ASSIGN) {
-           // Compute "take into account delay" unless "do not compute" flag was set by business rules
+            // Compute "take into account delay" unless "do not compute" flag was set by business rules
             $no_stat_computation = $item->isTakeIntoAccountComputationBlocked($this->input);
         }
         $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
 
         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
-           // Check object status and update it if needed
+            // Check object status and update it if needed
             if (
                 $this->input['type'] == CommonITILActor::ASSIGN
                 && !isset($this->input['_from_object'])
@@ -271,11 +325,11 @@ abstract class CommonITILActor extends CommonDBRelation
             ) {
                 $item->update(['id'               => $item->getID(),
                     'status'           => CommonITILObject::ASSIGNED,
-                    '_from_assignment' => true
+                    '_from_assignment' => true,
                 ]);
             }
 
-           // raise notification for this actor addition
+            // raise notification for this actor addition
             if (!isset($this->input['_disablenotif'])) {
                 $string_type = match ($this->input['type']) {
                     self::REQUESTER => 'requester',
@@ -283,12 +337,15 @@ abstract class CommonITILActor extends CommonDBRelation
                     self::ASSIGN    => 'assign',
                     default         => '',
                 };
-               // example for event: assign_group
+                // example for event: assign_group
                 $event = $string_type . "_" . strtolower($this::$itemtype_2);
                 NotificationEvent::raiseEvent($event, $item);
             }
         }
 
+        $current_log_option = $this->_force_log_option;
+        $this->_force_log_option = $this->getForceLogOption();
         parent::post_addItem();
+        $this->_force_log_option = $current_log_option;
     }
 }

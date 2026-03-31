@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,13 @@ use Html2Text\Html2Text;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
+use function Safe\getimagesize;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
+
 final class RichText
 {
     /**
@@ -49,9 +56,12 @@ final class RichText
      * @since 10.0.0
      *
      * @param null|string   $content        HTML string to be made safe
-     * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
      *
      * @return string
+     *
+     * @psalm-taint-escape html
+     * @psalm-taint-escape has_quotes
      */
     public static function getSafeHtml(?string $content, bool $encode_output = false): string
     {
@@ -80,10 +90,10 @@ final class RichText
      * @since 10.0.0
      *
      * @param string  $content                HTML string to be made safe
-     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
-     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-     * @param boolean $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
-     * @param boolean $preserve_line_breaks   Indicates whether the line breaks should be preserved
+     * @param bool $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param bool $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param bool $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool $preserve_line_breaks   Indicates whether the line breaks should be preserved
      *
      * @return string
      */
@@ -95,7 +105,6 @@ final class RichText
         bool $preserve_case = false,
         bool $preserve_line_breaks = false
     ): string {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $content = self::normalizeHtmlContent($content);
@@ -309,7 +318,6 @@ HTML;
      */
     private static function fixImagesPath(string $content): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $patterns = [
@@ -318,16 +326,26 @@ HTML;
             "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
 
             // src attribute, surrounding by " or '
-            '/ (src)="[^"]*\/front\/document\.send\.php([^"]+)" /',
-            "/ (src)='[^']*\/front\/document\.send\.php([^']+)' /",
+            '/ (src)="(?!data:)[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (src)='(?!data:)[^']*\/front\/document\.send\.php([^']+)' /",
         ];
 
         foreach ($patterns as $pattern) {
-            $content = preg_replace(
+            $result = preg_replace(
                 $pattern,
                 sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
                 $content
             );
+            if ($result === null) {
+                $log_msg = sprintf(
+                    '`preg_replace()` with pattern `%s` failed: `%s`.',
+                    $pattern,
+                    preg_last_error_msg()
+                );
+                trigger_error($log_msg, E_USER_WARNING);
+                return $content;
+            }
+            $content = $result;
         }
 
         return $content;
@@ -345,9 +363,16 @@ HTML;
      */
     private static function loadImagesLazy(string $content): string
     {
-        return preg_replace(
-            '/<img([\w\W]+?)\/+>/',
-            '<img$1 loading="lazy">',
+        return preg_replace_callback(
+            '/<img\b((?>[^>]*))\s*\/?>/i',
+            static function (array $matches): string {
+                $attrs = $matches[1];
+                $attrs = rtrim($attrs, '/ \t\n\r\0\x0B');
+                if (preg_match('/\bloading\s*=/i', $attrs)) {
+                    return $matches[0];
+                }
+                return sprintf('<img%s loading="lazy">', $attrs);
+            },
             $content
         );
     }
@@ -403,7 +428,7 @@ HTML;
                             'h'   => $imgsize[1],
                             'thumbnail_w' => $width,
                             'thumbnail_h' => $height,
-                        ]
+                        ],
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
                 }
@@ -434,25 +459,25 @@ HTML;
                 'zoom'         => true,
             ],
             'rand'               => mt_rand(),
-            'gallery_item_class' => ''
+            'gallery_item_class' => '',
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }
         }
 
         $out = '';
-        $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
+        $out .= "<div class='pswp-img" . htmlescape($p['rand']) . " " . htmlescape($p['gallery_item_class']) . "' itemscope itemtype='http://schema.org/ImageGallery'>";
         foreach ($imgs as $img) {
             if (!isset($img['thumbnail_src'])) {
                 $img['thumbnail_src'] = $img['src'];
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
-            $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
-            $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
+            $out .= "<a href='" . htmlescape($img['src']) . "' itemprop='contentUrl' data-index='0'>";
+            $width_attr = isset($img['thumbnail_w']) ? "width='" . ((int) $img['thumbnail_w']) . "'" : "";
+            $height_attr = isset($img['thumbnail_h']) ? "height='" . ((int) $img['thumbnail_h']) . "'" : "";
             $out .= "<img src='" . htmlescape($img['thumbnail_src']) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
@@ -462,6 +487,13 @@ HTML;
         $items_json = json_encode($imgs);
         $close_json = json_encode($p['controls']['close'] ?? false);
         $zoom_json  = json_encode($p['controls']['zoom'] ?? false);
+
+        $next_title     = json_encode(__('Next (arrow right)'));
+        $prev_title     = json_encode(__('Previous (arrow left)'));
+        $close_title    = json_encode(__('Close (Esc)'));
+        $download_title = json_encode(__('Download'));
+        $zoom_title     = json_encode(__('Zoom in/out'));
+
         $js = <<<JAVASCRIPT
       (function($) {
          $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
@@ -476,11 +508,11 @@ HTML;
                 close: {$close_json},
                 zoom: {$zoom_json},
 
-                arrowNextTitle: __('Next (arrow right)'),
-                arrowPrevTitle: __('Previous (arrow left)'),
-                closeTitle: __('Close (Esc)'),
-                downloadTitle: __('Download'),
-                zoomTitle: __('Zoom in/out'),
+                arrowNextTitle: {$next_title},
+                arrowPrevTitle: {$prev_title},
+                closeTitle: {$close_title},
+                downloadTitle: {$download_title},
+                zoomTitle: {$zoom_title},
             };
             const gallery = new PhotoSwipe(options);
             gallery.on(
@@ -512,94 +544,103 @@ JAVASCRIPT;
 
     private static function getHtmlSanitizer(): HtmlSanitizer
     {
-        $config = (new HtmlSanitizerConfig())
-            ->allowSafeElements()
-            ->allowLinkSchemes([
-                'aim',
-                'app',
-                'feed',
-                'file',
-                'ftp',
-                'gopher',
-                'http',
-                'https',
-                'irc',
-                'mailto',
-                'news',
-                'nntp',
-                'sftp',
-                'ssh',
-                'tel',
-                'telnet',
-                'notes',
-            ])
-            ->allowRelativeLinks()
-            ->allowRelativeMedias()
-            ->withMaxInputLength(-1)
-        ;
+        static $sanitizer = null;
 
-        // Block some elements (tag is removed but contents is preserved)
-        $blocked_elements = [
-            'html',
-            'body',
+        if ($sanitizer === null) {
+            $config = (new HtmlSanitizerConfig())
+                ->allowSafeElements()
+                ->allowLinkSchemes([
+                    'aim',
+                    'app',
+                    'feed',
+                    'file',
+                    'ftp',
+                    'gopher',
+                    'http',
+                    'https',
+                    'irc',
+                    'mailto',
+                    'news',
+                    'nntp',
+                    'sftp',
+                    'ssh',
+                    'tel',
+                    'telnet',
+                    'notes',
+                ])
+                ->allowRelativeLinks()
+                ->allowRelativeMedias()
+                ->withMaxInputLength(-1);
 
-            // form elements
-            'form',
-            'button',
-            'input',
-            'select',
-            'datalist',
-            'option',
-            'optgroup',
-            'textarea',
-        ];
-        foreach ($blocked_elements as $blocked_element) {
-            $config = $config->blockElement($blocked_element);
+            // Block some elements (tag is removed but contents is preserved)
+            $blocked_elements = [
+                'html',
+                'body',
+
+                // form elements
+                'form',
+                'button',
+                'input',
+                'select',
+                'datalist',
+                'option',
+                'optgroup',
+                'textarea',
+            ];
+            foreach ($blocked_elements as $blocked_element) {
+                $config = $config->blockElement($blocked_element);
+            }
+
+            // Drop some elements (tag and contents are removed)
+            $dropped_elements = [
+                'head',
+                'script',
+
+                // header elements used to link external resources
+                'link',
+                'meta',
+
+                // elements used to embed potential malicious external application
+                'applet',
+                'canvas',
+                'embed',
+                'object',
+            ];
+            foreach ($dropped_elements as $dropped_element) {
+                $config = $config->dropElement($dropped_element);
+            }
+
+            // Allow class and style attribute
+            $config = $config->allowAttribute('class', '*');
+            $config = $config->allowAttribute('style', '*');
+            // Allow layout attribute for table tags
+            $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
+            $config = $config->allowAttribute('border', ['table']);
+
+
+            if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+                $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
+            }
+
+            // Keep attributes specific to rich text auto completion
+            $rich_text_completion_attributes = [
+                // required for proper display of autocompleted tags
+                'contenteditable',
+
+                // required for user mentions and form tags
+                'data-user-mention',
+                'data-user-id',
+                'data-form-tag',
+                'data-form-tag-value',
+                'data-form-tag-provider',
+            ];
+            foreach ($rich_text_completion_attributes as $attribute) {
+                $config = $config->allowAttribute($attribute, 'span');
+            }
+
+            $sanitizer = new HtmlSanitizer($config);
         }
 
-        // Drop some elements (tag and contents are removed)
-        $dropped_elements = [
-            'head',
-            'script',
-
-            // header elements used to link external resources
-            'link',
-            'meta',
-
-            // elements used to embed potential malicious external application
-            'applet',
-            'canvas',
-            'embed',
-            'object',
-        ];
-        foreach ($dropped_elements as $dropped_element) {
-            $config = $config->dropElement($dropped_element);
-        }
-
-        // Allow class and style attribute
-        $config = $config->allowAttribute('style', '*');
-
-        if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
-            $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
-        }
-
-        // Keep attributes specific to rich text auto completion
-        $rich_text_completion_attributes = [
-            // required for proper display of autocompleted tags
-            'contenteditable',
-
-            // required for user mentions and form tags
-            'data-user-mention',
-            'data-user-id',
-            'data-form-tag',
-            'data-form-tag-value',
-            'data-form-tag-provider',
-            'class',
-        ];
-        foreach ($rich_text_completion_attributes as $attribute) {
-            $config = $config->allowAttribute($attribute, 'span');
-        }
-
-        return new HtmlSanitizer($config);
+        return $sanitizer;
     }
 }

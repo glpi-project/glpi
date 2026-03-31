@@ -1,12 +1,12 @@
 <script setup>
-    /* global escapeMarkupText */
     /* global sortable */
     /* global glpi_toast_error, glpi_confirm */
+    /* global _ */
 
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
     import {computed, nextTick, onMounted, ref, watch} from "vue";
-    import SearchInput from "../../../modules/SearchTokenizer/SearchInput.js";
+    import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
 
     const props = defineProps({
@@ -114,54 +114,6 @@
         }
     });
 
-    onMounted(() => {
-        emit('kanban:pre_init');
-        loadState().then(() => {
-            $(() => {
-                $.ajax({
-                    type: 'GET',
-                    url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                    data: {
-                        action: 'get_kanbans',
-                        itemtype: props.item.itemtype,
-                        items_id: props.item.items_id,
-                    }
-                }).then((kanbans) => {
-                    all_kanbans.value = kanbans;
-                    kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
-                });
-            });
-            filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
-                allowed_tags: props.supported_filters,
-                on_result_change: (e, result) => {
-                    filters.value = {
-                        _text: ''
-                    };
-                    filters.value._text = result.getFullPhrase();
-                    result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
-                        term: t.term || '',
-                        exclusion: t.exclusion || false,
-                        prefix: t.prefix
-                    });
-                },
-                tokenizer_options: {
-                    custom_prefixes: {
-                        '#': { // Regex prefix
-                            label: __('Regex'),
-                            token_color: '#00800080'
-                        }
-                    }
-                }
-            });
-            refreshSearchTokenizer();
-            refreshSortables();
-            initMutationObserver();
-            refresh(true);
-            backgroundRefresh();
-            emit('kanban:post_init');
-        });
-    });
-
     function initMutationObserver() {
         mutation_observer = new MutationObserver((records) => {
             records.forEach(r => {
@@ -176,9 +128,9 @@
                             // Compute current position based on list of sortable elements without current card.
                             // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
                             // not always corresponding to its position inside list of visible elements.
-                            const sortable_elements = $('#' + current_column + ' ul.kanban-body > li:not([id="' + sort_data.card_id + '"])');
+                            const sortable_elements = $('#' + CSS.escape(current_column) + ' ul.kanban-body > li:not([id="' + CSS.escape(sort_data.card_id) + '"])');
                             const current_position = sortable_elements.index(placeholder.get(0));
-                            const card = $('#' + sort_data.card_id);
+                            const card = $('#' + CSS.escape(sort_data.card_id));
                             card.data('current-pos', current_position);
 
                             if (!rights.canOrderCard()) {
@@ -201,7 +153,7 @@
                 }
             });
         });
-        mutation_observer.observe($(`#${props.element_id}`).get(0), {
+        mutation_observer.observe($(`#${CSS.escape(props.element_id)}`).get(0), {
             subtree: true,
             childList: true
         });
@@ -212,9 +164,9 @@
      * This should be called every time a new column or item is added to the board.
      */
     function refreshSortables() {
-        $(`#${props.element_id}`).trigger('kanban:refresh_sortables');
+        $(`#${CSS.escape(props.element_id)}`).trigger('kanban:refresh_sortables');
         // Make sure all items in the columns can be sorted
-        const bodies = $(`#${props.element_id} .kanban-body`);
+        const bodies = $(`#${CSS.escape(props.element_id)} .kanban-body`);
         $.each(bodies, function(b) {
             const body = $(b);
             if (body.data('sortable')) {
@@ -257,15 +209,15 @@
 
         if (rights.canModifyView()) {
             // Enable column sorting
-            sortable(`#${props.element_id} .kanban-columns`, {
-                acceptFrom: `#${props.element_id} .kanban-columns`,
+            sortable(`#${CSS.escape(props.element_id)} .kanban-columns`, {
+                acceptFrom: `#${CSS.escape(props.element_id)} .kanban-columns`,
                 appendTo: '.kanban-container',
                 items: '.kanban-column:not(.kanban-protected)',
                 handle: '.kanban-column-header',
                 orientation: 'horizontal',
                 forcePlaceholderSize: true
             });
-            $(`#${props.element_id} .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header`).addClass('grab');
+            $(`#${CSS.escape(props.element_id)} .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header`).addClass('grab');
         }
 
         $(`#${props.element_id} .kanban-columns`).off('sortstop').on('sortstop', (e) => {
@@ -280,7 +232,7 @@
         filter_input.tokenizer.clearAutocomplete();
 
         // Refresh core tags autocomplete
-        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${props.supported_itemtypes[k].icon} me-1"></i>` + k));
+        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${_.escape(props.supported_itemtypes[k].icon)} me-1"></i>` + _.escape(k)));
         filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
         filter_input.tokenizer.setAutocomplete('deleted', ["true", "false"]);
 
@@ -343,8 +295,8 @@
             // Sort cards based on their index in the column
             new_state[i].cards.sort((a, b) => {
                 // Handle the case where the card is not in the column
-                const card_a = $(`#${a}`);
-                const card_b = $(`#${b}`);
+                const card_a = $(`#${CSS.escape(a)}`);
+                const card_b = $(`#${CSS.escape(b)}`);
                 if (card_a.length === 0) {
                     return -1;
                 }
@@ -410,14 +362,14 @@
             const indices = Object.keys(state['state']);
             const promises = [];
             for (let i = 0; i < indices.length; i++) {
-                const index = indices[i];
+                const index = parseInt(indices[i]);
                 const entry = state['state'][index];
                 entry.folded = entry.folded === 'true' || entry.folded === true;
-                const element = $(`#column-${props.column_field.id}-${entry.column}`);
+                const element = $(`#column-${CSS.escape(props.column_field.id)}-${CSS.escape(entry.column)}`);
                 if (element.length === 0) {
                     promises.push(loadColumn(entry.column, true, false));
                 }
-                $(`#${props.element_id} .kanban-columns .kanban-column:nth-child(${index})`).after(element);
+                $(`#${CSS.escape(props.element_id)} .kanban-columns .kanban-column:nth-child(${index})`).after(element);
                 if (entry.folded) {
                     element.addClass('collapsed');
                 }
@@ -513,7 +465,7 @@
                     refreshSortables();
 
                     // If there are no cards in the state for this column, force a state save
-                    if (state_for_col === undefined || state_for_col.cards.length === 0) {
+                    if ((state_for_col?.cards || []).length === 0) {
                         saveState();
                     }
                 }
@@ -709,13 +661,13 @@
                 action: 'load_item_panel'
             }
         }).done((result) => {
-            $(`#${props.element_id} .offcanvas`).remove();
-            $(`#${props.element_id}`).append(`
+            $(`#${CSS.escape(props.element_id)} .offcanvas`).remove();
+            $(`#${CSS.escape(props.element_id)}`).append(`
                 <div class="offcanvas offcanvas-end show position-absolute h-100" tabindex="-1">
                     <div class="offcanvas-body p-0"></div>
                 </div>
             `);
-            const offcanvas_body = $(`#${props.element_id} .offcanvas .offcanvas-body`);
+            const offcanvas_body = $(`#${CSS.escape(props.element_id)} .offcanvas .offcanvas-body`);
             offcanvas_body.append(result);
             offcanvas_body.find(`.card-title button`).on('click', () => {
                 closeCardDetailsPanel();
@@ -738,7 +690,7 @@
                 l.append(`
                     <div class="member-details">
                         ${member_item}
-                        ${escapeMarkupText(l.attr('data-name')) || `${member_itemtype} (${member_items_id})`}
+                        ${_.escape(l.attr('data-name')) || `${_.escape(member_itemtype)} (${_.escape(member_items_id)})`}
                     </div>
                     <button type="button" name="delete" class="btn btn-ghost-danger">
                         <i class="ti ti-x" title="${__('Delete')}"></i>
@@ -797,7 +749,7 @@
                 action: 'load_teammember_form'
             }
         }).done((result) => {
-            const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
+            const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${CSS.escape(card_itemtype)}`).html();
             const content = `
                 ${teammember_types_dropdown}
                 ${result}
@@ -1057,7 +1009,7 @@
 
         emit('kanban:filter', {
             filters: new_filters,
-            kanban_element: $(`#${props.element_id}`),
+            kanban_element: $(`#${CSS.escape(props.element_id)}`),
             columns: columns.value
         });
         emit('kanban:post_filter', new_filters);
@@ -1329,12 +1281,58 @@
 
         return ordered;
     });
+
+    emit('kanban:pre_init');
+    await loadState();
+    await $.ajax({
+        type: 'GET',
+        url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+        data: {
+            action: 'get_kanbans',
+            itemtype: props.item.itemtype,
+            items_id: props.item.items_id,
+        }
+    }).then((kanbans) => {
+        all_kanbans.value = kanbans;
+        kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
+    });
+
+    await refresh(true);
+    backgroundRefresh();
+    onMounted(() => {
+        initMutationObserver();
+        filter_input = new SearchInput($(`#${CSS.escape(props.element_id)} input[name="filter"]`), {
+            allowed_tags: props.supported_filters,
+            on_result_change: (e, result) => {
+                filters.value = {
+                    _text: ''
+                };
+                filters.value._text = result.getFullPhrase();
+                result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
+                    term: t.term || '',
+                    exclusion: t.exclusion || false,
+                    prefix: t.prefix
+                });
+            },
+            tokenizer_options: {
+                custom_prefixes: {
+                    '#': { // Regex prefix
+                        label: __('Regex'),
+                        token_color: '#00800080'
+                    }
+                }
+            }
+        });
+        refreshSearchTokenizer();
+        refreshSortables();
+        emit('kanban:post_init');
+    });
 </script>
 
 <template>
     <div :id="element_id" class="kanban">
         <div class="kanban-container">
-            <div v-if="show_toolbar" class="kanban-toolbar card flex-column flex-md-row">
+            <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group shadow-none">
                 <select name="kanban-board-switcher" v-model="kanban_switcher">
                     <option v-for="(k_name, k_id) in all_kanbans" :value="k_id" :selected="k_id === item.items_id" :key="k_id">{{ k_name }}</option>
                 </select>
@@ -1386,7 +1384,7 @@
                     </div>
                 </div>
                 <div class="dropdown">
-                    <button type="button" class="btn btn-outline-secondary ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
+                    <button type="button" class="btn btn-outline-secondary btn-icon ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
                             data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <i class="ti ti-dots-vertical"></i>
                     </button>
@@ -1446,12 +1444,18 @@
     .kanban {
         position: relative;
         height: 100%;
+        --toolbar-margin: 15px;
+        --toolbar-padding: 10px;
 
         .kanban-toolbar {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: var(--toolbar-margin);
             font-size: 14px;
-            padding: 10px;
+            padding: var(--toolbar-padding);
+
+            select[name="kanban-board-switcher"] {
+                appearance: auto;
+            }
 
             .fas,
             .fa-solid {
@@ -1473,8 +1477,9 @@
         }
 
         .kanban-container {
-            overflow: auto;
-            min-height: 400px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin) - (var(--toolbar-margin) + var(--toolbar-padding) + (0.5625rem * 2) + 1.2rem + 2px));
 
             .kanban-dropdown {
                 position: fixed;
@@ -1531,57 +1536,7 @@
             .kanban-columns {
                 display: flex;
                 overflow-x: auto;
-            }
-        }
-
-        .kanban-color-preview,
-        :deep(.kanban-column-title) {
-            &.itilstatus {
-                &.assigned,
-                &.new {
-                    background-color: #49bf4d !important;
-                    color: #000f01 !important;
-                }
-
-                &.accepted {
-                    background-color: green !important;
-                    color: rgb(255, 255, 255) !important;
-                }
-
-                &.refused {
-                    background-color: rgb(167, 47, 0) !important;
-                    color: rgb(19, 5, 0) !important;
-                }
-
-                &.test,
-                &.qualif,
-                &.waiting {
-                    background-color: orange !important;
-                    color: rgb(27, 18, 0) !important;
-                }
-
-                &.approval {
-                    background-color: #8cabdb !important;
-                    color: rgb(18, 24, 36) !important;
-                }
-
-                &.eval {
-                    background-color: lightblue !important;
-                    color: rgb(30, 38, 41) !important;
-                }
-
-                &.closed,
-                &.solved,
-                &.observe,
-                &.canceled {
-                    background-color: black !important;
-                    color: white !important;
-                }
-
-                &.planned {
-                    background-color: #1b2f62 !important;
-                    color: #f3f3f5 !important;
-                }
+                height: calc(100% - 75px);
             }
         }
 
@@ -1591,6 +1546,7 @@
             display: inline-block;
             margin-right: 5px;
             vertical-align: middle;
+            background-color: var(--status-color);
         }
     }
 

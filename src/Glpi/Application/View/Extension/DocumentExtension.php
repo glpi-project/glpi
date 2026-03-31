@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,8 @@ use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
+use function Safe\filesize;
+
 /**
  * @since 10.0.0
  */
@@ -47,7 +49,7 @@ class DocumentExtension extends AbstractExtension
     /**
      * Static cache for user defined files extensions icons.
      */
-    private static $extensionIcon = null;
+    private static ?array $extensionIcon = null;
 
     public function getFilters(): array
     {
@@ -66,8 +68,6 @@ class DocumentExtension extends AbstractExtension
      */
     public function getDocumentIcon(string $filename): string
     {
-        /** @var array $CFG_GLPI */
-        /** @var \DBmysql $DB */
         global $CFG_GLPI, $DB;
 
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -76,12 +76,12 @@ class DocumentExtension extends AbstractExtension
             $iterator = $DB->request([
                 'SELECT' => [
                     'ext',
-                    'icon'
+                    'icon',
                 ],
                 'FROM' => 'glpi_documenttypes',
                 'WHERE' => [
-                    'icon' => ['<>', '']
-                ]
+                    'icon' => ['<>', ''],
+                ],
             ]);
             foreach ($iterator as $result) {
                 self::$extensionIcon[$result['ext']] = $result['icon'];

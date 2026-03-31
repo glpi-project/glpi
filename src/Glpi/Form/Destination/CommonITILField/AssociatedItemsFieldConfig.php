@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,15 +37,12 @@ namespace Glpi\Form\Destination\CommonITILField;
 use CommonITILObject;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
-use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use Glpi\Form\Destination\HasFieldWithQuestionId;
 use Override;
 
+#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_IDS, is_array: true)]
 final class AssociatedItemsFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
@@ -63,26 +59,16 @@ final class AssociatedItemsFieldConfig implements
         private array $strategies,
         private array $specific_question_ids = [],
         private array $specific_associated_items = [],
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyItemsArrayHandler(self::SPECIFIC_ASSOCIATED_ITEMS),
-            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
-        ];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
         $strategies = array_map(
-            fn (string $strategy) => AssociatedItemsFieldStrategy::tryFrom($strategy),
+            fn(string $strategy) => AssociatedItemsFieldStrategy::tryFrom($strategy),
             $data[self::STRATEGIES] ?? []
         );
-        if (empty($strategies)) {
+        if ($strategies === []) {
             $strategies = [AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS];
         }
 
@@ -98,7 +84,7 @@ final class AssociatedItemsFieldConfig implements
     {
         return [
             self::STRATEGIES                => array_map(
-                fn (AssociatedItemsFieldStrategy $strategy) => $strategy->value,
+                fn(AssociatedItemsFieldStrategy $strategy) => $strategy->value,
                 $this->strategies
             ),
             self::SPECIFIC_QUESTION_IDS     => $this->specific_question_ids,

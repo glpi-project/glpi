@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -74,7 +74,6 @@ final class AllowListDropdown extends AbstractRightsDropdown
     #[Override]
     protected static function getAjaxUrl(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['root_doc'] . "/ajax/form/allowListDropdownValue.php";
@@ -95,7 +94,6 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $groups,
         array $profiles,
     ): int {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $condition = [
@@ -108,29 +106,37 @@ final class AllowListDropdown extends AbstractRightsDropdown
             $condition['OR'] = [];
 
             // Filter by user
-            if (!empty($users)) {
+            if ($users !== []) {
                 $condition['OR'][] = ['id' => array_values($users)];
             }
 
             // Filter by group
-            if (!empty($groups)) {
+            if ($groups !== []) {
+                $groups_with_parents = [];
+                foreach ($groups as $group) {
+                    $groups_with_parents[] = $group;
+                    $parents = getSonsOf(Group::getTable(), $group);
+                    array_push($groups_with_parents, ...$parents);
+                }
+
+                $groups_with_parents = array_unique($groups_with_parents);
                 $condition['OR'][] = [
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',
                         'FROM'   => Group_User::getTable(),
-                        'WHERE'  => ['groups_id' => array_values($groups)]
-                    ])
+                        'WHERE'  => ['groups_id' => array_values($groups_with_parents)],
+                    ]),
                 ];
             }
 
             // Filter by profile
-            if (!empty($profiles)) {
+            if ($profiles !== []) {
                 $condition['OR'][] = [
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',
                         'FROM'   => Profile_User::getTable(),
-                        'WHERE'  => ['profiles_id' => array_values($profiles)]
-                    ])
+                        'WHERE'  => ['profiles_id' => array_values($profiles)],
+                    ]),
                 ];
             }
 
@@ -148,39 +154,46 @@ final class AllowListDropdown extends AbstractRightsDropdown
         array $groups,
         array $profiles,
     ): string {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $criteria = [];
         $all_users_are_allowed = in_array(AbstractRightsDropdown::ALL_USERS, $users);
 
         if (!$all_users_are_allowed) {
+            $user_filters = [];
+
             foreach ($users as $user_id) {
-                $criteria[] = [
+                $user_filters[] = [
                     'link'       => 'OR',
-                    'searchtype' => 'is',
-                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'field'      => 1, // ID
                     'value'      => $user_id,
                 ];
             }
 
             foreach ($groups as $group_id) {
-                $criteria[] = [
+                $user_filters[] = [
                     'link'       => 'OR',
-                    'searchtype' => 'equals',
+                    'searchtype' => 'under',
                     'field'      => 13, // Linked group,
                     'value'      => $group_id,
                 ];
             }
 
             foreach ($profiles as $profile_id) {
-                $criteria[] = [
+                $user_filters[] = [
                     'link'       => 'OR',
                     'searchtype' => 'equals',
                     'field'      => 20, // Profile
                     'value'      => $profile_id,
                 ];
             }
+
+            // Group criteria into a block to ease the addition of new criteria.
+            $criteria[] = [
+                'link' => 'AND',
+                'criteria' => $user_filters,
+            ];
         }
 
         // Exclude system user

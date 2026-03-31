@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,17 +35,15 @@
 namespace Glpi\Controller\ItemType\Form;
 
 use Glpi\Controller\GenericFormController;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
+use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use MailCollector;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class MailCollectorFormController extends GenericFormController
 {
     #[ItemtypeFormRoute(MailCollector::class)]
-    #[ItemtypeFormLegacyRoute(MailCollector::class)]
     public function __invoke(Request $request): Response
     {
         $request->attributes->set('class', MailCollector::class);
@@ -55,7 +53,7 @@ class MailCollectorFormController extends GenericFormController
         ) {
             $object = new MailCollector();
             $object->check($request->request->get('id'), UPDATE);
-            $object->collect($request->request->get('id'), 1);
+            $object->collect($request->request->get('id'), true);
 
             return new RedirectResponse($object->getLinkURL());
         }

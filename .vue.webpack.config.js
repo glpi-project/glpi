@@ -9,7 +9,7 @@ const config = {
     },
     output: {
         filename: 'app.js',
-        chunkFilename: "[name].js",
+        chunkFilename: "[name]-[chunkhash].js",
         path: path.resolve(__dirname, 'public/build/vue'),
         publicPath: '/build/vue',
         asyncChunks: true,
@@ -64,6 +64,14 @@ const config = {
 
         entrypoints: true,
         timings: true,
+    },
+    devServer: {
+        hot: true,
+        liveReload: false,
+        port: 9637,
+        devMiddleware: {
+            writeToDisk: true,
+        },
     }
 };
 

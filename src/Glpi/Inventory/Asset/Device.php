@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,17 +37,22 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Devices;
+use stdClass;
+
+use function Safe\strtotime;
 
 abstract class Device extends InventoryAsset
 {
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @param string $itemdevicetable
+     * @param string $fk
+     *
+     * @return array<int, array<int, array<string, mixed>>>
      */
     protected function getExisting($itemdevicetable, $fk): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -56,8 +61,8 @@ abstract class Device extends InventoryAsset
             'FROM'      => $itemdevicetable,
             'WHERE'     => [
                 "$itemdevicetable.items_id"     => $this->item->fields['id'],
-                "$itemdevicetable.itemtype"     => $this->item->getType()
-            ]
+                "$itemdevicetable.itemtype"     => $this->item->getType(),
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -69,7 +74,6 @@ abstract class Device extends InventoryAsset
 
     public function handle()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
@@ -77,11 +81,12 @@ abstract class Device extends InventoryAsset
         $itemdevicetype = $this->getItemtype();
         if (in_array($itemdevicetype, $devicetypes)) {
             $value = $this->data;
-            $itemdevice = new $itemdevicetype();
+            /** @var Item_Devices $itemdevice */
+            $itemdevice = getItemForItemtype($itemdevicetype);
 
             $itemdevicetable = getTableForItemType($itemdevicetype);
-            $devicetype      = $itemdevicetype::getDeviceType();
-            $device          = new $devicetype();
+            $devicetype      = $itemdevice::getDeviceType();
+            $device          = getItemForItemtype($devicetype);
             $devicetable     = getTableForItemType($devicetype);
             $fk              = getForeignKeyFieldForTable($devicetable);
 
@@ -114,7 +119,7 @@ abstract class Device extends InventoryAsset
                     $fk                  => $device_id,
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
-                    'is_dynamic'         => 1
+                    'is_dynamic'         => 1,
                 ];
                 $i_input = $fk_input;
 
@@ -148,8 +153,8 @@ abstract class Device extends InventoryAsset
 
                             case 'delta':
                                 if (
-                                    $i_input[$field] - (int)$compare[1] > $existing_item[$field]
-                                    && $i_input[$field] + (int)$compare[1] < $existing_item[$field]
+                                    $i_input[$field] - (int) $compare[1] > $existing_item[$field]
+                                    && $i_input[$field] + (int) $compare[1] < $existing_item[$field]
                                 ) {
                                     $equals = false;
                                 }
@@ -164,7 +169,7 @@ abstract class Device extends InventoryAsset
                             $fk                  => $device_id,
                             'itemtype'           => $this->item->getType(),
                             'items_id'           => $this->item->fields['id'],
-                            'is_dynamic'         => 1
+                            'is_dynamic'         => 1,
                         ] + $this->handleInput($val, $itemdevice);
                         $itemdevice->update($itemdevice_data, true);
                         unset($existing[$device_id][$key]);
@@ -178,7 +183,7 @@ abstract class Device extends InventoryAsset
                         $fk => $device_id,
                         'itemtype' => $this->item->getType(),
                         'items_id' => $this->item->fields['id'],
-                        'is_dynamic' => 1
+                        'is_dynamic' => 1,
                     ] + $this->handleInput($val, $itemdevice);
                     $itemdevice->add($itemdevice_data, [], !$this->item->isNewItem()); //log only if mainitem is not new
                     $this->itemdeviceAdded($itemdevice, $val);
@@ -200,16 +205,21 @@ abstract class Device extends InventoryAsset
         }
     }
 
+    /**
+     * @param Item_Devices $itemdevice
+     * @param stdClass $val
+     *
+     * @return void
+     */
     protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
     {
-       //to be overrided
+        //to be overridden
     }
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        /** @var \Item_Devices $item_device */
+        /** @var class-string<Item_Devices> $item_device */
         $item_device = $this->getItemtype();
         $affinities = $item_device::itemAffinity();
         return in_array('*', $affinities) || in_array($this->item->getType(), $item_device::itemAffinity());

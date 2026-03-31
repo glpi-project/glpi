@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace Glpi\Asset;
 
 use CommonType;
+use RuntimeException;
 use Toolbox;
 
 abstract class AssetType extends CommonType
@@ -58,7 +58,7 @@ abstract class AssetType extends CommonType
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
@@ -84,13 +84,21 @@ abstract class AssetType extends CommonType
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
+        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
+        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
+
+    /**
+     * Retrieve an item from the database
+     *
+     * @param int|null $id ID of the item to get
+     *
+     * @return self|false
+     */
 
     public static function getById(?int $id)
     {
@@ -105,7 +113,7 @@ abstract class AssetType extends CommonType
                     'ON'  => [
                         self::getTable()            => AssetDefinition::getForeignKeyField(),
                         AssetDefinition::getTable() => AssetDefinition::getIndexName(),
-                    ]
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -118,8 +126,7 @@ abstract class AssetType extends CommonType
         }
 
         // Instanciate concrete class
-        $asset_type_class = $definition->getAssetTypeClassName(true);
-        $asset_type = new $asset_type_class();
+        $asset_type = $definition->getAssetTypeClassInstance();
         if (!$asset_type->getFromDB($id)) {
             return false;
         }
@@ -129,20 +136,7 @@ abstract class AssetType extends CommonType
 
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
-        $table_prefix = $tablename !== null
-            ? $tablename . '.'
-            : '';
-
-        // Keep only items from current definition must be shown.
-        $criteria = [
-            $table_prefix . AssetDefinition::getForeignKeyField() => static::getDefinition()->getID(),
-        ];
-
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array.
-        $criteria = [crc32(serialize($criteria)) => $criteria];
-
-        return $criteria;
+        return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
     }
 
     public function prepareInputForAdd($input)
@@ -168,20 +162,40 @@ abstract class AssetType extends CommonType
 
         if (
             array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
+            && (int) $input[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition does not match the current concrete class.');
+            throw new RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
+            && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
-            throw new \RuntimeException('Definition cannot be changed.');
+            throw new RuntimeException('Definition cannot be changed.');
         }
 
         $input[$definition_fkey] = $definition_id;
 
         return $input;
+    }
+
+    public function rawSearchOptions()
+    {
+        // Get parent search options, but skip the ones from the immediate CommonDCModelDropdown parent
+        $options = parent::rawSearchOptions();
+
+        foreach ($options as &$option) {
+            if (
+                is_array($option)
+                && array_key_exists('table', $option)
+                && $option['table'] === static::getTable()
+            ) {
+                // Search class could not be able to retrieve the concrete class when using `getItemTypeForTable()`,
+                // so we have to define an `itemtype` here.
+                $option['itemtype'] = static::class;
+            }
+        }
+
+        return $options;
     }
 }

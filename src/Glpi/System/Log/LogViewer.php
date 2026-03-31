@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,7 +47,7 @@ final class LogViewer extends CommonGLPI
      */
     private $log_parser;
 
-    public static $rightname = 'logs';
+    public static $rightname = 'system_logs';
 
     public function __construct()
     {
@@ -60,7 +60,7 @@ final class LogViewer extends CommonGLPI
         return _n('Log', 'Logs', $nb);
     }
 
-    public static function getMenuContent()
+    public static function getMenuContent(): array
     {
         $menu = [];
 
@@ -158,6 +158,9 @@ final class LogViewer extends CommonGLPI
     }
 
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-news";
@@ -165,7 +168,6 @@ final class LogViewer extends CommonGLPI
 
     public static function getSearchURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return implode(
@@ -173,7 +175,7 @@ final class LogViewer extends CommonGLPI
             [
                 $full ? $CFG_GLPI['root_doc'] : '',
                 'front',
-                'logviewer.php'
+                'logviewer.php',
             ]
         );
     }

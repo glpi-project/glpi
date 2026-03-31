@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -61,12 +60,12 @@ if ($context == "impact") {
 if ($isValidItemtype) {
     $table = getTableForItemType($itemtype);
 
-    $rand = $_POST["rand"] ?? mt_rand();
+    $rand = (int) ($_POST["rand"] ?? mt_rand());
 
     // Message for post-only
     if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
-        echo "<span class='text-muted'>" .
-         __s('Enter the first letters (user, item name, serial or asset number)')
+        echo "<span class='text-muted'>"
+         . __s('Enter the first letters (user, item name, serial or asset number)')
          . "</span>";
     }
     $field_id = Html::cleanId("dropdown_" . $_POST['myname'] . $rand);
@@ -89,7 +88,7 @@ if ($isValidItemtype) {
         }
     }
 
-   // Add context if defined
+    // Add context if defined
     if (!empty($context)) {
         $p["context"] = $context;
     }
@@ -103,15 +102,15 @@ if ($isValidItemtype) {
 
     // Auto update summary of active or just solved tickets
     if (($_POST['source_itemtype'] ?? null) === Ticket::class) {
-        $myname = htmlescape($_POST["myname"]);
-        echo "<span id='item_ticket_selection_information{$myname}_$rand' class='ms-1'></span>";
+        $myname = $_POST["myname"];
+        echo "<span id='item_ticket_selection_information" . htmlescape("{$myname}_{$rand}") . "' class='ms-1 text-nowrap'></span>";
         Ajax::updateItemOnSelectEvent(
             $field_id,
-            "item_ticket_selection_information{$myname}_$rand",
+            "item_ticket_selection_information{$myname}_{$rand}",
             $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
             [
                 'items_id' => '__VALUE__',
-                'itemtype' => $_POST['itemtype']
+                'itemtype' => $_POST['itemtype'],
             ]
         );
     }

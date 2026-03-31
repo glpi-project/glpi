@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Console\System;
 
+use DBmysql;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
@@ -58,7 +59,7 @@ class CheckRequirementsCommand extends AbstractCommand
     {
 
         $requirements_manager = new RequirementsManager();
-        $optional_db = $this->db instanceof \DBmysql && $this->db->connected ? $this->db : null;
+        $optional_db = $this->db instanceof DBmysql && $this->db->connected ? $this->db : null;
         $core_requirements = $requirements_manager->getCoreRequirementList($optional_db);
 
         if ($optional_db) {
@@ -74,7 +75,7 @@ class CheckRequirementsCommand extends AbstractCommand
             ]
         );
 
-       /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
+        /* @var \Glpi\System\Requirement\RequirementInterface $requirement */
         foreach ($core_requirements as $requirement) {
             if ($requirement->isOutOfContext()) {
                 $status = sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('SKIPPED'));
@@ -110,7 +111,7 @@ class CheckRequirementsCommand extends AbstractCommand
                 [
                     $title,
                     $status,
-                    $requirement->isValidated() ? '' : implode("\n", $requirement->getValidationMessages())
+                    $requirement->isValidated() ? '' : implode("\n", $requirement->getValidationMessages()),
                 ]
             );
         }

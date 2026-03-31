@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,13 +37,19 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 use Session;
+use TaskTemplate;
 
-class ITILTaskField extends AbstractConfigField
+final class ITILTaskField extends AbstractConfigField
 {
     #[Override]
     public function getLabel(): string
@@ -61,6 +66,7 @@ class ITILTaskField extends AbstractConfigField
     #[Override]
     public function renderConfigForm(
         Form $form,
+        FormDestination $destination,
         JsonFieldInterface $config,
         string $input_name,
         array $display_options
@@ -129,7 +135,7 @@ class ITILTaskField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 20;
     }
 
     #[Override]
@@ -143,5 +149,63 @@ class ITILTaskField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::TIMELINE;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+        $requirements = [];
+
+        // Check if templates are defined
+        $template_ids = $config[ITILTaskFieldConfig::TASKTEMPLATE_IDS] ?? null;
+        if ($template_ids === null) {
+            return $fallback;
+        }
+
+        foreach ($template_ids as $i => $template_id) {
+            $template = TaskTemplate::getById($template_id);
+            if ($template) {
+                // Insert template name and requirement
+                $requirement = DataRequirementSpecification::fromItem($template);
+                $requirements[] = $requirement;
+                $config[ITILTaskFieldConfig::TASKTEMPLATE_IDS][$i] = $requirement->name;
+            }
+        }
+
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if templates are defined
+        $template_names = $config[ITILTaskFieldConfig::TASKTEMPLATE_IDS] ?? null;
+        if ($template_names === null) {
+            return parent::prepareDynamicConfigDataForImport(
+                $config,
+                $destination,
+                $mapper
+            );
+        }
+
+        // Insert ids
+        foreach ($template_names as $i => $template_name) {
+            $id = $mapper->getItemId(TaskTemplate::class, $template_name);
+            $config[ITILTaskFieldConfig::TASKTEMPLATE_IDS][$i] = $id;
+        }
+
+        return $config;
     }
 }

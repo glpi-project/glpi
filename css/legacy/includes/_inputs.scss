@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -121,4 +121,9 @@ input.submit,
 .form-control.expired {
    border-color: #d63939 !important;
    background-color: rgba(255, 0, 0, 0.1) !important;
+}
+.form-control[readonly] {
+   opacity: 0.7;
+   background-color: rgba(var(--tblr-body-color-rgb), 0.1);
+   cursor: not-allowed;
 }

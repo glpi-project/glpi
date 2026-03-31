@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
@@ -44,104 +45,106 @@ class Notification extends CommonDBTM implements FilterableInterface
 {
     use FilterableTrait;
 
-   // MAILING TYPE
-   //Notification to a user (sse mailing users type below)
-    const USER_TYPE             = 1;
-   //Notification to users of a profile
-    const PROFILE_TYPE          = 2;
-   //Notification to users of a group
-    const GROUP_TYPE            = 3;
-   //Notification to the people in charge of the database synchronisation
-    const MAILING_TYPE          = 4;
-   //Notification to the supervisor of a group
-    const SUPERVISOR_GROUP_TYPE = 5;
-   //Notification to all users of a group except supervisor
-    const GROUP_WITHOUT_SUPERVISOR_TYPE = 6;
+    // MAILING TYPE
+    //Notification to a user (sse mailing users type below)
+    public const USER_TYPE             = 1;
+    //Notification to users of a profile
+    public const PROFILE_TYPE          = 2;
+    //Notification to users of a group
+    public const GROUP_TYPE            = 3;
+    //Notification to the people in charge of the database synchronisation
+    public const MAILING_TYPE          = 4;
+    //Notification to the supervisor of a group
+    public const SUPERVISOR_GROUP_TYPE = 5;
+    //Notification to all users of a group except supervisor
+    public const GROUP_WITHOUT_SUPERVISOR_TYPE = 6;
 
-   // MAILING USERS TYPE
+    // MAILING USERS TYPE
 
-   //Notification to the GLPI global administrator
-    const GLOBAL_ADMINISTRATOR                = 1;
-   //Notification to the technicial who's assign to a ticket
-    const ASSIGN_TECH                         = 2;
-   //Notification to the owner of the item
-    const AUTHOR                              = 3;
-   //Notification to the technician previously in charge of the ticket
-    const OLD_TECH_IN_CHARGE                  = 4;
-   //Notification to the technician in charge of the item
-    const ITEM_TECH_IN_CHARGE                 = 5;
-   //Notification to the item's user
-    const ITEM_USER                           = 6;
-   //Notification to the ticket's recipient
-    const RECIPIENT                           = 7;
-   //Notificartion to the ticket's assigned supplier
-    const SUPPLIER                            = 8;
-   //Notification to the ticket's assigned group
-    const ASSIGN_GROUP                        = 9;
-   //Notification to the supervisor of the ticket's assigned group
-    const SUPERVISOR_ASSIGN_GROUP             = 10;
-   //Notification to the entity administrator
-    const ENTITY_ADMINISTRATOR                = 11;
-   //Notification to the supervisor of the ticket's requester group
-    const SUPERVISOR_REQUESTER_GROUP          = 12;
-   //Notification to the ticket's requester group
-    const REQUESTER_GROUP                     = 13;
-   //Notification to the ticket's validation approver
-    const VALIDATION_APPROVER                 = 14;
-   //Notification to the ticket's validation requester
-    const VALIDATION_REQUESTER                = 15;
-   //Notification to the task assigned user
-    const TASK_ASSIGN_TECH                    = 16;
-   //Notification to the task author
-    const TASK_AUTHOR                         = 17;
-   //Notification to the followup author
-    const FOLLOWUP_AUTHOR                     = 18;
-   //Notification to the user
-    const USER                                = 19;
-   //Notification to the ticket's observer group
-    const OBSERVER_GROUP                      = 20;
-   //Notification to the ticket's observer user
-    const OBSERVER                            = 21;
-   //Notification to the supervisor of the ticket's observer group
-    const SUPERVISOR_OBSERVER_GROUP           = 22;
-   //Notification to the group of technicians in charge of the item
-    const ITEM_TECH_GROUP_IN_CHARGE           = 23;
-   // Notification to the ticket's assigned group without supervisor
-    const ASSIGN_GROUP_WITHOUT_SUPERVISOR     = 24;
-   //Notification to the ticket's requester group without supervisor
-    const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;
-   //Notification to the ticket's observer group without supervisor
-    const OBSERVER_GROUP_WITHOUT_SUPERVISOR   = 26;
-   // Notification to manager users
-    const MANAGER_USER                        = 27;
-   // Notification to manager groups
-    const MANAGER_GROUP                       = 28;
-   // Notification to supervisor of manager group
-    const MANAGER_GROUP_SUPERVISOR            = 29;
-   // Notification to manager group without supervisor
-    const MANAGER_GROUP_WITHOUT_SUPERVISOR    = 30;
-   // Notification to team users
-    const TEAM_USER                           = 31;
-   // Notification to team groups
-    const TEAM_GROUP                          = 32;
-   // Notification to supervisor of team groups
-    const TEAM_GROUP_SUPERVISOR               = 33;
-   // Notification to team groups without supervisor
-    const TEAM_GROUP_WITHOUT_SUPERVISOR       = 34;
-   // Notification to team contacts
-    const TEAM_CONTACT                        = 35;
-   // Notification to team suppliers
-    const TEAM_SUPPLIER                       = 36;
-   //Notification to the task assigned group
-    const TASK_ASSIGN_GROUP                   = 37;
-   //Notification to planning event's guests
-    const PLANNING_EVENT_GUESTS               = 38;
-   //Notification to the mentionned user
-    const MENTIONNED_USER                     = 39;
+    //Notification to the GLPI global administrator
+    public const GLOBAL_ADMINISTRATOR                = 1;
+    //Notification to the technicial who's assign to a ticket
+    public const ASSIGN_TECH                         = 2;
+    //Notification to the owner of the item
+    public const AUTHOR                              = 3;
+    //Notification to the technician previously in charge of the ticket
+    public const OLD_TECH_IN_CHARGE                  = 4;
+    //Notification to the technician in charge of the item
+    public const ITEM_TECH_IN_CHARGE                 = 5;
+    //Notification to the item's user
+    public const ITEM_USER                           = 6;
+    //Notification to the ticket's recipient
+    public const RECIPIENT                           = 7;
+    //Notificartion to the ticket's assigned supplier
+    public const SUPPLIER                            = 8;
+    //Notification to the ticket's assigned group
+    public const ASSIGN_GROUP                        = 9;
+    //Notification to the supervisor of the ticket's assigned group
+    public const SUPERVISOR_ASSIGN_GROUP             = 10;
+    //Notification to the entity administrator
+    public const ENTITY_ADMINISTRATOR                = 11;
+    //Notification to the supervisor of the ticket's requester group
+    public const SUPERVISOR_REQUESTER_GROUP          = 12;
+    //Notification to the ticket's requester group
+    public const REQUESTER_GROUP                     = 13;
+    //Notification to the ticket's validation approver
+    public const VALIDATION_APPROVER                 = 14;
+    //Notification to the ticket's validation requester
+    public const VALIDATION_REQUESTER                = 15;
+    //Notification to the task assigned user
+    public const TASK_ASSIGN_TECH                    = 16;
+    //Notification to the task author
+    public const TASK_AUTHOR                         = 17;
+    //Notification to the followup author
+    public const FOLLOWUP_AUTHOR                     = 18;
+    //Notification to the user
+    public const USER                                = 19;
+    //Notification to the ticket's observer group
+    public const OBSERVER_GROUP                      = 20;
+    //Notification to the ticket's observer user
+    public const OBSERVER                            = 21;
+    //Notification to the supervisor of the ticket's observer group
+    public const SUPERVISOR_OBSERVER_GROUP           = 22;
+    //Notification to the group of technicians in charge of the item
+    public const ITEM_TECH_GROUP_IN_CHARGE           = 23;
+    // Notification to the ticket's assigned group without supervisor
+    public const ASSIGN_GROUP_WITHOUT_SUPERVISOR     = 24;
+    //Notification to the ticket's requester group without supervisor
+    public const REQUESTER_GROUP_WITHOUT_SUPERVISOR  = 25;
+    //Notification to the ticket's observer group without supervisor
+    public const OBSERVER_GROUP_WITHOUT_SUPERVISOR   = 26;
+    // Notification to manager users
+    public const MANAGER_USER                        = 27;
+    // Notification to manager groups
+    public const MANAGER_GROUP                       = 28;
+    // Notification to supervisor of manager group
+    public const MANAGER_GROUP_SUPERVISOR            = 29;
+    // Notification to manager group without supervisor
+    public const MANAGER_GROUP_WITHOUT_SUPERVISOR    = 30;
+    // Notification to team users
+    public const TEAM_USER                           = 31;
+    // Notification to team groups
+    public const TEAM_GROUP                          = 32;
+    // Notification to supervisor of team groups
+    public const TEAM_GROUP_SUPERVISOR               = 33;
+    // Notification to team groups without supervisor
+    public const TEAM_GROUP_WITHOUT_SUPERVISOR       = 34;
+    // Notification to team contacts
+    public const TEAM_CONTACT                        = 35;
+    // Notification to team suppliers
+    public const TEAM_SUPPLIER                       = 36;
+    //Notification to the task assigned group
+    public const TASK_ASSIGN_GROUP                   = 37;
+    //Notification to planning event's guests
+    public const PLANNING_EVENT_GUESTS               = 38;
+    //Notification to the mentionned user
+    public const MENTIONNED_USER                     = 39;
     //Notification to the ticket's validation target (Who was asked to approve)
-    const VALIDATION_TARGET                   = 40;
+    public const VALIDATION_TARGET                   = 40;
+    // Notification to the ticket's validation substitutes (Who can approve if the target is not available)
+    public const VALIDATION_TARGET_SUBSTITUTES       = 41;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'notification';
@@ -167,21 +170,19 @@ class Notification extends CommonDBTM implements FilterableInterface
         return __("Notifications will only be sent for items that match the defined filter.");
     }
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Notification', 'Notifications', $nb);
     }
 
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class, self::class];
     }
 
-    /**
-     *  @see CommonGLPI::getMenuContent()
-     *
-     *  @since 0.85
-     **/
+    #[Override]
     public static function getMenuContent()
     {
         $menu = [];
@@ -219,51 +220,52 @@ class Notification extends CommonDBTM implements FilterableInterface
         return false;
     }
 
-
+    #[Override]
     public function defineTabs($options = [])
     {
         // Get parents tabs
         $parent_tabs = parent::defineTabs();
 
+        // remove filter tab for items that do not extend CommonDBTM (searchOptions() is needed)
+        if (!is_subclass_of($this->fields['itemtype'], CommonDBTM::class)) {
+            $parent_tabs = array_filter(
+                $parent_tabs,
+                static fn($key) => str_contains(CriteriaFilter::class, $key),
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+
         // Main tab shoud be first, then the most relevants tabs, then inherited common tabs and finish with the history
-        $tabs = [
-            // Main tab retrieved from parents
-            array_keys($parent_tabs)[0] => array_shift($parent_tabs)
-        ];
+        $tabs = isset(array_keys($parent_tabs)[0])
+            ? [ array_keys($parent_tabs)[0] => array_shift($parent_tabs), ]
+            : [];
 
         // Most relevant tabs first
-        $this->addStandardTab('Notification_NotificationTemplate', $tabs, $options);
-        $this->addStandardTab('NotificationTarget', $tabs, $options);
+        $this->addStandardTab(Notification_NotificationTemplate::class, $tabs, $options);
+        $this->addStandardTab(NotificationTarget::class, $tabs, $options);
 
         // Add common tabs
         $tabs = array_merge($tabs, $parent_tabs);
 
         // Keep log at the end
-        $this->addStandardTab('Log', $tabs, $options);
+        $this->addStandardTab(Log::class, $tabs, $options);
 
         return $tabs;
     }
 
-
+    #[Override]
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [
             'item' => $this,
             'params' => [
-                'target' => static::getFormURL()
+                'target' => static::getFormURL(),
             ],
         ]);
         return true;
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
+    #[Override]
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -273,26 +275,17 @@ class Notification extends CommonDBTM implements FilterableInterface
         switch ($field) {
             case 'event':
                 if (isset($values['itemtype']) && !empty($values['itemtype'])) {
-                    return NotificationEvent::getEventName($values['itemtype'], $values[$field]);
+                    return htmlescape(NotificationEvent::getEventName($values['itemtype'], $values[$field]));
                 }
                 break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
-     **/
+    #[Override]
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($values)) {
@@ -306,12 +299,13 @@ class Notification extends CommonDBTM implements FilterableInterface
                 : $CFG_GLPI["notificationtemplates_types"];
 
                 $events = [];
+                /** @var list<class-string<CommonGLPI>> $itemtypes */
                 foreach ($itemtypes as $itemtype) {
                     $target = NotificationTarget::getInstanceByType($itemtype);
                     if ($target) {
                         $target_events = $target->getAllEvents();
                         foreach ($target_events as $key => $label) {
-                             $events[$itemtype][$itemtype . Search::SHORTSEP . $key] = $label;
+                            $events[$itemtype][$itemtype . Search::SHORTSEP . $key] = $label;
                         }
                     }
                 }
@@ -329,14 +323,14 @@ class Notification extends CommonDBTM implements FilterableInterface
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -356,12 +350,12 @@ class Notification extends CommonDBTM implements FilterableInterface
             'massiveaction'      => false,
             'datatype'           => 'specific',
             'additionalfields'   => [
-                'itemtype'
+                'itemtype',
             ],
             'searchtype'         => [
                 'equals',
-                'notequals'
-            ]
+                'notequals',
+            ],
         ];
 
         $tab[] = [
@@ -373,12 +367,12 @@ class Notification extends CommonDBTM implements FilterableInterface
             'searchequalsonfield' => true,
             'datatype'           => 'specific',
             'joinparams'         => [
-                'jointype'  => 'child'
+                'jointype'  => 'child',
             ],
             'searchtype'         => [
                 '0'                  => 'equals',
-                '1'                  => 'notequals'
-            ]
+                '1'                  => 'notequals',
+            ],
         ];
 
         $tab[] = [
@@ -393,10 +387,10 @@ class Notification extends CommonDBTM implements FilterableInterface
                 'beforejoin'  => [
                     'table'        => Notification_NotificationTemplate::getTable(),
                     'joinparams'   => [
-                        'jointype'  => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'  => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -406,7 +400,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'notificationtemplates_types',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -414,15 +408,15 @@ class Notification extends CommonDBTM implements FilterableInterface
             'table'              => $this->getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -431,7 +425,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -439,7 +433,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             'table'              => $this->getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -447,18 +441,13 @@ class Notification extends CommonDBTM implements FilterableInterface
             'table'              => $this->getTable(),
             'field'              => 'allow_response',
             'name'               => __('Allow response'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
     }
 
-    /**
-     * Get the massive actions for this object
-     *
-     * @param object|null $checkitem
-     * @return array list of actions
-     */
+    #[Override]
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -466,13 +455,14 @@ class Notification extends CommonDBTM implements FilterableInterface
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _sx('button', 'Add notification template');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _sx('button', 'Remove all notification templates');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_template'] = _sx('button', 'Add notification template');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_all_template'] = _sx('button', 'Remove all notification templates');
         }
 
         return $actions;
     }
 
+    #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
@@ -487,18 +477,16 @@ class Notification extends CommonDBTM implements FilterableInterface
         return false;
     }
 
-
     public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
-
         switch ($ma->getAction()) {
             case 'add_template':
                 foreach ($ids as $id) {
-                   //load notification
+                    //load notification
                     $notification = new Notification();
                     $notification->getFromDB($id);
 
-                   //check if selected template
+                    //check if selected template
                     $notification_template = new NotificationTemplate();
                     $notification_template->getFromDB($ma->POST['notificationtemplates_id']);
 
@@ -508,7 +496,7 @@ class Notification extends CommonDBTM implements FilterableInterface
                         $data = [
                             'mode'                     => $ma->POST['mode'],
                             'notificationtemplates_id' => $ma->POST['notificationtemplates_id'],
-                            'notifications_id'         => $id
+                            'notifications_id'         => $id,
                         ];
                         if ($notification_notificationtemplate->getFromDBByCrit($data)) {
                             $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
@@ -538,7 +526,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         return;
     }
 
-
+    #[Override]
     public function canViewItem(): bool
     {
 
@@ -552,15 +540,9 @@ class Notification extends CommonDBTM implements FilterableInterface
         return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
     }
 
-
-    /**
-     * Is the current user have right to update the current notification ?
-     *
-     * @return boolean
-     **/
+    #[Override]
     public function canCreateItem(): bool
     {
-
         if (
             (($this->fields['itemtype'] == 'CronTask')
             || ($this->fields['itemtype'] == 'DBConnection'))
@@ -570,7 +552,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         }
         return Session::haveAccessToEntity($this->getEntityID());
     }
-
 
     public function cleanDBonPurge()
     {
@@ -583,7 +564,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         );
     }
 
-
     /**
      * Send notification
      *
@@ -594,29 +574,32 @@ class Notification extends CommonDBTM implements FilterableInterface
     public static function send($options)
     {
         $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
+
+        if (!is_a($classname, NotificationInterface::class, true)) {
+            throw new LogicException(sprintf('Invalid `%s` class.', $classname));
+        }
+
         $notif = new $classname();
         $notif->sendNotification($options);
     }
 
-
     /**
      * Get the mailing signature for the entity
      *
-     * @param $entity
+     * @param int $entity
+     * @return string
      **/
     public static function getMailingSignature($entity)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $signature = trim(Entity::getUsedConfig('mailing_signature', $entity, '', ''));
-        if (strlen($signature) > 0) {
+        if ($signature !== '') {
             return $signature;
         }
 
         return $CFG_GLPI['mailing_signature'];
     }
-
 
     /**
      * @param string $event    Event name
@@ -627,32 +610,28 @@ class Notification extends CommonDBTM implements FilterableInterface
      **/
     public static function getNotificationsByEventAndType($event, $itemtype, $entity)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $criteria = [
             'SELECT'    => [
                 Notification::getTable() . '.*',
                 Notification_NotificationTemplate::getTable() . '.mode',
-                Notification_NotificationTemplate::getTable() . '.notificationtemplates_id'
+                Notification_NotificationTemplate::getTable() . '.notificationtemplates_id',
             ],
             'FROM'      => Notification::getTable(),
             'LEFT JOIN' => [
                 Entity::getTable()                              => [
                     'ON' => [
                         Entity::getTable()         => 'id',
-                        Notification::getTable()   => 'entities_id'
-                    ]
+                        Notification::getTable()   => 'entities_id',
+                    ],
                 ],
                 Notification_NotificationTemplate::getTable()   => [
                     'ON' => [
                         Notification_NotificationTemplate::getTable()   => 'notifications_id',
-                        Notification::getTable()                        => 'id'
-                    ]
-                ]
+                        Notification::getTable()                        => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 Notification::getTable() . '.itemtype' => $itemtype,
@@ -664,7 +643,7 @@ class Notification extends CommonDBTM implements FilterableInterface
                 $entity,
                 true
             ),
-            'ORDER'     => Entity::getTable() . '.level DESC'
+            'ORDER'     => Entity::getTable() . '.level DESC',
         ];
 
         $modes = Notification_NotificationTemplate::getModes();
@@ -681,7 +660,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         return $DB->request($criteria);
     }
 
-
+    #[Override]
     public function prepareInputForAdd($input)
     {
 
@@ -693,7 +672,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         return $input;
     }
 
-
+    #[Override]
     public function prepareInputForUpdate($input)
     {
 
@@ -705,14 +684,17 @@ class Notification extends CommonDBTM implements FilterableInterface
         return $input;
     }
 
-
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-bell";
     }
 
+    /**
+     * @return bool
+     */
     public function allowResponse()
     {
-        return $this->fields['allow_response'];
+        return (bool) $this->fields['allow_response'];
     }
 }

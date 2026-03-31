@@ -1,0 +1,99 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 184,
+            "uuid": "8ffcd60e-46b7-4859-ac4b-d96bc2a8d93c",
+            "name": "Test form",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "visible_if",
+            "illustration": "",
+            "submit_button_conditions": [
+                {
+                    "item_uuid": "736730f6-fbbf-4331-b67f-dc2e78e9ad2e",
+                    "item_type": "question",
+                    "value_operator": "equals",
+                    "logic_operator": "and",
+                    "value": {
+                        "itemtype": "Computer",
+                        "items_id": "My computer"
+                    }
+                }
+            ],
+            "sections": [
+                {
+                    "id": 164,
+                    "uuid": "abbd5ace-3930-4522-b8ae-fad181c90ac0",
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 208,
+                    "uuid": "736730f6-fbbf-4331-b67f-dc2e78e9ad2e",
+                    "name": "My item question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": null,
+                    "extra_data": {
+                        "itemtype": "Computer",
+                        "root_items_id": 0,
+                        "subtree_depth": 0,
+                        "selectable_tree_root": false
+                    },
+                    "section_id": 164,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 169,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Computer",
+                    "name": "My computer"
+                },
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                }
+            ]
+        }
+    ]
+}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -51,9 +50,9 @@ if (
     isset($_POST['itemtype'])
     && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
 ) {
-   // Security
-    if (!class_exists($_POST['itemtype'])) {
-        return;
+    // Security
+    if (!($item = getItemForItemtype($_POST['itemtype'])) || !$item->can($_POST['items_id'], READ)) {
+        throw new AccessDeniedHttpException();
     }
 
     $days   = 3;
@@ -67,7 +66,7 @@ if (
 
     $nb = count($data);
     $badge_helper = sprintf(
-        _n(
+        _sn(
             '%s ticket in progress or recently solved on this item.',
             '%s tickets in progress or recently solved on this item.',
             $nb
@@ -79,7 +78,7 @@ if (
     if ($nb) {
         $content = '';
         foreach ($data as $title) {
-            $content .= $title . '<br>';
+            $content .= htmlescape($title) . '<br>';
         }
         echo '&nbsp;';
         Html::showToolTip($content);

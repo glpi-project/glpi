@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\OAuth\Server;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 final class OAuthClient extends CommonDBTM
 {
@@ -90,7 +93,7 @@ final class OAuthClient extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false, // implicit field is id
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $opts[] = [
@@ -105,6 +108,7 @@ final class OAuthClient extends CommonDBTM
     }
 
     /**
+     * @return string
      * @throws Exception
      */
     public static function getNewIDOrSecret()
@@ -126,7 +130,7 @@ final class OAuthClient extends CommonDBTM
         $input['secret'] = $key->encrypt(self::getNewIDOrSecret());
 
         $input['grants'] = json_encode($input['grants'] ?? []);
-        $input['scopes'] = json_encode($input['scopes'] ?? []);
+        $input['scopes'] = json_encode(empty($input['scopes']) ? [] : $input['scopes']);
 
         if (empty($input['redirect_uri'])) {
             $input['redirect_uri'] = ['/api.php/oauth2/redirection'];
@@ -153,7 +157,7 @@ final class OAuthClient extends CommonDBTM
             $input['grants'] = json_encode($input['grants']);
         }
         if (isset($input['scopes'])) {
-            $input['scopes'] = json_encode($input['scopes']);
+            $input['scopes'] = json_encode(empty($input['scopes']) ? [] : $input['scopes']);
         }
         $input['redirect_uri'] = json_encode($input['redirect_uri'] ?? []);
 

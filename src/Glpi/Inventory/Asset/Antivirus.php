@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,18 +35,18 @@
 
 namespace Glpi\Inventory\Asset;
 
-use ItemAntivirus;
 use Glpi\Inventory\Conf;
+use ItemAntivirus;
+use RuntimeException;
 
 class Antivirus extends InventoryAsset
 {
     public function prepare(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array($this->item->getType(), $CFG_GLPI['itemantivirus_types'])) {
-            throw new \RuntimeException('Antivirus are not handled for ' . $this->item->getType());
+            throw new RuntimeException('Antivirus are not handled for ' . $this->item->getType());
         }
         $mapping = [
             'company'      => 'manufacturers_id',
@@ -54,7 +54,7 @@ class Antivirus extends InventoryAsset
             'base_version' => 'signature_version',
             'enabled'      => 'is_active',
             'uptodate'     => 'is_uptodate',
-            'expiration'   => 'date_expiration'
+            'expiration'   => 'date_expiration',
         ];
 
         foreach ($this->data as &$val) {
@@ -75,7 +75,7 @@ class Antivirus extends InventoryAsset
             if (!property_exists($val, 'is_uptodate') || empty($val->is_uptodate)) {
                 $val->is_uptodate = 0;
             } else {
-                $val->is_uptodate = (int)$val->is_uptodate;
+                $val->is_uptodate = (int) $val->is_uptodate;
             }
 
             $val->is_dynamic = 1;
@@ -87,11 +87,10 @@ class Antivirus extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -101,8 +100,8 @@ class Antivirus extends InventoryAsset
             'FROM'   => ItemAntivirus::getTable(),
             'WHERE'  => [
                 'itemtype' => $this->item->getType(),
-                'items_id' => $this->item->fields['id']
-            ]
+                'items_id' => $this->item->fields['id'],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -130,7 +129,7 @@ class Antivirus extends InventoryAsset
                 if ($compare == $arraydb) {
                     $itemAntivirus->getFromDB($keydb);
                     $input = $this->handleInput($val, $itemAntivirus) + [
-                        'id'           => $keydb
+                        'id'           => $keydb,
                     ];
                     $itemAntivirus->update($input);
                     unset($value[$k]);
@@ -161,13 +160,12 @@ class Antivirus extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_antivirus == 1 && in_array($this->item::class, $CFG_GLPI['itemantivirus_types']);
     }
 
     public function getItemtype(): string
     {
-        return \ItemAntivirus::class;
+        return ItemAntivirus::class;
     }
 }

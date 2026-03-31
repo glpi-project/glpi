@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,12 +34,13 @@
 
 namespace Glpi\Log;
 
-use Monolog\Formatter\LineFormatter;
 use Monolog\LogRecord;
+use Override;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 final class AccessLogLineFormatter extends AbstractLogLineFormatter
 {
@@ -60,10 +61,10 @@ final class AccessLogLineFormatter extends AbstractLogLineFormatter
         self::$currentRequest = $request;
     }
 
-    #[\Override()]
+    #[Override()]
     public function format(LogRecord $record): string
     {
-        /** @var \Throwable $exception */
+        /** @var Throwable $exception */
         $exception = $record->context['exception'];
 
         $requested_uri = self::$currentRequest->getPathInfo();

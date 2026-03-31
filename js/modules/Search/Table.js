@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,8 +32,9 @@
  */
 
 /* global bootstrap, validateFormWithBootstrap, displaySessionMessages */
+/* global _ */
 
-import GenericView from './GenericView.js';
+import GenericView from '/js/modules/Search/GenericView.js';
 
 // Explicitly bind to window so Jest tests work properly
 window.GLPI = window.GLPI || {};
@@ -47,7 +48,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
     };
 
     constructor(result_view_element_id, push_history = true, forced_params = {}) {
-        const element_id = $(`#${result_view_element_id}`).parent().find('table.search-results').attr('id');
+        const element_id = $(`#${CSS.escape(result_view_element_id)}`).parent().find('table.search-results').attr('id');
         super(element_id);
 
         this.push_history = push_history;
@@ -68,17 +69,17 @@ window.GLPI.Search.Table = class Table extends GenericView {
     toggleSavedSearch(isDisable) {
         if (isDisable) {
             $('.bookmark_record')
-                .attr('title', __('Submit current search before saving it'))
+                .attr('title', _.unescape(__('Submit current search before saving it')))
                 .prop('disabled', true);
         } else {
             $('.bookmark_record')
-                .attr('title', __('Save current search'))
+                .attr('title', _.unescape(__('Save current search')))
                 .prop('disabled', false);
         }
     }
 
     getElement() {
-        return $(`#${this.element_id}`);
+        return $(`#${CSS.escape(this.element_id)}`);
     }
 
     /**
@@ -363,20 +364,24 @@ window.GLPI.Search.Table = class Table extends GenericView {
     }
 
     setSortStateFromColumns() {
-        const columns = this.getElement().find('thead th[data-searchopt-id]:not([data-searchopt-id=""])[data-sort-order]:not([data-sort-order=""])');
+        let columns = this.getElement()
+            .find('thead th[data-searchopt-id]:not([data-searchopt-id=""])[data-sort-num]:not([data-sort-num=""])');
         if (columns.length === 0) {
             return null;
         }
+        // sort solumns by sort-num
+        columns = $(columns.get().sort((a, b) => {
+            return $(a).attr('data-sort-num') - $(b).attr('data-sort-num');
+        }));
 
         this.resetSortState();
 
         columns.each((i, c) => {
             const col = $(c);
-
             const order = col.attr('data-sort-order');
             if (order !== 'nosort') {
-                this.sort_state['sort'][col.attr('data-sort-num') || 0] = col.attr('data-searchopt-id');
-                this.sort_state['order'][col.attr('data-sort-num') || 0] = order;
+                this.sort_state['sort'].push(col.attr('data-searchopt-id'));
+                this.sort_state['order'].push(order);
             }
         });
         return this.sort_state;
@@ -397,8 +402,8 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
         // fill with new values
         $.each(sort, (i, v) => {
-            this.sort_state['sort'][i] = v;
-            this.sort_state['order'][i] = order[i];
+            this.sort_state['sort'].push(v);
+            this.sort_state['order'].push(order[i]);
         });
     }
 };

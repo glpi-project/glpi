@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,190 +35,112 @@
 
 namespace Glpi\Api\HL;
 
+use Glpi\Api\HL\GraphQL\DefaultResolvers;
+use Glpi\Api\HL\GraphQL\SchemaGenerator;
+use Glpi\Debug\Profiler;
 use Glpi\Http\Request;
+use GraphQL\Executor\ExecutionResult;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Utils\BuildSchema;
+use GraphQL\Validator\DocumentValidator;
+use GraphQL\Validator\Rules\QueryComplexity;
+use GraphQL\Validator\Rules\QueryDepth;
+use GraphQL\Validator\Rules\ValidationRule;
+use stdClass;
+use Throwable;
 
-/**
- * GraphQL processor
- */
+use function Safe\json_decode;
+
 final class GraphQL
 {
     /**
      * Maximum depth of fields in the query that will be recognized.
      */
-    public const MAX_QUERY_FIELD_DEPTH = 25;
+    public const MAX_QUERY_FIELD_DEPTH = 15;
 
+    /**
+     * @param Request $request
+     * @return array{result: ExecutionResult, context: stdClass}|array{}
+     */
     public static function processRequest(Request $request): array
     {
         $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
-        $query = (string) $request->getBody();
-        $generator = new GraphQLGenerator($api_version);
-        $schema_str = $generator->getSchema();
+        $query = self::extractQueryFromBody($request);
+
+        Profiler::getInstance()->start('GraphQL::processRequest', Profiler::CATEGORY_HLAPI);
+
         try {
+            Profiler::getInstance()->start('GraphQL::executeQuery', Profiler::CATEGORY_HLAPI);
+            Profiler::getInstance()->start('GraphQL::getSchema', Profiler::CATEGORY_HLAPI);
+            $schema_generator = new SchemaGenerator($api_version);
+            $schema = $schema_generator->getSchema();
+            Profiler::getInstance()->stop('GraphQL::getSchema');
+            $context = new stdClass();
             $result = \GraphQL\GraphQL::executeQuery(
-                schema: BuildSchema::build($schema_str),
+                schema: $schema,
                 source: $query,
-                fieldResolver: static function ($source, $args, $context, ResolveInfo $info) use ($api_version) {
-                    $resolve_obj = true;
-                    if ($source !== null) {
-                        $resolve_obj = false;
-                    }
-                    if ($resolve_obj) {
-                        $field_selection = $info->getFieldSelection(self::MAX_QUERY_FIELD_DEPTH);
-                        // Get the raw Schema for the type
-                        $requested_type = $info->fieldName;
-                        $schema = OpenAPIGenerator::getComponentSchemas($api_version)[$requested_type] ?? null;
-                        if ($schema === null) {
-                            return null;
-                        }
-                        $completed_schema = self::expandSchemaFromRequestedFields($schema, $field_selection, null, $api_version);
+                contextValue: $context,
+                fieldResolver: self::getFieldResolver($api_version),
+                validationRules: self::getValidationRules(),
+            )->setErrorsHandler(fn(array $errors, callable $formatter) => array_map($formatter, $errors));
 
-                        if (isset($args['id'])) {
-                            $result = json_decode(Search::getOneBySchema($completed_schema, ['id' => $args['id']], [])->getBody(), true);
-                            return [$result];
-                        }
-                        return json_decode(Search::searchBySchema($completed_schema, $args)->getBody(), true);
-                    }
-
-                    return $source[$info->fieldName] ?? null;
-                }
+            Profiler::getInstance()->stop('GraphQL::executeQuery');
+        } catch (Throwable $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                "Error processing GraphQL request: {$e->getMessage()}",
+                ['exception' => $e]
             );
-        } catch (\Throwable $e) {
-            trigger_error("Error processing GraphQL request: {$e->getMessage()}", E_USER_WARNING);
+
             return [];
+        } finally {
+            Profiler::getInstance()->stop('GraphQL::processRequest');
         }
-        return $result->toArray();
+        return ['result' => $result, 'context' => $context];
     }
 
-    private static function expandSchemaFromRequestedFields(array $schema, array $fields_requested, ?string $object_prop_key, string $api_version): array
+    private static function getFieldResolver(string $api_version): callable
     {
-        $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
-        $itemtype = self::getSchemaItemtype($schema, $api_version);
-        if ($is_schema_array) {
-            $properties = $schema['items']['properties'];
-        } else {
-            $properties = $schema['properties'];
-        }
-        $field_names = array_keys($fields_requested);
-        foreach ($field_names as $field_name) {
-            // Check if any requested field is missing and then try to replace it with the full schema
-            if (!isset($properties[$field_name])) {
-                $properties = self::replacePartialObjectType($schema, $api_version);
-                if ($is_schema_array) {
-                    $properties = $properties['items']['properties'];
-                } else {
-                    $properties = $properties['properties'];
-                }
-                break;
-            }
-        }
-        foreach ($properties as $schema_field => $schema_field_data) {
-            if (!in_array($schema_field, $field_names, true)) {
-                $properties = self::hideOrRemoveProperty($itemtype, $schema_field, $properties, array_keys($fields_requested), $object_prop_key);
-            } else if (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
-                $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field], $schema_field, $api_version);
-            }
-        }
-        if ($is_schema_array) {
-            $schema['items']['properties'] = $properties;
-        } else {
-            $schema['properties'] = $properties;
-        }
-        return $schema;
-    }
+        $default_resolvers = new DefaultResolvers($api_version);
+        return static function ($source, $args, $context, ResolveInfo $info) use ($default_resolvers) {
+            $field_type = $info->returnType;
+            $is_scalar = !($field_type instanceof ObjectType || $field_type instanceof ListOfType);
 
-    private static function replacePartialObjectType(array $schema, string $api_version): array
-    {
-        $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
-        $full_schema_name = ($is_schema_array ? $schema['items']['x-full-schema'] : $schema['x-full-schema']) ?? null;
-        if ($full_schema_name === null) {
-            return $schema;
-        }
-        $full_schema = OpenAPIGenerator::getComponentSchemas($api_version)[$full_schema_name] ?? null;
-        if ($full_schema === null) {
-            return $schema;
-        }
-
-        if ($is_schema_array) {
-            $schema['items']['properties'] = $full_schema['properties'];
-        } else {
-            $schema['properties'] = $full_schema['properties'];
-        }
-        return $schema;
+            if ($is_scalar) {
+                $resolved = $default_resolvers->resolveScalarField($source, $args, $context, $info);
+            } elseif ($field_type instanceof ListOfType) {
+                $resolved = $default_resolvers->resolveListField($source, $args, $context, $info);
+            } else {
+                $resolved = $default_resolvers->resolveObjectField($source, $args, $context, $info);
+            }
+            return $resolved;
+        };
     }
 
     /**
-     * Find the related itemtype of the given partial or complete schema.
-     * @param array $schema The schema to find the itemtype of.
-     * @param string $api_version The API version
-     * @return string|null The itemtype of the given schema or null if it could not be found.
+     * @return ValidationRule[]
      */
-    private static function getSchemaItemtype(array $schema, string $api_version): ?string
+    private static function getValidationRules(): array
     {
-        $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
-        $real_schema = $is_schema_array ? $schema['items'] : $schema;
-        if (isset($real_schema['x-itemtype'])) {
-            return $real_schema['x-itemtype'];
+        $rules = [
+            new QueryComplexity(100),
+            new QueryDepth(self::MAX_QUERY_FIELD_DEPTH),
+        ];
+        foreach (DocumentValidator::defaultRules() as $rule) {
+            $rules[] = $rule;
         }
-        if (isset($real_schema['x-full-schema'])) {
-            $full_schema = OpenAPIGenerator::getComponentSchemas($api_version)[$real_schema['x-full-schema']] ?? null;
-            if ($full_schema !== null) {
-                return $full_schema['x-itemtype'] ?? null;
-            }
-        }
-        return null;
+        return $rules;
     }
 
-    /**
-     * Attempt to remove a property that was not requested.
-     * This function will evaluate if the property is required in a few ways and if it is, it will be kept but hidden from the final result.
-     * Otherwise, the property will be simply removed.
-     * <br>
-     * Evaluations:
-     * <ul>
-     *    <li>Is this a primary key?</li>
-     *    <li>Is this referenced by an `x-mapped-from` property?</li>
-     * </ul>
-     * @param class-string<\CommonDBTM>|null $itemtype The itemtype of the object that contains the property. Used to determine the index field name.
-     * @param string $property The key of the property to remove or hide.
-     * @param array $schema_properties The schema properties of the object that contains the property.
-     * @param array $other_requested The other properties that were requested.
-     * @param string|null $object_prop_key The key of the object in the parent object. If not null, this is used complete the $other_requested properties.
-     * @return array The modified object schema
-     */
-    private static function hideOrRemoveProperty(?string $itemtype, string $property, array $schema_properties, array $other_requested, ?string $object_prop_key = null): array
+    private static function extractQueryFromBody(Request $request): string
     {
-        $field = $schema_properties[$property]['x-field'] ?? $property;
-        $is_primary_key = $field === 'id';
-        if ($itemtype !== null) {
-            $is_primary_key = $is_primary_key || $field === $itemtype::getIndexName();
-        }
+        $contentType = $request->getHeaderLine('Content-Type');
 
-        if ($is_primary_key) {
-            $schema_properties[$property]['x-hidden'] = true;
-            return $schema_properties;
-        }
-
-        $is_hidden = false;
-        foreach ($other_requested as $requested_property) {
-            $requested_property_schema = $schema_properties[$requested_property] ?? null;
-            if ($requested_property_schema === null) {
-                continue;
-            }
-            $mapped_from = $requested_property_schema['x-mapped-from'] ?? null;
-            if ($mapped_from === $property) {
-                $schema_properties[$property]['x-hidden'] = true;
-                $is_hidden = true;
-            }
-            if ($object_prop_key !== null && $mapped_from === "{$object_prop_key}.{$property}") {
-                $schema_properties[$property]['x-hidden'] = true;
-                $is_hidden = true;
-            }
-        }
-        if (!$is_hidden) {
-            unset($schema_properties[$property]);
-        }
-        return $schema_properties;
+        return match ($contentType) {
+            'application/graphql' => (string) $request->getBody(),
+            'application/json' => json_decode((string) $request->getBody(), true)['query'] ?? '',
+            default => (string) $request->getBody(),
+        };
     }
 }

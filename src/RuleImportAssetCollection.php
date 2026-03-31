@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,14 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Inventory\Request;
+
+use function Safe\file_get_contents;
 
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'linkcomputer';
@@ -48,14 +51,13 @@ class RuleImportAssetCollection extends RuleCollection
     {
         $ong = parent::defineTabs();
 
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$withtemplate) {
@@ -65,10 +67,10 @@ class RuleImportAssetCollection extends RuleCollection
                     $types = $CFG_GLPI['ruleimportasset_types'];
                     foreach ($types as $type) {
                         if (class_exists($type)) {
-                            $ong[$type] = $type::getTypeName();
+                            $ong[$type] = $type::getTypeName(Session::getPluralNumber());
                         }
                     }
-                    $ong['_global'] = __('Global');
+                    $ong['_global'] = self::createTabEntry(__('Global'));
                     return $ong;
             }
         }
@@ -80,11 +82,17 @@ class RuleImportAssetCollection extends RuleCollection
         return __('Rules for import and link equipments');
     }
 
+    /**
+     * @param array $criteria
+     * @param array $options
+     *
+     * @return array
+     */
     public function collectionFilter($criteria, $options = [])
     {
         // current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
-        $current_tab = str_replace(__CLASS__ . '$', '', $active_tab);
+        $current_tab = str_replace(self::class . '$', '', $active_tab);
         $tabs = $this->getTabNameForItem($this);
 
         if (!isset($tabs[$current_tab])) {
@@ -94,15 +102,15 @@ class RuleImportAssetCollection extends RuleCollection
         $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
             'ON'  => [
                 'crit'         => 'rules_id',
-                'glpi_rules'   => 'id'
-            ]
+                'glpi_rules'   => 'id',
+            ],
         ];
         $criteria['GROUPBY'] = ['glpi_rules.id'];
 
         if ($current_tab != '_global') {
             $where = [
                 'crit.criteria'   => 'itemtype',
-                'crit.pattern'    => getSingular($current_tab)
+                'crit.pattern'    => getSingular($current_tab),
             ];
             $criteria['WHERE']  += $where;
         } else {
@@ -141,7 +149,7 @@ class RuleImportAssetCollection extends RuleCollection
 
         $refused = new RefusedEquipment();
         if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
-            $inventory_request = new \Glpi\Inventory\Request();
+            $inventory_request = new Request();
             $contents = file_get_contents($inventory_file);
             $inventory_request
                 ->testRules()

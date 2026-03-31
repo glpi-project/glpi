@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -32,7 +31,6 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set rand = random() %}
 
 {% set urgency_options = field_options|merge({
    'disabled': (not (canupdate or can_requester))
@@ -54,7 +52,7 @@
       'value': item.fields['urgency'],
       'width': '100%',
       'display': false,
-      'rand': rand,
+      'rand': field_options.rand,
    }|merge(urgency_options)),
    __('Urgency'),
    field_options|merge({
@@ -80,10 +78,12 @@
       'value': item.fields['impact'],
       'width': '100%',
       'display': false,
-      'rand': rand,
+      'rand': field_options.rand,
    }|merge(impact_options)),
    __('Impact'),
-   field_options
+   field_options|merge({
+      'id': 'dropdown_impact' ~ field_options.rand,
+   })
 ) }}
 
 {% set priority_options = field_options|merge({
@@ -107,27 +107,29 @@
       'value': item.fields['priority'],
       'width': '100%',
       'display': false,
-      'rand': rand,
+      'rand': field_options.rand,
    }|merge(field_options|merge(priority_options))),
    __('Priority'),
-   field_options
+   field_options|merge({
+      'id': 'dropdown_priority' ~ field_options.rand,
+   })
 ) }}
 
 <script type="text/javascript">
 $(function() {
-   $('#dropdown_urgency{{ rand }}, #dropdown_impact{{ rand }}').on('change.select2', function (e) {
+   $('#dropdown_urgency{{ field_options.rand }}, #dropdown_impact{{ field_options.rand }}').on('change.select2', function (e) {
       $.ajax({
-         url: "{{ path('/ajax/priority.php') }}",
+         url: `${CFG_GLPI.root_doc}/ajax/priority.php`,
          datatype: 'json',
          data: {
-            'urgency': $('#dropdown_urgency{{ rand }}').select2('data') ? $('#dropdown_urgency{{ rand }}').select2('data')[0].id : 0,
-            'impact':  $('#dropdown_impact{{ rand }}').select2('data') ? $('#dropdown_impact{{ rand }}').select2('data')[0].id : 0,
+            'urgency': $('#dropdown_urgency{{ field_options.rand }}').select2('data') ? $('#dropdown_urgency{{ field_options.rand }}').select2('data')[0].id : 0,
+            'impact':  $('#dropdown_impact{{ field_options.rand }}').select2('data') ? $('#dropdown_impact{{ field_options.rand }}').select2('data')[0].id : 0,
             '_predefined_fields':  $('input[name="_predefined_fields"]').val(),
             'getJson': true,
          }
       }).done(function(data) {
-         $('#dropdown_priority{{ rand }}').val(data.priority);
-         $('#dropdown_priority{{ rand }}').trigger('change');
+         $('#dropdown_priority{{ field_options.rand }}').val(data.priority);
+         $('#dropdown_priority{{ field_options.rand }}').trigger('change');
       });
    })
 });

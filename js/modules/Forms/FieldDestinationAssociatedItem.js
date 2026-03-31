@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,6 +59,11 @@ export class GlpiFormFieldDestinationAssociatedItem {
     #specific_values_template;
 
     /**
+     * @type {number}
+     */
+    #last_used_dropdown_index = 0;
+
+    /**
      * @param {jQuery<HTMLElement>} specific_values_extra_field
      */
     constructor(
@@ -71,7 +76,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
         this.#associated_items_container = specific_values_extra_field.find('[data-glpi-associated-items-specific-values-extra-field-container]');
         this.#specific_values_template = specific_values_extra_field.find('[data-glpi-associated-items-specific-values-extra-field-template]');
 
-        this.#associated_items_container.on('change', `select[name="${this.#items_id_name}"]`, () => this.#handleChanges());
+        this.#associated_items_container.on('change', `select[name="${CSS.escape(this.#items_id_name)}"]`, () => this.#handleChanges());
 
         this.#associated_items_container.find('[data-glpi-remove-associated-item-button]')
             .each((index, button) => this.#registerOnRemoveAssociatedItem($(button)));
@@ -83,7 +88,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
 
     #handleChanges() {
         const empty_fields = this.#associated_items_container.find(`[data-glpi-associated-items-specific-values-extra-field-item]`)
-            .filter((index, field) => ($(field).find(`select[name="${this.#items_id_name}"]`).val() ?? "0") === "0");
+            .filter((index, field) => ($(field).find(`select[name="${CSS.escape(this.#items_id_name)}"]`).val() ?? "0") === "0");
 
         // Always keep one empty field
         if (empty_fields.length > 1) {
@@ -114,7 +119,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
             if (
                 (button.closest('[data-glpi-associated-items-specific-values-extra-field-item]')
                     .find(`select[name="${this.#items_id_name}"]`).val() ?? "0") !== "0"
-                    || this.#associated_items_container.find(`select[name="${this.#items_id_name}"]`)
+                    || this.#associated_items_container.find(`select[name="${CSS.escape(this.#items_id_name)}"]`)
                         .filter((index, field) => $(field).val() === "0").length > 1
             ) {
                 button.closest('[data-glpi-associated-items-specific-values-extra-field-item]').remove();
@@ -133,7 +138,8 @@ export class GlpiFormFieldDestinationAssociatedItem {
             if (id !== undefined && config !== undefined) {
                 // Rename id to ensure it is unique
                 const uid = getUUID();
-                $(this).attr("id", uid);
+                const new_id = `_config_${uid}`;
+                $(this).attr("id", new_id);
 
                 // Check if a select2 isn't already initialized
                 // and if a configuration is available
@@ -141,7 +147,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
                     $(this).hasClass("select2-hidden-accessible") === false
                     && config !== undefined
                 ) {
-                    config.field_id = uid;
+                    config.field_id = new_id;
                     if (config.type === "ajax") {
                         setupAjaxDropdown(config);
                     } else if (config.type === "adapt") {
@@ -151,27 +157,27 @@ export class GlpiFormFieldDestinationAssociatedItem {
             }
         });
 
-
-        const id = getUUID();
-        const itemtype_select_id = field.find(`select[name="${itemtype_name}"]`).attr('id');
+        const id = this.#last_used_dropdown_index++;
+        const itemtype_select_id = field.find(`select[name="${CSS.escape(itemtype_name)}"]`).attr('id');
 
         // Replace the old id by the new one
-        field.find(`span[id^="show_${items_id_name.replace(/[[\]]/g, '_')}"]`)
+        field.find(`span[id^="show_${CSS.escape(items_id_name.replace(/[[\]]/g, '_'))}"]`)
             .attr('id', `show_${items_id_name.replace(/[[\]]/g, '_')}${id}`);
 
         // Replace all occurence of previous id by the new one in script tags
         field.find('script').each((index, script) => {
             // Replace the old itemtype select id by the new one
             script.text = script.text.replace(
-                new RegExp(`dropdown_${itemtype_name.replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
-                itemtype_select_id
+                /\$\(['"]#dropdown_[^)]+['"]\)/g,
+                `$("#${CSS.escape(itemtype_select_id)}")`
             );
 
             // Replace the old id by the new one
             script.text = script.text.replace(
-                new RegExp(`show_${items_id_name.replace(/[[\]]/g, '_')}[0-9]+`, 'g'),
-                `show_${items_id_name.replace(/[[\]]/g, '_')}${id}`
+                /\$\(['"]#show_[^)]+['"]\)/g,
+                `$("#show_${CSS.escape(items_id_name.replace(/[[\]]/g, '_'))}${id}")`
             );
+
             script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
 
             // Execute the script

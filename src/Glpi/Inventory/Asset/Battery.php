@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,8 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
+use Item_DeviceBattery;
 
 class Battery extends Device
 {
@@ -50,7 +50,7 @@ class Battery extends Device
             'date'         => 'manufacturing_date',
             'capacity'     => 'capacity',
             'chemistry'    => 'devicebatterytypes_id',
-            'voltage'      => 'voltage'
+            'voltage'      => 'voltage',
         ];
 
         foreach ($this->data as &$val) {
@@ -61,7 +61,7 @@ class Battery extends Device
             }
 
             if (!isset($val->voltage) || $val->voltage == '') {
-               //a numeric value is expected here
+                //a numeric value is expected here
                 $val->voltage = 0;
             }
 
@@ -81,6 +81,6 @@ class Battery extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceBattery::class;
+        return Item_DeviceBattery::class;
     }
 }

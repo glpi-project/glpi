@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use Glpi\Security\TOTPManager;
+
+use function Safe\json_encode;
 
 if (isset($_POST['regenerate_backup_codes'])) {
-    $totp = new \Glpi\Security\TOTPManager();
+    $totp = new TOTPManager();
     $codes = $totp->regenerateBackupCodes(Session::getLoginUserID());
     echo json_encode($codes);
 }

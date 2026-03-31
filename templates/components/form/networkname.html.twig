@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -72,9 +71,9 @@
                   {% if display_dissociate_btn %}
                      {% set unaffect_btn %}
                         <a class="btn btn-sm btn-outline-danger"
-                        onclick=" submitGetLink('{{ item.getFormURL }}', {'unaffect': 'unaffect', 'id': '{{ ID }}', '_glpi_csrf_token': '{{ csrf_token() }}', '_glpi_simple_form': '1'});">
-                           <span class="fas fa-unlink " title={{ __('Dissociate') }}>
-                              <span class="sr-only">{{ __('Dissociate') }}</span>
+                        onclick=" submitGetLink('{{ item.getFormURL()|e('js')|e }}', {'unaffect': 'unaffect', 'id': '{{ ID|e('js')|e }}', '_glpi_csrf_token': '{{ csrf_token()|e('js')|e }}', '_glpi_simple_form': '1'});">
+                           <span class="ti ti-unlink " title={{ _x('button', 'Dissociate') }}>
+                              <span class="sr-only">{{ _x('button', 'Dissociate') }}</span>
                            </span>
                         </a>
 
@@ -82,7 +81,7 @@
 
                      {{ fields.htmlField(
                         '_virtual',
-                        display_recursive_items_link|raw,
+                        display_recursive_items_link,
                         recursive_items_type_data,
                         field_options|merge({
                            add_field_html: unaffect_btn
@@ -152,7 +151,7 @@
 
                   {{ fields.htmlField(
                      '_vrtual',
-                      (add_child ~ show_child)|raw,
+                     add_child ~ show_child,
                      ip_label,
                      field_options
                   ) }}

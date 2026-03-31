@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -154,6 +154,11 @@ h3 {
 
 .alert:not(.alert-important) {
     color: #000;
+
+    .text-muted,
+    .alert-icon {
+        color: inherit !important;
+    }
 }
 
 /** Tabler override for install **/
@@ -163,6 +168,17 @@ h3 {
 
 .form-control {
     color: rgb(32, 32, 32) !important;
+
+    &:autofill,
+    &:-webkit-autofill {
+        &, &:hover, &:focus, &:active {
+            /* stylelint-disable-next-line property-no-vendor-prefix */
+            -webkit-text-fill-color: rgb(32, 32, 32) !important;
+            /* stylelint-disable-next-line property-no-vendor-prefix */
+            -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+            box-shadow: 0 0 0 30px #fff inset !important;
+        }
+    }
 }
 
 .popover.validation-messages {

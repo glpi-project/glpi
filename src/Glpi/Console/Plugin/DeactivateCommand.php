@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,9 +44,9 @@ class DeactivateCommand extends AbstractPluginCommand
     /**
      * Error code returned when a plugin deactivation failed.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_PLUGIN_DEACTIVATION_FAILED = 1;
+    public const ERROR_PLUGIN_DEACTIVATION_FAILED = 1;
 
     protected function configure()
     {
@@ -117,14 +117,14 @@ class DeactivateCommand extends AbstractPluginCommand
      *
      * @param string  $directory
      *
-     * @return boolean
+     * @return bool
      */
     private function canRunDeactivateMethod($directory)
     {
 
         $plugin = new Plugin();
 
-       // Check that directory is valid
+        // Check that directory is valid
         if (!$plugin->isLoadable($directory)) {
             $this->output->writeln(
                 '<error>' . sprintf(__('Invalid plugin directory "%s".'), $directory) . '</error>',
@@ -133,7 +133,7 @@ class DeactivateCommand extends AbstractPluginCommand
             return false;
         }
 
-       // Check current plugin state
+        // Check current plugin state
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $directory]);
         if (!$is_already_known) {
             $this->output->writeln(
@@ -168,8 +168,8 @@ class DeactivateCommand extends AbstractPluginCommand
             [
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [
-                    'state' => Plugin::ACTIVATED
-                ]
+                    'state' => Plugin::ACTIVATED,
+                ],
             ]
         );
         foreach ($plugin_iterator as $plugin) {

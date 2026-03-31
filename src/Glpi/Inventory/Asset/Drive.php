@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,16 +36,20 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
+use Item_DeviceDrive;
+use stdClass;
+
+use function Safe\preg_match;
 
 class Drive extends Device
 {
     /** @var Conf */
     private Conf $conf;
 
-    private $harddrives;
-    private $prepared_harddrives = [];
+    private HardDrive $harddrives;
+    /** @var stdClass[] */
+    private array $prepared_harddrives = [];
 
     public function prepare(): array
     {
@@ -91,7 +95,9 @@ class Drive extends Device
     /**
      * Is current data a drive
      *
-     * @return boolean
+     * @param stdClass $data
+     *
+     * @return bool
      */
     public function isDrive($data)
     {
@@ -102,7 +108,7 @@ class Drive extends Device
             'reader',
             'sd[\s-]*card',
             'micro[\s-]*sd',
-            'mmc'
+            'mmc',
         ];
 
         foreach ($drives_regex as $regex) {
@@ -122,7 +128,7 @@ class Drive extends Device
     public function handle()
     {
         parent::handle();
-        if ($this->harddrives !== null) {
+        if (isset($this->harddrives)) {
             $this->harddrives->handleLinks();
             $this->harddrives->handle();
         }
@@ -137,7 +143,7 @@ class Drive extends Device
     /**
      * Get harddrives data
      *
-     * @return HardDrive[]
+     * @return stdClass[]
      */
     public function getPreparedHarddrives(): array
     {
@@ -146,6 +152,6 @@ class Drive extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceDrive::class;
+        return Item_DeviceDrive::class;
     }
 }

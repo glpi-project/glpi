@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,10 +35,9 @@
 use Glpi\DBAL\QueryExpression;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 /** Create registration_number field */
@@ -58,7 +56,7 @@ if (!$DB->fieldExists("glpi_entities", "registration_number")) {
 /** Replace -1 value for entities_id field */
 // Replace -1 value for root entity to be able to change type to unsigned.
 // Use max int signed value of mysql to be fairly certain not to be blocked because of the uniqueness key.
-$DB->update('glpi_entities', ['entities_id' => pow(2, 31) - 1], ['id' => '0']);
+$DB->update('glpi_entities', ['entities_id' => 2 ** 31 - 1], ['id' => '0']);
 
 $migration->changeField('glpi_entities', 'entities_id', 'entities_id', "int {$default_key_sign} DEFAULT '0'");
 $migration->migrationOneTable('glpi_entities'); // Ensure 'entities_id' is nullable.
@@ -86,7 +84,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
             [
                 // 0 value for root entity
                 'update'    => '0',
-                'condition' => 'WHERE `id` = 0'
+                'condition' => 'WHERE `id` = 0',
             ]
         );
         $migration->migrationOneTable('glpi_entities'); // Ensure strategy field is created to be able to fill it
@@ -126,7 +124,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
                 'after'     => "anonymize_support_agents",
                 'value'     => -2,               // Inherit as default value
                 'update'    => '1',              // Enabled for root entity
-                'condition' => 'WHERE `id` = 0'
+                'condition' => 'WHERE `id` = 0',
             ]
         );
     }
@@ -152,7 +150,7 @@ if (!$DB->fieldExists("glpi_entities", "certificates_alert_repeat_interval")) {
             'after'     => "send_certificates_alert_before_delay",
             'value'     => -2,               // Inherit as default value
             'update'    => '0',              // Disabled for root entity
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
 }

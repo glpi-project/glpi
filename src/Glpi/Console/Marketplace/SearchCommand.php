@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,10 @@
 
 namespace Glpi\Console\Marketplace;
 
-use GLPINetwork;
 use Glpi\Console\AbstractCommand;
 use Glpi\Marketplace\Controller;
 use Glpi\RichText\RichText;
+use GLPINetwork;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

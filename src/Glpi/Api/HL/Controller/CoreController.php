@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,14 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
@@ -49,47 +51,133 @@ use Glpi\Http\Response;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
+use Html;
+use JsonException;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Profile;
+use ProfileRight;
 use Session;
+use Throwable;
+use Transfer;
+use User;
+
+use function Safe\file_get_contents;
+use function Safe\preg_replace;
+use function Safe\strtotime;
 
 final class CoreController extends AbstractController
 {
     public static function getRawKnownSchemas(): array
     {
-        return [
-            'Session' => [
-                'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => [
-                    'current_time' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'user_id' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'use_mode' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'friendly_name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'real_name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'first_name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'default_entity' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'profiles' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
-                    'active_entities' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
-                    'active_profile' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'id' => ['type' => Doc\Schema::TYPE_INTEGER],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'interface' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
+        $transfer_keep_option = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'default' => 0,
+            'enum' => [0, 1],
+            'description' => <<<EOT
+- 0: Delete permanently
+- 1: Keep
+EOT,
+        ];
+        $transfer_clean_option = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'default' => 0,
+            'enum' => [0, 1, 2],
+            'description' => <<<EOT
+- 0: Keep
+- 1: Put in trashbin
+- 2: Delete permanently
+EOT,
+        ];
+        $transfer_connection_option = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'default' => 0,
+            'enum' => [0, 1, 2],
+            'description' => <<<EOT
+- 0: Delete permanently
+- 1: Disconnect
+- 2: Keep
+EOT,
+        ];
+
+        $session_schema = [
+            'x-version-introduced' => '2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'current_time' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user_id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'use_mode' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'friendly_name' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'real_name' => ['type' => Doc\Schema::TYPE_STRING],
+                'first_name' => ['type' => Doc\Schema::TYPE_STRING],
+                'default_entity' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'profiles' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
+                'active_entities' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
+                'active_profile' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        'interface' => ['type' => Doc\Schema::TYPE_STRING],
+                        'rights' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-version-introduced' => '2.2',
+                            'description' => 'Rights associated with the active profile. Each right value is an integer with the individual bitwise flags combined by OR depending on the specific right.',
+                            'properties' => [
+                                // Filled dynamically below
+                            ],
+                        ],
                     ],
-                    'active_entity' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'id' => ['type' => Doc\Schema::TYPE_INTEGER],
-                            'short_name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
-                        ]
-                    ]
-                ]
+                ],
+                'active_entity' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                        'short_name' => ['type' => Doc\Schema::TYPE_STRING],
+                        'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
+                        'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    ],
+                ],
             ],
+        ];
+        $all_right_names = array_keys(ProfileRight::getAllPossibleRights());
+        $rights_info = [];
+        foreach (Profile::getRightsForForm() as $forms) {
+            foreach ($forms as $groups) {
+                foreach ($groups as $rights) {
+                    foreach ($rights as $right) {
+                        if (!array_key_exists($right['field'], $rights_info)) {
+                            $rights_info[$right['field']] = $right;
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($all_right_names as $right_name) {
+            $right_prop = [
+                'type' => Doc\Schema::TYPE_INTEGER,
+            ];
+            if (array_key_exists($right_name, $rights_info)) {
+                $right_prop['description'] = $rights_info[$right_name]['label'] . ' rights. Possible values:';
+                $rights = $rights_info[$right_name]['rights'];
+                ksort($rights);
+                foreach ($rights as $right_bit => $right_label) {
+                    if (is_array($right_label)) {
+                        $right_label = $right_label['short'];
+                    }
+                    $right_prop['description'] .= "\n- " . $right_bit . ': ' . $right_label;
+                    $right_prop['enum'][] = $right_bit;
+                }
+
+                $right_prop['x-label'] = $rights_info[$right_name]['label'];
+                $right_prop['x-right-scope'] = $rights_info[$right_name]['scope'];
+            }
+            $session_schema['properties']['active_profile']['properties']['rights']['properties'][$right_name] = $right_prop;
+        }
+
+        return [
+            'Session' => $session_schema,
             'EntityTransferRecord' => [
                 'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
@@ -97,8 +185,45 @@ final class CoreController extends AbstractController
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'entity' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'options' => ['type' => Doc\Schema::TYPE_OBJECT],
-                ]
+                    'options' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'properties' => [
+                            'keep_ticket'         => $transfer_connection_option,
+                            'keep_networklink'    => $transfer_connection_option,
+                            'keep_reservation'    => $transfer_keep_option,
+                            'keep_history'        => $transfer_keep_option,
+                            'keep_device'         => $transfer_keep_option,
+                            'keep_infocom'        => $transfer_keep_option,
+                            'keep_dc_monitor'     => $transfer_keep_option,
+                            'clean_dc_monitor'    => $transfer_clean_option,
+                            'keep_dc_phone'       => $transfer_keep_option,
+                            'clean_dc_phone'      => $transfer_clean_option,
+                            'keep_dc_peripheral'  => $transfer_keep_option,
+                            'clean_dc_peripheral' => $transfer_clean_option,
+                            'keep_dc_printer'     => $transfer_keep_option,
+                            'clean_dc_printer'    => $transfer_clean_option,
+                            'keep_supplier'       => $transfer_keep_option,
+                            'clean_supplier'      => $transfer_clean_option,
+                            'keep_contact'        => $transfer_keep_option,
+                            'clean_contact'       => $transfer_clean_option,
+                            'keep_contract'       => $transfer_keep_option,
+                            'clean_contract'      => $transfer_clean_option,
+                            'keep_disk'           => $transfer_keep_option,
+                            'keep_software'       => $transfer_keep_option,
+                            'clean_software'      => $transfer_clean_option,
+                            'keep_document'       => $transfer_keep_option,
+                            'clean_document'      => $transfer_clean_option,
+                            'keep_cartridgeitem'  => $transfer_keep_option,
+                            'clean_cartridgeitem' => $transfer_clean_option,
+                            'keep_cartridge'      => $transfer_keep_option,
+                            'keep_consumable'     => $transfer_keep_option,
+                            'keep_certificate'    => $transfer_keep_option,
+                            'clean_certificate'   => $transfer_clean_option,
+                            'lock_updated_fields' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                            'keep_location'       => $transfer_keep_option,
+                        ],
+                    ],
+                ],
             ],
             'APIInformation' => [
                 'x-version-introduced' => '2.0',
@@ -113,11 +238,11 @@ final class CoreController extends AbstractController
                                 'api_version' => ['type' => Doc\Schema::TYPE_STRING],
                                 'version' => ['type' => Doc\Schema::TYPE_STRING],
                                 'endpoint' => ['type' => Doc\Schema::TYPE_STRING],
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -126,17 +251,17 @@ final class CoreController extends AbstractController
     #[Doc\Route(
         description: 'API Homepage. Displays the available API versions and a list of available routes. When logged in, more routes are displayed.',
         responses: [
-            '200' => [
-                'description' => 'API information',
-                'schema' => 'APIInformation'
-            ]
+            new Doc\Response(
+                schema: new Doc\SchemaReference('APIInformation'),
+                description: 'API information',
+            ),
         ]
     )]
     public function index(Request $request): Response
     {
         $data = [
             'message' => 'Welcome to GLPI API',
-            'api_versions' => Router::getAPIVersions()
+            'api_versions' => Router::getAPIVersions(),
         ];
 
         return new JSONResponse($data);
@@ -144,19 +269,17 @@ final class CoreController extends AbstractController
 
     #[Route(path: '/doc', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Displays the API documentation as a Swagger UI HTML page.',
-    )]
+    #[Doc\Route(description: 'Displays the API documentation as a Swagger UI HTML page.')]
     public function showDocumentation(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
-        $swagger_content .= \Html::script('/lib/swagger-ui.js');
-        $swagger_content .= \Html::css('/lib/swagger-ui.css');
-        $favicon = \Html::getPrefixedUrl('/pics/favicon.ico');
-        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
+        $swagger_content .= Html::script('/lib/swagger-ui.js');
+        $swagger_content .= Html::css('/lib/swagger-ui.css');
+        $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
+        $api_version = $this->getAPIVersion($request);
+        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/v' . $api_version . '/doc.json';
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
@@ -188,15 +311,13 @@ HTML;
         // Must allow caching since it is a large script, and the documentation won't update often (possibly when plugins change)
         return new Response(200, [
             'Content-Type' => 'text/html',
-            'Cache-Control' => 'public, max-age=86400'
+            'Cache-Control' => 'public, max-age=86400',
         ], $swagger_content);
     }
 
     #[Route(path: '/doc.json', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get the OpenAPI JSON schema.',
-    )]
+    #[Doc\Route(description: 'Get the OpenAPI JSON schema.')]
     public function getOpenAPISchema(Request $request): Response
     {
         $generator = new OpenAPIGenerator(Router::getInstance(), $this->getAPIVersion($request));
@@ -206,9 +327,7 @@ HTML;
 
     #[Route(path: '/getting-started', methods: ['GET'], security_level: Route::SECURITY_NONE, middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Displays the general API documentation to get started.',
-    )]
+    #[Doc\Route(description: 'Displays the general API documentation to get started.')]
     public function showGettingStarted(Request $request): Response
     {
         $documentation_file = GLPI_ROOT . '/resources/api_doc.MD';
@@ -225,7 +344,7 @@ HTML;
             $html_docs
         );
 
-        $content = \Html::includeHeader(
+        $content = Html::includeHeader(
             title: __('API Getting Started'),
             display: false,
         );
@@ -252,7 +371,7 @@ HTML;
                 // Filter out this route
                 $controller = $route->getController();
                 $controller_method = $route->getMethod();
-                if ($controller === __CLASS__ && $controller_method->getShortName() === 'defaultRoute') {
+                if ($controller === self::class && $controller_method->getShortName() === 'defaultRoute') {
                     continue;
                 }
                 $allowed_methods[] = $method;
@@ -268,17 +387,21 @@ HTML;
         description: 'A fallback for when no other endpoint matches the request. A 404 error will be shown.',
         methods: ['GET', 'POST', 'PATCH', 'PUT', "DELETE"],
         responses: [
-            '200' => [
-                'description' => 'Never returned',
-            ],
-            '404' => [
-                'description' => 'No route found for the requested path',
-            ]
+            new Doc\Response(
+                schema: null,
+                description: 'Never returned',
+                status_code: 200,
+            ),
+            new Doc\Response(
+                schema: null,
+                description: 'No route found for the requested path',
+                status_code: 404,
+            ),
         ]
     )]
     public function defaultRoute(Request $request): Response
     {
-        return new JSONResponse(null, 404);
+        return self::getNotFoundErrorResponse();
     }
 
     #[Route(path: '/{req}', methods: ['OPTIONS'], requirements: ['req' => '.*'], priority: -1, security_level: Route::SECURITY_NONE)]
@@ -292,7 +415,7 @@ HTML;
         $authenticated = Session::getLoginUserID() !== false;
         $allowed_methods = $authenticated ? $this->getAllowedMethodsForMatchedRoute($request) : ['GET', 'POST', 'PATCH', 'PUT', "DELETE"];
         if (count($allowed_methods) === 0) {
-            return new JSONResponse(null, 404);
+            return self::getNotFoundErrorResponse();
         }
         $response_headers = [];
         if ($authenticated) {
@@ -303,9 +426,16 @@ HTML;
         }
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             $response_headers['Access-Control-Allow-Headers'] = [
-                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Glpi-Session-Token', 'Glpi-User-Token'
+                'Content-Type', 'Authorization', 'Origin', 'Accept',
+                'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
+                'X-Debug-Mode',
             ];
+            if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
+                $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
+            }
         }
+        // Cache preflight responses for 10 minutes
+        $response_headers['Access-Control-Max-Age'] = '600';
         return new JSONResponse(null, 204, $response_headers);
     }
 
@@ -314,55 +444,55 @@ HTML;
     #[Doc\Route(
         description: 'Get information about the session',
         responses: [
-            [
-                'description'   => 'The session information',
-                'schema'        => 'Session'
-            ]
+            new Doc\Response(
+                schema: new Doc\SchemaReference('Session'),
+                description: 'The session information'
+            ),
         ]
     )]
     public function getSession(Request $request): Response
     {
-        /** @var {name: string, default: mixed}[] $allowed_keys_mapping */
+        /** @var array{name: string, default: mixed}[] $allowed_keys_mapping */
         $allowed_keys_mapping = [
             'glpi_currenttime' => [
                 'name' => 'current_time',
-                'default' => ''
+                'default' => '',
             ],
             'glpiID' => [
                 'name' => 'user_id',
-                'default' => -1
+                'default' => -1,
             ],
             'glpi_use_mode' => [
                 'name' => 'use_mode',
-                'default' => Session::NORMAL_MODE
+                'default' => Session::NORMAL_MODE,
             ],
             'glpifriendlyname' => [
                 'name' => 'friendly_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpiname' => [
                 'name' => 'name',
-                'default' => ''
+                'default' => '',
             ],
             'glpirealname' => [
                 'name' => 'real_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpifirstname' => [
                 'name' => 'first_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpidefault_entity' => [
                 'name' => 'default_entity',
-                'default' => -1
+                'default' => -1,
             ],
             'glpiprofiles' => [
                 'name' => 'profiles',
-                'default' => []
+                'default' => [],
             ],
             'glpiactiveentities' => [
                 'name' => 'active_entities',
-                'default' => []
+                'default' => [],
             ],
         ];
         $session = [];
@@ -377,23 +507,32 @@ HTML;
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
         ];
+
+        if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
+            $all_right_names = array_keys(ProfileRight::getAllPossibleRights());
+            foreach ($active_profile as $key => $value) {
+                if (in_array($key, $all_right_names, true)) {
+                    $session['active_profile']['rights'][$key] = (int) $value;
+                } else {
+                    $session['active_profile']['rights'][$key] = 0;
+                }
+            }
+        }
+
         $session['active_entity'] = [
             'id' => $_SESSION['glpiactive_entity'],
             'short_name' => $_SESSION['glpiactive_entity_shortname'],
             'complete_name' => $_SESSION['glpiactive_entity_name'],
-            'recursive' => $_SESSION['glpiactive_entity_recursive']
+            'recursive' => $_SESSION['glpiactive_entity_recursive'],
         ];
         return new JSONResponse($session);
     }
 
     #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'], middlewares: [CookieAuthMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Authorize the API client using the authorization code grant type.',
-    )]
+    #[Doc\Route(description: 'Authorize the API client using the authorization code grant type.')]
     public function authorize(Request $request): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         try {
             $auth_request = Server::getAuthorizationServer()->validateAuthorizationRequest($request);
@@ -402,7 +541,7 @@ HTML;
             if ($user_id === false) {
                 // Redirect to login page
                 $redirect_params = [
-                    'scope'         => implode(' ', array_map(static fn ($s) => $s->getIdentifier(), $auth_request->getScopes())),
+                    'scope'         => implode(' ', array_map(static fn($s) => $s->getIdentifier(), $auth_request->getScopes())),
                     'client_id'     => $auth_request->getClient()->getIdentifier(),
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
@@ -419,7 +558,7 @@ HTML;
             $auth_request->setUser($user);
             if (!$request->hasParameter('accept') && !$request->hasParameter('deny')) {
                 // Display the authorization page
-                $glpi_user = new \User();
+                $glpi_user = new User();
                 $glpi_user->getFromDB($user_id);
                 $authorize_form = TemplateRenderer::getInstance()->render('pages/oauth/authorize.html.twig', [
                     'auth_request' => $auth_request,
@@ -435,8 +574,8 @@ HTML;
             $response = Server::getAuthorizationServer()->completeAuthorizationRequest($auth_request, new Response());
             return $response;
         } catch (OAuthServerException $exception) {
-            return $exception->generateHttpResponse(new Response());
-        } catch (\Throwable $exception) {
+            return $exception->generateHttpResponse(new Response()); // @phpstan-ignore return.type (Response vs ResponseInterface)
+        } catch (Throwable $exception) {
             ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
@@ -444,9 +583,7 @@ HTML;
 
     #[Route(path: '/token', methods: ['POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get an OAuth 2.0 token'
-    )]
+    #[Doc\Route(description: 'Get an OAuth 2.0 token')]
     public function token(Request $request): Response
     {
         try {
@@ -454,8 +591,8 @@ HTML;
             $response = Server::getAuthorizationServer()->respondToAccessTokenRequest($request, new JSONResponse());
             return $response;
         } catch (OAuthServerException $exception) {
-            return $exception->generateHttpResponse(new JSONResponse());
-        } catch (\Throwable $exception) {
+            return $exception->generateHttpResponse(new JSONResponse()); // @phpstan-ignore return.type (Response vs ResponseInterface)
+        } catch (Throwable $exception) {
             ErrorHandler::logCaughtException($exception);
             return new JSONResponse(null, 500);
         }
@@ -469,18 +606,16 @@ HTML;
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
-    #[Route(path: '/status', methods: ['GET'], tags: ['Status'])]
+    #[Route(path: '/status', methods: ['GET'], tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a list of all GLPI system status checker services.',
-    )]
+    #[Doc\Route(description: 'Get a list of all GLPI system status checker services.')]
     public function status(Request $request): Response
     {
         $services = array_keys(StatusChecker::getServices());
         $data = [
             'all' => [
                 'href' => '/status/all',
-            ]
+            ],
         ];
         foreach ($services as $service) {
             $data[$service] = [
@@ -490,25 +625,25 @@ HTML;
         return new JSONResponse($data);
     }
 
-    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'])]
+    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the the status of all GLPI system status checker services',
         responses: [
-            [
-                'schema'        => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'status' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
-                            ],
-                        ]
-                    ]
-                ]
-            ]
+            new Doc\Response(
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_ARRAY,
+                    items: new Doc\Schema(
+                        type: Doc\Schema::TYPE_OBJECT,
+                        properties: [
+                            'status' => new Doc\Schema(
+                                type: Doc\Schema::TYPE_STRING,
+                                enum: [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
+                            ),
+                        ],
+                    )
+                )
+            ),
         ]
     )]
     public function statusAllServices(Request $request): Response
@@ -519,23 +654,23 @@ HTML;
     }
 
     #[Route(path: '/status/{service}', methods: ['GET'], requirements: [
-        'service' => '[a-zA-Z0-9_]+'
-    ], priority: 9, tags: ['Status'])]
+        'service' => '[a-zA-Z0-9_]+',
+    ], priority: 9, tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the status of a GLPI system status checker service. Use "all" as the service to get the full system status.',
         responses: [
-            [
-                'schema'        => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'properties' => [
-                        'status' => [
-                            'type' => Doc\Schema::TYPE_STRING,
-                            'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
-                        ],
-                    ]
-                ]
-            ]
+            new Doc\Response(
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'status' => new Doc\Schema(
+                            type: Doc\Schema::TYPE_STRING,
+                            enum: [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA]
+                        ),
+                    ],
+                )
+            ),
         ]
     )]
     public function statusByService(Request $request): Response
@@ -553,27 +688,24 @@ HTML;
     #[Doc\Route(
         description: 'Transfer one or more items to another entity',
         parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'EntityTransferRecord[]'
-            ]
+            new Doc\Parameter(
+                name: '_',
+                schema: new Doc\SchemaReference('EntityTransferRecord[]'),
+                location: Doc\Parameter::LOCATION_BODY,
+            ),
         ]
     )]
     public function transferEntity(Request $request): Response
     {
         $params = $request->getParameters();
-        $transfer = new \Transfer();
+        $transfer = new Transfer();
 
-        $transfer_records = array_filter($params, static function ($param) {
+        $transfer_records = array_filter($params, static fn($param)
             // must have itemtype, items_id and entity keys
-            return is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']);
-        });
+            => is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']));
         $original_record_count = count($transfer_records);
         // Filter out any records that would transfer to an entity the user doesn't have access to
-        $transfer_records = array_filter($transfer_records, static function ($record) {
-            return Session::haveAccessToEntity((int) $record['entity']);
-        });
+        $transfer_records = array_filter($transfer_records, static fn($record) => Session::haveAccessToEntity((int) $record['entity']));
         $is_partial_transfer = $original_record_count !== count($transfer_records);
 
         $controllers = Router::getInstance()->getControllers();
@@ -596,7 +728,7 @@ HTML;
 
             try {
                 $options_hash = md5(json_encode($options, JSON_THROW_ON_ERROR));
-            } catch (\JsonException) {
+            } catch (JsonException) {
                 $options_hash = mt_rand();
             }
 
@@ -623,5 +755,50 @@ HTML;
         }
 
         return new JSONResponse(null, $is_partial_transfer ? 202 : 200);
+    }
+
+    #[Route(path: '/Session/EntityTree', methods: ['GET'], tags: ['Session'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\Route(
+        description: 'Get the entity tree for the current session, with the active entity selected and its ancestors expanded.',
+    )]
+    public function getSessionEntityTree(Request $request): JSONResponse
+    {
+        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+        $entitiestree = [];
+        foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+            $default_entity_id = $default_entity['id'];
+            $entitytree = $default_entity['is_recursive'] ? Entity::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
+
+            $adapt_tree = static function (&$entities) use (&$adapt_tree) {
+                foreach ($entities as $entities_id => &$entity) {
+                    $entity['key'] = $entities_id;
+                    $entity['label'] = $entity['name'];
+                    $entity['tree'] ??= [];
+                    $entity['children'] = array_values($adapt_tree($entity['tree']));
+                    unset($entity['name'], $entity['tree']);
+                }
+                unset($entity);
+                return $entities;
+            };
+            $adapt_tree($entitytree);
+
+            $entitiestree = array_merge($entitiestree, $entitytree);
+        }
+        $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
+            foreach ($entities as &$entity) {
+                if (isset($ancestors[$entity['key']])) {
+                    $entity['expanded'] = 'true';
+                }
+                if ($entity['key'] == $_SESSION['glpiactive_entity']) {
+                    $entity['selected'] = 'true';
+                }
+                if (isset($entity['children'])) {
+                    $select_tree($entity['children']);
+                }
+            }
+        };
+        $select_tree($entitiestree);
+        return new JSONResponse($entitiestree);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,8 +37,12 @@ namespace Glpi\Cache;
 
 use DirectoryIterator;
 use Glpi\Kernel\Kernel;
+use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
+use Safe\Exceptions\FilesystemException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
@@ -46,6 +50,13 @@ use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Toolbox;
+
+use function Safe\glob;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\rmdir;
+use function Safe\unlink;
 
 class CacheManager
 {
@@ -60,12 +71,6 @@ class CacheManager
      * @var string
      */
     public const CONTEXT_TRANSLATIONS = 'translations';
-
-    /**
-     * GLPI installer cache context.
-     * @var string
-     */
-    public const CONTEXT_INSTALLER = 'installer';
 
     /**
      * Memcached scheme.
@@ -105,8 +110,12 @@ class CacheManager
      */
     private $cache_dir;
 
-    public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR)
+    public function __construct(string $config_dir = GLPI_CONFIG_DIR, ?string $cache_dir = null)
     {
+        if ($cache_dir === null) {
+            $cache_dir = Kernel::getCacheRootDir();
+        }
+
         $this->config_dir = $config_dir;
         $this->cache_dir = $cache_dir;
     }
@@ -138,10 +147,10 @@ class CacheManager
     public function setConfiguration(string $context, $dsn, array $options = []): bool
     {
         if (!$this->isContextValid($context, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
+            throw new InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
         }
         if (!$this->isDsnValid($dsn)) {
-            throw new \InvalidArgumentException(sprintf('Invalid DSN: %s.', json_encode($dsn, JSON_UNESCAPED_SLASHES)));
+            throw new InvalidArgumentException(sprintf('Invalid DSN: %s.', json_encode($dsn, JSON_UNESCAPED_SLASHES)));
         }
 
         $config = $this->getRawConfig();
@@ -163,7 +172,7 @@ class CacheManager
     public function unsetConfiguration(string $context): bool
     {
         if (!$this->isContextValid($context, true)) {
-            throw new \InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
+            throw new InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
         }
 
         $config = $this->getRawConfig();
@@ -188,13 +197,13 @@ class CacheManager
                 $client = MemcachedAdapter::createConnection($dsn, $options);
                 $stats = $client->getStats();
                 if ($stats === false) {
-                   // Memcached::getStats() will return false if server cannot be reached.
-                    throw new \RuntimeException('Unable to connect to Memcached server.');
+                    // Memcached::getStats() will return false if server cannot be reached.
+                    throw new RuntimeException('Unable to connect to Memcached server.');
                 }
                 break;
             case self::SCHEME_REDIS:
             case self::SCHEME_REDISS:
-               // Init Redis connection to find potential connection errors.
+                // Init Redis connection to find potential connection errors.
                 $options['lazy'] = false; //force instant connection
                 RedisAdapter::createConnection($dsn, $options);
                 break;
@@ -218,15 +227,14 @@ class CacheManager
     /**
      * Get cache storage adapter for given context.
      *
-     * @return \Psr\Cache\CacheItemPoolInterface
+     * @return CacheItemPoolInterface
      */
     public function getCacheStorageAdapter(string $context): CacheItemPoolInterface
     {
-        /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
 
         if (!$this->isContextValid($context)) {
-            throw new \InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
+            throw new InvalidArgumentException(sprintf('Invalid context: "%s".', $context));
         }
 
         $raw_config = $this->getRawConfig();
@@ -236,15 +244,13 @@ class CacheManager
             $namespace_prefix .= '-';
         }
 
-        if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
-            // 'translations' and 'installer' contexts are not supposed to be configured
+        if ($context === self::CONTEXT_TRANSLATIONS) {
+            // 'translations' context is not supposed to be configured
             // and should always use a filesystem adapter.
-            // Append GLPI version to namespace to ensure that these caches are not containing data
-            // from a previous version.
-            $namespace = $this->normalizeNamespace($namespace_prefix . $context . '-' . GLPI_VERSION);
+            $namespace = $this->normalizeNamespace($namespace_prefix . $context);
             $adapter = new FilesystemAdapter($namespace, 0, $this->cache_dir);
         } elseif (!array_key_exists($context, $raw_config['contexts'])) {
-            // Default to filesystem, inside GLPI_CACHE_DIR/$context.
+            // Default to filesystem, in a different directory for each context.
             $adapter = new FilesystemAdapter($this->normalizeNamespace($namespace_prefix . $context), 0, $this->cache_dir);
         } else {
             $context_config = $raw_config['contexts'][$context];
@@ -252,7 +258,7 @@ class CacheManager
             $dsn       = $context_config['dsn'];
             $options   = $context_config['options'] ?? [];
             $scheme    = $this->extractScheme($dsn);
-            $namespace = $this->normalizeNamespace($namespace_prefix .  $context);
+            $namespace = $this->normalizeNamespace($namespace_prefix . $context);
 
             switch ($scheme) {
                 case self::SCHEME_MEMCACHED:
@@ -271,7 +277,7 @@ class CacheManager
                     break;
 
                 default:
-                    throw new \RuntimeException(sprintf('Invalid cache DSN %s.', var_export($dsn, true)));
+                    throw new RuntimeException(sprintf('Invalid cache DSN %s.', var_export($dsn, true)));
             }
         }
 
@@ -302,16 +308,6 @@ class CacheManager
     }
 
     /**
-     * Get installer cache instance.
-     *
-     * @return CacheInterface
-     */
-    public function getInstallerCacheInstance(): CacheInterface
-    {
-        return $this->getCacheInstance(self::CONTEXT_INSTALLER);
-    }
-
-    /**
      * Reset all caches.
      *
      * @return bool
@@ -335,12 +331,20 @@ class CacheManager
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
             foreach ($tpl_files as $tpl_file) {
-                $success = unlink($tpl_file) && $success;
+                try {
+                    unlink($tpl_file);
+                } catch (FilesystemException $e) {
+                    $success = false;
+                }
             }
 
             $tpl_dirs = glob($tpl_cache_dir . '/*', GLOB_ONLYDIR);
             foreach ($tpl_dirs as $tpl_dir) {
-                $success = rmdir($tpl_dir) && $success;
+                try {
+                    rmdir($tpl_dir);
+                } catch (FilesystemException $e) {
+                    $success = false;
+                }
             }
         }
 
@@ -354,20 +358,19 @@ class CacheManager
      */
     public function getKnownContexts(): array
     {
-       // Core contexts
+        // Core contexts
         $contexts = [
-            'core',
-            'installer',
-            'translations',
+            self::CONTEXT_CORE,
+            self::CONTEXT_TRANSLATIONS,
         ];
 
-       // Contexts defined in configuration.
-       // These may not be find in directories if they are configured to use a remote service.
+        // Contexts defined in configuration.
+        // These may not be find in directories if they are configured to use a remote service.
         $config = $this->getRawConfig();
         array_push($contexts, ...array_keys($config['contexts']));
 
-       // Context found from cache directories.
-       // These may not be find in configuration if they are using default configuration.
+        // Context found from cache directories.
+        // These may not be find in configuration if they are using default configuration.
         $directory_iterator = new DirectoryIterator($this->cache_dir);
         foreach ($directory_iterator as $file) {
             if ($file->isDot() || !$file->isDir() || !preg_match('/^plugin_/', $file->getFilename())) {
@@ -407,7 +410,7 @@ class CacheManager
                 return null; // Mixed schemes are not allowed
             }
             $scheme = reset($schemes);
-           // Only Memcached system accept multiple DSN.
+            // Only Memcached system accept multiple DSN.
             return $scheme === self::SCHEME_MEMCACHED ? $scheme : null;
         }
 
@@ -421,7 +424,7 @@ class CacheManager
         }
         $scheme = $matches['scheme'];
 
-        return in_array($scheme, array_keys($this->getAvailableAdapters())) ? $scheme : null;
+        return in_array($scheme, self::getAvailableAdaptersSchemes(), true) ? $scheme : null;
     }
 
     /**
@@ -444,8 +447,7 @@ class CacheManager
                     continue;
                 }
                 if (
-                    !$this->isContextValid($context, true)
-                    || !is_array($context_config)
+                    !is_array($context_config)
                     || !array_key_exists('dsn', $context_config)
                     || !$this->isDsnValid($context_config['dsn'])
                     || (array_key_exists('options', $context_config) && !is_array($context_config['options']))
@@ -496,8 +498,7 @@ PHP;
         $core_contexts = ['core'];
 
         if (!$only_configurable) {
-           // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
-            $core_contexts[] = self::CONTEXT_INSTALLER;
+            // 'translations' cache storage cannot not be configured (it always use the filesystem storage)
             $core_contexts[] = self::CONTEXT_TRANSLATIONS;
         }
 
@@ -528,11 +529,11 @@ PHP;
                 return false; // Mixed schemes are not allowed
             }
 
-           // Only Memcached system accept multiple DSN.
+            // Only Memcached system accept multiple DSN.
             return reset($schemes) === self::SCHEME_MEMCACHED;
         }
 
-        return in_array($this->extractScheme($dsn), array_keys($this->getAvailableAdapters()));
+        return in_array($this->extractScheme($dsn), self::getAvailableAdaptersSchemes(), true);
     }
 
     /**
@@ -553,18 +554,39 @@ PHP;
 
     /**
      * Returns a list of available adapters.
+     *
+     * @return self::SCHEME_*[]
+     */
+    private static function getAvailableAdaptersSchemes(): array
+    {
+        return [
+            self::SCHEME_MEMCACHED,
+            self::SCHEME_REDIS,
+            self::SCHEME_REDISS,
+        ];
+    }
+
+    /**
+     * Returns a list of available adapters.
      * Keys are adapter schemes (see self::SCHEME_*).
      * Values are translated names.
      *
-     * @return array
+     * @return array<self::SCHEME_*, string>
      */
     public static function getAvailableAdapters(): array
     {
-        return [
-            self::SCHEME_MEMCACHED  => __('Memcached'),
-            self::SCHEME_REDIS      => __('Redis (TCP)'),
-            self::SCHEME_REDISS     => __('Redis (TLS)'),
-        ];
+        $adapters = [];
+
+        foreach (self::getAvailableAdaptersSchemes() as $scheme) {
+            $adapters[$scheme] = match ($scheme) {
+                self::SCHEME_MEMCACHED  => __('Memcached'),
+                self::SCHEME_REDIS      => __('Redis (TCP)'),
+                self::SCHEME_REDISS     => __('Redis (TLS)'),
+                default => throw new InvalidArgumentException(sprintf('Invalid cache adapter scheme: "%s".', $scheme))
+            };
+        }
+
+        return $adapters;
     }
 
     /**
@@ -584,7 +606,7 @@ PHP;
 
         // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
         // This command will clear the Symfony cache gracefully.
-        $app = new \Symfony\Bundle\FrameworkBundle\Console\Application($localKernel);
+        $app = new Application($localKernel);
         $app->setAutoExit(false);
         $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
     }

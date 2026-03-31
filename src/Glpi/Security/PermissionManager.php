@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -56,7 +56,6 @@ final class PermissionManager
 
     public function getAllEntities(int $users_id): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $profile_table = Profile::getTable();
@@ -68,12 +67,12 @@ final class PermissionManager
                     'ON'    => [
                         $profile_table => 'id',
                         Profile_User::getTable() => 'profiles_id',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE' => [
                 Profile_User::getTableField('users_id') => $users_id,
-            ]
+            ],
         ]);
         $entities = [];
         foreach ($iterator as $row) {

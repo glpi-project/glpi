@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,11 @@
 namespace Glpi\Form\ServiceCatalog;
 
 use CommonGLPI;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
+use LogicException;
 use Override;
 use Session;
-use Ticket;
 
 final class ServiceCatalog extends CommonGLPI
 {
@@ -57,10 +57,10 @@ final class ServiceCatalog extends CommonGLPI
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
-        // This tab is only available for forms
-        if (!($item instanceof Form)) {
+        // This tab is only available for service catalog leafs
+        if (!($item instanceof ServiceCatalogLeafInterface)) {
             return "";
         }
 
@@ -73,14 +73,14 @@ final class ServiceCatalog extends CommonGLPI
         $tabnum = 1,
         $withtemplate = 0
     ) {
-        // This tab is only available for forms
-        if (!($item instanceof Form)) {
+        // This tab is only available for service catalog leafs
+        if (!($item instanceof ServiceCatalogLeafInterface)) {
             return false;
         }
 
         $twig = TemplateRenderer::getInstance();
         echo $twig->render('pages/admin/form/service_catalog_tab.html.twig', [
-            'form' => $item,
+            'item' => $item,
             'icon' => self::getIcon(),
         ]);
 
@@ -90,7 +90,6 @@ final class ServiceCatalog extends CommonGLPI
     #[Override]
     public static function getSearchURL($full = true): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $full ? $CFG_GLPI['root_doc'] . '/ServiceCatalog' : '/ServiceCatalog';
@@ -99,6 +98,17 @@ final class ServiceCatalog extends CommonGLPI
     #[Override]
     public static function canView(): bool
     {
-        return Session::haveRight(Ticket::$rightname, CREATE);
+        $session_info = Session::getCurrentSessionInfo();
+        if ($session_info === null) {
+            // Unlogged users can't render the service catalog
+            return false;
+        }
+
+        $entity = Entity::getById($session_info->getCurrentEntityId());
+        if (!$entity) {
+            throw new LogicException(); // Can't happen
+        }
+
+        return $entity->isServiceCatalogEnabled();
     }
 }

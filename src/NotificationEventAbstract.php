@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,11 +47,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
         $emitter = null,
         ?CommonDBTM $trigger = null
     ) {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
         if ($CFG_GLPI['notifications_' . $options['mode']]) {
             $entity = $notificationtarget->getEntity();
             if (isset($options['processed'])) {
@@ -71,16 +67,13 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                 'data'               => $data,
                 'notificationtarget' => $notificationtarget,
                 'template'           => $template,
-                'notify_me'          => $notify_me
+                'notify_me'          => $notify_me,
             ]);
 
-           // get original timezone
-            $orig_tz = $DB->guessTimezone();
-
-           //Foreach notification targets
+            //Foreach notification targets
             foreach ($targets as $target) {
-                 //Get all users affected by this notification
-                 $notificationtarget->addForTarget($target, $options);
+                //Get all users affected by this notification
+                $notificationtarget->addForTarget($target, $options);
 
                 foreach ($notificationtarget->getTargets() as $users_infos) {
                     $key = $users_infos[static::getTargetFieldName()];
@@ -92,20 +85,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                         if (!isset($processed[$users_infos['language']][$key])) {
                             //If ther user's language is the same as the template's one
                             $options['item'] = $item;
-
-                            // set timezone from user
-                            // as we work on a copy of the item object, no reload is required after
-                            if (
-                                isset($users_infos['additionnaloption']['timezone'])
-                                && is_a($options['item'], CommonDBTM::class, true) // item may be a `CommonGLPI`
-                            ) {
-                                /** @var CommonDBTM $item */
-                                $DB->setTimezone($users_infos['additionnaloption']['timezone']);
-                                // reload object for get timezone correct dates
-                                $options['item']->getFromDB($item->fields['id']);
-
-                                $DB->setTimezone($orig_tz);
-                            }
 
                             if (
                                 $tid = $template->getTemplateByLanguage(
@@ -145,11 +124,11 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $notificationtarget->getFromDB($target['id']);
                                     echo "<tr class='tab_bg_2'><td>" . htmlescape($label) . "</td>";
                                     echo "<td>" . htmlescape($notificationtarget->getNameID()) . "</td>";
-                                    echo "<td>" . sprintf(
-                                        __s('%1$s (%2$s)'),
+                                    echo "<td>" . htmlescape(sprintf(
+                                        __('%1$s (%2$s)'),
                                         $template->getName(),
-                                        htmlescape($users_infos['language'])
-                                    ) . "</td>";
+                                        $users_infos['language']
+                                    )) . "</td>";
                                     echo "<td>" . htmlescape($options['mode']) . "</td>";
                                     echo "<td>" . htmlescape($key) . "</td>";
                                     echo "</tr>";
@@ -169,12 +148,19 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
     /**
      * Extra steps raising
      *
-     * @param array $params All parameters send to raise() method
+     * @param array{
+     *              notificationtarget: NotificationTarget<covariant CommonGLPI>,
+     *              event: string,
+     *              options: array<mixed>,
+     *              data: array<mixed>,
+     *              template: NotificationTemplate,
+     *              notify_me: bool,
+     *     } $params All parameters send to raise() method
      *
      * @return void
      */
     protected static function extraRaise($params)
     {
-       //does nothing; designed to be overriden
+        //does nothing; designed to be overriden
     }
 }

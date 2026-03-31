@@ -1,0 +1,111 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 187,
+            "uuid": "0acfe9c9-d3d1-43bc-8f86-d2b06fef4f7f",
+            "name": "Test form",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 168,
+                    "uuid": "f2b0db69-40bf-4a89-a2b8-fbf623d37062",
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [
+                {
+                    "id": 31,
+                    "uuid": "2793d35b-62af-437b-a39e-3eca75fa9087",
+                    "name": "My comment",
+                    "description": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "section_id": 168,
+                    "visibility_strategy": "visible_if",
+                    "conditions": [
+                        {
+                            "item_uuid": "9cc1828e-97d1-4e2b-8f15-9cab6222fe47",
+                            "item_type": "question",
+                            "value_operator": "equals",
+                            "logic_operator": "and",
+                            "value": {
+                                "itemtype": "Computer",
+                                "items_id": "My computer"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "questions": [
+                {
+                    "id": 212,
+                    "uuid": "9cc1828e-97d1-4e2b-8f15-9cab6222fe47",
+                    "name": "My item question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": null,
+                    "extra_data": {
+                        "itemtype": "Computer",
+                        "root_items_id": 0,
+                        "subtree_depth": 0,
+                        "selectable_tree_root": false
+                    },
+                    "section_id": 168,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 172,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                },
+                {
+                    "itemtype": "Computer",
+                    "name": "My computer"
+                }
+            ]
+        }
+    ]
+}

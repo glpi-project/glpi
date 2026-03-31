@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Glpi\Http\RedirectResponse;
 use Glpi\Mail\SMTP\OauthConfig;
 
 Session::checkRight("config", UPDATE);
@@ -56,8 +59,8 @@ if (isset($_POST["update"])) {
             try {
                 $auth_url = $provider->getAuthorizationUrl();
                 $_SESSION['smtp_oauth2_state'] = $provider->getState();
-                Html::redirect($auth_url);
-            } catch (\Throwable $e) {
+                return new RedirectResponse($auth_url);
+            } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(_x('oauth', 'Authorization failed with error: %s'), $e->getMessage())),

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
- /**
-  * Helper class that contains method to handle password history validation or
-  * change
-  *
-  * Implemented temporarily as a singleton, should become some kind of service
-  * once GLPI support depencency injection.
-  */
+/**
+ * Helper class that contains method to handle password history validation or
+ * change
+ *
+ * Implemented temporarily as a singleton, should become some kind of service
+ * once GLPI support depencency injection.
+ */
 final class PasswordHistory
 {
     /**
@@ -103,7 +103,7 @@ final class PasswordHistory
                 return false;
             }
 
-            // History might contain more entries than configurated (skip them)
+            // History might contain more entries than configured (skip them)
             $passwords_checked_count++;
             if ($passwords_checked_count == $length) {
                 break;
@@ -119,16 +119,16 @@ final class PasswordHistory
      * Must be called after a user password is updated
      *
      * @param User   $user
-     * @param string $password Previous user's password, which has just been replaced
+     * @param string|null $password Previous user's password, which has just been replaced
      *
      * @return bool
      */
-    public function updatePasswordHistory(User $user, string $password): bool
+    public function updatePasswordHistory(User $user, ?string $password): bool
     {
-        // No password change
         if (empty($password)) {
-            trigger_error("Unexpected empty password has not been added to passwords history.", E_USER_WARNING);
-            return false;
+            // There is no previous password to store. This is a normal case if a user is created without setting the password.
+            // Login attempts with an empty password are not accepted by Auth::validateLogin()
+            return true;
         }
 
         // Here $password should always be a hash and not a "real" password
@@ -176,9 +176,7 @@ final class PasswordHistory
     /**
      * Singleton constructor
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the number of passwords stored in glpi_users.password_history that
@@ -195,7 +193,6 @@ final class PasswordHistory
      */
     private function getPasswordHistoryLengthToValidate(): int
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return ($CFG_GLPI['non_reusable_passwords_count'] ?? 1) - 1;
     }

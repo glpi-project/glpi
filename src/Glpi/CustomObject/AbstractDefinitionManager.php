@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,6 +34,8 @@
 
 namespace Glpi\CustomObject;
 
+use function Safe\spl_autoload_register;
+
 /**
  * Abstract class for custom object definition managers
  * @template ConcreteDefinition of AbstractDefinition
@@ -42,24 +44,25 @@ abstract class AbstractDefinitionManager
 {
     /**
      * Definitions cache.
-     * @var array
-     * @phpstan-var array<class-string<ConcreteDefinition>, array<int, ConcreteDefinition>>
+     * @var array<int, ConcreteDefinition>
      */
-    private array $definitions_data = [];
+    private array $definitions = [];
 
+    /**
+     * @phpstan-return static<ConcreteDefinition>
+     */
     abstract public static function getInstance(): self;
 
     /**
-     * @return class-string<AbstractDefinition>
-     * @phpstan-return class-string<ConcreteDefinition>
+     * @phpstan-return ConcreteDefinition
      */
-    abstract public static function getDefinitionClass(): string;
+    abstract public static function getDefinitionClassInstance(): AbstractDefinition;
 
     /**
-     * Returns the list of reserved system names
-     * @return array
+     * Returns the regex pattern of reserved system names
+     * @return string
      */
-    abstract public function getReservedSystemNames(): array;
+    abstract public function getReservedSystemNamesPattern(): string;
 
     /**
      * Register the class autoload function.
@@ -67,7 +70,13 @@ abstract class AbstractDefinitionManager
      */
     final public function registerAutoload(): void
     {
-        spl_autoload_register([$this, 'autoloadClass']);
+        spl_autoload_register(
+            function ($classname) {
+                // Use `static::getInstance()` to be sure that the autoloader will use the current instance in testing context
+                // instead of the instance that was the current one during the GLPI boot.
+                static::getInstance()->autoloadClass($classname);
+            }
+        );
     }
 
     /**
@@ -79,13 +88,34 @@ abstract class AbstractDefinitionManager
     abstract public function autoloadClass(string $classname): void;
 
     /**
-     * Boostrap all the active definitions.
+     * Boot the definitions.
      */
-    final public function bootstrapDefinitions(): void
+    final public function bootDefinitions(): void
     {
+        $definition_object = static::getDefinitionClassInstance();
+
+        $this->definitions = [];
+
+        $definitions_data = getAllDataFromTable($definition_object::getTable());
+        foreach ($definitions_data as $definition_data) {
+            $definition = new $definition_object();
+            $definition->getFromResultSet($definition_data);
+            $this->registerDefinition($definition);
+        }
+
+        // Bootstrap definitions
         foreach ($this->getDefinitions(true) as $definition) {
             $this->bootstrapDefinition($definition);
         }
+    }
+
+    /**
+     * Register a definition.
+     * @phpstan-param ConcreteDefinition $definition
+     */
+    public function registerDefinition(AbstractDefinition $definition): void
+    {
+        $this->definitions[$definition->fields['system_name']] = $definition;
     }
 
     /**
@@ -94,18 +124,13 @@ abstract class AbstractDefinitionManager
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
-    public function bootstrapDefinition(AbstractDefinition $definition)
-    {
-    }
+    public function bootstrapDefinition(AbstractDefinition $definition) {}
 
     final public function getCustomObjectClassNames(bool $with_namespace = true): array
     {
         $classes = [];
 
-        foreach ($this->getDefinitions() as $definition) {
-            if (!$definition->isActive()) {
-                continue;
-            }
+        foreach ($this->getDefinitions(true) as $definition) {
             $classes[] = $definition->getCustomObjectClassName($with_namespace);
         }
 
@@ -128,8 +153,7 @@ abstract class AbstractDefinitionManager
      */
     final public function clearDefinitionsCache(): void
     {
-        $definition_class = static::getDefinitionClass();
-        unset($this->definitions_data[$definition_class]);
+        $this->definitions = [];
     }
 
     /**
@@ -141,23 +165,13 @@ abstract class AbstractDefinitionManager
      */
     final public function getDefinitions(bool $only_active = false): array
     {
-        $definition_class = static::getDefinitionClass();
-        if (!array_key_exists($definition_class, $this->definitions_data)) {
-            $this->definitions_data[$definition_class] = getAllDataFromTable($definition_class::getTable());
+        if (!$only_active) {
+            return $this->definitions;
         }
 
-        $definitions = [];
-        foreach ($this->definitions_data[$definition_class] as $definition_data) {
-            if ($only_active && (bool) $definition_data['is_active'] !== true) {
-                continue;
-            }
-
-            $system_name = $definition_data['system_name'];
-            $definition = new $definition_class();
-            $definition->getFromResultSet($definition_data);
-            $definitions[$system_name] = $definition;
-        }
-
-        return $definitions;
+        return \array_filter(
+            $this->definitions,
+            fn(AbstractDefinition $definition) => $definition->isActive()
+        );
     }
 }

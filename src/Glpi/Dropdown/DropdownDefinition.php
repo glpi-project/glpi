@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,11 +36,12 @@ namespace Glpi\Dropdown;
 
 use CommonDropdown;
 use CommonGLPI;
+use DisplayPreference;
 use Glpi\CustomObject\AbstractDefinition;
 use Session;
 
 /**
- * @extends AbstractDefinition<\Glpi\Dropdown\Dropdown>
+ * @extends AbstractDefinition<Dropdown>
  */
 final class DropdownDefinition extends AbstractDefinition
 {
@@ -64,6 +65,14 @@ final class DropdownDefinition extends AbstractDefinition
         return 'Glpi\\CustomDropdown';
     }
 
+    public static function getCustomObjectClassSuffix(): string
+    {
+        return 'Dropdown';
+    }
+
+    /**
+     * @return class-string<DropdownDefinitionManager>
+     */
     public static function getDefinitionManagerClass(): string
     {
         return DropdownDefinitionManager::class;
@@ -74,7 +83,7 @@ final class DropdownDefinition extends AbstractDefinition
      *
      * @param bool $with_namespace
      * @return string
-     * @phpstan-return class-string<\Glpi\Dropdown\Dropdown>
+     * @phpstan-return class-string<Dropdown>
      */
     public function getDropdownClassName(bool $with_namespace = true): string
     {
@@ -162,27 +171,13 @@ final class DropdownDefinition extends AbstractDefinition
         $prefs = [
             14, // Name
         ];
-        $pref = new \DisplayPreference();
+        $pref = new DisplayPreference();
         foreach ($prefs as $field) {
             $pref->add([
                 'itemtype' => $this->getDropdownClassName(),
                 'num'      => $field,
                 'users_id' => 0,
             ]);
-        }
-    }
-
-    public function cleanDBonPurge()
-    {
-        $related_classes = [
-            $this->getDropdownClassName(),
-        ];
-        foreach ($related_classes as $classname) {
-            (new $classname())->deleteByCriteria(
-                ['dropdowns_dropdowndefinitions_id' => $this->getID()],
-                force: true,
-                history: false
-            );
         }
     }
 }

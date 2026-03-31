@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,16 +34,15 @@
  */
 
 /**
- * @since 9.2
- */
-
-
-
-/**
  * NotificationTargetSoftwareLicense Class
+ *
+ * @extends NotificationTarget<Certificate>
+ *
+ * @since 9.2
  **/
 class NotificationTargetCertificate extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarm on expired certificate')];
@@ -61,6 +60,7 @@ class NotificationTargetCertificate extends NotificationTarget
         );
     }
 
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
 
@@ -120,7 +120,7 @@ class NotificationTargetCertificate extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
 
@@ -135,14 +135,14 @@ class NotificationTargetCertificate extends NotificationTarget
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'certificates',
             'label'   => __('Certificates list (deprecated; contains only one element)'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
         asort($this->tag_descriptions);

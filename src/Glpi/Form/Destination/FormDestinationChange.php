@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,13 +35,37 @@
 namespace Glpi\Form\Destination;
 
 use Change;
+use CommonITILObject;
+use Glpi\Form\Destination\CommonITILField\BackupPlanField;
+use Glpi\Form\Destination\CommonITILField\CheckListField;
+use Glpi\Form\Destination\CommonITILField\ControlsListField;
+use Glpi\Form\Destination\CommonITILField\DeploymentPlanField;
+use Glpi\Form\Destination\CommonITILField\ImpactsField;
 use Override;
 
 final class FormDestinationChange extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getTarget(): CommonITILObject
     {
-        return Change::class;
+        return new Change();
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
+    }
+
+    #[Override]
+    protected function defineConfigurableFields(): array
+    {
+        return array_merge(parent::defineConfigurableFields(), [
+            new ImpactsField(),
+            new ControlsListField(),
+            new DeploymentPlanField(),
+            new BackupPlanField(),
+            new CheckListField(),
+        ]);
     }
 }

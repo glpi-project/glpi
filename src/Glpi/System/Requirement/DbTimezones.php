@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
+use DBmysql;
+
 /**
  * @since 9.5.0
  */
@@ -43,11 +45,11 @@ class DbTimezones extends AbstractRequirement
     /**
      * DB instance.
      *
-     * @var \DBmysql
+     * @var DBmysql
      */
     private $db;
 
-    public function __construct(\DBmysql $db)
+    public function __construct(DBmysql $db)
     {
         parent::__construct(
             __('DB timezone data'),
@@ -60,40 +62,9 @@ class DbTimezones extends AbstractRequirement
 
     protected function check()
     {
-        $mysql_db_res = $this->db->request([
-            'FROM'   => 'information_schema.schemata',
-            'WHERE'  => [
-                'schema_name' => 'mysql'
-            ]
-        ]);
-        if ($mysql_db_res->count() === 0) {
-            $this->validated = false;
-            $this->validation_messages[] = __('Access to timezone database (mysql) is not allowed.');
-            return;
-        }
+        $available_timezones = $this->db->getTimezones();
 
-        $tz_table_res = $this->db->request([
-            'FROM'   => 'information_schema.tables',
-            'WHERE'  => [
-                'table_schema' => 'mysql',
-                'table_type'   => 'BASE TABLE',
-                'table_name'   => ['LIKE', 'time_zone_name']
-            ]
-        ]);
-        if ($tz_table_res->count() === 0) {
-            $this->validated = false;
-            $this->validation_messages[] = __('Access to timezone table (mysql.time_zone_name) is not allowed.');
-            return;
-        }
-
-        $iterator = $this->db->request(
-            [
-                'COUNT'  => 'cpt',
-                'FROM'   => 'mysql.time_zone_name',
-            ]
-        );
-        $result = $iterator->current();
-        if ($result['cpt'] === 0) {
+        if (count($available_timezones) === 0) {
             $this->validated = false;
             $this->validation_messages[] = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
             return;

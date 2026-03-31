@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,13 +34,14 @@
  */
 
 use Glpi\Dashboard\Widget;
+use Safe\DateTime;
 
 /**
  * Store network port metrics
  */
 class NetworkPortMetrics extends CommonDBChild
 {
-    public static $itemtype        = 'NetworkPort';
+    public static $itemtype = NetworkPort::class;
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;
 
@@ -80,21 +81,20 @@ class NetworkPortMetrics extends CommonDBChild
      */
     public function getMetrics(NetworkPort $netport, $user_filters = []): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-            'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')],
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id  => $netport->fields['id']
-            ] + $filters
+                static::$items_id  => $netport->fields['id'],
+            ] + $filters,
         ]);
 
         return iterator_to_array($iterator);
@@ -104,6 +104,8 @@ class NetworkPortMetrics extends CommonDBChild
      * Display form for agent
      *
      * @param NetworkPort $netport Port instance
+     *
+     * @return void
      */
     public function showMetrics(NetworkPort $netport)
     {
@@ -118,7 +120,7 @@ class NetworkPortMetrics extends CommonDBChild
         $errors_series = [];
         $labels = [];
         foreach ($raw_metrics as $metrics) {
-            $date = new \DateTime($metrics['date']);
+            $date = new DateTime($metrics['date']);
             $labels[] = $date->format(__('Y-m-d'));
             unset($metrics['id'], $metrics['date'], $metrics['date_creation'], $metrics['date_mod'], $metrics[static::$items_id]);
 
@@ -150,8 +152,8 @@ class NetworkPortMetrics extends CommonDBChild
             'line_width'  => 2,
         ];
 
-       //display bytes graph
-        echo "<div class='netports_metrics bytes'>";
+        //display bytes graph
+        echo "<div class='dashboard netports_metrics bytes'>";
         echo Widget::multipleAreas($bytes_bar_conf);
         echo "</div>";
 
@@ -170,13 +172,13 @@ class NetworkPortMetrics extends CommonDBChild
 
         echo "</br>";
 
-       //display error graph
-        echo "<div class='netports_metrics'>";
+        //display error graph
+        echo "<div class='dashboard netports_metrics'>";
         echo Widget::multipleAreas($errors_bar_conf);
         echo "</div>";
     }
 
-    private function getLabelFor($key): string
+    private function getLabelFor(string $key): string
     {
         return match ($key) {
             'ifinbytes' => __('Input megabytes'),

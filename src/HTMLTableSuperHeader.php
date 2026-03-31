@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,20 +37,18 @@
  * Only an HTMLTableMain can create an HTMLTableSuperHeader.
  * @since 0.84
  **/
-class HTMLTableSuperHeader extends HTMLTableHeader
+class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
-   /// The headers of each column
-    private $headerSets = [];
-   /// The table that owns the current super header
+    /** @var HTMLTableBase The table that owns the current super header */
     private $table;
 
     /**
-     * @param HTMLTableMain         $table    HTMLTableMain object: table owning the current header
+     * @param HTMLTableBase         $table    HTMLTableBase object: table owning the current header
      * @param string                $name     the name of the header
      * @param string                $content  see inc/HTMLTableEntity#__construct()
-     * @param ?HTMLTableSuperHeader $father   HTMLTableSuperHeader objet (default NULL)
-     **/
-    public function __construct(HTMLTableMain $table, $name, $content, ?HTMLTableSuperHeader $father = null)
+     * @param ?HTMLTableHeader      $father   HTMLTableHeader objet (default NULL)
+     */
+    public function __construct(HTMLTableBase $table, $name, $content, ?HTMLTableHeader $father = null)
     {
         $this->table = $table;
         parent::__construct($name, $content, $father);
@@ -59,18 +57,18 @@ class HTMLTableSuperHeader extends HTMLTableHeader
     /**
      * Compute the Least Common Multiple of two integers
      *
-     * @param $first
-     * @param $second
+     * @param int $first
+     * @param int $second
      *
-     * @return integer LCM of $first and $second
-     **/
+     * @return int LCM of $first and $second
+     */
     private static function LCM($first, $second)
     {
         $result = $first * $second;
         while ($first > 1) {
             $reste = $first % $second;
             if ($reste === 0) {
-                $result = $result / $second;
+                $result /= $second;
                 break;  // leave when LCM is found
             }
             $first = $second;
@@ -91,7 +89,8 @@ class HTMLTableSuperHeader extends HTMLTableHeader
         $subheader_name = '';
     }
 
-    public function getCompositeName()
+    #[Override]
+    public function getCompositeName(): string
     {
         return $this->getName() . ':';
     }
@@ -105,8 +104,10 @@ class HTMLTableSuperHeader extends HTMLTableHeader
      * compute the total number of current super header colspan: it is the Least Common
      * Multiple of the colspan of each subHeader it owns.
      *
-     * @param integer $number the colspan for this header given by the group
-     **/
+     * @param int $number the colspan for this header given by the group
+     *
+     * @return void
+     */
     public function updateNumberOfSubHeader($number)
     {
         $this->setColSpan(self::LCM($number, $this->getColSpan()));

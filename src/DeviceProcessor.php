@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -81,7 +81,7 @@ class DeviceProcessor extends CommonDevice
                     'name'  => 'deviceprocessormodels_id',
                     'label' => _n('Model', 'Models', 1),
                     'type'  => 'dropdownValue',
-                ]
+                ],
             ]
         );
     }
@@ -111,7 +111,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'nbcores_default',
             'name'               => __('Number of cores'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -119,7 +119,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'nbthreads_default',
             'name'               => __('Number of threads'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -127,7 +127,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => 'glpi_deviceprocessormodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -143,7 +143,7 @@ class DeviceProcessor extends CommonDevice
     {
         foreach (
             ['frequence', 'frequency_default', 'nbcores_default',
-                'nbthreads_default'
+                'nbthreads_default',
             ] as $field
         ) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
@@ -179,7 +179,7 @@ class DeviceProcessor extends CommonDevice
 
         switch ($itemtype) {
             case 'Computer':
-                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
                 break;
         }
     }
@@ -209,10 +209,15 @@ class DeviceProcessor extends CommonDevice
         return [
             'designation'          => 'equal',
             'manufacturers_id'     => 'equal',
-            'frequence'            => 'delta:10'
+            'frequence'            => 'delta:10',
         ];
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
@@ -229,9 +234,9 @@ class DeviceProcessor extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_deviceprocessors',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -297,10 +302,34 @@ class DeviceProcessor extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        => QueryFunction::sum('TABLE.frequency') . ' * ' . QueryFunction::count(
+            'computation'        => QueryFunction::sum('TABLE.frequency') . ' / ' . QueryFunction::count(
                 expression: 'TABLE.id',
-            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
+            ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
+        ];
+
+        $tab[] = [
+            'id'                 => '1336',
+            'table'              => 'glpi_items_deviceprocessors',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1337',
+            'table'              => 'glpi_items_deviceprocessors',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;

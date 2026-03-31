@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -67,7 +66,7 @@
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
-         'cancreateuser': cancreateuser,
+         'cancreateuser': cancreateuser|default(false),
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
@@ -100,7 +99,7 @@
          'itiltemplate': itiltemplate,
          'params': params,
          'canupdate': canupdate,
-         'cancreateuser': cancreateuser,
+         'cancreateuser': cancreateuser|default(false),
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
@@ -227,11 +226,11 @@
          {{ actortype }}: [
             {% for actor in item.getActorsForType(actortypeint, params) %}
             {
-               itemtype: "{{ actor['itemtype'] }}",
-               items_id: "{{ actor['items_id'] }}",
-               use_notification: {{ actor['use_notification'] ? "1" : "0" }},
-               alternative_email: "{{ actor['alternative_email'] ?? '' }}",
-               default_email: "{{ actor['default_email'] ?? '' }}",
+               itemtype: "{{ actor['itemtype']|e('js') }}",
+               items_id: "{{ actor['items_id']|e('js') }}",
+               use_notification: {{ (actor['use_notification'] ?? false) ? "1" : "0" }},
+               alternative_email: "{{ (actor['alternative_email'] ?? '')|e('js') }}",
+               default_email: "{{ (actor['default_email'] ?? '')|e('js') }}",
             },
             {% endfor %}
          ],
@@ -299,7 +298,7 @@
          fa_class = "fas";
       }
 
-      var actor_entry = $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+']')
+      var actor_entry = $('.actor_entry[data-itemtype='+CSS.escape(actor.itemtype)+'][data-items-id='+parseInt(actor.items_id)+'][data-actortype='+CSS.escape(actortype)+']')
          .filter(function() {
             if(actor.items_id == 0 && actor.itemtype == "User") {
                return $(this).text().trim() === actor.alternative_email;

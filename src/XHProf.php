@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,16 +54,16 @@
  */
 class XHProf
 {
-   // this can be overloaded in config/local_define.php
-    const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
-    const XHPROF_URL  = '/xhprof';
+    // this can be overloaded in config/local_define.php
+    public const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
+    public const XHPROF_URL  = '/xhprof';
 
 
-    private static $run = false;
+    private static bool $run = false;
 
 
     /**
-     * @param $msg (default '')
+     * @param string $msg (default '')
      **/
     public function __construct($msg = '')
     {
@@ -78,8 +78,10 @@ class XHProf
 
 
     /**
-     * @param $msg (default '')
-     **/
+     * @param string $msg (default '')
+     *
+     * @return void
+     */
     public function start($msg = '')
     {
 
@@ -101,21 +103,26 @@ class XHProf
     }
 
 
+    /**
+     * @return void
+     */
     public function stop()
     {
-
         if (self::$run) {
-            $data = xhprof_disable();
-
             $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
-            include_once $incl . '/utils/xhprof_lib.php';
-            include_once $incl . '/utils/xhprof_runs.php';
+            require_once $incl . '/utils/xhprof_lib.php';
+            require_once $incl . '/utils/xhprof_runs.php';
 
+            if (!class_exists("XHProfRuns_Default")) {
+                throw new RuntimeException("pecl/xhprof is not installed");
+            }
+
+            $data = xhprof_disable();
             $runs = new XHProfRuns_Default();
             $id   = $runs->save_run($data, 'glpi');
 
             $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
-            $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
+            $host = ($_SERVER['HTTP_HOST'] ?? 'localhost');
             $link = "http://" . $host . "$url/index.php?run=$id&source=glpi";
             Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
 

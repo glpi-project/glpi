@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,11 +40,10 @@ interface NotificationInterface
 {
     /**
      * Send notifications
-     *
-     * @return boolean
+     * @param array<mixed> $options
+     * @return bool
      **/
-    public function sendNotification();
-
+    public function sendNotification($options = []);
 
     /**
      * Check data
@@ -52,7 +51,7 @@ interface NotificationInterface
      * @param mixed $value   The data to check (may differ for every notification mode)
      * @param array $options Optionnal special options (may be needed)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function check($value, $options = []);
 

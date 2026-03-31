@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,7 @@ window.old_alert = window.alert;
 window.alert = function(message, caption) {
     // Don't apply methods on undefined objects... ;-) #3866
     if(typeof message == 'string') {
-        message = message.replace("\n", '<br>');
+        message = message.replaceAll("\n", '<br>');
     }
     caption = caption || _n('Information', 'Information', 1);
 

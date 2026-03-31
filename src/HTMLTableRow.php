@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,43 +40,61 @@ class HTMLTableRow extends HTMLTableEntity
 {
     /** @var HTMLTableGroup */
     private $group;
+    /** @var bool */
     private $empty              = true;
+    /** @var array<string, array<HTMLTableCell>> */
     private $cells              = [];
+    /** @var int */
     private $numberOfSubRows    = 1;
+    /** @var array<int, array> */
     private $linesWithAttributs = [];
 
     /**
-     * @param $group
-     **/
+     * @param HTMLTableGroup $group
+     */
     public function __construct($group)
     {
         $this->group = $group;
     }
 
+    /**
+     * @return HTMLTableGroup
+     */
     public function getGroup()
     {
         return $this->group;
     }
 
+    /**
+     * @return bool
+     */
     public function notEmpty()
     {
         return !$this->empty;
     }
 
+    /**
+     * @return int
+     */
     public function getNumberOfsubRows()
     {
         return $this->numberOfSubRows;
     }
 
+    /**
+     * @return HTMLTableRow
+     */
     public function createAnotherRow()
     {
         return $this->group->createRow();
     }
 
     /**
-     * @param $lineIndex
-     * @param $attributs
-     **/
+     * @param int $lineIndex
+     * @param array $attributs
+     *
+     * @return void
+     */
     public function addAttributForLine($lineIndex, $attributs)
     {
         $this->linesWithAttributs[$lineIndex] = $attributs;
@@ -84,10 +102,12 @@ class HTMLTableRow extends HTMLTableEntity
 
     /**
      * @param HTMLTableHeader $header object
-     * @param $content
+     * @param string|array $content
      * @param ?HTMLTableCell $father object (default NULL)
      * @param ?CommonDBTM $item object: The item associated with the current cell (default NULL)
-     **/
+     *
+     * @return HTMLTableCell
+     */
     public function addCell(
         HTMLTableHeader $header,
         $content,
@@ -96,10 +116,14 @@ class HTMLTableRow extends HTMLTableEntity
     ) {
 
         if (!$this->group->haveHeader($header)) {
-            throw new \Exception('Unavailable header!');
+            throw new Exception('Unavailable header!');
         }
 
-        $header_name = $header->getCompositeName();
+        if ($header instanceof HTMLCompositeTableInterface) {
+            $header_name = $header->getCompositeName();
+        } else {
+            $header_name = $header->getName();
+        }
         if (!isset($this->cells[$header_name])) {
             $this->cells[$header_name] = [];
         }
@@ -110,6 +134,9 @@ class HTMLTableRow extends HTMLTableEntity
         return $cell;
     }
 
+    /**
+     * @return bool
+     */
     public function prepareDisplay()
     {
         if ($this->empty) {
@@ -155,8 +182,10 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
     /**
-     * @param $headers
-     **/
+     * @param HTMLTableHeader[] $headers
+     *
+     * @return void
+     */
     public function displayRow($headers)
     {
         echo "\t<tbody";
@@ -170,6 +199,9 @@ class HTMLTableRow extends HTMLTableEntity
             }
             echo "\t\t<tr class='tab_bg_1'>\n";
             foreach ($headers as $header) {
+                if (!$header instanceof HTMLCompositeTableInterface) {
+                    continue;
+                }
                 $header_name = $header->getCompositeName();
                 if (isset($this->cells[$header_name])) {
                     $display = false;
@@ -177,12 +209,12 @@ class HTMLTableRow extends HTMLTableEntity
                         $display |= $cell->displayCell($i, $options);
                     }
                     if (!$display) {
-                        echo "\t\t\t<td colspan='" . $header->getColSpan() . "'";
+                        echo "\t\t\t<td colspan='" . ((int) $header->getColSpan()) . "'";
                         $header->displayEntityAttributs($options);
                         echo "></td>\n";
                     }
                 } else {
-                    echo "\t\t\t<td colspan='" . $header->getColSpan() . "'";
+                    echo "\t\t\t<td colspan='" . ((int) $header->getColSpan()) . "'";
                     $header->displayEntityAttributs($options);
                     echo "></td>\n";
                 }
@@ -193,8 +225,10 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
     /**
-     * @param $name
-     * @param $sub_name  (default NULL)
+     * @param string $name
+     * @param ?string $sub_name  (default NULL)
+     *
+     * @return HTMLTableHeader
      */
     public function getHeaderByName($name, $sub_name = null)
     {

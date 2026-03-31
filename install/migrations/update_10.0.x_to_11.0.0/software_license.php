@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,10 +33,9 @@
  */
 
 /**
- * @var \Migration $migration
- * @var \DBmysql $DB
+ * @var Migration $migration
+ * @var DBmysql $DB
  */
-
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if ($DB->fieldExists('glpi_softwarelicenses', 'softwares_id')) {
@@ -46,7 +45,7 @@ if ($DB->fieldExists('glpi_softwarelicenses', 'softwares_id')) {
         'softwares_id',
         "int {$default_key_sign}",
         [
-            'null' => true
+            'null' => true,
         ]
     );
 }

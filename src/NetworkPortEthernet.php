@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Socket;
+
+use function Safe\preg_replace;
 
 /**
  * Ethernet instantiation of NetworkPort
@@ -52,6 +53,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation
         return ['link.mac' => 'mac'];
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
         if (isset($input['speed']) && ($input['speed'] === 'speed_other_value')) {
@@ -106,7 +112,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             'type_label' => __('Ethernet port type'),
             'port_types' => self::getPortTypeName(),
             'speed_label' => __('Ethernet port speed'),
-            'connection_label' => __('Connected to')
+            'connection_label' => __('Connected to'),
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -129,7 +135,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -140,8 +146,8 @@ TWIG, $twig_params);
             'name'               => __('MAC'),
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'empty'
-            ]
+                'jointype'           => 'empty',
+            ],
         ];
 
         $tab[] = [
@@ -150,7 +156,7 @@ TWIG, $twig_params);
             'field'              => 'type',
             'name'               => __('Ethernet port type'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -159,7 +165,7 @@ TWIG, $twig_params);
             'field'              => 'speed',
             'name'               => __('Ethernet port speed'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -171,7 +177,7 @@ TWIG, $twig_params);
      * @param string|null $val  if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
-     * @phpstan-return $val !== null ? string : array
+     * @phpstan-return ($val is null ? array : string)
      **/
     public static function getPortTypeName($val = null)
     {
@@ -179,7 +185,7 @@ TWIG, $twig_params);
             ''   => Dropdown::EMPTY_VALUE,
             'T'  => __('Twisted pair (RJ-45)'),
             'SX' => __('Multimode fiber'),
-            'LX' => __('Single mode fiber')
+            'LX' => __('Single mode fiber'),
         ];
 
         if (is_null($val)) {
@@ -191,10 +197,10 @@ TWIG, $twig_params);
     /**
      * Transform a port speed from string to integerer and vice-versa
      *
-     * @param integer|string $val        port speed
-     * @param boolean        $to_string  true if we must transform the speed to string
+     * @param int|string $val        port speed
+     * @param bool        $to_string  true if we must transform the speed to string
      *
-     * @return false|integer|string (regarding what is requested)
+     * @return false|int|string (regarding what is requested)
      **/
     public static function transformPortSpeed($val, $to_string)
     {
@@ -206,11 +212,11 @@ TWIG, $twig_params);
 
             if ((($val % 100) === 0) && ($val > 1000)) {
                 $val /= 100;
-               //TRANS: %f is the speed
+                //TRANS: %f is the speed
                 return sprintf(__('%.1f Gbit/s'), $val / 10);
             }
 
-           //TRANS: %d is the speed
+            //TRANS: %d is the speed
             return sprintf(__('%d Mbit/s'), $val);
         } else {
             $val = preg_replace('/\s+/', '', strtolower($val));
@@ -221,11 +227,11 @@ TWIG, $twig_params);
             }
 
             if (($unit === 'mbit/s') || ($unit === 'mb/s')) {
-                return (int)$speed;
+                return (int) $speed;
             }
 
             if (($unit === 'gbit/s') || ($unit === 'gb/s')) {
-                return (int)($speed * 1000);
+                return (int) ($speed * 1000);
             }
 
             return false;
@@ -235,21 +241,21 @@ TWIG, $twig_params);
     /**
      * Get the possible value for Ethernet port speed
      *
-     * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
+     * @param int|null $val  if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
-     * @phpstan-return $val !== null ? string : array
+     * @phpstan-return ($val is null ? array : false|integer|string)
      **/
     public static function getPortSpeed($val = null)
     {
         $tmp = [
             0     => '',
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             10    => sprintf(__('%d Mbit/s'), 10),
             100   => sprintf(__('%d Mbit/s'), 100),
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             1000  => sprintf(__('%d Gbit/s'), 1),
-            10000 => sprintf(__('%d Gbit/s'), 10)
+            10000 => sprintf(__('%d Gbit/s'), 10),
         ];
 
         if (is_null($val)) {
@@ -264,8 +270,8 @@ TWIG, $twig_params);
             $values = [$field => $values];
         }
         return match ($field) {
-            'type' => self::getPortTypeName($values[$field]),
-            'speed' => self::getPortSpeed($values[$field]),
+            'type' => htmlescape(self::getPortTypeName($values[$field])),
+            'speed' => htmlescape(self::getPortSpeed($values[$field])),
             default => parent::getSpecificValueToDisplay($field, $values, $options),
         };
     }
@@ -288,6 +294,12 @@ TWIG, $twig_params);
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
+    /**
+     * @param array $tab
+     * @param array $joinparams
+     *
+     * @return void
+     */
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [
@@ -303,9 +315,9 @@ TWIG, $twig_params);
                 'linkfield'           => 'networkports_id',
                 'beforejoin'         => [
                     'table'              => 'glpi_networkportethernets',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
     }
 }

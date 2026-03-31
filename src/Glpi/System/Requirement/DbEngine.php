@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,11 @@
 
 namespace Glpi\System\Requirement;
 
+use DBmysql;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @since 9.5.0
  */
@@ -43,11 +48,11 @@ class DbEngine extends AbstractRequirement
     /**
      * DB instance.
      *
-     * @var \DBmysql
+     * @var DBmysql
      */
     private $db;
 
-    public function __construct(\DBmysql $db)
+    public function __construct(DBmysql $db)
     {
         parent::__construct(
             __('DB engine version')
@@ -65,7 +70,7 @@ class DbEngine extends AbstractRequirement
 
         switch ($server) {
             case 'MariaDB':
-                $min_version = '10.5';
+                $min_version = '10.6';
                 break;
             case 'MySQL':
             default:

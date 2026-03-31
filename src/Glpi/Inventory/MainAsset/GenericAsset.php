@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,13 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-class GenericAsset extends MainAsset
+use Glpi\Asset\Asset;
+
+class GenericAsset extends Computer
 {
     protected function getModelsFieldName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
+        /** @var Asset $item */
         $item = $this->item;
         $model_classname = $item->getDefinition()->getAssetModelClassName();
 
@@ -48,7 +50,7 @@ class GenericAsset extends MainAsset
 
     protected function getTypesFieldName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
+        /** @var Asset $item */
         $item = $this->item;
         $type_classname = $item->getDefinition()->getAssetTypeClassName();
 

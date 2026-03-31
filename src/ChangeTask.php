@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ class ChangeTask extends CommonITILTask
     /**
      * Populate the planning with planned ticket tasks
      *
-     * @param $options array of possible options:
+     * @param array $options array of possible options:
      *    - who ID of the user (0 = undefined)
      *    - whogroup ID of the group of users (0 = undefined)
      *    - begin Date
@@ -54,7 +54,7 @@ class ChangeTask extends CommonITILTask
      **/
     public static function populatePlanning($options = []): array
     {
-        return parent::genericPopulatePlanning(__CLASS__, $options);
+        return parent::genericPopulatePlanning(self::class, $options);
     }
 
 
@@ -62,21 +62,21 @@ class ChangeTask extends CommonITILTask
      * Display a Planning Item
      *
      * @param array           $val       array of the item to display
-     * @param integer         $who       ID of the user (0 if all)
+     * @param int         $who       ID of the user (0 if all)
      * @param string          $type      position of the item in the time block (in, through, begin or end)
-     * @param integer|boolean $complete  complete display (more details)
+     * @param int|bool $complete  complete display (more details)
      *
      * @return string
      */
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
-        return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
+        return parent::genericDisplayPlanningItem(self::class, $val, $who, $type, $complete);
     }
 
     /**
      * Populate the planning with not planned ticket tasks
      *
-     * @param $options array of possible options:
+     * @param array $options array of possible options:
      *    - who ID of the user (0 = undefined)
      *    - whogroup ID of the group of users (0 = undefined)
      *    - begin Date
@@ -86,6 +86,6 @@ class ChangeTask extends CommonITILTask
      **/
     public static function populateNotPlanned($options = []): array
     {
-        return parent::genericPopulateNotPlanned(__CLASS__, $options);
+        return parent::genericPopulateNotPlanned(self::class, $options);
     }
 }

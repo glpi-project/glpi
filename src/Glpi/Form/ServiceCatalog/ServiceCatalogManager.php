@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,37 +38,59 @@ namespace Glpi\Form\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface;
+use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+use Glpi\Toolbox\SingletonTrait;
+use RuntimeException;
 
 final class ServiceCatalogManager
 {
-    /** @var \Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface[] */
+    use SingletonTrait;
+
+    /** @var int */
+    public const ITEMS_PER_PAGE = 12;
+
+    /** @var ItemProviderInterface<covariant ServiceCatalogItemInterface>[] */
     private array $providers;
 
     public function __construct()
     {
         $this->providers = [
-            new FormProvider(),
+            FormProvider::getInstance(),
             new CategoryProvider(),
+            new KnowbaseItemProvider(),
         ];
+    }
+
+    /**
+     * @param ItemProviderInterface<covariant ServiceCatalogItemInterface> $provider
+     * @return void
+     */
+    public function registerPluginProvider(
+        ItemProviderInterface $provider
+    ): void {
+        $this->providers[] = $provider;
     }
 
     /**
      * Return all available forms and non empties categories for the given user.
      *
-     * @return ServiceCatalogItemInterface[]
+     * @return array{items: ServiceCatalogItemInterface[], total: int}
      */
     public function getItems(ItemRequest $item_request): array
     {
-        $items = [];
+        $all_items = [];
+        $item_request->context = ItemRequestContext::SERVICE_CATALOG;
 
         // Load root items
         foreach ($this->providers as $provider) {
-            array_push($items, ...$provider->getItems($item_request));
+            array_push($all_items, ...$provider->getItems($item_request));
         }
 
         // Load children for composite (non recursive, only for the first level)
-        foreach ($items as $item) {
+        foreach ($all_items as $item) {
             if (!($item instanceof ServiceCatalogCompositeInterface)) {
                 continue;
             }
@@ -84,15 +106,23 @@ final class ServiceCatalogManager
                 $children_request,
                 $children
             );
-            $children = $this->sortChildItems($children);
+            $children = $this->sortItems($children, $item_request->getSortStrategy());
             $item->setChildren($children);
         }
 
         // Remove empty composite, must be done after the children has been loaded.
-        $items = $this->removeRootCompositeWithoutChildren($items);
-        $items = $this->sortRootItems($items);
+        $all_items = $this->removeRootCompositeWithoutChildren($all_items);
+        $all_items = $this->sortItems($all_items, $item_request->getSortStrategy());
 
-        return $items;
+        // Calculate pagination info
+        $total = count($all_items);
+        $offset = ($item_request->page - 1) * $item_request->items_per_page;
+        $items = array_slice($all_items, $offset, $item_request->items_per_page);
+
+        return [
+            'items' => $items,
+            'total' => $total,
+        ];
     }
 
     /**
@@ -124,7 +154,7 @@ final class ServiceCatalogManager
                 }
 
                 // Unknown implementation, should never happen.
-                throw new \RuntimeException("Unsupported item: " . get_class($item));
+                throw new RuntimeException("Unsupported item: " . get_class($item));
             }
         );
     }
@@ -154,7 +184,7 @@ final class ServiceCatalogManager
                 }
 
                 // Unknown implementation, should never happen.
-                throw new \RuntimeException("Unsupported item: " . get_class($item));
+                throw new RuntimeException("Unsupported item: " . get_class($item));
             }
         );
     }
@@ -205,50 +235,15 @@ final class ServiceCatalogManager
     }
 
     /**
+     * Sort items using the specified sort strategy
+     *
      * @param ServiceCatalogItemInterface[] $items
+     * @param SortStrategyEnum $strategy
      * @return ServiceCatalogItemInterface[]
      */
-    private function sortChildItems(array $items): array
+    private function sortItems(array $items, SortStrategyEnum $strategy): array
     {
-        usort($items, function (
-            ServiceCatalogItemInterface $a,
-            ServiceCatalogItemInterface $b,
-        ) {
-            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
-        });
-
-        return $items;
-    }
-
-    /**
-     * @param ServiceCatalogItemInterface[] $items
-     * @return ServiceCatalogItemInterface[]
-     */
-    private function sortRootItems(array $items): array
-    {
-        // Root items are sorted with categories at the end as they will be
-        // displayed differently
-        usort($items, function (
-            ServiceCatalogItemInterface $a,
-            ServiceCatalogItemInterface $b,
-        ) {
-            if (
-                $a instanceof ServiceCatalogCompositeInterface
-                && !($b instanceof ServiceCatalogCompositeInterface)
-            ) {
-                return 1;
-            }
-
-            if (
-                !($a instanceof ServiceCatalogCompositeInterface)
-                && $b instanceof ServiceCatalogCompositeInterface
-            ) {
-                return -1;
-            }
-
-            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
-        });
-
-        return $items;
+        $strategy = $strategy->getStrategy();
+        return $strategy->sort($items);
     }
 }

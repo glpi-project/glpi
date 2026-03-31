@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,7 +39,6 @@ use Symfony\Bundle\FrameworkBundle\Routing\AttributeRouteControllerLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 class PluginRoutesLoader extends Loader
@@ -64,20 +63,22 @@ class PluginRoutesLoader extends Loader
             );
             $plugin_routes = $loader->load($plugin_path, 'attribute');
 
-            if (!$plugin_routes) {
+            if ($plugin_routes->count() === 0) {
                 // No route found in the plugin
                 continue;
             }
 
-            foreach ($plugin_routes as $route) {
-                /** @var Route $route */
-                $prefix = '/plugins/' . $plugin_key . '/';
-                if (!\str_starts_with($route->getPath(), $prefix)) {
-                    $route->setPath($prefix . \ltrim($route->getPath(), '/'));
-                }
-            }
+            $name_prefix_mapping = [
+                'plugins'     => sprintf('@%s:', $plugin_key),
+                'marketplace' => sprintf('@%s_marketplace:', $plugin_key),
+            ];
 
-            $routes->addCollection($plugin_routes);
+            foreach ($name_prefix_mapping as $plugin_dir => $name_prefix) {
+                $prefixed_plugin_routes = clone $plugin_routes;
+                $prefixed_plugin_routes->addPrefix(sprintf('/%s/%s/', $plugin_dir, $plugin_key));
+                $prefixed_plugin_routes->addNamePrefix($name_prefix);
+                $routes->addCollection($prefixed_plugin_routes);
+            }
         }
 
         return $routes;

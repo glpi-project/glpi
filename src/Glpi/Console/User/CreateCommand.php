@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,12 +34,10 @@
 
 namespace Glpi\Console\User;
 
-use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use User;
 
 class CreateCommand extends AbstractUserCommand
 {
@@ -57,7 +55,7 @@ class CreateCommand extends AbstractUserCommand
     {
         $user_input = ['name' => $input->getArgument('username')];
 
-        $user = new \User();
+        $user = new User();
         if ($user->getFromDBbyName($user_input['name'])) {
             $output->writeln('<error>' . __('User already exists') . '</error>');
             return 1;

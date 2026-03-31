@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,10 +42,6 @@ describe('Form destination', () => {
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Destination\\FormDestination$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
-
-            // Create a ticket destination
-            cy.findByRole('button', {name: "Add ticket"}).click();
-            cy.checkAndCloseAlert('Item successfully added');
         });
     });
 
@@ -68,8 +63,8 @@ describe('Form destination', () => {
 
     it('can enable or disable auto configuration on supported fields', () => {
         // Inputs aliases
-        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
-        cy.findByLabelText("Content").awaitTinyMCE().as("content_field");
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
+        cy.findByRole('region', {name: 'Content configuration'}).awaitTinyMCE().as("content_field");
 
         // Checkbox aliases
         cy.findAllByRole('checkbox', {'name': "Auto config"}).eq(0)
@@ -109,7 +104,7 @@ describe('Form destination', () => {
         });
 
         describe('Validate manual values are kept after reload', () => {
-            cy.findByLabelText("Content").awaitTinyMCE().as("content_field"); // this alias must be repeated after a page reload
+            cy.findByRole('region', {name: 'Content configuration'}).awaitTinyMCE().as("content_field"); // this alias must be repeated after a page reload
 
             // Ensure the manual values are still there
             cy.get("@content_auto_config_checkbox").should('not.be.checked');
@@ -130,7 +125,7 @@ describe('Form destination', () => {
         });
 
         describe('Validate manual values have been removed', () => {
-            cy.findByLabelText("Content").awaitTinyMCE().as("content_field"); // this alias must be repeated after a page reload
+            cy.findByRole('region', {name: 'Content configuration'}).awaitTinyMCE().as("content_field"); // this alias must be repeated after a page reload
 
             // Ensure the manual value has been removed for the "content" field
             cy.get("@content_auto_config_checkbox").should('be.checked');
@@ -141,11 +136,12 @@ describe('Form destination', () => {
     });
 
     it('check form destination title default value', () => {
-        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
         cy.get('@title_field').contains('Form name: Test form for the destination form suite');
     });
 
     it('can define multiple strategies for the same field', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.findByRole('region', {name: 'Requesters configuration'}).as('requesters_config');
         cy.get('@requesters_config').findByRole('button', {name: 'Combine with another option'}).should('exist').as('add_strategy_button');
         cy.getDropdownByLabelText('Requesters').as('first_strategy_dropdown');
@@ -163,18 +159,19 @@ describe('Form destination', () => {
         // Add a third strategy
         cy.get('@add_strategy_button').click();
         cy.findByRole('combobox', {name: '-----'}).as('third_strategy_dropdown');
-        cy.get('@third_strategy_dropdown').selectDropdownValue('Answer to last "Requesters" question');
+        cy.get('@third_strategy_dropdown').selectDropdownValue('Answer to last "Requesters" or "Email" question');
 
         // Save changes
         cy.findByRole('button', {name: 'Update item'}).click();
 
         // Check if the strategies are saved
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_config').within(() => {
             cy.findByRole('combobox', {name: 'From template'}).should('exist');
             cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
             cy.findByRole('listitem', {name: 'glpi'}).should('exist');
-            cy.findByRole('combobox', {name: 'Answer to last "Requesters" question'}).should('exist');
+            cy.findByRole('combobox', {name: 'Answer to last "Requesters" or "Email" question'}).should('exist');
         });
 
         // Add a fourth strategy
@@ -187,12 +184,62 @@ describe('Form destination', () => {
 
         // Check if the strategies are saved
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_config').within(() => {
             cy.findByRole('combobox', {name: 'From template'}).should('exist');
             cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
             cy.findByRole('listitem', {name: 'glpi'}).should('exist');
-            cy.findByRole('combobox', {name: 'Answer to last "Requesters" question'}).should('exist');
+            cy.findByRole('combobox', {name: 'Answer to last "Requesters" or "Email" question'}).should('exist');
             cy.findByRole('combobox', {name: 'User who filled the form'}).should('exist');
         });
+    });
+
+    it('can duplicate a form destination', () => {
+        // Configure the destination with some custom values
+        cy.findByRole("textbox", {name: "Form destination name"}).clear();
+        cy.findByRole("textbox", {name: "Form destination name"}).type('Original destination');
+
+        // Configure title field
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
+        cy.get("@title_field").clear();
+        cy.get("@title_field").type('Custom title for duplication test');
+
+        // Save the original configuration
+        cy.findByRole("button", {name: "Update item"}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Click the duplicate button
+        cy.findByRole("button", {name: "Duplicate"}).click();
+
+        // Check that the duplication was successful
+        cy.findAllByRole('region', {name: 'Original destination'})
+            .should('have.length', 2);
+
+        // Check that the duplicated destination has the same configuration
+        cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Original destination');
+
+        // Verify the title field content is duplicated
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("duplicated_title_field");
+        cy.get("@duplicated_title_field").should('contain.text', 'Custom title for duplication test');
+
+        // Verify this is indeed a new destination by changing the name
+        cy.findByRole("textbox", {name: "Form destination name"}).clear();
+        cy.findByRole("textbox", {name: "Form destination name"}).type('Duplicated destination');
+        cy.findByRole("button", {name: "Update item"}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Verify the name change
+        cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Duplicated destination');
+        cy.findAllByRole('region', {name: 'Duplicated destination'})
+            .should('have.length', 1);
+
+        // Verify the original destination is still there
+        cy.findAllByRole('region', {name: 'Original destination'})
+            .should('have.length', 1)
+            .click();
+
+        cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Original destination');
+        cy.findByRole('region', {name: 'Title configuration'}).as("original_title_field");
+        cy.get("@original_title_field").should('contain.text', 'Custom title for duplication test');
     });
 });

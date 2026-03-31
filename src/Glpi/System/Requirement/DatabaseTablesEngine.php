@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,16 +35,18 @@
 
 namespace Glpi\System\Requirement;
 
+use DBmysql;
+
 final class DatabaseTablesEngine extends AbstractRequirement
 {
     /**
      * DB instance.
      *
-     * @var \DBmysql
+     * @var DBmysql
      */
     private $db;
 
-    public function __construct(\DBmysql $db)
+    public function __construct(DBmysql $db)
     {
         parent::__construct(
             __('Database tables engine')

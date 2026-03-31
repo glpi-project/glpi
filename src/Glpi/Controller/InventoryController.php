@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,21 +36,28 @@ namespace Glpi\Controller;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
-use Glpi\Http\Firewall;
-use Symfony\Component\HttpFoundation\Request;
+use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
-use Glpi\Security\Attribute\DisableCsrfChecks;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use RefusedEquipment;
+use Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Throwable;
+
+use function Safe\file_get_contents;
 
 final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;
 
-    #[DisableCsrfChecks()]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function __construct(private readonly UrlGeneratorInterface $router)
+    {
+        //empty constructor
+    }
+
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
     public function index(Request $request): Response
@@ -88,7 +95,7 @@ final class InventoryController extends AbstractController
             if ($handle) {
                 $inventory_request->handleRequest($contents);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
         } finally {
@@ -116,12 +123,12 @@ final class InventoryController extends AbstractController
         }
 
         $inventory_request = new \Glpi\Inventory\Request();
-        $refused_id = (int)$request->get('id');
+        $refused_id = (int) $request->get('id');
 
-        $refused = new \RefusedEquipment();
+        $refused = new RefusedEquipment();
 
         try {
-            \Session::checkRight("config", READ);
+            Session::checkRight("config", READ);
             if ($refused->getFromDB($refused_id) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
                 $contents = file_get_contents($inventory_file);
             } else {
@@ -131,7 +138,7 @@ final class InventoryController extends AbstractController
                 );
             }
             $inventory_request->handleRequest($contents);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             //empty
             $inventory_request->addError($e->getMessage());
         }
@@ -139,5 +146,59 @@ final class InventoryController extends AbstractController
         $redirect_url = $refused->handleInventoryRequest($inventory_request);
         $response = new RedirectResponse($redirect_url);
         return $response;
+    }
+
+    #[Route("/Inventory/Configuration", name: "glpi_inventory_configuration", methods: ['GET'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET'])]
+    public function configure(Request $request): Response
+    {
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
+        return $this->render('pages/admin/inventory/conf/index.html.twig', [
+            'conf' => new Conf(),
+        ]);
+    }
+
+    #[Route("/Inventory/Configuration/Store", name: "glpi_inventory_store_configuration", methods: ['POST'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_store_configuration_legacy", methods: ['POST'])]
+    public function storeConfiguration(Request $request): Response
+    {
+        Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
+        $conf = new Conf();
+        $post_data = $request->request->all();
+
+        if (isset($post_data['update'])) {
+            unset($post_data['update']);
+            if ($conf->saveConf($post_data)) {
+                Session::addMessageAfterRedirect(
+                    __s('Configuration has been updated'),
+                    false,
+                    INFO
+                );
+            }
+        }
+        return new RedirectResponse($this->router->generate('glpi_inventory_configuration'));
+    }
+
+    #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]
+    public function report(Request $request): Response
+    {
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
+        $conf = new Conf();
+
+        $to_import = [];
+        foreach ($request->files->get('inventory_files') as $file) {
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $to_import[$file->getClientOriginalName()] = $file->getPathname();
+            }
+        }
+
+        $imported_files = $conf->importFiles($to_import);
+
+        return $this->render(
+            'pages/admin/inventory/upload_result.html.twig',
+            [
+                'imported_files' => $imported_files,
+            ]
+        );
     }
 }

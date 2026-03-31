@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
-
 /**
  * @since 9.2
  */
@@ -52,16 +49,15 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Retrieve an item from the database
      *
-     * @param integer $ID        ID of the item to get
+     * @param int $ID        ID of the item to get
      * @param SLM::TTR|SLM::TTO $olaType
      *
      * @since 9.1 2 mandatory parameters
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBForTicket($ID, $olaType)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -71,21 +67,21 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels'  => [
                     'FKEY'   => [
                         static::getTable()   => 'olalevels_id',
-                        'glpi_olalevels'     => 'id'
-                    ]
+                        'glpi_olalevels'     => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'FKEY'   => [
                         'glpi_olalevels'     => 'olas_id',
-                        'glpi_olas'          => 'id'
-                    ]
-                ]
+                        'glpi_olas'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 static::getTable() . '.tickets_id'  => $ID,
-                'glpi_olas.type'                    => $olaType
+                'glpi_olas.type'                    => $olaType,
             ],
-            'LIMIT'        => 1
+            'LIMIT'        => 1,
         ]);
         if (count($iterator) === 1) {
             $row = $iterator->current();
@@ -97,8 +93,8 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Delete entries for a ticket
      *
-     * @param integer $tickets_id Ticket ID
-     * @param SLM::TTR|SLM::TTO $type Type of OLA
+     * @param int               $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $olaType    Type of OLA
      *
      * @since 9.1 2 parameters mandatory
      *
@@ -106,7 +102,6 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public function deleteForTicket($tickets_id, $olaType)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -116,20 +111,20 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels'  => [
                     'ON' => [
                         'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id'
-                    ]
+                        'glpi_olalevels'           => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'ON' => [
                         'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id'
-                    ]
-                ]
+                        'glpi_olas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_olas.type'                    => $olaType
-            ]
+                'glpi_olas.type'                    => $olaType,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -140,9 +135,9 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
-     * @return array of information
+     * @return array
      * @used-by CronTask
      **/
     public static function cronInfo($name)
@@ -159,39 +154,39 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @param $task : CronTask object
      *
-     * @return integer (0 : nothing done - 1 : done)
+     * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
     public static function cronOlaTicket(CronTask $task)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tot = 0;
+        $now = Session::getCurrentTime();
 
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_olalevels_tickets.*',
-                'glpi_olas.type AS type'
+                'glpi_olas.type AS type',
             ],
             'FROM'      => 'glpi_olalevels_tickets',
             'LEFT JOIN' => [
                 'glpi_olalevels'  => [
                     'ON' => [
                         'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id'
-                    ]
+                        'glpi_olalevels'           => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'ON' => [
                         'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id'
-                    ]
-                ]
+                        'glpi_olas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date' => ['<', QueryFunction::now()]
-            ]
+                'glpi_olalevels_tickets.date' => ['<', $now],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -218,12 +213,12 @@ class OlaLevel_Ticket extends CommonDBTM
         $ticket         = new Ticket();
         $olalevelticket = new self();
 
-       // existing ticket and not deleted
+        // existing ticket and not deleted
         if (
             $ticket->getFromDB($data['tickets_id'])
             && !$ticket->isDeleted()
         ) {
-           // search all actors of a ticket
+            // search all actors of a ticket
             foreach ($ticket->getUsers(CommonITILActor::REQUESTER) as $user) {
                 $ticket->fields['_users_id_requester'][] = $user['users_id'];
             }
@@ -250,39 +245,39 @@ class OlaLevel_Ticket extends CommonDBTM
 
             $olalevel = new OlaLevel();
             $ola      = new OLA();
-           // Check if ola datas are OK
+            // Check if ola datas are OK
             [, $olaField] = OLA::getFieldNames($olaType);
             if (($ticket->fields[$olaField] > 0)) {
                 if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
-                   // Drop line when status is closed
+                    // Drop line when status is closed
                     $olalevelticket->delete(['id' => $data['id']]);
-                } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-                   // No execution if ticket has been taken into account
+                } elseif ($ticket->fields['status'] != CommonITILObject::SOLVED) {
+                    // No execution if ticket has been taken into account
                     if (
                         !(($olaType == SLM::TTO)
                         && ($ticket->fields['takeintoaccount_delay_stat'] > 0))
                     ) {
-                       // If status = solved : keep the line in case of solution not validated
+                        // If status = solved : keep the line in case of solution not validated
                         $input = [
                             'id'           => $ticket->getID(),
                             '_auto_update' => true,
                         ];
 
                         if (
-                            $olalevel->getRuleWithCriteriasAndActions($data['olalevels_id'], 1, 1)
+                            $olalevel->getRuleWithCriteriasAndActions($data['olalevels_id'], true, true)
                             && $ola->getFromDB($ticket->fields[$olaField])
                         ) {
                             $doit = true;
                             if (count($olalevel->criterias)) {
                                 $doit = $olalevel->checkCriterias($ticket->fields);
                             }
-                           // Process rules
+                            // Process rules
                             if ($doit) {
                                 $input = $olalevel->executeActions($input, [], $ticket->fields);
                             }
                         }
 
-                       // Put next level in todo list
+                        // Put next level in todo list
                         if (
                             $next = $olalevel->getNextOlaLevel(
                                 $ticket->fields[$olaField],
@@ -291,21 +286,21 @@ class OlaLevel_Ticket extends CommonDBTM
                         ) {
                             $ola->addLevelToDo($ticket, $next);
                         }
-                       // Action done : drop the line
+                        // Action done : drop the line
                         $olalevelticket->delete(['id' => $data['id']]);
 
                         $ticket->update($input);
                     } else {
-                       // Drop line
+                        // Drop line
                         $olalevelticket->delete(['id' => $data['id']]);
                     }
                 }
             } else {
-               // Drop line
+                // Drop line
                 $olalevelticket->delete(['id' => $data['id']]);
             }
         } else {
-           // Drop line
+            // Drop line
             $olalevelticket->delete(['id' => $data['id']]);
         }
     }
@@ -313,17 +308,18 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Replay all task needed for a specific ticket
      *
-     * @param integer $tickets_id Ticket ID
+     * @param int $tickets_id Ticket ID
      * @param SLM::TTR|SLM::TTO $olaType Type of ola
      *
      * @since 9.1    2 parameters mandatory
      *
+     * @return void
      */
     public static function replayForTicket($tickets_id, $olaType)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
+        $now = Session::getCurrentTime();
         $criteria = [
             'SELECT'    => 'glpi_olalevels_tickets.*',
             'FROM'      => 'glpi_olalevels_tickets',
@@ -331,21 +327,21 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels'  => [
                     'ON' => [
                         'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id'
-                    ]
+                        'glpi_olalevels'           => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'ON' => [
                         'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id'
-                    ]
-                ]
+                        'glpi_olas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date'       => ['<', QueryFunction::now()],
+                'glpi_olalevels_tickets.date'       => ['<', $now],
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_olas.type'                    => $olaType
-            ]
+                'glpi_olas.type'                    => $olaType,
+            ],
         ];
 
         $last_escalation = -1;

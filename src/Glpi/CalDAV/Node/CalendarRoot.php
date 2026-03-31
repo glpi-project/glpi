@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,8 @@ namespace Glpi\CalDAV\Node;
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Backend\Principal;
 
+use function Safe\preg_replace;
+
 /**
  * Calendar root node for CalDAV server.
  *
@@ -58,7 +60,7 @@ class CalendarRoot extends \Sabre\CalDAV\CalendarRoot
                 break;
         }
 
-       // Return calendar path relative to calendar root path
+        // Return calendar path relative to calendar root path
         return preg_replace(
             '/^' . preg_quote(Calendar::CALENDAR_ROOT . '/', '/') . '/',
             '',

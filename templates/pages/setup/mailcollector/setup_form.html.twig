@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -89,7 +88,8 @@
 
    {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
       'connect_opts': connect_opts,
-      'connect_string': host
+      'connect_string': host,
+      'protocol_choices': protocol_choices,
    }) }}
 
    {{ fields.smallTitle(__('Authentication')) }}
@@ -125,7 +125,8 @@
          connect_opts['mailbox'],
          __('Incoming mail folder (optional, often INBOX)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
       {{ fields.nullField() }}
@@ -134,7 +135,8 @@
          item.fields['accepted'],
          __('Accepted mail archive folder (optional)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
       {{ fields.textField(
@@ -142,7 +144,8 @@
          item.fields['refused'],
          __('Refused mail archive folder (optional)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
    {% endif %}
@@ -213,6 +216,20 @@
                   // Force empty value for server_mailbox
                   data += '&server_mailbox=';
 
+                  // In some case (like oauth imap) provide password is not possible
+                  // So, ask for password only if there is one stored in database and it's not an OAuth connection
+                  var passwdField = $(this).closest('form').find('input[name="passwd"]');
+                  var hasStoredPassword = {{ (item.fields['passwd'] is defined and item.fields['passwd']) ? 'true' : 'false' }};
+                  var isOAuth = {{ ('oauth' in (item.fields['server_type'] ?? '')) ? 'true' : 'false' }};
+                  if (hasStoredPassword && !isOAuth && passwdField.val() == '') {
+                     var passwd = prompt(__('Please enter password to list folders'));
+                     if (passwd === null) {
+                        // User cancelled the prompt
+                        return;
+                     }
+                     data += '&passwd=' + encodeURIComponent(passwd);
+                  }
+
                   glpi_ajax_dialog({
                       title: __('Select a folder'),
                       url: '{{ path('/ajax/mailcollector.php') }}',
@@ -226,16 +243,9 @@
 
                   const li       = $(this);
                   const input_id = li.data('input-id');
-                  const folder   = li.children('.folder-name').html();
+                  const folder   = li.children('.folder-name').data('globalname');
 
-                  let _label = '';
-                  const _parents = li.parents('li').children('.folder-name');
-                  for (i = _parents.length -1 ; i >= 0; i--) {
-                      _label += $(_parents[i]).html() + '/';
-                  }
-                  _label += folder;
-
-                  $('#'+input_id).val(_label);
+                  $('#'+input_id).val(folder);
 
                   const modalEl = $('#'+input_id+'_modal')[0];
                   const modal = bootstrap.Modal.getInstance(modalEl);

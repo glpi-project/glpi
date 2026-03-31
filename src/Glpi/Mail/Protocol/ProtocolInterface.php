@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,6 +52,8 @@ interface ProtocolInterface
      * @param  string      $host  hostname or IP address of POP3 server
      * @param  int|null    $port  server port, null value with fallback to default port
      * @param  string|bool $ssl   use 'SSL', 'TLS' or false
+     *
+     * @return void
      */
     public function connect($host, $port = null, $ssl = false);
 

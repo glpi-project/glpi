@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -64,51 +64,16 @@
  */
 class HTMLTableMain extends HTMLTableBase
 {
+    /** @var ?string */
     private $title;
-
-    /** @var array<HTMLTableGroup> */
+    /** @var array<string, HTMLTableGroup> */
     private $groups    = [];
+    /** @var array<class-string<CommonDBTM>, string> */
     private $itemtypes = [];
 
     public function __construct()
     {
         parent::__construct(true);
-    }
-
-    public function __get(string $property)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        $value = null;
-        switch ($property) {
-            case 'title':
-                $value = $this->$property;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
-        return $value;
-    }
-
-    public function __set(string $property, $value)
-    {
-        // TODO Deprecate access to variables in GLPI 11.0.
-        switch ($property) {
-            case 'title':
-                $this->$property = $value;
-                break;
-            default:
-                $trace = debug_backtrace();
-                trigger_error(
-                    sprintf('Undefined property: %s::%s in %s on line %d', __CLASS__, $property, $trace[0]['file'], $trace[0]['line']),
-                    E_USER_WARNING
-                );
-                break;
-        }
     }
 
     /**
@@ -126,7 +91,7 @@ class HTMLTableMain extends HTMLTableBase
     public function tryAddHeader()
     {
         if (count($this->groups) > 0) {
-            throw new \Exception('Implementation error: must define all headers before any subgroups');
+            throw new Exception('Implementation error: must define all headers before any subgroups');
         }
     }
 
@@ -137,7 +102,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * TODO : study to be sure that the order is the one we have defined ...
      *
-     * @return boolean|HTMLTableGroup
+     * @return bool|HTMLTableGroup
      * @see HTMLTableEntity::content
      **/
     public function createGroup($name, $content)
@@ -149,9 +114,11 @@ class HTMLTableMain extends HTMLTableBase
     }
 
     /**
-     * @param $itemtype
-     * @param $title
-     **/
+     * @param class-string<CommonDBTM> $itemtype
+     * @param string $title
+     *
+     * @return void
+     */
     public function addItemType($itemtype, $title)
     {
         $this->itemtypes[$itemtype] = $title;
@@ -162,7 +129,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @param string $group_name the group name
      *
-     * @return boolean|HTMLTableGroup
+     * @return bool|HTMLTableGroup
      **/
     public function getGroup($group_name)
     {
@@ -171,7 +138,9 @@ class HTMLTableMain extends HTMLTableBase
 
     /**
      * Display the super headers, for the global table, or the groups
-     **/
+     *
+     * @return void
+     */
     public function displaySuperHeader()
     {
         echo "\t\t<tr class='noHover'>\n";
@@ -189,7 +158,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * Beware that a row is counted only if it is not empty (ie.: at least one addCell)
      *
-     * @return integer the total number of rows
+     * @return int the total number of rows
      **/
     public function getNumberOfRows()
     {
@@ -250,8 +219,8 @@ class HTMLTableMain extends HTMLTableBase
         }
 
         if (!empty($this->title)) {
-            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . htmlescape($this->title) .
-              "</th></tr>\n";
+            echo "\t\t<tr class='noHover'><th colspan='" . ((int) $totalNumberOfColumn) . "'>" . htmlescape($this->title)
+              . "</th></tr>\n";
         }
 
         if ($totalNumberOfRow === 0) {
@@ -259,8 +228,8 @@ class HTMLTableMain extends HTMLTableBase
                 echo "\t</thead>\n";
             }
 
-            echo "\t\t<tr class='tab_bg_1'>" .
-              "<td class='center' colspan='$totalNumberOfColumn'>" . __s('None') . "</td></tr>\n";
+            echo "\t\t<tr class='tab_bg_1'>"
+              . "<td class='center' colspan='" . ((int) $totalNumberOfColumn) . "'>" . __s('None') . "</td></tr>\n";
         } else {
             if ($p['display_thead']) {
                 $this->displaySuperHeader();

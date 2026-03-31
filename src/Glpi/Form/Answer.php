@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use InvalidArgumentException;
 use JsonSerializable;
 
 final readonly class Answer implements JsonSerializable
@@ -63,7 +64,7 @@ final readonly class Answer implements JsonSerializable
                 $data['raw_answer'],
             )
         ) {
-            throw new \InvalidArgumentException('Invalid JSON data');
+            throw new InvalidArgumentException('Invalid JSON data');
         }
 
         $question = new Question();
@@ -91,7 +92,11 @@ final readonly class Answer implements JsonSerializable
             return null;
         }
 
-        return $type->formatRawAnswer($this->getRawAnswer());
+        $question = Question::getById($this->getQuestionId());
+        if ($question === false) {
+            return null;
+        }
+        return $type->formatRawAnswer($this->getRawAnswer(), $question);
     }
 
     public function getQuestionLabel(): string

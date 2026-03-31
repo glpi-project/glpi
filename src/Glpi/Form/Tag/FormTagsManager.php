@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,11 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Toolbox\MapperInterface;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 final class FormTagsManager
 {
@@ -50,6 +55,43 @@ final class FormTagsManager
         return $filter === '' ? $tags : $this->filterTags($tags, $filter);
     }
 
+    public function refreshTagsContent(string $content): string
+    {
+        return preg_replace_callback(
+            '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
+            function ($match) {
+                $tag = $match[0];
+
+                // Extract value.
+                preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
+                if ($value_match === []) {
+                    return "";
+                }
+
+                // Extract provider.
+                preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
+                if (
+                    $provider_match === []
+                    || !is_a(
+                        $provider_match[1],
+                        TagProviderInterface::class,
+                        true
+                    )
+                ) {
+                    return "";
+                }
+
+                $provider = new $provider_match[1]();
+                $tag = $provider->getTagFromRawValue($value_match[1]);
+                if ($tag === null) {
+                    return "";
+                }
+                return $tag->html;
+            },
+            $content
+        );
+    }
+
     public function insertTagsContent(
         string $content,
         AnswersSet $answers_set
@@ -61,14 +103,14 @@ final class FormTagsManager
 
                 // Extract value.
                 preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
-                if (empty($value_match)) {
+                if ($value_match === []) {
                     return "";
                 }
 
                 // Extract provider.
                 preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
                 if (
-                    empty($provider_match)
+                    $provider_match === []
                     || !is_a(
                         $provider_match[1],
                         TagProviderInterface::class,
@@ -98,6 +140,36 @@ final class FormTagsManager
             new CommentTitleTagProvider(),
             new CommentDescriptionTagProvider(),
         ]);
+    }
+
+    public function replaceIdsInTags(
+        string $subject,
+        MapperInterface $mapper
+    ): string {
+        foreach ($this->getTagProviders() as $tag_provider) {
+            if (!$tag_provider instanceof TagWithIdValueInterface) {
+                // This tag value do not reference and ID, we can skip it
+                continue;
+            }
+            $provider_class = preg_quote($tag_provider::class);
+            $mapped_class = $tag_provider->getItemtype();
+
+            $subject = preg_replace_callback(
+                // Look for the value + provider properties
+                "/data-form-tag-value=\"(\d+)\" "
+                . "data-form-tag-provider=\"$provider_class\"/",
+                fn($match) => preg_replace(
+                    // We do another preg on a small subset to avoid having to
+                    // manually rewrite the whole string
+                    "/value=\"(\d+)/",
+                    "value=\"" . $mapper->getItemId($mapped_class, $match[1]),
+                    $match[0]
+                ),
+                $subject,
+            );
+        }
+
+        return $subject;
     }
 
     private function removeInvalidProviders(array $providers): array

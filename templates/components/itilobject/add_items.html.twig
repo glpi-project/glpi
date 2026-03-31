@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -53,7 +52,7 @@
       <i>{{ _n('%1$s item not saved', '%1$s items not saved', (count - usedcount))|format((count - usedcount)) }}</i>
    {% endif %}
    {% if params.id > 0 and usedcount > 5 %}
-      <i><a href="{{ 'Ticket'|itemtype_form_path(params.id) }}&amp;forcetab=Item_Ticket$1">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
+      <i><a href="{{ itil_class|itemtype_form_path(params.id) }}&amp;forcetab={{ item_class }}$1">{{ __('Display all items') ~ '(' ~ usedcount ~ ')' }}</a></i>
    {% endif %}
    <script>
       function refreshItemCounter{{ rand }}() {
@@ -86,6 +85,7 @@
             return;
          }
          $.ajax({
+            method: 'POST',
             url: CFG_GLPI.root_doc + '/ajax/{{ item_class|lower }}.php',
             dataType: 'html',
             data: {

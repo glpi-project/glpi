@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,8 @@ use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use Twig\TwigTest;
+
+use function Safe\ini_get;
 
 /**
  * @since 10.0.0
@@ -87,10 +89,20 @@ class PhpExtension extends AbstractExtension
      */
     public function call(string|array $callable, array $parameters = [])
     {
-        if (is_callable($callable)) {
-            return call_user_func_array($callable, $parameters);
+        if (!is_callable($callable)) {
+            $callable_str = null;
+            if (\is_string($callable)) {
+                $callable_str = $callable;
+            } else {
+                $object = $callable[0] ?? 'unknown';
+                $method = $callable[1] ?? 'unknown';
+                $callable_str = (is_string($object) ? $object : \get_debug_type($object)) . '::' . $method;
+            }
+            \trigger_error(sprintf('Invalid callable `%s()`.', $callable_str), E_USER_WARNING);
+
+            return null;
         }
-        return null;
+        return call_user_func_array($callable, $parameters);
     }
 
     /**
@@ -103,10 +115,29 @@ class PhpExtension extends AbstractExtension
      */
     public function getStatic($class, string $property)
     {
-        if ((is_object($class) || class_exists($class)) && property_exists($class, $property)) {
-            return $class::$$property;
+        if (!is_object($class) && !class_exists($class)) {
+            \trigger_error(
+                sprintf(
+                    'Invalid class or object `%s`.',
+                    \is_string($class) ? $class : \get_debug_type($class)
+                ),
+                E_USER_WARNING
+            );
+            return null;
         }
-        return null;
+        if (!property_exists($class, $property)) {
+            \trigger_error(
+                sprintf(
+                    'Invalid property `%s::%s.',
+                    \is_string($class) ? $class : \get_debug_type($class),
+                    $property
+                ),
+                E_USER_WARNING
+            );
+            return null;
+        }
+
+        return $class::$$property;
     }
 
     /**
@@ -119,7 +150,7 @@ class PhpExtension extends AbstractExtension
      */
     public function isInstanceof($value, $classname): bool
     {
-        return is_object($value) && $value instanceof $classname;
+        return $value instanceof $classname;
     }
 
     /**

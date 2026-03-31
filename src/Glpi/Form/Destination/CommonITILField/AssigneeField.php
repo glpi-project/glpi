@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,15 +36,25 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Group;
 use Override;
 use Session;
+use Supplier;
+use User;
 
-class AssigneeField extends ITILActorField
+final class AssigneeField extends ITILActorField
 {
     #[Override]
-    public function getAllowedQuestionType(): string
+    public function getAllowedQuestionType(): array
     {
-        return QuestionTypeAssignee::class;
+        return [new QuestionTypeAssignee(), new QuestionTypeEmail()];
+    }
+
+    #[Override]
+    public function getAllowedQuestionItemTypes(): array
+    {
+        return [User::class, Group::class, Supplier::class];
     }
 
     #[Override]
@@ -63,7 +72,7 @@ class AssigneeField extends ITILActorField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 120;
     }
 
     #[Override]

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,19 +36,19 @@
 /**
  * NotificationTargetCartridgeItem Class
  *
- * @since 0.84
+ * @extends NotificationTarget<CartridgeItem>
  **/
 class NotificationTargetCartridgeItem extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Cartridges alarm')];
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
-
         $events = $this->getAllEvents();
 
         $this->data['##cartridge.entity##'] = Dropdown::getDropdownName(
@@ -87,10 +87,9 @@ class NotificationTargetCartridgeItem extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
-
         $tags = [
             'cartridge.action'         => _n('Event', 'Events', 1),
             'cartridge.reference'      => __('Reference'),
@@ -99,20 +98,20 @@ class NotificationTargetCartridgeItem extends NotificationTarget
             'cartridge.stock_target'   => __('Stock target'),
             'cartridge.to_order'       => __('To order'),
             'cartridge.url'            => __('URL'),
-            'cartridge.entity'         => Entity::getTypeName(1)
+            'cartridge.entity'         => Entity::getTypeName(1),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'cartridges',
             'label'   => __('Device list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
         asort($this->tag_descriptions);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,6 +41,7 @@ use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Html;
 use Override;
+use Ticket;
 
 final class FormTile extends CommonDBChild implements TileInterface
 {
@@ -48,7 +49,13 @@ final class FormTile extends CommonDBChild implements TileInterface
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
-    private ?Form $form;
+    private Form $form;
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
+    }
 
     #[Override]
     public function getLabel(): string
@@ -73,12 +80,7 @@ final class FormTile extends CommonDBChild implements TileInterface
     {
         $form = $this->getItem();
         if (!($form instanceof Form)) {
-            // We don't throw an exception here because we don't want to crash
-            // the home page in case of one invalid tile.
-            // It is better to display an empty tile in this case rather
-            // than blocking access to the helpdesk.
-            trigger_error("Unable to load linked form", E_USER_WARNING);
-            $this->form = null;
+            throw new InvalidTileException("Unable to load linked form");
         } else {
             $this->form = $form;
         }
@@ -87,38 +89,25 @@ final class FormTile extends CommonDBChild implements TileInterface
     #[Override]
     public function getTitle(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-        return $this->form->fields['name'];
+        return $this->form->getServiceCatalogItemTitle();
     }
 
     #[Override]
     public function getDescription(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-        return $this->form->fields['description'];
+        return $this->form->getServiceCatalogItemDescription();
     }
 
     #[Override]
     public function getIllustration(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
         return $this->form->getServiceCatalogItemIllustration();
     }
 
     #[Override]
     public function getTileUrl(): string
     {
-        if ($this->form === null) {
-            return "";
-        }
-
-        return Html::getPrefixedUrl('/Form/Render/' .  $this->form->getID());
+        return Html::getPrefixedUrl('/Form/Render/' . $this->form->getID());
     }
 
     #[Override]
@@ -126,8 +115,17 @@ final class FormTile extends CommonDBChild implements TileInterface
     {
         $form_access_manager = FormAccessControlManager::getInstance();
 
+        if (!$session_info->hasRight(Ticket::$rightname, CREATE)) {
+            return false;
+        }
+
         // Form must be active
         if (!$this->form->isActive()) {
+            return false;
+        }
+
+        // Form must not be deleted
+        if ($this->form->isDeleted()) {
             return false;
         }
 
@@ -155,6 +153,16 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function getConfigFieldsTemplate(): string
     {
         return "pages/admin/form_tile_config_fields.html.twig";
+    }
+
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_Tile::class,
+            ]
+        );
     }
 
     public function getFormId(): int

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,10 +36,13 @@
 namespace Glpi\Console\Security;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Security\TOTPManager;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use User;
 
 class DisableTFACommand extends AbstractCommand
 {
@@ -54,12 +57,12 @@ class DisableTFACommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $username = $input->getArgument('login');
-        $user = new \User();
+        $user = new User();
         if (!$user->getFromDBbyName($username)) {
             $output->writeln("<error>" . sprintf(__("User %s not found"), $username) . "</error>");
             return 1;
         }
-        $totp_manager = new \Glpi\Security\TOTPManager();
+        $totp_manager = new TOTPManager();
         if (!$totp_manager->is2FAEnabled($user->getID())) {
             $output->writeln("<error>" . __("2FA is not enabled for this user") . "</error>");
             return 0;
@@ -67,7 +70,7 @@ class DisableTFACommand extends AbstractCommand
         if ($totp_manager->get2FAEnforcement($user->getID())) {
             $output->writeln("<info>" . __("2FA is enforced for this user. They will be required to set it up again the next time they log in.") . "</info>");
         }
-        $helper = $this->getHelper('question');
+        $helper = new QuestionHelper();
         $question = new ConfirmationQuestion(__('Are you sure you want to disable 2FA for this user?'), false);
         if (!$helper->ask($input, $output, $question)) {
             return 0;

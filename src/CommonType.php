@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,7 @@ use Glpi\Features\Clonable;
 
 abstract class CommonType extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public static function getFieldLabel()
@@ -46,7 +47,7 @@ abstract class CommonType extends CommonDropdown
 
     public static function getIcon()
     {
-        $type_class  = get_called_class();
+        $type_class  = static::class;
         $device_class = str_replace('Type', '', $type_class);
         return $device_class::getIcon();
     }

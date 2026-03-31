@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Section;
 use Override;
 
-final class SectionTagProvider implements TagProviderInterface
+final class SectionTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -73,12 +73,29 @@ final class SectionTagProvider implements TagProviderInterface
         return $section->fields['name'];
     }
 
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Section::class;
+    }
+
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $section = Section::getById((int) $value);
+        if (!$section) {
+            return null;
+        }
+
+        return $this->getTagForSection($section);
+    }
+
     public function getTagForSection(Section $section): Tag
     {
         return new Tag(
             label: sprintf(__('Section: %s'), $section->fields['name']),
             value: $section->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

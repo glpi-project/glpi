@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +35,8 @@
 namespace Glpi\Helpdesk;
 
 use CommonGLPI;
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Grid;
 use Override;
 use Reminder;
 use RSSFeed;
@@ -48,12 +50,13 @@ final class HomePageTabs extends CommonGLPI
     private const SOLVED_TICKETS_TAB = 2;
     private const PUBLIC_REMINDER_TAB = 3;
     private const RSS_FEED_PUBLIC = 4;
+    private const DASHBOARD_TAB = 5;
 
     #[Override]
     public function defineTabs($options = []): array
     {
         $tabs = [];
-        $this->addStandardTab(__CLASS__, $tabs, $options);
+        $this->addStandardTab(self::class, $tabs, $options);
         $tabs['no_all_tab'] = true;
 
         return $tabs;
@@ -97,6 +100,13 @@ final class HomePageTabs extends CommonGLPI
             $tabs[self::RSS_FEED_PUBLIC] = self::createTabEntry(
                 text: RSSFeed::getTypeName(),
                 icon: RSSFeed::getIcon()
+            );
+        }
+
+        if (Grid::canViewOneDashboard()) {
+            $tabs[self::DASHBOARD_TAB] = self::createTabEntry(
+                text: __("Dashboard"),
+                icon: Dashboard::getIcon()
             );
         }
 
@@ -145,6 +155,17 @@ final class HomePageTabs extends CommonGLPI
             return true;
         }
 
+        if ($tabnum == self::DASHBOARD_TAB) {
+            if (!Grid::canViewOneDashboard()) {
+                return false;
+            }
+
+            $default   = Grid::getDefaultDashboardForMenu('central');
+            $dashboard = new Grid($default);
+            $dashboard->show();
+            return true;
+        }
+
         return false;
     }
 
@@ -156,7 +177,7 @@ final class HomePageTabs extends CommonGLPI
                 'field'      => 12,
                 'searchtype' => 'equals',
                 'value'      => 'notold',
-            ]
+            ],
         ]);
     }
 
@@ -168,7 +189,7 @@ final class HomePageTabs extends CommonGLPI
                 'field'      => 12,
                 'searchtype' => 'equals',
                 'value'      => 'old',
-            ]
+            ],
         ]);
     }
 
@@ -180,6 +201,7 @@ final class HomePageTabs extends CommonGLPI
             'showmassiveactions' => false,
             'hide_controls'      => true,
             'as_map'             => false,
+            'usesession'         => 0, // false won't work here, need to be 0
             'push_history'       => false,
             'sort'               => [19],
             'order'              => ['DESC'],

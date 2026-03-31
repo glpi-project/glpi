@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,15 +42,19 @@ function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
     // Search for fileupload container.
-    // First try to find an uplaoder having same name as editor element.
-    var uploader = $(`[data-uploader-name="${editor.getElement().name}"]`);
+    // First try to find an uploader having same name as editor element.
+    var uploader = $(`[data-uploader-name="${CSS.escape(editor.getElement().name)}"]`);
     if (uploader.length === 0) {
         // Fallback to uploader using default name
         uploader = $(editor.getElement()).closest('form').find('[data-uploader-name="filename"]');
     }
     if (uploader.length === 0) {
+        // Fallback to an uploader found in the parent element
+        uploader = $(editor.getElement()).parent().find('[data-uploader-name]');
+    }
+    if (uploader.length === 0) {
         // Fallback to any uploader found in current form
-        uploader = $(editor.getElement()).closest('form').find('[data-uploader-name=]').first();
+        uploader = $(editor.getElement()).closest('form').find('[data-uploader-name]').first();
     }
 
     uploader.fileupload('add', {files: [file]});
@@ -67,7 +71,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                 $.each(
                     files,
                     (index, file) => {
-                        if (files_data[index].error !== undefined) {
+                        if ((files_data[index].error ?? false) !== false) {
                             container.parent().find('.uploadbar')
                                 .text(files_data[index].error)
                                 .css('width', '100%');
@@ -81,7 +85,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                             editor = tinyMCE.get(editor_id);
                             const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
                             const matching_image = uploaded_image !== undefined
-                                ? editor.dom.select(`img[data-upload_id="${uploaded_image.upload_id}"]`)
+                                ? editor.dom.select(`img[data-upload_id="${CSS.escape(uploaded_image.upload_id)}"]`)
                                 : [];
                             if (matching_image.length > 0) {
                                 editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
@@ -123,7 +127,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
  * @param      {Object}  container     The fileinfo container
  */
 var displayUploadedFile = function(file, tag, editor, input_name, filecontainer) {
-    var fileindex = $(`input[name^="_${input_name}["]`).length;
+    var fileindex = $(`input[name^="_${CSS.escape(input_name)}["]`).length;
     var ext = file.name.split('.').pop();
 
     var p = $('<p></p>')
@@ -151,8 +155,15 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 
     // Delete button
     var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
-    $('<span class="ti ti-circle-x pointer"></span>').click(() => {
+    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').attr('title', __('Delete')).on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
+
+        // Trigger an event to notify that an image has been removed
+        $(document).trigger('glpi_fileupload_remove', {
+            elementsIdToRemove: elementsIdToRemove,
+            tagToRemove: tag.tag,
+            editor: editor
+        });
     }).appendTo(p);
 };
 
@@ -166,7 +177,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
     // Remove file display lines
     $.each(elementsIdToRemove, (index, element) => {
-        $(`#${element}`).remove();
+        $(`#${CSS.escape(element)}`).remove();
     });
 
     if (typeof editor !== "undefined" && editor !== null

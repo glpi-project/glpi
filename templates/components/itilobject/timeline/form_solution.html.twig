@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,9 +38,12 @@
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
-{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
-{% set noform = params['noform'] is defined or params['noform'] == true %}
+{% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
+{% set noform = params['noform'] is defined or (params['noform'] ?? false) == true %}
 {% set disabled = (candedit == false) %}
+{% set rand = rand|default(random())|safe_dom_id %}
+
+{% set content_field_id = 'solution_content_' ~ rand %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -88,7 +90,7 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             <input type="hidden" name="_no_message_link" value="1" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             {% if item.getType() == 'Ticket' and item.countOpenChildrenOfSameType() > 0 %}
                <div class="alert alert-important alert-warning">
@@ -99,21 +101,23 @@
 
             <div class="row mx-n3 mx-xxl-auto">
                <div class="col-12 col-xl-7 col-xxl-8">
-                  {% set content = subitem.fields['content'] %}
+                  {% set content = subitem.fields['content'] ?? '' %}
 
                   {{ fields.textareaField(
                      'content',
                      content,
                      '',
                      {
+                        'id': content_field_id,
                         'full_width': true,
                         'no_label': true,
                         'enable_richtext': true,
                         'enable_fileupload': true,
-                        'enable_mentions': true,
+                        'mention_options': mention_options|default({}),
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
                         'disabled': disabled,
+                        'aria_label': _n('Solution', 'Solutions', 1),
                      }
                   ) }}
                </div>
@@ -121,21 +125,7 @@
                   <div class="row">
                      {% if candedit %}
                         {% if can_read_kb and not nokb %}
-                           {% set search_solution_button %}
-                               <button type="button" class="btn btn-secondary overflow-hidden text-nowrap" name="search_solution"
-                                       title="{{ __('Search a solution') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                                   <i class="ti ti-search"></i>
-                               </button>
-                           {% endset %}
-                           {{ fields.field(
-                              '',
-                              search_solution_button,
-                              '',
-                              {
-                                 'full_width': true,
-                                 'icon_label': true,
-                              }
-                           ) }}
+                           {{ include('components/itilobject/timeline/knowledge_item.html.twig') }}
                         {% endif %}
 
                         {% set sol_template_lbl %}
@@ -229,9 +219,9 @@
             </div>
 
          {% if not noform %}
-               {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
                <div class="d-flex card-footer mx-n3 mb-n3">
-                  {% if subitem.fields['id'] <= 0 %}
+                  {% if (subitem.fields['id'] ?? 0) <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">
                         <i class="ti ti-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
@@ -253,16 +243,16 @@
       <script type="text/javascript">
          function solutiontemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path('/ajax/solution.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/solution.php`,
                type: 'POST',
                data: {
                   solutiontemplates_id: value,
-                  items_id: '{{ item.fields['id'] }}',
-                  itemtype: '{{ item.getType() }}'
+                  items_id: '{{ item.fields['id']|e('js') }}',
+                  itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
                // set textarea content
-               setRichTextEditorContent("content_{{ rand }}", data.content);
+               setRichTextEditorContent("{{ content_field_id|e('js') }}", data.content);
 
                // set type
                var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
@@ -275,33 +265,6 @@
                $("#dropdown_solutiontypes_id{{ rand }}").append(newOption).trigger('change');
             });
          }
-         $('button[name="search_solution"]').on('click', () => {
-            window.glpi_ajax_dialog({
-                id: 'modal_searchSolution',
-                modalclass: 'modal-xl',
-                title: '{{ __('Search a solution') }}',
-                url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
-            });
-            $(document).off('click', '#modal_searchSolution button.use-solution').on('click', '#modal_searchSolution button.use-solution', (e) => {
-                const btn = $(e.target).closest('button.use-solution');
-                const solutions_id = btn.attr('data-solution-id') ?? btn.closest('.list-group-item').attr('data-solution-id');
-                $('#modal_searchSolution').modal('hide');
-                if (solutions_id) {
-                    $.ajax({
-                        url: `{{ path('/Knowbase/KnowbaseItem/') }}${solutions_id}/Content`
-                    }).then((data) => {
-                        if (data) {
-                            setRichTextEditorContent("content_{{ rand }}", data);
-                            const link_kb = $('.itilsolution input[type="checkbox"][name="kb_linked_id"]');
-                            link_kb.val(solutions_id);
-                            link_kb.removeAttr('disabled');
-                            link_kb.closest('.form-field').find('label.col-form-label > i').attr('data-bs-original-title', __('Link to knowledge base entry #%id').replace('%id', solutions_id));
-                            link_kb.closest('.form-field').removeClass('d-none');
-                        }
-                    });
-                }
-            })
-         });
       </script>
    {% endif %}
 {% endblock %}

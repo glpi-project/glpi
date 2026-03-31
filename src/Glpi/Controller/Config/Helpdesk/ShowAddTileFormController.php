@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,29 +34,13 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use CommonDBTM;
-use Config;
-use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Form\Form;
-use Glpi\Helpdesk\Tile\ExternalPageTile;
-use Glpi\Helpdesk\Tile\FormTile;
-use Glpi\Helpdesk\Tile\GlpiPageTile;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class ShowAddTileFormController extends AbstractController
+final class ShowAddTileFormController extends AbstractTileController
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
-    }
-
     #[Route(
         "/Config/Helpdesk/ShowAddTileForm",
         name: "glpi_config_helpdesk_show_add_tile_form",
@@ -70,7 +54,7 @@ final class ShowAddTileFormController extends AbstractController
                 $possible_tiles[] = $tile_type;
             }
         }
-        if (empty($possible_tiles)) {
+        if ($possible_tiles === []) {
             throw new AccessDeniedHttpException();
         }
 

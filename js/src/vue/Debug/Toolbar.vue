@@ -68,7 +68,7 @@
             refreshButton: (button) => {
                 const server_perf = props.initial_request.server_performance;
                 const memory_usage = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
-                const server_performance_button_label = `${server_perf.execution_time} <span class="text-muted"> ms using </span> ${memory_usage} <span class="text-muted"> MiB </span>`;
+                const server_performance_button_label = `${_.escape(server_perf.execution_time)} <span class="text-muted"> ms using </span> ${_.escape(memory_usage)} <span class="text-muted"> MiB </span>`;
                 button.find('.debug-text').html(server_performance_button_label);
             }
         },
@@ -80,7 +80,7 @@
             component_registered_name: 'widget-sqlrequests',
             refreshButton: (button) => {
                 const sql_data = getCombinedSQLData();
-                const database_button_label = `${sql_data.total_requests} <span class="text-muted"> requests </span>`;
+                const database_button_label = `${_.escape(sql_data.total_requests)} <span class="text-muted"> requests </span>`;
                 button.find('.debug-text').html(database_button_label);
             }
         },
@@ -104,7 +104,7 @@
                 if (button.find('.debug-text').text().trim() === '') {
                     setTimeout(() => {
                         const dom_timing = +window.performance.getEntriesByType('navigation')[0].domComplete.toFixed(2);
-                        const client_performance_button_label = `${dom_timing} <span class="text-muted"> ms </span>`;
+                        const client_performance_button_label = `${_.escape(dom_timing)} <span class="text-muted"> ms </span>`;
                         button.find('.debug-text').html(client_performance_button_label);
                     }, 200);
                 }
@@ -125,7 +125,7 @@
             main_widget: true, // This widget shows directly in the toolbar
             component_registered_name: 'widget-theme-switcher',
             refreshButton: (button) => {
-                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${document.documentElement.attributes['data-glpi-theme'].value}`);
+                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${_.escape(document.documentElement.attributes['data-glpi-theme'].value)}`);
             }
         },
         {
@@ -145,12 +145,6 @@
         }
     ];
 
-    $.each(props.initial_request.sql.queries, (i, query) => {
-        cleanSQLQuery(query.query).then((clean_query) => {
-            // eslint-disable-next-line vue/no-mutating-props
-            props.initial_request.sql.queries[i].query = clean_query;
-        });
-    });
     $(document).ajaxSend((event, xhr, settings) => {
         // If the request is going to the debug AJAX endpoint, don't do anything
         if (settings.url.indexOf('ajax/debug.php') !== -1) {
@@ -246,18 +240,6 @@
         return widgets.filter((widget) => widget.main_widget);
     }
 
-    function cleanSQLQuery(query) {
-        const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
-        const post_newline_keywords = ['UNION'];
-        query = query.replace(/\n/g, ' ');
-        return Promise.resolve(window.GLPI.Monaco.colorizeText(query, 'sql')).then((html) => {
-            // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
-            const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
-            const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
-            return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();
-        });
-    }
-
     function getCombinedSQLData() {
         const sql_data = {
             total_requests: 0,
@@ -301,7 +283,7 @@
 
     function refreshWidgetButtons() {
         $.each(getMainWidgets(), (i, /** @type MainWidget */ widget) => {
-            widget.refreshButton($(`#debug-toolbar .debug-toolbar-widgets li[data-glpi-debug-widget-id="${widget.id}"]`));
+            widget.refreshButton($(`#debug-toolbar .debug-toolbar-widgets li[data-glpi-debug-widget-id="${CSS.escape(widget.id)}"]`));
         });
         initial_load.value = false;
     }
@@ -333,12 +315,6 @@
                 return;
             }
             ajax_request.profile = data;
-
-            $.each(ajax_request.profile.sql.queries || [], (i, query) => {
-                cleanSQLQuery(query.query).then((clean_query) => {
-                    ajax_request.profile.sql.queries[i].query = clean_query;
-                });
-            });
 
             const content_area = $('#debug-toolbar-expanded-content');
             if (content_area.data('active-widget') !== undefined) {
@@ -415,7 +391,7 @@
         box-shadow: none;
     }
     .debug-toolbar-widgets .debug-toolbar-widget {
-        &.active, &:hover {
+        &.active, &:hover, &[active="true"] {
             border-top: 3px solid var(--tblr-primary) !important;
             margin-top : -3px;
         }

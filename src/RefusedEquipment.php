@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,17 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\Inventoriable;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
+use Glpi\Search\DefaultSearchRequestInterface;
 
 /**
  * Equipments refused from inventory
  */
-class RefusedEquipment extends CommonDBTM
+class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterface
 {
-    use Glpi\Features\Inventoriable;
+    use Inventoriable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'refusedequipment';
 
@@ -156,16 +159,12 @@ class RefusedEquipment extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * Get search parameters for default search / display list
-     *
-     * @return array
-     */
-    public static function getDefaultSearchRequest()
+    #[Override]
+    public static function getDefaultSearchRequest(): array
     {
         return [
             'sort'  => 3, //date SO
-            'order' => 'DESC'
+            'order' => 'DESC',
         ];
     }
 
@@ -176,7 +175,6 @@ class RefusedEquipment extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initForm($ID, $options);
@@ -185,27 +183,27 @@ class RefusedEquipment extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
 
         $itemtype = $this->fields['itemtype'];
-        echo "<th>" .  __s('Item type') . "</th>";
-        echo "<td>" . htmlescape($itemtype::getTypeName(1))  . "</td>";
+        echo "<th>" . __s('Item type') . "</th>";
+        echo "<td>" . htmlescape($itemtype::getTypeName(1)) . "</td>";
 
         echo "<th>" . __s('Name') . "</th>";
-        echo "<td>" . htmlescape($this->getName())  . "</td>";
+        echo "<td>" . htmlescape($this->getName()) . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
-        echo "<th>" .  __s('Serial') . "</th>";
-        echo "<td>" . htmlescape($this->fields['serial'])  . "</td>";
+        echo "<th>" . __s('Serial') . "</th>";
+        echo "<td>" . htmlescape($this->fields['serial']) . "</td>";
 
-        echo "<th>" .  __s('UUID') . "</th>";
-        echo "<td>" . htmlescape($this->fields['uuid'])  . "</td>";
+        echo "<th>" . __s('UUID') . "</th>";
+        echo "<td>" . htmlescape($this->fields['uuid']) . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
         $rule = new RuleImportAsset();
         $rule->getFromDB($this->fields['rules_id']);
-        echo "<th>" .  htmlescape(Rule::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlescape(Rule::getTypeName(1)) . "</th>";
         echo "<td>";
         echo $rule->getLink();
 
@@ -225,20 +223,23 @@ class RefusedEquipment extends CommonDBTM
 
         $entity = new Entity();
         $entity->getFromDB($this->fields['entities_id']);
-        echo "<th>" .  htmlescape(Entity::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         echo "<td>" . $entity->getLink() . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
-        echo "<th>" .  htmlescape(IPAddress::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlescape(IPAddress::getTypeName(1)) . "</th>";
         echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['ip']))) . "</td>";
 
-        echo "<th>" .  __s('MAC address') . "</th>";
+        echo "<th>" . __s('MAC address') . "</th>";
         echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['mac']))) . "</td>";
 
         echo "</tr>";
-        $this->showInventoryInfo();
+
+        echo '<tr><td colspan="4">';
+        echo TemplateRenderer::getInstance()->render('components/form/inventory_info.html.twig', ['item' => $this]);
+        echo "</td></tr>";
 
         $this->showFormButtons($options);
 
@@ -276,7 +277,7 @@ class RefusedEquipment extends CommonDBTM
             __s('Inventory is successful, refused entry log has been removed.')
         );
 
-        $item = new $status['itemtype']();
+        $item = getItemForItemtype($status['itemtype']);
         if (isset($status['items_id'])) {
             $item->getFromDB($status['items_id']);
             $redirect_url = $item->getLinkURL();

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,16 +35,22 @@
 namespace Glpi\Controller;
 
 use CommonDBTM;
-use Html;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Glpi\Http\RedirectResponse;
+use Html;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Display a form for a given item type or handle form submission.
+ *
+ * - Use GET method to display a form.
+ * - Use POST method to submit a form.
+ */
 class GenericFormController extends AbstractController
 {
     private const SUPPORTED_ACTIONS = [
@@ -56,7 +62,6 @@ class GenericFormController extends AbstractController
         'unglobalize',
     ];
 
-    #[Route("/{class}/Form", name: "glpi_itemtype_form", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
@@ -98,11 +103,11 @@ class GenericFormController extends AbstractController
      */
     private function handleFormAction(Request $request, string $form_action, string $class): Response
     {
-        $id = $request->query->get('id', -1);
+        $id = $request->isMethod('GET') ? $request->query->get('id', -1) : $request->request->get('id', -1);
         $post_data = $request->request->all();
 
         /* @var CommonDBTM $object */
-        $object = new $class();
+        $object = getItemForItemtype($class);
 
         if (!$object::isNewID($id) && !$object->getFromDB($id)) {
             throw new NotFoundHttpException();
@@ -126,7 +131,7 @@ class GenericFormController extends AbstractController
             'delete', 'restore' => $object->can($id, DELETE, $post_data),
             'purge' => $object->can($id, PURGE, $post_data),
             'update', 'unglobalize' => $object->can($id, UPDATE, $post_data),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+            default => throw new RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if (!$can_do_action) {
@@ -138,10 +143,10 @@ class GenericFormController extends AbstractController
             'add' => $object->add($post_data),
             'delete' => $object->delete($post_data),
             'restore' => $object->restore($post_data),
-            'purge' => $object->delete($post_data, 1),
+            'purge' => $object->delete($post_data, true),
             'update' => $object->update($post_data),
             'unglobalize' => $object->unglobalize(),
-            default => throw new \RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
+            default => throw new RuntimeException(\sprintf("Unsupported object action \"%s\".", $form_action)),
         };
 
         if ($action_result) {
@@ -150,11 +155,16 @@ class GenericFormController extends AbstractController
                 $class,
                 $object::getLogDefaultLevel(),
                 $object::getLogDefaultServiceName(),
-                sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $form_action, $post_data["name"])
+                sprintf(
+                    __('%1$s executes the "%2$s" action on the item %3$s'),
+                    $_SESSION["glpiname"],
+                    $form_action,
+                    $post_data["name"] ?? NOT_AVAILABLE
+                )
             );
         }
 
-        $post_action = $object::getPostFormAction($form_action);
+        $post_action = $object::getPostFormAction($form_action, $action_result);
 
         return match ($post_action) {
             'backcreated' => $_SESSION['glpibackcreated']
@@ -184,7 +194,10 @@ class GenericFormController extends AbstractController
         return $request->getMethod() === 'GET' ? 'get' : null;
     }
 
-    public function displayForm(CommonDBTM $object, Request $request): Response
+    /**
+     * Display a full form page
+     */
+    private function displayForm(CommonDBTM $object, Request $request): Response
     {
         $form_options = $object->getFormOptionsFromUrl($request->query->all());
         $form_options['formoptions'] = 'data-track-changes=true';
@@ -199,6 +212,9 @@ class GenericFormController extends AbstractController
         ]);
     }
 
+    /**
+     * Display a modal form
+     */
     private function displayModal(mixed $object, Request $request): Response
     {
         $form_options = [];

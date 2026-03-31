@@ -1,0 +1,10 @@
+Date: Wed, 18 Dec 2025 10:00:00 +0100
+From: < >
+To: GLPI debug <unittests@glpi-project.org>
+CC: {{{
+Subject: 50 - Message with all invalid addresses
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+This message has all invalid addresses (From and CC) to test the case where no valid address can be extracted.

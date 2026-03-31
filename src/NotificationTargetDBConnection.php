@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,32 +33,30 @@
  * ---------------------------------------------------------------------
  */
 
-// Class NotificationTarget
+/**
+ * Class NotificationTarget
+ *
+ * @extends NotificationTarget<DBConnection>
+ */
 class NotificationTargetDBConnection extends NotificationTarget
 {
-    /**
-     * Overwrite the function in NotificationTarget because there's only one target to be notified
-     *
-     * @see NotificationTarget::addNotificationTargets()
-     **/
+    #[Override]
     public function addNotificationTargets($entity)
     {
-
         $this->addProfilesToTargets();
         $this->addGroupsToTargets($entity);
         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
     }
 
-
+    #[Override]
     public function getEvents()
     {
         return ['desynchronization' => __('Desynchronization SQL replica')];
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
-
         if ($options['diff'] > 1000000000) {
             $tmp = __("Can't connect to the database.");
         } else {
@@ -74,32 +72,30 @@ class NotificationTargetDBConnection extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
-
         $tags = ['dbconnection.delay' => __('Difference between main and replica')];
-
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => true,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 
-       //Tags with just lang
+        //Tags with just lang
         $tags = ['dbconnection.title'
                                  => __('Replica database out of sync!'),
             'dbconnection.delay'
-                                 => __('The replica database is desynchronized. The difference is of:')
+                                 => __('The replica database is desynchronized. The difference is of:'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 

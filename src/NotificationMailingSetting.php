@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,14 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\SMTP\OauthConfig;
 
+use function Safe\json_decode;
+
 /**
  *  This class manages the mail settings
  */
 class NotificationMailingSetting extends NotificationSetting
 {
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return __('Email notifications configuration');
@@ -58,10 +61,11 @@ class NotificationMailingSetting extends NotificationSetting
         return Notification_NotificationTemplate::MODE_MAIL;
     }
 
+    #[Override]
     public function defineTabs($options = [])
     {
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -82,6 +86,7 @@ class NotificationMailingSetting extends NotificationSetting
             'noreply_email',
             'noreply_email_name',
             'attach_ticket_documents_to_mail',
+            'attach_documents_to_notifications_for_anonymous',
             'mailing_signature',
             'smtp_mode',
             'smtp_max_retries',
@@ -100,13 +105,14 @@ class NotificationMailingSetting extends NotificationSetting
         ];
     }
 
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -114,7 +120,7 @@ class NotificationMailingSetting extends NotificationSetting
             'table'         => $this->getTable(),
             'field'         => 'value',
             'name'          => __('Value'),
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;
@@ -122,8 +128,17 @@ class NotificationMailingSetting extends NotificationSetting
 
     public function showFormConfig()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        // warning and no form if can't read keyfile
+        // always display no matter what $options['display']
+        // see comment at the end of this function
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
 
         $attach_documents_values = [
             self::ATTACH_NO_DOCUMENT       => __('No documents'),
@@ -134,7 +149,6 @@ class NotificationMailingSetting extends NotificationSetting
         $mail_methods = [
             MAIL_MAIL       => __('PHP'),
             MAIL_SMTP       => __('SMTP'),
-            MAIL_SMTPS      => __('SMTPS'),
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
         $is_mail_function_available = true;
@@ -155,6 +169,7 @@ class NotificationMailingSetting extends NotificationSetting
         $supported_providers = OauthConfig::getInstance()->getSupportedProviders();
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/mailing_setting.html.twig', [
+            'config_id' => Config::getConfigIDForContext('core'),
             'attach_documents_values' => $attach_documents_values,
             'mail_methods' => $mail_methods,
             'is_mail_function_available' => $is_mail_function_available,
@@ -164,6 +179,7 @@ class NotificationMailingSetting extends NotificationSetting
         ]);
     }
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-mail";

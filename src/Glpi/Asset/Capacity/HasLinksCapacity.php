@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +34,9 @@
 
 namespace Glpi\Asset\Capacity;
 
+use CommonDBTM;
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Link;
 use Link_Itemtype;
 use ManualLink;
@@ -92,14 +93,14 @@ class HasLinksCapacity extends AbstractCapacity
         return sprintf(__('%1$s links attached to %2$s assets'), $manualLinkCount + $externalLinkCount, $max);
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('link_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, ManualLink::class, 100);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from link types
         $this->unregisterFromTypeConfig('link_types', $classname);
@@ -110,7 +111,7 @@ class HasLinksCapacity extends AbstractCapacity
             'itemtype' => $classname,
         ], true, false);
 
-        $link_itemtype = new \Link_Itemtype();
+        $link_itemtype = new Link_Itemtype();
         $link_itemtype->deleteByCriteria([
             'itemtype' => $classname,
         ], true, false);
@@ -126,7 +127,7 @@ class HasLinksCapacity extends AbstractCapacity
     /**
      * Count external links defined for given asset class.
      *
-     * @param class-string<\CommonDBTM> $asset_classname
+     * @param class-string<CommonDBTM> $asset_classname
      * @return int
      */
     private function countExternalLinks(string $asset_classname): int

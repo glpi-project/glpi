@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,11 @@
 
 namespace Glpi\Search\Output;
 
+use Entity;
 use Glpi\Toolbox\URL;
+use Location;
+use Ticket;
+use Toolbox;
 
 /**
  *
@@ -50,7 +54,7 @@ final class MapSearchOutput extends HTMLSearchOutput
         if ($itemtype === 'Location') {
             $latitude = 21;
             $longitude = 20;
-        } else if ($itemtype === 'Entity') {
+        } elseif ($itemtype === 'Entity') {
             $latitude = 67;
             $longitude = 68;
         } else {
@@ -63,14 +67,14 @@ final class MapSearchOutput extends HTMLSearchOutput
             'field'        => $latitude,
             'searchtype'   => 'contains',
             'value'        => 'NULL',
-            '_hidden'      => true
+            '_hidden'      => true,
         ];
         $params['criteria'][] = [
             'link'         => 'AND NOT',
             'field'        => $longitude,
             'searchtype'   => 'contains',
             'value'        => 'NULL',
-            '_hidden'      => true
+            '_hidden'      => true,
         ];
 
         return $params;
@@ -78,7 +82,6 @@ final class MapSearchOutput extends HTMLSearchOutput
 
     public function displayData(array $data, array $params = []): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtype = $data['itemtype'];
@@ -89,29 +92,26 @@ final class MapSearchOutput extends HTMLSearchOutput
             array_pop($criteria);
             $criteria[] = [
                 'link'         => 'AND',
-                'field'        => ($itemtype === 'Location' || $itemtype === 'Entity') ? 1 : (($itemtype === 'Ticket') ? 83 : 3),
+                'field'        => ($itemtype === Location::class || $itemtype === Entity::class) ? 1 : (($itemtype === Ticket::class) ? 83 : 3),
                 'searchtype'   => 'equals',
-                'value'        => 'CURLOCATION'
+                'value'        => 'CURLOCATION',
             ];
-            $globallinkto = \Toolbox::append_params(
+
+            $parameters = Toolbox::append_params(
                 [
+                    'as_map'       => 0,
                     'criteria'     => $criteria,
                     'metacriteria' => $data['search']['metacriteria'],
-                ],
-                '&amp;'
+                    'sort'         => $data['search']['sort'],
+                    'order'        => $data['search']['order'],
+                ]
             );
-            $sort_params = \Toolbox::append_params([
-                'sort'   => $data['search']['sort'],
-                'order'  => $data['search']['order']
-            ], '&amp;');
-            $parameters = "as_map=0&amp;" . $sort_params . '&amp;' .
-                $globallinkto;
-
-            if (strpos($target, '?') == false) {
+            if (!str_contains($target, '?')) {
                 $fulltarget = $target . "?" . $parameters;
             } else {
                 $fulltarget = $target . "&" . $parameters;
             }
+
             $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) : $itemtype;
 
             $twig_params = [

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,7 +49,7 @@ class Knowbase extends CommonGLPI
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         $ong['no_all_tab'] = true;
         return $ong;
@@ -58,8 +58,8 @@ class Knowbase extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === self::class) {
-            $tabs[1] = _x('button', 'Search');
-            $tabs[2] = _x('button', 'Browse');
+            $tabs[1] = self::createTabEntry(_x('button', 'Search'), icon: 'ti ti-search');
+            $tabs[2] = self::createTabEntry(_x('button', 'Browse'), icon: 'ti ti-list-tree');
 
             return $tabs;
         }
@@ -84,13 +84,14 @@ class Knowbase extends CommonGLPI
 
     /**
      * Show the knowbase search view
-     **/
+     *
+     * @return void
+     */
     public static function showSearchView()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Search a solution
+        // Search a solution
         if (isset($_GET["itemtype"], $_GET["items_id"]) && !isset($_GET["contains"])) {
             if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types'], true) && $item = getItemForItemtype($_GET["itemtype"])) {
                 if ($item->can($_GET["item_items_id"], READ)) {
@@ -101,7 +102,7 @@ class Knowbase extends CommonGLPI
 
         if (isset($_GET["contains"])) {
             $_SESSION['kbcontains'] = $_GET["contains"];
-        } else if (isset($_SESSION['kbcontains'])) {
+        } elseif (isset($_SESSION['kbcontains'])) {
             $_GET['contains'] = $_SESSION["kbcontains"];
         }
         $ki = new KnowbaseItem();

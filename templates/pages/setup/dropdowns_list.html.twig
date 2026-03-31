@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -40,13 +39,13 @@
       <div class="card">
          <div class="accordion accordion-flush">
             <div class="accordion-item">
-               <h2 class="accordion-header">
-                  <button class="accordion-button {{ nb_opt > 1 ? "collapsed" : "" }}" type="button"
+               <div class="accordion-header">
+                  <button class="accordion-button {{ nb_opt > 3 ? "collapsed" : "" }}" type="button"
                      data-bs-toggle="collapse" data-bs-target="#{{ card_id }}" aria-expanded="true" aria-controls="collapseOne">
                      {{ label }}
                   </button>
-               </h2>
-               <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 1 ? "collapse" : "" }}" style="transition: none">
+               </div>
+               <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 3 ? "collapse" : "" }}" style="transition: none">
                   <div class="list-group list-group-flush list-group-hoverable">
                      {% for itemtype, dropdown_label in dropdown %}
                         {% set is_entity_assign = itemtype|itemtype_class.isEntityAssign() %}
@@ -63,7 +62,7 @@
                                  {% if is_entity_assign %}
                                     <i class="{{ 'Entity'|itemtype_icon }} fs-4"
                                        data-bs-toggle="tooltip"
-                                       title="{{ __('Dropdown with entity management') }}"></i>
+                                       title="{{ __('Entity management') }}"></i>
                                  {% endif %}
                               </div>
                            </div>
@@ -84,7 +83,7 @@
 
 <div class="container-fluid text-start mb-4 dropdowns-list">
    <div class="input-icon mb-3">
-      <input class="form-control" placeholder="{{ __('Filter dropdowns') }}" id="filter-dropdown" />
+      <input class="form-control" placeholder="{{ __('Search') }}" id="filter-dropdown" />
       <span class="input-icon-addon">
          <i class="ti ti-search"></i>
       </span>
@@ -113,8 +112,8 @@ $(function () {
 
       if (input_value.length > 0) {
          timerid = setTimeout(function() {
-            $('.dropdowns-list .list-group-item:not(:icontains('+input_value+'))').hide();
-            $('.dropdowns-list .list-group-item:icontains('+input_value+')')
+            $('.dropdowns-list .list-group-item:not(:icontains('+CSS.escape(input_value)+'))').hide();
+            $('.dropdowns-list .list-group-item:icontains('+CSS.escape(input_value)+')')
                .closest('.accordion-collapse').addClass('show')
                .siblings('.accordion-header')
                   .children('.accordion-button').removeClass('collapsed');

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,11 +38,11 @@
  **/
 class UserEmail extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
 
-   // From CommonDBChild
-    public static $itemtype        = 'User';
+    // From CommonDBChild
+    public static $itemtype = User::class;
     public static $items_id        = 'users_id';
     public $dohistory              = true;
 
@@ -96,17 +96,16 @@ class UserEmail extends CommonDBChild
      **/
     public static function getDefaultForUser($users_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-       // Get default one
+        // Get default one
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'     => $users_id,
             ],
             'ORDER'  => 'is_default DESC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         foreach ($iterator as $row) {
@@ -120,13 +119,12 @@ class UserEmail extends CommonDBChild
     /**
      * Get all emails for user.
      *
-     * @param $users_id user ID
+     * @param int $users_id user ID
      *
      * @return array of emails
      **/
     public static function getAllForUser($users_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $emails = [];
@@ -135,7 +133,7 @@ class UserEmail extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'     => $users_id,
-            ]
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -149,23 +147,22 @@ class UserEmail extends CommonDBChild
     /**
      * is an email of the user
      *
-     * @param $users_id           user ID
-     * @param $email     string   email to check user ID
+     * @param int    $users_id user ID
+     * @param string $email    email to check user ID
      *
-     * @return boolean is this email set for the user ?
+     * @return bool is this email set for the user ?
      **/
     public static function isEmailForUser($users_id, $email)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'  => $users_id,
-                'email'     => $email
+                'email'     => $email,
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -175,22 +172,20 @@ class UserEmail extends CommonDBChild
         return false;
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @param $field_name
-     * @param $child_count_js_var
-     *
-     * @return string
-     **/
+    #[Override()]
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
+        $html = "<div class='d-flex'>"
+            . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . __s('Set as default email') . "'>"
+            . "&nbsp;"
+            . "<input type='text' size='30' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . __s('Email address') . "'>"
+            . "</div>";
 
-        return "<input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
-             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\'>&nbsp;" .
-             "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name) .
-             "[-'+" . htmlescape($child_count_js_var) . "+']\'>";
+        return str_replace(
+            '__JS_PLACEHOLDER__',
+            "'+{$child_count_js_var}+'", // string closing, + operator, JS variable name, + operator, string reopening
+            jsescape($html)
+        );
     }
 
 
@@ -215,17 +210,17 @@ class UserEmail extends CommonDBChild
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . htmlescape($this->getID()) . "'";
         if (!$canedit) {
-            $result .= " disabled";
+            $result .= " disabled aria-disabled='true'";
         }
         if ($this->fields['is_default']) {
             $result .= " checked";
         }
-        $result .= ">&nbsp;";
+        $result .= " aria-label='" . __s('Set as default email') . "'>&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
-            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
+            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' aria-label='" . __s('Email address') . "'>";
         }
         $result .= "</div>";
 
@@ -255,37 +250,45 @@ class UserEmail extends CommonDBChild
         ) {
             return;
         }
-        $canedit = (
-            (
-                $user->can($users_id, UPDATE)
-                && ($user->currentUserHaveMoreRightThan($users_id)))
-            || ($users_id == Session::getLoginUserID())
-        );
+
+        $canedit = $users_id == Session::getLoginUserID();
+        if (!$canedit) {
+            if ($user->isNewID($users_id)) {
+                $canedit = $user->can($users_id, CREATE);
+            } else {
+                $canedit = $user->can($users_id, UPDATE)
+                && $user->currentUserHaveMoreRightThan($users_id);
+            }
+        }
 
         parent::showChildsForItemForm($user, '_useremails', $canedit);
     }
 
 
     /**
-     * @param $user
+     * @param User $user
+     *
+     * @return void
      **/
     public static function showAddEmailButton(User $user)
     {
 
         $users_id = $user->getID();
         if (!$user->can($users_id, READ) && ($users_id != Session::getLoginUserID())) {
-            return false;
+            return;
         }
-        $canedit = (
-            (
-                $user->can($users_id, UPDATE)
-                && ($user->currentUserHaveMoreRightThan($users_id)))
-            || ($users_id == Session::getLoginUserID())
-        );
+
+        $canedit = $users_id == Session::getLoginUserID();
+        if (!$canedit) {
+            if ($user->isNewID($users_id)) {
+                $canedit = $user->can($users_id, CREATE);
+            } else {
+                $canedit = $user->can($users_id, UPDATE)
+                    && $user->currentUserHaveMoreRightThan($users_id);
+            }
+        }
 
         parent::showAddChildButtonForItemForm($user, '_useremails', $canedit);
-
-        return;
     }
 
 
@@ -295,7 +298,7 @@ class UserEmail extends CommonDBChild
             return false;
         }
 
-       // First email is default
+        // First email is default
         if (countElementsInTable($this->getTable(), ['users_id' => $input['users_id']]) == 0) {
             $input['is_default'] = 1;
         }
@@ -340,10 +343,9 @@ class UserEmail extends CommonDBChild
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : unsed others for the users
+        // if default is set : unsed others for the users
         if (
             in_array('is_default', $this->updates)
             && ($this->input["is_default"] == 1)
@@ -351,11 +353,11 @@ class UserEmail extends CommonDBChild
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
                     'id'        => ['<>', $this->input['id']],
-                    'users_id'  => $this->fields['users_id']
+                    'users_id'  => $this->fields['users_id'],
                 ]
             );
         }
@@ -366,19 +368,18 @@ class UserEmail extends CommonDBChild
 
     public function post_addItem()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : unset others for the users
+        // if default is set : unset others for the users
         if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
                     'id'        => ['<>', $this->fields['id']],
-                    'users_id'  => $this->fields['users_id']
+                    'users_id'  => $this->fields['users_id'],
                 ]
             );
         }
@@ -389,22 +390,21 @@ class UserEmail extends CommonDBChild
 
     public function post_deleteFromDB()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : set default to another one
+        // if default is set : set default to another one
         if ($this->fields["is_default"] == 1) {
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default'   => 1
+                    'is_default'   => 1,
                 ],
                 [
                     'WHERE'  => [
                         'id'        => ['<>', $this->fields['id']],
-                        'users_id'  => $this->fields['users_id']
+                        'users_id'  => $this->fields['users_id'],
                     ],
-                    'LIMIT'  => 1
+                    'LIMIT'  => 1,
                 ]
             );
         }

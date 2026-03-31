@@ -1,0 +1,76 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 576,
+            "uuid": "0fdb05b8-8344-4d0f-b8b6-89159225bd41",
+            "name": "Test form",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 428,
+                    "uuid": "5e9b557b-832c-45a3-a005-b304b6486562",
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 504,
+                    "uuid": "b6bd71d5-4ff8-4d00-98a3-843f44bc084e",
+                    "name": "My plugin question",
+                    "type": "GlpiPlugin\\Tester\\Form\\QuestionTypeColor",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 428,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": [
+                {
+                    "key": "Tester"
+                }
+            ]
+        }
+    ]
+}

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,71 +36,48 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
-use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
 final class ValidationFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
-    public const STRATEGIES            = 'strategies';
-    public const SPECIFIC_QUESTION_IDS = 'specific_question_ids';
-    public const SPECIFIC_ACTORS       = 'specific_actors';
+    public const STRATEGIES = 'strategies';
+    public const STRATEGY_CONFIGS = 'strategy_configs';
 
     /**
-     * @param array<ValidationFieldStrategy> $strategies
-     * @param array<int>                     $specific_question_ids
-     * @param array<int>                     $specific_actors
+     * @param array<ValidationFieldStrategyConfig> $strategy_configs
      */
     public function __construct(
-        private array $strategies,
-        private array $specific_question_ids = [],
-        private array $specific_actors = [],
+        private array $strategy_configs = []
     ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyItemsArrayHandler(key: self::SPECIFIC_ACTORS),
-            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
-        ];
+        // Ensure we have at least one strategy
+        if ($this->strategy_configs === []) {
+            $this->strategy_configs[] = new ValidationFieldStrategyConfig(
+                ValidationFieldStrategy::NO_VALIDATION
+            );
+        }
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategies = array_map(
-            fn (string $strategy) => ValidationFieldStrategy::tryFrom($strategy),
-            $data[self::STRATEGIES] ?? []
-        );
-        if (empty($strategies)) {
-            $strategies = [ValidationFieldStrategy::NO_VALIDATION];
+        $strategy_configs = [];
+        foreach ($data[self::STRATEGY_CONFIGS] as $config_data) {
+            $strategy_configs[] = ValidationFieldStrategyConfig::jsonDeserialize($config_data);
         }
-
-        return new self(
-            strategies: $strategies,
-            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
-            specific_actors: $data[self::SPECIFIC_ACTORS] ?? [],
-        );
+        return new self($strategy_configs);
     }
 
     #[Override]
     public function jsonSerialize(): array
     {
         return [
-            self::STRATEGIES              => array_map(
-                fn (ValidationFieldStrategy $strategy) => $strategy->value,
-                $this->strategies
+            self::STRATEGY_CONFIGS => array_map(
+                fn(ValidationFieldStrategyConfig $config) => $config->jsonSerialize(),
+                $this->strategy_configs
             ),
-            self::SPECIFIC_QUESTION_IDS => $this->specific_question_ids,
-            self::SPECIFIC_ACTORS => $this->specific_actors,
         ];
     }
 
@@ -116,16 +92,22 @@ final class ValidationFieldConfig implements
      */
     public function getStrategies(): array
     {
-        return $this->strategies;
+        return array_map(
+            fn(ValidationFieldStrategyConfig $config) => $config->getStrategy(),
+            $this->strategy_configs
+        );
     }
 
-    public function getSpecificQuestionIds(): array
+    /**
+     * @return array<ValidationFieldStrategyConfig>
+     */
+    public function getStrategyConfigs(): array
     {
-        return $this->specific_question_ids;
+        return $this->strategy_configs;
     }
 
-    public function getSpecificActors(): array
+    public function getStrategyConfigByIndex(int $index): ?ValidationFieldStrategyConfig
     {
-        return $this->specific_actors;
+        return $this->strategy_configs[$index] ?? null;
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -75,13 +75,13 @@ class ManualLink extends CommonDBChild
                 ]
             );
             if (Link::canView()) {
-                 $count += countElementsInTable(
-                     ['glpi_links_itemtypes', 'glpi_links'],
-                     [
-                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                         'glpi_links_itemtypes.itemtype'  => $item->getType()
-                     ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
-                 );
+                $count += countElementsInTable(
+                    ['glpi_links_itemtypes', 'glpi_links'],
+                    [
+                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                    ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
+                );
             }
         }
         return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
@@ -89,6 +89,10 @@ class ManualLink extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         Link::showAllLinksForItem($item);
         return true;
     }
@@ -99,8 +103,8 @@ class ManualLink extends CommonDBChild
             'item' => $this,
             'parent_item' => [
                 'itemtype' => $options['itemtype'] ?? null,
-                'items_id' => $options['items_id'] ?? null
-            ]
+                'items_id' => $options['items_id'] ?? null,
+            ],
         ]);
 
         return true;
@@ -151,7 +155,6 @@ class ManualLink extends CommonDBChild
      */
     public static function getForItem(CommonDBTM $item): iterable
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',
@@ -159,11 +162,16 @@ class ManualLink extends CommonDBChild
                 'itemtype'  => $item->getType(),
                 'items_id'  => $item->fields[$item->getIndexName()],
             ],
-            'ORDERBY'      => 'name'
+            'ORDERBY'      => 'name',
         ]);
         return $iterator;
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -228,7 +236,7 @@ class ManualLink extends CommonDBChild
             // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
             $html .= '<i class="fs-2 fa ' . htmlescape($fields['icon']) . '"'
             . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
-        } else if (str_starts_with($fields['icon'] ?? '', 'ti-')) {
+        } elseif (str_starts_with($fields['icon'] ?? '', 'ti-')) {
             $html .= '<i class="fs-2 ti ' . htmlescape($fields['icon']) . '"></i>&nbsp;';
         }
         $html .= htmlescape(!empty($fields['name']) ? $fields['name'] : $fields['url']);

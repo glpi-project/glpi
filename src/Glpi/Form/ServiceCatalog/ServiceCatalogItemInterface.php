@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,4 +53,10 @@ interface ServiceCatalogItemInterface
      * @return string
      */
     public function getServiceCatalogItemIllustration(): string;
+
+    /**
+     * Check if the item is pinned
+     * @return bool
+     */
+    public function isServiceCatalogItemPinned(): bool;
 }

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,9 +35,12 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonDBRelation;
+use CommonDBTM;
 use DisplayPreference;
+use Exception;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\CapacityConfig;
 use Log;
 
 /**
@@ -53,13 +55,16 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * Declared as final to ensure that constructor can be called without having to pass any parameter.
      */
-    final public function __construct()
-    {
-    }
+    final public function __construct() {}
 
     public function getDescription(): string
     {
         return '';
+    }
+
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return null;
     }
 
     public function getSearchOptions(string $classname): array
@@ -92,13 +97,13 @@ abstract class AbstractCapacity implements CapacityInterface
      * The count is based on the number of distinct peer items IDs found in the table of the relation class
      * in rows linked to the given asset class.
      *
-     * @param class-string<\CommonDBTM> $asset_classname
-     * @param class-string<\CommonDBTM> $relation_classname
+     * @param class-string<CommonDBTM> $asset_classname
+     * @param class-string<CommonDBTM> $relation_classname
+     * @param array $specific_criteria
      * @return int
      */
-    protected function countPeerItemsUsage(string $asset_classname, string $relation_classname): int
+    final protected function countPeerItemsUsage(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (is_a($relation_classname, CommonDBRelation::class, true)) {
@@ -111,7 +116,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $distinct_field  = $relation_classname::$items_id_1;
             }
             if ($distinct_field === null) {
-                throw new \Exception('Unable to compute peer item foreign key field.');
+                throw new Exception('Unable to compute peer item foreign key field.');
             }
 
             return countDistinctElementsInTable(
@@ -119,7 +124,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $distinct_field,
                 [
                     'itemtype' => $asset_classname,
-                ]
+                ] + $specific_criteria
             );
         }
 
@@ -132,11 +137,11 @@ abstract class AbstractCapacity implements CapacityInterface
                 $relation_classname::getTable(),
                 [
                     'itemtype' => $asset_classname,
-                ]
+                ] + $specific_criteria
             );
         }
 
-        throw new \Exception('Unable to compute peer items usage.');
+        throw new Exception('Unable to compute peer items usage.');
     }
 
     /**
@@ -144,11 +149,12 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * The count is based on the number of distinct assets IDs found in the table of the relation class.
      *
-     * @param class-string<\CommonDBTM> $asset_classname
-     * @param class-string<\CommonDBTM> $relation_classname
+     * @param class-string<CommonDBTM> $asset_classname
+     * @param class-string<CommonDBTM> $relation_classname
+     * @param array $specific_criteria
      * @return int
      */
-    protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname): int
+    final protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
         // We assume that asset type/id are always store in `itemtype`/`items_id` fields.
         return countDistinctElementsInTable(
@@ -156,14 +162,14 @@ abstract class AbstractCapacity implements CapacityInterface
             'items_id',
             [
                 'itemtype' => $asset_classname,
-            ]
+            ] + $specific_criteria
         );
     }
 
     /**
      * Count the number of assets for the given asset definition.
      *
-     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param class-string<Asset> $classname
      * @param array<string, mixed>            $where_clause
      *
      * @return int
@@ -173,26 +179,20 @@ abstract class AbstractCapacity implements CapacityInterface
         return countElementsInTable(
             Asset::getTable(),
             $where_clause + [
-                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id']
+                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id'],
             ]
         );
     }
 
-    public function onClassBootstrap(string $classname): void
-    {
-    }
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void {}
 
-    public function onObjectInstanciation(Asset $object): void
-    {
-    }
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void {}
 
-    public function onCapacityEnabled(string $classname): void
-    {
-    }
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void {}
 
-    public function onCapacityDisabled(string $classname): void
-    {
-    }
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void {}
+
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void {}
 
     /**
      * Delete logs related to relations between two itemtypes.
@@ -208,7 +208,6 @@ abstract class AbstractCapacity implements CapacityInterface
         string $linked_itemtype,
         bool $both_sides = true
     ): void {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -241,7 +240,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function deleteFieldsLogs(string $itemtype, array $search_options): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ids = $this->extractOptionsIds($search_options);
@@ -262,7 +260,7 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Delete display preferences for given search options.
      *
-     * @param string $source_itemtype
+     * @param string $itemtype
      * @param array $search_options
      * @return void
      */
@@ -318,7 +316,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function registerToTypeConfig(string $config_name, string $itemtype): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array($itemtype, $CFG_GLPI[$config_name])) {
@@ -335,7 +332,6 @@ abstract class AbstractCapacity implements CapacityInterface
      */
     protected function unregisterFromTypeConfig(string $config_name, string $itemtype): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $CFG_GLPI[$config_name] = array_values(

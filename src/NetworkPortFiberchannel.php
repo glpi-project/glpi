@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,10 +34,11 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Socket;
+
+use function Safe\preg_replace;
 
 /**
- * NetworkPortFiberchannel class : Fiberchannel instantiation of NetworkPort
+ * NetworkPortFiberchannel class: Fiberchannel instantiation of NetworkPort
  *
  * @since 9.1
  */
@@ -53,6 +54,11 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
         return ['link.mac' => 'mac'];
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
         if (isset($input['speed']) && ($input['speed'] === 'speed_other_value')) {
@@ -134,7 +140,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -145,8 +151,8 @@ TWIG, $twig_params);
             'name'               => __('MAC'),
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'empty'
-            ]
+                'jointype'           => 'empty',
+            ],
         ];
 
         $tab[] = [
@@ -163,7 +169,7 @@ TWIG, $twig_params);
             'field'              => 'speed',
             'name'               => __('Fiber channel port speed'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -171,7 +177,7 @@ TWIG, $twig_params);
             'table'              => 'glpi_networkportfiberchanneltypes',
             'field'              => 'name',
             'name'               => __('Fiber port type'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -180,10 +186,10 @@ TWIG, $twig_params);
     /**
      * Transform a port speed from string to integerer and vice-versa
      *
-     * @param integer|string $val        port speed
-     * @param boolean        $to_string  true if we must transform the speed to string
+     * @param int|string $val        port speed
+     * @param bool        $to_string  true if we must transform the speed to string
      *
-     * @return false|integer|string (regarding what is requested)
+     * @return false|int|string (regarding what is requested)
      **/
     public static function transformPortSpeed($val, $to_string)
     {
@@ -220,7 +226,7 @@ TWIG, $twig_params);
     /**
      * Get the possible value for Ethernet port speed
      *
-     * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
+     * @param int|null $val  if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
      **/
@@ -228,12 +234,12 @@ TWIG, $twig_params);
     {
         $tmp = [
             0     => '',
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             10    => sprintf(__('%d Mbit/s'), 10),
             100   => sprintf(__('%d Mbit/s'), 100),
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             1000  => sprintf(__('%d Gbit/s'), 1),
-            10000 => sprintf(__('%d Gbit/s'), 10)
+            10000 => sprintf(__('%d Gbit/s'), 10),
         ];
 
         if (is_null($val)) {
@@ -249,7 +255,7 @@ TWIG, $twig_params);
         }
         switch ($field) {
             case 'speed':
-                return self::getPortSpeed($values[$field]);
+                return htmlescape(self::getPortSpeed($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -269,6 +275,12 @@ TWIG, $twig_params);
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
+    /**
+     * @param array $tab
+     * @param array $joinparams
+     *
+     * @return void
+     */
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [
@@ -284,9 +296,9 @@ TWIG, $twig_params);
                 'linkfield'           => 'networkports_id',
                 'beforejoin'         => [
                     'table'              => 'glpi_networkportfiberchannels',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
     }
 }

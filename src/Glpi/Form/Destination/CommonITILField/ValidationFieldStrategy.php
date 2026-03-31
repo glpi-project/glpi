@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,28 +36,34 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\AnswersSet;
+use ITILValidationTemplate;
 
 enum ValidationFieldStrategy: string
 {
     case NO_VALIDATION    = 'no_validation';
+    case SPECIFIC_VALUES  = 'specific_values';
     case SPECIFIC_ACTORS  = 'specific_actors';
     case SPECIFIC_ANSWERS = 'specific_answers';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::NO_VALIDATION    => __("No validation"),
-            self::SPECIFIC_ACTORS   => __("Specific actors"),
+            self::NO_VALIDATION    => __("No approval"),
+            self::SPECIFIC_VALUES  => __("Specific Approval templates"),
+            self::SPECIFIC_ACTORS  => __("Specific actors"),
             self::SPECIFIC_ANSWERS => __("Answer from specific questions"),
         };
     }
 
     public function getValidation(
-        ValidationFieldConfig $config,
+        ValidationFieldStrategyConfig $config,
         AnswersSet $answers_set,
     ): ?array {
         return match ($this) {
             self::NO_VALIDATION    => null,
+            self::SPECIFIC_VALUES  => $this->getActorsForSpecificValues(
+                $config->getSpecificValidationTemplateIds()
+            ),
             self::SPECIFIC_ACTORS  => $this->getActorsFromSpecificActors(
                 $config->getSpecificActors()
             ),
@@ -68,7 +74,7 @@ enum ValidationFieldStrategy: string
         };
     }
 
-    private function isValidAnswer($value): bool
+    private function isValidAnswer(mixed $value): bool
     {
         if (is_array($value) && is_array(current($value))) {
             foreach ($value as $item) {
@@ -80,15 +86,15 @@ enum ValidationFieldStrategy: string
             return true;
         }
 
-        return isset($value['itemtype']) && is_string($value['itemtype']) &&
-            isset($value['items_id']) && is_numeric($value['items_id']);
+        return isset($value['itemtype']) && is_string($value['itemtype'])
+            && isset($value['items_id']) && is_numeric($value['items_id']);
     }
 
     private function getActorsForSpecificAnswers(
         array $question_ids,
         AnswersSet $answers_set,
     ): ?array {
-        if (empty($question_ids)) {
+        if ($question_ids === []) {
             return null;
         }
 
@@ -101,6 +107,33 @@ enum ValidationFieldStrategy: string
             } elseif ($actors_to_add !== null) {
                 $actors[] = $actors_to_add;
             }
+        }
+
+        return $actors;
+    }
+
+    /**
+     * Get actors for specific validation templates
+     *
+     * @param ?array<int> $specific_values Validation template IDs
+     */
+    private function getActorsForSpecificValues(
+        ?array $specific_values,
+    ): ?array {
+        if (empty($specific_values)) {
+            return null;
+        }
+
+        $actors = [];
+        foreach ($specific_values as $validation_template_id) {
+            $validation_template = ITILValidationTemplate::getById($validation_template_id);
+            if (!$validation_template) {
+                continue;
+            }
+
+            $actors[] = [
+                '_template_id' => $validation_template->getId(),
+            ];
         }
 
         return $actors;
@@ -130,7 +163,7 @@ enum ValidationFieldStrategy: string
     private function getActorsFromSpecificActors(
         array $specific_actors,
     ): ?array {
-        if (empty($specific_actors)) {
+        if ($specific_actors === []) {
             return null;
         }
 

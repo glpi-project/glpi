@@ -1,0 +1,80 @@
+From: <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Subject:
+ 44 - Hebrew encoding issue
+Thread-Topic:
+ =?iso-8859-8-i?B?VGVzdGluZyBhZnRlciAxMC4wLjE1IOHj6ffkIPDl8fT6IODn+Okg7vLh?=
+ =?iso-8859-8-i?B?+CDs4vjx5CDn4/nk?=
+Thread-Index: AQHay7VwWm1D7TBarUiz3aMaQfjWag==
+Date: Mon, 1 Jul 2024 12:52:33 +0000
+Message-ID:
+ <AS8PR08MB701061415D541C4E1B16F05CA3D32@AS8PR08MB7010.eurprd08.prod.outlook.com>
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator:
+Content-Type: multipart/alternative;
+	boundary="_000_AS8PR08MB701061415D541C4E1B16F05CA3D32AS8PR08MB7010eurp_"
+MIME-Version: 1.0
+
+--_000_AS8PR08MB701061415D541C4E1B16F05CA3D32AS8PR08MB7010eurp_
+Content-Type: text/plain; charset="iso-8859-8-i"
+Content-Transfer-Encoding: quoted-printable
+
+Testing at the request of glpi support
+=E1=E3=E9=F7=E4 =F9=EC =EE=E9=E9=EC =F2=ED =F2=E1=F8=E9=FA =E5=E0=F0=E2=EC=
+=E9=FA
+
+--_000_AS8PR08MB701061415D541C4E1B16F05CA3D32AS8PR08MB7010eurp_
+Content-Type: text/html; charset="iso-8859-8-i"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:w=3D"urn:sc=
+hemas-microsoft-com:office:word" xmlns:m=3D"http://schemas.microsoft.com/of=
+fice/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html40"><head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+8-i">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Aptos;
+	panose-1:2 11 0 4 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Aptos",sans-serif;
+	mso-ligatures:standardcontextual;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Aptos",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:11.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style>
+</head>
+<body lang=3D"en-IL" link=3D"#467886" vlink=3D"#96607D" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span lang=3D"EN-US">Testing at the request of glpi =
+support<o:p></o:p></span></p>
+<p class=3D"MsoNormal" dir=3D"RTL" style=3D"text-align:right;direction:rtl;=
+unicode-bidi:embed">
+<span lang=3D"HE" style=3D"font-family:&quot;Arial&quot;,sans-serif">=E1=E3=
+=E9=F7=E4 =F9=EC =EE=E9=E9=EC =F2=ED =F2=E1=F8=E9=FA =E5=E0=F0=E2=EC=E9=FA<=
+o:p></o:p></span></p>
+</div>
+</body>
+</html>
+
+--_000_AS8PR08MB701061415D541C4E1B16F05CA3D32AS8PR08MB7010eurp_--

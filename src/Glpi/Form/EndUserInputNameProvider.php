@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,9 @@
 
 namespace Glpi\Form;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Utility class to provide the end user input name
  */
@@ -54,13 +57,12 @@ final class EndUserInputNameProvider
         return sprintf(self::END_USER_INPUT_NAME, $question->getID());
     }
 
-
     public function getFiles(array $inputs, array $answers): array
     {
         $files = [
             'filename' => [],
             'prefix'   => [],
-            'tag'      => []
+            'tag'      => [],
         ];
 
         foreach (array_keys($answers) as $answer_id) {
@@ -115,9 +117,7 @@ final class EndUserInputNameProvider
 
         return array_filter(
             $answers,
-            function ($key) {
-                return preg_match(self::END_USER_INPUT_NAME_REGEX, $key);
-            },
+            fn($key) => preg_match(self::END_USER_INPUT_NAME_REGEX, $key) === 1,
             ARRAY_FILTER_USE_KEY
         );
     }

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -45,10 +44,12 @@
 </div>
 
 <section
+    class="d-flex align-items-end"
     data-glpi-form-editor-horizontal-blocks-container
     aria-label="{{ __("Horizontal blocks layout") }}"
 >
     <section
+        class="flex-grow-1 w-100"
         data-glpi-form-editor-horizontal-blocks
         aria-label="{{ __("Horizontal blocks") }}"
     >
@@ -66,7 +67,7 @@
                 {% endif %}
                 {% set previous_index = form_block.fields.horizontal_rank %}
 
-                {{ form_block.displayBlockForEditor() }}
+                {{ form_block.displayBlockForEditor(can_update, allow_unauthenticated_access) }}
             {% endif %}
         {% endfor %}
 
@@ -87,11 +88,13 @@
             }, with_context = false) }}
         {% endif %}
     </section>
-    {{ include('pages/admin/form/form_toolbar.html.twig', {
-        'can_update'     : can_update,
-        'form'           : form,
-        'vertical_layout': false,
-    }, with_context = false) }}
+    <div class="position-relative mb-2">
+        {{ include('pages/admin/form/form_toolbar.html.twig', {
+            'can_update'     : can_update,
+            'form'           : form,
+            'vertical_layout': true,
+        }, with_context = false) }}
+    </div>
 </section>
 
 {# Add a small div to avoid an issue with the html5sortable library which

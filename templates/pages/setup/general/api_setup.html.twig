@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,20 +38,24 @@
    {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
 
     {{ fields.smallTitle(__('API')) }}
-    {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
-    {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
-    {{ fields.htmlField(
-        '',
-        getting_started_doc
-    ) }}
-    {{ fields.htmlField(
-        '',
-        endpoint_doc
-    ) }}
-    {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
-        readonly: true,
-        copyable: true
-    }) }}
+    {{ fields.sliderField('enable_hlapi', config_object.isHlApiEnabled(), __("Enable API")) }}
+    {{ fields.nullField() }}
+    {% if config_object.isHlApiEnabled() %}
+        {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
+        {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
+        {{ fields.htmlField(
+            '',
+            getting_started_doc
+        ) }}
+        {{ fields.htmlField(
+            '',
+            endpoint_doc
+        ) }}
+        {{ fields.textField('_url_base_api', api_url, __('URL of the API'), {
+            readonly: true,
+            copyable: true
+        }) }}
+    {% endif %}
 
     {{ fields.smallTitle(__('Legacy API')) }}
     {% if config['enable_api'] %}
@@ -82,7 +85,7 @@
          legacy_doc
       ) }}
       {{ fields.nullField() }}
-      {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
+      {{ fields.textField('_legacy_url_base_api', legacy_api_url, __('URL of the API'), {
          readonly: true,
          copyable: true
       }) }}

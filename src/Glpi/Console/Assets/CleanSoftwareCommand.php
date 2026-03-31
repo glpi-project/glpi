@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -65,7 +65,7 @@ class CleanSoftwareCommand extends AbstractCommand
         $this->validateInput($input);
         $max = $input->getOption('max');
 
-       // Run crontask
+        // Run crontask
         $total = CleanSoftwareCron::run($max);
         $output->writeln("<info> $total item(s) deleted </info>");
 
@@ -77,13 +77,14 @@ class CleanSoftwareCommand extends AbstractCommand
      *
      * @param InputInterface $input
      *
+     * @return void
      * @throws InvalidArgumentException
      */
     private function validateInput(InputInterface $input)
     {
         $max = $input->getOption('max');
         if (!is_numeric($max)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Option --max must be an integer.')
             );
         }

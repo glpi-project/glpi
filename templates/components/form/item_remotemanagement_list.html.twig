@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -32,19 +32,13 @@
 
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
-<h3 class="text-start mt-5">{{ __('List of remote management') }}</h3>
 {% if canedit %}
-    <div class="text-center mb-3">
-        <a class="btn btn-primary" href="{{ form_url }}" role="button">
-            {{ __('Add a remote management') }}
-        </a>
-    </div>
+    {% include 'components/tab/addlink_block.html.twig' with {'add_link': form_url, 'button_label': __('Add a remote management')} %}
 {% endif %}
 
 {% if entries|length > 0 %}
     {{ include('components/datatable.html.twig', {
         'is_tab': true,
-        'nopager': true,
         'nofilter': true,
         'nosort': true,
         'columns': {
@@ -58,10 +52,11 @@
         'entries': entries,
         'total_number': entries|length,
         'showmassiveactions': canedit,
+        'massiveactionparams': massiveactionparams,
     }, with_context = false) }}
 {% else %}
     {{ alerts.alert_info(
-        __('No item found')
+        __('No results found')
     ) }}
 {% endif %}
 

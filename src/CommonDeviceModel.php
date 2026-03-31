@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ use Glpi\Features\Clonable;
 /// Class DeviceBatteryModel
 abstract class CommonDeviceModel extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public static function getTypeName($nb = 0)
@@ -47,11 +48,10 @@ abstract class CommonDeviceModel extends CommonDropdown
 
     public static function getFormURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = get_called_class();
+        $itemtype = static::class;
         $link = "$dir/front/devicemodel.form.php?itemtype=$itemtype";
 
         return $link;
@@ -59,11 +59,10 @@ abstract class CommonDeviceModel extends CommonDropdown
 
     public static function getSearchURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
-        $itemtype = get_called_class();
+        $itemtype = static::class;
         $link = "$dir/front/devicemodel.php?itemtype=$itemtype";
 
         return $link;
@@ -71,7 +70,7 @@ abstract class CommonDeviceModel extends CommonDropdown
 
     public static function getIcon()
     {
-        $model_class  = get_called_class();
+        $model_class  = static::class;
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
     }

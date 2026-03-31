@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,9 +40,9 @@ use Glpi\DBAL\QuerySubQuery;
  */
 class CleanSoftwareCron extends CommonDBTM
 {
-    const TASK_NAME = 'cleansoftware';
+    public const TASK_NAME = 'cleansoftware';
 
-    const MAX_BATCH_SIZE = 2000;
+    public const MAX_BATCH_SIZE = 2000;
 
     protected static $notable = true;
 
@@ -66,6 +66,11 @@ class CleanSoftwareCron extends CommonDBTM
         return __('Max items to handle in one execution');
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return [
@@ -77,14 +82,14 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Clean unused software and software versions
      *
-     * @param int $max Max items to handle
+     * @param ?int $max Max items to handle
      * @return int Number of deleted items
      */
     public static function run(?int $max): int
     {
         $total = 0;
 
-       // Delete software versions with no installation
+        // Delete software versions with no installation
         $total += self::deleteItems(
             self::getVersionsWithNoInstallationCriteria(),
             new SoftwareVersion(),
@@ -107,6 +112,8 @@ class CleanSoftwareCron extends CommonDBTM
      * Run from cronTask
      *
      * @param CronTask $task
+     *
+     * @return int
      */
     public static function cronCleanSoftware(CronTask $task)
     {
@@ -137,7 +144,7 @@ class CleanSoftwareCron extends CommonDBTM
                                 'WHERE'  => [
                                     'is_deleted' => 0,
                                 ],
-                            ])
+                            ]),
                         ],
                         [
                             'id' => new QuerySubQuery([
@@ -174,8 +181,8 @@ class CleanSoftwareCron extends CommonDBTM
                         'SELECT' => 'softwares_id',
                         'FROM'   => SoftwareVersion::getTable(),
                     ]),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -193,7 +200,6 @@ class CleanSoftwareCron extends CommonDBTM
         CommonDBTM $em,
         int $max
     ): int {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $total = 0;
@@ -208,7 +214,7 @@ class CleanSoftwareCron extends CommonDBTM
                 $em->delete($item);
             }
 
-           // Stop if no items found
+            // Stop if no items found
         } while ($count > 0 && $total < $max);
 
         return $total;

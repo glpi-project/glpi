@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,26 +35,35 @@
 
 /**
  * @since 0.84
- **/
+ *
+ */
 abstract class HTMLTableBase
 {
+    /** @var array<string, array<string, HTMLTableHeader>> */
     private $headers = [];
+    /** @var string[] */
     private $headers_order = [];
+    /** @var array<string, string[]> */
     private $headers_sub_order = [];
+    /** @var bool */
     private $super;
 
     /**
-     * @param $super
-     **/
+     * @param bool $super
+     */
     public function __construct($super)
     {
         $this->super = $super;
     }
 
     /**
-     * @param HTMLTableHeader $header_object
-     * @param boolean $allow_super_header    (false by default
-     **/
+     * @template T of HTMLTableHeader
+     *
+     * @param T $header_object
+     * @param bool $allow_super_header    (false by default)
+     *
+     * @return T
+     */
     public function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false)
     {
         $header_name    = '';
@@ -65,7 +74,7 @@ abstract class HTMLTableBase
             && (!$this->super)
             && (!$allow_super_header)
         ) {
-            throw new \Exception(sprintf(
+            throw new Exception(sprintf(
                 'Implementation error: invalid super header name "%s"',
                 $header_name
             ));
@@ -74,7 +83,7 @@ abstract class HTMLTableBase
             !$header_object->isSuperHeader()
             && $this->super
         ) {
-            throw new \Exception(sprintf(
+            throw new Exception(sprintf(
                 'Implementation error: invalid super header name "%s"',
                 $header_name
             ));
@@ -119,8 +128,10 @@ abstract class HTMLTableBase
      * @exception Exception                  If there is no super header while creating a sub
      *                                       header or a super header while creating a super one
      *
-     * @return HTMLTableHeader               table header that have been created
-     **/
+     * @return ($super is null ? HTMLTableSuperHeader : HTMLTableSubHeader) table header that have been created
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     */
     public function addHeader(
         $name,
         $content,
@@ -131,7 +142,7 @@ abstract class HTMLTableBase
         $this->tryAddHeader();
         if (is_null($super)) {
             if (!$this->super) {
-                throw new \Exception('A sub header requires a super header');
+                throw new Exception('A sub header requires a super header');
             }
             return $this->appendHeader(new HTMLTableSuperHeader(
                 $this,
@@ -141,23 +152,29 @@ abstract class HTMLTableBase
             ));
         }
         if ($this->super) {
-            throw new \Exception('Cannot attach a super header to another header');
+            throw new Exception('Cannot attach a super header to another header');
         }
         return $this->appendHeader(new HTMLTableSubHeader($super, $name, $content, $father));
     }
 
     /**
      * @param string $name
-     **/
+     *
+     * @return HTMLTableHeader
+     */
     public function getSuperHeaderByName($name)
     {
         return $this->getHeaderByName($name, '');
     }
 
     /**
-     * @param $name
-     * @param $sub_name (default NULL)
-     **/
+     * @param string $name
+     * @param ?string $sub_name (default NULL)
+     *
+     * @return HTMLTableHeader
+     *
+     * @throws HTMLTableUnknownHeader
+     */
     public function getHeaderByName($name, $sub_name = null)
     {
         if (is_string($sub_name)) {
@@ -176,8 +193,10 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param $header_name  (default '')
-     **/
+     * @param string $header_name  (default '')
+     *
+     * @return ($header_name is '' ? array<string, array<string, HTMLTableHeader>> : array<string, HTMLTableHeader>)
+     */
     public function getHeaders($header_name = '')
     {
         if (empty($header_name)) {
@@ -190,8 +209,10 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param $header_name  (default '')
-     **/
+     * @param string $header_name  (default '')
+     *
+     * @return string[]
+     */
     public function getHeaderOrder($header_name = '')
     {
         if (empty($header_name)) {
@@ -200,6 +221,6 @@ abstract class HTMLTableBase
         if (isset($this->headers_sub_order[$header_name])) {
             return $this->headers_sub_order[$header_name];
         }
-        throw new  HTMLTableUnknownHeadersOrder($header_name);
+        throw new HTMLTableUnknownHeadersOrder($header_name);
     }
 }

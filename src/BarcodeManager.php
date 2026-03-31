@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,36 +33,48 @@
  * ---------------------------------------------------------------------
  */
 
+use Com\Tecnick\Barcode\Barcode;
+use Com\Tecnick\Barcode\Model;
+
 class BarcodeManager
 {
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return Model|false
+     */
     public function generateQRCode(CommonDBTM $item)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (
-            $item->isNewItem() ||
-            !in_array($item::class, $CFG_GLPI["asset_types"])
+            $item->isNewItem()
+            || !in_array($item::class, $CFG_GLPI["asset_types"])
         ) {
             return false;
         }
-        $barcode = new \Com\Tecnick\Barcode\Barcode();
+        $barcode = new Barcode();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
             $CFG_GLPI["url_base"] . $item->getLinkURL(),
-            -2,
-            -2,
+            200,
+            200,
             'black',
-            array(-2, -2, -2, -2)
+            [10, 10, 10, 10]
         )->setBackgroundColor('white');
         return $qrcode;
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return false|string
+     */
     public static function renderQRCode(CommonDBTM $item)
     {
         $barcode_manager = new self();
         $qrcode = $barcode_manager->generateQRCode($item);
         if ($qrcode) {
-            return $qrcode->getHtmlDiv();
+            return "<img src=\"data:image/png;base64," . base64_encode($qrcode->getPngData()) . "\" />";
         }
         return false;
     }

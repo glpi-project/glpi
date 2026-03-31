@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,74 +33,116 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
-/**
- * @var array $CFG_GLPI
- */
+use function Safe\parse_url;
+
 global $CFG_GLPI;
-
-// avoid reloading js libs
-if (isset($_GET['ajax']) && $_GET['ajax']) {
-    /** @var \Glpi\Controller\LegacyFileLoadController $this */
-    $this->setAjax();
-}
-
-Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
-if (isset($_REQUEST['ajax'])) {
-    Html::header_nocache();
-    Html::popHeader(__('Simplified interface'));
-} else if (Session::getCurrentInterface() == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'));
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
-if (isset($_POST["update"])) {
-    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-    if (
-        Session::haveRight("reservation", UPDATE)
-        || (Session::getLoginUserID() == $_POST["users_id"])
-    ) {
-        $_POST['_item']   = key($_POST["items"]);
-        $_POST['begin']   = $_POST['resa']["begin"];
-        $_POST['end']     = $_POST['resa']["end"];
-        $rr->update($_POST);
-        Html::back();
+$fn_redirect_back = static function ($begin_year = null, $begin_month = null) {
+    $back_url = Html::getBackUrl();
+    if ($begin_year === null && $begin_month === null) {
+        // Try to get from POST data
+        if (isset($_POST['resa']["begin"])) {
+            $begin = $_POST['resa']["begin"];
+            [$begin_year, $begin_month] = explode("-", $begin);
+        } else {
+            // Default to current month/year
+            $begin_year  = date('Y');
+            $begin_month = date('m');
+        }
     }
-} else if (isset($_POST["purge"])) {
-    $reservationitems_id = key($_POST["items"]);
-    if ($rr->delete($_POST, 1)) {
+
+    // Remove old month/year params
+    $back_url_params = [];
+    $back_url_base = parse_url($back_url, PHP_URL_PATH) ?? '';
+    parse_str(parse_url($back_url, PHP_URL_QUERY) ?? '', $back_url_params);
+    unset($back_url_params['month'], $back_url_params['year'], $back_url_params['tab_params']);
+    if ($back_url_params !== []) {
+        $back_url = $back_url_base . '?' . Toolbox::append_params($back_url_params);
+    }
+    if (str_contains($back_url, 'front/reservation.php')) {
+        $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
+            'month' => $begin_month,
+            'year' => $begin_year,
+        ]);
+    } else {
+        $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
+            'tab_params' => [
+                'month' => $begin_month,
+                'year' => $begin_year,
+            ],
+        ]);
+    }
+    Html::redirect($back_url);
+};
+
+if (isset($_POST["update"])) {
+    $rr->check($_POST["id"], UPDATE);
+
+    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
+    $_POST['_item']   = key($_POST["items"]);
+    $_POST['begin']   = $_POST['resa']["begin"];
+    $_POST['end']     = $_POST['resa']["end"];
+    if ($rr->update($_POST)) {
         Event::log(
             $_POST["id"],
             "reservation",
             4,
             "inventory",
             //TRANS: %s is the user login
-                 sprintf(
-                     __('%1$s purges the reservation for item %2$s'),
-                     $_SESSION["glpiname"],
-                     $reservationitems_id
-                 )
+            sprintf(
+                __('%1$s updates the reservation for item %2$s'),
+                $_SESSION["glpiname"],
+                $_POST['_item']
+            )
+        );
+    }
+    $fn_redirect_back();
+} elseif (isset($_POST["purge"])) {
+    $rr->check($_POST["id"], PURGE);
+
+    $reservationitems_id = key($_POST["items"]);
+    if ($rr->delete($_POST, true)) {
+        Event::log(
+            $_POST["id"],
+            "reservation",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(
+                __('%1$s purges the reservation for item %2$s'),
+                $_SESSION["glpiname"],
+                $reservationitems_id
+            )
         );
     }
 
-    list($begin_year,$begin_month) = explode("-", $rr->fields["begin"]);
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
-                  "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
-} else if (isset($_POST["add"])) {
+    [$begin_year, $begin_month] = explode("-", $rr->fields["begin"]);
+    $fn_redirect_back($begin_year, $begin_month);
+} elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
-    Html::back();
-} else if (isset($_GET["id"])) {
+    $fn_redirect_back();
+} elseif (isset($_GET["id"])) {
+    if (!empty($_GET["id"])) {
+        $rr->check($_GET["id"], READ);
+    }
     if (!isset($_GET['begin'])) {
         $_GET['begin'] = date('Y-m-d H:00:00');
     }
     if (
         empty($_GET["id"])
-        && (!isset($_GET['item']) || (count($_GET['item']) == 0 ))
+        && (!isset($_GET['item']) || (count($_GET['item']) == 0))
     ) {
         Html::back();
     }
@@ -112,9 +154,7 @@ if (isset($_POST["update"])) {
     }
 }
 
-if (isset($_REQUEST['ajax'])) {
-    Html::popFooter();
-} else if (Session::getCurrentInterface() == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpFooter();
 } else {
     Html::footer();

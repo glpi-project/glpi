@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,30 +36,33 @@
 namespace Glpi\Console\Migration;
 
 use CommonDBTM;
-use Infocom;
-use Plugin;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
+use Infocom;
+use LogicException;
+use Plugin;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Toolbox;
+
+use function Safe\preg_match;
 
 abstract class AbstractPluginToCoreCommand extends AbstractCommand
 {
     /**
      * Error code returned if plugin version or plugin data is invalid.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
+    public const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
      * Error code returned when import failed.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_PLUGIN_IMPORT_FAILED = 2;
+    public const ERROR_PLUGIN_IMPORT_FAILED = 2;
 
     /**
      * Target items mapping.
@@ -103,7 +106,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             $output->writeln(
                 [
                     sprintf(__('You are about to launch migration of "%s" plugin data into GLPI core tables.'), $this->getPluginKey()),
-                    __('It is better to make a backup of your existing data before continuing.')
+                    __('It is better to make a backup of your existing data before continuing.'),
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -136,7 +139,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
                         $plugin->fields['version'],
                         $required_version
                     );
-                    throw new \Glpi\Console\Exception\EarlyExitException(
+                    throw new EarlyExitException(
                         '<error>' . $msg . '</error>',
                         self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
                     );
@@ -164,7 +167,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
                 continue;
             }
 
-            list($tablename, $fieldname) = explode('.', $field);
+            [$tablename, $fieldname] = explode('.', $field);
             if (!$this->db->tableExists($tablename) || !$this->db->fieldExists($tablename, $fieldname)) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Plugin database field "%s" is missing.'), $field) . '</error>',
@@ -175,7 +178,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         }
 
         if ($missing_fields) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Migration cannot be done.') . '</error>',
                 self::ERROR_PLUGIN_VERSION_OR_DATA_INVALID
             );
@@ -220,7 +223,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         }
 
         if (!$skip_errors && !$prevent_exit) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Plugin data import failed.') . '</error>',
                 self::ERROR_PLUGIN_IMPORT_FAILED
             );
@@ -264,9 +267,9 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Define target item for given source item.
      *
      * @param string  $source_itemtype
-     * @param integer $source_id
+     * @param int $source_id
      * @param string  $target_itemtype
-     * @param integer $target_id
+     * @param int $target_id
      *
      * @return void
      */
@@ -285,7 +288,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Returns target item corresponding to given itemtype and id.
      *
      * @param string  $source_itemtype
-     * @param integer $source_id
+     * @param int $source_id
      *
      * @return null|CommonDBTM
      */
@@ -328,7 +331,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     protected function storeItem(string $itemtype, ?int $existing_item_id, array $input, ?ProgressBar $progress_bar = null): ?CommonDBTM
     {
         if (!is_a($itemtype, CommonDBTM::class, true)) {
-            throw new \LogicException(sprintf('Invalid itemtype "%s".', $itemtype));
+            throw new LogicException(sprintf('Invalid itemtype "%s".', $itemtype));
         }
 
         $item = new $itemtype();
@@ -385,7 +388,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         );
         if ($exists) {
             $infocom_input += [
-                'id' => $infocom->fields['id']
+                'id' => $infocom->fields['id'],
             ];
             $success = $infocom->update($infocom_input);
         } else {

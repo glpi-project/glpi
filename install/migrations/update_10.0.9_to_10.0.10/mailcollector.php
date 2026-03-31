@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,9 +34,8 @@
 
 /**
  * @var array $ADDTODISPLAYPREF
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 /* Add `last_collect_date` to some glpi_mailcollectors */
 $migration->addField('glpi_mailcollectors', 'last_collect_date', 'timestamp');
 $migration->addKey('glpi_mailcollectors', 'last_collect_date', 'last_collect_date');

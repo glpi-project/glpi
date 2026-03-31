@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,15 +37,14 @@ namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\RoutePath;
 use Glpi\Http\Request;
-use Glpi\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 final class MiddlewareInput
 {
     public function __construct(
         public Request $request,
         public RoutePath $route_path,
-        public ?Response $response,
+        public ?ResponseInterface $response,
         public ?array $client = null,
-    ) {
-    }
+    ) {}
 }

@@ -6,12 +6,11 @@ Critical and high advisories are published one month after the release. All othe
 
 ## Reporting a Vulnerability
 
-If you found a security issue, please open an advisory on [github](https://github.com/glpi-project/glpi/security/advisories/new).
-
-If you do not have a github account, or if you want to contact us regarding a security issue, you can drop a mail to \[glpi-security AT ow2.org\].
+If you found a security issue, please send an email to \[security AT glpi-project.org\].
 
 You should provide us all details about the issue and the way to reproduce it.
 You may also provide a script that can be used to check the issue exists.
+Please also ensure the issue can really be exploited.
 
 Once the report will be handled, and if the issue is not yet fixed (or in progress)
 we'll add it to the GitHub security tab, and add you as observer. Meanwhile,
@@ -23,6 +22,7 @@ Thank you for improving the security of glpi.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 11.0.x  | :heavy_check_mark: |
 | 10.0.x  | :heavy_check_mark: |
 | 9.5.x   | :x:                |
 | 9.4.x   | :x:                |

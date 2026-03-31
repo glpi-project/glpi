@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,6 +31,7 @@
  */
 
 let api_token = null;
+let oauth_token = null;
 
 /**
  * @memberof Cypress.Chainable.prototype
@@ -43,12 +43,7 @@ let api_token = null;
  */
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     cy.clearAllCookies();
-    cy.request('/').its('body').then((body) => {
-        // Click the "Log in again" button if it exists
-        const login_again = Cypress.$(body).find('a[href*="/front/logout.php"]');
-        if (login_again.length > 0) {
-            cy.request(login_again.attr('href'));
-        }
+    cy.request('index.php').its('body').then((body) => {
         const $html = Cypress.$(body);
 
         // Parse page
@@ -186,6 +181,7 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
 Cypress.Commands.add('awaitTinyMCE',  {
     prevSubject: 'element',
 }, (subject) => {
+    cy.wrap(subject).parent().click(); // Trigger lazy loading
     cy.wrap(subject).parent().find('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
 });
 
@@ -354,13 +350,18 @@ Cypress.Commands.add("getWithAPI", (itemtype, id) => {
  * @memberof Cypress.Chainable.prototype
  * @method createWithAPI
  * @description Create an item using the legacy API
- * @param {string} url API endpoint
+ * @param {string} itemtype API endpoint
  * @param {object} values Values to create the item with
  */
-Cypress.Commands.add("createWithAPI", (url, values) => {
-    return cy.initApi().doApiRequest("POST", url, values).then(response => {
+Cypress.Commands.add("createWithAPI", (itemtype, values) => {
+    return cy.initApi().doApiRequest("POST", itemtype, values).then(response => {
         if (response.status !== 201) {
             throw new Error('Failed to create item');
+        }
+
+        // Session can't be re-used as active entities will be invalid...
+        if (itemtype == "Entity") {
+            api_token = null;
         }
 
         return response.body.id;
@@ -371,11 +372,38 @@ Cypress.Commands.add("createWithAPI", (url, values) => {
  * @memberof Cypress.Chainable.prototype
  * @method updateWithAPI
  * @description Update an item using the legacy API
- * @param {string} url API endpoint
+ * @param {string} itemtype API endpoint
  * @param {object} values Values to update the item with
  */
-Cypress.Commands.add("updateWithAPI", (url, values) => {
-    cy.initApi().doApiRequest("PUT", url, values);
+Cypress.Commands.add("updateWithAPI", (itemtype, id, values) => {
+    cy.initApi().doApiRequest("PUT", `${itemtype}/${id}`, values);
+});
+
+Cypress.Commands.add("deleteWithAPI", (itemtype, id) => {
+    cy.initApi().doApiRequest("DELETE", `${itemtype}/${id}`);
+});
+
+Cypress.Commands.add("searchWithAPI", (itemtype, values) => {
+    let url = `search/${itemtype}`;
+
+    let i = 0;
+    for (const criteria of values) {
+        url += i == 0 ? "?" : "&";
+        url += `criteria[${i}][link]=${criteria.link}`;
+        url += `&criteria[${i}][field]=${criteria.field}`;
+        url += `&criteria[${i}][searchtype]=${criteria.searchtype}`;
+        url += `&criteria[${i}][value]=${criteria.value}`;
+        i++;
+    }
+
+    return cy.initApi().doApiRequest("GET", url).then((response) => {
+        if (response.body.count == 0) {
+            // The "data" key does not exist in the API response if there are 0 results.
+            return [];
+        }
+
+        return response.body.data;
+    });
 });
 
 /**
@@ -511,9 +539,9 @@ Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
 });
 
 Cypress.Commands.add('checkAndCloseAlert', (text) => {
-    cy.findByRole('alert').as('alert');
-    cy.get('@alert').should('contain.text', text);
-    cy.get('@alert').findByRole('button', {name: 'Close'}).click();
+    cy.findAllByRole('alert').as('alerts');
+    cy.get('@alerts').should('contain.text', text);
+    cy.get('@alerts').findByRole('button', {name: 'Close'}).click();
 });
 
 Cypress.Commands.add('validateBreadcrumbs', (breadcrumbs) => {
@@ -532,4 +560,99 @@ Cypress.Commands.add('validateMenuIsActive', (name) => {
         .findByRole('link', {'name': name})
         .should('have.class', 'active')
     ;
+});
+
+Cypress.Commands.add('openAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('have.class', 'collapsed')
+        .click()
+    ;
+});
+
+
+Cypress.Commands.add('closeAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('not.have.class', 'collapsed')
+        .click()
+    ;
+});
+
+Cypress.Commands.add('updateTestUserSettings', (settings) => {
+    return cy.updateWithAPI('User', 7, settings);
+});
+
+Cypress.Commands.add('getRowCells', {prevSubject: true}, (subject) => {
+    cy.wrap(subject).closest('table').find('thead th').then($headers => {
+        if ($headers.length === 0) {
+            return undefined;
+        }
+        const headers = [];
+        $headers.each((i, th) => headers.push(Cypress.$(th).text().trim()));
+
+        // map row cells to an object where keys are headers texts
+        if (subject.prop('tagName').toLowerCase() !== 'tr') {
+            throw new Error('getRowCells can only be called on a <tr> element');
+        }
+        return cy.wrap(subject).findAllByRole('cell').then($cells => {
+            if (headers !== undefined && $cells.length !== headers.length) {
+                throw new Error(`Number of cells (${ $cells.length }) does not match number of headers (${ headers.length })`);
+            }
+            const result = {};
+            $cells.each((i, cell) => {
+                const key = headers !== undefined ? headers[i] : i;
+                result[key] = cell;
+            });
+            return result;
+        });
+    });
+});
+
+Cypress.Commands.add('glpiAPIRequest', ({
+    method = 'GET',
+    endpoint = '',
+    headers = {},
+    body = null,
+    allow_failure = false,
+    username = 'e2e_tests',
+    password = 'glpi',
+}) => {
+    function getRequestOptions() {
+        return {
+            method: method,
+            url: `/api.php/${endpoint}`,
+            headers: {
+                'Authorization': `Bearer ${oauth_token}`,
+                ...headers,
+            },
+            body: body,
+            failOnStatusCode: !allow_failure,
+        };
+    }
+    if (oauth_token === null) {
+        cy.request({
+            method: 'POST',
+            url: '/api.php/token',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                'grant_type': 'password',
+                'client_id': '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
+                'client_secret': 'd2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1',
+                'username': username,
+                'password': password,
+                'scope': 'email user api graphql'
+            }
+        }).then((response) => {
+            if (response.status !== 200) {
+                throw new Error('Failed to get API token');
+            }
+            oauth_token = response.body.access_token;
+            return cy.request(getRequestOptions());
+        });
+    } else {
+        return cy.request(getRequestOptions());
+    }
 });

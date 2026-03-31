@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight("refusedequipment", READ);
@@ -47,7 +49,7 @@ if (!isset($_GET["withtemplate"])) {
 $refusedequipment = new RefusedEquipment();
 if (isset($_POST["purge"])) {
     $refusedequipment->check($_POST["id"], PURGE);
-    if ($refusedequipment->delete($_POST, 1)) {
+    if ($refusedequipment->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "refusedequipment",
@@ -58,7 +60,7 @@ if (isset($_POST["purge"])) {
         );
     }
     $refusedequipment->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $refusedequipment->check($_POST["id"], UPDATE);
     $refusedequipment->update($_POST);
     Event::log(
@@ -74,6 +76,6 @@ if (isset($_POST["purge"])) {
     $menus = ["admin", "glpi\inventory\inventory", "RefusedEquipment"];
     RefusedEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

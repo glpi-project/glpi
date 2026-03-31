@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 /**
  * @since 0.85
@@ -60,7 +62,7 @@ if (isset($_POST["delete"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $queuednotification->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $queuednotification->check($_POST["id"], DELETE);
     $queuednotification->restore($_POST);
 
@@ -73,9 +75,9 @@ if (isset($_POST["delete"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $queuednotification->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $queuednotification->check($_POST["id"], PURGE);
-    $queuednotification->delete($_POST, 1);
+    $queuednotification->delete($_POST, true);
 
     Event::log(
         $_POST["id"],

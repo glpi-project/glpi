@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,7 +32,7 @@
 
 /* global GLPI */
 
-import '../../../../js/modules/Search/Table.js';
+import '/js/modules/Search/Table.js';
 import {jest} from '@jest/globals';
 
 describe('Search Table', () => {
@@ -250,6 +249,19 @@ describe('Search Table', () => {
         expect(sorted.attr('data-sort-order')).toBe('DESC');
         sorted.click();
         expect(sorted.attr('data-sort-order')).toBe('ASC');
+
+        // Restore sort
+        restore_initial_sort_state();
+        verify_initial_sort_state();
+
+        // Ensure non-consecutive sorts do not add extra, null sorts.
+        real_table.getElement().find('th').eq(0).attr('data-sort-num', '1');
+        real_table.getElement().find('th').eq(0).attr('data-sort-order', 'ASC');
+        real_table.getElement().find('th').eq(2).attr('data-sort-num', '1');
+        real_table.getElement().find('th').eq(2).attr('data-sort-order', 'ASC');
+        state = real_table.setSortStateFromColumns();
+        expect(state['sort'].length).toBe(2);
+        expect(state['order'].length).toBe(2);
 
         // Restore sort
         restore_initial_sort_state();

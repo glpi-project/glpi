@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -105,7 +104,14 @@
               $('div.custom-header-fields').on('click', 'button[name="add_header"]', () => {
                   add_custom_header('', '');
               }).on('click', 'button[name="remove_header"]', (e) => {
-                  $(e.target).closest('.custom-header-field-pair').remove();
+                  const header_pair = $(e.target).closest('.custom-header-field-pair');
+                  header_pair.find('.header_value').each((i, editor_dom) => {
+                      const editor = window.monaco.editor.getEditors().find((ed) => ed._domElement === editor_dom);
+                      if (editor) {
+                          editor.dispose();
+                      }
+                  });
+                  header_pair.remove();
               });
 
               // Add formdata handler to inject the custom header values from the monaco editors

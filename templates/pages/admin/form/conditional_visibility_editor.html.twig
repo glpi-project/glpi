@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,8 +38,9 @@
 
     <div
         class="row mt-3"
-        data-glpi-form-editor-condition
-        data-glpi-form-editor-condition-index="{{ loop.index0 }}"
+        data-glpi-conditions-editor-condition
+        data-glpi-conditions-editor-condition-index="{{ loop.index0 }}"
+        data-testid="visibility-condition"
     >
         <div class="col-12">
             <div class="d-flex align-items-center">
@@ -52,7 +53,7 @@
                                 'value': condition.getLogicOperator().value,
                                 'aria_label' : __('Logic operator'),
                                 'add_data_attributes': {
-                                    'glpi-form-editor-condition-logic-operator': '',
+                                    'glpi-conditions-editor-logic-operator': '',
                                 },
                         }]) %}
                     </span>
@@ -66,8 +67,7 @@
                             'value': condition.getItemDropdownKey(),
                             'aria_label' : _n('Item', 'Items', 1),
                             'add_data_attributes': {
-                                'glpi-form-editor-condition-item': '',
-                                'glpi-form-editor-on-change': "render-visibility-editor",
+                                'glpi-conditions-editor-item': '',
                             },
                             'display_emptychoice': true,
                             'emptylabel': __("Select an item..."),
@@ -80,39 +80,51 @@
                         type="hidden"
                         value="{{ condition.getItemUuid() }}"
                         name="_conditions[{{ loop.index0 }}][item_uuid]"
-                        data-glpi-form-editor-condition-item-uuid
+                        data-glpi-conditions-editor-item-uuid
                     />
                     <input
                         type="hidden"
-                        value="{{ condition.getItemType() }}"
+                        value="{{ condition.getItemType().value }}"
                         name="_conditions[{{ loop.index0 }}][item_type]"
-                        data-glpi-form-editor-condition-item-type
+                        data-glpi-conditions-editor-item-type
                     />
 
                     <span class="me-2 value-operator-selector">
+                        {% set value_op = '' %}
+                        {% if condition.getValueOperator() is not null %}
+                            {% set value_op = condition.getValueOperator().value %}
+                        {% endif %}
                         {% do call('Dropdown::showFromArray', [
                             '_conditions[' ~ loop.index0 ~ '][value_operator]',
                             manager.getValueOperatorDropdownValues(
                                 condition.getItemUuid()
                             ),
                             {
-                                'value': condition.getValueOperator().value,
+                                'value': value_op,
                                 'aria_label' : __('Value operator'),
                                 'add_data_attributes': {
-                                    'glpi-form-editor-condition-value-operator': '',
+                                    'glpi-conditions-editor-value-operator': '',
                                 },
                             }
                         ]) %}
                     </span>
 
-                    <input
-                        class="me-2 form-control value-selector flex-grow-1"
-                        value="{{ condition.getValue() }}"
-                        name="_conditions[{{ loop.index0 }}][value]"
-                        placeholder="{{ __("Enter a value...") }}"
-                        data-glpi-form-editor-condition-value
-                        aria-label="{{ __("Value") }}"
-                    />
+                    {# Load the correct template to use #}
+                    {% set handler = manager.getHandlerForCondition(condition) %}
+
+                    {% if handler is not null %}
+                        {% if handler.getTemplate() is not null %}
+                            {{ include(
+                                handler.getTemplate(),
+                                {
+                                    input_value: condition.getValue(),
+                                    input_name: "_conditions[" ~ loop.index0 ~ "][value]",
+                                    input_label: __("Value"),
+                                }|merge(handler.getTemplateParameters(condition)),
+                                with_context = false
+                            ) }}
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
 
                 {% if condition_is_filled or loop.index0 > 0 %}
@@ -120,7 +132,7 @@
                         role="button"
                         aria-label="{{ __("Delete criteria") }}"
                         class="ti ti-trash text-danger cursor-pointer ms-auto"
-                        data-glpi-form-editor-on-click="delete-condition"
+                        data-glpi-condition-editor-delete-condition
                     ></i>
                 {% endif %}
             </div>
@@ -130,9 +142,10 @@
 
 {% if last_condition_is_filled %}
     <button
-        data-glpi-form-editor-on-click="add-condition"
+        data-glpi-condition-editor-add-condition
         type="button"
         class="d-flex align-items-center btn btn-sm btn-ghost-secondary mt-3"
+        aria-label="{{ __("Add another criteria") }}"
     >
         <i class="ti ti-plus me-1"></i>
         <span>{{ __("Add another criteria") }}</span>

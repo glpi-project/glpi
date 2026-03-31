@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Laminas\I18n\Translator\TranslatorInterface;
+
 /**
  * @var int $DEFAULT_PLURAL_NUMBER
  */
@@ -48,26 +50,26 @@ $DEFAULT_PLURAL_NUMBER = 2;
  * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string translated string
+ *
+ * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
+ * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
 function __($str, $domain = 'glpi')
 {
-    /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;
 
-    if ($TRANSLATE !== null) {
-        try {
-            $trans = $TRANSLATE->translate($str, $domain);
+    try {
+        $trans = $TRANSLATE->translate($str, $domain);
 
-            if (is_array($trans)) {
-                // Wrong call when plural defined
-                $trans = $trans[0];
-            }
-        } catch (\Throwable $e) {
-            // Error may happen when overrided translation files does not use same plural rules as GLPI.
-            // Silently fail to not flood error log.
+        if (is_array($trans)) {
+            // Wrong call when plural defined
+            $trans = $trans[0];
         }
+    } catch (Throwable $e) {
+        // Error may happen when overrided translation files does not use same plural rules as GLPI.
+        // Silently fail to not flood error log.
     }
 
     return $trans ?? $str;
@@ -114,25 +116,26 @@ function _sx($ctx, $str, $domain = 'glpi')
  *
  * @param string  $sing   in singular
  * @param string  $plural in plural
- * @param integer $nb     to select singular or plural
+ * @param int $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string translated string
+ *
+ * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
+ * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
 function _n($sing, $plural, $nb, $domain = 'glpi')
 {
-    /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
+    /** @var TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;
 
-    if ($TRANSLATE !== null) {
-        try {
-            $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
-        } catch (\Throwable $e) {
-            // Error may happen when overrided translation files does not use same plural rules as GLPI.
-            // Silently fail to not flood error log.
-        }
+    try {
+        $trans = $TRANSLATE->translatePlural($sing, $plural, $nb, $domain);
+    } catch (Throwable $e) {
+        // Error may happen when overrided translation files does not use same plural rules as GLPI.
+        // Silently fail to not flood error log.
     }
 
     return $trans ?? (($nb == 0 || $nb > 1) ? $plural : $sing);
@@ -146,7 +149,7 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
  *
  * @param string  $sing   in singular
  * @param string  $plural in plural
- * @param integer $nb     to select singular or plural
+ * @param int $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
@@ -171,12 +174,12 @@ function _sn($sing, $plural, $nb, $domain = 'glpi')
 function _x($ctx, $str, $domain = 'glpi')
 {
 
-   // simulate pgettext
+    // simulate pgettext
     $msg   = $ctx . "\004" . $str;
     $trans = __($msg, $domain);
 
     if ($trans == $msg) {
-       // No translation
+        // No translation
         return $str;
     }
     return $trans;
@@ -191,7 +194,7 @@ function _x($ctx, $str, $domain = 'glpi')
  * @param string  $ctx    context
  * @param string  $sing   in singular
  * @param string  $plural in plural
- * @param integer $nb     to select singular or plural
+ * @param int $nb     to select singular or plural
  * @param string  $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
@@ -199,17 +202,17 @@ function _x($ctx, $str, $domain = 'glpi')
 function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
 {
 
-   // simulate pgettext
+    // simulate pgettext
     $singmsg    = $ctx . "\004" . $sing;
     $pluralmsg  = $ctx . "\004" . $plural;
     $trans      = _n($singmsg, $pluralmsg, $nb, $domain);
 
     if ($trans == $singmsg) {
-       // No translation
+        // No translation
         return $sing;
     }
     if ($trans == $pluralmsg) {
-       // No translation
+        // No translation
         return $plural;
     }
     return $trans;

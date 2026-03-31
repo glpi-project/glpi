@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,10 @@
  */
 class Timer
 {
-   //! Timer value
+    /**
+     * Timer value
+     * @var int|float
+     */
     public $timer = 0;
 
 
@@ -59,8 +62,8 @@ class Timer
     /**
      * Get the current time of the timer
      *
-     * @param integer $decimals Number of decimal of the result (default 3)
-     * @param boolean $raw      Get raw time
+     * @param int $decimals Number of decimal of the result (default 3)
+     * @param bool $raw      Get raw time
      *
      * @return string time past from start
      **/
@@ -68,9 +71,9 @@ class Timer
     {
         $elapsed = microtime(true) - $this->timer;
         if ($raw === true) {
-            return (string)($elapsed * 1000);
+            return (string) ($elapsed * 1000);
         } else {
-           // $decimals will set the number of decimals you want for your milliseconds.
+            // $decimals will set the number of decimals you want for your milliseconds.
             return number_format($elapsed, $decimals, '.', ' ');
         }
     }

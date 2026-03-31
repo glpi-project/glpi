@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Search;
+use Glpi\Search\Output\HTMLSearchOutput;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -47,7 +47,7 @@ class SearchExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('showItem', [$this, 'showItem']),
+            new TwigFunction('showItem', [$this, 'showItem'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -58,7 +58,8 @@ class SearchExtension extends AbstractExtension
         int $row = 0,
         string $extraparams = ""
     ): string {
-       // This is mandatory as Search::showItem expected third param to be passed by reference...
-        return Search::showItem($displaytype, $value, $num, $row, $extraparams);
+        // This is mandatory as HTMLSearchOutput::showItem expected second param to be passed by reference...
+        $output = new HTMLSearchOutput();
+        return $output->showItem($value, $num, $row, $extraparams);
     }
 }

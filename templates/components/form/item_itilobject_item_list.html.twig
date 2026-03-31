@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -50,32 +50,29 @@
         {% endif %}
     {% endif %}
 
-    {% if number > 0 %}
-        {% set values = [] %}
+    {% set values = [] %}
 
-        {% for data in iterator %}
-            {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
-        {% endfor %}
+    {% for data in iterator %}
+        {% set values = values|merge({(values|length) : {'id' : item.getID(), 'item_id' : data["id"], 'itemtype' : itemtype_1, 'associated_elements' : ''}}) %}
+    {% endfor %}
 
-        {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
-        {% set entries = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
-        {% set datatable_params = {
-            'super_header': {
-                'label': superheader,
-                'is_raw': superheader_raw,
-            },
-            'is_tab': true,
-            'nopager': true,
-            'nofilter': true,
-            'nosort': true,
-            'entries': entries,
-            'total_number': entries|length,
-            'showmassiveactions': canedit,
-        } %}
-        {% set merged_params = datatable_params|merge(common_columns) %}
+    {% set common_columns = call(itemtype_1 ~ '::getCommonDatatableColumns', []) %}
+    {% set entries = call(itemtype_1 ~ '::getDatatableEntries', [values]) %}
+    {% set datatable_params = {
+        'super_header': {
+            'label': superheader|default(''),
+            'is_raw': superheader_raw|default(false),
+        },
+        'is_tab': true,
+        'nofilter': true,
+        'nosort': true,
+        'entries': entries,
+        'total_number': entries|length,
+        'showmassiveactions': canedit|default(false),
+    } %}
+    {% set merged_params = datatable_params|merge(common_columns) %}
 
-        {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
-    {% endif %}
+    {{ include('components/datatable.html.twig', merged_params, with_context = false) }}
 </div>
 
 {% if showform %}
@@ -91,7 +88,6 @@
         {% set datatable_params = {
             'super_header': __('%s on linked items')|format(itemtype_1|itemtype_name(number)),
             'is_tab': true,
-            'nopager': true,
             'nofilter': true,
             'nosort': true,
             'entries': entries2,

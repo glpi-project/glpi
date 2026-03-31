@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,21 +36,20 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-use Blacklist;
 use CommonDBTM;
-use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Inventory\Conf;
-use IPAddress;
-use Printer as GPrinter;
 use PrinterLog;
 use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
-use RuleImportAssetCollection;
+use stdClass;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
 
 class Printer extends NetworkEquipment
 {
-    private $counters;
+    private stdClass $counters;
 
     public function __construct(CommonDBTM $item, $data)
     {
@@ -72,7 +71,7 @@ class Printer extends NetworkEquipment
     {
         parent::prepare();
 
-        if (!property_exists($this->raw_data->content ?? new \stdClass(), 'network_device')) {
+        if (!property_exists($this->raw_data->content ?? new stdClass(), 'network_device')) {
             $autoupdatesystems_id = $this->data[0]->autoupdatesystems_id;
             $this->data = [];
             foreach ($this->raw_data as $val) {
@@ -139,10 +138,10 @@ class Printer extends NetworkEquipment
                 }
 
                 if (isset($this->extra_data['pagecounters'])) {
-                    $pcounter = (object)$this->extra_data['pagecounters'];
+                    $pcounter = (object) $this->extra_data['pagecounters'];
                     foreach ($mapping_pcounter as $origin => $dest) {
                         if (property_exists($pcounter, $origin)) {
-                             $pcounter->$dest = $pcounter->$origin;
+                            $pcounter->$dest = $pcounter->$origin;
                         }
 
                         if (property_exists($pcounter, 'total_pages')) {
@@ -192,9 +191,9 @@ class Printer extends NetworkEquipment
     /**
      * Get printer counters
      *
-     * @return \stdClass
+     * @return stdClass
      */
-    public function getCounters(): \stdClass
+    public function getCounters(): stdClass
     {
         return $this->counters;
     }
@@ -206,15 +205,16 @@ class Printer extends NetworkEquipment
      */
     public function handleMetrics()
     {
-        if ($this->counters === null) {
+        if (!isset($this->counters)) {
             return;
         }
 
         $unicity_input = [
-            'printers_id' => $this->item->fields['id'],
-            'date'        => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
+            'itemtype' => $this->item::class,
+            'items_id' => $this->item->fields['id'],
+            'date' => date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])),
         ];
-        $input = array_merge((array)$this->counters, $unicity_input);
+        $input = array_merge((array) $this->counters, $unicity_input);
 
         $metrics = new PrinterLog();
         if ($metrics->getFromDBByCrit($unicity_input)) {
@@ -223,35 +223,5 @@ class Printer extends NetworkEquipment
         } else {
             $metrics->add($input, [], false);
         }
-    }
-
-    /**
-     * Try to know if printer need to be updated from discovery
-     * Only if IP has changed
-     * @return boolean
-     */
-    public static function needToBeUpdatedFromDiscovery(CommonDBTM $item, $val)
-    {
-        if (property_exists($val, 'ips')) {
-            foreach ($val->ips as $ip) {
-                $blacklist = new Blacklist();
-                //exclude IP if needed
-                if ('' != $blacklist->process(Blacklist::IP, $ip)) {
-                    //try to find IP (get from discovery) from known IP of Printer
-                    //if found refuse update
-                    //if no, printer IP have changed so  we allow the update from discovery
-                    $ipaddress = new IPAddress($ip);
-                    $tmp['mainitems_id'] = $item->fields['id'];
-                    $tmp['mainitemtype'] = $item::getType();
-                    $tmp['is_dynamic']   = 1;
-                    $tmp['name']         = $ipaddress->getTextual();
-                    if ($ipaddress->getFromDBByCrit($tmp)) {
-                        return false;
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

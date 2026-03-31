@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace Glpi\Asset\Capacity;
 
 use Cable;
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Socket;
 use Override;
 use Session;
@@ -81,7 +81,7 @@ class HasSocketCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('socket_types', $classname);
 
@@ -92,9 +92,8 @@ class HasSocketCapacity extends AbstractCapacity
         );
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->unregisterFromTypeConfig('socket_types', $classname);
@@ -102,7 +101,7 @@ class HasSocketCapacity extends AbstractCapacity
         $socket = new Socket();
         $socket->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

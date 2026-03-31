@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -37,7 +36,7 @@
 {% set form_id = 'project_task_' ~ rand %}
 {% set content_field_id = 'content_' ~ rand %}
 {% set params = {
-    'formoptions': 'id="' ~ form_id ~ '"'
+    'form_id': form_id,
 } %}
 
 {% block form_fields %}
@@ -49,44 +48,8 @@
         'ProjectTaskTemplate'|itemtype_name,
         {
             'entity': item.getEntityID(),
-            'on_change': 'projecttasktemplate_update(this.value)'
         }
     ) }}
-
-    <script>
-        const form = $('#{{ form_id }}');
-        function projecttasktemplate_update(value) {
-            $.ajax({
-                url: CFG_GLPI.root_doc + "/ajax/projecttask.php",
-                type: "POST",
-                data: {
-                    projecttasktemplates_id: value
-                }
-            }).done(function(data) {
-                // Set simple inputs
-                form.find('input[name=name]').val(data.name);
-                form.find('textarea[name=comment]').val(data.comments);
-
-                // Set flatpickr dates
-                form.find('input[name=plan_start_date]').parent()[0]._flatpickr.setDate(data.plan_start_date);
-                form.find('input[name=plan_end_date]').parent()[0]._flatpickr.setDate(data.plan_end_date);
-                form.find('input[name=real_start_date]').parent()[0]._flatpickr.setDate(data.real_start_date);
-                form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
-
-                // Set content
-                setRichTextEditorContent("{{ content_field_id }}", data.description);
-
-                // Set dropdowns and dates
-                form.find('select[name=projecttasks_id]').trigger("setValue", data.projecttasks_id);
-                form.find('select[name=projectstates_id]').trigger("setValue", data.projectstates_id);
-                form.find('select[name=projecttasktypes_id]').trigger("setValue", data.projecttasktypes_id);
-                form.find('select[name=percent_done]').trigger("setValue", data.percent_done);
-                form.find('select[name=is_milestone]').trigger("setValue", data.is_milestone);
-                form.find('select[name=effective_duration]').trigger("setValue", data.effective_duration);
-                form.find('select[name=planned_duration]').trigger("setValue", data.planned_duration);
-            });
-         }
-    </script>
 
     {{ fields.nullField() }}
 
@@ -100,8 +63,8 @@
     ) }}
 
     {% if item.isNewID(id) %}
-        <input type='hidden' name='projects_id' value='{{ projects_id }}'>
-        <input type='hidden' name='is_recursive' value='{{ recursive }}'>
+        <input type="hidden" name="projects_id" value="{{ projects_id }}">
+        <input type="hidden" name="is_recursive" value="{{ recursive ? 1 : 0 }}">
     {% endif %}
 
     {{ fields.dropdownField(
@@ -129,27 +92,44 @@
         _n('Type', 'Types', 1),
     ) }}
 
+    {% set auto_status %}
+        {{ fields.checkboxField(
+            'auto_projectstates',
+            item.fields.auto_projectstates,
+            __('Automatically calculate'),
+            {
+                'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config."),
+                'field_class': 'col-12 w-100',
+                'label_class': 'col-auto',
+                'input_class': 'col',
+            }
+        ) }}
+    {% endset %}
+
     {{ fields.dropdownField(
         'ProjectState',
         'projectstates_id',
         item.fields.projectstates_id,
         _x('item', 'State'),
-        item.fields.auto_projectstates ? {'disabled': true} : {}
-    ) }}
-
-    {{ fields.checkboxField(
-        'auto_projectstates',
-        item.fields.auto_projectstates,
-        __('Automatically calculate'),
         {
-            'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config.")
+            disabled: item.fields.auto_projectstates,
+            add_field_html: auto_status,
         }
     ) }}
-    <script>
-        form.find("input[name=auto_projectstates]").on('change', function() {
-            $("select[name='projectstates_id']").prop('disabled', $("input[name='auto_projectstates']").eq(1).prop('checked'));
-        });
-    </script>
+
+    {% set auto_percent %}
+        {{ fields.checkboxField(
+            'auto_percent_done',
+            item.fields.auto_percent_done,
+            __('Automatically calculate'),
+            {
+                'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.'),
+                'field_class': 'col-12 w-100',
+                'label_class': 'col-auto',
+                'input_class': 'col',
+            }
+        ) }}
+    {% endset %}
 
     {{ fields.dropdownNumberField(
         'percent_done',
@@ -161,33 +141,15 @@
             'max': 100,
             'step': 5,
             'unit': '%',
+            'add_field_html': auto_percent,
          }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
     ) }}
-
-    {{ fields.checkboxField(
-        'auto_percent_done',
-        item.fields.auto_percent_done,
-        __('Automatically calculate'),
-        {
-            'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
-        }
-    ) }}
-    <script>
-        form.find("input[name=auto_percent_done]").on('change', function() {
-            $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
-        });
-    </script>
 
     {{ fields.dropdownYesNo(
         'is_milestone',
         item.fields.is_milestone,
         __('Milestone'),
     ) }}
-    <script>
-        form.find('select[name=is_milestone]').on('change', function() {
-            $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
-        });
-    </script>
 
     {% if item.isNewItem() %}
         {% set teammember_list = call('ProjectTaskTeamDropdown::show', ['teammember_list', []]) %}
@@ -233,31 +195,25 @@
         }
     ) }}
 
-    {{ fields.dropdownTimestampField(
+    {{ fields.dropdownArrayField(
         'planned_duration',
         item.fields.planned_duration,
+        duration_dropdown_to_add,
         __('Planned duration'),
         {
-            'min': 0,
-            'max': 8 * constant('HOUR_TIMESTAMP'),
-            'addfirstminutes': true,
-            'inhours': true,
-            'toadd': duration_dropdown_to_add,
             'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'display_emptychoice': true,
         },
     ) }}
 
-    {{ fields.dropdownTimestampField(
+    {{ fields.dropdownArrayField(
         'effective_duration',
         item.fields.effective_duration,
+        duration_dropdown_to_add,
         __('Effective duration'),
         {
-            'min': 0,
-            'max': 8 * constant('HOUR_TIMESTAMP'),
-            'addfirstminutes': true,
-            'inhours': true,
-            'toadd': duration_dropdown_to_add,
             'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'display_emptychoice': true,
         },
     ) }}
 
@@ -310,5 +266,52 @@
             'field_class' : "col-12",
         }
     ) }}
+
+    <script type="module">
+        const form = $('#{{ form_id }}');
+        function projecttasktemplate_update(value) {
+            $.ajax({
+                url: CFG_GLPI.root_doc + "/ajax/projecttask.php",
+                type: "POST",
+                data: {
+                    projecttasktemplates_id: value
+                }
+            }).done(function(data) {
+                // Set simple inputs
+                form.find('input[name=name]').val(data.name);
+                form.find('textarea[name=comment]').val(data.comments);
+
+                // Set flatpickr dates
+                form.find('input[name=plan_start_date]').parent()[0]._flatpickr.setDate(data.plan_start_date);
+                form.find('input[name=plan_end_date]').parent()[0]._flatpickr.setDate(data.plan_end_date);
+                form.find('input[name=real_start_date]').parent()[0]._flatpickr.setDate(data.real_start_date);
+                form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
+
+                // Set content
+                setRichTextEditorContent("{{ content_field_id }}", data.description);
+
+                // Set dropdowns and dates
+                form.find('select[name=projecttasks_id]').trigger("setValue", data.projecttasks_id);
+                form.find('select[name=projectstates_id]').trigger("setValue", data.projectstates_id);
+                form.find('select[name=projecttasktypes_id]').trigger("setValue", data.projecttasktypes_id);
+                form.find('select[name=percent_done]').trigger("setValue", data.percent_done);
+                form.find('select[name=is_milestone]').trigger("setValue", data.is_milestone);
+                form.find('select[name=effective_duration]').trigger("setValue", data.effective_duration);
+                form.find('select[name=planned_duration]').trigger("setValue", data.planned_duration);
+            });
+        }
+        form.find('select[name="projecttasktemplates_id"]').on('change', function() {
+            projecttasktemplate_update(this.value);
+        });
+        form.find("input[name=auto_projectstates]").on('change', function() {
+            $("select[name='projectstates_id']").prop('disabled', $("input[name='auto_projectstates']").eq(1).prop('checked'));
+        });
+        form.find('select[name=is_milestone]').on('change', function() {
+            $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
+        });
+        form.find("input[name=auto_percent_done]").on('change', function() {
+            $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
+        });
+    </script>
 
 {% endblock %}

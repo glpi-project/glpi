@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,18 +36,19 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use function Safe\json_encode;
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST['action']) && isset($_POST['id'])) {
+    $id = (int) $_POST['id'];
+
     $agent = new Agent();
-    if (!$agent->getFromDB($_POST['id'])) {
-        throw new NotFoundHttpException('Unable to load agent #' . $_POST['id']);
+    if (!$agent->getFromDB($id)) {
+        throw new NotFoundHttpException('Unable to load agent #' . $id);
     }
-    if (!$agent::canView()) {
+    if (!$agent->can($id, READ)) {
         throw new AccessDeniedHttpException();
     }
     $answer = [];

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,17 +39,20 @@ use Config;
 use Rule;
 use RuleCollection;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class RulesManager
 {
     /**
      * Initialize rules for each collection that does not yet contains any rule.
      */
-    public static function initializeRules(): void
+    public static function initializeRules(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rulecollections_types = $CFG_GLPI['rulecollections_types'];
+        $has_initialized_rules = false;
 
         foreach ($CFG_GLPI['dictionnary_types'] as $itemtype) {
             $rulecollection = RuleCollection::getClassByType($itemtype);
@@ -85,6 +88,7 @@ final class RulesManager
 
             if (countElementsInTable(Rule::getTable(), ['sub_type' => $ruleclass->getType()]) === 0) {
                 $ruleclass->initRules(false);
+                $has_initialized_rules = true;
             }
 
             // Mark collection as already initialized, to not reinitialize it on next update
@@ -95,5 +99,7 @@ final class RulesManager
                 ['initialized_rules_collections' => json_encode($initialized_collections)]
             );
         }
+
+        return $has_initialized_rules;
     }
 }

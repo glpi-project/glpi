@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,14 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Config;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeFile extends AbstractQuestionType
+final class QuestionTypeFile extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     #[Override]
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
@@ -82,7 +84,7 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'       => $question
+            'question'       => $question,
         ]);
     }
 
@@ -113,29 +115,12 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question
+            'question' => $question,
         ]);
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            {% for document in documents %}
-                <div class="form-control-plaintext">
-                    {{ document.getLink()|raw }}
-                </div>
-            {% endfor %}
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'documents' => array_map(fn($document_id) => (new Document())->getById($document_id), $answer)
-        ]);
-    }
-
-    #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return implode(', ', array_map(
             fn($document_id) => (new Document())->getById($document_id)->fields['filename'],
@@ -144,7 +129,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::FILE;
     }
@@ -152,6 +137,28 @@ TWIG;
     #[Override]
     public function isAllowedForUnauthenticatedAccess(): bool
     {
-        return true;
+        return Config::allowUnauthenticatedUploads();
+    }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return self::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): null
+    {
+        return null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

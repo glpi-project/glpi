@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,13 +35,10 @@
 
 class Link_Itemtype extends CommonDBChild
 {
-   // From CommonDbChild
-    public static $itemtype = 'Link';
+    // From CommonDbChild
+    public static $itemtype = Link::class;
     public static $items_id = 'links_id';
 
-    /**
-     * @since 0.84
-     **/
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -53,19 +50,18 @@ class Link_Itemtype extends CommonDBChild
      *
      * Remove all associations for an itemtype
      *
-     * @since 0.85
+     * @param class-string<CommonDBTM> $itemtype  itemtype for which all link associations must be removed
      *
-     * @param string $itemtype  itemtype for which all link associations must be removed
+     * @return void
      */
     public static function deleteForItemtype($itemtype)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete(
             self::getTable(),
             [
-                'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
+                'itemtype'  => ['LIKE', "%Plugin$itemtype%"],
             ]
         );
     }

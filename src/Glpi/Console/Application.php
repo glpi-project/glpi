@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,9 +36,10 @@
 namespace Glpi\Console;
 
 use DBmysql;
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Kernel\Kernel;
 use Glpi\System\Requirement\RequirementInterface;
@@ -54,33 +55,43 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
 use Update;
+
+use function Safe\preg_replace;
 
 class Application extends BaseApplication
 {
     /**
      * Error code returned when system requirements are missing.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
+    public const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
 
     /**
      * Error code returned if write access to configuration files is denied.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_CONFIG_WRITE_ACCESS_DENIED = 129;
+    public const ERROR_CONFIG_WRITE_ACCESS_DENIED = 129;
+
+    /**
+     * Error code returned when DB is not available.
+     *
+     * @var int
+     */
+    public const ERROR_DB_UNAVAILABLE = 130;
 
     /**
      * Error code returned when DB is not up-to-date.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_DB_OUTDATED = 129;
+    public const ERROR_DB_OUTDATED = 131;
 
     /**
      * Pointer to $CFG_GLPI.
@@ -97,11 +108,13 @@ class Application extends BaseApplication
 
     public function __construct(private Kernel $kernel)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
+
+        // preconfigure the output to correctly handle kernel boot errors
+        $input = new ArgvInput();
+        $output = new ConsoleOutput();
+        parent::configureIO($input, $output);
+        ConsoleErrorDisplayHandler::setOutput($output);
 
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
@@ -122,87 +135,95 @@ class Application extends BaseApplication
 
     protected function getDefaultInputDefinition(): InputDefinition
     {
-        $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
+        $env_values = Environment::getValues();
 
-        $definition = new InputDefinition(
-            [
-                new InputArgument(
-                    'command',
-                    InputArgument::REQUIRED,
-                    __('The command to execute')
-                ),
+        $definition = [
+            new InputArgument(
+                'command',
+                InputArgument::REQUIRED,
+                __('The command to execute')
+            ),
 
-                new InputOption(
-                    '--help',
-                    '-h',
-                    InputOption::VALUE_NONE,
-                    __('Display this help message')
-                ),
-                new InputOption(
-                    '--quiet',
-                    '-q',
-                    InputOption::VALUE_NONE,
-                    __('Do not output any message')
-                ),
-                new InputOption(
-                    '--verbose',
-                    '-v|vv|vvv',
-                    InputOption::VALUE_NONE,
-                    __('Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
-                ),
-                new InputOption(
-                    '--version',
-                    '-V',
-                    InputOption::VALUE_NONE,
-                    __('Display this application version')
-                ),
-                new InputOption(
-                    '--ansi',
-                    null,
-                    InputOption::VALUE_NONE,
-                    __('Force ANSI output')
-                ),
-                new InputOption(
-                    '--no-ansi',
-                    null,
-                    InputOption::VALUE_NONE,
-                    __('Disable ANSI output')
-                ),
-                new InputOption(
-                    '--no-interaction',
-                    '-n',
-                    InputOption::VALUE_NONE,
-                    __('Do not ask any interactive question')
-                ),
-                new InputOption(
-                    '--env',
-                    null,
-                    InputOption::VALUE_REQUIRED,
-                    sprintf(__('Environment to use, possible values are: %s'), '`' . implode('`, `', $env_values) . '`'),
-                    suggestedValues: $env_values
-                ),
-                new InputOption(
-                    '--config-dir',
-                    null,
-                    InputOption::VALUE_OPTIONAL,
-                    __('Configuration directory to use. Deprecated option')
-                ),
-                new InputOption(
-                    '--lang',
-                    null,
-                    InputOption::VALUE_OPTIONAL,
-                    __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
-                )
-            ]
-        );
+            new InputOption(
+                '--help',
+                '-h',
+                InputOption::VALUE_NONE,
+                __('Display this help message')
+            ),
+            new InputOption(
+                '--quiet',
+                '-q',
+                InputOption::VALUE_NONE,
+                __('Do not output any message')
+            ),
+            new InputOption(
+                '--verbose',
+                '-v|vv|vvv',
+                InputOption::VALUE_NONE,
+                __('Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
+            ),
+            new InputOption(
+                '--version',
+                '-V',
+                InputOption::VALUE_NONE,
+                __('Display this application version')
+            ),
+            new InputOption(
+                '--ansi',
+                null,
+                InputOption::VALUE_NONE,
+                __('Force ANSI output')
+            ),
+            new InputOption(
+                '--no-ansi',
+                null,
+                InputOption::VALUE_NONE,
+                __('Disable ANSI output')
+            ),
+            new InputOption(
+                '--no-interaction',
+                '-n',
+                InputOption::VALUE_NONE,
+                __('Do not ask any interactive question')
+            ),
+            new InputOption(
+                '--env',
+                null,
+                InputOption::VALUE_REQUIRED,
+                sprintf(__('Environment to use, possible values are: %s'), '`' . implode('`, `', $env_values) . '`'),
+                suggestedValues: $env_values
+            ),
+            new InputOption(
+                '--config-dir',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                __('Configuration directory to use. Deprecated option')
+            ),
+            new InputOption(
+                '--lang',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
+            ),
+        ];
 
-        return $definition;
+        if (
+            in_array('--allow-superuser', $_SERVER['argv'], true)
+            || (\function_exists('posix_geteuid') && \posix_geteuid() === 0)
+        ) {
+            // Prevent the `The "--allow-superuser" option does not exist.` error when executing the console as a superuser.
+            $definition[] = new InputOption(
+                name: '--allow-superuser',
+                description: __('Allow the console to be executed by the root user'),
+            );
+        }
+
+        return new InputDefinition($definition);
     }
 
     protected function configureIO(InputInterface $input, OutputInterface $output)
     {
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->output = $output;
@@ -210,16 +231,16 @@ class Application extends BaseApplication
 
         parent::configureIO($input, $output);
 
-       // Trigger error on invalid lang. This is not done before as error handler would not be set.
+        // Trigger error on invalid lang. This is not done before as error handler would not be set.
         $lang = $input->getParameterOption('--lang', null, true);
         if (null !== $lang && !array_key_exists($lang, $CFG_GLPI['languages'])) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(
+            throw new RuntimeException(
                 sprintf(__('Invalid "--lang" option value "%s".'), $lang)
             );
         }
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
-            Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+            Toolbox::setDebugMode(Session::DEBUG_MODE);
         }
     }
 
@@ -248,11 +269,23 @@ class Application extends BaseApplication
     {
         $begin_time = microtime(true);
 
+        if (\function_exists('posix_geteuid') && \posix_geteuid() === 0) {
+            // This message cannot be mutualized with the message displayed in the top of the `bin/console` script:
+            // - when the execution as root IS NOT allowed, we must exit before the kernel instantiation, to prevent any cache file creation;
+            // - when the execution as root IS allowed, we must display this message after the kernel instantiation,
+            //   to prevent a `Session cannot be started after headers have already been sent` warning.
+            $output->writeln([
+                '<bg=yellow;fg=black;options=bold> WARNING: running as root is discouraged. </>',
+                '<bg=yellow;fg=black;options=bold> You should run the script as the same user that your web server runs as to avoid file permissions being ruined. </>',
+                '',
+            ]);
+        }
+
         $is_db_available = $this->db instanceof DBmysql && $this->db->connected;
 
         if (
             $is_db_available
-            && defined('SKIP_UPDATES')
+            && GLPI_SKIP_UPDATES
             && (!($command instanceof GlpiCommandInterface) || $command->requiresUpToDateDb())
             && !Update::isDbUpToDate()
         ) {
@@ -295,7 +328,7 @@ class Application extends BaseApplication
 
         try {
             $result = parent::doRunCommand($command, $input, $output);
-        } catch (\Glpi\Console\Exception\EarlyExitException $e) {
+        } catch (EarlyExitException $e) {
             $result = $e->getCode();
             $output->writeln($e->getMessage(), OutputInterface::VERBOSITY_QUIET);
         }
@@ -328,16 +361,16 @@ class Application extends BaseApplication
     private function computeAndLoadOutputLang()
     {
 
-       // 1. Check in command line arguments
+        // 1. Check in command line arguments
         $input = new ArgvInput();
         $lang = $input->getParameterOption('--lang', null, true);
 
         if (null !== $lang && !$this->isLanguageValid($lang)) {
-           // Unset requested lang if invalid
+            // Unset requested lang if invalid
             $lang = null;
         }
 
-       // 2. Check in GLPI configuration
+        // 2. Check in GLPI configuration
         if (
             null === $lang && array_key_exists('language', $this->config)
             && $this->isLanguageValid($this->config['language'])
@@ -345,7 +378,7 @@ class Application extends BaseApplication
             $lang = $this->config['language'];
         }
 
-       // 3. Use default value
+        // 3. Use default value
         if (null === $lang) {
             $lang = 'en_GB';
         }
@@ -362,7 +395,7 @@ class Application extends BaseApplication
      *
      * @param string $language
      *
-     * @return boolean
+     * @return bool
      */
     private function isLanguageValid($language)
     {
@@ -376,7 +409,7 @@ class Application extends BaseApplication
      *
      * @param RequirementInterface[] $command_specific_requirements
      *
-     * @return boolean  true if requirements are OK, false otherwise
+     * @return bool  true if requirements are OK, false otherwise
      */
     private function checkCoreMandatoryRequirements(
         array $command_specific_requirements
@@ -435,9 +468,7 @@ class Application extends BaseApplication
         }
 
         $config_files_to_update = array_map(
-            function ($path) {
-                return GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . $path;
-            },
+            fn($path) => GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . $path,
             $command->getConfigurationFilesToUpdate($input)
         );
         if (!Filesystem::canWriteFiles($config_files_to_update)) {

@@ -1,0 +1,89 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 82,
+            "uuid": "7bb310f9-ddaf-4bad-bc56-25081950b0a7",
+            "name": "Test form",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 52,
+                    "uuid": "518edab6-5f3b-4d1f-92f4-8faa8ac2f0a0",
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 66,
+                    "uuid": "f2a16cd4-a71f-42ce-8904-bc4d12bea549",
+                    "name": "Your favorite hammer",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": null,
+                    "extra_data": {
+                        "itemtype": "Glpi\\CustomAsset\\HammerAsset",
+                        "root_items_id": 0,
+                        "subtree_depth": 0,
+                        "selectable_tree_root": false
+                    },
+                    "section_id": 52,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 84,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                }
+            ],
+            "custom_types_requirements": [
+                {
+                    "itemtype": "Glpi\\CustomAsset\\HammerAsset"
+                }
+            ]
+        }
+    ]
+}

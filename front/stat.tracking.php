@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Location\StatDataClosed;
@@ -41,7 +43,9 @@ use Glpi\Stat\Data\Location\StatDataOpened;
 use Glpi\Stat\Data\Location\StatDataOpenSatisfaction;
 use Glpi\Stat\Data\Location\StatDataSolved;
 
-/** @var array $CFG_GLPI */
+use function Safe\mktime;
+use function Safe\preg_match;
+
 global $CFG_GLPI;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
@@ -54,12 +58,12 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
+    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), ((int) date("Y")) - 1));
     $_GET["date2"] = date("Y-m-d");
 }
 
@@ -75,12 +79,12 @@ if (
 
 $params = [
     'itemtype'  => $_GET["itemtype"] ?? "",
-    'type'      => (string)($_GET["type"] ?? "user"),
+    'type'      => (string) ($_GET["type"] ?? "user"),
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
     'value2'    => $_GET["value2"] ?? 0,
-    'start'     => (int)($_GET["start"] ?? 0),
-    'showgraph' => (int)($_GET["showgraph"] ?? 0),
+    'start'     => (int) ($_GET["start"] ?? 0),
+    'showgraph' => (int) ($_GET["showgraph"] ?? 0),
 ];
 
 $values = Stat::getITILStatFields($params['itemtype']);
@@ -98,7 +102,7 @@ Html::printPager(
     $params['start'],
     count($val),
     $CFG_GLPI['root_doc'] . '/front/stat.tracking.php',
-    http_build_query($params, '', '&amp;'),
+    http_build_query($params, '', '&'),
     'Stat',
     $params
 );

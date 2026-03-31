@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -33,13 +32,13 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<form method='POST' enctype='multipart/form-data'>
+<form method='POST' enctype='multipart/form-data' action="{{ path('Inventory/ImportFiles') }}">
     <h2>
         {{ __("Import inventory files") }}
     </h2>
     <div class="alert alert-info" role="alert">
         <p>
-            {{ __("You can use this menu to upload one or several inventory files. Files must have a known extension (%1\$s).\n")|format(inventory_extensions|join(', ')) }}<br>
+            {{ __("You can use this menu to upload one or several inventory files. Files must have a known extension (%1\$s).")|format(inventory_extensions|join(', ')) }}<br>
             {{ __('It is also possible to upload a compressed archive directly with a collection of inventory files.') }}
         </p>
     </div>

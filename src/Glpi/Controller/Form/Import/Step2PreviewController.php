@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,8 +39,9 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Glpi\Http\RedirectResponse;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -78,7 +79,11 @@ final class Step2PreviewController extends AbstractController
         }
 
         $previewResult = $serializer->previewImport($json, $mapper, $skipped_forms);
-        if (empty($previewResult->getValidForms()) && empty($previewResult->getInvalidForms())) {
+        if (
+            empty($previewResult->getValidForms())
+            && empty($previewResult->getInvalidForms())
+            && empty($previewResult->getFormsWithFatalErrors())
+        ) {
             return new RedirectResponse($request->getBasePath() . '/Form/Import');
         }
 
@@ -97,7 +102,7 @@ final class Step2PreviewController extends AbstractController
             return $request->request->get('json');
         }
 
-        /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
+        /** @var UploadedFile $file */
         $file = $request->files->get('import_file');
 
         return $file->getContent();

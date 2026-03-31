@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,7 +43,7 @@
  **/
 class Item_DeviceSoundCard extends Item_Devices
 {
-    public static $itemtype_2 = 'DeviceSoundCard';
+    public static $itemtype_2 = DeviceSoundCard::class;
     public static $items_id_2 = 'devicesoundcards_id';
 
     protected static $notable = false;
@@ -56,7 +56,7 @@ class Item_DeviceSoundCard extends Item_Devices
             'otherserial' => parent::getSpecificities('otherserial'),
             'locations_id' => parent::getSpecificities('locations_id'),
             'states_id' => parent::getSpecificities('states_id'),
-            'busID'  => parent::getSpecificities('busID')
+            'busID'  => parent::getSpecificities('busID'),
         ];
     }
 

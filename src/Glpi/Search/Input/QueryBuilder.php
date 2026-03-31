@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,26 @@
 namespace Glpi\Search\Input;
 
 use AllAssets;
-use GLPI;
+use CommonDBTM;
+use DefaultFilter;
+use DisplayPreference;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
+use Html;
+use Override;
+use Plugin;
+use RuntimeException;
+use SavedSearch_User;
+use Search;
 use Session;
 use Toolbox;
+
+use function Safe\parse_url;
 
 final class QueryBuilder implements SearchInputInterface
 {
@@ -56,7 +69,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      **/
-    public static function showGenericSearch($itemtype, array $params)
+    public static function showGenericSearch(string $itemtype, array $params): void
     {
         // Default values of parameters
         $p['sort']         = '';
@@ -68,7 +81,7 @@ final class QueryBuilder implements SearchInputInterface
         if (class_exists($itemtype)) {
             $p['target']       = $itemtype::getSearchURL();
         } else {
-            $p['target']       = \Toolbox::getItemTypeSearchURL($itemtype);
+            $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
         }
         $p['showreset']                     = true;
         $p['forcereset']                    = false;
@@ -85,6 +98,7 @@ final class QueryBuilder implements SearchInputInterface
         $p['showmassiveactions']            = true;
         $p['extra_actions_templates']       = [];
         $p['hide_criteria']                 = $params['hide_criteria'] ?? false;
+        $p['is_criteria_filter']            = $params['is_criteria_filter'] ?? false;
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
@@ -95,7 +109,7 @@ final class QueryBuilder implements SearchInputInterface
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
 
-        $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
+        $can_disablefilter = Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
 
         $target_query  = parse_url($p['target'], PHP_URL_QUERY);
         $additional_params = [];
@@ -161,7 +175,6 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function displaySearchoption($request = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (
             !isset($request["itemtype"])
@@ -176,7 +189,7 @@ final class QueryBuilder implements SearchInputInterface
         $prefix = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
 
         if (!is_subclass_of($request['itemtype'], 'CommonDBTM')) {
-            throw new \RuntimeException('Invalid itemtype provided!');
+            throw new RuntimeException('Invalid itemtype provided!');
         }
 
         if (isset($request['meta']) && $request['meta']) {
@@ -184,6 +197,15 @@ final class QueryBuilder implements SearchInputInterface
         } else {
             $fieldname = 'criteria';
             $request['meta'] = 0;
+        }
+
+        // on first call, set default first field if not defined
+        if (empty($request['field'])) {
+            $numeric_keys = array_filter(
+                array_keys(SearchOption::getOptionsForItemtype($request['itemtype'])),
+                'is_numeric'
+            );
+            $request['field'] = $numeric_keys !== [] ? reset($numeric_keys) : '';
         }
 
         $actions = SearchOption::getActionsFor($request["itemtype"], $request["field"]);
@@ -200,10 +222,10 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
-        $dropdownname = \Html::cleanId("spansearchtype$fieldname" .
-            $normalized_itemtype .
-            $prefix .
-            $num);
+        $dropdownname = Html::cleanId("spansearchtype$fieldname"
+            . $normalized_itemtype
+            . $prefix
+            . $num);
         $searchopt = [];
         if (count($actions) > 0) {
             // get already get search options
@@ -267,7 +289,7 @@ final class QueryBuilder implements SearchInputInterface
             case "lessthan":
             case "under":
             case "notunder":
-                if (!$display && isset($searchopt['field'])) {
+                if (isset($searchopt['field'])) {
                     // Specific cases
                     switch ($searchopt['table'] . "." . $searchopt['field']) {
                         // Add mygroups choice to searchopt
@@ -303,20 +325,20 @@ final class QueryBuilder implements SearchInputInterface
                             break;
 
                         case "glpi_users.name":
-                            $options2['right']            = (isset($searchopt['right']) ? $searchopt['right'] : 'all');
+                            $options2['right']            = ($searchopt['right'] ?? 'all');
                             $options2['inactive_deleted'] = 1;
                             $searchopt['toadd'] = [
                                 [
                                     'id'    => 'myself',
                                     'text'  => __('Myself'),
-                                ]
+                                ],
                             ];
 
                             break;
                     }
 
                     // Standard datatype usage
-                    if (!$display && isset($searchopt['datatype'])) {
+                    if (isset($searchopt['datatype'])) {
                         switch ($searchopt['datatype']) {
                             case "date":
                             case "date_delay":
@@ -337,21 +359,21 @@ final class QueryBuilder implements SearchInputInterface
                         !$display
                         && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))
                     ) {
-                        $display = \Plugin::doOneHook(
+                        $display = Plugin::doOneHook(
                             $plug['plugin'],
-                            'searchOptionsValues',
+                            Hooks::AUTO_SEARCH_OPTION_VALUES,
                             [
                                 'name'           => $inputname,
                                 'searchtype'     => $request['searchtype'],
                                 'searchoption'   => $searchopt,
-                                'value'          => $request['value']
+                                'value'          => $request['value'],
                             ]
                         );
                     }
                 }
                 break;
             case 'empty':
-                echo "<input type='hidden' name='$inputname' value='null'>";
+                echo "<input type='hidden' name='" . htmlescape($inputname) . "' value='null'>";
                 $display = true;
                 break;
         }
@@ -363,9 +385,9 @@ final class QueryBuilder implements SearchInputInterface
             $message = $fieldpattern['validation_message'];
 
             $field_title = __s('Criteria value');
-            echo "<input type='text' class='form-control' size='13' aria-label='{$field_title}' name='{$inputname}' value=\"" .
-                htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">" .
-                "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
+            echo "<input type='text' class='form-control' size='13' aria-label='" . htmlescape($field_title) . "' name='" . htmlescape($inputname) . "' value=\""
+                . htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">"
+                . "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
         }
     }
 
@@ -383,7 +405,6 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function displayCriteria($request = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -400,12 +421,12 @@ final class QueryBuilder implements SearchInputInterface
             return;
         }
 
-        $options     = \Search::getCleanedOptions($request["itemtype"]);
+        $options     = Search::getCleanedOptions($request["itemtype"]);
         $randrow     = mt_rand();
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
         $criteria    = [];
         $from_meta   = isset($request['from_meta']) && $request['from_meta'];
 
@@ -431,7 +452,7 @@ final class QueryBuilder implements SearchInputInterface
             // print groups
             if (!is_array($val)) {
                 $group = $val;
-            } else if (count($val) == 1) {
+            } elseif (count($val) == 1) {
                 $group = $val['name'];
             } else {
                 if (
@@ -495,7 +516,7 @@ final class QueryBuilder implements SearchInputInterface
         $p            = $request['p'];
         $num          = (int) $request['num'];
         $prefix       = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
-        $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num  = $p['parents_num'] ?? [];
         $itemtype     = $request["itemtype"];
         $metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num);
 
@@ -507,7 +528,7 @@ final class QueryBuilder implements SearchInputInterface
         if (!$metacriteria) {
             $metacriteria = [];
             // Set default field
-            $options  = \Search::getCleanedOptions($itemtype);
+            $options  = Search::getCleanedOptions($itemtype);
 
             foreach ($options as $key => $val) {
                 if (is_array($val) && isset($val['table'])) {
@@ -578,7 +599,7 @@ final class QueryBuilder implements SearchInputInterface
             // print groups
             if (!is_array($val)) {
                 $group = $val;
-            } else if (count($val) == 1) {
+            } elseif (count($val) == 1) {
                 $group = $val['name'];
             } else {
                 if (
@@ -617,7 +638,7 @@ final class QueryBuilder implements SearchInputInterface
         $randrow     = mt_rand();
         $rowid       = 'searchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
 
         if (!$criteria = self::findCriteriaInSession($request['itemtype'], $num, $parents_num)) {
             $criteria = [
@@ -636,20 +657,9 @@ final class QueryBuilder implements SearchInputInterface
         ]);
     }
 
-    /**
-     * Completion of the URL $_GET values with the $_SESSION values or define default values
-     *
-     * @param class-string<\CommonDBTM>  $itemtype Item type to manage
-     * @param array   $params          Params to parse
-     * @param boolean $usesession      Use data saved in the session (true by default)
-     * @param boolean $forcebookmark   Force trying to load parameters from default bookmark:
-     *                                  used for global search (false by default)
-     *
-     * @return array parsed params
-     **/
+    #[Override]
     public static function manageParams($itemtype, $params = [], $usesession = true, $forcebookmark = false): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_values = [];
@@ -685,7 +695,7 @@ final class QueryBuilder implements SearchInputInterface
         $default_values["unpublished"] = 1;
 
         if (isset($params['start'])) {
-            $params['start'] = (int)$params['start'];
+            $params['start'] = (int) $params['start'];
         }
 
         $default_values["criteria"]     = self::getDefaultCriteria($itemtype);
@@ -707,15 +717,16 @@ final class QueryBuilder implements SearchInputInterface
         //                                  searchtype =>
         //                                  value =>   (contains)
 
-        if ($itemtype != \AllAssets::getType() && class_exists($itemtype)) {
+        if ($itemtype != AllAssets::getType() && class_exists($itemtype)) {
             // retrieve default values for current itemtype
             $itemtype_default_values = [];
-            if (method_exists($itemtype, 'getDefaultSearchRequest')) {
-                $itemtype_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
+            $item = getItemForItemtype($itemtype);
+            if ($item instanceof DefaultSearchRequestInterface) {
+                $itemtype_default_values = $item::getDefaultSearchRequest();
             }
 
             // retrieve default values for the current user
-            $user_default_values = \SavedSearch_User::getDefault(\Session::getLoginUserID(), $itemtype);
+            $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
             if ($user_default_values === false) {
                 $user_default_values = [];
             }
@@ -741,15 +752,18 @@ final class QueryBuilder implements SearchInputInterface
                 && !isset($params["reset"])
                 && !isset($_SESSION['glpisearch'][$itemtype]))
         ) {
-            $user_default_values = \SavedSearch_User::getDefault(\Session::getLoginUserID(), $itemtype);
+            if (!isset($user_default_values)) {
+                $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+            }
             if ($user_default_values) {
                 $_SESSION['glpisearch'][$itemtype] = [];
                 // Only get data for bookmarks
                 if ($forcebookmark) {
                     $params = $user_default_values;
                 } else {
-                    $bookmark = new \SavedSearch();
-                    $bookmark->load($user_default_values['savedsearches_id']);
+                    // remember the loaded saved search on first load
+                    // this is usefull to adapt the search button control label
+                    $_SESSION['glpi_loaded_savedsearch'] = $user_default_values['savedsearches_id'];
                 }
             }
         }
@@ -822,9 +836,9 @@ final class QueryBuilder implements SearchInputInterface
             }
         }
 
-        if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
+        if ($defaultfilter = DefaultFilter::getSearchCriteria($itemtype)) {
             $params['defaultfilter'] = $defaultfilter;
-            $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
+            $can_disablefilter = Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
             if (!isset($params['nodefault']) || !$can_disablefilter) {
                 $defaultfilter['search_criteria']['_hidden'] = true;
                 $params['criteria'][] = $defaultfilter['search_criteria'];
@@ -833,20 +847,21 @@ final class QueryBuilder implements SearchInputInterface
         return self::cleanParams($params);
     }
 
+    #[Override]
     public static function cleanParams(array $params): array
     {
         $int_params = [
-            'sort'
+            'sort',
         ];
 
         foreach ($params as $key => &$val) {
             if (in_array($key, $int_params)) {
                 if (is_array($val)) {
                     foreach ($val as &$subval) {
-                        $subval = (int)$subval;
+                        $subval = (int) $subval;
                     }
                 } else {
-                    $val = (int)$val;
+                    $val = (int) $val;
                 }
             }
         }
@@ -876,7 +891,7 @@ final class QueryBuilder implements SearchInputInterface
                     $invalid_criteria[] = (int) $criterion['field'];
                     unset($params['criteria'][$k]);
                 }
-            } else if (!isset($valid_main_opts[(int) $criterion['field']])) {
+            } elseif (!isset($valid_main_opts[(int) $criterion['field']])) {
                 $invalid_criteria[] = (int) $criterion['field'];
                 unset($params['criteria'][$k]);
             }
@@ -903,7 +918,10 @@ final class QueryBuilder implements SearchInputInterface
         if (!($params['silent_validation'] ?? false) && count($invalid_criteria) > 0) {
             // There is probably no need to show more information about the invalid criteria
             Session::addMessageAfterRedirect(__s('Some search criteria were removed because they are invalid'), false, WARNING);
-            if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            if (
+                Environment::get()->shouldEnableExtraDevAndDebugTools()
+                || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            ) {
                 trigger_error(
                     'Attempted to use invalid search options from itemtype: "' . $params['itemtype'] . '" with IDs ' . implode(', ', $invalid_criteria),
                     E_USER_WARNING
@@ -927,13 +945,12 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * construct the default criteria for an itemtype
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array Criteria
      */
-    public static function getDefaultCriteria($itemtype = ''): array
+    public static function getDefaultCriteria($itemtype): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $field = '';
@@ -958,21 +975,21 @@ final class QueryBuilder implements SearchInputInterface
                 'link'       => 'AND',
                 'field'      => $field,
                 'searchtype' => 'contains',
-                'value'      => ''
-            ]
+                'value'      => '',
+            ],
         ];
     }
 
     /**
      * Retrieve a single criteria in Session by its index
      *
-     * @param  class-string<\CommonDBTM>  $itemtype    which glpi type we must search in session
-     * @param  integer $num         index of the criteria
+     * @param class-string<CommonDBTM> $itemtype which glpi type we must search in session
+     * @param  int $num         index of the criteria
      * @param  array   $parents_num node indexes of the parents (@see displayCriteriaGroup)
      *
      * @return array|false The found criteria array or false if nothing found
      */
-    private static function findCriteriaInSession($itemtype = '', $num = 0, $parents_num = [])
+    private static function findCriteriaInSession($itemtype, $num, $parents_num)
     {
         if (!isset($_SESSION['glpisearch'][$itemtype]['criteria'])) {
             return false;

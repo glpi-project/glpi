@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,19 +35,22 @@
 
 /**
  * NotificationTargetReservation Class
- **/
+ *
+ * @extends NotificationTarget<Reservation>
+ */
 class NotificationTargetReservation extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['new'    => __('New reservation'),
             'update' => __('Update of a reservation'),
             'delete' => __('Deletion of a reservation'),
-            'alert'  => __('Reservation expired')
+            'alert'  => __('Reservation expired'),
         ];
     }
 
-
+    #[Override]
     public function addAdditionalTargets($event = '')
     {
         if ($event != 'alert') {
@@ -62,15 +65,12 @@ class NotificationTargetReservation extends NotificationTarget
             $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
         }
-       // else if ($event == 'alert') {
-       //   $this->addTarget(Notification::ITEM_USER, __('User reserving equipment'));
-       //}
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
-       //----------- Reservation infos -------------- //
+        //----------- Reservation infos -------------- //
         $events                                  = $this->getAllEvents();
 
         $this->data['##reservation.action##']   = $events[$event];
@@ -104,11 +104,11 @@ class NotificationTargetReservation extends NotificationTarget
                                  );
 
                 if ($item->isField('users_id_tech')) {
-                     $this->data['##reservation.item.tech##']
-                                 = Dropdown::getDropdownName(
-                                     'glpi_users',
-                                     $item->getField('users_id_tech')
-                                 );
+                    $this->data['##reservation.item.tech##']
+                                = Dropdown::getDropdownName(
+                                    'glpi_users',
+                                    $item->getField('users_id_tech')
+                                );
                 }
 
                 $this->data['##reservation.itemurl##']
@@ -156,7 +156,7 @@ class NotificationTargetReservation extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
 
@@ -164,31 +164,31 @@ class NotificationTargetReservation extends NotificationTarget
             'reservation.itemtype' => __('Item type'),
             'reservation.url'      => __('URL'),
             'reservation.itemurl'  => __('URL of item reserved'),
-            'reservation.action'   => _n('Event', 'Events', 1)
+            'reservation.action'   => _n('Event', 'Events', 1),
         ];
 
         foreach ($tags_all as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $tags_except_alert = ['reservation.user'        => __('Writer'),
             'reservation.begin'       => __('Start date'),
             'reservation.end'         => __('End date'),
-            'reservation.comment'     => __('Comments'),
+            'reservation.comment'     => _n('Comment', 'Comments', Session::getPluralNumber()),
             'reservation.note'        => __('Notes'),
             'reservation.item.entity' => Entity::getTypeName(1),
             'reservation.item.name'   => _n('Associated item', 'Associated items', 1),
-            'reservation.item.tech'   => __('Technician in charge')
+            'reservation.item.tech'   => __('Technician in charge'),
         ];
 
         foreach ($tags_except_alert as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
                 'label'  => $label,
                 'value'  => true,
-                'events' => ['new', 'update', 'delete']
+                'events' => ['new', 'update', 'delete'],
             ]);
         }
 
@@ -196,27 +196,27 @@ class NotificationTargetReservation extends NotificationTarget
             'label'   => __('Device list'),
             'value'   => false,
             'foreach' => true,
-            'events'  => ['alert']
+            'events'  => ['alert'],
         ]);
 
         $tag_alert = ['reservation.expirationdate' => __('End date'),
-            'reservation.entity'         => Entity::getTypeName(1)
+            'reservation.entity'         => Entity::getTypeName(1),
         ];
 
         foreach ($tag_alert as $tag => $label) {
             $this->addTagToList(['tag'    => $tag,
                 'label'  => $label,
                 'value'  => true,
-                'events' => ['alert']
+                'events' => ['alert'],
             ]);
         }
 
         asort($this->tag_descriptions);
     }
 
+    #[Override]
     public function getObjectItem($event = '')
     {
-
         if ($this->obj) {
             $ri = new ReservationItem();
 

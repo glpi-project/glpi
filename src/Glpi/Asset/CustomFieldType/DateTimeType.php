@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +35,10 @@
 namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
+use InvalidArgumentException;
+
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 class DateTimeType extends AbstractType
 {
@@ -64,7 +68,7 @@ TWIG, $twig_params);
             return null;
         }
         if (!preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value)) {
-            throw new \InvalidArgumentException('The value must be in the format YYYY-MM-DD HH:MM:SS');
+            throw new InvalidArgumentException('The value must be in the format YYYY-MM-DD HH:MM:SS');
         }
         return gmdate('Y-m-d H:i:s', strtotime($value));
     }

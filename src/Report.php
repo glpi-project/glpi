@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,6 +40,8 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Socket;
 
+use function Safe\mktime;
+
 /**
  *  Report class
  *
@@ -49,6 +51,7 @@ use Glpi\Socket;
  **/
 class Report extends CommonGLPI
 {
+    /** @var bool */
     protected static $notable = false;
     public static $rightname         = 'reports';
 
@@ -64,10 +67,6 @@ class Report extends CommonGLPI
 
     public static function getReports(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         // Report generation
@@ -121,7 +120,7 @@ class Report extends CommonGLPI
                         $report_list[Plugin::getInfo($plug, 'name')][$page] = [
                             'name' => $name,
                             'file' => "{$CFG_GLPI['root_doc']}/plugins/{$plug}/{$page}",
-                            'plug' => $plug
+                            'plug' => $plug,
                         ];
                     }
                 }
@@ -133,13 +132,15 @@ class Report extends CommonGLPI
 
     /**
      * Show report selector which always appears on the top of the report pages
-     **/
+     *
+     * @return void
+     */
     public static function title()
     {
         $twig_params = [
             'title' => __('Select the report you want to generate'),
             'selected' => -1,
-            'values'   => ['/front/report.php' => Dropdown::EMPTY_VALUE]
+            'values'   => ['/front/report.php' => Dropdown::EMPTY_VALUE],
         ];
 
         $report_list = self::getReports();
@@ -151,7 +152,7 @@ class Report extends CommonGLPI
                     if ($file = $fn_find_selected($data)) {
                         return $file;
                     }
-                } else if (stripos($_SERVER['REQUEST_URI'], $data['file']) !== false) {
+                } elseif (stripos($_SERVER['REQUEST_URI'], (string) $data['file']) !== false) {
                     return $data['file'];
                 }
             }
@@ -192,14 +193,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<class-string<CommonDBTM>, array<string, array>>
+     * @return array<class-string<CommonDBTM>, array<string, mixed>>
      */
     private static function getAssetCounts(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $items = $CFG_GLPI["asset_types"];
@@ -212,11 +209,11 @@ TWIG, $twig_params);
                 'COUNT'  => 'cpt',
                 'FROM'   => $table_item,
                 'WHERE'  => [
-                    "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria()
+                    "$table_item.is_deleted"   => 0,
+                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria(),
             ];
 
-            $itemtype_object = new $itemtype();
+            $itemtype_object = getItemForItemtype($itemtype);
             if ($itemtype_object->maybeTemplate()) {
                 $criteria["WHERE"]["$table_item.is_template"] = 0;
             }
@@ -229,17 +226,17 @@ TWIG, $twig_params);
                             $relation_table => 'items_id_peripheral',
                             $table_item     => 'id', [
                                 'AND' => [
-                                    $relation_table . '.itemtype_peripheral' => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    $relation_table . '.itemtype_peripheral' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
             }
 
             $result[$itemtype] = [
                 'label' => $itemtype::getTypeName(Session::getPluralNumber()),
-                'count' => (int) $DB->request($criteria)->current()['cpt']
+                'count' => (int) $DB->request($criteria)->current()['cpt'],
             ];
         }
 
@@ -247,11 +244,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<string, array<int, array>>
+     * @return array<int, array<string, mixed>>
      */
     private static function getOSInstallCounts(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -259,19 +255,19 @@ TWIG, $twig_params);
             'SELECT'    => [
                 'COUNT' => '* AS count',
                 'glpi_operatingsystems.id AS id',
-                'glpi_operatingsystems.name AS name'
+                'glpi_operatingsystems.name AS name',
             ],
             'FROM'      => 'glpi_items_operatingsystems',
             'LEFT JOIN' => [
                 'glpi_operatingsystems' => [
                     'ON' => [
                         'glpi_items_operatingsystems' => 'operatingsystems_id',
-                        'glpi_operatingsystems'       => 'id'
-                    ]
-                ]
+                        'glpi_operatingsystems'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => ['is_deleted' => 0] + getEntitiesRestrictCriteria('glpi_items_operatingsystems'),
-            'GROUPBY'   => 'glpi_operatingsystems.name'
+            'GROUPBY'   => 'glpi_operatingsystems.name',
         ]);
 
         foreach ($iterator as $data) {
@@ -280,22 +276,15 @@ TWIG, $twig_params);
             }
             $result[$data['id']] = [
                 'label' => $data['name'],
-                'count' => (int) $data['count']
+                'count' => (int) $data['count'],
             ];
         }
 
         return $result;
     }
 
-    /**
-     * @return array<class-string<CommonDBTM>, array<int, array>
-     */
     private static function getAssetTypeCounts(): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $items = $CFG_GLPI["asset_types"];
@@ -306,6 +295,11 @@ TWIG, $twig_params);
         $items = array_flip($val);
 
         foreach ($items as $itemtype) {
+            $item = getItemForItemtype($itemtype);
+            if (!$item instanceof CommonDBTM) {
+                throw new RuntimeException("Invalid asset type: " . $itemtype);
+            }
+
             $typeclass = $itemtype . "Type";
 
             if (!class_exists($typeclass)) {
@@ -320,24 +314,24 @@ TWIG, $twig_params);
                 'SELECT'    => [
                     'COUNT'  => '* AS count',
                     "$table_item.id AS id",
-                    "$type_table.name AS name"
+                    "$type_table.name AS name",
                 ],
                 'FROM'      => $table_item,
                 'LEFT JOIN' => [
                     $type_table => [
                         'ON' => [
                             $table_item => $typefield,
-                            $type_table => 'id'
-                        ]
-                    ]
+                            $type_table => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria($table_item),
-                'GROUPBY'   => "$type_table.name"
+                    "$table_item.is_deleted"   => 0,
+                ] + getEntitiesRestrictCriteria($table_item) + $item::getSystemSQLCriteria($table_item),
+                'GROUPBY'   => "$type_table.name",
             ];
 
-            $itemtype_object = new $itemtype();
+            $itemtype_object = getItemForItemtype($itemtype);
             if ($itemtype_object->maybeTemplate()) {
                 $criteria["WHERE"]["$table_item.is_template"] = 0;
             }
@@ -349,27 +343,27 @@ TWIG, $twig_params);
                         $relation_table => 'items_id_peripheral',
                         $table_item     => 'id', [
                             'AND' => [
-                                $relation_table . '.itemtype_peripheral' => $itemtype
-                            ]
-                        ]
-                    ]
+                                $relation_table . '.itemtype_peripheral' => $itemtype,
+                            ],
+                        ],
+                    ],
                 ];
             }
 
             $iterator = $DB->request($criteria);
             foreach ($iterator as $data) {
                 if (empty($data['name'])) {
-                    $data['name'] = Dropdown:: EMPTY_VALUE;
+                    $data['name'] = Dropdown::EMPTY_VALUE;
                 }
                 if (!array_key_exists($itemtype, $result)) {
                     $result[$itemtype] = [
-                        'label' => $itemtype::getTypeName(Session::getPluralNumber()),
-                        'items' => []
+                        'label' => $item::getTypeName(Session::getPluralNumber()),
+                        'items' => [],
                     ];
                 }
                 $result[$itemtype]['items'][$data['id']] = [
                     'label' => $data['name'],
-                    'count' => (int) $data['count']
+                    'count' => (int) $data['count'],
                 ];
             }
         }
@@ -390,21 +384,21 @@ TWIG, $twig_params);
             'report_type' => 'count',
             'params' => [], // No user-defined parameters for this report
             'data' => [
-                'items' => []
+                'items' => [],
             ],
         ];
 
         $report['data']['items']['assets'] = [
             'label' => _n('Asset', 'Assets', Session::getPluralNumber()),
-            'items' => self::getAssetCounts()
+            'items' => self::getAssetCounts(),
         ];
         $report['data']['items']['os'] = [
             'label' => OperatingSystem::getTypeName(Session::getPluralNumber()),
-            'items' => self::getOSInstallCounts()
+            'items' => self::getOSInstallCounts(),
         ];
         $report['data']['items']['types'] = [
             'label' => _n('Type', 'Types', Session::getPluralNumber()),
-            'items' => self::getAssetTypeCounts()
+            'items' => self::getAssetTypeCounts(),
         ];
 
         return $report;
@@ -472,12 +466,16 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     public static function showNetworkReportCriteria(bool $embeded): void
     {
-        TemplateRenderer::getInstance()->display('pages/tools/report/network_criteria.html.twig', ['embeded' => $embeded]);
+        TemplateRenderer::getInstance()->display(
+            'pages/tools/report/network_criteria.html.twig',
+            [
+                'embeded' => $embeded,
+            ]
+        );
     }
 
     private static function getNetworkCommonCriteria(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
         // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
         //      match opposite NetworkPort, then its NetworkName and IPAddresses.
@@ -514,10 +512,10 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         'NAME_1' => 'items_id', [
                             'AND'    => [
                                 'NAME_1.itemtype'    => 'NetworkPort',
-                                'NAME_1.is_deleted'  => 0
-                            ]
-                        ]
-                    ]
+                                'NAME_1.is_deleted'  => 0,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_ipaddresses AS ADDR_1'  => [
                     'ON'  => [
@@ -525,20 +523,20 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         'ADDR_1' => 'items_id', [
                             'AND'    => [
                                 'ADDR_1.itemtype'    => 'NetworkName',
-                                'ADDR_1.is_deleted'  => 0
-                            ]
-                        ]
-                    ]
+                                'ADDR_1.is_deleted'  => 0,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports_networkports AS LINK'  => [
                     'ON'  => [
                         'LINK'   => 'networkports_id_1',
                         'PORT_1' => 'id', [
                             'OR'     => [
-                                'LINK.networkports_id_2'   => new QueryExpression($DB::quoteName('PORT_1.id'))
-                            ]
-                        ]
-                    ]
+                                'LINK.networkports_id_2'   => new QueryExpression($DB::quoteName('PORT_1.id')),
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports AS PORT_2' => [
                     'ON'  => [
@@ -548,7 +546,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                             true_expression: "LINK.networkports_id_2",
                             false_expression: "LINK.networkports_id_1"
                         ),
-                    ]
+                    ],
                 ],
                 'glpi_networknames AS NAME_2' => [
                     'ON'  => [
@@ -556,10 +554,10 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         'NAME_2' => 'items_id', [
                             'AND'    => [
                                 'NAME_2.itemtype'     => 'NetworkPort',
-                                'NAME_2.is_deleted'   => 0
-                            ]
-                        ]
-                    ]
+                                'NAME_2.is_deleted'   => 0,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_ipaddresses AS ADDR_2'  => [
                     'ON'  => [
@@ -567,13 +565,13 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                         'ADDR_2' => 'items_id', [
                             'AND'    => [
                                 'ADDR_2.itemtype'    => 'NetworkName',
-                                'ADDR_2.is_deleted'  => 0
-                            ]
-                        ]
-                    ]
-                ]
+                                'ADDR_2.is_deleted'  => 0,
+                            ],
+                        ],
+                    ],
+                ],
             ],
-            'GROUPBY'      => ['PORT_1.id']
+            'GROUPBY'      => ['PORT_1.id'],
         ];
     }
 
@@ -593,20 +591,20 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
         $criteria['INNER JOIN']['glpi_sockets'] = [
             'ON' => [
                 'glpi_sockets' => 'locations_id',
-                'glpi_locations' => 'id'
-            ]
+                'glpi_locations' => 'id',
+            ],
         ];
         $criteria['INNER JOIN']['glpi_networkportethernets'] = [
             'ON' => [
                 'glpi_networkportethernets' => 'networkports_id',
-                'glpi_sockets' => 'networkports_id'
-            ]
+                'glpi_sockets' => 'networkports_id',
+            ],
         ];
         $criteria['INNER JOIN']['glpi_networkports AS PORT_1'] = [
             'ON' => [
                 'PORT_1' => 'id',
-                'glpi_networkportethernets' => 'networkports_id'
-            ]
+                'glpi_networkportethernets' => 'networkports_id',
+            ],
         ];
         $criteria['ORDER'] = ['glpi_locations.completename', 'PORT_1.name'];
 
@@ -625,20 +623,20 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
         $criteria['INNER JOIN']['glpi_networkportethernets'] = [
             'ON' => [
                 'glpi_networkportethernets' => 'networkports_id',
-                'glpi_sockets' => 'networkports_id'
-            ]
+                'glpi_sockets' => 'networkports_id',
+            ],
         ];
         $criteria['INNER JOIN']['glpi_networkports AS PORT_1'] = [
             'ON' => [
                 'PORT_1' => 'id',
-                'glpi_networkportethernets' => 'networkports_id'
-            ]
+                'glpi_networkportethernets' => 'networkports_id',
+            ],
         ];
         $criteria['LEFT JOIN']['glpi_locations'] = [
             'ON' => [
                 'glpi_locations' => 'id',
-                'glpi_sockets' => 'locations_id'
-            ]
+                'glpi_sockets' => 'locations_id',
+            ],
         ];
         $criteria['WHERE'] = ['glpi_sockets.id' => $sockets_id];
         return $criteria;
@@ -658,9 +656,9 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                 'ITEM' => 'id', [
                     'AND' => [
                         'PORT_1.itemtype' => 'NetworkEquipment',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
         $criteria['WHERE'] = ['ITEM.id' => $networkequipments_id];
 
@@ -668,26 +666,27 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     }
 
     /**
-     * @param class-string<'Location'|'NetworkEquioment'|'Glpi\Socket'> $by_itemtype
+     * @param class-string<Location|NetworkEquipment|Socket> $by_itemtype
      * @param int $by_items_id
      * @return array
      * @phpstan-return ReportData
      */
     private static function getNetworkReport(string $by_itemtype, int $by_items_id): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $title = sprintf(match ($by_itemtype) {
-            Location::class => __('Network report by location: %s'),
+            Location::class         => __('Network report by location: %s'),
             NetworkEquipment::class => __('Network report by hardware: %s'),
-            Socket::class => __('Network report by outlet: %s'),
+            Socket::class           => __('Network report by outlet: %s'),
+            default                 => throw new InvalidArgumentException(),
         }, Dropdown::getDropdownName($by_itemtype::getTable(), $by_items_id));
 
         $criteria = match ($by_itemtype) {
-            Location::class => self::getNetworkLocationCriteria($by_items_id),
+            Location::class         => self::getNetworkLocationCriteria($by_items_id),
             NetworkEquipment::class => self::getNetworkEquipmentCriteria($by_items_id),
-            Socket::class => self::getNetworkSocketCriteria($by_items_id),
+            Socket::class           => self::getNetworkSocketCriteria($by_items_id),
+            default                 => throw new InvalidArgumentException(),
         };
 
         $report = [
@@ -696,10 +695,10 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
             'report_type' => 'network',
             'params' => [
                 'by_itemtype' => $by_itemtype,
-                'by_items_id' => $by_items_id
+                'by_items_id' => $by_items_id,
             ],
             'data' => [
-                'items' => []
+                'items' => [],
             ],
         ];
 
@@ -820,7 +819,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
         $datatable_params = [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => $super_header,
@@ -839,7 +837,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                     <div class="card-title">{{ report['title'] }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showNetworkReportCriteria', [true]) }}
+                    {% do call('Report::showNetworkReportCriteria', [true]) %}
                     <br>
                     {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
                 </div>
@@ -858,7 +856,7 @@ TWIG, ['report' => $report, 'datatable_params' => $datatable_params]);
             'report_id' => 'reservation',
             'report_type' => 'reservation',
             'params' => [
-                'users_id' => $users_id
+                'users_id' => $users_id,
             ],
             'data' => Reservation::getForUser($users_id),
         ];
@@ -885,8 +883,8 @@ TWIG, ['report' => $report, 'datatable_params' => $datatable_params]);
                     <div class="card-title">{{ report['title'] }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Reservation::showReservationsAsList', [report['data']['in_progress'], current_label]) }}
-                    {{ call('Reservation::showReservationsAsList', [report['data']['old'], old_label]) }}
+                    {% do call('Reservation::showReservationsAsList', [report['data']['in_progress'], current_label]) %}
+                    {% do call('Reservation::showReservationsAsList', [report['data']['old'], old_label]) %}
                 </div>
             </div>
 TWIG, $twig_params);
@@ -894,20 +892,14 @@ TWIG, $twig_params);
 
     /**
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      */
     private static function getYearlyAssetsReport(array $itemtypes, array $years): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
-        $itemtypes = array_filter($itemtypes, static function (string $itemtype) use ($CFG_GLPI): bool {
-            return in_array($itemtype, $CFG_GLPI['report_types'], true);
-        });
+        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_GLPI['report_types'], true));
 
         $report = [
             'title' => __("Equipment's report by year"),
@@ -915,11 +907,11 @@ TWIG, $twig_params);
             'report_type' => 'yearly_assets',
             'params' => [
                 'itemtypes' => $itemtypes,
-                'years' => $years
+                'years' => $years,
             ],
             'data' => [
-                'items' => []
-            ]
+                'items' => [],
+            ],
         ];
 
         foreach ($itemtypes as $key => $itemtype) {
@@ -939,12 +931,12 @@ TWIG, $twig_params);
                     'glpi_contracts.begin_date',
                     'glpi_contracts.duration',
                     'glpi_entities.completename AS entname',
-                    'glpi_entities.id AS entID'
+                    'glpi_entities.id AS entID',
                 ],
                 'FROM'      => $itemtable,
                 'LEFT JOIN' => [],
                 'WHERE'     => [],
-                'ORDERBY'   => ['entname ASC', 'itemdeleted DESC', 'itemname ASC']
+                'ORDERBY'   => ['entname ASC', 'itemdeleted DESC', 'itemname ASC'],
             ];
 
             if ($itemtype !== Project::class) {
@@ -952,8 +944,8 @@ TWIG, $twig_params);
                 $criteria['LEFT JOIN']['glpi_locations'] = [
                     'ON'  => [
                         $itemtable  => 'locations_id',
-                        'glpi_locations.id'
-                    ]
+                        'glpi_locations.id',
+                    ],
                 ];
                 $criteria['WHERE']["$itemtable.is_template"] = 0;
             }
@@ -963,18 +955,18 @@ TWIG, $twig_params);
                 $criteria['LEFT JOIN']['glpi_softwares'] = [
                     'ON'  => [
                         'glpi_softwares'        => 'id',
-                        'glpi_softwarelicenses' => 'softwares_id'
-                    ]
+                        'glpi_softwarelicenses' => 'softwares_id',
+                    ],
                 ];
                 $criteria['WHERE']['glpi_softwares.is_template'] = 0;
             }
             $criteria['SELECT'][] = "$deleted_field AS itemdeleted";
-            $criteria['SELECT'][] = ($location_field !== null ?
-                "$location_field AS locationname" :
-                new QueryExpression($DB::quoteValue(''), 'locationname'));
-            $criteria['SELECT'][] = ($location_field !== null ?
-                "glpi_locations.id AS locationID" :
-                new QueryExpression($DB::quoteValue(''), 'locationID'));
+            $criteria['SELECT'][] = ($location_field !== null
+                ? "$location_field AS locationname"
+                : new QueryExpression($DB::quoteValue(''), 'locationname'));
+            $criteria['SELECT'][] = ($location_field !== null
+                ? "glpi_locations.id AS locationID"
+                : new QueryExpression($DB::quoteValue(''), 'locationID'));
 
             $criteria['LEFT JOIN'] += [
                 'glpi_contracts_items'  => [
@@ -982,43 +974,43 @@ TWIG, $twig_params);
                         $itemtable              => 'id',
                         'glpi_contracts_items'  => 'items_id', [
                             'AND' => [
-                                'glpi_contracts_items.itemtype' => $itemtype
-                            ]
-                        ]
-                    ]
+                                'glpi_contracts_items.itemtype' => $itemtype,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_contracts'        => [
                     'ON'  => [
                         'glpi_contracts_items'  => 'contracts_id',
                         'glpi_contracts'        => 'id', [
                             'AND' => [
-                                'NOT' => ['glpi_contracts_items.contracts_id' => null]
-                            ]
-                        ]
-                    ]
+                                'NOT' => ['glpi_contracts_items.contracts_id' => null],
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_infocoms'         => [
                     'ON'  => [
                         $itemtable        => 'id',
                         'glpi_infocoms'   => 'items_id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype' => $itemtype
-                            ]
-                        ]
-                    ]
+                                'glpi_infocoms.itemtype' => $itemtype,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_contracttypes'    => [
                     'ON'  => [
                         'glpi_contracts'     => 'contracttypes_id',
-                        'glpi_contracttypes' => 'id'
-                    ]
+                        'glpi_contracttypes' => 'id',
+                    ],
                 ],
                 'glpi_entities'         => [
                     'ON'  => [
                         $itemtable        => 'entities_id',
-                        'glpi_entities'   => 'id'
-                    ]
-                ]
+                        'glpi_entities'   => 'id',
+                    ],
+                ],
             ];
             $criteria['WHERE'] += getEntitiesRestrictCriteria($itemtable);
 
@@ -1029,7 +1021,7 @@ TWIG, $twig_params);
             }
             if (count($ors)) {
                 $criteria['WHERE'][] = [
-                    'OR'  => $ors
+                    'OR'  => $ors,
                 ];
             }
 
@@ -1054,7 +1046,7 @@ TWIG, $twig_params);
                     'contracttypename' => $result['contracttypename'],
                     'begin_date' => $result['begin_date'],
                     'duration' => $result['duration'],
-                    'end_date' => $end_date
+                    'end_date' => $end_date,
                 ];
             }
         }
@@ -1066,12 +1058,12 @@ TWIG, $twig_params);
      * Show assets by year report
      *
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      * @return void
      */
     public static function showYearlyAssetsReport(array $itemtypes, array $years): void
     {
-        if (empty($itemtypes)) {
+        if ($itemtypes === []) {
             self::showYearlyAssetsReportCriteria(false);
             return;
         }
@@ -1085,7 +1077,7 @@ TWIG, $twig_params);
         $columns['location'] = Location::getTypeName(1);
         $columns['buy_date'] = __('Date of purchase');
         $columns['warranty_expiration_date'] = __('Warranty expiration date');
-        $columns['contract_type'] = __('Contract type');
+        $columns['contract_type'] = _n('Contract type', 'Contract types', 1);
         $columns['begin_date'] = __('Start date');
         $columns['end_date'] = __('End date');
 
@@ -1098,7 +1090,6 @@ TWIG, $twig_params);
             if (!isset($datatable_params[$itemtype])) {
                 $datatable_params[$itemtype] = [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => $columns,
@@ -1128,7 +1119,7 @@ TWIG, $twig_params);
 
         $twig_params = [
             'title' => $report['title'],
-            'datatable_params' => $datatable_params
+            'datatable_params' => $datatable_params,
         ];
 
         // language=Twig
@@ -1138,7 +1129,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showYearlyAssetsReportCriteria', [true]) }}
+                    {% do call('Report::showYearlyAssetsReportCriteria', [true]) %}
                     <br>
                     {% for itemtype, datatable in datatable_params %}
                         {{ include('components/datatable.html.twig', datatable, with_context = false) }}
@@ -1151,20 +1142,14 @@ TWIG, $twig_params);
 
     /**
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      */
     private static function getContractAssetsReport(array $itemtypes, array $years): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Filter the itemtypes to only keep the ones that are valid
-        $itemtypes = array_filter($itemtypes, static function (string $itemtype) use ($CFG_GLPI): bool {
-            return in_array($itemtype, $CFG_GLPI['contract_types'], true);
-        });
+        $itemtypes = array_filter($itemtypes, static fn(string $itemtype): bool => in_array($itemtype, $CFG_GLPI['contract_types'], true));
 
         $report = [
             'title' => __('List of the hardware under contract'),
@@ -1172,11 +1157,11 @@ TWIG, $twig_params);
             'report_type' => 'contract_assets',
             'params' => [
                 'itemtypes' => $itemtypes,
-                'years' => $years
+                'years' => $years,
             ],
             'data' => [
-                'items' => []
-            ]
+                'items' => [],
+            ],
         ];
 
         foreach ($itemtypes as $itemtype) {
@@ -1190,43 +1175,43 @@ TWIG, $twig_params);
                     'glpi_contracts.duration',
                     'glpi_entities.completename AS entname',
                     'glpi_entities.id AS entID',
-                    'glpi_contracts.begin_date'
+                    'glpi_contracts.begin_date',
                 ],
                 'FROM'   => 'glpi_contracts_items',
                 'INNER JOIN'   => [
                     'glpi_contracts'  => [
                         'ON'  => [
                             'glpi_contracts_items'  => 'contracts_id',
-                            'glpi_contracts'        => 'id'
-                        ]
+                            'glpi_contracts'        => 'id',
+                        ],
                     ],
                     $itemtable  => [
                         'ON'  => [
                             $itemtable  => 'id',
                             'glpi_contracts_items'  => 'items_id', [
                                 'AND' => [
-                                    'glpi_contracts_items.itemtype' => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_contracts_items.itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'LEFT JOIN'    => [
                     'glpi_contracttypes' => [
                         'ON'  => [
                             'glpi_contracts'     => 'contracttypes_id',
-                            'glpi_contracttypes' => 'id'
-                        ]
+                            'glpi_contracttypes' => 'id',
+                        ],
                     ],
                     'glpi_entities'   => [
                         'ON'  => [
                             $itemtable        => 'entities_id',
-                            'glpi_entities'   => 'id'
-                        ]
-                    ]
+                            'glpi_entities'   => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => getEntitiesRestrictCriteria($itemtable),
-                'ORDERBY'      => ["entname ASC", 'itemdeleted DESC', "itemname ASC"]
+                'ORDERBY'      => ["entname ASC", 'itemdeleted DESC', "itemname ASC"],
             ];
 
             if ($DB->fieldExists($itemtable, 'name')) {
@@ -1247,10 +1232,10 @@ TWIG, $twig_params);
                             'glpi_infocoms' => 'items_id',
                             $itemtable     => 'id', [
                                 'AND' => [
-                                    'glpi_infocoms.itemtype'   => $itemtype
-                                ]
-                            ]
-                        ]
+                                    'glpi_infocoms.itemtype'   => $itemtype,
+                                ],
+                            ],
+                        ],
                     ];
                 }
                 if ($itemtype === Project::class) {
@@ -1273,17 +1258,17 @@ TWIG, $twig_params);
                 $criteria['SELECT'] = array_merge($criteria['SELECT'], [
                     "$itemtable.is_deleted AS itemdeleted",
                     'glpi_infocoms.buy_date',
-                    'glpi_infocoms.warranty_duration'
+                    'glpi_infocoms.warranty_duration',
                 ]);
                 $criteria['LEFT JOIN']['glpi_infocoms'] = [
                     'ON'  => [
                         $itemtable        => 'id',
                         'glpi_infocoms'   => 'items_id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype' => $itemtype
-                            ]
-                        ]
-                    ]
+                                'glpi_infocoms.itemtype' => $itemtype,
+                            ],
+                        ],
+                    ],
                 ];
                 if ($DB->fieldExists($itemtable, 'locations_id')) {
                     $criteria['SELECT'][] = 'glpi_locations.completename AS locationname';
@@ -1291,8 +1276,8 @@ TWIG, $twig_params);
                     $criteria['LEFT JOIN']['glpi_locations'] = [
                         'ON'  => [
                             $itemtable        => 'locations_id',
-                            'glpi_locations'   => 'id'
-                        ]
+                            'glpi_locations'   => 'id',
+                        ],
                     ];
                 } else {
                     $criteria['SELECT'][] = new QueryExpression("'' AS locationname");
@@ -1334,7 +1319,7 @@ TWIG, $twig_params);
                     'contracttypename' => $result['contracttypename'],
                     'begin_date' => $result['begin_date'],
                     'duration' => $result['duration'],
-                    'end_date' => $end_date
+                    'end_date' => $end_date,
                 ];
             }
         }
@@ -1346,12 +1331,12 @@ TWIG, $twig_params);
      * Show assets under contract report
      *
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      * @return void
      */
     public static function showContractAssetsReport(array $itemtypes, array $years): void
     {
-        if (empty($itemtypes)) {
+        if ($itemtypes === []) {
             self::showContractAssetsReportCriteria(false);
             return;
         }
@@ -1365,7 +1350,7 @@ TWIG, $twig_params);
         $columns['location'] = Location::getTypeName(1);
         $columns['buy_date'] = __('Date of purchase');
         $columns['warranty_expiration_date'] = __('Warranty expiration date');
-        $columns['contract_type'] = __('Contract type');
+        $columns['contract_type'] = _n('Contract type', 'Contract types', 1);
         $columns['begin_date'] = __('Start date');
         $columns['end_date'] = __('End date');
 
@@ -1378,7 +1363,6 @@ TWIG, $twig_params);
             if (!isset($datatable_params[$itemtype])) {
                 $datatable_params[$itemtype] = [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => $columns,
@@ -1408,7 +1392,7 @@ TWIG, $twig_params);
 
         $twig_params = [
             'title' => $report['title'],
-            'datatable_params' => $datatable_params
+            'datatable_params' => $datatable_params,
         ];
 
         // language=Twig
@@ -1418,7 +1402,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showContractAssetsReportCriteria', [true]) }}
+                    {% do call('Report::showContractAssetsReportCriteria', [true]) %}
                     <br>
                     {% for itemtype, datatable in datatable_params %}
                         {{ include('components/datatable.html.twig', datatable, with_context = false) }}
@@ -1438,7 +1422,7 @@ TWIG, $twig_params);
     {
         if (empty($begin) && empty($end)) {
             $year           = date("Y") - 1;
-            $begin = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
+            $begin = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), $year));
             $end = date("Y-m-d");
         }
 
@@ -1462,9 +1446,6 @@ TWIG, $twig_params);
      */
     private static function getInfocomReport(?string $begin, ?string $end, bool $is_assets = true): array
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         [$begin, $end] = self::handleInfocomDates($begin, $end);
@@ -1475,11 +1456,11 @@ TWIG, $twig_params);
             'report_type' => $is_assets ? 'infocom_assets' : 'infocom_other',
             'params' => [
                 'begin_date' => $begin,
-                'end_date' => $end
+                'end_date' => $end,
             ],
             'data' => [
-                'items' => []
-            ]
+                'items' => [],
+            ],
         ];
 
         foreach ($CFG_GLPI['infocom_types'] as $itemtype) {
@@ -1559,14 +1540,12 @@ TWIG, $twig_params);
             if (!isset($datatable_params[$itemtype])) {
                 $datatable_params[$itemtype] = [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => $columns,
                     'formatters' => [
                         'value' => 'number',
                         'anv' => 'number',
-                        'tco' => 'raw_html',
                     ],
                     'super_header' => $itemtype::getTypeName(Session::getPluralNumber()),
                     'entries' => [],
@@ -1576,8 +1555,8 @@ TWIG, $twig_params);
                             '',
                             0, // Total Value
                             0, // Total Annual Net Value
-                            '', '', '', '', ''
-                        ]
+                            '', '', '', '', '',
+                        ],
                     ],
                     'footer_class' => 'fw-bold',
                     'total_number' => 0,
@@ -1627,23 +1606,28 @@ TWIG, $twig_params);
         $twig_params = [
             'title' => $report['title'],
             'datatable_params' => $datatable_params,
-            'graphs' => []
+            'graphs' => [],
         ];
 
         foreach ($anv_graph_data_itemtype as $itemtype => $anv_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($anv_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($anv_graph_data as $year => $value) {
                     $graph_data[] = [
                         'label' => $year,
-                        'number' => round($value)
+                        'number' => round($value),
                     ];
                 }
 
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s account net value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1652,19 +1636,24 @@ TWIG, $twig_params);
         }
 
         foreach ($total_graph_data_itemtype as $itemtype => $total_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($total_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($total_graph_data as $year => $value) {
                     $graph_data[] = [
                         'label' => $year,
-                        'number' => round($value)
+                        'number' => round($value),
                     ];
                 }
 
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1696,7 +1685,7 @@ TWIG, $twig_params);
             foreach ($all_itemtypes_anv_graph_data as $year => $value) {
                 $graph_data[] = [
                     'label' => $year,
-                    'number' => round($value)
+                    'number' => round($value),
                 ];
             }
 
@@ -1712,7 +1701,7 @@ TWIG, $twig_params);
             foreach ($all_itemtypes_total_graph_data as $year => $value) {
                 $graph_data[] = [
                     'label' => $year,
-                    'number' => round($value)
+                    'number' => round($value),
                 ];
             }
 
@@ -1730,7 +1719,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showInfocomReportCriteria', [true, true]) }}
+                    {% do call('Report::showInfocomReportCriteria', [true, true]) %}
                     <br>
                     {% for itemtype, datatable in datatable_params %}
                         {{ include('components/datatable.html.twig', datatable, with_context = false) }}
@@ -1786,23 +1775,28 @@ TWIG, $twig_params);
 
         $twig_params = [
             'title' => $report['title'],
-            'graphs' => []
+            'graphs' => [],
         ];
 
         foreach ($anv_graph_data_itemtype as $itemtype => $anv_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($anv_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($anv_graph_data as $year => $value) {
                     $graph_data[] = [
                         'label' => $year,
-                        'number' => round($value)
+                        'number' => round($value),
                     ];
                 }
 
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s account net value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1811,19 +1805,24 @@ TWIG, $twig_params);
         }
 
         foreach ($total_graph_data_itemtype as $itemtype => $total_graph_data) {
+            $item_object = getItemForItemtype($itemtype);
+            if (!$item_object instanceof CommonGLPI) {
+                throw new RuntimeException("Invalid itemtype: $itemtype");
+            }
+
             if (count($total_graph_data) > 0) {
                 $graph_data = [];
                 foreach ($total_graph_data as $year => $value) {
                     $graph_data[] = [
                         'label' => $year,
-                        'number' => round($value)
+                        'number' => round($value),
                     ];
                 }
 
                 $twig_params['graphs'][] = Widget::simpleLine([
                     'label' => sprintf(
                         __('%1$s value'),
-                        $itemtype::getTypeName(1)
+                        $item_object::getTypeName(1)
                     ),
                     'data' => $graph_data,
                     'legend' => true,
@@ -1855,7 +1854,7 @@ TWIG, $twig_params);
             foreach ($all_itemtypes_anv_graph_data as $year => $value) {
                 $graph_data[] = [
                     'label' => $year,
-                    'number' => round($value)
+                    'number' => round($value),
                 ];
             }
 
@@ -1871,7 +1870,7 @@ TWIG, $twig_params);
             foreach ($all_itemtypes_total_graph_data as $year => $value) {
                 $graph_data[] = [
                     'label' => $year,
-                    'number' => round($value)
+                    'number' => round($value),
                 ];
             }
 
@@ -1889,7 +1888,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showInfocomReportCriteria', [true, false]) }}
+                    {% do call('Report::showInfocomReportCriteria', [true, false]) %}
                     <br>
                     {% for graph in graphs %}
                         {{ graph|raw }}
@@ -1900,11 +1899,19 @@ TWIG, $twig_params);
 TWIG, $twig_params);
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
         return [ READ => __('Read')];
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-report";
@@ -1962,7 +1969,7 @@ TWIG, $twig_params);
             'begin' => $begin,
             'end' => $end,
             'is_assets' => $is_assets,
-            'embeded' => $embeded
+            'embeded' => $embeded,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -2010,7 +2017,7 @@ TWIG, $twig_params);
             'itemtype_label' => __('Item type'),
             'year_label' => _n('Date', 'Dates', 1),
             'years' => [],
-            'embeded' => $embeded
+            'embeded' => $embeded,
         ];
 
         // +/- 10 years from the current year
@@ -2063,7 +2070,7 @@ TWIG, $twig_params);
             'itemtype_label' => __('Item type'),
             'year_label' => _n('Date', 'Dates', 1),
             'years' => [],
-            'embeded' => $embeded
+            'embeded' => $embeded,
         ];
 
         // +/- 10 years from the current year

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-
 /**
  * RegisteredID class
  * @since 0.85
@@ -53,7 +51,7 @@ class RegisteredID extends CommonDBChild
     {
         return [
             'PCI' => __('PCI'),
-            'USB' => __('USB')
+            'USB' => __('USB'),
         ];
     }
 
@@ -62,27 +60,25 @@ class RegisteredID extends CommonDBChild
         return _n('Registered ID (issued by PCI-SIG)', 'Registered IDs (issued by PCI-SIG)', $nb);
     }
 
-    /**
-     * @param string $field_name
-     * @param string $child_count_js_var
-     *
-     * @return string
-     **/
+    #[Override()]
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var): string
     {
-        $field_name = htmlescape($field_name);
-        $child_count_js_var = htmlescape($child_count_js_var);
-        $result  = "<select name=\'" . $field_name . "_type[-'+$child_count_js_var+']\'>";
-        $result .= "<option value=\'\'>" . Dropdown::EMPTY_VALUE . "</option>";
+        $html = "<select name='" . htmlescape($field_name) . "_type[-__JS_PLACEHOLDER__]'>"
+            . "<option value=''>" . htmlescape(Dropdown::EMPTY_VALUE) . "</option>";
+
         foreach (self::getRegisteredIDTypes() as $name => $label) {
             $name = htmlescape($name);
             $label = htmlescape($label);
-            $result .= "<option value=\'$name\'>$label</option>";
+            $html .= "<option value='$name'>$label</option>";
         }
-        $result .= "</select> : ";
-        $result .= "<input type=\'text\' size=\'30\' " . "name=\'" . $field_name .
-                "[-'+$child_count_js_var+']\'>";
-        return $result;
+        $html .= "</select> : ";
+        $html .= "<input type='text' size='30' name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'>";
+
+        return str_replace(
+            '__JS_PLACEHOLDER__',
+            "'+{$child_count_js_var}+'", // string closing, + operator, JS variable name, + operator, string reopening
+            jsescape($html)
+        );
     }
 
     public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)

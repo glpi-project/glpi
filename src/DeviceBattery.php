@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,22 +50,22 @@ class DeviceBattery extends CommonDevice
                 [
                     'name'  => 'devicebatterytypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'capacity',
                     'label'  => __('Capacity'),
                     'type'   => 'integer',
                     'min'    => 0,
-                    'unit'   => __('mWh')
+                    'unit'   => __('mWh'),
                 ],
                 [
                     'name'   => 'voltage',
                     'label'  => __('Voltage'),
                     'type'   => 'integer',
                     'min'    => 0,
-                    'unit'   => __('mV')
-                ]
+                    'unit'   => __('mV'),
+                ],
             ]
         );
     }
@@ -95,7 +95,7 @@ class DeviceBattery extends CommonDevice
             'table'              => 'glpi_devicebatterytypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -115,10 +115,10 @@ class DeviceBattery extends CommonDevice
             return $father;
         }
 
-        Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-        $base->addHeader('devicebattery_type', _n('Type', 'Types', 1), $super, $father);
-        $base->addHeader('voltage', sprintf('%1$s (%2$s)', __('Voltage'), __('mV')), $super, $father);
-        $base->addHeader('capacity', sprintf('%1$s (%2$s)', __('Capacity'), __('mWh')), $super, $father);
+        Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+        $base->addHeader('devicebattery_type', _sn('Type', 'Types', 1), $super, $father);
+        $base->addHeader('voltage', sprintf(__s('%1$s (%2$s)'), __s('Voltage'), __s('mV')), $super, $father);
+        $base->addHeader('capacity', sprintf(__s('%1$s (%2$s)'), __s('Capacity'), __s('mWh')), $super, $father);
     }
 
     public function getHTMLTableCellForItem(
@@ -138,10 +138,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["devicebatterytypes_id"]) {
             $row->addCell(
                 $row->getHeaderByName('devicebattery_type'),
-                Dropdown::getDropdownName(
-                    "glpi_devicebatterytypes",
-                    $this->fields["devicebatterytypes_id"]
-                ),
+                htmlescape(Dropdown::getDropdownName("glpi_devicebatterytypes", $this->fields["devicebatterytypes_id"])),
                 $father
             );
         }
@@ -149,7 +146,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["voltage"]) {
             $row->addCell(
                 $row->getHeaderByName('voltage'),
-                $this->fields['voltage'],
+                htmlescape($this->fields['voltage']),
                 $father
             );
         }
@@ -157,7 +154,7 @@ class DeviceBattery extends CommonDevice
         if ($this->fields["capacity"]) {
             $row->addCell(
                 $row->getHeaderByName('capacity'),
-                $this->fields['capacity'],
+                htmlescape($this->fields['capacity']),
                 $father
             );
         }
@@ -171,7 +168,7 @@ class DeviceBattery extends CommonDevice
             'devicebatterytypes_id' => 'equal',
             'manufacturers_id'      => 'equal',
             'capacity'              => 'delta:10',
-            'voltage'               => 'delta:10'
+            'voltage'               => 'delta:10',
         ];
     }
 

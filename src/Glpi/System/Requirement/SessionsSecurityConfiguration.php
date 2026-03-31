@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
+use function Safe\ini_get;
+
 /**
  * @since 10.0.3
  */
@@ -58,7 +60,7 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         $cookie_secure   = filter_var($this->getCookiesSecure(), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = $this->getCookiesSamesite();
 
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
+        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int) ($_SERVER['SERVER_PORT'] ?? null) == 443;
 
         if ($is_cli) {
             $this->validation_messages[] = __('Checking the session cookie configuration of the web server cannot be done in the CLI context.');
@@ -91,16 +93,25 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         }
     }
 
+    /**
+     * @return string
+     */
     protected function getCookiesSecure()
     {
         return ini_get('session.cookie_secure');
     }
 
+    /**
+     * @return string
+     */
     protected function getCookiesHttpOnly()
     {
         return ini_get('session.cookie_httponly');
     }
 
+    /**
+     * @return string
+     */
     protected function getCookiesSamesite(): string
     {
         return ini_get('session.cookie_samesite');

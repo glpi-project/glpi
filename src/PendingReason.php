@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,13 +40,13 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class PendingReason extends CommonDropdown
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $can_be_translated = true;
 
-   // Rights managment
+    // Rights managment
     public static $rightname = 'pendingreason';
 
     public static function getTypeName($nb = 0)
@@ -74,31 +74,31 @@ class PendingReason extends CommonDropdown
                 'name' => 'calendars_id',
                 'label' => Calendar::getTypeName(1),
                 'type' => 'dropdownValue',
-                'list' => true
+                'list' => true,
             ],
             [
                 'name'  => 'followup_frequency',
                 'label' => __('Automatic follow-up/solution frequency'),
                 'type'  => '',
-                'list'  => true
+                'list'  => true,
             ],
             [
                 'name'      => 'itilfollowuptemplates_id',
                 'label'     => ITILFollowupTemplate::getTypeName(1),
                 'type'      => 'dropdownValue',
-                'list'      => true
+                'list'      => true,
             ],
             [
                 'name'  => 'followups_before_resolution',
                 'label' => __('Follow-ups before automatic resolution'),
                 'type'  => '',
-                'list'  => true
+                'list'  => true,
             ],
             [
                 'name'      => 'solutiontemplates_id',
                 'label'     => SolutionTemplate::getTypeName(1),
                 'type'      => 'dropdownValue',
-                'list'      => true
+                'list'      => true,
             ],
         ];
     }
@@ -113,7 +113,7 @@ class PendingReason extends CommonDropdown
             'field'              => 'followup_frequency',
             'name'               => __('Automatic follow-up frequency'),
             'searchtype'         => ['equals', 'notequals'],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -122,7 +122,7 @@ class PendingReason extends CommonDropdown
             'field'              => 'followups_before_resolution',
             'name'               => __('Follow-ups before automatic resolution'),
             'searchtype'         => ['equals', 'notequals'],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -153,10 +153,12 @@ class PendingReason extends CommonDropdown
     /**
      * Display specific "followup_frequency" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
-     * @param $long_label If false give less details in the default label
+     * @param ?string $value
+     * @param string $name
+     * @param array $options
+     * @param bool $long_label If false give less details in the default label
+     *
+     * @return int|string
      */
     public static function displayFollowupFrequencyfield(
         $value = null,
@@ -166,11 +168,11 @@ class PendingReason extends CommonDropdown
     ) {
         $values = self::getFollowupFrequencyValues();
 
-       // Short label for forms with input labels
+        // Short label for forms with input labels
         $label = __("Disabled");
 
         if ($long_label) {
-           // Long default value label for forms with icons instead of labels
+            // Long default value label for forms with icons instead of labels
             $label = __("Automatic follow-up disabled");
         }
 
@@ -199,27 +201,30 @@ class PendingReason extends CommonDropdown
      */
     public static function getFollowupFrequencyValues(): array
     {
+        $formatter = new NumberFormatter($_SESSION['glpilanguage'], NumberFormatter::SPELLOUT);
         return [
             DAY_TIMESTAMP      => __("Every day"),
-            2 * DAY_TIMESTAMP  => __("Every two days"),
-            3 * DAY_TIMESTAMP  => __("Every three days"),
-            4 * DAY_TIMESTAMP  => __("Every four days"),
-            5 * DAY_TIMESTAMP  => __("Every five days"),
-            6 * DAY_TIMESTAMP  => __("Every six days"),
+            2 * DAY_TIMESTAMP  => sprintf(__("Every %s days"), $formatter->format(2)),
+            3 * DAY_TIMESTAMP  => sprintf(__("Every %s days"), $formatter->format(3)),
+            4 * DAY_TIMESTAMP  => sprintf(__("Every %s days"), $formatter->format(4)),
+            5 * DAY_TIMESTAMP  => sprintf(__("Every %s days"), $formatter->format(5)),
+            6 * DAY_TIMESTAMP  => sprintf(__("Every %s days"), $formatter->format(6)),
             WEEK_TIMESTAMP     => __("Every week"),
-            2 * WEEK_TIMESTAMP => __("Every two weeks"),
-            3 * WEEK_TIMESTAMP => __("Every three weeks"),
-            4 * WEEK_TIMESTAMP => __("Every four weeks"),
+            2 * WEEK_TIMESTAMP => sprintf(__("Every %s weeks"), $formatter->format(2)),
+            3 * WEEK_TIMESTAMP => sprintf(__("Every %s weeks"), $formatter->format(3)),
+            4 * WEEK_TIMESTAMP => sprintf(__("Every %s weeks"), $formatter->format(4)),
         ];
     }
 
     /**
      * Display specific "followups_before_resolution" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
-     * @param $long_label If false give less details in the default label
+     * @param ?string $value
+     * @param string $name
+     * @param array $options
+     * @param bool $long_label If false give less details in the default label
+     *
+     * @return int|string
      */
     public static function displayFollowupsNumberBeforeResolutionField(
         $value = null,
@@ -229,11 +234,11 @@ class PendingReason extends CommonDropdown
     ) {
         $values = self::getFollowupsBeforeResolutionValues();
 
-       // Short label for forms with input labels
+        // Short label for forms with input labels
         $label = __("Disabled");
 
         if ($long_label) {
-           // Long default value label for forms with icons instead of labels
+            // Long default value label for forms with icons instead of labels
             $label = __("Automatic resolution disabled");
         }
 
@@ -256,13 +261,6 @@ class PendingReason extends CommonDropdown
         return Dropdown::showFromArray($name, $values, $options);
     }
 
-    /**
-     * Display specific "is_default" field
-     *
-     * @param $value
-     * @param $name
-     * @param $options
-     */
     private function displayIsDefaultPendingReasonField(bool $value): string
     {
         $defaultPendingReason = self::getDefault();
@@ -270,10 +268,10 @@ class PendingReason extends CommonDropdown
         $out = Dropdown::showYesNo('is_default', $value, params: ['display' => false]);
         $out .= TemplateRenderer::getInstance()->render('components/form/pending_reason_is_default.html.twig', [
             'show_warning' => $defaultPendingReason && $defaultPendingReason->getID() != $this->getID(),
-            'tooltip' => $defaultPendingReason ? \Html::showToolTip(
+            'tooltip' => $defaultPendingReason ? Html::showToolTip(
                 sprintf(
-                    __('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
-                    '<a href="' . PendingReason::getFormURLWithID($defaultPendingReason->getID()) . '">' . $defaultPendingReason->fields['name'] . '</a>'
+                    __s('If you set this as the default pending reason, the previous default pending reason (%s) will no longer be the default value.'),
+                    '<a href="' . htmlescape(PendingReason::getFormURLWithID($defaultPendingReason->getID())) . '">' . htmlescape($defaultPendingReason->fields['name']) . '</a>'
                 ),
                 [
                     'display' => false,
@@ -304,10 +302,10 @@ class PendingReason extends CommonDropdown
 
         if ($field['name'] == 'followup_frequency') {
             echo self::displayFollowupFrequencyfield($this->fields['followup_frequency']);
-        } else if ($field['name'] == 'followups_before_resolution') {
+        } elseif ($field['name'] == 'followups_before_resolution') {
             echo self::displayFollowupsNumberBeforeResolutionField($this->fields['followups_before_resolution']);
-        } else if ($field['name'] == 'is_default') {
-            echo self::displayIsDefaultPendingReasonField((bool)$this->fields['is_default']);
+        } elseif ($field['name'] == 'is_default') {
+            echo self::displayIsDefaultPendingReasonField((bool) $this->fields['is_default']);
         }
     }
 
@@ -315,14 +313,14 @@ class PendingReason extends CommonDropdown
     {
         if ($field == 'followup_frequency') {
             if ($values[$field] == 0) {
-                return __("Disabled");
+                return __s("Disabled");
             }
-            return self::getFollowupFrequencyValues()[$values[$field]];
-        } else if ($field == 'followups_before_resolution') {
+            return htmlescape(self::getFollowupFrequencyValues()[$values[$field]]);
+        } elseif ($field == 'followups_before_resolution') {
             if ($values[$field] == 0) {
-                return __("Disabled");
+                return __s("Disabled");
             }
-            return self::getFollowupsBeforeResolutionValues()[$values[$field]];
+            return htmlescape(self::getFollowupsBeforeResolutionValues()[$values[$field]]);
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -333,7 +331,7 @@ class PendingReason extends CommonDropdown
 
         if ($field == 'followup_frequency') {
             return self::displayFollowupFrequencyfield($values[$field], $name, $options, false);
-        } else if ($field == 'followups_before_resolution') {
+        } elseif ($field == 'followups_before_resolution') {
             return self::displayFollowupsNumberBeforeResolutionField($values[$field], $name, $options, false);
         }
 
@@ -363,6 +361,9 @@ class PendingReason extends CommonDropdown
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public static function isDefaultPending()
     {
         $default_pending = self::getDefault();
@@ -370,6 +371,9 @@ class PendingReason extends CommonDropdown
         return $default_pending && $default_pending->fields['is_pending_per_default'];
     }
 
+    /**
+     * @return void
+     */
     public function updateDefaultPendingReason()
     {
         if (isset($this->input['is_default']) && $this->input['is_default']) {
@@ -390,10 +394,15 @@ class PendingReason extends CommonDropdown
         $this->updateDefaultPendingReason();
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
-        $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default'] ?
-            ($input['is_pending_per_default'] ?? 0) : 0;
+        $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default']
+            ? ($input['is_pending_per_default'] ?? 0) : 0;
 
         return $input;
     }

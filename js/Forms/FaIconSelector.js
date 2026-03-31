@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  */
 
 /* eslint no-var: 0 */
+
+/* global _ */
 
 var GLPI = GLPI || {};
 GLPI.Forms = GLPI.Forms || {};
@@ -118,7 +120,7 @@ GLPI.Forms.FaIconSelector = class {
         // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
         const faFontFamilies = '\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\'';
         const container = document.createElement('span');
-        container.innerHTML = `<i class="fa-lg fa-fw fa ${option.id}" style="font-family:${faFontFamilies};"></i> ${option.id}`;
+        container.innerHTML = `<i class="fa-lg fa-fw fa ${_.escape(option.id)}" style="font-family:${faFontFamilies};"></i> ${_.escape(option.id)}`;
         return container;
     }
 };

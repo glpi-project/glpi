@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,15 @@
 namespace Glpi\Api\HL;
 
 use CommonGLPI;
-use Glpi\Api\HL\Controller\ComponentController;
-use Glpi\Api\HL\Controller\ProjectController;
-use Glpi\Api\HL\Doc\Response;
-use Glpi\Api\HL\Doc\Schema;
-use Glpi\Api\HL\Doc\SchemaReference;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Debug\Profiler;
 use Glpi\OAuth\Server;
+use ReflectionClass;
+use Session;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * @phpstan-type OpenAPIInfo array{title: string, version: string, license: array{name: string, url: string}}
@@ -78,6 +80,16 @@ final class OpenAPIGenerator
 
     private string $api_version;
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private static array $component_schemas_cache = [];
+
+    public static function clearComponentSchemasCache(): void
+    {
+        self::$component_schemas_cache = [];
+    }
+
     public function __construct(Router $router, string $api_version)
     {
         $this->router = $router;
@@ -86,10 +98,13 @@ final class OpenAPIGenerator
 
     private function getPublicVendorExtensions(): array
     {
-        return ['x-writeonly', 'x-readonly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
+        return [
+            'writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed', 'x-itemtype',
+            'x-supports-mentions', 'x-label', 'x-right-scope',
+        ];
     }
 
-    private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
+    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
     {
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
@@ -102,15 +117,15 @@ final class OpenAPIGenerator
                 continue;
             }
             if ($parent_key === 'properties') {
-                if ($key === 'id') {
-                    //Implicitly set the id property as read-only
-                    $value['x-readonly'] = true;
+                if (!array_key_exists('x-full-schema', $parent_schema) && $key === 'id') {
+                    // Implicitly set the id property as read-only but not for partials
+                    $value['readOnly'] = true;
                 }
             }
             // If the value is an array
             if (is_array($value)) {
                 // Clean the value
-                $schema[$key] = $this->cleanVendorExtensions($value, $key);
+                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema);
             }
         }
         return $schema;
@@ -130,7 +145,7 @@ EOT;
         return [
             'title' => 'GLPI High-Level REST API',
             'description' => $description,
-            'version' => Router::API_VERSION,
+            'version' => $this->api_version,
             'license' => [
                 'name' => 'GNU General Public License v3 or later',
                 'url' => 'https://www.gnu.org/licenses/gpl-3.0.html',
@@ -140,44 +155,72 @@ EOT;
 
     public static function getComponentSchemas(string $api_version): array
     {
-        static $schemas = null;
-
-        if ($schemas === null) {
-            $schemas = [];
-
-            $controllers = Router::getInstance()->getControllers();
-            foreach ($controllers as $controller) {
-                $known_schemas = $controller::getKnownSchemas($api_version);
-                $short_name = (new \ReflectionClass($controller))->getShortName();
-                $controller_name = str_replace('Controller', '', $short_name);
-                foreach ($known_schemas as $schema_name => $known_schema) {
-                    // Ignore schemas starting with an underscore. They are only used internally.
-                    if (str_starts_with($schema_name, '_')) {
-                        continue;
-                    }
-                    $calculated_name = $schema_name;
-                    if (isset($schemas[$schema_name])) {
-                        // For now, set the new calculated name to the short name of the controller + the schema name
-                        $calculated_name = $controller_name . ' - ' . $schema_name;
-                        // Change the existing schema name to its own calculated name
-                        $other_short_name = (new \ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
-                        $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
-                        $schemas[$other_calculated_name] = $schemas[$schema_name];
-                        unset($schemas[$schema_name]);
-                    }
-                    if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
-                        /** @var class-string<CommonGLPI> $itemtype */
-                        $itemtype = $known_schema['x-itemtype'];
-                        $known_schema['description'] = $itemtype::getTypeName(1);
-                    }
-                    $schemas[$calculated_name] = $known_schema;
-                    $schemas[$calculated_name]['x-controller'] = $controller::class;
-                    $schemas[$calculated_name]['x-schemaname'] = $schema_name;
-                }
-            }
+        if (isset(self::$component_schemas_cache[$api_version])) {
+            return self::$component_schemas_cache[$api_version];
         }
 
-        return $schemas;
+        $schemas = [];
+
+        $controllers = Router::getInstance()->getControllers();
+        foreach ($controllers as $controller) {
+            Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval for ' . $controller::class, Profiler::CATEGORY_HLAPI);
+            $known_schemas = $controller::getKnownSchemas($api_version);
+            $short_name = (new ReflectionClass($controller))->getShortName();
+            $controller_name = str_replace('Controller', '', $short_name);
+            foreach ($known_schemas as $schema_name => $known_schema) {
+                // Ignore schemas starting with an underscore. They are only used internally.
+                if (str_starts_with($schema_name, '_')) {
+                    continue;
+                }
+                $calculated_name = $schema_name;
+                if (isset($schemas[$schema_name])) {
+                    // For now, set the new calculated name to the short name of the controller + the schema name
+                    $calculated_name = $controller_name . ' - ' . $schema_name;
+                    // Change the existing schema name to its own calculated name
+                    $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
+                    $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
+                    $schemas[$other_calculated_name] = $schemas[$schema_name];
+                    unset($schemas[$schema_name]);
+                }
+                if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
+                    /** @var class-string<CommonGLPI> $itemtype */
+                    $itemtype = $known_schema['x-itemtype'];
+                    $known_schema['description'] = $itemtype::getTypeName(1);
+                }
+
+                // Add properties that have 'required' flags to a 'required' array on the nearest parent object
+                // We add the 'required' on individual properties so that it works well with the API version filtering
+                $fn_hoist_required_flags = static function (&$schema_part) use (&$fn_hoist_required_flags) {
+                    if (is_array($schema_part)) {
+                        if (isset($schema_part['properties']) && is_array($schema_part['properties'])) {
+                            $required_fields = [];
+                            foreach ($schema_part['properties'] as $prop_name => &$prop_value) {
+                                if (is_array($prop_value)) {
+                                    if (isset($prop_value['required']) && $prop_value['required'] === true) {
+                                        $required_fields[] = $prop_name;
+                                        unset($prop_value['required']);
+                                    }
+                                    // Recurse into the property value
+                                    $fn_hoist_required_flags($prop_value);
+                                }
+                            }
+                            unset($prop_value);
+                            if (count($required_fields) > 0) {
+                                $schema_part['required'] = $required_fields;
+                            }
+                        }
+                    }
+                };
+                $fn_hoist_required_flags($known_schema);
+
+                $schemas[$calculated_name] = $known_schema;
+                $schemas[$calculated_name]['x-controller'] = $controller::class;
+                $schemas[$calculated_name]['x-schemaname'] = $schema_name;
+            }
+            Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval for ' . $controller::class);
+        }
+
+        return self::$component_schemas_cache[$api_version] = $schemas;
     }
 
     private function getComponentReference(string $name, string $controller): ?array
@@ -231,7 +274,6 @@ EOT;
      */
     public function getSchema(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $component_schemas = self::getComponentSchemas($this->api_version);
@@ -242,27 +284,51 @@ EOT;
             'servers' => [
                 [
                     'url' => $CFG_GLPI['url_base'] . '/api.php',
-                    'description' => 'GLPI High-Level REST API'
-                ]
+                    'description' => 'GLPI High-Level REST API',
+                ],
             ],
             'components' => [
                 'securitySchemes' => $this->getSecuritySchemeComponents(),
                 'schemas' => $component_schemas,
-            ]
+            ],
         ];
 
         $routes = $this->router->getAllRoutes();
         $paths = [];
 
         foreach ($routes as $route_path) {
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $paths = array_merge_recursive($paths, $this->getPathSchemas($route_path));
+            if (!$route_path->matchesAPIVersion($this->api_version)) {
+                continue;
+            }
+            $new_paths = $this->getPathSchemas($route_path);
+            foreach ($new_paths as $new_path => $new_pathinfo) {
+                if (!array_key_exists($new_path, $paths)) {
+                    $paths[$new_path] = $new_pathinfo;
+                } else {
+                    foreach ($new_pathinfo as $method => $method_info) {
+                        if (!array_key_exists($method, $paths[$new_path])) {
+                            $paths[$new_path][$method] = $method_info;
+                        } else {
+                            // Multiple paths with the same method (probably different parameter patterns)
+                            foreach ($method_info['parameters'] ?? [] as $pk => $param) {
+                                if (array_key_exists('pattern', $param['schema'])) {
+                                    foreach ($paths[$new_path][$method]['parameters'] as $existing_pk => $existing_param) {
+                                        if (($existing_param['name'] === $param['name']) && isset($existing_param['schema']['pattern']) && str_contains($existing_param['schema']['pattern'], '|')) {
+                                            $paths[$new_path][$method]['parameters'][$existing_pk]['schema']['pattern'] .= '|' . $param['schema']['pattern'];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         $schema['paths'] = $this->expandGenericPaths($paths);
 
         // Clean vendor extensions
-        if ($_SESSION['glpi_use_mode'] !== \Session::DEBUG_MODE) {
+        if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
             $schema = $this->cleanVendorExtensions($schema);
         }
 
@@ -354,6 +420,92 @@ EOT;
     }
 
     /**
+     *
+     * @param string $path_url
+     * @param string $method
+     * @param array<string, mixed> $route
+     * @param array<string, mixed> $expanded
+     */
+    private function expandGenericPathRoute(string $path_url, string $method, array $route, array &$expanded): void
+    {
+        $new_urls = [];
+        /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
+        $all_expansions = [];
+        foreach ($route['parameters'] as $param_key => $param) {
+            if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
+                $all_expansions[$param['name']] = explode('|', $param['schema']['pattern']);
+            }
+        }
+        // enumerate all possible combinations of expansions (where keys are the placeholder name and the value is a single replacement) and generate a new URL and route for each
+        $combinations = [];
+        foreach ($all_expansions as $placeholder_name => $expansions) {
+            $new_combinations = [];
+            foreach ($expansions as $expansion) {
+                if (count($combinations) === 0) {
+                    $new_combinations[] = [$placeholder_name => $expansion];
+                } else {
+                    foreach ($combinations as $combination) {
+                        $new_combinations[] = array_merge($combination, [$placeholder_name => $expansion]);
+                    }
+                }
+            }
+            $combinations = $new_combinations;
+        }
+
+        foreach ($combinations as $combination) {
+            $new_url = $path_url;
+            $temp_expanded = $route;
+            $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
+                $route['responses'],
+                $combination,
+                $route['x-controller']
+            );
+            $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
+                $route['parameters'],
+                $combination,
+                $route['x-controller']
+            );
+            if (isset($route['requestBody'])) {
+                $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
+                    $route['requestBody'],
+                    $combination,
+                    $route['x-controller']
+                );
+            }
+            // Replace placeholders in the description if any
+            if (isset($temp_expanded['description'])) {
+                foreach ($combination as $placeholder => $value) {
+                    $temp_expanded['description'] = str_replace("{{$placeholder}}", $value, $temp_expanded['description']);
+                }
+            }
+
+            foreach ($combination as $placeholder => $value) {
+                $new_url = str_replace("{{$placeholder}}", $value, $new_url);
+                // Remove the itemtype path parameter now that it is a static value
+                foreach ($temp_expanded['parameters'] as $param_key => $param) {
+                    if ($param['name'] === $placeholder) {
+                        unset($temp_expanded['parameters'][$param_key]);
+                        break;
+                    }
+                }
+            }
+
+            $expanded[$new_url][$method] = $temp_expanded;
+
+            $new_urls[] = $new_url;
+        }
+
+        if (count($new_urls)) {
+            foreach ($new_urls as $new_url) {
+                // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
+                $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
+            }
+        } else {
+            $expanded[$path_url][$method] = $route;
+        }
+    }
+
+    /**
      * Replace any generic paths like `/Assets/{itemtype}` with the actual paths for each itemtype as long as the parameter pattern(s) are explicit lists.
      * Example: "Computer|Monitor|NetworkEquipment".
      * @param array $paths
@@ -364,74 +516,13 @@ EOT;
         $expanded = [];
         foreach ($paths as $path_url => $path) {
             foreach ($path as $method => $route) {
-                $new_urls = [];
-                /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
-                $all_expansions = [];
-                foreach ($route['parameters'] as $param_key => $param) {
-                    if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
-                        $all_expansions[$param['name']] = explode('|', $param['schema']['pattern']);
-                    }
-                }
-                // enumerate all possible combinations of expansions (where keys are the placeholder name and the value is a single replacement) and generate a new URL and route for each
-                $combinations = [];
-                foreach ($all_expansions as $placeholder_name => $expansions) {
-                    $new_combinations = [];
-                    foreach ($expansions as $expansion) {
-                        if (count($combinations) === 0) {
-                            $new_combinations[] = [$placeholder_name => $expansion];
-                        } else {
-                            foreach ($combinations as $combination) {
-                                $new_combinations[] = array_merge($combination, [$placeholder_name => $expansion]);
-                            }
-                        }
-                    }
-                    $combinations = $new_combinations;
-                }
-
-                foreach ($combinations as $combination) {
-                    $new_url = $path_url;
-                    $temp_expanded = $route;
-                    $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
-                        $route['responses'],
-                        $combination,
-                        $route['x-controller']
-                    );
-                    $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
-                        $route['parameters'],
-                        $combination,
-                        $route['x-controller']
-                    );
-                    if (isset($route['requestBody'])) {
-                        $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
-                            $route['requestBody'],
-                            $combination,
-                            $route['x-controller']
-                        );
-                    }
-
-                    foreach ($combination as $placeholder => $value) {
-                        $new_url = str_replace("{{$placeholder}}", $value, $new_url);
-                        // Remove the itemtype path parameter now that it is a static value
-                        foreach ($temp_expanded['parameters'] as $param_key => $param) {
-                            if ($param['name'] === $placeholder) {
-                                unset($temp_expanded['parameters'][$param_key]);
-                                break;
-                            }
-                        }
-                    }
-                    if (!isset($paths[$new_url][$method])) {
-                        $expanded[$new_url][$method] = $temp_expanded;
-                    }
-                    $new_urls[] = $new_url;
-                }
-
-                if (count($new_urls)) {
-                    foreach ($new_urls as $new_url) {
-                        // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
-                        $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
+                if (is_array($route['x-controller'])) {
+                    foreach ($route as $r) {
+                        // There are multiple routes with the same path, but probably different parameters
+                        $this->expandGenericPathRoute($path_url, $method, $r, $expanded);
                     }
                 } else {
-                    $expanded[$path_url][$method] = $route;
+                    $this->expandGenericPathRoute($path_url, $method, $route, $expanded);
                 }
             }
         }
@@ -443,6 +534,8 @@ EOT;
      */
     private function getSecuritySchemeComponents(): array
     {
+        global $CFG_GLPI;
+
         $scopes = Server::getAllowedScopes();
         $scope_descriptions = Server::getScopeDescriptions();
         $scopes = array_combine(array_keys($scopes), $scope_descriptions);
@@ -452,16 +545,16 @@ EOT;
                 'type' => 'oauth2',
                 'flows' => [
                     'authorizationCode' => [
-                        'authorizationUrl' => '/api.php/authorize',
-                        'tokenUrl' => '/api.php/token',
-                        'refreshUrl' => '/api.php/token',
-                        'scopes' => $scopes
+                        'authorizationUrl' => $CFG_GLPI['root_doc'] . '/api.php/authorize',
+                        'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'refreshUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'scopes' => $scopes,
                     ],
                     'password' => [
-                        'tokenUrl' => '/api.php/token',
-                        'scopes' => $scopes
-                    ]
-                ]
+                        'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'scopes' => $scopes,
+                    ],
+                ],
             ],
         ];
     }
@@ -487,9 +580,7 @@ EOT;
         if ($route_doc === null) {
             return null;
         }
-        $request_params = array_filter($route_doc->getParameters(), static function (Doc\Parameter $param) {
-            return $param->getLocation() === Doc\Parameter::LOCATION_BODY;
-        });
+        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param) => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
         if (count($request_params) === 0) {
             return null;
         }
@@ -499,18 +590,16 @@ EOT;
                     'schema' => [
                         'type' => 'object',
                         'properties' => [],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
-        $request_body_param = array_filter($request_params, static function (Doc\Parameter $param) {
-            return $param->getName() === '_';
-        });
+        $request_body_param = array_filter($request_params, static fn(Doc\Parameter $param) => $param->getName() === '_');
         if (count($request_body_param) > 0) {
             $request_body_param = array_values($request_body_param)[0];
-            if ($request_body_param->getSchema() instanceof SchemaReference) {
+            if ($request_body_param->getSchema() instanceof Doc\SchemaReference) {
                 $body_schema = $this->getComponentReference($request_body_param->getSchema()['ref'], $route_path->getController());
             } else {
                 $body_schema = $request_body_param->getSchema()->toArray();
@@ -522,16 +611,7 @@ EOT;
             if ($route_param->getName() === '_') {
                 continue;
             }
-            $body_param = [
-                'type' => $route_param->getSchema()->getType()
-            ];
-            if ($route_param->getSchema()->getFormat() !== null) {
-                $body_param['format'] = $route_param->getSchema()->getFormat();
-            }
-            if (count($route_param->getSchema()->getProperties())) {
-                $body_param['properties'] = $route_param->getSchema()->getProperties();
-            }
-            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $body_param;
+            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $route_param->getSchema()->toArray();
         }
         return $request_body;
     }
@@ -563,8 +643,8 @@ EOT;
     {
         return [
             [
-                'oauth' => []
-            ]
+                'oauth' => $route_path->getRouteScopes(),
+            ],
         ];
     }
 
@@ -580,24 +660,24 @@ EOT;
             if ($response->isReference()) {
                 $resolved_schema = $this->getComponentReference($response->getSchema()['ref'], $route_path->getController());
             } else {
-                $resolved_schema = $response->getSchema()->toArray();
+                $resolved_schema = $response->getSchema()?->toArray() ?? [];
             }
             $response_media_type = $response->getMediaType();
             $response_schema = [
                 'description' => $response->getDescription(),
                 'content' => [
                     $response_media_type => [
-                        'schema' => $resolved_schema
-                    ]
+                        'schema' => $resolved_schema,
+                    ],
                 ],
             ];
             if ($response_media_type === 'application/json' && $route_path->hasMiddleware(ResultFormatterMiddleware::class)) {
                 // add csv and xml
                 $response_schema['content']['text/csv'] = [
-                    'schema' => $resolved_schema
+                    'schema' => $resolved_schema,
                 ];
                 $response_schema['content']['application/xml'] = [
-                    'schema' => $resolved_schema
+                    'schema' => $resolved_schema,
                 ];
             }
             $response_schemas[$response->getStatusCode()] = $response_schema;
@@ -626,7 +706,7 @@ EOT;
             $default_responses = [
                 '200' => [
                     'description' => 'Success',
-                    'methods' => ['GET', 'PATCH'] // Usually only GET and PATCH methods return 200
+                    'methods' => ['GET', 'PATCH'], // Usually only GET and PATCH methods return 200
                 ],
                 '201' => [
                     'description' => 'Success (created)',
@@ -635,9 +715,9 @@ EOT;
                         'Location' => [
                             'description' => 'The URL of the newly created resource',
                             'schema' => [
-                                'type' => 'string'
-                            ]
-                        ]
+                                'type' => 'string',
+                            ],
+                        ],
                     ],
                     'content' => [
                         'application/json' => [
@@ -646,19 +726,19 @@ EOT;
                                 'properties' => [
                                     'id' => [
                                         'type' => 'integer',
-                                        'format' => 'int64'
+                                        'format' => 'int64',
                                     ],
                                     'href' => [
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 '204' => [
                     'description' => 'Success (no content)',
-                    'methods' => ['DELETE']
+                    'methods' => ['DELETE'],
                 ],
                 '400' => [
                     'description' => 'Bad request',
@@ -731,8 +811,8 @@ EOT;
                             'required' => true,
                             'schema' => [
                                 'type' => 'integer',
-                                'pattern' => $requirement
-                            ]
+                                'pattern' => $requirement,
+                            ],
                         ];
                     } else {
                         $param = [
@@ -741,8 +821,8 @@ EOT;
                             'required' => true,
                             'schema' => [
                                 'type' => 'string',
-                                'pattern' => $requirement
-                            ]
+                                'pattern' => $requirement,
+                            ],
                         ];
                     }
 
@@ -762,27 +842,36 @@ EOT;
                     $path_schema['parameters'][$param['name']]['schema'] = $combined_schema;
                 }
             }
+            if ($method === 'delete') {
+                $path_schema['parameters']['force'] = [
+                    'name' => 'force',
+                    'in' => 'query',
+                    'description' => 'If "true", the item will be permanently deleted instead of being moved to the trash (if the item supported soft-deletion).',
+                    'default' => false,
+                    'schema' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ];
+            }
             // Inject global headers
             if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
                 $path_schema['parameters']['GLPI-Entity'] = [
                     'name' => 'GLPI-Entity',
                     'in' => 'header',
                     'description' => 'The ID of the entity to use. If not specified, the default entity for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                    'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Profile'] = [
                     'name' => 'GLPI-Profile',
                     'in' => 'header',
                     'description' => 'The ID of the profile to use. If not specified, the default profile for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                    'schema' => ['type' => Doc\Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Entity-Recursive'] = [
                     'name' => 'GLPI-Entity-Recursive',
                     'in' => 'header',
                     'description' => '"true" if the entity access should include child entities. This is false by default.',
                     'schema' => [
-                        'type' => Schema::TYPE_STRING,
-                        'enum' => ['true', 'false']
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => ['true', 'false'],
                     ],
                 ];
             }
@@ -791,21 +880,21 @@ EOT;
                 'name' => 'Accept-Language',
                 'in' => 'header',
                 'description' => 'The language to use for the response. If not specified, the default language for the user is used.',
-                'schema' => ['type' => Schema::TYPE_STRING],
+                'schema' => ['type' => Doc\Schema::TYPE_STRING],
                 'examples' => [
                     'English_GB' => [
                         'value' => 'en_GB',
-                        'summary' => 'English (United Kingdom)'
+                        'summary' => 'English (United Kingdom)',
                     ],
                     'French_FR' => [
                         'value' => 'fr_FR',
-                        'summary' => 'French (France)'
+                        'summary' => 'French (France)',
                     ],
                     'Portuguese_BR' => [
                         'value' => 'pt_BR',
-                        'summary' => 'Portuguese (Brazil)'
+                        'summary' => 'Portuguese (Brazil)',
                     ],
-                ]
+                ],
             ];
 
             if (strcasecmp($method, 'delete') && $request_body !== null) {
@@ -817,7 +906,7 @@ EOT;
             $path_schemas[$method] = $path_schema;
         }
         return [
-            $route_path->getRoutePath() => $path_schemas
+            $route_path->getRoutePath() => $path_schemas,
         ];
     }
 }

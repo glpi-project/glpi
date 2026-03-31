@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,8 +37,9 @@
 {% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
 {% set id           = item.fields['id'] ?? -1 %}
 {% set in_navheader = in_navheader|default(false) %}
-
+{% set header_toolbar = header_toolbar|default([]) %}
 {% set entity_name = entity_name|default('') %}
+
 {% if entity_id is not defined %}
     {% if item.getType() == 'Entity' %}
         {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
@@ -53,11 +53,12 @@
     {% endif %}
 {% endif %}
 
-{% set template_name = item.fields['template_name'] %}
 {% if withtemplate == 2 and not item.isNewItem() %}
+   {% set template_name = item.fields['template_name'] %}
    <input type="hidden" name="template_name" value="{{ template_name }}" />
    {% set nametype = __('Created from the template %s')|format(template_name) %}
 {% elseif withtemplate == 1 %}
+   {% set template_name = item.fields['template_name'] %}
    <input type="hidden" name="is_template" value="1" />
 {% elseif item.isNewItem() %}
    {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
@@ -65,20 +66,20 @@
 
 {% if item.canEdit(item.fields['id']) %}
    <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
-         action="{{ path('/front/massiveaction.php') }}?_from_single_item=1" data-submit-once>
+         action="{{ path('/front/massiveaction.php') }}?_single_item[itemtype]={{ item.getType() }}&_single_item[id]={{ item.getID() }}" data-submit-once>
       <div id="massive_container_{{ rand }}"></div>
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    </form>
 {% endif %}
 
 <div id="header_{{ rand }}"
-     class="card-header main-header d-flex flex-wrap me-2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1">
+     class="card-header main-header d-flex flex-wrap flex-md-nowrap me-2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1" style="min-width: 100px;">
    {% if withtemplate == 1 and item.isNewItem() %}
       <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
              name="template_name" id="textfield_template_name{{ rand }}"
              value="{{ template_name }}" />
    {% endif %}
-   <h3 class="card-title d-flex align-items-center {{ in_navheader ? "" : "ps-5" }}">
+   <h3 class="card-title d-flex align-items-center ps-0 {{ in_navheader ? "ps-sm-5" : "ps-sm-4" }}">
       {% set icon = item.getIcon() %}
       {% if not in_navheader and icon|length > 0 %}
          <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
@@ -115,7 +116,7 @@
       </span>
       {% endif %}
 
-      {% if header_toolbar %}
+      {% if header_toolbar|length > 0 %}
          <div class="d-inline-block toolbar ms-2">
             {% for raw_element in header_toolbar %}
                {{ raw_element|raw }}
@@ -127,13 +128,15 @@
    {% set single_actions_ms_auto = true %}
    {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
       {% set single_actions_ms_auto = false %}
-      <span class="badge entity-name mx-1 px-2 ms-auto align-items-center" title="{{ entity_name }}">
-                  <i class="ti ti-stack me-2"></i>
-                  {{ entity_name }}
-               </span>
+       <div class="badge entity-name mx-1 px-2 ms-auto align-items-center col" title="{{ entity_name }}" style="min-width: 100px; max-width: fit-content;">
+           <i class="ti ti-stack me-2"></i>
+           <div class="overflow-hidden text-truncate text-nowrap">
+               <span class="float-end ps-1">{{ entity_name }}</span>
+           </div>
+       </div>
 
       {% if item.maybeRecursive() %}
-         <span class="badge is_recursive-toggle mx-1 px-2 align-items-center">
+         <span class="badge is_recursive-toggle mx-1 px-2 align-items-center col-auto">
             <label class="form-check d-flex align-items-center mb-0">
                {% set disabled = canedit == false %}
                {% set comment  = __('Change visibility in child entities.') %}
@@ -159,7 +162,7 @@
                {% endif %}
                <span class="form-check-label mb-0 mx-2">
                   {{ __('Child entities') }}
-                  <i class="fas fa-info ms-1" title="{{ comment }}"></i>
+                  <i class="ti ti-info-circle ms-1" title="{{ comment }}"></i>
                </span>
             </label>
          </span>

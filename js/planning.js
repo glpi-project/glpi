@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
 /* global glpi_ajax_dialog, glpi_html_dialog */
+/* global _ */
+
 var GLPIPlanning  = {
     calendar:      null,
     dom_id:        "",
@@ -92,7 +94,6 @@ var GLPIPlanning  = {
             timeZone:    'UTC',
             theme:       true,
             weekNumbers: options.full_view ? true : false,
-            defaultView: options.default_view,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
@@ -159,7 +160,7 @@ var GLPIPlanning  = {
                 }
                 $(info.el)
                     .find('.fc-cell-text')
-                    .prepend(`<i class="fas fa-${icon}"></i>&nbsp;`);
+                    .prepend(`<i class="ti ti-${icon}"></i>&nbsp;`);
 
                 if (info.resource._resource.extendedProps.itemtype == 'Group_User') {
                     info.el.style.backgroundColor = 'lightgray';
@@ -174,7 +175,7 @@ var GLPIPlanning  = {
                 // append event data to dom (to re-use they in clone behavior)
                 element.data('myevent', event);
 
-                var eventtype_marker = `<span class="event_type" style="background-color: ${extProps.typeColor}"></span>`;
+                var eventtype_marker = `<span class="event_type" style="background-color: ${_.escape(extProps.typeColor)}"></span>`;
                 element.append(eventtype_marker);
 
                 var content = extProps.content;
@@ -194,7 +195,7 @@ var GLPIPlanning  = {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
+                        .append(`&nbsp;<i class='${_.escape(extProps.icon)}' title='${_.escape(icon_alt)}'></i>`);
                 }
 
                 // add classes to current event
@@ -227,7 +228,8 @@ var GLPIPlanning  = {
                 if (!disable_qtip) {
                     // detect ideal position
                     var qtip_position = {
-                        target: 'mouse',
+                        target: element,
+                        at: 'bottom right',
                         adjust: {
                             mouse: false
                         },
@@ -278,10 +280,10 @@ var GLPIPlanning  = {
                     // create new one
                     var actions = '';
                     if (options.can_create) {
-                        actions += `<li class="clone-event"><i class="far fa-clone"></i>${__("Clone")}</li>`;
+                        actions += `<li class="clone-event"><i class="ti ti-copy"></i>${__("Clone")}</li>`;
                     }
                     if (options.can_delete) {
-                        actions += `<li class="delete-event"><i class="fas fa-trash"></i>${__("Delete")}</li>`;
+                        actions += `<li class="delete-event"><i class="ti ti-trash"></i>${__("Delete")}</li>`;
                     }
                     if (actions == '') {
                         return;
@@ -360,7 +362,7 @@ var GLPIPlanning  = {
                         } else {
                             glpi_html_dialog({
                                 title: __("Make a choice"),
-                                body: `${__("Delete the whole serie of the recurrent event")}<br>${ 
+                                body: `${__("Delete the whole serie of the recurrent event")}<br>${
                                     __("or just add an exception by deleting this instance?")}`,
                                 buttons: [{
                                     label: __("Serie"),
@@ -390,11 +392,11 @@ var GLPIPlanning  = {
                 }
 
                 // attach button (planning and refresh) in planning header
-                $(`#${GLPIPlanning.dom_id} .fc-toolbar .fc-center h2`)
+                $(`#${CSS.escape(GLPIPlanning.dom_id)} .fc-toolbar .fc-center h2`)
                     .after(
-                        $('<i id="refresh_planning" class="fa fa-sync pointer"></i>')
+                        $('<i id="refresh_planning" class="ti ti-refresh pointer"></i>')
                     ).after(
-                        $('<div id="planning_datepicker"><a data-toggle><i class="far fa-calendar-alt fa-lg pointer"></i></a>')
+                        $('<div id="planning_datepicker"><a data-toggle><i class="ti ti-calendar pointer"></i></a>')
                     );
 
                 // specific process for full list
@@ -439,37 +441,23 @@ var GLPIPlanning  = {
                 }).done(function() {
                     // indicate to central page we're done rendering
                     if (!options.full_view) {
-                        setTimeout(function () {
-                            $(document).trigger('masonry_grid:layout');
-                        }, 100);
+                        // Observe changes in the DOM before triggering
+                        const observer = new MutationObserver((mutations, obs) => {
+                            if (document.readyState === 'complete') {
+                                obs.disconnect(); // Stop observation once the DOM is stable
+                                setTimeout(() => {
+                                    $(document).trigger('masonry_grid:layout');
+                                }, 100);
+                            }
+                        });
+
+                        observer.observe(document.body, { childList: true, subtree: true });
                     }
                 });
 
                 // set end of day markers for timeline
                 GLPIPlanning.setEndofDays(info.view);
             },
-            events: {
-                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-                type: 'POST',
-                extraParams: function() {
-                    var view_name = GLPIPlanning.calendar
-                        ? GLPIPlanning.calendar.state.viewType
-                        : options.default_view;
-                    return {
-                        'action': 'get_events',
-                        'view_name': view_name
-                    };
-                },
-                success: function(data) {
-                    if (!options.full_view && data.length == 0) {
-                        GLPIPlanning.calendar.setOption('height', 0);
-                    }
-                },
-                failure: function(error) {
-                    console.error('there was an error while fetching events!', error);
-                }
-            },
-
             // EDIT EVENTS
             eventResize: function(info) {
                 var event        = info.event;
@@ -522,7 +510,7 @@ var GLPIPlanning  = {
                 if (is_recurrent) {
                     glpi_html_dialog({
                         title: __("Recurring event dragged"),
-                        body: __("The dragged event is a recurring event. Do you want to move the serie or instance ?"),
+                        body: __("The dragged event is a recurring event. Do you want to move the serie or instance?"),
                         buttons: [
                             {
                                 label: __("Serie"),
@@ -596,28 +584,25 @@ var GLPIPlanning  = {
                             begin: start.toISOString(),
                             end: end.toISOString(),
                             res_itemtype: itemtype,
-                            res_items_id: items_id,
-                            in_modal: 1
+                            res_items_id: items_id
                         },
                         dialogclass: 'modal-lg planning-modal',
                         title: __('Add an event'),
                         bs_focus: false
                     });
-                    GLPIPlanning.calendar.setOption('selectable', false);
-                    window.setTimeout(function() {
-                        GLPIPlanning.calendar.setOption('selectable', true);
-                    }, 500);
                 }
 
                 GLPIPlanning.calendar.unselect();
             }
         });
 
-        // Load the last known view only if it is valid (else load default view)
-        const view = this.calendar.isValidViewType(options.default_view) ?
-            options.default_view :
-            default_options.default_view;
-        this.calendar.changeView(view);
+        // if current view is not valid eg: related plugin not loaded fallback to default view
+        if (!this.calendar.isValidViewType(options.default_view)) {
+            this.calendar.changeView(default_options.default_view);
+        } else {
+            // else use the one passed in options
+            this.calendar.changeView(options.default_view);
+        }
 
         $('.planning_on_central a')
             .mousedown(function() {
@@ -628,15 +613,39 @@ var GLPIPlanning  = {
                 disable_qtip = false;
             });
 
-        window.onblur = function() {
+        $(window).on('blur', () => {
             window_focused = false;
-        };
-        window.onfocus = function() {
+        });
+        $(window).on('focus', () => {
             window_focused = true;
-        };
+        });
 
         //window.calendar = calendar; // Required as object is not accessible by forms callback
         GLPIPlanning.calendar.render();
+
+        // IMPORTANT: This event source was moved here, after the calendar's render() call,
+        // to prevent an automatic AJAX request to the events URL during FullCalendar's initialization.
+        // And another one during the calendar's changeView() call.
+        // By adding it manually after rendering, only one call is done.
+        this.calendar.addEventSource({
+            url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+            type: 'POST',
+            extraParams: function () {
+                var view_name =  GLPIPlanning.calendar.state.viewType;
+                return {
+                    'action': 'get_events',
+                    'view_name': view_name
+                };
+            },
+            success: function (data) {
+                if (!options.full_view && data.length === 0) {
+                    GLPIPlanning.calendar.setOption('height', 0);
+                }
+            },
+            failure: function (error) {
+                console.error('there was an error while fetching events!', error);
+            }
+        });
 
         // attach the date picker to planning
         GLPIPlanning.initFCDatePicker();
@@ -648,6 +657,8 @@ var GLPIPlanning  = {
         $(document).click(function() {
             $('.planning-context-menu').remove();
         });
+
+        $('.fc-scroller').attr('tabindex', '0');
     },
 
     refresh: function() {
@@ -955,9 +966,6 @@ var GLPIPlanning  = {
     // set planning height
     getHeight: function() {
         var _newheight = $(window).height() - 272;
-        if ($('#debugajax').length > 0) {
-            _newheight -= $('#debugajax').height();
-        }
 
         //minimal size
         var _minheight = 300;

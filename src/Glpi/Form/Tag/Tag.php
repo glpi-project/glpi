@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,19 +46,18 @@ final readonly class Tag
 
     public function __construct(
         string $label,
-        string $value,
-        string $provider,
+        string|int $value,
+        TagProviderInterface $provider,
     ) {
         $this->label = $label;
 
-        $color = (new $provider())->getTagColor();
+        $color = $provider->getTagColor();
 
         // Build HTML representation of the tag.
         $properties = [
-            "contenteditable"        => "false",
             "data-form-tag"          => "true",
             "data-form-tag-value"    => $value,
-            "data-form-tag-provider" => $provider,
+            "data-form-tag-provider" => $provider::class,
             "class"                  => "border-$color border-start border-3 bg-dark-lt",
         ];
         $properties = implode(" ", array_map(
@@ -66,6 +65,6 @@ final readonly class Tag
             array_keys($properties),
             array_values($properties),
         ));
-        $this->html = sprintf('<span %s>%s</span>', $properties, htmlescape($label));
+        $this->html = sprintf('<span %s>#%s</span>', $properties, htmlescape($label));
     }
 }

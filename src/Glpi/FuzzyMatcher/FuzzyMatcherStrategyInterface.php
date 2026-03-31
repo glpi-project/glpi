@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -70,5 +70,5 @@ interface FuzzyMatcherStrategyInterface
     /**
      * @see https://www.php.net/manual/en/function.levenshtein.php
      */
-    public function maxCostForSuccess(): int;
+    public function maxCostForSuccess(/* FIXME uncomment in GLPI 12.0: ?int $string_length*/): int;
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,9 +40,19 @@
 namespace Glpi\Api;
 
 use AllAssets;
+use CommonDBTM;
+use Document;
 use GLPIUploadHandler;
+use ReflectionClass;
+use Safe\Exceptions\JsonException;
 use stdClass;
 use Toolbox;
+
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\strtotime;
 
 class APIRest extends API
 {
@@ -59,7 +69,7 @@ class APIRest extends API
     public function manageUploadedFiles()
     {
         foreach (array_keys($_FILES) as $filename) {
-           // Randomize files names
+            // Randomize files names
             $rand_name = uniqid('', true);
             if (is_array($_FILES[$filename]['name'])) {
                 // Input name was suffixed by `[]`. This results in each `$_FILES[$filename]` property being an array.
@@ -90,11 +100,13 @@ class APIRest extends API
 
             $upload_result
             = GLPIUploadHandler::uploadFiles(['name'           => $filename,
-                'print_response' => false
+                'print_response' => false,
             ]);
             foreach ($upload_result as $uresult) {
-                 $this->parameters['input']->_filename[] = $uresult[0]->name;
-                 $this->parameters['input']->_prefix_filename[] = $uresult[0]->prefix;
+                foreach ($uresult as $file_result) {
+                    $this->parameters['input']->_filename[]        = $file_result->name;
+                    $this->parameters['input']->_prefix_filename[] = $file_result->prefix;
+                }
             }
             $this->parameters['upload_result'][] = $upload_result;
         }
@@ -131,14 +143,14 @@ class APIRest extends API
         // Add headers for CORS
         $this->cors();
 
-        // retrieve paramaters (in body, query_string, headers)
+        // retrieve parameters (in body, query_string, headers)
         $this->parseIncomingParams($is_inline_doc);
 
         // show debug if required
         if (isset($this->parameters['debug'])) {
             $this->debug = $this->parameters['debug'];
             if (empty($this->debug)) {
-                $this->debug = 1;
+                $this->debug = true;
             }
         }
 
@@ -149,7 +161,7 @@ class APIRest extends API
 
         // retrieve param who permit session writing
         if (isset($this->parameters['session_write'])) {
-            $this->session_write = (bool)$this->parameters['session_write'];
+            $this->session_write = (bool) $this->parameters['session_write'];
         }
 
         // Do not unlock the php session for ressources that may handle it
@@ -249,7 +261,7 @@ class APIRest extends API
                 )
             );
         } elseif ($resource == "applyMassiveAction") {
-           // Parse parameters
+            // Parse parameters
             $params = json_decode(json_encode($this->parameters), true);
             $ids = $params['ids'] ?? [];
 
@@ -264,7 +276,7 @@ class APIRest extends API
                 $params['input'] ?? []
             );
         } elseif (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
-            $this->userPicture($matches[1]);
+            $this->userPicture((int) $matches[1]);
         } else {
             // commonDBTM manipulation
             $itemtype          = $this->getItemtype(0);
@@ -275,9 +287,26 @@ class APIRest extends API
                 default:
                 case "GET": // retrieve item(s)
                     if (
-                        $id > 0
-                        || ($id !== false && $id == 0 && $itemtype == "Entity")
+                        $itemtype === Document::class
+                        && $id > 0
+                        && (
+                            ($_SERVER['HTTP_ACCEPT'] ?? null) === 'application/octet-stream'
+                            || ($this->parameters['alt'] ?? null) === 'media'
+                        )
                     ) {
+                        // Raw document download
+                        $document = new Document();
+                        if (!$document->getFromDB($id)) {
+                            $this->messageNotfoundError();
+                        }
+                        if (!$document->can($id, READ)) {
+                            $this->messageRightError();
+                        }
+                        $document->getAsResponse()->send();
+                        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
+                    }
+
+                    if ($id !== false) {
                         $response = $this->getItem($itemtype, $id, $this->parameters);
                         if (isset($response['date_mod'])) {
                             $datemod = strtotime($response['date_mod']);
@@ -322,8 +351,8 @@ class APIRest extends API
                         $additionalheaders['link'] = "";
                         foreach ($response as $created_item) {
                             if ($created_item['id']) {
-                                $additionalheaders['link'] .= self::$api_url . "/$itemtype/" .
-                                                     $created_item['id'] . ",";
+                                $additionalheaders['link'] .= self::$api_url . "/$itemtype/"
+                                                     . $created_item['id'] . ",";
                             }
                         }
                         // remove last comma
@@ -336,11 +365,12 @@ class APIRest extends API
                     if (!isset($this->parameters['input'])) {
                         $this->messageBadArrayError();
                     }
+
                     // if id is passed by query string, add it into input parameter
-                    $input = (array) ($this->parameters['input']);
                     if (
-                        ($id > 0 || $id == 0 && $itemtype == "Entity")
-                        && !isset($input['id'])
+                        is_object($this->parameters['input'])
+                        && ($id > 0 || $id == 0 && $itemtype == "Entity")
+                        && !property_exists($this->parameters['input'], 'id')
                     ) {
                         $this->parameters['input']->id = $id;
                     }
@@ -367,13 +397,13 @@ class APIRest extends API
     /**
      * Retrieve and check itemtype from $this->url_elements
      *
-     * @param integer $index      we'll find itemtype in this index of $this->url_elements
+     * @param int $index      we'll find itemtype in this index of $this->url_elements
      *                            (default o)
-     * @param boolean $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
+     * @param bool $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
      *                            (default true)
-     * @param boolean $all_assets if we can have allasset virtual type (default false)
+     * @param bool $all_assets if we can have allasset virtual type (default false)
      *
-     * @return boolean
+     * @return false|class-string<CommonDBTM>
      */
     private function getItemtype($index = 0, $recursive = true, $all_assets = false)
     {
@@ -384,7 +414,7 @@ class APIRest extends API
             || Toolbox::isAPIDeprecated($this->url_elements[$index]);
 
             if ($all_assets || $valid_class) {
-                 $itemtype = $this->url_elements[$index];
+                $itemtype = $this->url_elements[$index];
 
                 if (
                     $recursive
@@ -394,19 +424,19 @@ class APIRest extends API
                     $itemtype                            = $additional_itemtype;
                 }
 
-                 // AllAssets
+                // AllAssets
                 if ($all_assets) {
                     return AllAssets::getType();
                 }
 
-               // Load namespace for deprecated
+                // Load namespace for deprecated
                 $deprecated = Toolbox::isAPIDeprecated($itemtype);
                 if ($deprecated) {
                     $itemtype = "Glpi\Api\Deprecated\\$itemtype";
                 }
 
-               // Get case sensitive itemtype name
-                $itemtype = (new \ReflectionClass($itemtype))->getName();
+                // Get case sensitive itemtype name
+                $itemtype = (new ReflectionClass($itemtype))->getName();
                 if ($deprecated) {
                     // Remove deprecated namespace
                     $itemtype = str_replace("Glpi\Api\Deprecated\\", "", $itemtype);
@@ -418,7 +448,7 @@ class APIRest extends API
                 400,
                 "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM"
             );
-        } else if ($recursive) {
+        } elseif ($recursive) {
             $this->returnError(__("missing resource"), 400, "ERROR_RESOURCE_MISSING");
         }
 
@@ -430,7 +460,7 @@ class APIRest extends API
      * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
      * it always find the second
      *
-     * @return integer|boolean id of current itemtype (or false if not found)
+     * @return int|bool id of current itemtype (or false if not found)
      */
     private function getId()
     {
@@ -454,7 +484,7 @@ class APIRest extends API
     /**
      * Construct this->parameters from query string and http body
      *
-     * @param boolean $is_inline_doc Is the current request asks to display inline documentation
+     * @param bool $is_inline_doc Is the current request asks to display inline documentation
      *  This will remove the default behavior who set content-type to application/json
      *
      * @return void
@@ -464,15 +494,15 @@ class APIRest extends API
 
         $parameters = [];
 
-       // first of all, pull the GET vars
+        // first of all, pull the GET vars
         if (isset($_SERVER['QUERY_STRING'])) {
             parse_str($_SERVER['QUERY_STRING'], $parameters);
         }
 
-       // now how about PUT/POST bodies? These override what we got from GET
+        // now how about PUT/POST bodies? These override what we got from GET
         $body = trim($this->getHttpBody());
-        if (strlen($body) > 0 && $this->verb == "GET") {
-           // GET method requires an empty body
+        if ($body !== '' && $this->verb == "GET") {
+            // GET method requires an empty body
             $this->returnError(
                 "GET Request should not have json payload (http body)",
                 400,
@@ -483,7 +513,7 @@ class APIRest extends API
         $content_type = "";
         if (isset($_SERVER['CONTENT_TYPE'])) {
             $content_type = $_SERVER['CONTENT_TYPE'];
-        } else if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             $content_type = $_SERVER['HTTP_CONTENT_TYPE'];
         } else {
             if (!$is_inline_doc) {
@@ -491,12 +521,15 @@ class APIRest extends API
             }
         }
 
-        if (strpos($content_type, "application/json") !== false) {
-            if ($body_params = json_decode($body)) {
-                foreach ($body_params as $param_name => $param_value) {
-                    $parameters[$param_name] = $param_value;
+        if (str_contains($content_type, "application/json")) {
+            try {
+                if ($body != '') {
+                    $body_params = json_decode($body);
+                    foreach ($body_params as $param_name => $param_value) {
+                        $parameters[$param_name] = $param_value;
+                    }
                 }
-            } else if (strlen($body) > 0) {
+            } catch (JsonException $e) {
                 $this->returnError(
                     "JSON payload seems not valid",
                     400,
@@ -505,10 +538,10 @@ class APIRest extends API
                 );
             }
             $this->format = "json";
-        } else if (strpos($content_type, "multipart/form-data") !== false) {
+        } elseif (str_contains($content_type, "multipart/form-data")) {
             if (count($_FILES) <= 0) {
-               // likely uploaded files is too big so $_REQUEST will be empty also.
-               // see http://us.php.net/manual/en/ini.core.php#ini.post-max-size
+                // likely uploaded files is too big so $_REQUEST will be empty also.
+                // see http://us.php.net/manual/en/ini.core.php#ini.post-max-size
                 $this->returnError(
                     "The file seems too big",
                     400,
@@ -517,8 +550,19 @@ class APIRest extends API
                 );
             }
 
-           // with this content_type, php://input is empty... (see http://php.net/manual/en/wrappers.php.php)
-            if (!$uploadManifest = json_decode($_REQUEST['uploadManifest'])) {
+            // with this content_type, php://input is empty... (see http://php.net/manual/en/wrappers.php.php)
+            try {
+                $uploadManifest = json_decode($_REQUEST['uploadManifest']);
+                foreach ($uploadManifest as $field => $value) {
+                    $parameters[$field] = $value;
+                }
+                $this->format = "json";
+
+                // move files into _tmp folder
+                $parameters['upload_result'] = [];
+                $parameters['input']->_filename = [];
+                $parameters['input']->_prefix_filename = [];
+            } catch (JsonException $e) {
                 $this->returnError(
                     "JSON payload seems not valid",
                     400,
@@ -526,18 +570,8 @@ class APIRest extends API
                     false
                 );
             }
-            foreach ($uploadManifest as $field => $value) {
-                $parameters[$field] = $value;
-            }
-            $this->format = "json";
-
-           // move files into _tmp folder
-            $parameters['upload_result'] = [];
-            $parameters['input']->_filename = [];
-            $parameters['input']->_prefix_filename = [];
-        } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
+        } elseif (str_contains($content_type, "application/x-www-form-urlencoded")) {
             parse_str($body, $postvars);
-            /** @var array $postvars */
             foreach ($postvars as $field => $value) {
                 // $parameters['input'] needs to be an object when process API Request
                 if ($field === 'input') {
@@ -550,9 +584,9 @@ class APIRest extends API
             $this->format = "html";
         }
 
-       // retrieve HTTP headers
+        // retrieve HTTP headers
         $headers = getallheaders();
-        if (false !== $headers && count($headers) > 0) {
+        if (count($headers) > 0) {
             $fixedHeaders = [];
             foreach ($headers as $key => $value) {
                 $fixedHeaders[ucwords(strtolower($key), '-')] = $value;
@@ -560,7 +594,7 @@ class APIRest extends API
             $headers = $fixedHeaders;
         }
 
-       // try to retrieve basic auth
+        // try to retrieve basic auth
         if (
             isset($_SERVER['PHP_AUTH_USER'])
             && isset($_SERVER['PHP_AUTH_PW'])
@@ -569,10 +603,10 @@ class APIRest extends API
             $parameters['password'] = $_SERVER['PHP_AUTH_PW'];
         }
 
-       // try to retrieve user_token in header
+        // try to retrieve user_token in header
         if (
             isset($headers['Authorization'])
-            && (strpos($headers['Authorization'], 'user_token') !== false)
+            && (str_contains($headers['Authorization'], 'user_token'))
         ) {
             $auth = explode(' ', $headers['Authorization']);
             if (isset($auth[1])) {
@@ -580,17 +614,17 @@ class APIRest extends API
             }
         }
 
-       // try to retrieve session_token in header
+        // try to retrieve session_token in header
         if (isset($headers['Session-Token'])) {
             $parameters['session_token'] = $headers['Session-Token'];
         }
 
-       // try to retrieve app_token in header
+        // try to retrieve app_token in header
         if (isset($headers['App-Token'])) {
             $parameters['app_token'] = $headers['App-Token'];
         }
 
-       // check boolean parameters
+        // check boolean parameters
         foreach ($parameters as $key => &$parameter) {
             if ($parameter === "true") {
                 $parameter = true;
@@ -602,7 +636,6 @@ class APIRest extends API
 
         $this->parameters = $parameters;
 
-        return "";
     }
 
 
@@ -617,27 +650,21 @@ class APIRest extends API
             header("$key: $value");
         }
 
-        http_response_code($httpcode);
+        http_response_code($httpcode); // @phpstan-ignore glpi.forbidHttpResponseCode (API response is streamed)
         $this->header($this->debug);
 
         if ($response !== null) {
-            $json = json_encode($response, JSON_UNESCAPED_UNICODE
-                                      | JSON_UNESCAPED_SLASHES
-                                      | ($this->debug
-                                          ? JSON_PRETTY_PRINT
-                                          : 0));
+            $json = json_encode(
+                $response,
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | ($this->debug ? JSON_PRETTY_PRINT : 0)
+            );
         } else {
             $json = '';
         }
 
-        if ($this->debug) {
-            echo "<pre>";
-            var_dump($response);
-            echo "</pre>";
-        } else {
-            echo $json;
-        }
-        exit();
+        echo $json;
+
+        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 
 
@@ -653,9 +680,9 @@ class APIRest extends API
 
         if ($this->format == "html") {
             parent::inlineDocumentation($file);
-        } else if ($this->format == "json") {
+        } elseif ($this->format == "json") {
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
-        exit();
+        exit(); // @phpstan-ignore glpi.forbidExit (API response is streamed)
     }
 }

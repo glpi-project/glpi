@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,10 @@ use Glpi\Mail\SMTP\OauthProvider\Azure;
 use Glpi\Mail\SMTP\OauthProvider\Google;
 use Glpi\Mail\SMTP\OauthProvider\ProviderInterface;
 use GLPIKey;
-use Toolbox;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use Safe\Exceptions\JsonException;
+
+use function Safe\json_decode;
 
 final class OauthConfig
 {
@@ -52,9 +55,7 @@ final class OauthConfig
     /**
      * Singleton constructor. Keep it private to force usage of `getInstance()`.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get singleton instance.
@@ -72,11 +73,11 @@ final class OauthConfig
 
     /**
      * Return configured SMTP Oauth provider instance.
-     *
-     * @return ProviderInterface|null
      */
-    public function getSmtpOauthProvider(): ?ProviderInterface
+    public function getSmtpOauthProvider(): (ProviderInterface&AbstractProvider)|null
     {
+        global $CFG_GLPI;
+
         $config = Config::getConfigurationValues(
             'core',
             [
@@ -94,17 +95,24 @@ final class OauthConfig
 
         $provider_class = $config['smtp_oauth_provider'];
 
-        if (!is_string($provider_class) || !is_a($provider_class, ProviderInterface::class, true)) {
+        if (
+            !is_string($provider_class)
+            || !is_a($provider_class, ProviderInterface::class, true)
+            || !is_a($provider_class, AbstractProvider::class, true)
+        ) {
             return null;
         }
 
         $client_id        = $config['smtp_oauth_client_id'];
         $client_secret    = (new GLPIKey())->decrypt($config['smtp_oauth_client_secret']);
-        $provider_options = Toolbox::isJSON($config['smtp_oauth_options'])
-            ? json_decode($config['smtp_oauth_options'], true)
-            : [];
+        $provider_options = [];
+        try {
+            $provider_options = json_decode($config['smtp_oauth_options'], true);
+        } catch (JsonException $e) {
+            //no error
+        }
 
-        if ($config['proxy_name'] !== '') {
+        if ($config['proxy_name'] !== '' && !in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
             // Connection using proxy
             $provider_options['proxy'] = $config['proxy_user'] !== ''
                 ? sprintf(
@@ -125,7 +133,7 @@ final class OauthConfig
             [
                 'clientId'     => $client_id,
                 'clientSecret' => $client_secret,
-                'redirectUri'  => $config['url_base'] . '/front/smtp_oauth2_callback.php'
+                'redirectUri'  => $config['url_base'] . '/front/smtp_oauth2_callback.php',
             ] + $provider_options
         );
 

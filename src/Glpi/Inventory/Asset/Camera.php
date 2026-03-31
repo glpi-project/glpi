@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,13 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Glpi\Inventory\Conf;
+use ImageFormat;
+use ImageResolution;
+use Item_DeviceCamera;
+use Item_DeviceCamera_ImageFormat;
+use Item_DeviceCamera_ImageResolution;
 use Item_Devices;
+use stdClass;
 
 class Camera extends Device
 {
@@ -46,7 +51,7 @@ class Camera extends Device
         $mapping = [
             'manufacturer'    => 'manufacturers_id',
             'model'           => 'devicecameramodels_id',
-            'designation'     => 'name'
+            'designation'     => 'name',
         ];
 
         foreach ($this->data as &$val) {
@@ -65,11 +70,16 @@ class Camera extends Device
         return $this->data;
     }
 
-
+    /**
+     * @param Item_Devices $itemdevice
+     * @param stdClass $val
+     *
+     * @return void
+     */
     protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
     {
 
-       //handle resolutions
+        //handle resolutions
         if (property_exists($val, 'resolution')) {
             $this->handleResolution($itemdevice, $val->resolution);
         }
@@ -83,7 +93,10 @@ class Camera extends Device
         }
     }
 
-    private function handleResolution($itemdevice, $val, $is_video = false)
+    /**
+     * @param string[]|string $val
+     */
+    private function handleResolution(Item_Devices $itemdevice, array|string $val, bool $is_video = false): void
     {
         if (!is_array($val)) {
             $val = [$val];
@@ -94,20 +107,20 @@ class Camera extends Device
                 continue;
             }
 
-            $resolution = new \ImageResolution();
+            $resolution = new ImageResolution();
             if (!$resolution->getFromDBByCrit(['name' => $rsl])) {
                 $resolution->add([
                     'name'         => $rsl,
-                    'is_video'     => (int)$is_video,
-                    'is_dynamic'   => 1
+                    'is_video'     => (int) $is_video,
+                    'is_dynamic'   => 1,
                 ]);
             }
 
-            $cam_resolutions = new \Item_DeviceCamera_ImageResolution();
+            $cam_resolutions = new Item_DeviceCamera_ImageResolution();
             $data = [
                 'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageresolutions_id' => $resolution->fields['id'],
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ];
 
             if (!$cam_resolutions->getFromDBByCrit($data)) {
@@ -116,13 +129,16 @@ class Camera extends Device
         }
     }
 
-    private function handleFormats($itemdevice, $val)
+    /**
+     * @param string[]|string $val
+     */
+    private function handleFormats(Item_Devices $itemdevice, array|string $val): void
     {
         if (!is_array($val)) {
             $val = [$val];
         }
 
-        $format = new \ImageFormat();
+        $format = new ImageFormat();
         foreach ($val as $fmt) {
             if (empty($fmt)) {
                 continue;
@@ -131,15 +147,15 @@ class Camera extends Device
             if (!$format->getFromDBByCrit(['name' => $fmt])) {
                 $format->add([
                     'name' => $fmt,
-                    'is_dynamic' => 1
+                    'is_dynamic' => 1,
                 ]);
             }
 
-            $cam_formats = new \Item_DeviceCamera_ImageFormat();
+            $cam_formats = new Item_DeviceCamera_ImageFormat();
             $data = [
                 'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageformats_id' => $format->fields['id'],
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ];
 
             if (!$cam_formats->getFromDBByCrit($data)) {
@@ -150,6 +166,6 @@ class Camera extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceCamera::class;
+        return Item_DeviceCamera::class;
     }
 }

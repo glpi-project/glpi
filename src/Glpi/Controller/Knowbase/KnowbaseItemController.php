@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -64,7 +64,7 @@ final class KnowbaseItemController extends AbstractController
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB((int) $id)) {
             throw new NotFoundHttpException();
-        } else if (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
         return new Response($kbitem->fields['answer']);
@@ -86,7 +86,7 @@ final class KnowbaseItemController extends AbstractController
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB((int) $id)) {
             throw new NotFoundHttpException();
-        } else if (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
         return new StreamedResponse(static function () use ($kbitem) {
@@ -95,18 +95,14 @@ final class KnowbaseItemController extends AbstractController
     }
 
     #[Route(
-        "/Knowbase/KnowbaseItem/SearchSolution/{itemtype}/{items_id}",
-        name: "knowbaseitem_search_solution",
+        "/Knowbase/KnowbaseItem/Search/{itemtype}/{items_id}",
+        name: "knowbaseitem_search",
         requirements: [
             'items_id' => '\d+',
         ]
     )]
-    public function searchSolution(Request $request): Response
+    public function search(Request $request): Response
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $itemtype = $request->get('itemtype');
@@ -146,13 +142,13 @@ final class KnowbaseItemController extends AbstractController
                         && $data['visibility_count'] > 0))
             ) {
                 $icon_class = "ti ti-help faq";
-                $icon_title = __s("This item is part of the FAQ");
-            } else if (
+                $icon_title = __("This item is part of the FAQ");
+            } elseif (
                 isset($data['visibility_count'])
                 && $data['visibility_count'] <= 0
             ) {
                 $icon_class = "ti ti-eye-off not-published";
-                $icon_title = __s("This item is not published yet");
+                $icon_title = __("This item is not published yet");
             }
 
             $results[] = [
@@ -183,7 +179,7 @@ final class KnowbaseItemController extends AbstractController
         ];
 
         return new StreamedResponse(static function () use ($twig_params) {
-            TemplateRenderer::getInstance()->display('pages/tools/search_solution.twig', $twig_params);
+            TemplateRenderer::getInstance()->display('pages/tools/search_knowbaseitem.html.twig', $twig_params);
         });
     }
 }

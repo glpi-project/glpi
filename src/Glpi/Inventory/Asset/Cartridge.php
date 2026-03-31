@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,15 @@
 
 namespace Glpi\Inventory\Asset;
 
+use CartridgeItem;
 use Glpi\Inventory\Conf;
 use Printer_CartridgeInfo;
 
 class Cartridge extends InventoryAsset
 {
+    /**
+     * @return array<string, array<string, string>>
+     */
     public function knownTags(): array
     {
         $tags = [];
@@ -48,7 +52,7 @@ class Cartridge extends InventoryAsset
             'tonerblack'      => ['tonerblack2'],
             'tonerblackmax'   => ['tonerblack2max'],
             'tonerblackused'  => ['tonerblack2used'],
-            'tonerblackremaining'   => ['tonerblack2remaining']
+            'tonerblackremaining'   => ['tonerblack2remaining'],
         ];
 
         $types = [
@@ -61,7 +65,7 @@ class Cartridge extends InventoryAsset
             'transferkit'     => __('Transfer kit'),
             'cleaningkit'     => __('Cleaning kit'),
             'developer'       => __('Developer'),
-            'photoconductor'  => __('Photoconductor')
+            'photoconductor'  => __('Photoconductor'),
         ];
 
         $colored_types = ['toner', 'drum', 'cartridge', 'photoconductor'];
@@ -77,47 +81,42 @@ class Cartridge extends InventoryAsset
             'grey'         => __('Grey'),
             'darkgrey'     => __('Dark grey'),
             'gray'         => __('Grey'),
-            'darkgray'     => __('Dark grey')
+            'darkgray'     => __('Dark grey'),
         ];
 
         $states = [
             'max'       => __('Max'),
             'used'      => __('Used'),
-            'remaining' => __('Remaining')
+            'remaining' => __('Remaining'),
         ];
 
         foreach ($types as $type => $label) {
-           //not a colored type, add an entry for type only, and type + state
+            //not a colored type, add an entry for type only, and type + state
             if (!in_array($type, $colored_types)) {
                 $tags[$type] = [
-                    'name'   => $label
+                    'name'   => $label,
                 ];
 
                 foreach ($states as $state => $slabel) {
                     $tags[$type . $state] = [
-                    //TRANS first argument is a type, second a state
+                        //TRANS first argument is a type, second a state
                         'name'   => sprintf(
                             '%1$s %2$s',
                             $label,
                             $slabel
-                        )
+                        ),
                     ];
-                    if (isset($aliases[$type . $state])) {
-                        foreach ($aliases[$type . $state] as $alias) {
-                            $tags[$alias] = $tags[$type . $state];
-                        }
-                    }
                 }
             } else {
-               //types colored: add an entry with type + color and type + color + state
+                //types colored: add an entry with type + color and type + color + state
                 foreach ($colors as $color => $clabel) {
                     $tags[$type . $color] = [
-                    //TRANS first argument is a type, second a color
+                        //TRANS first argument is a type, second a color
                         'name'   => sprintf(
                             '%1$s %2$s',
                             $label,
                             $clabel
-                        )
+                        ),
                     ];
 
                     if (isset($aliases[$type . $color])) {
@@ -128,13 +127,13 @@ class Cartridge extends InventoryAsset
 
                     foreach ($states as $state => $slabel) {
                         $tags[$type . $color . $state] = [
-                        //TRANS first argument is a type, second a color and third a state
+                            //TRANS first argument is a type, second a color and third a state
                             'name'   => sprintf(
                                 '%1$s %2$s %3$s',
                                 $label,
                                 $clabel,
                                 $slabel
-                            )
+                            ),
                         ];
                         if (isset($aliases[$type . $color . $state])) {
                             foreach ($aliases[$type . $color . $state] as $alias) {
@@ -146,19 +145,19 @@ class Cartridge extends InventoryAsset
                     if (in_array($type, $w_extras_types) && $color == 'black') {
                         $extras = [
                             'photo'  => __('Photo'),
-                            'matte'  => __('Matte')
+                            'matte'  => __('Matte'),
                         ];
                         foreach ($extras as $extra => $elabel) {
                             $tags[$type . $color . $extra] = [
                                 'name' => sprintf(
-                            //TRANS first argument is a type, second a color and third an extra (matte or photo)
+                                    //TRANS first argument is a type, second a color and third an extra (matte or photo)
                                     '%1$s %2$s %3$s',
                                     $label,
                                     $clabel,
                                     $elabel
-                                )
+                                ),
                             ];
-                            if (isset($aliases[$type . $color . $extra])) {
+                            if (isset($aliases[$type . $color . $extra])) { // @phpstan-ignore isset.offset (phpstan think this is always false, it is safer to keep it because this code is a mess so it is hard to confirm TODO: rewrite in a more readable way)
                                 foreach ($aliases[$type . $color . $extra] as $alias) {
                                     $tags[$alias] = $tags[$type . $color . $extra];
                                 }
@@ -166,14 +165,14 @@ class Cartridge extends InventoryAsset
 
                             $tags[$type . $extra . $color] = [
                                 'name' => sprintf(
-                           //TRANS first argument is a type, second an extra (matte or photo) and third a color
+                                    //TRANS first argument is a type, second an extra (matte or photo) and third a color
                                     '%1$s %2$s %3$s',
                                     $label,
                                     $elabel,
                                     $clabel
-                                )
+                                ),
                             ];
-                            if (isset($aliases[$type . $extra . $color])) {
+                            if (isset($aliases[$type . $extra . $color])) { // @phpstan-ignore isset.offset (phpstan think this is always false, it is safer to keep it because this code is a mess so it is hard to confirm TODO: rewrite in a more readable way)
                                 foreach ($aliases[$type . $extra . $color] as $alias) {
                                     $tags[$alias] = $tags[$type . $extra . $color];
                                 }
@@ -186,11 +185,11 @@ class Cartridge extends InventoryAsset
 
         $tags += [
             'informations' => [
-                'name'   => __('Many information grouped')
+                'name'   => __('Many information grouped'),
             ],
             'staples'      => [
-                'name'   => __('Staples')
-            ]
+                'name'   => __('Staples'),
+            ],
         ];
 
         return $tags;
@@ -204,18 +203,17 @@ class Cartridge extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
 
         $iterator = $DB->request([
             'FROM'   => Printer_CartridgeInfo::getTable(),
-            'WHERE'  => ['printers_id' => $this->item->fields['id']]
+            'WHERE'  => ['printers_id' => $this->item->fields['id']],
         ]);
 
         foreach ($iterator as $data) {
@@ -239,7 +237,7 @@ class Cartridge extends InventoryAsset
                 if ($k == $arraydb['property']) {
                     $input = [
                         'value' => $val,
-                        'id' => $keydb
+                        'id' => $keydb,
                     ];
                     $cartinfo->update($input, false);
                     unset($value->$k);
@@ -250,7 +248,7 @@ class Cartridge extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_cartridges) != 0) {
-            foreach ($db_cartridges as $idtmp => $data) {
+            foreach (array_keys($db_cartridges) as $idtmp) {
                 $cartinfo->delete(['id' => $idtmp], true);
             }
         }
@@ -260,7 +258,7 @@ class Cartridge extends InventoryAsset
                 [
                     'printers_id' => $this->item->fields['id'],
                     'property' => $property,
-                    'value' => $val
+                    'value' => $val,
                 ],
                 [],
                 false
@@ -275,6 +273,6 @@ class Cartridge extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \CartridgeItem::class;
+        return CartridgeItem::class;
     }
 }

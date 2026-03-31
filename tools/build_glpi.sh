@@ -7,7 +7,7 @@
 #
 # http://glpi-project.org
 #
-# @copyright 2015-2025 Teclib' and contributors.
+# @copyright 2015-2026 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
 # @licence   https://www.gnu.org/licenses/gpl-3.0.html
 #
@@ -49,7 +49,7 @@ echo "Installing dependencies..."
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
 
 echo "Compiling locale files..."
-$WORKING_DIR/bin/console locales:compile
+$WORKING_DIR/bin/console tools:locales:compile
 
 echo "Moving JS files into the /public directory..."
 for file in $(find $WORKING_DIR/js -type f ! -path "$WORKING_DIR/js/src/*")
@@ -80,6 +80,7 @@ find $WORKING_DIR -depth -iname ".*" -exec rm -rf {} \;
 dev_nodes=(
     "composer.json"
     "composer.lock"
+    "composer-dependency-analyser.php"
     "docker-compose.yaml"
     "eslint.config.mjs"
     "js"
@@ -91,11 +92,15 @@ dev_nodes=(
     "package-lock.json"
     "phpstan.neon"
     "phpstan.neon.dist"
-    "phpunit"
     "phpunit.xml.dist"
+    "playwright.config.ts"
+    "PluginsMakefile.mk"
+    "psalm.xml"
+    "rector.php"
     "stubs"
     "tests"
     "tools"
+    "tsconfig.json"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
 )
