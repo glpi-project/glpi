@@ -1119,10 +1119,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 'query' => ['crc_token' => $secret_signature],
             ]);
 
-            if ($response->getStatusCode() == 200) {
+            if ($response->getStatusCode() === 200) {
                 $response_challenge = $response->getBody()->getContents();
                 //check response
-                if ($response_challenge == hash_hmac('sha256', $secret_signature, $decrypted_secret)) {
+                if (hash_equals(hash_hmac('sha256', $secret_signature, $decrypted_secret), $response_challenge)) {
                     $challenge_response = [
                         'status' => true,
                         'message' => __('Challenge–response authentication validated'),
