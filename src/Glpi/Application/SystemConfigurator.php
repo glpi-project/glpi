@@ -213,7 +213,28 @@ final class SystemConfigurator
 
         // Handle deprecated/obsolete constants
         if (defined('PLUGINS_DIRECTORIES') && !defined('GLPI_PLUGINS_DIRECTORIES')) {
-            define('GLPI_PLUGINS_DIRECTORIES', PLUGINS_DIRECTORIES);
+            if (!is_array(PLUGINS_DIRECTORIES)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Configuration "%s" must be an array, %s given.',
+                        'PLUGINS_DIRECTORIES',
+                        get_debug_type(PLUGINS_DIRECTORIES),
+                    )
+                );
+            }
+
+            define('GLPI_PLUGINS_DIRECTORIES', array_values(array_unique(PLUGINS_DIRECTORIES)));
+        } elseif (defined('GLPI_PLUGINS_DIRECTORIES')) {
+            $plugin_directories = constant('GLPI_PLUGINS_DIRECTORIES');
+            if (!is_array($plugin_directories)) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Configuration "%s" must be an array, %s given.',
+                        'GLPI_PLUGINS_DIRECTORIES',
+                        get_debug_type($plugin_directories),
+                    )
+                );
+            }
         }
 
         // Configure environment type if not defined by user.
@@ -248,6 +269,20 @@ final class SystemConfigurator
                     fn($matches) => defined($matches['name']) ? constant($matches['name']) : '',
                     $constants[GLPI_ENVIRONMENT_TYPE][$name] ?? $constants['default'][$name]
                 );
+
+                if ($name === 'GLPI_PLUGINS_DIRECTORIES') {
+                    if (!is_array($value)) {
+                        throw new \InvalidArgumentException(
+                            sprintf(
+                                'Configuration "%s" must be an array, %s given.',
+                                $name,
+                                get_debug_type($value),
+                            )
+                        );
+                    }
+
+                    $value = array_values(array_unique($value));
+                }
 
                 define($name, $value);
             }
