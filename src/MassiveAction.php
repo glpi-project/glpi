@@ -35,6 +35,7 @@
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
+use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
@@ -596,8 +597,8 @@ class MassiveAction
             && !isAPI()
         ) {
             $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
-                  = "<i class='ti ti-corner-right-up'></i>"
-                    . _sx('button', 'Add to transfer list');
+                = "<i class='ti ti-corner-right-up'></i>"
+                . _sx('button', 'Add to transfer list');
         }
     }
 
@@ -646,7 +647,7 @@ class MassiveAction
             if ($canpurge) {
                 if (in_array($itemtype, Item_Devices::getConcernedItems())) {
                     $actions[$self_pref . 'purge_item_but_devices']
-                                             = _sx('button', 'Delete permanently but keep devices');
+                        = _sx('button', 'Delete permanently but keep devices');
                     $actions[$self_pref . 'purge']  = _sx('button', 'Delete permanently and remove devices');
                 } else {
                     $actions[$self_pref . 'purge']  = _sx('button', 'Delete permanently');
@@ -659,8 +660,8 @@ class MassiveAction
             if (
                 Session::getCurrentInterface() == 'central'
                 && ($canupdate
-                 || (Infocom::canApplyOn($itemtype)
-                     && Infocom::canUpdate()))
+                    || (Infocom::canApplyOn($itemtype)
+                        && Infocom::canUpdate()))
             ) {
                 //TRANS: select action 'update' (before doing it)
                 $actions[$self_pref . 'update'] = _sx('button', 'Update');
@@ -675,6 +676,10 @@ class MassiveAction
 
             Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+            if ($canupdate && Toolbox::hasTrait($itemtype, AssignableItem::class)) {
+                $actions[$self_pref . 'associate_group'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Associate group');
+                $actions[$self_pref . 'dissociate_group'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Dissociate group');
+            }
 
             CommonDBConnexity::getMassiveActionsForItemtype(
                 $actions,
@@ -699,7 +704,7 @@ class MassiveAction
                 }
                 if ($item instanceof CommonDropdown) {
                     $actions[$self_pref . 'purge_but_item_linked']
-                     = _sx('button', 'Delete permanently even if linked items');
+                        = _sx('button', 'Delete permanently even if linked items');
                 }
             }
 
@@ -845,6 +850,25 @@ class MassiveAction
         global $DB;
 
         switch ($ma->getAction()) {
+            case 'associate_group':
+            case 'dissociate_group':
+                $values = [
+                    'groups_id'      => __('Group'),
+                    'groups_id_tech' => __('Group in charge'),
+                ];
+                Dropdown::showFromArray('fieldname', $values);
+
+                echo '<br>';
+                Group::dropdown([
+                    'name'     => 'selected_group[]',
+                    'multiple' => true,
+                ]);
+                echo '<br>';
+                echo Html::submit(_x('button', 'Post'), [
+                    'name'  => 'massiveaction',
+                ]);
+                return true;
+
             case 'update':
                 if (!isset($ma->POST['id_field'])) {
                     $itemtypes        = array_keys($ma->items);
@@ -861,7 +885,7 @@ class MassiveAction
                         if (
                             Infocom::canApplyOn($itemtype)
                             && (!$itemtype::canUpdate()
-                            || !Infocom::canUpdate())
+                                || !Infocom::canUpdate())
                         ) {
                             $show_all      = false;
                             $show_infocoms = Infocom::canUpdate();
@@ -876,18 +900,18 @@ class MassiveAction
                                     && ($index != 1)
                                     // Permit entities_id is explicitly activate
                                     && (($option["linkfield"] != 'entities_id')
-                                    || (isset($option['massiveaction']) && $option['massiveaction']))
+                                        || (isset($option['massiveaction']) && $option['massiveaction']))
                                 ) {
                                     if (!isset($option['massiveaction']) || $option['massiveaction']) {
                                         if (
                                             ($show_all)
                                             || (($show_infocoms
-                                            && Search::isInfocomOption($itemtype, $index))
-                                            || (!$show_infocoms
-                                            && !Search::isInfocomOption($itemtype, $index)))
+                                                    && Search::isInfocomOption($itemtype, $index))
+                                                || (!$show_infocoms
+                                                    && !Search::isInfocomOption($itemtype, $index)))
                                         ) {
                                             $options_per_type[$itemtype][$group][$itemtype . ':' . $index]
-                                            = $option['name'];
+                                                = $option['name'];
                                             if ($itemtable == $option['table']) {
                                                 $field_key = 'MAIN:' . $option['field'] . ':' . $index;
                                             } else {
@@ -902,7 +926,7 @@ class MassiveAction
                                                     $options_count[$option['MA_common_field']] = [];
                                                 }
                                                 $options_count[$option['MA_common_field']][]
-                                                 = $itemtype . ':' . $index . ':' . $group;
+                                                    = $itemtype . ':' . $index . ':' . $group;
                                             }
                                         }
                                     }
@@ -1473,13 +1497,13 @@ class MassiveAction
                                     ($link_entity_type < 0)
                                     || ($link_entity_type == $item->getEntityID())
                                     || ($is_recursive
-                                    && in_array(
-                                        $link_entity_type,
-                                        getAncestorsOf(
-                                            "glpi_entities",
-                                            $item->getEntityID()
-                                        )
-                                    ))
+                                        && in_array(
+                                            $link_entity_type,
+                                            getAncestorsOf(
+                                                "glpi_entities",
+                                                $item->getEntityID()
+                                            )
+                                        ))
                                 ) {
                                     $input2 = [
                                         'items_id'  => $key,
@@ -1737,6 +1761,53 @@ class MassiveAction
                     }
                 }
 
+                break;
+
+            case 'associate_group':
+            case 'dissociate_group':
+                $input      = $ma->getInput();
+
+                Toolbox::logDebug($input);
+
+
+                $groups_ids = array_map('intval', (array) ($input['selected_group'] ?? []));
+                $field_name = $input['fieldname'] ?? 'groups_id';
+
+                Toolbox::logDebug($groups_ids);
+
+                if ($groups_ids === []) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage(__('No group selected'));
+                    return;
+                }
+
+                foreach ($ids as $id) {
+                    if (!$item->can($id, UPDATE)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    if (!$item->getFromDB($id)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        continue;
+                    }
+
+                    $existing = array_map('intval', $item->fields[$field_name] ?? []);
+
+                    if ($action === 'associate_group') {
+                        $new_groups = array_values(array_unique(array_merge($existing, $groups_ids)));
+                    } else {
+                        $new_groups = array_values(array_diff($existing, $groups_ids));
+                    }
+
+                    if ($item->update(['id' => $id, $field_name => $new_groups])) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                    }
+                }
                 break;
         }
     }
