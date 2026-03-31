@@ -106,7 +106,7 @@ class Budget extends CommonDropdown
                         $count = self::countForBudget($item);
                     }
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $count, $item::getType(), 'ti ti-package')
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $count, $item::getType(), 'ti ti-package'),
                     ];
             }
         }
@@ -287,11 +287,6 @@ class Budget extends CommonDropdown
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        // Check if user can read the budget
-        if (!$item->can($item->fields['id'], READ)) {
-            return 0;
-        }
 
         // Use the same criteria as showItems() but without pagination
         $count_criteria = [
