@@ -58,46 +58,9 @@
 
     {{ fields.smallTitle(__('Legacy API')) }}
     {% if config['enable_api'] %}
-        <twig:Alert:Danger>Danger alert</twig:Alert:Danger>
-
-        <twig:Alert title="Fun HTML syntax! or after Twig component syntax" messages="My message" />
-
-        <twig:Alert title="Fun HTML syntax! or after Twig component syntax">
-            <div>
-                My content in more like a vue/nuxt logic
-            </div>
-        </twig:Alert>
-
-        <twig:Alert>
-            <twig:block name="title">
-                <h3 class="alert-title bg-green">
-                    We can also be more like a vue/nuxt component
-                </h3>
-            </twig:block>
-
-            <div>
-                My content in more like a twig logic
-            </div>
-        </twig:Alert>
-
-        <twig:Alert title="Default title" :messages="['Message 1', 'Message 2']" type="danger" icon="ti ti-speedboat">
-            <twig:block name="title">
-                <h4 class="alert-title">
-                    We can also render the default content
-                </h4>
-                {{ parent() }}
-            </twig:block>
-
-            <div>
-                My content in more like a twig logic
-                <div>{{ parent() }}</div>
-            </div>
-        </twig:Alert>
-
-        {{ component('Alert', {
-            type: 'warning',
-            title: __('The Legacy API is enabled. It is recommended to only use the new API when possible.')
-        }) }}
+        <twig:Alert:Warning
+            :title="__('The Legacy API is enabled. It is recommended to only use the new API when possible.')"
+        />
     {% endif %}
     {{ fields.sliderField('enable_api', config['enable_api'], __("Enable Legacy REST API"), {
         additional_attributes: {
