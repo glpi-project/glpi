@@ -1772,7 +1772,7 @@ class MassiveAction
 
                 if ($groups_ids === []) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                    $ma->addMessage(__('No group selected'));
+                    $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     return;
                 }
 
