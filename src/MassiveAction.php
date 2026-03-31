@@ -1767,13 +1767,8 @@ class MassiveAction
             case 'dissociate_group':
                 $input      = $ma->getInput();
 
-                Toolbox::logDebug($input);
-
-
                 $groups_ids = array_map('intval', (array) ($input['selected_group'] ?? []));
                 $field_name = $input['fieldname'] ?? 'groups_id';
-
-                Toolbox::logDebug($groups_ids);
 
                 if ($groups_ids === []) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
