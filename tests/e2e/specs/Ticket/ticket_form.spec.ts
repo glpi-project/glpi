@@ -107,14 +107,17 @@ test('TODO List', async ({ profile, page, api }) => {
 
 test('Search for Solution', async ({ profile, page, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const rand = randomUUID().replaceAll('-', '');
     const ticket_id = await api.createItem('Ticket', {
-        name: 'Test search solution',
-        content: 'Test search solution',
+        name: rand,
+        content: rand,
         entities_id: getWorkerEntityId(),
     });
+    const kb_name = `KB title ${rand}`;
+    const kb_content = `KB content ${rand}`;
     await api.createItem('KnowbaseItem', {
-        name: 'Test search solution',
-        answer: 'Test search solution kb answer',
+        name: kb_name,
+        answer: kb_content,
     });
 
     const ticket = new TicketPage(page);
@@ -125,17 +128,16 @@ test('Search for Solution', async ({ profile, page, api }) => {
     await page.getByRole('listitem', { name: 'Add a solution' }).click();
     await ticket.getButton('Search in the knowledge base').click();
 
-
     // Search for solution modal should be open with one result
     const kb_modal = page.getByRole('dialog', { name: 'Search in the knowledge base' });
     await expect(kb_modal).toBeVisible();
-    await expect(kb_modal.getByLabel('Search…')).toHaveValue('Test search solution');
+    await expect(kb_modal.getByLabel('Search…')).toHaveValue(rand);
     await expect(kb_modal.getByRole('listitem').first()).toBeVisible();
 
     // View KB entry
-    await kb_modal.getByTitle('Preview').first().click();
-    await expect(kb_modal.getByText('Subject')).toBeVisible();
-    await expect(kb_modal.getByText('Content', { exact: true })).toBeVisible();
+    await kb_modal.getByTitle('Preview').click();
+    await expect(kb_modal.getByText(kb_name)).toBeVisible();
+    await expect(kb_modal.getByText(kb_content, {exact: true}).filter({visible: true})).toBeAttached();
     await expect(kb_modal.getByRole('listitem')).toHaveCount(0);
 
     // Go back to search and use the KB entry
@@ -159,12 +161,13 @@ test('Search for Solution', async ({ profile, page, api }) => {
     // Search for solution modal should be open with one result
     const kb_modal2 = page.getByRole('dialog', { name: 'Search in the knowledge base' });
     await expect(kb_modal2).toBeVisible();
-    await expect(kb_modal2.getByLabel('Search…')).toHaveValue('Test search solution');
+    await expect(kb_modal2.getByLabel('Search…')).toHaveValue(rand);
     await expect(kb_modal2.getByRole('listitem').first()).toBeVisible();
 
     // View KB entry
-    await kb_modal2.getByTitle('Preview').first().click();
-    await expect(kb_modal2.getByText('Subject')).toBeVisible();
+    await kb_modal2.getByTitle('Preview').click();
+    await expect(kb_modal2.getByText(kb_name)).toBeVisible();
+    await expect(kb_modal2.getByText(kb_content, {exact: true}).filter({visible: true})).toBeAttached();
     await expect(kb_modal2.getByRole('listitem')).toHaveCount(0);
 
     // Go back to search and use the KB entry
