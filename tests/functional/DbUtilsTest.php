@@ -558,10 +558,10 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity($entity, $recursive);
 
         $instance = new \DbUtils();
-        $this->assertSame($count, $instance->countElementsInTableForMyEntities($table, $condition));
+        $this->assertSame($count, @$instance->countElementsInTableForMyEntities($table, $condition));
 
         //keep testing old method from db.function
-        $this->assertSame($count, countElementsInTableForMyEntities($table, $condition));
+        $this->assertSame($count, @countElementsInTableForMyEntities($table, $condition));
     }
 
     public static function dataCountEntities()

@@ -45,6 +45,13 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::$slave`
 - `DBmysql::isSlave()`
 - `DBSlave` class
+- `countElementsInTableForMyEntities()` / `DbUtils::countElementsInTableForMyEntities()`
+- `getTreeValueName()` / `DbUtils::getTreeValueName()`
+- `getTreeForItem()` / `DbUtils::getTreeForItem()`
+- `contructTreeFromList()` / `DbUtils::constructTreeFromList()`
+- `contructListFromTree()` / `DbUtils::constructListFromTree()`
+- `get_hour_from_sql()` / `DbUtils::getHourFromSql()`
+- `$withcomment` and `$translate` parameters of `getTreeLeafValueName()` and `DbUtils::getTreeLeafValueName()`
 
 #### Removed
 
