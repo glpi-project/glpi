@@ -30,27 +30,22 @@
  * ---------------------------------------------------------------------
  */
 
-describe("ITIL Followups", () => {
-    it("can add a followup to a new ticket", () => {
-        cy.createWithAPI("Ticket", {
-            name: "Open ticket",
-            content: "",
-        }).then((id) => {
-            cy.login();
-            cy.visit(`/front/ticket.form.php?id=${id}`);
-            cy.findByRole('button', {name: "Answer"}).should('exist');
-        });
-    });
+import { Page } from "@playwright/test";
+import { GlpiPage } from "./GlpiPage";
 
-    it("can't add a followup to a closed ticket", () => {
-        cy.createWithAPI("Ticket", {
-            name: "Closed ticket",
-            content: "",
-            status: 6,
-        }).then((id) => {
-            cy.login();
-            cy.visit(`/front/ticket.form.php?id=${id}`);
-            cy.findByRole('button', {name: "Answer"}).should('not.exist');
-        });
-    });
-});
+export class NotificationTemplatePage extends GlpiPage
+{
+    public constructor(page: Page)
+    {
+        super(page);
+    }
+
+    public async goto(id: number, tab?: string): Promise<void>
+    {
+        let url = `/front/notificationtemplate.form.php?id=${id}`;
+        if (tab) {
+            url += `&forcetab=${tab}`;
+        }
+        await this.page.goto(url);
+    }
+}

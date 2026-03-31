@@ -219,7 +219,7 @@ final class Parser
                         [
                             'AND' => [
                                 [$this->db::quoteName($a) => ['<>', '']],
-                                [$this->db::quoteName($a) => ['<>', null]],
+                                'NOT' => [$this->db::quoteName($a) => null],
                             ],
                         ],
                     ],

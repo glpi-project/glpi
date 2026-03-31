@@ -36,12 +36,12 @@ namespace tests\units;
 
 use CommonDBTM;
 use Contract;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Location;
 use MassiveAction;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Problem;
 use Session;
 use Ticket;
 use User;
@@ -144,6 +144,15 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount($singlecount, $input['actions']);
     }
 
+    /**
+     * @param string $action_code   action choosen on form ('update', 'purge', ...)
+     * @param CommonDBTM $item
+     * @param array $ids            ids for items to update
+     * @param array<string, mixed>  $input submitted by user
+     * @param int $ok               number of expected success
+     * @param int $ko               number of expected failures
+     * @param string $action_class
+     */
     protected function processMassiveActionsForOneItemtype(
         string $action_code,
         CommonDBTM $item,
@@ -152,7 +161,7 @@ class MassiveActionTest extends DbTestCase
         int $ok,
         int $ko,
         string $action_class = MassiveAction::class
-    ) {
+    ): void {
         $ma_ok = 0;
         $ma_ko = 0;
 
@@ -177,8 +186,10 @@ class MassiveActionTest extends DbTestCase
 
                 if ($res == MassiveAction::ACTION_OK) {
                     $ma_ok += $increment;
-                } else {
+                } elseif ($res == MassiveAction::ACTION_KO || $res == MassiveAction::ACTION_NORIGHT) {
                     $ma_ko += $increment;
+                } else {
+                    throw new \RuntimeException("Unexpected result '$res' in itemDone callback");
                 }
             }
         );
@@ -187,8 +198,8 @@ class MassiveActionTest extends DbTestCase
         $action_class::processMassiveActionsForOneItemtype($ma, $item, $ids);
 
         // Check expected number of success and failures
-        $this->assertSame($ok, $ma_ok);
-        $this->assertSame($ko, $ma_ko);
+        $this->assertSame($ko, $ma_ko, "$ko failures expected but $ma_ko found");
+        $this->assertSame($ok, $ma_ok, "$ok success expected but $ma_ok found");
     }
 
     public static function amendCommentProvider()
@@ -278,6 +289,119 @@ class MassiveActionTest extends DbTestCase
         $_SESSION['glpiactiveentities'] = $old_session;
     }
 
+    /**
+     * Ids of search Option of State related to visibility
+     * @see State::rawSearchOptions()
+     * @return array<int,array<int>>
+     */
+    public static function stateVisibilitySearchOptionIdsProvider(): array
+    {
+        return array_map(fn($so_id) => [$so_id], range(21, 39));
+    }
+
+    /**
+     * Checks if a State can be (de)associated with an itemtype via massive action
+     */
+    #[DataProvider('stateVisibilitySearchOptionIdsProvider')]
+    public function testMassiveActionUpdateStateVisibility(int $search_option_id): void
+    {
+        // --- arrange
+        $this->login();
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        $_searchoption_definition = SearchOption::getOptionsForItemtype($state::class)[$search_option_id];
+        $visible_itemtype = $_searchoption_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] ?? throw new \RuntimeException('Unexpected searchOption definition : visible_itemtype not found');
+
+        // input submited in massive action form
+        $form_input = [
+            'visible_itemtype' => [$visible_itemtype],
+            'is_visible' => 1,
+            'search_options' => ['State' => $search_option_id],
+        ];
+
+        // --- act
+        $this->processMassiveActionsForOneItemtype(
+            'update_visibility',
+            $state,
+            [$state->fields['id']],
+            $form_input,
+            1,
+            0,
+            \State::class
+        );
+
+        // -- assert
+        $state->getFromDB($state->getID());
+        $state_visible_field = 'is_visible_' . strtolower($visible_itemtype);
+        $this->assertEquals(1, $state->fields[$state_visible_field]);
+    }
+
+    /**
+     * Checks if a State can be (de)associated with a custom asset itemtype via massive action
+     */
+    public function testMassiveActionUpdateStateVisibilityForCustomAsset(): void
+    {
+        // --- Arrange
+        $this->login();
+        $definition = $this->initAssetDefinition();
+        $custom_asset_classname = $definition->getAssetClassName();
+
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        // Find the search option for this custom asset in State using definition (not id, it may change)
+        $search_options = SearchOption::getOptionsForItemtype($state::class);
+        $custom_asset_search_option = null;
+        $custom_asset_search_option_id = null;
+
+        foreach ($search_options as $so_id => $so_definition) {
+            if (isset($so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'])
+                && $so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] === $custom_asset_classname) {
+                $custom_asset_search_option = $so_definition;
+                $custom_asset_search_option_id = $so_id;
+                $visibility_field = 'is_visible_' . strtolower($custom_asset_classname);
+                break;
+            }
+        }
+
+        assert($custom_asset_search_option !== null, "Search option not found for custom asset {$custom_asset_classname}");
+        assert(isset($state->fields[$visibility_field]), "field '$visibility_field' not found in State fields");
+        assert($state->fields[$visibility_field] == 0, "field '$visibility_field' should be 0 to start test");
+
+        // input submitted in massive action form
+        $test_input = [
+            'visible_itemtype' => [$custom_asset_classname],
+            'is_visible' => 1,
+            'search_options' => ['State' => $custom_asset_search_option_id],
+        ];
+
+        // --- Act
+        $this->processMassiveActionsForOneItemtype(
+            'update_visibility',
+            $state,
+            [$state->fields['id']],
+            $test_input,
+            1,
+            0,
+            \State::class,
+        );
+
+        // --- Assert
+        $state->getFromDB($state->getID());
+        $this->assertEquals(1, $state->fields[$visibility_field]);
+
+        // Verify in DropdownVisibility table
+        $visibility = countElementsInTable(
+            \DropdownVisibility::getTable(),
+            [
+                'itemtype' => \State::class,
+                'items_id' => $state->getID(),
+                'visible_itemtype' => $custom_asset_classname,
+                'is_visible' => 1,
+            ]
+        );
+        $this->assertEquals(1, $visibility, "DropdownVisibility entry should exist for custom asset");
+    }
+
     public static function addNoteProvider()
     {
         return [
@@ -347,93 +471,6 @@ class MassiveActionTest extends DbTestCase
         }
 
         $_SESSION['glpiactiveprofile'][$item::$rightname] = $old_session;
-    }
-
-    public static function linkToProblemProvider()
-    {
-        return [
-            [
-                // Expected failure: wrong itemtype
-                'item'      => getItemByTypeName("Computer", "_test_pc01"),
-                'input'     => [],
-                'has_right' => false,
-            ],
-            [
-                // Expected failure: missing rights
-                'item'      => getItemByTypeName("Ticket", "_ticket01"),
-                'input'     => [],
-                'has_right' => false,
-            ],
-            [
-                // Expected failure: input is empty
-                'item'      => getItemByTypeName("Ticket", "_ticket01"),
-                'input'     => [],
-                'has_right' => true,
-            ],
-            [
-                // Expected failure: input is invalid
-                'item'      => getItemByTypeName("Ticket", "_ticket01"),
-                'input'     => ['problems_id' => -1],
-                'has_right' => true,
-            ],
-            [
-                // Should work
-                'item'      => getItemByTypeName("Ticket", "_ticket01"),
-                'input'     => ['problems_id' => 1],
-                'has_right' => true,
-            ],
-        ];
-    }
-
-    #[DataProvider('linkToProblemProvider')]
-    public function testProcessMassiveActionsForOneItemtype_linkToProblem(
-        CommonDBTM $item,
-        array $input,
-        bool $has_right
-    ) {
-        // Set up session rights
-        $old_session = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
-        if ($has_right) {
-            $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
-        }
-
-        // Default expectation: can't run
-        $expected_ok = 0;
-        $expected_ko = 0;
-
-        // Check rights set up was successful
-        $this->assertSame(
-            $has_right,
-            (bool) Session::haveRight(Problem::$rightname, UPDATE)
-        );
-
-        // If input is valid, make sure we have a matching problem
-        $problems_id = $input['problems_id'] ?? -1;
-        if ($problems_id > 0) {
-            $problem = new Problem();
-            $input['problems_id'] = $problem->add([
-                'name'    => "tmp",
-                'content' => "tmp",
-            ]);
-            $this->assertGreaterThan(0, $input['problems_id']);
-
-            // Update expectation: this item should be OK
-            $expected_ok = 1;
-        }
-
-        // Execute action
-        @$this->processMassiveActionsForOneItemtype(
-            "link_to_problem",
-            $item,
-            [$item->fields['id']],
-            $input,
-            $expected_ok,
-            $expected_ko,
-            Ticket::class
-        );
-
-        // Reset rights
-        $_SESSION['glpiactiveprofile'][Problem::$rightname] = $old_session;
     }
 
     protected function resolveTicketsProvider()

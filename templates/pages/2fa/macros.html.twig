@@ -180,7 +180,7 @@
                 backup_code_container.append(`<table class="table table-bordered mx-auto text-center" style="width: fit-content"><tbody></tbody></table>`);
                 const table_body = backup_code_container.find('tbody');
                 $.each(codes, function (index, value) {
-                    let code_item = $('<tr><td class="backup-code"></td></tr>');
+                    let code_item = $('<tr><td class="backup-code" data-testid="backup-code"></td></tr>');
                     // Stylize the codes to make them easier to read and reduce ambiguity
                     for (let i = 0; i < value.length; i++) {
                         if (isNaN(value[i])) {

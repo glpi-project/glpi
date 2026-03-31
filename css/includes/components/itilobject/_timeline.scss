@@ -51,6 +51,18 @@
         margin-left: 0.5rem;
         margin-right: -0.5rem;
 
+        .task-state-checkbox {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .task-state-checkbox:disabled {
+            cursor: not-allowed;
+        }
+
         .state {
             display: inline-block;
             width: 20px;

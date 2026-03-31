@@ -63,6 +63,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Features\AssignableItemInterface;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -398,7 +400,7 @@ final class SQLProvider implements SearchProviderInterface
                             expression: QueryFunction::concat([
                                 "{$table}{$addtable}.completename",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
+                                "glpi_profiles_users{$addtable2}.profiles_id",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_recursive",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
@@ -3714,6 +3716,94 @@ final class SQLProvider implements SearchProviderInterface
             return $joins;
         }
 
+        if ($to_type === Form::class && $from_referencetype && is_a($from_referencetype, CommonITILObject::class, true)) {
+            // From CommonITILObject to Form
+            $dest_items_table = AnswersSet_FormDestinationItem::getTable();
+            $dest_items_alias = $dest_items_table . $alias_suffix;
+            if (!in_array($dest_items_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $dest_items_alias;
+                $joins['LEFT JOIN']["`$dest_items_table` AS `$dest_items_alias`"] = [
+                    'ON' => [
+                        $dest_items_alias => 'items_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$dest_items_alias.itemtype" => $from_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            $answerssets_table = AnswersSet::getTable();
+            $answerssets_alias = $answerssets_table . $alias_suffix;
+            if (!in_array($answerssets_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $answerssets_alias;
+                $joins['LEFT JOIN']["`$answerssets_table` AS `$answerssets_alias`"] = [
+                    'ON' => [
+                        $answerssets_alias => 'id',
+                        $dest_items_alias => 'forms_answerssets_id',
+                    ],
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $answerssets_alias => 'forms_forms_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
+        if ($from_referencetype === Form::class && $to_type && is_a($to_type, CommonITILObject::class, true)) {
+            // From Form to CommonITILObject
+            $answerssets_table = AnswersSet::getTable();
+            $answerssets_alias = $answerssets_table . $alias_suffix;
+            if (!in_array($answerssets_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $answerssets_alias;
+                $joins['LEFT JOIN']["`$answerssets_table` AS `$answerssets_alias`"] = [
+                    'ON' => [
+                        $answerssets_alias => 'forms_forms_id',
+                        $from_table => 'id',
+                    ],
+                ];
+            }
+            $dest_items_table = AnswersSet_FormDestinationItem::getTable();
+            $dest_items_alias = $dest_items_table . $alias_suffix;
+            if (!in_array($dest_items_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $dest_items_alias;
+                $joins['LEFT JOIN']["`$dest_items_table` AS `$dest_items_alias`"] = [
+                    'ON' => [
+                        $dest_items_alias => 'forms_answerssets_id',
+                        $answerssets_alias => 'id',
+                        [
+                            'AND' => [
+                                "$dest_items_alias.itemtype" => $to_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $dest_items_alias => 'items_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
         // Generic JOIN
         $from_obj      = getItemForItemtype($from_referencetype);
         $from_item_obj = null;
@@ -6696,7 +6786,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename(
                                     !empty($data[$ID][$k]['trans_completename'])
                                         ? $data[$ID][$k]['trans_completename']
-                                        : $data[$ID][$k]['name']
+                                        : $name
                                 );
                                 $chunks = \explode(' > ', $name);
                                 $completename = '';
@@ -6928,24 +7018,28 @@ final class SQLProvider implements SearchProviderInterface
                     return __('Default value');
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
-                        $bar_color = 'green';
-                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), "0");
-                        $progressbar_data = [
-                            'percent'      => $percent,
-                            'percent_text' => $percent,
-                            'color'        => $bar_color,
+                        $progressbar_data = array_map(fn($entry) => [
+                            'percent'      => ltrim(($entry['name'] ?? ""), "0"),
+                            'percent_text' => ltrim(($entry['name'] ?? ""), "0"),
+                            'color'        => 'green',
                             'text'         => '',
-                        ];
+                        ], array_filter($data[$ID], static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY));
+                    } elseif (array_key_exists('percent', $progressbar_data)) {
+                        // progressbar data is only a single entry
+                        $progressbar_data = [$progressbar_data];
                     }
 
-                    $out = '<span class="text-nowrap">' . \htmlescape($progressbar_data['text']) . '</span>'
-                        . '<div class="progress" style="height: 16px">'
-                        . '<div class="progress-bar progress-bar-striped" role="progressbar"'
-                        . ' style="width:' . \htmlescape($progressbar_data['percent']) . '%; background-color:' . \htmlescape($progressbar_data['color']) . ';"'
-                        . ' aria-valuenow="' . \htmlescape($progressbar_data['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
-                        . \htmlescape($progressbar_data['percent_text']) . '%'
-                        . '</div>'
-                        . '</div>';
+                    $out = '';
+                    foreach ($progressbar_data as $k => $v) {
+                        $out .= '<div class="mb-1"><span class="text-nowrap">' . \htmlescape($v['text']) . '</span>'
+                            . '<div class="progress" style="height: 16px">'
+                            . '<div class="progress-bar progress-bar-striped" role="progressbar"'
+                            . ' style="width:' . \htmlescape($v['percent']) . '%; background-color:' . \htmlescape($v['color']) . ';"'
+                            . ' aria-valuenow="' . \htmlescape($v['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
+                            . \htmlescape($v['percent_text']) . '%'
+                            . '</div>'
+                            . '</div></div>';
+                    }
 
                     return $out;
                 case 'color':

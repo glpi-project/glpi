@@ -2008,8 +2008,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public function prepareInputForUpdate($input)
     {
-        $input = $this->handleInputDeprecations($input);
-
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
@@ -2886,8 +2884,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         global $CFG_GLPI;
 
-        $input = $this->handleInputDeprecations($input);
-
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
@@ -3105,33 +3101,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         }
                     }
                 }
-            }
-        }
-
-        return $input;
-    }
-
-    /**
-     * Handle input deprecations by transferring old supported input keys to new input keys.
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    private function handleInputDeprecations(array $input): array
-    {
-        if (array_key_exists('users_id_validate', $input)) {
-            Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "_validation_targets" instead.');
-
-            if (!array_key_exists('_validation_targets', $input)) {
-                $input['_validation_targets'] = [];
-            }
-            $users_ids = !is_array($input['users_id_validate']) ? [$input['users_id_validate']] : $input['users_id_validate'];
-            foreach ($users_ids as $user_id) {
-                $input['_validation_targets'][] = [
-                    'itemtype_target' => User::class,
-                    'items_id_target' => $user_id,
-                ];
             }
         }
 
@@ -7586,19 +7555,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'hide_private_items' => false,
         ];
 
-        if (array_key_exists('bypass_rights', $options) && $options['bypass_rights']) {
-            Toolbox::deprecated('Using `bypass_rights` parameter is deprecated.');
-            $params['check_view_rights'] = false;
-        }
-        if (array_key_exists('expose_private', $options) && $options['expose_private']) {
-            Toolbox::deprecated('Using `expose_private` parameter is deprecated.');
-            $params['hide_private_items'] = false;
-        }
-        if (array_key_exists('is_self_service', $options) && $options['is_self_service']) {
-            Toolbox::deprecated('Using `is_self_service` parameter is deprecated.');
-            $params['hide_private_items'] = false;
-        }
-
         if (count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
@@ -7703,6 +7659,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
+                    if (!isset($followup_row['sourceitems_id'])) {
+                        $followup_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($followup_row['sourceof_items_id'])) {
+                        $followup_row['sourceof_items_id'] = 0;
+                    }
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type'     => ITILFollowup::class,
                         'item'     => $followup_row,
@@ -7733,6 +7698,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
+                    if (!isset($task_row['sourceitems_id'])) {
+                        $task_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($task_row['sourceof_items_id'])) {
+                        $task_row['sourceof_items_id'] = 0;
+                    }
                     $timeline[$tltask::class . "_" . $tasks_id] = [
                         'type'     => $taskClass,
                         'item'     => $task_row,
@@ -7974,7 +7947,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
-                $autoreminder_obj->fields['content'] ?? '',
+                htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])
             );
 
@@ -8915,6 +8888,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ];
     }
 
+    /**
+     * Add associated items in database
+     */
     public function handleItemsIdInput(): void
     {
         if (!empty($this->input['items_id'])) {
@@ -10814,6 +10790,28 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
                     $input['profiles_id'] = $user->fields['profiles_id']; //default profile
+                }
+            }
+        }
+
+        // set group of first fetched associated item - $input['_groups_id_of_item']
+        if (isset($input["items_id"])) {
+            $items = is_array($input["items_id"]) ? $input["items_id"] : [$input["items_id"]];
+            foreach ($items as $itemtype => $items_ids) {
+                if (!is_array($items_ids)) {
+                    continue;
+                }
+
+                $item = getItemForItemtype($itemtype);
+                if (!($item instanceof CommonDBTM)) {
+                    continue;
+                }
+
+                foreach ($items_ids as $id) {
+                    if ($item->getFromDB($id) && isset($item->fields['groups_id'])) {
+                        $input['_groups_id_of_item'] = $item->fields['groups_id'];
+                        break 2;
+                    }
                 }
             }
         }

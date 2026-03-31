@@ -16,6 +16,7 @@ The present file will list all changes made to the project; according to the
 ### Removed
 
 ### API changes
+- Type declarations for some `CronTask` methods have been added.
 
 #### Added
 
@@ -24,6 +25,14 @@ The present file will list all changes made to the project; according to the
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final
 - `KnowbaseItem_Revision` is now final
+- Use of the `users_id_validate` field for `CommonITILValidation` is no longer supported. Use `items_id_target` and `itemtype_target` instead.
+- Passing additional URL parameters in `Document::getDownloadLink()` is no longer supported.
+- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use `_categories` array instead.
+- Use of the `certificates` and `entities_id` options in `NotificationTargetCertificate` is no longer supported. These values are automatically computed based on the linked certificate.
+- Use of the `domains` and `entities_id` options in `NotificationTargetDomain` is no longer supported. These values are automatically computed based on the linked domain.
+- Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
+- `Ticket:link_to_problem` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
+- `Ticket_Ticket:add` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
@@ -36,6 +45,13 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::$slave`
 - `DBmysql::isSlave()`
 - `DBSlave` class
+- `countElementsInTableForMyEntities()` / `DbUtils::countElementsInTableForMyEntities()`
+- `getTreeValueName()` / `DbUtils::getTreeValueName()`
+- `getTreeForItem()` / `DbUtils::getTreeForItem()`
+- `contructTreeFromList()` / `DbUtils::constructTreeFromList()`
+- `contructListFromTree()` / `DbUtils::constructListFromTree()`
+- `get_hour_from_sql()` / `DbUtils::getHourFromSql()`
+- `$withcomment` and `$translate` parameters of `getTreeLeafValueName()` and `DbUtils::getTreeLeafValueName()`
 
 #### Removed
 
@@ -43,6 +59,7 @@ The present file will list all changes made to the project; according to the
 - `jquery-prettytextdiff` JS library
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
+- `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -131,12 +148,15 @@ The present file will list all changes made to the project; according to the
 ## [11.0.7] unreleased
 
 ### Added
+- Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
+- CLI command `security:change_oauth_key` to (re)generate the OAuth keys. This can be used to change keys or to create them in the case they fail to be created during the installation/update process.
 
 ### Changed
 
 ### Deprecated
 
 ### Removed
+- "Associate to an appliance" and "Remove from a rack" actions removed for templates.
 
 ### API changes
 

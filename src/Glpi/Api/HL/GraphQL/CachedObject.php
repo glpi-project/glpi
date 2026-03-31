@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,22 +32,24 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Tabs', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-    });
-    it('can use the "forcetab" URL parameter to land on a specific tab', () => {
-        cy.visit("/front/user.form.php?id=2&forcetab=Change$1");
-        cy.findByRole('tab', { name: 'Created changes' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Created problems' })
-            .should('not.have.attr', 'aria-selected', 'true');
+namespace Glpi\Api\HL\GraphQL;
 
-        cy.visit("/front/user.form.php?id=2&forcetab=Problem$1");
-        cy.findByRole('tab', { name: 'Created problems' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Created changes' })
-            .should('not.have.attr', 'aria-selected', 'true');
-    });
-});
+/**
+ * An object fetched and cached during a GraphQL request.
+ * May be an incomplete representation of the object, depending on the requested fields.
+ */
+class CachedObject
+{
+    /** @param array<string, mixed> $data */
+    public function __construct(
+        public array $data = []
+    ) {}
+
+    /**
+     * @return string[]
+     */
+    public function getFields(): array
+    {
+        return array_keys($this->data);
+    }
+}

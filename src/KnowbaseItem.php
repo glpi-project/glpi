@@ -243,7 +243,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
-        $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
 
@@ -359,14 +358,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ];
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
-        }
-
-        // Support old "knowbaseitemcategories_id" input
-        if (isset($this->input['knowbaseitemcategories_id'])) {
-            Toolbox::deprecated('knowbaseitemcategories_id input is deprecated. Use _categories instead');
-            $categories = $this->input['knowbaseitemcategories_id'];
-            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
-            unset($this->input['knowbaseitemcategories_id']);
         }
 
         // Handle categories
@@ -755,14 +746,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'content_field' => 'answer',
             ]
         );
-
-        // Support old "knowbaseitemcategories_id" input
-        if (isset($this->input['knowbaseitemcategories_id'])) {
-            Toolbox::deprecated('knowbaseitemcategories_id input is deprecated. Use _categories instead');
-            $categories = $this->input['knowbaseitemcategories_id'];
-            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
-            unset($this->input['knowbaseitemcategories_id']);
-        }
 
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');

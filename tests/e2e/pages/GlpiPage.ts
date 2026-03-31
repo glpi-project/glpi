@@ -47,6 +47,15 @@ export class GlpiPage
     public readonly dashboards_widgets: Locator;
     public readonly active_entity: Locator;
 
+    // Layout locators (common to all authenticated pages)
+    public readonly sidebar: Locator;
+    public readonly main_header: Locator;
+    public readonly sidebar_menu_toggles: Locator;
+    public readonly user_menu_dropdown: Locator;
+    public readonly entity_menu_toggle: Locator;
+    public readonly entity_menu_dropdown: Locator;
+    public readonly about_link: Locator;
+
     // Notes tab locators
     public readonly add_note_button: Locator;
     public readonly submit_note_button: Locator;
@@ -69,6 +78,15 @@ export class GlpiPage
         // .first() because we always display this information twice, with only
         // one being shown depending on the screen size.
         this.active_entity = page.getByTestId("current-entity").first();
+
+        // Layout locators
+        this.sidebar              = page.getByTestId('sidebar');
+        this.main_header          = page.getByTestId('main-header');
+        this.sidebar_menu_toggles = page.getByTestId('sidebar-menu-toggle');
+        this.user_menu_dropdown   = page.getByTestId('user-menu-dropdown').filter({ visible: true });
+        this.entity_menu_toggle   = page.getByRole('link', { name: 'Select the desired entity' });
+        this.entity_menu_dropdown = page.getByTestId('entity-menu-dropdown').filter({ visible: true });
+        this.about_link           = page.getByTestId('about-link').filter({ visible: true });
 
         // Notes tab locators
         this.add_note_button = this.getButton("Add a note");
@@ -93,12 +111,20 @@ export class GlpiPage
             .getByRole('option', {'name': value, exact: exact})
             .first()
         ;
+        const simple_dropdown_with_prefix = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': `»${value}`, exact: exact})
+        ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
         ;
 
-        await simple_dropdown.or(dropdown_with_groups).click();
+        await simple_dropdown
+            .or(simple_dropdown_with_prefix)
+            .or(dropdown_with_groups)
+            .click()
+        ;
         await expect(dropdown).toContainText(value);
     }
 
@@ -106,6 +132,7 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
         exact: boolean = true,
+        check_value: boolean = true,
     ):  Promise<void> {
         await dropdown.click();
 
@@ -120,7 +147,10 @@ export class GlpiPage
         ;
 
         await simple_dropdown.or(dropdown_with_groups).click();
-        await expect(dropdown).toContainText(value);
+
+        if (check_value) {
+            await expect(dropdown).toContainText(value);
+        }
     }
 
     public async doClearDropdownValue(
@@ -139,7 +169,7 @@ export class GlpiPage
     public async doLogout(): Promise<void>
     {
         await this.user_menu.click();
-        await this.logout_link.click();
+        await this.page.goto('/front/logout.php');
     }
 
     public async doChangeProfile(profile: string): Promise<void>

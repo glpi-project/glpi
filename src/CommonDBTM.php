@@ -4133,14 +4133,16 @@ class CommonDBTM extends CommonGLPI
                 MassiveAction::getAddTransferList($actions);
             }
 
-            if (in_array(static::class, Appliance::getTypes(true))) {
-                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
-            }
+            if ($checkitem === null || $checkitem->isNewItem() || !$checkitem->isTemplate()) {
+                if (in_array(static::class, Appliance::getTypes(true))) {
+                    $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                        = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
+                }
 
-            if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
-                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
+                    $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
+                        = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                }
             }
         }
 
@@ -4448,7 +4450,7 @@ class CommonDBTM extends CommonGLPI
             }
 
             $double_text = '';
-            if ($item->canView() && $item->canViewItem()) {
+            if (Session::getLoginUserID(false) && $item->canView() && $item->canViewItem()) {
                 $double_text = $item->getLink();
             }
 
@@ -4582,7 +4584,7 @@ class CommonDBTM extends CommonGLPI
                             $where['NOT'] = [static::getTable() . '.id' => $this->input['id']];
                         }
 
-                        $doubles = getAllDataFromTable(static::getTable(), $where);
+                        $doubles = getAllDataFromTable(static::getTable(), $where + static::getSystemSQLCriteria());
                         if (count($doubles) > 0) {
                             $message = [];
                             if (

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
@@ -1014,27 +1015,26 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $dashboards_data = require __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
         $tables['glpi_dashboards_dashboards'] = [];
         $tables['glpi_dashboards_items'] = [];
         $i = $j = 1;
-        foreach ($dashboards_data as $default_dashboard) {
-            $translated_name = $default_dashboard['translated_name'];
-            unset($default_dashboard['translated_name']);
-            $items = $default_dashboard['_items'];
-            unset($default_dashboard['_items']);
-            $tables['glpi_dashboards_dashboards'][] = array_merge([
+        foreach (Dashboard::getDefaults() as $dashboard_data) {
+            $tables['glpi_dashboards_dashboards'][] = [
                 'id' => $i,
-            ], $default_dashboard);
+                'key' => $dashboard_data['key'],
+                'name' => $dashboard_data['name'],
+                'context' => $dashboard_data['context'],
+            ];
 
-            foreach ($items as $item) {
-                $tables['glpi_dashboards_items'][] = array_merge([
-                    'id' => $j,
-                    'dashboards_dashboards_id' => $i,
-                ], $item);
+            foreach ($dashboard_data['items'] as $item) {
+                $item['id'] = $j;
+                $item['dashboards_dashboards_id'] = $i;
+                $item['card_options'] = json_encode($item['card_options']);
+                $tables['glpi_dashboards_items'][] = $item;
 
                 $j++;
             }
+
             $i++;
         }
 
@@ -9731,6 +9731,17 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 self::PROFILE_SUPERVISOR,
                 self::PROFILE_READ_ONLY,
             ];
+            $tables['glpi_oauthclients'][] = [
+                'name'         => 'Test E2E Playwright OAuth Client',
+                'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
+                'grants'       => json_encode(['authorization_code']),
+                'scopes'       => json_encode(['api', 'user']),
+                'is_active'    => 1,
+                'is_confidential' => 1,
+                'identifier'   => 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789',
+                'secret'       => (new GLPIKey())->encrypt('fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210'),
+            ];
+
             foreach ($users_to_create as $user_data) {
                 $next_available_user_id = max(
                     array_column($tables['glpi_users'], 'id')

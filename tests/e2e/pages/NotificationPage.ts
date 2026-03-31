@@ -30,19 +30,22 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Search engine', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin', true);
-    });
-    it('Accessibility', () => {
-        cy.visit('/front/computer.php');
-        cy.get('div.search_page').within(() => {
-            cy.root().injectAndCheckA11y();
-            cy.get('button.show-search-filters').click();
-            cy.get('div.search-form').injectAndCheckA11y();
-            cy.get('button.show-search-sorts').click();
-            cy.get('div.sort-container').injectAndCheckA11y();
-        });
-    });
-});
+import { Page } from "@playwright/test";
+import { GlpiPage } from "./GlpiPage";
+
+export class NotificationPage extends GlpiPage
+{
+    public constructor(page: Page)
+    {
+        super(page);
+    }
+
+    public async goto(id: number, tab?: string): Promise<void>
+    {
+        let url = `/front/notification.form.php?id=${id}`;
+        if (tab) {
+            url += `&forcetab=${tab}`;
+        }
+        await this.page.goto(url);
+    }
+}

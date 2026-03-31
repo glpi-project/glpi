@@ -105,7 +105,7 @@
                 {% if no_header is not defined or no_header == false %}
                     <tr>
                         {% if showmassiveactions %}
-                            <th style="width: 30px;">
+                            <th scope="col" style="width: 30px;">
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
@@ -125,7 +125,7 @@
 
                             {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
 
-                            <th>
+                            <th scope="col">
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
                                     <a href="{{ sort_href }}">
                                     <i class="{{ sort_icon }}"></i>
@@ -138,7 +138,7 @@
                         {% endfor %}
 
                        {% if nofilter is not defined or csv_url|length %}
-                           <th>
+                           <th scope="col">
                                <span class="float-end log-toolbar mb-0">
                                    {% if nofilter is not defined %}
                                        <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">

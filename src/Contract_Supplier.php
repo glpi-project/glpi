@@ -215,6 +215,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

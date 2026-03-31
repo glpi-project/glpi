@@ -236,8 +236,7 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  * @param string|array<mixed, mixed> $condition filtering criteria
  *
  * @return int Number of elements in table
- *
- * @TODO This method is not used, deprecate it in GLPI 12.0.
+ * @deprecated 12.0.0
  */
 function countElementsInTableForMyEntities($table, $condition = [])
 {
@@ -292,9 +291,6 @@ function getAllDataFromTable($table, $criteria = [], $usecache = false, $order =
  * @return ($withcomment is true ? array{name: string, comment: string} : string)
  *
  * @see DbUtils::getTreeValueCompleteName
- *
- * @TODO Deprecate the `$withcomment` parameter, it is never used.
- * @TODO Deprecate the `$translate` parameter, it is never used.
  */
 function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
 {
@@ -339,8 +335,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  * @param int     $level     current level of recursion (default 0)
  *
  * @return array{0: string, 1:int}
- *
- * @TODO This method is not used, deprecate it in GLPI 12.0.
+ * @deprecated 12.0.0
  */
 function getTreeValueName($table, $ID, $wholename = "", $level = 0)
 {
@@ -403,8 +398,7 @@ function getSonsAndAncestorsOf($table, $IDf)
  * @param int     $IDf   The ID of the father
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
- *
- * @TODO This method is not used, deprecate it in GLPI 12.0.
+ * @deprecated 12.0.0
  */
 function getTreeForItem($table, $IDf)
 {
@@ -420,8 +414,7 @@ function getTreeForItem($table, $IDf)
  * @param int                                           $root root of the tree
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
- *
- * @TODO This method is not used, deprecate it in GLPI 12.0.
+ * @deprecated 12.0.0
  */
 function contructTreeFromList($list, $root)
 {
@@ -437,8 +430,7 @@ function contructTreeFromList($list, $root)
  * @param int                                        $parent root of the tree
  *
  * @return array<int, int> list of items in the tree
- *
- * @TODO This method is not used, deprecate it in GLPI 12.0.
+ * @deprecated 12.0.0
  */
 function contructListFromTree($tree, $parent = 0)
 {
@@ -629,8 +621,7 @@ function importArrayFromDB($DATA)
  * @param string $time datetime time
  *
  * @return string
- *
- * @TODO This method is not used, deprecate it in GLPI 12.0.
+ * @deprecated 12.0.0
  */
 function get_hour_from_sql($time)
 {
@@ -665,7 +656,6 @@ function getDbRelations()
  *                                        when have acces to all entities (used for reminders)
  *
  * @return string the WHERE clause to restrict
- *
  * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
  */
 function getEntitiesRestrictRequest(
