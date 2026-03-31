@@ -54,7 +54,7 @@ class BudgetTest extends DbTestCase
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => $this->getTestRootEntity(true),
-            'value'       => 10000
+            'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
         $this->assertTrue($budget->getFromDB($budgets_id));
@@ -153,7 +153,7 @@ class BudgetTest extends DbTestCase
 
         $this->assertIsArray($tabs);
         $this->assertArrayHasKey(2, $tabs);
-        
+
         // The tab should contain a counter badge with value 1
         $tab_html = $tabs[2];
         $this->assertStringContainsString('badge', $tab_html);
