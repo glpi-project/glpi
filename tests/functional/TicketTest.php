@@ -4350,37 +4350,44 @@ class TicketTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['interface'] = '';
         $this->setEntity('Root entity', true);
 
-        $ticket = new Ticket();
-        $parent_id = $ticket->add([
-            'name'        => 'Parent ticket',
-            'content'     => 'Parent ticket',
-            'entities_id' => 0,
-            'status'      => CommonITILObject::INCOMING,
-        ]);
-        $child_id = $ticket->add([
-            'name'        => 'Child ticket',
-            'content'     => 'Child ticket',
-            'entities_id' => 0,
-            'status'      => CommonITILObject::INCOMING,
-        ]);
+        $parent_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Parent ticket',
+                'content'     => 'Parent ticket',
+                'entities_id' => 0,
+                'status'      => CommonITILObject::INCOMING,
+            ]
+        )->getID();
+
+        $child_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Child ticket',
+                'content'     => 'Child ticket',
+                'entities_id' => 0,
+                'status'      => CommonITILObject::INCOMING,
+            ]
+        )->getID();
 
         // Create a SON_OF link WITHOUT merging (child is not deleted)
-        $tt = new \Ticket_Ticket();
-        $tt->add([
-            'link'         => \Ticket_Ticket::SON_OF,
-            'tickets_id_1' => $child_id,
-            'tickets_id_2' => $parent_id,
-        ]);
+        $this->createItem(
+            \Ticket_Ticket::class,
+            [
+                'link'         => \Ticket_Ticket::SON_OF,
+                'tickets_id_1' => $child_id,
+                'tickets_id_2' => $parent_id,
+            ]
+        );
 
         // Add a followup to the child ticket
-        $followup = new ITILFollowup();
-        $this->assertGreaterThan(
-            0,
-            $followup->add([
+        $followup = $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype' => 'Ticket',
                 'items_id' => $child_id,
                 'content'  => 'Followup on non-deleted child',
-            ])
+            ]
         );
 
         // The followup must NOT have been copied to the parent
@@ -4391,13 +4398,12 @@ class TicketTest extends DbTestCase
         ]));
 
         // Add a task to the child ticket
-        $task = new \TicketTask();
-        $this->assertGreaterThan(
-            0,
-            $task->add([
+        $task = $this->createItem(
+            \TicketTask::class,
+            [
                 'tickets_id' => $child_id,
                 'content'    => 'Task on non-deleted child',
-            ])
+            ]
         );
 
         // The task must NOT have been copied to the parent
@@ -4407,24 +4413,24 @@ class TicketTest extends DbTestCase
         ]));
 
         // Add a document to the child ticket
-        $document = new \Document();
-        $documents_id = $document->add([
-            'name'     => 'Child ticket document',
-            'filename' => 'doc.xls',
-            'users_id' => '2',
-        ]);
-        $this->assertGreaterThan(0, $documents_id);
+        $documents_id = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'Child ticket document',
+                'filename' => 'doc.xls',
+                'users_id' => Session::getLoginUserID(),
+            ]
+        )->getID();
 
-        $document_item = new \Document_Item();
-        $this->assertGreaterThan(
-            0,
-            $document_item->add([
+        $document_item = $this->createItem(
+            \Document_Item::class,
+            [
                 'itemtype'     => 'Ticket',
                 'items_id'     => $child_id,
                 'documents_id' => $documents_id,
                 'entities_id'  => '0',
                 'is_recursive' => 0,
-            ])
+            ]
         );
 
         // The document must NOT have been copied to the parent
