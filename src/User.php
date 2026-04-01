@@ -1295,7 +1295,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         // Security on default profile update
         if (isset($input['profiles_id'])) {
-            if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))) {
+            if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id'])) && $input['profiles_id'] != 0) {
                 unset($input['profiles_id']);
             }
         }
