@@ -72,6 +72,12 @@ final class RichText
 
         $content = self::normalizeHtmlContent($content);
 
+        $content = preg_replace_callback(
+            '/href="([^"]*)"/',
+            fn($matches) => 'href="' . str_replace(' ', '%20', $matches[1]) . '"',
+            $content
+        );
+
         $content = self::getHtmlSanitizer()->sanitize($content);
 
         // Remove extra lines
