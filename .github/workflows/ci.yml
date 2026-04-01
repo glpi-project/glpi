@@ -407,7 +407,7 @@ jobs:
       - name: "Install dependencies"
         run: npm ci
       - name: "Download blob reports"
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: all-blob-reports
           pattern: blob-report-*
