@@ -40,7 +40,7 @@
         "gettext/languages": "^2.12",
         "glpi-project/inventory_format": "^1.2",
         "guzzlehttp/guzzle": "^7.10",
-        "guzzlehttp/psr7": "^2.8",
+        "guzzlehttp/psr7": "^2.9",
         "html2text/html2text": "^4.3",
         "laminas/laminas-i18n": "^2.32",
         "laminas/laminas-mail": "^2.25",
