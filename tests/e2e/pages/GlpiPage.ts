@@ -103,6 +103,7 @@ export class GlpiPage
         exact: boolean = true
     ):  Promise<void> {
         await dropdown.click();
+        await this.page.getByRole('listbox').focus();
         await this.page.keyboard.type(value);
 
         // Select2 roles are different if the dropdown group some values
@@ -126,6 +127,7 @@ export class GlpiPage
         check_value: boolean = true,
     ):  Promise<void> {
         await dropdown.click();
+        await this.page.getByRole('listbox').focus();
 
         // Select2 roles are different if the dropdown group some values
         const simple_dropdown = this.page
