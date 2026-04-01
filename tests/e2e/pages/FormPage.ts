@@ -675,10 +675,10 @@ export class FormPage extends GlpiPage
         value: string,
     ): Promise<void> {
         await dropdown.click();
-        await this.page.getByRole('listbox').focus();
         await this.page.keyboard.type(value);
         await expect(
-            this.page.getByRole('listbox').getByText(value, { exact: true })
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.page.locator('.select2-results__options').getByText(value, { exact: true })
         ).toHaveCount(0);
         await this.page.keyboard.press('Escape');
     }
