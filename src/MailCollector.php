@@ -1743,7 +1743,7 @@ class MailCollector extends CommonDBTM
 
             $filename = Toolbox::filename($filename);
 
-            //try to avoid conflict between inline image and attachmentPI
+            //try to avoid conflict between inline image and attachment
             while (in_array($filename, $this->files)) {
                 $info = new SplFileInfo($filename);
                 $extension  = $info->getExtension();
