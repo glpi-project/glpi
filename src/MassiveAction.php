@@ -597,8 +597,8 @@ class MassiveAction
             && !isAPI()
         ) {
             $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
-                = "<i class='ti ti-corner-right-up'></i>"
-                . _sx('button', 'Add to transfer list');
+                  = "<i class='ti ti-corner-right-up'></i>"
+                    . _sx('button', 'Add to transfer list');
         }
     }
 
@@ -647,7 +647,7 @@ class MassiveAction
             if ($canpurge) {
                 if (in_array($itemtype, Item_Devices::getConcernedItems())) {
                     $actions[$self_pref . 'purge_item_but_devices']
-                        = _sx('button', 'Delete permanently but keep devices');
+                                             = _sx('button', 'Delete permanently but keep devices');
                     $actions[$self_pref . 'purge']  = _sx('button', 'Delete permanently and remove devices');
                 } else {
                     $actions[$self_pref . 'purge']  = _sx('button', 'Delete permanently');
@@ -660,8 +660,8 @@ class MassiveAction
             if (
                 Session::getCurrentInterface() == 'central'
                 && ($canupdate
-                    || (Infocom::canApplyOn($itemtype)
-                        && Infocom::canUpdate()))
+                 || (Infocom::canApplyOn($itemtype)
+                     && Infocom::canUpdate()))
             ) {
                 //TRANS: select action 'update' (before doing it)
                 $actions[$self_pref . 'update'] = _sx('button', 'Update');
@@ -704,7 +704,7 @@ class MassiveAction
                 }
                 if ($item instanceof CommonDropdown) {
                     $actions[$self_pref . 'purge_but_item_linked']
-                        = _sx('button', 'Delete permanently even if linked items');
+                     = _sx('button', 'Delete permanently even if linked items');
                 }
             }
 
@@ -885,7 +885,7 @@ class MassiveAction
                         if (
                             Infocom::canApplyOn($itemtype)
                             && (!$itemtype::canUpdate()
-                                || !Infocom::canUpdate())
+                             || !Infocom::canUpdate())
                         ) {
                             $show_all      = false;
                             $show_infocoms = Infocom::canUpdate();
@@ -900,18 +900,18 @@ class MassiveAction
                                     && ($index != 1)
                                     // Permit entities_id is explicitly activate
                                     && (($option["linkfield"] != 'entities_id')
-                                        || (isset($option['massiveaction']) && $option['massiveaction']))
+                                     || (isset($option['massiveaction']) && $option['massiveaction']))
                                 ) {
                                     if (!isset($option['massiveaction']) || $option['massiveaction']) {
                                         if (
                                             ($show_all)
                                             || (($show_infocoms
-                                                    && Search::isInfocomOption($itemtype, $index))
-                                                || (!$show_infocoms
-                                                    && !Search::isInfocomOption($itemtype, $index)))
+                                            && Search::isInfocomOption($itemtype, $index))
+                                            || (!$show_infocoms
+                                            && !Search::isInfocomOption($itemtype, $index)))
                                         ) {
                                             $options_per_type[$itemtype][$group][$itemtype . ':' . $index]
-                                                = $option['name'];
+                                            = $option['name'];
                                             if ($itemtable == $option['table']) {
                                                 $field_key = 'MAIN:' . $option['field'] . ':' . $index;
                                             } else {
@@ -926,7 +926,7 @@ class MassiveAction
                                                     $options_count[$option['MA_common_field']] = [];
                                                 }
                                                 $options_count[$option['MA_common_field']][]
-                                                    = $itemtype . ':' . $index . ':' . $group;
+                                                 = $itemtype . ':' . $index . ':' . $group;
                                             }
                                         }
                                     }
@@ -1497,13 +1497,13 @@ class MassiveAction
                                     ($link_entity_type < 0)
                                     || ($link_entity_type == $item->getEntityID())
                                     || ($is_recursive
-                                        && in_array(
-                                            $link_entity_type,
-                                            getAncestorsOf(
-                                                "glpi_entities",
-                                                $item->getEntityID()
-                                            )
-                                        ))
+                                    && in_array(
+                                        $link_entity_type,
+                                        getAncestorsOf(
+                                            "glpi_entities",
+                                            $item->getEntityID()
+                                        )
+                                    ))
                                 ) {
                                     $input2 = [
                                         'items_id'  => $key,
