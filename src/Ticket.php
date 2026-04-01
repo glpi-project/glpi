@@ -6042,16 +6042,25 @@ JAVASCRIPT;
     {
         global $DB;
 
-        //look for merged tickets
+        //look for merged tickets (only when the source ticket is deleted, i.e. actually merged)
         $merged = [];
         $iterator = $DB->request(
             [
                 'FROM' => Ticket_Ticket::getTable(),
-                'SELECT' => ['tickets_id_2'],
+                'SELECT' => [Ticket_Ticket::getTable() . '.tickets_id_2'],
                 'DISTINCT' => true,
+                'INNER JOIN' => [
+                    Ticket::getTable() => [
+                        'ON' => [
+                            Ticket_Ticket::getTable() => 'tickets_id_1',
+                            Ticket::getTable()        => 'id',
+                        ],
+                    ],
+                ],
                 'WHERE' => [
-                    'tickets_id_1' => $id,
-                    'link'        => Ticket_Ticket::SON_OF,
+                    Ticket_Ticket::getTable() . '.tickets_id_1' => $id,
+                    Ticket_Ticket::getTable() . '.link'         => Ticket_Ticket::SON_OF,
+                    Ticket::getTable() . '.is_deleted'          => 1,
                 ],
             ]
         );

@@ -4340,6 +4340,101 @@ class TicketTest extends DbTestCase
         ]));
     }
 
+    /**
+     * When two tickets have a SON_OF link but the child is NOT deleted (not actually merged),
+     * responses added to the child must NOT be propagated to the parent.
+     */
+    public function testResponsesNotPropagatedWhenChildNotDeleted(): void
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $ticket = new Ticket();
+        $parent_id = $ticket->add([
+            'name'        => 'Parent ticket',
+            'content'     => 'Parent ticket',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ]);
+        $child_id = $ticket->add([
+            'name'        => 'Child ticket',
+            'content'     => 'Child ticket',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ]);
+
+        // Create a SON_OF link WITHOUT merging (child is not deleted)
+        $tt = new \Ticket_Ticket();
+        $tt->add([
+            'link'         => \Ticket_Ticket::SON_OF,
+            'tickets_id_1' => $child_id,
+            'tickets_id_2' => $parent_id,
+        ]);
+
+        // Add a followup to the child ticket
+        $followup = new ITILFollowup();
+        $this->assertGreaterThan(
+            0,
+            $followup->add([
+                'itemtype' => 'Ticket',
+                'items_id' => $child_id,
+                'content'  => 'Followup on non-deleted child',
+            ])
+        );
+
+        // The followup must NOT have been copied to the parent
+        $this->assertEmpty($followup->find([
+            'itemtype'       => 'Ticket',
+            'items_id'       => $parent_id,
+            'sourceitems_id' => $child_id,
+        ]));
+
+        // Add a task to the child ticket
+        $task = new \TicketTask();
+        $this->assertGreaterThan(
+            0,
+            $task->add([
+                'tickets_id' => $child_id,
+                'content'    => 'Task on non-deleted child',
+            ])
+        );
+
+        // The task must NOT have been copied to the parent
+        $this->assertEmpty($task->find([
+            'tickets_id'     => $parent_id,
+            'sourceitems_id' => $child_id,
+        ]));
+
+        // Add a document to the child ticket
+        $document = new \Document();
+        $documents_id = $document->add([
+            'name'     => 'Child ticket document',
+            'filename' => 'doc.xls',
+            'users_id' => '2',
+        ]);
+        $this->assertGreaterThan(0, $documents_id);
+
+        $document_item = new \Document_Item();
+        $this->assertGreaterThan(
+            0,
+            $document_item->add([
+                'itemtype'     => 'Ticket',
+                'items_id'     => $child_id,
+                'documents_id' => $documents_id,
+                'entities_id'  => '0',
+                'is_recursive' => 0,
+            ])
+        );
+
+        // The document must NOT have been copied to the parent
+        $this->assertEmpty($document_item->find([
+            'itemtype'     => 'Ticket',
+            'items_id'     => $parent_id,
+            'documents_id' => $documents_id,
+        ]));
+    }
+
     public function testKeepScreenshotsOnFormReload()
     {
         //login to get session
