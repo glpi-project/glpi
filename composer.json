@@ -131,7 +131,7 @@
         "symfony/var-dumper": "^7.4",
         "symfony/web-profiler-bundle": "^7.4",
         "thecodingmachine/phpstan-safe-rule": "^1.4",
-        "vimeo/psalm": "^6.15"
+        "vimeo/psalm": "^6.16"
     },
     "provide": {
         "ext-sodium": "*"
