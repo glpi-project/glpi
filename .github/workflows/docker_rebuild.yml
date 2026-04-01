@@ -80,33 +80,21 @@ jobs:
                   return bMaj - aMaj || bMin - aMin || bPatch - aPatch;
                 });
 
-              const latestPerMinorVersion = [];
               for (const supportedVersion of supportedVersions) {
                 // Find the latest stable release for this Major.Minor (e.g. 11.0)
                 const latestVersionTag = stableTags.find(t => t.startsWith(`${supportedVersion}.`));
                 if (latestVersionTag) {
-                  latestPerMinorVersion.push({ supportedVersion, version: latestVersionTag });
+                  core.info(`Rebuild target: ${latestVersionTag}`);
+                  matrix.push({
+                    'glpi-version': latestVersionTag,
+                    'image-tag': '',
+                    'no-cache': true,
+                    'use-legacy-marketplace-path': Number(latestVersionTag.split('.')[0]) < 11,
+                  });
                 } else {
                   core.warning(`No stable releases found for supported version: ${supportedVersion}`);
                 }
               }
-
-              if (latestPerMinorVersion.length === 0) {
-                core.setFailed('No stable releases found for any supported versions.');
-                return;
-              }
-
-              core.info(`Rebuild targets: ${latestPerMinorVersion.map(m => m.version).join(', ')}`);
-
-              matrix.push(...latestPerMinorVersion.map(({ supportedVersion, version }) => {
-                const major = supportedVersion.split('.')[0];
-                return {
-                  'glpi-version': version,
-                  'image-tag': '',
-                  'no-cache': true,
-                  'use-legacy-marketplace-path': Number(major) < 11,
-                };
-              }));
             }
 
             if (mustRebuildNightly) {
