@@ -458,7 +458,7 @@ class Contract extends CommonDBTM implements StateInterface
                 (int) $values['renewal'] === self::RENEWAL_TACIT,
                 $values['periodicity']
             ),
-	        '_virtual_expire_notice' => Infocom::getWarrantyExpir(
+            '_virtual_expire_notice' => Infocom::getWarrantyExpir(
                 $values['begin_date'],
                 $values['duration'],
                 $values['notice'],

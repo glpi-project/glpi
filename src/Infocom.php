@@ -41,7 +41,6 @@ use Safe\DateTime;
 
 use function Safe\mktime;
 use function Safe\preg_match;
-use function Safe\strtotime;
 
 /**
  * Infocom class
