@@ -61,11 +61,13 @@ jobs:
 
             if (mustRebuildStable) {
               // Fetch all non-draft, non-prerelease releases
-              const releases = await github.rest.repos.listReleases({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                per_page: 100,
-              });
+              const releases = await github.paginate(
+                github.rest.repos.listReleases,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                }
+              );
 
               // Keep only stable releases and sort by semver descending
               const stableTags = releases.data
