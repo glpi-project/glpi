@@ -74,7 +74,7 @@ final class RichText
 
         $content = preg_replace_callback(
             '/href="([^"]*)"/',
-            fn($matches) => 'href="' . str_replace(' ', '&nbsp;', $matches[1]) . '"',
+            fn($matches) => 'href="' . str_replace(' ', '%20', $matches[1]) . '"',
             $content
         );
 

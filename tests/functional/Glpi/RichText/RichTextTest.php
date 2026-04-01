@@ -417,7 +417,7 @@ HTML,
         yield [
             'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
             'encode_output_entities' => false,
-            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI #1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI%20#1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
         ];
 
         yield [
@@ -742,7 +742,7 @@ HTML,
 
         yield [
             'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
-            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI #1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI%20#1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
         ];
 
         global $CFG_GLPI;
