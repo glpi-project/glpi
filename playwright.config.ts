@@ -67,16 +67,11 @@ export default defineConfig({
     // - https://playwright.dev/docs/test-reporters
     // - https://playwright.dev/docs/api/class-testconfig#test-config-reporter
     reporter: process.env.CI ? [
-        // Will generate a HTML report that can be downloaded and viewed locally
-        ['html'],
+        // Blob reporter for merging sharded reports
+        // See: https://playwright.dev/docs/test-sharding#merging-reports-from-multiple-shards
+        ['blob'],
         // Easier to read in the terminal output of the CI itself
         ['dot'],
-        // Special reporter that can be viewed from github action results summary
-        // See:
-        // - https://ctrf.io
-        // - https://github.com/ctrf-io/github-test-reporter
-        // - https://github.com/ctrf-io/playwright-ctrf-json-reporter
-        ['playwright-ctrf-json-reporter'],
     ] : [
         // Generate html report in given folder
         ['html', {

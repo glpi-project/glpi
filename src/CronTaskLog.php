@@ -43,6 +43,9 @@ class CronTaskLog extends CommonDBChild
     public static string $itemtype = CronTask::class;
     public static string $items_id  = 'crontasks_id';
 
+    // Prevent CronTaskLog entries from flooding the CronTask historical tab
+    public static bool $logs_for_parent = false;
+
     // Class constant
     public const STATE_START = 0;
     public const STATE_RUN   = 1;

@@ -2897,20 +2897,29 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     ) {
         $_names = [];
 
-        foreach ($params['add_keys_names'] as $kn_fkey) {
-            if ($kn_fkey == "id") {
+        $fkeys = array_filter($params['add_keys_names'], isForeignKeyField(...));
+
+        foreach ($fkeys as $kn_fkey) {
+            if ($kn_fkey !== "id" && !isset($data[$kn_fkey])) {
+                trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
+                continue;
+            }
+            $kn_id = $data[$kn_fkey];
+
+            if ($kn_fkey === "id") {
                 // Get friendlyname for current item
                 $kn_itemtype = $self_itemtype;
                 $kn_id = $data[$kn_itemtype::getIndexName()];
-            } else {
-                if (!isset($data[$kn_fkey])) {
-                    trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
+            } elseif (str_contains($kn_fkey, 'items_id')) {
+                $itemtype_key = str_replace('items_id', 'itemtype', $kn_fkey);
+                if (!isset($data[$itemtype_key])) {
+                    trigger_error(sprintf('Invalid value: "%s" is missing.', $itemtype_key), E_USER_WARNING);
                     continue;
                 }
-
+                $kn_itemtype = $data[$itemtype_key];
+            } else {
                 // Get friendlyname for given fkey
                 $kn_itemtype = getItemtypeForForeignKeyField($kn_fkey);
-                $kn_id = $data[$kn_fkey];
             }
 
             // Check itemtype is valid
