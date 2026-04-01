@@ -37,6 +37,12 @@ for CONTAINER_ID in `docker compose ps -a -q`; do
   done
 done
 
+if [[ "$UPDATE_FILES_ACL" = true ]]; then
+  # Prevent git to trigger errors related to unexpected directories ownership
+  docker compose exec -T app git config --global --add safe.directory /var/www/glpi
+  docker compose exec -T app find /home/www-data/.cache/composer/vcs -mindepth 1 -maxdepth 1 -exec git config --global --add safe.directory {} \;
+fi
+
 # Always wait for 5 seconds, even when all services are considered as healthy,
 # as they may respond even if their startup script is still running (should not take more than 5 seconds).
 # This problem was encountered on mariadb:10.1 service.
