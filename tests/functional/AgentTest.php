@@ -162,6 +162,36 @@ class AgentTest extends DbTestCase
         $this->assertSame(1, $agent->fields['use_module_collect_data']);
     }
 
+    public function testHandleAgentTagClearedOnReimportWithoutTag()
+    {
+        $deviceid = $this->getUniqueString();
+
+        // --- arrange ---
+        $metadata_with_tag = [
+            'deviceid' => $deviceid,
+            'version'  => 'FusionInventory-Agent_v2.5.2-1.fc31',
+            'itemtype' => 'Computer',
+            'tag'      => 'mytag',
+        ];
+
+        $agent = new \Agent();
+        $aid = $agent->handleAgent($metadata_with_tag);
+        assert($aid > 0);
+        assert($agent->fields['tag'] === 'mytag');
+
+        // --- act ---
+        $metadata_without_tag = $metadata_with_tag;
+        unset($metadata_without_tag['tag']);
+
+        $agent2 = new \Agent();
+        $agent2->handleAgent($metadata_without_tag);
+
+        // --- assert ---
+        $reloaded = new \Agent();
+        $reloaded->getFromDB($aid);
+        $this->assertNull($reloaded->fields['tag']);
+    }
+
     public function testAgentFeaturesFromItem()
     {
         //run an inventory

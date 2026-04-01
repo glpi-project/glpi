@@ -430,9 +430,7 @@ class Agent extends CommonDBTM
             $input['version'] = $metadata['provider']['version'];
         }
 
-        if (isset($metadata['tag'])) {
-            $input['tag'] = $metadata['tag'];
-        }
+        $input['tag'] = $metadata['tag'] ?? null;
 
         if (isset($metadata['port'])) {
             $input['port'] = $metadata['port'];
