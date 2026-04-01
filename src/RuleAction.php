@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 class RuleAction extends CommonDBChild
 {
     // From CommonDBChild
@@ -486,7 +488,7 @@ class RuleAction extends CommonDBChild
                 }
             }
         }
-        return $action;
+        return Sanitizer::sanitize($action);
     }
 
 

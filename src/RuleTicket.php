@@ -486,7 +486,7 @@ class RuleTicket extends Rule
                                 $group = new Group();
                                 if (
                                     $group->getFromDBByCrit(["name" => $regexvalue,
-                                        "is_observer" => true,
+                                        "is_watcher" => true,
                                     ])
                                 ) {
                                     $output['_additional_groups_observers'][$group->getID()] = $group->getID();
