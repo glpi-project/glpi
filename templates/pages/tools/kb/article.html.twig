@@ -364,6 +364,7 @@
                                                         <i class="ti ti-upload me-1"></i>{{ __('Upload a file') }}
                                                     </button>
                                                 </li>
+                                                {% if document_idor_token is defined %}
                                                 <li class="nav-item" role="presentation">
                                                     <button
                                                         class="nav-link"
@@ -378,6 +379,7 @@
                                                         <i class="ti ti-link me-1"></i>{{ __('Link a document') }}
                                                     </button>
                                                 </li>
+                                                {% endif %}
                                             </ul>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                                         </div>
@@ -429,23 +431,46 @@
                                                         </div>
                                                     </form>
                                                 </div>
+                                                {% if document_idor_token is defined %}
                                                 <div
                                                     class="tab-pane fade"
                                                     id="kb-modal-link-pane"
                                                     role="tabpanel"
                                                     aria-labelledby="kb-modal-link-tab"
+                                                    data-glpi-kb-link-item-id="{{ item_id }}"
+                                                    data-glpi-kb-link-idor-token="{{ document_idor_token }}"
+                                                    data-glpi-kb-link-used-ids="{{ used_document_ids|json_encode }}"
+                                                    data-glpi-kb-link-ajax-url="{{ path('/ajax/getDropdownValue.php') }}"
                                                 >
-                                                    <div class="text-center text-muted py-4">
-                                                        <i class="ti ti-file-symlink fs-1 mb-3 d-inline-block"></i>
-                                                        <p>{{ __('Link existing documents coming soon...') }}</p>
-                                                        <a
-                                                            href="{{ 'Document'|itemtype_search_path }}"
-                                                            class="btn btn-primary"
-                                                        >
-                                                            {{ __('Use existing interface') }}
-                                                        </a>
+                                                    {# Document search dropdown #}
+                                                    <div class="mb-3">
+                                                        <label for="kb-link-document-select" class="form-label">
+                                                            {{ __('Search for a document') }}
+                                                        </label>
+                                                        <select id="kb-link-document-select" class="form-select"></select>
+                                                    </div>
+
+                                                    {# Selected documents list (matching upload tab style) #}
+                                                    <div class="file-uploader-preview d-none"
+                                                         data-glpi-kb-link-preview>
+                                                        <div class="file-uploader-list" role="list"
+                                                             data-glpi-kb-link-list></div>
+                                                    </div>
+
+                                                    {# Actions #}
+                                                    <div class="d-flex justify-content-end gap-2 mt-4">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            {{ __('Cancel') }}
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary"
+                                                                data-glpi-kb-link-submit disabled>
+                                                            <i class="ti ti-link me-1"></i>
+                                                            {{ __('Link Documents') }}
+                                                        </button>
                                                     </div>
                                                 </div>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
