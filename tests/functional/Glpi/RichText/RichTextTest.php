@@ -720,6 +720,17 @@ HTML,
                 . '<img src="/path/to/image3.jpg" alt="an image" loading="lazy">'
                 . '</p>', 1000),
         ];
+
+        yield [
+            'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI #1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+        ];
+
+        global $CFG_GLPI;
+        yield [
+            'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
+            'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
+        ];
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
