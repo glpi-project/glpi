@@ -636,7 +636,7 @@ TWIG, $twig_params);
                 'name'     => $link,
                 'entities_id' => $entity_names[$data['entity']] ?? '',
                 'groups_id_tech' => implode("\n", $entry_groups),
-                'users_id_tech' => $user_names[$data['users_id_tech']] ?? '',
+                'users_id_tech' => $user_names[$data['users_id_tech']] ?: '',
                 'domaintypes_id' => $type_names[$data['domaintypes_id']] ?? '',
                 'domainrelations_id' => $relation_names[$data['domainrelations_id']] ?? '',
                 'date_creation' => $data["date_creation"],

@@ -141,7 +141,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
             try {
                 $headers = importArrayFromDB($current->fields['headers']);
-                if (is_array($headers) && count($headers)) {
+                if (count($headers)) {
                     foreach ($headers as $key => $val) {
                         $mail->getHeaders()->addTextHeader($key, $val);
                     }

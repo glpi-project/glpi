@@ -4630,7 +4630,7 @@ class CommonDBTM extends CommonGLPI
                             if ($fields['action_notify']) {
                                 $params = [
                                     'action_type' => $add,
-                                    'action_user' => getUserName(Session::getLoginUserID()),
+                                    'action_user' => getUserName((int) Session::getLoginUserID()),
                                     'entities_id' => $entities_id,
                                     'itemtype'    => get_class($this),
                                     'date'        => $_SESSION['glpi_currenttime'],
@@ -4920,7 +4920,7 @@ class CommonDBTM extends CommonGLPI
                                     ['display' => false]
                                 );
                             }
-                            return htmlescape(getUserName($value));
+                            return htmlescape(getUserName($user->getID()));
                         }
                         $name = Dropdown::getDropdownName($searchoptions['table'], $value);
                         if ($options['comments']) {

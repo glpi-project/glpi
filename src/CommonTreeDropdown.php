@@ -890,7 +890,7 @@ TWIG, $twig_params);
     public function getAncestors(): iterable
     {
         $ancestor_ids = getAncestorsOf($this->getTable(), $this->getID());
-        if (empty($ancestor_ids)) {
+        if ($ancestor_ids === []) {
             return [];
         }
         return static::getSeveralFromDBByCrit(['id' => $ancestor_ids]);

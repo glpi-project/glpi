@@ -196,7 +196,7 @@ class ItemVirtualMachine extends CommonDBChild
                 ]
             );
 
-            if (!empty($hosts)) {
+            if ($hosts !== []) {
                 echo '<h3 class="text-start">' . __s('List of hosts') . '</h3>';
                 $computer = new Computer();
                 $entries = [];

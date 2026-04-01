@@ -84,7 +84,7 @@
        }) %}
    {% endif %}
    {% if item.fields[name] is defined and item.fields[name] is not null %}
-      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? null]) %}
+      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? -1]) %}
    {% else %}
       {% set value = null %}
    {% endif %}

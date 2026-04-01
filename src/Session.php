@@ -425,7 +425,7 @@ class Session
                     $entities[$val['id']] = $val['id'];
                     if ($val['is_recursive']) {
                         $sons = getSonsOf("glpi_entities", $val['id']);
-                        foreach ($sons as $key2 => $val2) {
+                        foreach (array_keys($sons) as $key2) {
                             $entities[$key2] = $key2;
                         }
                     }

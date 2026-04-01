@@ -412,7 +412,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         $item_table = $item::getTable();
         $entity_criteria = getEntitiesRestrictCriteria($item_table, '', '', $item->maybeRecursive());
-        if (!empty($entity_criteria)) {
+        if ($entity_criteria !== []) {
             $criteria['INNER JOIN'][$item_table] = [
                 'ON' => [
                     'glpi_knowbaseitems_items' => 'items_id',
