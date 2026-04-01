@@ -9668,12 +9668,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLMField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method find\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/TemplateField.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getTemplateID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\TemplateFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
