@@ -1262,12 +1262,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$parent of method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:addNode\\(\\) expects DOMElement, \\(\\(TNode of DOMNode\\)\\|false\\) given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Agent/Communication/AbstractRequest.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:\\$response \\(DOMDocument\\) does not accept array\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
@@ -3194,12 +3188,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Variable \\$status might not be defined\\.$#',
-	'identifier' => 'variable.undefined',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Dashboard/Provider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$instance of static method Database\\:\\:showForInstance\\(\\) expects DatabaseInstance, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -4490,12 +4478,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Variable \\$peer_column might not be defined\\.$#',
-	'identifier' => 'variable.undefined',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_Disk\\:\\:showForItem\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -5054,13 +5036,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ManualLink.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_countable\\(\\) with array\\<array\\> will always evaluate to true\\.$#',
+	'message' => '#^Call to function is_countable\\(\\) with array\\<array\\<mixed\\>\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',
@@ -5411,12 +5393,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method NotificationTargetCommonITILObject\\:\\:addAdditionnalUserInfo\\(\\) should return 0\\|0\\.0\\|\'\'\\|\'0\'\\|array\\{\\}\\|false\\|null but returns array\\{show_private\\: mixed, is_self_service\\: mixed\\}\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, array\\<array\\|string\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -6928,6 +6904,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset 0 on non\\-empty\\-list\\<string\\> in empty\\(\\) always exists and is not falsy\\.$#',
 	'identifier' => 'empty.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset 2 on array\\{non\\-empty\\-string, non\\-empty\\-string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
