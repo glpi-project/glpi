@@ -173,7 +173,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 0,
                 'entities_id' => 'Entity1',
                 '_entities_id_default' => 0,
-            ]
+            ],
         ];
 
         yield [
@@ -191,7 +191,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 'Profile1',
                 'entities_id' => 0,
                 '_entities_id_default' => 0,
-            ]
+            ],
         ];
 
         yield [
@@ -209,7 +209,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 0,
                 'entities_id' => 'Entity1',
                 '_entities_id_default' => 0,
-            ]
+            ],
         ];
 
         yield [
@@ -227,7 +227,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 0,
                 'entities_id' => 0,
                 '_entities_id_default' => 'Entity1',
-            ]
+            ],
         ];
 
         yield [
@@ -248,7 +248,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 'Profile1',
                 'entities_id' => 'Entity1',
                 '_entities_id_default' => 'Entity1',
-            ]
+            ],
         ];
 
         yield [
@@ -269,7 +269,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 0,
                 'entities_id' => 'Entity1',
                 '_entities_id_default' => 0,
-            ]
+            ],
         ];
 
         yield [
@@ -290,7 +290,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 'Profile1',
                 'entities_id' => 'Entity1',
                 '_entities_id_default' => 'Entity1',
-            ]
+            ],
         ];
 
         yield [
@@ -311,7 +311,7 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 'Profile2',
                 'entities_id' => 'Entity2',
                 '_entities_id_default' => 'Entity2',
-            ]
+            ],
         ];
     }
 
@@ -332,12 +332,12 @@ class RuleRightTest extends DbTestCase
             [
                 'name'        => 'Entity2',
                 'entities_id' => 0,
-            ]
+            ],
         ]);
         [$profile1, $profile2] = $this->createItems(\Profile::class, [
             ['name' => 'Profile1'],
-            ['name' => 'Profile2']
-       ]);
+            ['name' => 'Profile2'],
+        ]);
 
         // Replace search keys by created items ids in actions, expected and user data.
         $search_keys = ['Profile1', 'Profile2', 'Entity1', 'Entity2'];
