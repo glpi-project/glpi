@@ -40,9 +40,7 @@ done
 if [[ "$UPDATE_FILES_ACL" = true ]]; then
   # Prevent git to trigger errors related to unexpected directories ownership
   docker compose exec -T app git config --global --add safe.directory /var/www/glpi
-  if [[ -d "/home/www-data/.cache/composer/vcs" ]]; then
-    docker compose exec -T app find /home/www-data/.cache/composer/vcs -mindepth 1 -maxdepth 1 -exec git config --global --add safe.directory {} \;
-  fi
+  docker compose exec -T app bash -c "if [[ -d "/home/www-data/.cache/composer/vcs" ]]; then find /home/www-data/.cache/composer/vcs -d -mindepth 1 -maxdepth 1 -exec git config --global --add safe.directory {} \;; fi"
 fi
 
 # Always wait for 5 seconds, even when all services are considered as healthy,
