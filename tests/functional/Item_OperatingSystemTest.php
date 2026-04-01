@@ -314,4 +314,107 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->setEntity('_test_child_2', true);
         $this->assertTrue($ios->can($ios->getID(), READ));
     }
+
+    public function testPreventEmptyOSAdd()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $ios = new Item_OperatingSystem();
+
+        // Test adding an OS with all empty fields - should fail
+        $input = [
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => 0,
+            'operatingsystemarchitectures_id'   => 0,
+            'operatingsystemversions_id'        => 0,
+            'operatingsystemkernelversions_id'  => 0,
+            'operatingsystemeditions_id'        => 0,
+            'operatingsystemservicepacks_id'    => 0,
+            'licenseid'                         => '',
+            'license_number'                    => '',
+        ];
+
+        // GLPI currently allows empty OS records
+        $this->assertFalse(
+            $ios->add($input),
+            "Should not be able to add an OS with all empty fields.",
+        );
+
+        // Check for the error message
+        $this->hasSessionMessages(ERROR, [
+            "Cannot add an empty operating system. At least one field must be filled.",
+        ]);
+
+        $this->assertSame(
+            0,
+            Item_OperatingSystem::countForItem($computer),
+            "No OS should be linked after failed add."
+        );
+    }
+
+    public function testUpdateOSToEmptyIsRejected()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $objects  = $this->createDdObjects();
+        $ios      = new Item_OperatingSystem();
+
+        // First add a valid OS record
+        $input = [
+            'itemtype'                        => $computer->getType(),
+            'items_id'                        => $computer->getID(),
+            'entities_id'                     => $_SESSION['glpiactive_entity'],
+            'operatingsystems_id'             => $objects['']->getID(),
+            'operatingsystemarchitectures_id' => $objects['Architecture']->getID(),
+        ];
+
+        $id = $ios->add($input);
+        $this->assertGreaterThan(0, $id);
+        $this->assertSame(
+            1,
+            Item_OperatingSystem::countForItem($computer),
+            "Count should be 1 after add.",
+        );
+
+        // Reload and ensure record still exists
+        $this->assertTrue($ios->getFromDB($id));
+        // Snapshot original state
+        $original = $ios->fields;
+
+        // Attempt to update with empty values
+        $result = $ios->update([
+            'id'             => $id,
+            'operatingsystems_id' => 0,
+            'operatingsystemarchitectures_id' => 0,
+        ]);
+
+        // Update must be rejected
+        $this->assertFalse(
+            $result,
+            "Updating OS to empty values should be rejected.",
+        );
+
+        // Consume the session message so tearDown doesn't fail
+        $this->hasSessionMessages(ERROR, [
+            "Cannot update operating system with empty values. To remove the operating system, use the delete action instead.",
+        ]);
+
+        // Verify data integrity - record must still exist and be unchanged
+        $this->assertTrue(
+            $ios->getFromDB($id),
+            "OS record should still exist."
+        );
+
+        // Asserting against real DB columns to ensure no changes were made
+        $this->assertSame(
+            $original['operatingsystems_id'],
+            $ios->fields['operatingsystems_id'],
+        );
+        $this->assertSame(
+            $original['operatingsystemarchitectures_id'],
+            $ios->fields['operatingsystemarchitectures_id'],
+        );
+    }
 }
