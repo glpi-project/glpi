@@ -35,10 +35,15 @@
 namespace tests\units;
 
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
+use QueuedWebhook;
+use Ticket;
 use Webhook;
+
+use function Safe\json_encode;
 
 class WebhookTest extends DbTestCase
 {
@@ -115,7 +120,7 @@ JSON;
             'content' => 'Test followup',
         ]);
 
-        $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
+        $queued_webhooks = getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
         $this->assertGreaterThan(0, count($queued_webhook));
@@ -164,7 +169,7 @@ JSON;
             'content' => 'Test followup',
         ]);
 
-        $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
+        $queued_webhooks = getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
         $this->assertGreaterThan(0, count($queued_webhook));
@@ -215,7 +220,7 @@ JSON;
             'content' => 'Test followup',
         ]);
 
-        $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
+        $queued_webhooks = getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
         $this->assertGreaterThan(0, count($queued_webhook));
@@ -392,5 +397,55 @@ JSON;
         $this->assertFalse($webhook->canCreateItem());
         $webhook->fields['itemtype'] = 'Monitor';
         $this->assertTrue($webhook->canCreateItem());
+    }
+
+    public function testWebhookWithoutSession(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: setup a webhook with a filter
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => Ticket::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype' => Webhook::class,
+            'items_id' => $webhook->getID(),
+            'search_itemtype' => Ticket::class,
+            'search_criteria' => json_encode([
+                [
+                    "link"       => "AND",
+                    "field"      => "12",
+                    "searchtype" => "equals",
+                    "value"      => "notold",
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        // Act: trigger the webhook by creating a ticket
+        $base_count = $this->countQueuedRequestForWebhook($webhook);
+        $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket',
+            'content'     => 'Test ticket content',
+            'entities_id' => $entity_id,
+        ]);
+
+        // Assert: one webhook request should have been added to the queue
+        $this->assertEquals(
+            $base_count + 1,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+    }
+
+    private function countQueuedRequestForWebhook(Webhook $webhook): int
+    {
+        return countElementsInTable(QueuedWebhook::getTable(), [
+            'webhooks_id' => $webhook->getID(),
+        ]);
     }
 }
