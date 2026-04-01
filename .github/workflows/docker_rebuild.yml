@@ -70,7 +70,7 @@ jobs:
               );
 
               // Keep only stable releases and sort by semver descending
-              const stableTags = releases.data
+              const stableTags = releases
                 .filter(r => !r.prerelease && !r.draft)
                 .map(r => r.tag_name)
                 .filter(name => /^\d+\.\d+\.\d+$/.test(name))
