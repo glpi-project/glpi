@@ -142,4 +142,9 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
 
         return true;
     }
+
+    public static function getIcon()
+    {
+        return "ti ti-photo-cog";
+    }
 }
