@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\Toolbox\Sanitizer;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -34,6 +32,8 @@ use Glpi\Toolbox\Sanitizer;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 class RuleAction extends CommonDBChild
 {
