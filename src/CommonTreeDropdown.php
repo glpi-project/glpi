@@ -628,7 +628,7 @@ TWIG, $twig_params);
                     case 'dropdownValue':
                         if (!isset($values_cache[$field['name']][$data[$field['name']]])) {
                             $values_cache[$field['name']][$data[$field['name']]] = Dropdown::getDropdownName(
-                                $field['name'],
+                                getTableNameForForeignKeyField($field['name']),
                                 $data[$field['name']]
                             );
                         }

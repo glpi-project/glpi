@@ -1000,7 +1000,7 @@ HTML;
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
@@ -1272,7 +1272,7 @@ TWIG,
             ],
         ];
 
-        if ($can_read_dashboard && strlen($default_asset_dashboard) > 0) {
+        if ($can_read_dashboard && $default_asset_dashboard !== '') {
             $menu['assets']['default_dashboard'] = '/front/dashboard_assets.php';
         }
 
@@ -1287,7 +1287,7 @@ TWIG,
             ],
         ];
 
-        if ($can_read_dashboard && strlen($default_asset_helpdesk) > 0) {
+        if ($can_read_dashboard && $default_asset_helpdesk !== '') {
             $menu['helpdesk']['default_dashboard'] = '/front/dashboard_helpdesk.php';
         }
 
@@ -3781,6 +3781,19 @@ JS;
                                     setupFileUpload(fileupload_config);
                                 });
                         });
+
+                        // Close TinyMCE toolbar dropdowns and blur active buttons when clicking outside editor UI elements
+                        $(document).on('click', function(e) {
+                            const target = $(e.target);
+                            const isEditorElementClicked =
+                                target.closest('.tox-editor-header').length > 0 ||
+                                target.closest('.tox-toolbar__primary').length > 0 ||
+                                target.closest('.tox-menu').length > 0;
+
+                            if (!isEditorElementClicked) {
+                                $('.tox-tbtn.tox-tbtn--enabled[data-mce-name="overflow-button"]').trigger('click').trigger('blur');
+                            }
+                        });
                     }
                 }, {$language_opts});
 
@@ -5376,11 +5389,12 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
+                      data-testid='file-upload-" . htmlescape($p['name']) . "'
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -5392,7 +5406,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png)$/i"
+            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),
@@ -5538,11 +5552,17 @@ JS;
         $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
+                $filepath = GLPI_TMP_DIR . '/' . $upload;
+                if (!file_exists($filepath)) {
+                    trigger_error(sprintf('Uploaded temp file %s not found, skipping.', $filepath), E_USER_WARNING);
+                    continue;
+                }
+
                 $prefix  = substr($upload, 0, 23);
                 $displayName = substr($upload, 23);
 
                 // get the extension icon
-                $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+                $extension = pathinfo($filepath, PATHINFO_EXTENSION);
                 $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
                 if (!is_readable(GLPI_ROOT . $extensionIcon)) {
                     $extensionIcon = '/pics/icones/defaut-dist.png';
@@ -5554,7 +5574,7 @@ JS;
                     'name'    => $upload,
                     'id'      => 'doc' . $p['name'] . mt_rand(),
                     'display' => $displayName,
-                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'size'    => filesize($filepath),
                     'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];
@@ -6299,7 +6319,7 @@ JS);
         // retrieve menu
         foreach ($_SESSION['glpimenu'] as $firstlvl) {
             if (isset($firstlvl['default'])) {
-                if (strlen($firstlvl['title']) > 0) {
+                if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default']),
                         'title' => $firstlvl['title'],
@@ -6308,7 +6328,7 @@ JS);
             }
 
             if (isset($firstlvl['default_dashboard'])) {
-                if (strlen($firstlvl['title']) > 0) {
+                if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default_dashboard']),
                         'title' => $firstlvl['title'] . " > " . __('Dashboard'),
@@ -6318,7 +6338,7 @@ JS);
 
             if (isset($firstlvl['content'])) {
                 foreach ($firstlvl['content'] as $menu) {
-                    if (isset($menu['title']) && strlen($menu['title']) > 0) {
+                    if (isset($menu['title']) && (string) $menu['title'] !== '') {
                         $fuzzy_entries[] = [
                             'url'   => self::getPrefixedUrl($menu['page']),
                             'title' => $firstlvl['title'] . " > " . $menu['title'],
@@ -6326,7 +6346,7 @@ JS);
 
                         if (isset($menu['options'])) {
                             foreach ($menu['options'] as $submenu) {
-                                if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                if (isset($submenu['title']) && (string) $submenu['title'] !== '') {
                                     $fuzzy_entries[] = [
                                         'url'   => self::getPrefixedUrl($submenu['page']),
                                         'title' => $firstlvl['title'] . " > "
@@ -6651,6 +6671,8 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
+        $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
+
         return self::getScssCompileDir($root_dir) . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
@@ -6663,7 +6685,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return $root_dir . '/public/css_compiled';
+        return str_replace(DIRECTORY_SEPARATOR, '/', $root_dir) . '/public/css_compiled';
     }
 
     /**

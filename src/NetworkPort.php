@@ -114,6 +114,30 @@ class NetworkPort extends CommonDBChild
         return false;
     }
 
+    public static function canView(): bool
+    {
+        if (static::$rightname && Session::haveRight(static::$rightname, READ)) {
+            return true;
+        }
+        return static::canChild('canView');
+    }
+
+    public static function canCreate(): bool
+    {
+        if (static::$rightname && Session::haveRight(static::$rightname, CREATE)) {
+            return true;
+        }
+        return static::canChild('canUpdate');
+    }
+
+    public static function canUpdate(): bool
+    {
+        if (static::$rightname && Session::haveRight(static::$rightname, UPDATE)) {
+            return true;
+        }
+        return static::canChild('canUpdate');
+    }
+
     /**
      * @param string $property
      * @param mixed $value
@@ -697,11 +721,6 @@ class NetworkPort extends CommonDBChild
                 $instantiations,
                 ['value' => 'NetworkPortEthernet']
             );
-            echo "</div>";
-
-            echo "<div class='col-auto m-2'>";
-            echo "<label for='several'>" . __s('Add several ports') . "</label>";
-            echo "&nbsp;<input type='checkbox' name='several' id='several' value='1'></td>";
             echo "</div>";
 
             echo "<div class='col-auto'>";
@@ -1344,7 +1363,7 @@ class NetworkPort extends CommonDBChild
             $options['several'] = false;
         }
 
-        if (!self::canView()) {
+        if (($ID > 0 && !self::canView()) || !self::canCreate()) {
             return false;
         }
 

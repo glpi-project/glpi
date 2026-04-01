@@ -33,6 +33,7 @@
 {% import "components/alerts_macros.html.twig" as alerts %}
 {% import "components/form/fields_macros.html.twig" as fields %}
 
+{{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": item, 'options': params}) }}
 {% block more_fields %}
     {% if url is defined %}
         {{ fields.htmlField(

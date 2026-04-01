@@ -13,7 +13,6 @@
 # Joan Montané, 2025
 # Lluís Forns Puigmartí, 2025
 # Ivan Fustero, 2025
-# Ivan Fustero, 2025
 # David Marti, 2025
 # Oriol Lladó, 2025
 # Jordi Domene, 2025
@@ -22,6 +21,7 @@
 # ramon lopez <info@proferamon.com>, 2026
 # Joan F, 2026
 # Nuria Costa <nuria.costa@uvic.cat>, 2026
+# Ivan Fustero, 2026
 # 
 #, fuzzy
 msgid ""
@@ -30,7 +30,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-01-22 07:57+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Nuria Costa <nuria.costa@uvic.cat>, 2026\n"
+"Last-Translator: Ivan Fustero, 2026\n"
 "Language-Team: Catalan (Spain) (https://app.transifex.com/glpi/teams/1637/ca_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -79,7 +79,7 @@ msgstr "Torna"
 
 #: templates/install/step3.html.twig install/update.php:149
 msgid "Database connection successful"
-msgstr "La connexió amb la BD ha estat correcta"
+msgstr "Connexió a la base de dades correcta"
 
 #: templates/install/step3.html.twig
 msgid "Database engine is not supported."
@@ -99,11 +99,11 @@ msgstr "Crea una nova base de dades:"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr "Utilitza un altre existent:"
+msgstr "O bé feu servir un d'existent:"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
-msgstr "Selecciona la base de dades a actualitzar"
+msgstr "Seleccioneu una base de dades per actualitzar:"
 
 #: templates/install/install.install_required.html.twig install/update.php:99
 #: install/update.php:119 install/install.php:67 install/install.php:89
@@ -151,7 +151,7 @@ msgstr "Utilitza GLPI"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr "Comprovant el permís d'escriptura als fitxers de configuració"
+msgstr "Comprovació de l'accés d'escriptura als fitxers de configuració"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
@@ -160,28 +160,27 @@ msgstr "Permís d'escriptura denegat pels fitxers de configuració"
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:477
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
-msgstr ""
-"Es necessari un permís temporal d'escriptura pels fitxers següents: %s."
+msgstr "Es requereix un accés d'escriptura temporal als fitxers següents: %s."
 
 #: templates/install/step1.html.twig src/Glpi/Console/Application.php:478
 msgid ""
 "Write access to these files can be removed once the operation is finished."
 msgstr ""
-"Es pot desactivar el permís d'escriptura a aquests fitxers un cop "
-"finalitzada l'operació."
+"Es pot eliminar l'accés d'escriptura a aquests fitxers un cop finalitzada "
+"l'operació."
 
 #: templates/install/step1.html.twig
 msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
 msgstr ""
-"Verificació de la compatibilitat del teu entorn amb l'execució de GLPI"
+"Comprovació de la compatibilitat del vostre entorn amb l'execució de GLPI"
 
 #: templates/install/step1.html.twig
 #: templates/install/update.need_update.html.twig install/update.php:87
 #: src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php:105
 #: src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php:115
 msgid "Try again"
-msgstr "Reintenta"
+msgstr "Torna-ho a intentar"
 
 #: templates/install/step1.html.twig src/Glpi/Console/AbstractCommand.php:264
 msgid "Do you want to continue?"
@@ -189,23 +188,23 @@ msgstr "Vols continuar?"
 
 #: templates/install/accept_license.html.twig
 msgid "Unofficial translations are also available"
-msgstr "Les traduccions no oficials estan també disponibles"
+msgstr "També hi ha traduccions no oficials disponibles"
 
 #: templates/install/agree_unstable.html.twig
 msgid "You are using a development version, be careful!"
-msgstr "Estàs utilitzant una versió de desenvolupament, ves amb ull!"
+msgstr "Utilitzeu una versió de desenvolupament, aneu amb compte!"
 
 #: templates/install/agree_unstable.html.twig
 msgid "You are using a pre-release version, be careful!"
-msgstr "Esteu utilitzant una versió preliminar, aneu amb compte!"
+msgstr "Utilitzeu una versió preliminar, aneu amb compte!"
 
 #: templates/install/agree_unstable.html.twig
 msgid "I know I am using a unstable version."
-msgstr "Se que estic utilitzant una versió inestable."
+msgstr "Sé que faig servir una versió inestable."
 
 #: templates/install/agree_unstable.html.twig
 msgid "Please check the unstable version checkbox."
-msgstr "Si us plau marca la checkbox de la versió inestable."
+msgstr "Marqueu la casella de selecció de la versió inestable."
 
 #: templates/install/step8.html.twig
 msgid "The installation is finished"
@@ -213,7 +212,7 @@ msgstr "La instal·lació ha acabat"
 
 #: templates/install/step8.html.twig
 msgid "Default logins / passwords are:"
-msgstr "Les credencials predeterminades són:"
+msgstr "Els inicis de sessió / contrasenyes predeterminades són:"
 
 #: templates/install/step8.html.twig
 msgid "glpi/glpi for the administrator account"
@@ -225,17 +224,16 @@ msgstr "tech/tech pel compte del tècnic"
 
 #: templates/install/step8.html.twig
 msgid "normal/normal for the normal account"
-msgstr "normal pel compte normal"
+msgstr "normal/normal per al compte normal"
 
 #: templates/install/step8.html.twig
 msgid "post-only/postonly for the postonly account"
-msgstr "post-only/postonly pel compte postonly"
+msgstr "post-only/postonly pel compte només publicació"
 
 #: templates/install/step8.html.twig
 msgid "You can delete or modify these accounts as well as the initial data."
 msgstr ""
-"Podeu suprimir o modificar aquests comptes i les primeres entrades a la base"
-" de dades"
+"Podeu suprimir o modificar aquests comptes, així com les dades inicials."
 
 #: templates/install/step2.html.twig
 msgid "Database connection setup"
@@ -274,14 +272,14 @@ msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
 msgstr ""
-"El codi font de GLPI s'ha actualitzat. És necessari actualitzar la base de "
-"dades de GLPI."
+"El codi font del GLPI s'ha actualitzat. Cal actualitzar la base de dades "
+"GLPI."
 
 #: templates/install/update.need_update.html.twig
 #: templates/install/step0.html.twig src/Plugin.php:2918
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Actualitza"
+msgstr "Actualització"
 
 #: templates/install/update.need_update.html.twig
 msgid ""
@@ -289,9 +287,9 @@ msgid ""
 "the database. Please install the correct GLPI files corresponding to the "
 "version of your database."
 msgstr ""
-"Estàs intentant utilitzar GLPI amb fitxers obsolets en comparació amb la "
-"versió de la base de dades. Instal·la els arxius de GLPI correctes que "
-"corresponen a la versió de la base de dades."
+"Esteu intentant utilitzar GLPI amb fitxers obsolets en comparació amb la "
+"versió de la base de dades. Instal·leu els fitxers GLPI correctes que "
+"corresponguin a la versió de la vostra base de dades."
 
 #: templates/install/blocks/requirements_table.html.twig
 msgid "Test done"
@@ -321,13 +319,15 @@ msgstr "Suggerit"
 
 #: templates/install/step0.html.twig
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr "Tria 'Instal·la' per a una nova instal·lació completa de GLPI"
+msgstr ""
+"Seleccioneu «Instal·la» per a una instal·lació completament nova de GLPI."
 
 #: templates/install/step0.html.twig
 msgid ""
 "Select 'Upgrade' to update your version of GLPI from an earlier version"
 msgstr ""
-"Selecciona 'Actualitza' per actualitzar GLPI des d'una versió anterior"
+"Seleccioneu \"Actualitzar\" per actualitzar la vostra versió de GLPI des "
+"d'una versió anterior."
 
 #: templates/install/step0.html.twig
 msgid "Installation or update of GLPI"
@@ -342,7 +342,7 @@ msgstr "Instal·la"
 
 #: templates/updatepassword.html.twig front/updatepassword.php:94
 msgid "Password update"
-msgstr "Actualitza la contrasenya"
+msgstr "Actualització de la contrasenya"
 
 #: templates/central/lists/table.html.twig
 #: templates/layout/parts/context_links.html.twig
@@ -644,12 +644,12 @@ msgstr "Tanca"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Aquesta versió és INESTABLE i és possible que no s'hi incloguin algunes "
+"SOLUCIONS DE SEGURETAT."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr ""
-"El trobaràs al lloc de GLPI: <a href='http://glpi-project.org' "
-"target='_blank'>http://glpi-project.org</a>."
+msgstr "Ho trobareu al lloc web GLPI-PROJECT.org."
 
 #: templates/layout/parts/user_header.html.twig src/Toolbox.php:1087
 #, php-format
@@ -660,7 +660,7 @@ msgstr "Una nova versió esta disponible: %s"
 #: templates/layout/parts/page_header.html.twig
 #: src/Glpi/Console/Application.php:294
 msgid "You are bypassing a needed update"
-msgstr "No estàs tenint en compte una actualització necessària"
+msgstr "Esteu ignorant una actualització necessària"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
@@ -707,7 +707,7 @@ msgstr "Redueix el menú"
 msgid "Saved search"
 msgid_plural "Saved searches"
 msgstr[0] "Cerca guardada"
-msgstr[1] "Cerques guardades"
+msgstr[1] "Cerques desades"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
@@ -739,11 +739,11 @@ msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Option+Command+G"
-msgstr "Opció + Command + G"
+msgstr "Option+Command+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Find menu"
-msgstr "Troba el menú"
+msgstr "Menú de cerca"
 
 #: templates/layout/parts/context_links.html.twig front/setup.templates.php:47
 msgid "Manage templates..."
@@ -757,12 +757,12 @@ msgstr "Plantilles"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #: src/Ticket.php:4807
 msgid "Show all"
-msgstr "Mostra tots"
+msgstr "Mostra-ho tot"
 
 #: templates/layout/parts/context_links.html.twig
 #: src/Item_SoftwareVersion.php:1602 src/Item_SoftwareLicense.php:1155
 msgid "Summary"
-msgstr "Seguiment"
+msgstr "Resum"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
@@ -770,7 +770,7 @@ msgstr "Kanban global"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Transfer list"
-msgstr "Llista de trasllats"
+msgstr "Llista de transferències"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/setup/authentication.html.twig
@@ -790,12 +790,12 @@ msgstr "Configuració"
 #: templates/pages/admin/form/import/step4_execute.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Import forms"
-msgstr "Importació de formularis"
+msgstr "Importar formularis"
 
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "Selecciona l'entitat %1s amb totes les seves subentitats"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -805,15 +805,15 @@ msgstr "Cerca..."
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr "Encara no has desat cap cerca"
+msgstr "Encara no has enregistrat cap cerca desada"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
-msgstr "Recerca per defecte"
+msgstr "Cerca predeterminada"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "mark as default"
-msgstr "marcar per defecte"
+msgstr "marcar com a predeterminat"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
@@ -821,7 +821,7 @@ msgstr "privat"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
-msgstr "Mode lectura"
+msgstr "Mode de només lectura"
 
 #: templates/layout/parts/objectlock_message.html.twig
 #: templates/components/notepad/form.html.twig
@@ -841,11 +841,11 @@ msgstr "Bloquejat: %1$s per %2$s"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Ask for unlock"
-msgstr "Pregunta per debloquejar"
+msgstr "Demana desbloqueig"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Alert me when unlocked"
-msgstr "Avisem quan estigui desbloquejat"
+msgstr "Avisa'm quan es desbloquegi"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
@@ -877,7 +877,7 @@ msgstr "Perfils"
 #: templates/layout/parts/profile_selector.html.twig
 #: templates/pages/admin/rules/import_preview.html.twig
 msgid "Select the desired entity"
-msgstr "Seleccionar l'entitat desitjada"
+msgstr "Seleccioneu l'entitat desitjada"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
@@ -890,7 +890,7 @@ msgstr "⌥ (option) + ⌘ (command) + E"
 #: templates/layout/parts/profile_selector.html.twig
 #: js/src/vue/FuzzySearch/Modal.vue:9
 msgid "Tip: You can call this modal with %s keys combination"
-msgstr "Consell: Pots cridar aquest mode amb 1%s combinacions de tecles"
+msgstr "Consell: Pots cridar aquest mode amb la combinació de tecles %s"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
@@ -925,14 +925,16 @@ msgstr "No s'han trobat entitats"
 
 #: templates/password_form.html.twig
 msgid "Your password has expired. You must change it to be able to login."
-msgstr "La teva contrasenya ha caducat. L'has de canviar per iniciar sessió."
+msgstr ""
+"La teva contrasenya ha caducat. L'has de canviar per poder iniciar la "
+"sessió."
 
 #: templates/password_form.html.twig src/User.php:5152
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
-"La teva pregunta per reiniciar la contrasenya ha expirat o és invàlida. "
-"Torna a configurar-la."
+"La sol·licitud de restabliment de contrasenya ha caducat o no és vàlida. Si "
+"us plau, renoveu-la."
 
 #: templates/password_form.html.twig
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -946,7 +948,7 @@ msgstr ""
 #: src/User.php:3258 src/User.php:4504 src/NotificationTargetUser.php:194
 #: src/RuleRight.php:217
 msgid "Login"
-msgstr "Usuari"
+msgstr "Inicia la sessió"
 
 #: templates/password_form.html.twig
 msgid "Current password"
@@ -968,15 +970,15 @@ msgstr "Política de seguretat de les contrasenyes"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr "Desar nova contrasenya"
+msgstr "Desa la nova contrasenya"
 
 #: templates/password_form.html.twig
 msgid ""
 "Please enter your email address. An email will be sent to you and you will "
 "be able to choose a new password."
 msgstr ""
-"Introdueix la teva adreça de correu electrònic. Rebràs un correu electrònic "
-"i podràs triar la nova contrasenya"
+"Si us plau, introduïu la vostra adreça electrònica. Rebreu un correu "
+"electrònic i podreu triar una nova contrasenya."
 
 #: templates/password_form.html.twig templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -1003,7 +1005,7 @@ msgstr ""
 msgid "Email"
 msgid_plural "Emails"
 msgstr[0] "Correu electrònic"
-msgstr[1] "Correus-e"
+msgstr[1] "Correus electrònics"
 
 #: templates/password_form.html.twig
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
@@ -1042,7 +1044,7 @@ msgstr "%s-%s de %s"
 #: src/Holiday.php:56 src/Holiday.php:79 src/APIClient.php:144
 #: src/CronTask.php:1248 src/Calendar_Holiday.php:139
 msgid "Start"
-msgstr "Principi"
+msgstr "Inici"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
@@ -1116,7 +1118,7 @@ msgstr "Última actualització el %s"
 #: templates/components/itilobject/footer.html.twig
 #: templates/pages/assets/template_list.html.twig
 msgid "Confirm the final deletion?"
-msgstr "Confirmes l'eliminació?"
+msgstr "Confirmar l'eliminació definitiva?"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/form/fields_macros.html.twig
@@ -1178,7 +1180,7 @@ msgstr "Edita una nota"
 #: js/src/vue/CustomObject/FieldPreview/Field.vue:38
 msgctxt "button"
 msgid "Delete permanently"
-msgstr "Suprimeix de forma permanent"
+msgstr "Suprimeix permanentment"
 
 #: templates/components/notepad/form.html.twig
 #: src/RuleCommonITILObject.php:101 src/RuleCommonITILObject.php:105
@@ -1210,7 +1212,7 @@ msgstr "No tens permisos per veure tots %s"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "%s on linked items"
-msgstr "%s objectes enllaçats"
+msgstr "%s en elements vinculats"
 
 #: templates/components/form/fields_macros.html.twig
 #: templates/pages/setup/apiclient.html.twig
@@ -1219,7 +1221,7 @@ msgstr "Regenera"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "The deletion will only take effect after saving the form"
-msgstr "La supressió només tindrà efecte després de desar el formulari"
+msgstr "L'eliminació només tindrà efecte després de desar el formulari"
 
 #: templates/components/form/fields_macros.html.twig
 #, php-format
@@ -1391,7 +1393,7 @@ msgstr "No s'han trobat resultats"
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Item link"
-msgstr "Enllaç a l'objecte"
+msgstr "Enllaç de l'element"
 
 #: templates/components/form/item_disk.html.twig src/Lock.php:431
 #: src/Item_Disk.php:302 src/Item_Disk.php:353 src/Item_Disk.php:491
@@ -1415,19 +1417,19 @@ msgstr "Espai lliure"
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:261
 #: src/Item_Disk.php:537
 msgid "Encryption tool"
-msgstr "Eina d'encriptació"
+msgstr "Eina de xifratge"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr "Eina d'encriptació"
+msgstr "Eina de xifratge"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
-msgstr "Algoritme d'encriptació"
+msgstr "Algoritme de xifratge"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Type"
-msgstr "Tipus d'encriptació"
+msgstr "Tipus de xifratge"
 
 #: templates/components/form/modals_macros.html.twig
 #: templates/pages/tools/find_available_reservation.html.twig
@@ -1520,11 +1522,11 @@ msgstr "El camp no s'actualitzarà a l'inventari"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Last inventory value was:"
-msgstr "El darrer valor inventariat va ser:"
+msgstr "L'últim valor de l'inventari va ser:"
 
 #: templates/components/form/item_itilobject_group.html.twig
 msgid "Show child groups objects"
-msgstr "Mostra els grups d'objectes per sota"
+msgstr "Mostra els objectes dels grups fills"
 
 #: templates/components/form/networkname.html.twig
 #: templates/pages/assets/networkport/networkname_short.html.twig
@@ -1539,8 +1541,8 @@ msgid ""
 "IP network is not included in the database. However, you can see current "
 "available networks."
 msgstr ""
-"Xarxa IP no inclosa a la base de dades. Tot i això, es poden veure les "
-"xarxes disponibles"
+"La xarxa IP no està inclosa a la base de dades. Tanmateix, podeu veure les "
+"xarxes disponibles actualment."
 
 #: templates/components/form/dates.html.twig
 #, php-format
@@ -1798,7 +1800,7 @@ msgstr "DisplayPort"
 
 #: templates/components/form/flags.html.twig src/Phone.php:481
 msgid "Headset"
-msgstr "Casc"
+msgstr "Auriculars"
 
 #: templates/components/form/flags.html.twig src/Phone.php:489
 msgid "Speaker"
@@ -1807,7 +1809,7 @@ msgstr "Altaveu"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:122
 msgid "Inventory information"
-msgstr "Informació de l'inventari"
+msgstr "Informació d'inventari"
 
 #. TRANS: parameter is the name of the asset
 #: templates/components/form/inventory_info.html.twig
@@ -1819,13 +1821,13 @@ msgstr "Descarregar \"%1$s\" fitxer d'inventari"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:160
 msgid "Inventory file missing"
-msgstr "No es troba fitxer d'inventari"
+msgstr "Falta el fitxer d'inventari"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Glpi/Features/Inventoriable.php:202 src/Agent.php:148 src/Agent.php:345
 msgid "Useragent"
-msgstr "Agent de l'usuari"
+msgstr "Agent d'usuari"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:140
 #: src/RuleLocation.php:92 src/Glpi/Features/Inventoriable.php:207
@@ -1847,7 +1849,7 @@ msgstr "Darrer contacte"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:154
 msgid "Last inventory update"
-msgstr "Darrera actualització d'inventari"
+msgstr "Darrera actualització de l'inventari"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:214
@@ -1857,7 +1859,7 @@ msgstr "Estat de l'agent"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:215
 msgid "Ask agent about its current status"
-msgstr "Demana a l'agent el seu estat actual"
+msgstr "Pregunta a l'agent sobre el seu estat actual"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/stencil/parts/port/status.html.twig
@@ -1873,22 +1875,22 @@ msgstr "Desconegut"
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:218
 msgid "Request inventory"
-msgstr "Demana l'inventari"
+msgstr "Sol·licita inventari"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:219
 msgid "Request agent to proceed an new inventory"
-msgstr "Demana a l'agent que faci un nou inventari"
+msgstr "Sol·licitar a l'agent que procedeixi a un nou inventari"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:169
 msgid "Agent information is not available."
-msgstr "Informació de l'agent no disponible."
+msgstr "La informació de l'agent no està disponible."
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:209
 msgid "Last inventory"
-msgstr "Darrer inventari"
+msgstr "Últim inventari"
 
 #: templates/components/form/item_device.html.twig
 msgid "No associated item"
@@ -1909,7 +1911,7 @@ msgstr "Cap element associat"
 #: src/DefaultFilter.php:103 src/DefaultFilter.php:120
 #: src/RuleImportEntity.php:114
 msgid "Itemtype"
-msgstr "Tipusobjecte"
+msgstr "Tipus d'element"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: src/Lock.php:866 src/Lock.php:1340 src/Item_Devices.php:325
@@ -2046,14 +2048,14 @@ msgstr "Imatge del darrere"
 
 #: templates/components/form/pictures.html.twig
 msgid "Asset URL"
-msgstr "Adreça URL de l'actiu"
+msgstr "URL de l'actiu"
 
 #: templates/components/form/pictures.html.twig
 msgid ""
 "Scan this QRCode to be redirected to the asset page from your mobile device"
 msgstr ""
-"Escanegeu aquest codi QR per ser redirigit a la pàgina de l'actiu des del "
-"vostre dispositiu mòbil"
+"Escaneja aquest codi QR per ser redirigit a la pàgina del recurs des del teu"
+" dispositiu mòbil"
 
 #: templates/components/form/item_antivirus.html.twig
 #: src/ItemAntivirus.php:364
@@ -2069,7 +2071,7 @@ msgstr "Versió del Antivirus"
 #: src/ItemAntivirus.php:130 src/ItemAntivirus.php:227
 #: src/ItemAntivirus.php:362
 msgid "Signature database version"
-msgstr "Versió de la base de dades de firmes"
+msgstr "Versió de la base de dades de signatures"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Rule import logs"
@@ -2089,7 +2091,7 @@ msgstr "Entrada"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr "Vegeu entrada"
+msgstr "Veure entrada"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
@@ -2124,7 +2126,7 @@ msgstr[1] "Usuaris"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr "Protocol d'encriptació per l'autenticació"
+msgstr "Protocol de xifratge per a l'autenticació"
 
 #: templates/components/form/snmpcredential.html.twig
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -2140,15 +2142,15 @@ msgstr "Contrasenya"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
-msgstr "Protocol d'encriptació per les dades"
+msgstr "Protocol de xifratge per a dades"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
-msgstr "Hores de servei"
+msgstr "Horari d'assistència"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
-msgstr "A la setmana"
+msgstr "La setmana"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
@@ -2160,7 +2162,7 @@ msgstr "Utilitza dissabte"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Sundays and holidays"
-msgstr "diumenges i festius"
+msgstr "Diumenges i festius"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Sunday"
@@ -2248,7 +2250,7 @@ msgstr "Restaura"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr "Conserva els dispositius mentre s'elimina aquest element"
+msgstr "Conserva els dispositius mentre suprimeixes aquest element"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig
@@ -2304,13 +2306,13 @@ msgstr "Data inicial"
 #: src/Glpi/ContentTemplates/Parameters/LevelAgreementParameters.php:55
 #: src/CronTask.php:1290
 msgid "Duration"
-msgstr "Duració"
+msgstr "Durada"
 
 #: templates/components/form/reservation.html.twig
 #: templates/pages/tools/find_available_reservation.html.twig
 #: templates/pages/assistance/planning/add_classic_event.html.twig
 msgid "Specify an end date"
-msgstr "Especifica una data de finalització"
+msgstr "Especifiqueu una data de finalització"
 
 #: templates/components/form/reservation.html.twig
 msgctxt "periodicity"
@@ -2459,7 +2461,7 @@ msgstr "MB"
 #: src/DeviceProcessor.php:280
 msgctxt "quantity"
 msgid "Processors number"
-msgstr "Número de processador"
+msgstr "Nombre de processadors"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last day"
@@ -2516,11 +2518,11 @@ msgstr "Compara"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
-msgstr "Impressores seleccionades per comparar"
+msgstr "Seleccioneu les impressores per comparar"
 
 #: templates/components/printer_graph_buttons.html.twig src/PrinterLog.php:371
 msgid "Total pages"
-msgstr "Pàgines totals"
+msgstr "Total de pàgines"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
@@ -2542,7 +2544,7 @@ msgstr "Exporta a CSV"
 #: templates/components/infocom.html.twig src/Infocom.php:2044
 #: src/Cartridge.php:811
 msgid "Enable the financial and administrative information"
-msgstr "Activa les dades financeres i administratives"
+msgstr "Habilita la informació financera i administrativa"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -2588,17 +2590,17 @@ msgstr "Data de desmantellament"
 #: templates/components/infocom.html.twig src/Infocom.php:122
 #: src/Infocom.php:1462 src/Cartridge.php:906
 msgid "Financial and administrative information"
-msgstr "Dades financeres i administratives"
+msgstr "Informació financera i administrativa"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1479
 #: src/Infocom.php:1848
 msgid "Order number"
-msgstr "Número de demanda"
+msgstr "Número de comanda"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1469
 #: src/Infocom.php:1864
 msgid "Immobilization number"
-msgstr "Número d'inhibició"
+msgstr "Número d'immobilització"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1499
 #: src/Infocom.php:1915
@@ -2608,7 +2610,7 @@ msgstr "Número de factura"
 #: templates/components/infocom.html.twig src/Infocom.php:1489
 #: src/Infocom.php:1856
 msgid "Delivery form"
-msgstr "Lliurament de"
+msgstr "Formulari de lliurament"
 
 #: templates/components/infocom.html.twig src/Budget.php:234
 #: src/Budget.php:528 src/Report.php:1524 src/Infocom.php:1632
@@ -2620,11 +2622,11 @@ msgstr "Valor"
 #: templates/components/infocom.html.twig src/Infocom.php:1642
 #: src/Infocom.php:1832
 msgid "Warranty extension value"
-msgstr "Preu extensió garantia"
+msgstr "Valor de l'extensió de garantia"
 
 #: templates/components/infocom.html.twig
 msgid "Account net value"
-msgstr "Valor Net Comptable VNC"
+msgstr "Valor net del compte"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1664
 #: src/Infocom.php:1890
@@ -2634,7 +2636,7 @@ msgstr "Tipus d'amortització"
 #: templates/components/infocom.html.twig src/Infocom.php:1652
 #: src/Infocom.php:1880
 msgid "Amortization duration"
-msgstr "Duració d'amortització"
+msgstr "Durada de l'amortització"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1676
 #: src/Infocom.php:1907
@@ -2643,18 +2645,18 @@ msgstr "Coeficient d'amortització"
 
 #: templates/components/infocom.html.twig
 msgid "TCO (value + tracking cost)"
-msgstr "CTP (valor + cost d'incidències)"
+msgstr "Cost total de propietat (valor + cost de seguiment)"
 
 #: templates/components/infocom.html.twig
 msgid "Monthly TCO"
-msgstr "CTP mensual"
+msgstr "Cost total de propietat mensual"
 
 #: templates/components/infocom.html.twig src/BusinessCriticity.php:45
 #: src/Infocom.php:1706 src/Infocom.php:1975
 msgid "Business criticity"
 msgid_plural "Business criticities"
-msgstr[0] "Crítica a l'empresa"
-msgstr[1] "Crítiques a les empreses"
+msgstr[0] "Crítica empresarial"
+msgstr[1] "Crítiques empresarials"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1594
 #: src/Infocom.php:1824
@@ -2670,7 +2672,7 @@ msgstr "Data d'inici de la garantia"
 #: templates/components/infocom.html.twig src/Infocom.php:1586
 #: src/Infocom.php:1816
 msgid "Lifelong"
-msgstr "Per a tota la vida"
+msgstr "De per vida"
 
 #: templates/components/infocom.html.twig src/CommonITILRecurrent.php:245
 #: src/CommonITILRecurrent.php:280 src/Contract_Supplier.php:195
@@ -2683,7 +2685,7 @@ msgstr[1] "%d mesos"
 #: templates/components/infocom.html.twig src/Infocom.php:1579
 #: src/Infocom.php:1811
 msgid "Warranty duration"
-msgstr "Duració de la garantia"
+msgstr "Durada de la garantia"
 
 #: templates/components/infocom.html.twig
 #, php-format
@@ -2694,7 +2696,7 @@ msgstr "Vàlid per %s"
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1278
 #: src/NotificationTargetInfocom.php:46 src/Infocom.php:1950
 msgid "Alarms on financial and administrative information"
-msgstr "Alertes sobre dades financeres i administratives"
+msgstr "Alarmes sobre informació financera i administrativa"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
@@ -2704,7 +2706,7 @@ msgstr "Actualitza?"
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "A new update is available for the %s plugin."
-msgstr "Hi ha disponible una nova actualització per al connector %s."
+msgstr "Hi ha una nova actualització disponible per al complement %s."
 
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
@@ -2726,7 +2728,7 @@ msgstr "TTO"
 #: src/Glpi/Dashboard/FakeProvider.php:541
 #: src/Glpi/ContentTemplates/Parameters/TicketParameters.php:80
 msgid "Time to own"
-msgstr "Temps de posseir"
+msgstr "Temps per prendre possessió"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/SLATTRField.php:48
@@ -2976,7 +2978,7 @@ msgstr "Voleu suprimir també la data?"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Assign a SLA"
-msgstr "Assigna una SLA"
+msgstr "Assigna un SLA"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: templates/components/messages_after_redirect_toasts.html.twig
@@ -3150,8 +3152,8 @@ msgid ""
 "This template affects one or more items, are you sure you want to perform "
 "this action?"
 msgstr ""
-"Aquesta plantilla afecta a un o més objectes, esteu segurs que voleu "
-"continuar amb aquesta acció?"
+"Aquesta plantilla afecta un o més elements. Segur que vols realitzar aquesta"
+" acció?"
 
 #: templates/components/itilobject/fields/global_validation.html.twig
 #: src/NotificationTargetTicket.php:136 src/NotificationTargetTicket.php:783
@@ -3162,7 +3164,7 @@ msgstr "Sol·licitud de validació"
 
 #: templates/components/itilobject/fields/status.html.twig
 msgid "Reopen"
-msgstr "Reoberta"
+msgstr "Reobrir"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig
 #: templates/pages/setup/general/assistance_setup.html.twig
@@ -3221,7 +3223,7 @@ msgstr "Edita"
 #: templates/components/itilobject/timeline/document/document_list_item.html.twig
 msgctxt "button"
 msgid "Remove from import exclusion list"
-msgstr "Suprimeix de la llista d'exclusió d'importació"
+msgstr "Elimina de la llista d'exclusions d'importació"
 
 #: templates/components/itilobject/timeline/document/post_figure_content.html.twig
 #: templates/components/itilobject/timeline/document/document_list_item.html.twig
@@ -3231,7 +3233,7 @@ msgstr "Afegeix a la llista d'exclusió d'importació"
 
 #: templates/components/itilobject/timeline/document/document_list_item.html.twig
 msgid "File extension"
-msgstr "Extensió de l'arxiu"
+msgstr "Extensió de fitxer"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/simple_form.html.twig
@@ -3365,7 +3367,7 @@ msgstr "Captura de pantalla"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screen recording"
-msgstr "Gravació de la pantalla"
+msgstr "Gravació de pantalla"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Stop recording"
@@ -3469,7 +3471,7 @@ msgstr "Rebutja"
 msgid "Approval step"
 msgid_plural "Approval step"
 msgstr[0] "Pa"
-msgstr[1] "Pas d'aprovació:Passos d'aprovació"
+msgstr[1] "Pas d'aprovació"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/actors/main.html.twig
@@ -3580,7 +3582,7 @@ msgstr "Aprovació de la solució"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Optional when approved"
-msgstr "Opcional si acceptada"
+msgstr "Opcional un cop aprovat"
 
 #: templates/components/itilobject/timeline/knowledge_item.html.twig
 msgid "Search in the knowledge base"
@@ -3662,7 +3664,7 @@ msgstr "Creat: %1$s"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr "Darrera actualització: «%1$s» per «%2$s»"
+msgstr "Darrera actualització: %1$s per %2$s"
 
 #: templates/components/itilobject/validationstep.html.twig
 msgid "Minimum approval required (%)"
@@ -3702,8 +3704,8 @@ msgstr "Associar-me"
 #: src/CommonITILObject.php:10373
 msgid "Observer"
 msgid_plural "Observers"
-msgstr[0] "Observador:Observadors"
-msgstr[1] "Observador:Observadors"
+msgstr[0] "Observador"
+msgstr[1] "Observadors"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/pages/admin/group.html.twig
@@ -3715,7 +3717,7 @@ msgstr "Assignada a"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Edit notification settings"
-msgstr "Editar configuració de notificacions"
+msgstr "Edita la configuració de notificacions"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: src/Glpi/Csv/PlanningCsv.php:71 src/Planning.php:885
@@ -3725,7 +3727,7 @@ msgstr "Actor"
 #: templates/components/itilobject/actors/main.html.twig src/UserEmail.php:181
 #: src/UserEmail.php:223
 msgid "Email address"
-msgstr "Adreça de correu"
+msgstr "Adreça electrònica"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/components/itilobject/actors/field.html.twig
@@ -3735,27 +3737,29 @@ msgstr "Adreça de correu"
 #: front/change_supplier.form.php:47 front/change_user.form.php:50
 #: front/problem_supplier.form.php:47 src/CommonITILObject.php:5103
 msgid "Email followup"
-msgstr "Seguiment per correu-e"
+msgstr "Seguiment per correu electrònic"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled because:"
-msgstr "Les notificacions estan inhabilitades perquè:"
+msgstr "Les notificacions estan desactivades perquè:"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "User does not have an email address."
-msgstr "L'usuari no té adreça de correu electrònic."
+msgstr "L'usuari no té una adreça de correu electrònic."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "User has disabled notifications from its preferences."
-msgstr "L'usuari ha desactivat les notificacions de les seves preferències."
+msgstr ""
+"L'usuari ha desactivat les notificacions des de les seves preferències."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled in this entity."
-msgstr "Les notificacions estan inhabilitades en aquesta entitat."
+msgstr "Les notificacions estan desactivades en aquesta entitat."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "However, you can reactivate the notifications for this ticket."
-msgstr "Les notificacions estan inhabilitades en aquesta entitat."
+msgstr ""
+"No obstant això, podeu reactivar les notificacions per a aquest tiquet."
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/components/search/criteria_filter_actions.html.twig
@@ -3782,7 +3786,7 @@ msgstr "Correu electrònic directe"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
-msgstr "Nombre de tiquets assignats"
+msgstr "Nombre de tiquets ja assignats"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:3581
 msgid "Number of tickets as requester"
@@ -3793,7 +3797,7 @@ msgstr "Nombre de tiquets com a sol·licitant"
 msgid "%1$s item not saved"
 msgid_plural "%1$s items not saved"
 msgstr[0] "%1$s objecte no guardat"
-msgstr[1] "%1$s objectes no guardats"
+msgstr[1] "%1$s elements no guardats"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Display all items"
@@ -3812,8 +3816,8 @@ msgstr "Veure altres accions"
 msgid ""
 "Solving this %s is not possible as one or more mandatory field is not filled"
 msgstr ""
-"No és possible resoldre aquesta qüestió %s, ja que no s'ha emplenat un o més"
-" camps obligatoris"
+"No és possible resoldre aquest %s perquè un o més camps obligatoris no s'han"
+" omplert."
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
@@ -3821,7 +3825,7 @@ msgstr "Cancel·la el tiquet"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
-msgstr ""
+msgstr "Activa/desactiva l'amplada dels panells"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2880
@@ -3831,29 +3835,29 @@ msgstr "Enquesta externa"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Satisfaction survey expired."
-msgstr ""
+msgstr "L'enquesta de satisfacció ha caducat."
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "After 12 hours, you can no longer modify your response."
-msgstr ""
+msgstr "Després de 12 hores, ja no podràs modificar la teva resposta."
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "No response given"
-msgstr ""
+msgstr "No s'ha donat cap resposta"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 #, php-format
 msgid "Satisfaction with the resolution of the %s"
-msgstr ""
+msgstr "Satisfacció amb la resolució del %s"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "Response date to the satisfaction survey."
-msgstr ""
+msgstr "Data de resposta a l'enquesta de satisfacció."
 
 #: templates/components/itilobject/linked_itilobjects.html.twig
 msgctxt "button"
 msgid "Unlink"
-msgstr ""
+msgstr "Desenllaça"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
@@ -3866,19 +3870,19 @@ msgstr "Ordena"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr "Restableix l'ordre"
+msgstr "Restableix l'ordenació"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr "Elimina l'ordre"
+msgstr "Suprimir una ordenació"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "ASC"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "DESC"
 
 #: templates/components/search/query_builder/metacriteria.html.twig
 msgid "Delete a global rule"
@@ -3891,7 +3895,7 @@ msgstr "Suprimeix una regla"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
-msgstr ""
+msgstr "Activa/desactiva els filtres predeterminats addicionals"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "rule"
@@ -3913,7 +3917,7 @@ msgstr "Esborra"
 #: templates/components/search/query_builder/search_option_value.html.twig
 #: src/Glpi/Search/Input/QueryBuilder.php:387
 msgid "Criteria value"
-msgstr ""
+msgstr "Valor dels criteris"
 
 #: templates/components/search/criteria_filter.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -3926,11 +3930,11 @@ msgstr "Vista prèvia"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "No filter found"
-msgstr ""
+msgstr "No s'ha trobat cap filtre"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
-msgstr ""
+msgstr "Encara no hi ha cap filtre definit per a aquest element."
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "Create a filter"
@@ -3938,7 +3942,7 @@ msgstr "Crear un filtre"
 
 #: templates/components/search/map.html.twig
 msgid "Search results for localized items only"
-msgstr "Busca resultats només dels objectes localitzats"
+msgstr "Resultats de la cerca només per a elements localitzats"
 
 #. TRANS: %1$s is the name, %2$s is the firstname
 #. TRANS: %1$s is a number maybe float or string and %2$s the unit
@@ -3996,28 +4000,32 @@ msgstr "%1$s %2$s"
 
 #: templates/components/search/map.html.twig
 msgid "An error occurred loading data :("
-msgstr "Hi ha hagut un error carregant les dades :("
+msgstr "S'ha produït un error en carregar les dades :("
 
 #: templates/components/search/map.html.twig
 msgid "Reload"
-msgstr "Recarrega"
+msgstr "Torna a carregar"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
 "These preferences cannot be edited at this time. The item type no longer "
 "exists or is provided by a plugin that is not enabled."
 msgstr ""
+"Aquestes preferències no es poden editar en aquest moment. El tipus "
+"d'element ja no existeix o el proporciona un connector que no està "
+"habilitat."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
 "These preferences are used by everyone that does not have a personal view "
 "configured."
 msgstr ""
+"Aquestes preferències les utilitza tothom que no té configurada una vista "
+"personal."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "No personal criteria. Create personal parameters?"
-msgstr ""
-"No hi ha criteris personals. Vols crear els teus paràmetres personals?"
+msgstr "Sense criteris personals. Voleu crear paràmetres personals?"
 
 #: templates/components/search/displaypreference_config.html.twig
 #: src/Glpi/Dashboard/Grid.php:1498 src/Profile.php:977 src/Profile.php:1090
@@ -4027,15 +4035,15 @@ msgstr "Crea"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Select an option to add"
-msgstr ""
+msgstr "Selecciona una opció per afegir"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
-msgstr ""
+msgstr "Suprimeix la vista personal"
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "Mostra les cerques desades"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
@@ -4047,7 +4055,7 @@ msgstr "Mostra com un mapa"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle browse"
-msgstr "Commuta la navegació"
+msgstr "Navegació"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -4055,7 +4063,7 @@ msgstr "Mostra la paperera"
 
 #: templates/components/search/controls.html.twig
 msgid "Show unpublished"
-msgstr ""
+msgstr "Mostra els no publicats"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/search/displaypreference_modal.html.twig
@@ -4065,7 +4073,7 @@ msgstr "Selecciona els elements que es mostraran de forma predeterminada"
 
 #: templates/components/search/controls.html.twig
 msgid "Refresh"
-msgstr ""
+msgstr "Actualitza"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/logs.html.twig
@@ -4075,15 +4083,15 @@ msgstr "Exporta"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "Pàgina actual"
 
 #: templates/components/search/controls.html.twig
 msgid "Landscape PDF"
-msgstr ""
+msgstr "PDF horizontal"
 
 #: templates/components/search/controls.html.twig
 msgid "Portrait PDF"
-msgstr ""
+msgstr "PDF vertical"
 
 #: templates/components/search/controls.html.twig
 #: templates/pages/assistance/planning/single_filter.html.twig
@@ -4093,11 +4101,11 @@ msgstr "CSV"
 #: templates/components/search/controls.html.twig
 #, php-format
 msgid "Spreadsheet (%s)"
-msgstr ""
+msgstr "Full de càlcul (%s)"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
-msgstr ""
+msgstr "Totes les pàgines"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2801
 msgid "Copy names to clipboard"
@@ -4133,43 +4141,45 @@ msgstr "Tipus d'element"
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid "An error occurred during the search"
-msgstr ""
+msgstr "S'ha produït un error durant la cerca"
 
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid ""
 "Consider changing the search criteria or adjusting the displayed columns."
 msgstr ""
+"Penseu en canviar els criteris de cerca o ajustar les columnes que es "
+"mostren."
 
 #: templates/components/search/table.html.twig
 #: templates/components/datatable.html.twig
 msgid "Select item"
-msgstr ""
+msgstr "Selecciona l'element"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Filter saved"
-msgstr ""
+msgstr "Filtre desat"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Unable to save filter"
-msgstr ""
+msgstr "No s'ha pogut desar el filtre"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Failed to delete filter"
-msgstr ""
+msgstr "No s'ha pogut suprimir el filtre"
 
 #: templates/components/search/display_data.html.twig
 #: src/Item_DeviceSimcard.php:199 src/NetworkName.php:901
 #: src/Glpi/Features/AssignableItem.php:232
 msgid "View all"
-msgstr "Veure tot"
+msgstr "Veure-ho tot"
 
 #: templates/components/search/displaypreference_list.html.twig
 #: templates/components/checkbox_matrix.html.twig
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 #: src/Profile.php:3763
 msgid "Select/unselect all"
-msgstr "Selecciona/deselecciona tots"
+msgstr "Selecciona/deselecciona tot"
 
 #: templates/components/search/displaypreference_list.html.twig
 #: templates/pages/tools/find_available_reservation.html.twig
@@ -4290,12 +4300,12 @@ msgstr "Filtre"
 
 #: templates/components/logs.html.twig
 msgid "No historical matching your filters"
-msgstr "Cap històric que coincideixi amb els teus filtres"
+msgstr "No hi ha cap historial que coincideixi amb els filtres"
 
 #: templates/components/logs.html.twig
 #: templates/components/datatable.html.twig
 msgid "Entries to show:"
-msgstr ""
+msgstr "Entrades per mostrar:"
 
 #: templates/components/user/info_card.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -4321,7 +4331,7 @@ msgstr "Crear usuari"
 #: templates/components/user/password_security_checks.html.twig
 #, php-format
 msgid "Minimum length: %s"
-msgstr ""
+msgstr "Longitud mínima: %s"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Digit"
@@ -4341,7 +4351,7 @@ msgstr "Símbol"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Password must contain"
-msgstr ""
+msgstr "La contrasenya ha de contenir"
 
 #: templates/components/datatable.html.twig src/Lock.php:1061
 msgid "Check all"
@@ -4362,7 +4372,7 @@ msgstr "Marca tot"
 #: src/Glpi/Search/Output/Spreadsheet.php:241 src/User.php:4331
 #: src/CommonITILValidation.php:658
 msgid "All"
-msgstr "Tots"
+msgstr "Tot"
 
 #: templates/components/datatable.html.twig
 #: templates/pages/2fa/2fa_config.html.twig
@@ -4428,8 +4438,8 @@ msgstr "No"
 #: src/CronTask.php:1262 js/glpi_dialog.js:419 js/modules/ObjectLock.js:104
 msgid "Error"
 msgid_plural "Errors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Error"
+msgstr[1] "Errors"
 
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
@@ -4443,7 +4453,7 @@ msgstr[1] "Informacions"
 
 #: templates/components/checkbox_matrix.html.twig
 msgid "Check/uncheck all"
-msgstr "Marca/desmarca tots"
+msgstr "Marca/desmarca tot"
 
 #: templates/components/assets/link_existing_or_new_item_device.html.twig
 msgid "No unaffected device!"
@@ -4451,7 +4461,7 @@ msgstr "Cap dispositiu afectat!"
 
 #: templates/components/assets/link_existing_or_new_item_device.html.twig
 msgid "Choose an existing device"
-msgstr "Tria un dispositiu existent"
+msgstr "Trieu un dispositiu existent"
 
 #: templates/components/assets/link_existing_or_new_item_device.html.twig
 msgid "Add new devices"
@@ -4467,7 +4477,7 @@ msgstr "Color de fons"
 #: templates/pages/management/domainrecord.html.twig
 #: src/DomainRecordType.php:388 src/DomainRecord.php:134
 msgid "Data"
-msgstr "Dades"
+msgstr "Data"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Widget"
@@ -4475,31 +4485,31 @@ msgstr "Widget"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
-msgstr "Utilitza una paleta de degradats"
+msgstr "Utilitza la paleta de gradients"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "generate a palette from the background color"
-msgstr ""
+msgstr "generar una paleta a partir del color de fons"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use palette"
-msgstr ""
+msgstr "Utilitza la paleta"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
-msgstr "Mostra els valors de les etiquetes als punts/barres"
+msgstr "Mostrar etiquetes de valor en punts/barres"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show labels on chart"
-msgstr ""
+msgstr "Mostra les etiquetes al gràfic"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Show legend"
-msgstr ""
+msgstr "Mostra la llegenda"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr "Número límit de dades"
+msgstr "Limitar el nombre de dades"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -4526,19 +4536,19 @@ msgstr "Ves a la pàgina %s"
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Try different keywords or filters."
-msgstr ""
+msgstr "Prova diferents paraules clau o filtres."
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Pick an illustration"
-msgstr ""
+msgstr "Trieu una il·lustració"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Upload your own illustration"
-msgstr ""
+msgstr "Puja la teva pròpia il·lustració"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Use selected file"
-msgstr ""
+msgstr "Utilitza el fitxer seleccionat"
 
 #: templates/components/danger_modal.html.twig
 #: templates/pages/admin/assetdefinition/capacities.html.twig
@@ -4549,23 +4559,23 @@ msgstr "Estàs segur?"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Select the user to delegate"
-msgstr ""
+msgstr "Seleccioneu l'usuari a delegar"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He doesn't want"
-msgstr ""
+msgstr "Ell no vol"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He wants"
-msgstr ""
+msgstr "Ell vol"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Do you want to be notified of future events of this ticket"
-msgstr ""
+msgstr "Voleu rebre notificacions dels futurs esdeveniments d'aquest tiquet?"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Address to send the notification"
-msgstr ""
+msgstr "Adreça per enviar la notificació"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
@@ -4573,23 +4583,25 @@ msgid ""
 "This ticket is for %1$s and %2$s to be notified of future events of this "
 "ticket."
 msgstr ""
+"Aquest tiquet és per a %1$s i %2$s per rebre notificacions dels "
+"esdeveniments futurs d'aquest tiquet."
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid "This ticket is for %1$s"
-msgstr ""
+msgstr "Aquest tiquet és per a %1$s"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "There are no forms available"
-msgstr ""
+msgstr "No hi ha formularis disponibles"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Please try again later."
-msgstr ""
+msgstr "Si us plau, torna-ho a intentar més tard."
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "No forms found"
-msgstr ""
+msgstr "No s'han trobat formularis"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Service catalog pages"
@@ -4597,19 +4609,19 @@ msgstr "Pàgines del catàleg de serveis"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "First page"
-msgstr ""
+msgstr "Primera pàgina"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Previous page"
-msgstr ""
+msgstr "Pàgina anterior"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Next page"
-msgstr ""
+msgstr "Pàgina següent"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Last page"
-msgstr ""
+msgstr "Última pàgina"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 #: templates/pages/tools/project_task.html.twig src/ProjectTaskTemplate.php:76
@@ -4624,11 +4636,11 @@ msgstr "Eqjuip"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "No team members"
-msgstr "Sense membres d'equip"
+msgstr "Cap membre de l'equip"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "Open full form"
-msgstr ""
+msgstr "Obre el formulari complet"
 
 #: templates/forgotpassword.html.twig templates/pages/login.html.twig
 #: src/NotificationTargetUser.php:48
@@ -4641,7 +4653,7 @@ msgstr "Oblida-ho,"
 
 #: templates/forgotpassword.html.twig
 msgid "send me back"
-msgstr "envia'm"
+msgstr "envia'm de tornada"
 
 #: templates/forgotpassword.html.twig
 msgid "to the login screen."
@@ -4649,17 +4661,19 @@ msgstr "a la pantalla d'inici de sessió."
 
 #: templates/maintenance.html.twig
 msgid "Temporarily down for maintenance"
-msgstr "Temporalment fora de servei"
+msgstr "Temporalment fora de servei per manteniment"
 
 #: templates/maintenance.html.twig
 msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"Disculpeu les molèsties, però estem fent tasques de manteniment en aquest "
+"moment. Tornarem a estar en línia en breu!"
 
 #: templates/maintenance.html.twig templates/pages/form_renderer.html.twig
 msgid "Take me home"
-msgstr "Portam a casa"
+msgstr "Porta'm a casa"
 
 #: templates/stencil/parts/port/status.html.twig
 #: src/NetworkPortConnectionLog.php:108 src/NetworkPort.php:1177
@@ -4678,54 +4692,54 @@ msgstr "Provant"
 
 #: templates/stencil/parts/port/status.html.twig src/NetworkPort.php:1189
 msgid "Dormant"
-msgstr ""
+msgstr "Inactiu"
 
 #: templates/stencil/editor.html.twig
 msgid "Set number of zones"
-msgstr ""
+msgstr "Estableix el nombre de zones"
 
 #: templates/stencil/editor.html.twig
 msgid "Define zone in image"
-msgstr ""
+msgstr "Defineix la zona a la imatge"
 
 #: templates/stencil/editor.html.twig
 msgid "Add zone"
-msgstr ""
+msgstr "Afegeix una zona"
 
 #: templates/stencil/editor.html.twig
 msgid "Remove zone"
-msgstr ""
+msgstr "Elimina la zona"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone label"
-msgstr ""
+msgstr "Etiqueta de zona"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone number"
-msgstr ""
+msgstr "Número de zona"
 
 #: templates/stencil/editor.html.twig
 msgid "Save zone data"
-msgstr ""
+msgstr "Desa les dades de la zona"
 
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Enter"
-msgstr ""
+msgstr "Introdueix"
 
 #: templates/stencil/editor.html.twig
 #: templates/pages/setup/general/performance.html.twig
 msgid "Reset"
-msgstr "Reseteja"
+msgstr "Restablir"
 
 #: templates/stencil/editor.html.twig
 msgctxt "keyboard"
 msgid "Esc"
-msgstr ""
+msgstr "Esc"
 
 #: templates/stencil/editor.html.twig
 msgid "Clear data"
-msgstr ""
+msgstr "Esborrar dades"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -4783,14 +4797,14 @@ msgstr "Data de registre"
 #: src/AuthLDAP.php:830 src/User.php:3483
 msgctxt "user"
 msgid "Administrative number"
-msgstr "Matrícula"
+msgstr "Número administratiu"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/address.html.twig src/Entity.php:1031
 #: src/Supplier.php:356 src/Contact.php:448
 msgctxt "infocom"
 msgid "Administrative number"
-msgstr "Matrícula"
+msgstr "Número administratiu"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/user/user.html.twig
@@ -4972,7 +4986,7 @@ msgstr "Editor"
 #: src/Computer.php:622 src/Certificate.php:290 src/PDU.php:232
 #: src/Domain.php:192 src/ConsumableItem.php:272
 msgid "Group in charge"
-msgstr "Grup responsable"
+msgstr "Grup encarregat"
 
 #: templates/generic_show_form.html.twig src/NotificationTargetTicket.php:646
 #: src/Peripheral.php:238 src/NetworkEquipment.php:315 src/Monitor.php:257
@@ -5023,7 +5037,7 @@ msgstr[1] "Models"
 #: src/Computer.php:540 src/NotificationTargetChange.php:290
 #: src/Certificate.php:238 src/CommonDBTM.php:3602
 msgid "Alternate username number"
-msgstr "Número de contacte"
+msgstr "Número d'usuari alternatiu"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/assets.html.twig
@@ -5036,11 +5050,11 @@ msgstr "Número de contacte"
 #: src/Computer.php:532 src/NotificationTargetChange.php:289
 #: src/Certificate.php:230 src/CommonDBTM.php:3595
 msgid "Alternate username"
-msgstr "Contacte"
+msgstr "Nom d'usuari alternatiu"
 
 #: templates/generic_show_form.html.twig src/Unmanaged.php:192
 msgid "Sysdescr"
-msgstr ""
+msgstr "Descripció del sistema"
 
 #: templates/generic_show_form.html.twig src/RuleDictionnaryPrinter.php:89
 msgid "Management type"
@@ -5144,11 +5158,11 @@ msgstr "Actiu"
 #: templates/generic_show_form.html.twig src/DatabaseInstance.php:291
 #: src/Computer.php:516
 msgid "Last boot date"
-msgstr "Data del darrer reinici"
+msgstr "Data de l'última arrencada"
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
-msgstr "Modifica el grup"
+msgstr "Edita el grup"
 
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/assets/cable.html.twig src/PlanningEventCategory.php:48
@@ -5158,7 +5172,7 @@ msgstr "Color"
 
 #: templates/impact/edit_edge_modal.html.twig
 msgid "Edit edge"
-msgstr ""
+msgstr "Edita la vora"
 
 #: templates/impact/ongoing_modal.html.twig
 #: src/Glpi/Helpdesk/HomePageTabs.php:77
@@ -5167,34 +5181,34 @@ msgstr "Tiquets en curs"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter the code from your authenticator app"
-msgstr ""
+msgstr "Si us plau, introdueix el codi de la teva aplicació d'autenticació"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Backup code"
-msgstr ""
+msgstr "Codi de recuperació"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Use a backup code"
-msgstr ""
+msgstr "Utilitza un codi de recuperació"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Use a code from your authenticator app"
-msgstr ""
+msgstr "Utilitza un codi de la teva aplicació d'autenticació"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Please enter a backup code"
-msgstr ""
+msgstr "Si us plau, introdueix un codi de recuperació"
 
 #: templates/pages/2fa/2fa_request.html.twig
 #: templates/pages/2fa/macros.html.twig
 msgid "Verify"
-msgstr ""
+msgstr "Verifica"
 
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/security_setup.html.twig
 #: src/Preference.php:66
 msgid "Two-factor authentication (2FA)"
-msgstr ""
+msgstr "Autenticació de dos factors (2FA)"
 
 #: templates/pages/2fa/2fa_config.html.twig
 #, php-format
@@ -5202,15 +5216,18 @@ msgid ""
 "If 2FA is enforced, users with access to this %s will be required to use 2FA"
 " at login even if this is not their default"
 msgstr ""
+"Si s'aplica la 2FA, els usuaris amb accés a aquesta %s hauran d'utilitzar la"
+" 2FA en iniciar sessió, fins i tot si aquesta no és la seva opció "
+"predeterminada."
 
 #: templates/pages/2fa/2fa_config.html.twig
 msgid "Unenforce 2FA"
-msgstr ""
+msgstr "Deixa d'aplicar 2FA"
 
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Enforce 2FA"
-msgstr ""
+msgstr "Aplicar la 2FA"
 
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/admin/entity/assistance.html.twig
@@ -5235,17 +5252,17 @@ msgstr "Herència de l'entitat arrel"
 #: templates/pages/2fa/2fa_status.html.twig
 #, php-format
 msgid "2FA grace period ends %s"
-msgstr "Finalització del període de gràcia 2FA %s"
+msgstr "El període de gràcia de 2FA finalitza %s"
 
 #: templates/pages/2fa/2fa_status.html.twig
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:73
 msgid "Mandatory"
-msgstr ""
+msgstr "Obligatori"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Optional"
-msgstr ""
+msgstr "Opcional"
 
 #: templates/pages/2fa/2fa_status.html.twig
 #: templates/pages/admin/user/user.html.twig
@@ -5258,20 +5275,20 @@ msgstr "Desactivar 2FA "
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Reset 2FA"
-msgstr ""
+msgstr "Restableix 2FA"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Regenerate backup codes"
-msgstr ""
+msgstr "Regenerar codis de còpia recuperació"
 
 #: templates/pages/2fa/macros.html.twig
 #, php-format
 msgid "2FA code digit %s of %s"
-msgstr ""
+msgstr "Dígit %s de %s del codi 2FA"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA is required for your account"
-msgstr ""
+msgstr "Cal 2FA per al vostre compte"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA Setup"
@@ -5282,26 +5299,32 @@ msgid ""
 "1. Install an authenticator app on your mobile device such as Google "
 "Authenticator or Authy."
 msgstr ""
+"1. Instal·leu una aplicació d'autenticació al vostre dispositiu mòbil, com "
+"ara Google Authenticator o Authy."
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
 "2. Scan the following QR code or enter the code shown into your "
 "authenticator app."
 msgstr ""
+"2. Escaneja el següent codi QR o introdueix el codi que es mostra a "
+"l'aplicació d'autenticació."
 
 #: templates/pages/2fa/macros.html.twig
 msgid "QR Code"
-msgstr ""
+msgstr "Codi QR"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA secret"
-msgstr ""
+msgstr "Secret 2FA"
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
 "3. After entering the code into your authenticator, enter the code shown in "
 "the app to finish the setup"
 msgstr ""
+"3. Després d'introduir el codi a l'autenticador, introdueix el codi que es "
+"mostra a l'aplicació per finalitzar la configuració."
 
 #: templates/pages/2fa/macros.html.twig
 #, php-format
@@ -5309,31 +5332,35 @@ msgid ""
 "You can skip this step for now, but you will be required to set it up later "
 "(%s days)"
 msgstr ""
+"Pots ometre aquest pas per ara, però hauràs de configurar-lo més tard (%s "
+"dies)"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Skip"
-msgstr ""
+msgstr "Omet"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Backup codes (This is the only time these will be shown)"
-msgstr ""
+msgstr "Codis de recuperació (aquesta és l'única vegada que es mostraran)"
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
 "These are one-time use codes in case your authenticator is inaccessible"
 msgstr ""
+"Aquests són codis d'un sol ús en cas que el vostre autenticador sigui "
+"inaccessible."
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Copied"
-msgstr ""
+msgstr "Copiat"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "An error occurred"
-msgstr ""
+msgstr "S'ha produït un error"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Copy backup codes"
-msgstr ""
+msgstr "Copiar codis de còpia de recuperació"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: src/Glpi/Form/Category.php:57
@@ -5420,7 +5447,7 @@ msgstr "Per ubicació"
 #: templates/pages/tools/report/network_criteria.html.twig src/Stat.php:1734
 #: src/Stat.php:1746 src/Stat.php:1759
 msgid "By hardware"
-msgstr "Per switch"
+msgstr "Per maquinari"
 
 #: templates/pages/tools/report/network_criteria.html.twig
 msgid "By network socket"
@@ -5487,11 +5514,11 @@ msgstr "Nombre d'elements mostrats"
 #: src/RSSFeed.php:547 src/RSSFeed.php:652 src/Planning.php:1210
 #, php-format
 msgid "URL \"%s\" is not allowed by your administrator."
-msgstr ""
+msgstr "L'administrador no permet l'URL \"%s\"."
 
 #: templates/pages/tools/rss_form.html.twig src/RSSFeed.php:653
 msgid "Error retrieving RSS feed"
-msgstr "Error descarregant al canal RSS"
+msgstr "Error en recuperar el canal RSS"
 
 #: templates/pages/tools/savedsearch/form.html.twig src/SavedSearch.php:118
 #: src/SavedSearch.php:906 src/SavedSearch.php:951
@@ -5500,7 +5527,7 @@ msgstr "Automàtic"
 
 #: templates/pages/tools/savedsearch/form.html.twig
 msgid "Do count"
-msgstr "Conta-ho"
+msgstr "Compta"
 
 #: templates/pages/tools/savedsearch/form.html.twig src/SavedSearch.php:141
 msgid "Public"
@@ -5525,11 +5552,11 @@ msgstr[0] "Notificacions utilitzades:"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Notification does not exist"
-msgstr ""
+msgstr "La notificació no existeix"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Create it now"
-msgstr ""
+msgstr "Crea-ho ara"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Add an alert"
@@ -5545,8 +5572,8 @@ msgid ""
 "Compare number of results the search returns against the specified value "
 "with selected operator"
 msgstr ""
-"Compara el nombre de resultats que retorna la recerca amb el valor "
-"especificat amb l'operador seleccionat"
+"Compara el nombre de resultats que retorna la cerca amb el valor especificat"
+" amb l'operador seleccionat"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 #: templates/pages/setup/dropdowntranslation.html.twig
@@ -5570,7 +5597,7 @@ msgstr "Freqüència de notificació"
 #: templates/pages/tools/savedsearch/save_button.html.twig
 #: js/modules/Search/GenericView.js:95 js/modules/Search/Table.js:76
 msgid "Save current search"
-msgstr "Guardar aquesta cerca"
+msgstr "Desa la cerca actual"
 
 #: templates/pages/tools/reminder_translation.html.twig
 #: templates/pages/tools/kb/translation.html.twig
@@ -5603,16 +5630,16 @@ msgstr "De %1$s a %2$s"
 
 #: templates/pages/tools/reminder.html.twig
 msgid "Add to schedule"
-msgstr "Afegeix a la llista"
+msgstr "Afegeix a la programació"
 
 #: templates/pages/tools/reminder.html.twig
 #, php-format
 msgid "Reminder %1$s"
-msgstr ""
+msgstr "Recordatori %1$s"
 
 #: templates/pages/tools/reminder.html.twig
 msgid "Not planned"
-msgstr ""
+msgstr "No planificat"
 
 #: templates/pages/tools/reminder.html.twig
 #: templates/pages/assistance/planning/external_event.html.twig
@@ -5628,11 +5655,11 @@ msgstr[1] "Calendaris"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Use this entry"
-msgstr ""
+msgstr "Utilitza aquesta entrada"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Back to results"
-msgstr ""
+msgstr "Torna als resultats"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 #: src/Glpi/Search/Provider/SQLProvider.php:6229 js/common.js:1989
@@ -5643,15 +5670,16 @@ msgstr "Carregant..."
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while searching in the knowledge base"
-msgstr ""
+msgstr "S'ha produït un error en cercar a la base de coneixements"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while loading the knowledge base entry"
 msgstr ""
+"S'ha produït un error en carregar l'entrada de la base de coneixements."
 
 #: templates/pages/tools/kb/knowbaseitem_item.html.twig
 msgid "Add a linked item"
-msgstr "Afegeix un objecte enllaçat"
+msgstr "Afegeix un element enllaçat"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/knowbaseitem.html.twig
@@ -5701,30 +5729,30 @@ msgstr[1] "%d vistes"
 #: src/Glpi/Search/Provider/SQLProvider.php:6389 src/KnowbaseItem.php:1528
 #: src/KnowbaseItem.php:1715
 msgid "This item is part of the FAQ"
-msgstr "Aquest article forma part de les Preguntes Més Freqüents"
+msgstr "Aquest element forma part de les preguntes freqüents"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "This item is not part of the FAQ"
-msgstr "Aquest article no forma part de les Preguntes Més Freqüents"
+msgstr "Aquest element no forma part de les preguntes freqüents"
 
 #: templates/pages/tools/kb/comments.html.twig
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a comment"
-msgstr ""
+msgstr "Afegeix un comentari"
 
 #: templates/pages/tools/kb/comments.html.twig
 msgid "No comments"
-msgstr "No hi ha cap comentari"
+msgstr "Sense comentaris"
 
 #: templates/pages/tools/kb/comments.html.twig
 msgid "Unable to load comment!"
-msgstr ""
+msgstr "No s'ha pogut carregar el comentari!"
 
 #: templates/pages/tools/kb/comments.html.twig js/modules/ObjectLock.js:137
 #: js/modules/Knowbase.js:74 js/modules/Knowbase.js:157
 msgid "Contact your GLPI admin!"
-msgstr "Contacte amb el vostre administrador GLPI!"
+msgstr "Poseu-vos en contacte amb el vostre administrador de GLPI!"
 
 #: templates/pages/tools/kb/comments.html.twig
 msgid "Add an answer"
@@ -5736,12 +5764,12 @@ msgstr "Vistes"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Put this item in the FAQ"
-msgstr "Col·loca aquest article en les Preguntes Més Freqüents"
+msgstr "Posa aquest element a les preguntes freqüents"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #, php-format
 msgid "Link with %1$s"
-msgstr ""
+msgstr "Enllaç amb %1$s"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #: src/NotificationTargetKnowbaseItem.php:70
@@ -5775,6 +5803,9 @@ msgid ""
 "When automatic computation is active, state is computed based on this task "
 "percent done. Don't forget to define them in the general config."
 msgstr ""
+"Quan el càlcul automàtic està actiu, l'estat es calcula en funció del "
+"percentatge de realització d'aquesta tasca. No us oblideu de definir-los a "
+"la configuració general."
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
@@ -5793,8 +5824,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child task percent done."
 msgstr ""
-"Quan el càlcul automàtic està actiu, el percentatge es calcula sobre la base"
-" de la mitjana de tots els percentatges de tasques fill realitzades."
+"Quan el càlcul automàtic està actiu, el percentatge es calcula en funció de "
+"la mitjana del percentatge completat de totes les tasques secundàries."
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
@@ -5829,7 +5860,7 @@ msgstr "Planificació"
 #: src/ProjectTask.php:1230 src/NotificationTargetProjectTask.php:539
 #: src/NotificationTargetProjectTask.php:563 src/ProjectTask_Ticket.php:358
 msgid "Planned start date"
-msgstr "Data inicial planificada"
+msgstr "Data d'inici prevista"
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
@@ -5850,7 +5881,7 @@ msgstr "Data inicial real"
 #: src/NotificationTargetProjectTask.php:564 src/ProjectTask_Ticket.php:359
 #: js/src/vue/Kanban/Card.vue:138
 msgid "Planned end date"
-msgstr "Data final planificada"
+msgstr "Data final prevista"
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
@@ -5869,7 +5900,7 @@ msgstr "Data final real"
 #: src/ProjectTask.php:1057 src/ProjectTask.php:1232
 #: src/NotificationTargetProjectTask.php:548 src/ProjectTask_Ticket.php:360
 msgid "Planned duration"
-msgstr "Durada planificada"
+msgstr "Durada prevista"
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
@@ -5968,13 +5999,13 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
-"Quan el càlcul automàtic està actiu, el percentatge es calcula sobre la base"
-" de la mitjana de tots els projectes fills i el percentatge de tasques "
-"realitzades."
+"Quan el càlcul automàtic està actiu, el percentatge es calcula en funció de "
+"la mitjana del percentatge completat de tots els projectes i totes les "
+"tasques secundàries."
 
 #: templates/pages/tools/project.html.twig src/Project.php:609
 msgid "Show on global Gantt"
-msgstr ""
+msgstr "Mostrar a Gantt global"
 
 #: templates/pages/tools/project.html.twig
 #: templates/pages/admin/group_user.html.twig
@@ -5984,8 +6015,8 @@ msgstr ""
 #: src/Group_User.php:626
 msgid "Manager"
 msgid_plural "Managers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Responsable"
+msgstr[1] "Responsables"
 
 #: templates/pages/tools/project.html.twig
 msgid "Sum of planned durations of tasks"
@@ -6007,7 +6038,7 @@ msgstr "Dispositiu aprovat"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:151
 msgid "Network hub"
-msgstr ""
+msgstr "Concentrador"
 
 #: templates/pages/assets/monitor.html.twig
 #: templates/pages/assets/phone.html.twig
@@ -6033,7 +6064,7 @@ msgstr "Estoc objectiu"
 #: templates/pages/assets/cable.html.twig
 #, php-format
 msgid "Endpoint %s"
-msgstr ""
+msgstr "Endpoint %s"
 
 #: templates/pages/assets/cable.html.twig
 #: templates/pages/admin/transfer.html.twig
@@ -6067,17 +6098,18 @@ msgstr "Posició"
 #: templates/pages/assets/software.html.twig install/update.php:120
 #: install/install.php:460
 msgid "Upgrade"
-msgstr "Actualitza"
+msgstr "Actualització"
 
 #: templates/pages/assets/software.html.twig
 msgid "from"
-msgstr "De"
+msgstr "de"
 
 #: templates/pages/assets/cartridge.html.twig src/CartridgeItem.php:75
 #: src/Cartridge.php:1177
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] "Models de cartutx"
+msgstr[0] "Model de cartutx"
+msgstr[1] "Models de cartutxos"
 
 #: templates/pages/assets/cartridge.html.twig src/Consumable.php:662
 #: src/Consumable.php:933 src/Cartridge.php:898 src/Cartridge.php:1179
@@ -6106,28 +6138,28 @@ msgstr "Afegeix una plantilla"
 
 #: templates/pages/assets/socket_short_form.html.twig
 msgid "Add several sockets"
-msgstr ""
+msgstr "Afegiu diversos endolls"
 
 #: templates/pages/assets/socket_short_form.html.twig
 #: templates/pages/assets/socket.html.twig
 msgid "Prefix"
-msgstr ""
+msgstr "Prefix"
 
 #: templates/pages/assets/socket_short_form.html.twig
 #: templates/pages/assets/socket.html.twig
 msgid "Suffix"
-msgstr ""
+msgstr "Suffix"
 
 #: templates/pages/assets/socket_short_form.html.twig
 #: templates/pages/assets/socket.html.twig src/Glpi/Socket.php:395
 #: src/Glpi/Socket.php:454 src/Glpi/Socket.php:774 src/Glpi/Socket.php:897
 msgid "Wiring side"
-msgstr ""
+msgstr "Banda de cablejat "
 
 #: templates/pages/assets/phone.html.twig src/Phone.php:335
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr "Quantitat de línies"
+msgstr "Nombre de línies"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/SoftwareVersion.php:353 src/Item_SoftwareVersion.php:1108
@@ -6135,13 +6167,15 @@ msgstr "Quantitat de línies"
 #: src/Item_OperatingSystem.php:589 src/Software.php:587
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] "Arquitectures"
+msgstr[0] "Arquitectura"
+msgstr[1] "Arquitectures"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/Item_OperatingSystem.php:491 src/OperatingSystemKernel.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] "Kernels"
+msgstr[0] "Kernel"
+msgstr[1] "Kernels"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/OperatingSystemEdition.php:42 src/Item_OperatingSystem.php:534
@@ -6156,7 +6190,7 @@ msgstr[1] "Edicions"
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/Item_OperatingSystem.php:348 src/Item_OperatingSystem.php:444
 msgid "Product ID"
-msgstr "ID de producte"
+msgstr "ID del producte"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
@@ -6164,7 +6198,7 @@ msgstr "Empresa"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Propietari"
 
 #: templates/pages/assets/operatingsystem.html.twig src/Lock.php:597
 #: src/Item_SoftwareVersion.php:477 src/Item_SoftwareVersion.php:1107
@@ -6175,7 +6209,7 @@ msgstr "Data d'instal·lació"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Host ID"
-msgstr "ID Host"
+msgstr "ID d'amfitrió"
 
 #: templates/pages/assets/customfield.html.twig
 #: templates/pages/admin/customobjects/main.html.twig
@@ -6192,12 +6226,16 @@ msgid ""
 "The system name field corresponds to what will be used when development is "
 "involved. Examples: API calls, webhooks, etc."
 msgstr ""
+"El camp de nom del sistema correspon al que s'utilitzarà quan hi hagi "
+"desenvolupament. Exemples: crides a l'API, webhooks, etc."
 
 #: templates/pages/assets/customfield.html.twig
 msgid ""
 "In the legacy API, the field name is prefixed by \"custom_\" to avoid "
 "conflicts with standard fields."
 msgstr ""
+"A l'API antiga, el nom del camp té com a prefix \"custom_\" per evitar "
+"conflictes amb els camps estàndard."
 
 #: templates/pages/assets/customfield.html.twig
 #: templates/pages/admin/customobjects/main.html.twig
@@ -6205,13 +6243,13 @@ msgstr ""
 #: src/Glpi/CustomObject/AbstractDefinition.php:409
 #: src/Glpi/CustomObject/AbstractDefinition.php:743
 msgid "System name"
-msgstr ""
+msgstr "Nom del sistema"
 
 #: templates/pages/assets/socket.html.twig src/Glpi/Socket.php:775
 #: src/NetworkPort.php:173
 msgid "Network port"
 msgid_plural "Network ports"
-msgstr[0] "Port de la xarxa"
+msgstr[0] "Port de xarxa"
 msgstr[1] "Ports de xarxa"
 
 #: templates/pages/assets/socket.html.twig
@@ -6220,23 +6258,23 @@ msgstr "De"
 
 #: templates/pages/assets/socket.html.twig
 msgid "To"
-msgstr ""
+msgstr "Per"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:566
 msgid "Initial page counter"
-msgstr "Comptador de pàgina inicial"
+msgstr "Comptador de pàgines inicial"
 
 #: templates/pages/assets/printer.html.twig src/Printer.php:575
 msgid "Current counter of pages"
-msgstr "Comptador de pàgines actual"
+msgstr "Comptador actual de pàgines"
 
 #: templates/pages/assets/rack.html.twig ajax/dcroom_size.php:62
 msgid "No room found or selected"
-msgstr "No s'ha trobat cap habitació ni s'ha seleccionat"
+msgstr "No s'ha trobat ni s'ha seleccionat cap sala"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Position in room"
-msgstr "Posició en sala"
+msgstr "Posició a la sala"
 
 #: templates/pages/assets/rack.html.twig
 msgid "North"
@@ -6256,7 +6294,7 @@ msgstr "Oest"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Door orientation in room"
-msgstr "Orientació de la porta en la sala"
+msgstr "Orientació de la porta a la sala"
 
 #: templates/pages/assets/rack.html.twig src/Rack.php:236
 msgid "Number of units"
@@ -6279,22 +6317,22 @@ msgstr "Profunditat"
 #: templates/pages/assets/rack.html.twig src/CommonDCModelDropdown.php:115
 #: src/Glpi/Asset/AssetModel.php:297
 msgid "Max. power (in watts)"
-msgstr "Energia max. (en watts)"
+msgstr "Potència màxima (en watts)"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Measured power (in watts)"
-msgstr "Energia mesurada (en watts)"
+msgstr "Potència mesurada (en watts)"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Max. weight"
-msgstr "Màx. pes"
+msgstr "Pes màxim"
 
 #: templates/pages/assets/networkport/form.html.twig src/NetworkPort.php:1533
 #: src/RuleImportAsset.php:148
 msgid "Port number"
 msgid_plural "Port number"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Número de port"
+msgstr[1] "Número de port"
 
 #: templates/pages/assets/networkport/form.html.twig src/Location.php:66
 #: src/Dropdown.php:799 src/NetworkPort.php:1699
@@ -6303,7 +6341,7 @@ msgstr "Àlies"
 
 #: templates/pages/assets/networkport/form.html.twig src/NetworkPort.php:1605
 msgid "MTU"
-msgstr ""
+msgstr "MTU"
 
 #: templates/pages/assets/networkport/form.html.twig src/NetworkPort.php:975
 msgid "Up"
@@ -6311,7 +6349,7 @@ msgstr "Amunt"
 
 #: templates/pages/assets/networkport/form.html.twig src/NetworkPort.php:979
 msgid "Down"
-msgstr ""
+msgstr "Avall"
 
 #: templates/pages/assets/networkport/form.html.twig src/NetworkPort.php:983
 msgid "Test"
@@ -6319,7 +6357,7 @@ msgstr "Prova"
 
 #: templates/pages/assets/networkport/form.html.twig src/NetworkPort.php:1619
 msgid "Internal status"
-msgstr "Estatus intern"
+msgstr "Estat intern"
 
 #: templates/pages/assets/networkport/networkname_short.html.twig
 #, php-format
@@ -6328,19 +6366,19 @@ msgstr "Mostra %s"
 
 #: templates/pages/login_error.html.twig
 msgid "Log in again"
-msgstr "Torna a entrar"
+msgstr "Torna a iniciar la sessió"
 
 #: templates/pages/setup/marketplace/card.html.twig
 msgid "Homepage"
-msgstr "Pàgina inicial"
+msgstr "Pàgina d'inici"
 
 #: templates/pages/setup/marketplace/card.html.twig
 msgid "Get help"
-msgstr "Obté ajuda"
+msgstr "Obtén ajuda"
 
 #: templates/pages/setup/marketplace/card.html.twig
 msgid "Readme"
-msgstr "Llegeix-me"
+msgstr "Llegiu-me"
 
 #: templates/pages/setup/marketplace/card.html.twig
 msgid "Changelog"
@@ -6348,7 +6386,7 @@ msgstr "Registre de canvis"
 
 #: templates/pages/setup/dropdowns_list.html.twig
 msgid "Entity management"
-msgstr ""
+msgstr "Gestió d'entitats"
 
 #: templates/pages/setup/externallink.html.twig src/Link.php:257
 msgid "Link or filename"
@@ -6357,7 +6395,7 @@ msgstr "Enllaç o nom de fitxer"
 #: templates/pages/setup/externallink.html.twig
 #: templates/pages/setup/manuallink.html.twig
 msgid "Open in a new window"
-msgstr "Obre una nova finestra"
+msgstr "Obre en una finestra nova"
 
 #: templates/pages/setup/externallink.html.twig
 msgid "File content"
@@ -6372,7 +6410,7 @@ msgstr "Execució"
 #: templates/pages/admin/rules/form.html.twig src/LevelAgreementLevel.php:136
 #: src/Rule.php:788
 msgid "Logical operator"
-msgstr "Tipus d'emparellament"
+msgstr "Operador lògic"
 
 #: templates/pages/setup/calendarsegment.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -6398,19 +6436,19 @@ msgstr ""
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range start"
-msgstr "Rang d'adreces IPv4 inicial"
+msgstr "Inici del rang d'adreces IPv4"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range end"
-msgstr "Rang d'adreces IPv4 final"
+msgstr "Final del rang d'adreces IPv4"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:160
 msgid "IPv6 address"
-msgstr "Rang d'adreces IPv6"
+msgstr "Adreça IPv6"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:168
 msgid "Application token"
-msgstr "Fitxa de sol·licitud"
+msgstr "Token d'aplicació"
 
 #: templates/pages/setup/externallink_itemtype.html.twig
 msgid "Add an item type"
@@ -6458,12 +6496,12 @@ msgstr "%1$s / %2$s"
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s memory usage is correct"
-msgstr "%1$s ús de la memòria és correcte"
+msgstr "%1$s ús de memòria és correcte"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr "%1$s ús de la memòria és molt baix o molt alt"
+msgstr "%1$s ús de memòria és molt baix o molt alt"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Hits rate"
@@ -6481,31 +6519,31 @@ msgstr "%1$s índex d'encerts és baix"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Out of memory restart"
-msgstr "Fora de memòria reinicia"
+msgstr "Reinici per falta de memòria"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s restart rate is correct"
-msgstr "%1$s índex de reinici és correcte"
+msgstr "%1$s la velocitat de reinici és correcta"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr "%1$s índex de reinici és massa alt"
+msgstr "%1$s la taxa de reinici és massa alta"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "User data cache"
-msgstr "Data caché de l'usuari"
+msgstr "Memòria cau de dades d'usuari"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "You can use \"%s\" command to configure cache system."
-msgstr ""
+msgstr "Podeu utilitzar l'ordre \"%s\" per configurar el sistema de memòria cau."
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "The \"%s\" cache extension is installed"
-msgstr "L'extensió de caché \"%s\" està instal·lada"
+msgstr "L'extensió de memòria cau \"%s\" està instal·lada"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
@@ -6514,7 +6552,7 @@ msgstr "S'utilitza el sistema de memòria cau \"%s\""
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Translation cache"
-msgstr "Caché de traduccions"
+msgstr "Memòria cau de traducció"
 
 #: templates/pages/setup/general/api_setup.html.twig src/Auth.php:1268
 #: src/Config.php:1029
@@ -6523,16 +6561,16 @@ msgstr "API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable API"
-msgstr ""
+msgstr "Activa l'API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 #: src/Glpi/Api/HL/Controller/CoreController.php:300
 msgid "API Getting Started"
-msgstr ""
+msgstr "Introducció a l'API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API Endpoints"
-msgstr ""
+msgstr "Punts finals de l'API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "URL of the API"
@@ -6540,23 +6578,27 @@ msgstr "URL de l'API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Legacy API"
-msgstr ""
+msgstr "API antiga"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid ""
 "The Legacy API is enabled. It is recommended to only use the new API when "
 "possible."
 msgstr ""
+"L'API antiga està habilitada. Es recomana utilitzar la nova API només quan "
+"sigui possible."
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable Legacy REST API"
-msgstr ""
+msgstr "Activa l'API REST antiga"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid ""
 "Are you sure you want to enable the Legacy API? It is recommended to only "
 "use the new API when possible."
 msgstr ""
+"Esteu segur que voleu habilitar l'API antiga? Es recomana utilitzar la nova "
+"API només quan sigui possible."
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API inline Documentation"
@@ -6581,6 +6623,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
+"Permet iniciar sessió a l'API i obtenir un token de sessió amb un token "
+"extern de l'usuari. Vegeu la clau d'accés remot a la pestanya Configuració "
+"de l'usuari."
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Information about system installation and configuration"
@@ -6588,7 +6633,7 @@ msgstr "Informació sobre la instal·lació i configuració del sistema"
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Copy system information"
-msgstr "Copia informació del sistema"
+msgstr "Copiar la informació del sistema"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: src/Glpi/Features/PlanningEvent.php:840 src/Profile.php:1082
@@ -6619,7 +6664,7 @@ msgstr "Nom, Cognoms"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Display order of surnames firstnames"
-msgstr "Visualitza l'ordre del cognom i nom"
+msgstr "Ordre de visualització dels cognoms i noms"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Number format"
@@ -6627,31 +6672,35 @@ msgstr "Format de número"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Results to display by page"
-msgstr "Resultats mostrats per pàgina"
+msgstr "Resultats per mostrar per pàgina"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Go to created item after creation"
-msgstr "Ves a l'element després de crear-lo"
+msgstr "Anar a l'element creat després de la creació"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Display the tree dropdown complete name in dropdown inputs"
 msgstr ""
+"Mostra el nom complet del menú desplegable de l'arbre a les entrades del "
+"menú desplegable"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Display the complete name of tree dropdown in search results"
 msgstr ""
+"Mostra el nom complet de l'arbre al menú desplegable als resultats de la "
+"cerca"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Display counters"
-msgstr "Mostra comptadors"
+msgstr "Comptadors de visualització"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show GLPI ID"
-msgstr "Mostra els ID GLPI"
+msgstr "Mostra l'ID de GLPI"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Keep devices when purging an item"
-msgstr "Conserva els dispositius quan eliminis un element"
+msgstr "Mantingueu els dispositius quan elimineu un element"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Notifications for my changes"
@@ -6659,7 +6708,7 @@ msgstr "Notificacions dels meus canvis"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Results to display on home page"
-msgstr "Resultats mostrats a la pàgina principal"
+msgstr "Resultats per mostrar a la pàgina d'inici"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: src/Config.php:353 src/User.php:6811
@@ -6680,7 +6729,7 @@ msgstr "Horitzontal (menú a la capçalera)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Vertical (menu in sidebar)"
-msgstr "Vertical (menu in sidebar)"
+msgstr "Vertical (menú a la barra lateral)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Page layout"
@@ -6692,7 +6741,7 @@ msgstr "En línia (sense barres d'eines)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Classic (toolbar on top)"
-msgstr "Clàssic (barra d'eines al capdamunt)"
+msgstr "Clàssic (barra d'eines a la part superior)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Rich text field layout"
@@ -6700,7 +6749,7 @@ msgstr "Disseny del camp de text enriquit"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Enable high contrast"
-msgstr "Activa el contrast alt"
+msgstr "Activa l'alt contrast"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig src/RuleRight.php:324
@@ -6715,13 +6764,13 @@ msgstr "Utilitza la configuració del servidor"
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "L'ús de la zona horària no s'ha activat."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
-msgstr ""
+msgstr "Executeu l'ordre \"%1$s\" per activar-lo."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default central tab"
@@ -6729,15 +6778,11 @@ msgstr "Pestanya central per defecte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
-"Ordre natural (elements antics a la part superior, recents a la part "
-"inferior)"
+msgstr "Ordre natural (elements antics a dalt, recents a baix)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Reverse order (old items on bottom, recent on top)"
-msgstr ""
-"Ordre invers (elements antics a la part inferior, recents a la part "
-"superior)"
+msgstr "Ordre invers (elements antics a baix, recents a dalt)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Timeline order"
@@ -6749,7 +6794,7 @@ msgstr "Mostra el formulari de cerca a sobre dels resultats"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search pagination above results"
-msgstr ""
+msgstr "Mostra la paginació de cerca a sobre dels resultats"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/profile/assistance_simple.html.twig
@@ -6769,11 +6814,11 @@ msgstr "Suport"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Private followups by default"
-msgstr "Seguiment privat per defecte"
+msgstr "Seguiments privats per defecte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show new tickets on the home page"
-msgstr "Mostra els tiquets nous en entrar al sistema"
+msgstr "Mostra els tiquets nous a la pàgina d'inici"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Private tasks by default"
@@ -6781,37 +6826,37 @@ msgstr "Tasques privades per defecte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Request sources by default"
-msgstr "Sol·licita fonts per defecte"
+msgstr "Origen de les sol·licituds per defecte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Tasks state by default"
-msgstr "Estat de tasques per defecte"
+msgstr "Estat de les tasques per defecte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Planned tasks state by default"
-msgstr ""
+msgstr "Estat de les tasques planificades per defecte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
 msgstr ""
-"Actualitzeu automàticament les dades (llista de tiquets, kanban del "
-"projecte) en qüestió de minuts."
+"Actualitza automàticament les dades (llista de tiquets, kanban del projecte)"
+" en minuts."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a technician when creating a ticket"
-msgstr "Preassigna'm com a tècnic quan es crei  un tiquet"
+msgstr "Preselecciona'm com a tècnic en crear un tiquet"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a requester when creating a ticket"
-msgstr "Pre-seleccionem a mi com a sol·licitant quan es crea un tiquet"
+msgstr "Preselecciona'm com a sol·licitant en crear un tiquet"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
-msgstr ""
+msgstr "Afegeix-me com a tècnic quan afegeixis un seguiment de tiquets"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket solution"
-msgstr ""
+msgstr "Afegeix-me com a tècnic en afegir una solució de tiquets"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Merged"
@@ -6823,15 +6868,15 @@ msgstr "Dividit"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Action button layout"
-msgstr ""
+msgstr "Disseny del botó d'acció"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Relative"
-msgstr ""
+msgstr "Relatiu"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Precise"
-msgstr ""
+msgstr "Precís"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Timeline date display"
@@ -6856,59 +6901,59 @@ msgstr[1] "Hores"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "OK state color"
-msgstr "Color d'estat correcte"
+msgstr "Color de l'estat correcte"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state color"
-msgstr "Color d'estat d'advertència"
+msgstr "Color de l'estat d'advertència"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state threshold"
-msgstr "Llindar d'estat d'advertència"
+msgstr "Llindar de l'estat d'advertència"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Critical state color"
-msgstr "Color d'estat crític"
+msgstr "Color de l'estat crític"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Critical state threshold"
-msgstr "Llindar d'estat crític"
+msgstr "Llindar de l'estat crític"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Item locks"
-msgstr "Objectes bloquejats"
+msgstr "Elements bloquejats"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Auto-lock Mode"
-msgstr "Mode d'auto-bloqueig"
+msgstr "Mode de bloqueig automàtic"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
 msgstr ""
-"Notificació directe (sol·licitant per desbloquejat serà el remitent de la "
+"Notificació directa (el sol·licitant del desbloqueig serà l'emissor de la "
 "notificació)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Dashboards"
-msgstr "Panells de control"
+msgstr "Taulers de control"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for central"
-msgstr "Per defecte per central"
+msgstr "Predeterminat per a la interfície central"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assets"
-msgstr "Per defecte per Actius"
+msgstr "Predeterminat per a actius"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for Assistance"
-msgstr "Per defecte per Assistència"
+msgstr "Predeterminat per a l'assistència"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default for tickets (mini dashboard)"
-msgstr "Predeterminat per tiquets (mini dashboard)"
+msgstr "Per defecte per a tiquets (mini tauler de control)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/setup/setup_notifications.html.twig
@@ -6925,41 +6970,45 @@ msgid ""
 "Disable notifications by default on ITIL objects actor configuration, with "
 "ability to derogate to it."
 msgstr ""
+"Desactiva les notificacions per defecte en la configuració de l'actor "
+"d'elements ITIL, amb la possibilitat de derogar-hi."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid ""
 "Disable all notifications on all other objects, without ability to derogate "
 "to it."
 msgstr ""
+"Desactiva totes les notificacions en tots els altres elements, sense la "
+"possibilitat de derogar-ho."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "Enable notifications"
-msgstr ""
+msgstr "Activa les notificacions"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Top left"
-msgstr ""
+msgstr "A dalt a l'esquerra"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Top right"
-msgstr ""
+msgstr "A dalt a la dreta"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Bottom left"
-msgstr ""
+msgstr "A baix a l'esquerra"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Bottom right"
-msgstr ""
+msgstr "A baix a la dreta"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Notification location"
-msgstr ""
+msgstr "Ubicació de la notificació"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica configuration"
-msgstr ""
+msgstr "Configuració de rèplica"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig src/Database.php:54
 msgid "Database"
@@ -6969,15 +7018,15 @@ msgstr[1] "Bases de dades"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "If synced (all changes)"
-msgstr "Si estan sincronitzats (tots els canvis)"
+msgstr "Si està sincronitzat (tots els canvis)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "If synced (current user changes)"
-msgstr "Si estan sincronitzats (canvis de l'usuari actual)"
+msgstr "Si està sincronitzat (canvis d'usuari actual)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "If synced or read-only account"
-msgstr "Si sincronitzat o compte de només lectura"
+msgstr "Si el compte està sincronitzat o és de només lectura"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Always"
@@ -6989,7 +7038,7 @@ msgstr "Utilitza la rèplica per al motor de cerca"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
-msgstr ""
+msgstr "Estat de replicació"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
@@ -7004,64 +7053,64 @@ msgstr "Desconegut"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Down"
-msgstr ""
+msgstr "Avall"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 #: src/Glpi/Event.php:347 src/Glpi/Event.php:421 src/RuleImportEntity.php:123
 msgid "Source"
-msgstr "Item (ID)"
+msgstr "Font"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Writable"
-msgstr ""
+msgstr "Escrivible"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Read-Only"
-msgstr ""
+msgstr "Només lectura"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "MySQL server returned an error:"
-msgstr ""
+msgstr "El servidor MySQL ha retornat un error:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server ID:"
-msgstr ""
+msgstr "ID del servidor:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "Fitxer de registre binari:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "Posició del registre binari:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server version:"
-msgstr ""
+msgstr "Versió del servidor:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replica"
-msgstr ""
+msgstr "Rèplica"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Undefined"
-msgstr ""
+msgstr "Sense definir"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Source binary log file:"
-msgstr ""
+msgstr "Fitxer de registre binari d'origen:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Source binary log position:"
-msgstr ""
+msgstr "Posició del registre binari d'origen:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Seconds behind source:"
-msgstr ""
+msgstr "Segons per darrere de la font:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "GLPI history delay:"
-msgstr ""
+msgstr "Retard de l'historial de GLPI:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig src/Entity.php:2648
 #: src/Entity.php:2705 src/Entity.php:2713 src/Entity.php:2720

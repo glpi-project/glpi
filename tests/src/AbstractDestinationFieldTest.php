@@ -74,6 +74,7 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
             $DB->dropTable($table['TABLE_NAME']);
         }
 
+        $DB->clearSchemaCache();
         parent::tearDownAfterClass();
     }
 

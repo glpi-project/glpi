@@ -434,6 +434,17 @@ class RuleControllerTest extends HLAPITestCase
                 });
         });
 
+        // List
+        $this->api->call(new Request('GET', "/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertIsArray($content);
+                    $this->assertNotEmpty($content);
+                });
+        });
+
         // Get
         $this->api->call(new Request('GET', $new_url), function ($call) {
             /** @var \HLAPICallAsserter $call */
@@ -498,6 +509,17 @@ class RuleControllerTest extends HLAPITestCase
                 ->headers(function ($headers) use ($rules_id, &$new_url) {
                     $this->assertStringStartsWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Action", $headers['Location']);
                     $new_url = $headers['Location'];
+                });
+        });
+
+        // List
+        $this->api->call(new Request('GET', "/Rule/Collection/Ticket/Rule/{$rules_id}/Action"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertIsArray($content);
+                    $this->assertNotEmpty($content);
                 });
         });
 

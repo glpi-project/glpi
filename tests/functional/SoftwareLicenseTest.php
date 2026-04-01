@@ -36,11 +36,6 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 
-/* Test for inc/softwarelicense.class.php */
-
-/**
- * @engine isolate
- */
 class SoftwareLicenseTest extends DbTestCase
 {
     public function testTypeName()

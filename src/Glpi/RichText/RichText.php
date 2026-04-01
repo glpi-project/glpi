@@ -364,8 +364,15 @@ HTML;
     private static function loadImagesLazy(string $content): string
     {
         return preg_replace_callback(
-            '/<img([^>]+?)\s*\/?>/i',
-            fn($matches) => '<img' . $matches[1] . ' loading="lazy">',
+            '/<img\b((?>[^>]*))\s*\/?>/i',
+            static function (array $matches): string {
+                $attrs = $matches[1];
+                $attrs = rtrim($attrs, '/ \t\n\r\0\x0B');
+                if (preg_match('/\bloading\s*=/i', $attrs)) {
+                    return $matches[0];
+                }
+                return sprintf('<img%s loading="lazy">', $attrs);
+            },
             $content
         );
     }
@@ -537,98 +544,103 @@ JAVASCRIPT;
 
     private static function getHtmlSanitizer(): HtmlSanitizer
     {
-        $config = (new HtmlSanitizerConfig())
-            ->allowSafeElements()
-            ->allowLinkSchemes([
-                'aim',
-                'app',
-                'feed',
-                'file',
-                'ftp',
-                'gopher',
-                'http',
-                'https',
-                'irc',
-                'mailto',
-                'news',
-                'nntp',
-                'sftp',
-                'ssh',
-                'tel',
-                'telnet',
-                'notes',
-            ])
-            ->allowRelativeLinks()
-            ->allowRelativeMedias()
-            ->withMaxInputLength(-1)
-        ;
+        static $sanitizer = null;
 
-        // Block some elements (tag is removed but contents is preserved)
-        $blocked_elements = [
-            'html',
-            'body',
+        if ($sanitizer === null) {
+            $config = (new HtmlSanitizerConfig())
+                ->allowSafeElements()
+                ->allowLinkSchemes([
+                    'aim',
+                    'app',
+                    'feed',
+                    'file',
+                    'ftp',
+                    'gopher',
+                    'http',
+                    'https',
+                    'irc',
+                    'mailto',
+                    'news',
+                    'nntp',
+                    'sftp',
+                    'ssh',
+                    'tel',
+                    'telnet',
+                    'notes',
+                ])
+                ->allowRelativeLinks()
+                ->allowRelativeMedias()
+                ->withMaxInputLength(-1);
 
-            // form elements
-            'form',
-            'button',
-            'input',
-            'select',
-            'datalist',
-            'option',
-            'optgroup',
-            'textarea',
-        ];
-        foreach ($blocked_elements as $blocked_element) {
-            $config = $config->blockElement($blocked_element);
+            // Block some elements (tag is removed but contents is preserved)
+            $blocked_elements = [
+                'html',
+                'body',
+
+                // form elements
+                'form',
+                'button',
+                'input',
+                'select',
+                'datalist',
+                'option',
+                'optgroup',
+                'textarea',
+            ];
+            foreach ($blocked_elements as $blocked_element) {
+                $config = $config->blockElement($blocked_element);
+            }
+
+            // Drop some elements (tag and contents are removed)
+            $dropped_elements = [
+                'head',
+                'script',
+
+                // header elements used to link external resources
+                'link',
+                'meta',
+
+                // elements used to embed potential malicious external application
+                'applet',
+                'canvas',
+                'embed',
+                'object',
+            ];
+            foreach ($dropped_elements as $dropped_element) {
+                $config = $config->dropElement($dropped_element);
+            }
+
+            // Allow class and style attribute
+            $config = $config->allowAttribute('class', '*');
+            $config = $config->allowAttribute('style', '*');
+            // Allow layout attribute for table tags
+            $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
+            $config = $config->allowAttribute('border', ['table']);
+
+
+            if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+                $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
+            }
+
+            // Keep attributes specific to rich text auto completion
+            $rich_text_completion_attributes = [
+                // required for proper display of autocompleted tags
+                'contenteditable',
+
+                // required for user mentions and form tags
+                'data-user-mention',
+                'data-user-id',
+                'data-form-tag',
+                'data-form-tag-value',
+                'data-form-tag-provider',
+            ];
+            foreach ($rich_text_completion_attributes as $attribute) {
+                $config = $config->allowAttribute($attribute, 'span');
+            }
+
+            $sanitizer = new HtmlSanitizer($config);
         }
 
-        // Drop some elements (tag and contents are removed)
-        $dropped_elements = [
-            'head',
-            'script',
-
-            // header elements used to link external resources
-            'link',
-            'meta',
-
-            // elements used to embed potential malicious external application
-            'applet',
-            'canvas',
-            'embed',
-            'object',
-        ];
-        foreach ($dropped_elements as $dropped_element) {
-            $config = $config->dropElement($dropped_element);
-        }
-
-        // Allow class and style attribute
-        $config = $config->allowAttribute('class', '*');
-        $config = $config->allowAttribute('style', '*');
-        // Allow layout attribute for table tags
-        $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
-        $config = $config->allowAttribute('border', ['table']);
-
-
-        if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
-            $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
-        }
-
-        // Keep attributes specific to rich text auto completion
-        $rich_text_completion_attributes = [
-            // required for proper display of autocompleted tags
-            'contenteditable',
-
-            // required for user mentions and form tags
-            'data-user-mention',
-            'data-user-id',
-            'data-form-tag',
-            'data-form-tag-value',
-            'data-form-tag-provider',
-        ];
-        foreach ($rich_text_completion_attributes as $attribute) {
-            $config = $config->allowAttribute($attribute, 'span');
-        }
-
-        return new HtmlSanitizer($config);
+        return $sanitizer;
     }
 }

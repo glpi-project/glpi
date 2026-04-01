@@ -121,12 +121,18 @@ abstract class AbstractController
      * Get a schema by name and API version
      * @param string $name The name of the schema
      * @param string $api_version The API version
-     * @return array|null
+     * @return array
      */
-    protected function getKnownSchema(string $name, string $api_version): ?array
+    protected function getKnownSchema(string $name, string $api_version): array
     {
-        $schemas = static::getKnownSchemas($api_version);
-        return array_change_key_case($schemas)[strtolower($name)] ?? null;
+        $schemas = array_change_key_case(static::getKnownSchemas($api_version));
+
+        $expected_key = strtolower($name);
+        if (!\array_key_exists($expected_key, $schemas)) {
+            throw new RuntimeException(sprintf('Schema not found for `%s`.', $name));
+        }
+
+        return $schemas[$expected_key];
     }
 
     /**

@@ -125,7 +125,8 @@
          connect_opts['mailbox'],
          __('Incoming mail folder (optional, often INBOX)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
       {{ fields.nullField() }}
@@ -134,7 +135,8 @@
          item.fields['accepted'],
          __('Accepted mail archive folder (optional)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
       {{ fields.textField(
@@ -142,7 +144,8 @@
          item.fields['refused'],
          __('Refused mail archive folder (optional)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
    {% endif %}
@@ -214,11 +217,16 @@
                   data += '&server_mailbox=';
 
                   // In some case (like oauth imap) provide password is not possible
-                  // So, ask for password only if there is one stored in database
+                  // So, ask for password only if there is one stored in database and it's not an OAuth connection
                   var passwdField = $(this).closest('form').find('input[name="passwd"]');
                   var hasStoredPassword = {{ (item.fields['passwd'] is defined and item.fields['passwd']) ? 'true' : 'false' }};
-                  if (hasStoredPassword && passwdField.val() == '') {
+                  var isOAuth = {{ ('oauth' in (item.fields['server_type'] ?? '')) ? 'true' : 'false' }};
+                  if (hasStoredPassword && !isOAuth && passwdField.val() == '') {
                      var passwd = prompt(__('Please enter password to list folders'));
+                     if (passwd === null) {
+                        // User cancelled the prompt
+                        return;
+                     }
                      data += '&passwd=' + encodeURIComponent(passwd);
                   }
 

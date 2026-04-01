@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
@@ -313,6 +314,7 @@ $empty_data_builder = new class {
             'maintenance_text' => '',
             'attach_ticket_documents_to_mail' => '0',
             'backcreated' => '1',
+            'attach_documents_to_notifications_for_anonymous' => '0',
             'task_state' => '1',
             'planned_task_state' => '1',
             'palette' => 'auror',
@@ -349,30 +351,30 @@ $empty_data_builder = new class {
             'instance_uuid' => null,
             'registration_uuid' => null,
             'smtp_retry_time' => '5',
-            'purge_addrelation' => '0',
-            'purge_deleterelation' => '0',
-            'purge_createitem' => '0',
-            'purge_deleteitem' => '0',
-            'purge_restoreitem' => '0',
-            'purge_updateitem' => '0',
-            'purge_item_software_install' => '0',
-            'purge_software_item_install' => '0',
-            'purge_software_version_install' => '0',
-            'purge_infocom_creation' => '0',
-            'purge_profile_user' => '0',
-            'purge_group_user' => '0',
-            'purge_adddevice' => '0',
-            'purge_updatedevice' => '0',
-            'purge_deletedevice' => '0',
-            'purge_connectdevice' => '0',
-            'purge_disconnectdevice' => '0',
-            'purge_userdeletedfromldap' => '0',
-            'purge_comments' => '0',
-            'purge_datemod' => '0',
             'purge_all' => '0',
-            'purge_user_auth_changes' => '0',
+            'purge_refusedequipment' => '1',
             'purge_plugins' => '0',
-            'purge_refusedequipment' => '0',
+            'purge_user_auth_changes' => '12',
+            'purge_datemod' => '12',
+            'purge_comments' => '0',
+            'purge_updateitem' => '0',
+            'purge_restoreitem' => '0',
+            'purge_deleteitem' => '0',
+            'purge_createitem' => '0',
+            'purge_deleterelation' => '0',
+            'purge_addrelation' => '0',
+            'purge_userdeletedfromldap' => '1',
+            'purge_disconnectdevice' => '6',
+            'purge_connectdevice' => '6',
+            'purge_deletedevice' => '6',
+            'purge_updatedevice' => '6',
+            'purge_adddevice' => '6',
+            'purge_group_user' => '12',
+            'purge_profile_user' => '12',
+            'purge_infocom_creation' => '0',
+            'purge_software_version_install' => '3',
+            'purge_software_item_install' => '3',
+            'purge_item_software_install' => '3',
             'display_login_source' => '1',
             'devices_in_menu' => '["Item_DeviceSimcard"]',
             'password_expiration_delay' => '-1',
@@ -1013,27 +1015,26 @@ $empty_data_builder = new class {
             ],
         ];
 
-        $dashboards_data = require __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
         $tables['glpi_dashboards_dashboards'] = [];
         $tables['glpi_dashboards_items'] = [];
         $i = $j = 1;
-        foreach ($dashboards_data as $default_dashboard) {
-            $translated_name = $default_dashboard['translated_name'];
-            unset($default_dashboard['translated_name']);
-            $items = $default_dashboard['_items'];
-            unset($default_dashboard['_items']);
-            $tables['glpi_dashboards_dashboards'][] = array_merge([
+        foreach (Dashboard::getDefaults() as $dashboard_data) {
+            $tables['glpi_dashboards_dashboards'][] = [
                 'id' => $i,
-            ], $default_dashboard);
+                'key' => $dashboard_data['key'],
+                'name' => $dashboard_data['name'],
+                'context' => $dashboard_data['context'],
+            ];
 
-            foreach ($items as $item) {
-                $tables['glpi_dashboards_items'][] = array_merge([
-                    'id' => $j,
-                    'dashboards_dashboards_id' => $i,
-                ], $item);
+            foreach ($dashboard_data['items'] as $item) {
+                $item['id'] = $j;
+                $item['dashboards_dashboards_id'] = $i;
+                $item['card_options'] = json_encode($item['card_options']);
+                $tables['glpi_dashboards_items'][] = $item;
 
                 $j++;
             }
+
             $i++;
         }
 
@@ -4610,34 +4611,29 @@ $empty_data_builder = new class {
                 'id'               => '187',
                 'items_id'         => '1',
                 'type'             => '1',
-                'notifications_id' => '71',
+                'notifications_id' => '72',
             ], [
                 'id'               => '188',
                 'items_id'         => '1',
                 'type'             => '1',
-                'notifications_id' => '72',
+                'notifications_id' => '74',
             ], [
                 'id'               => '189',
                 'items_id'         => '1',
                 'type'             => '1',
-                'notifications_id' => '74',
+                'notifications_id' => '75',
             ], [
                 'id'               => '190',
                 'items_id'         => '1',
                 'type'             => '1',
-                'notifications_id' => '75',
+                'notifications_id' => '80',
             ], [
                 'id'               => '191',
                 'items_id'         => '1',
                 'type'             => '1',
-                'notifications_id' => '80',
-            ], [
-                'id'               => '192',
-                'items_id'         => '1',
-                'type'             => '1',
                 'notifications_id' => '81',
             ], [
-                'id'               => '193',
+                'id'               => '192',
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '82',
@@ -9735,6 +9731,17 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 self::PROFILE_SUPERVISOR,
                 self::PROFILE_READ_ONLY,
             ];
+            $tables['glpi_oauthclients'][] = [
+                'name'         => 'Test E2E Playwright OAuth Client',
+                'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
+                'grants'       => json_encode(['authorization_code']),
+                'scopes'       => json_encode(['api', 'user']),
+                'is_active'    => 1,
+                'is_confidential' => 1,
+                'identifier'   => 'abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789',
+                'secret'       => (new GLPIKey())->encrypt('fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210'),
+            ];
+
             foreach ($users_to_create as $user_data) {
                 $next_available_user_id = max(
                     array_column($tables['glpi_users'], 'id')

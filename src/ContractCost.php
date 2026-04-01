@@ -363,7 +363,7 @@ TWIG, $twig_params);
             $name = sprintf(
                 __s('%1$s %2$s'),
                 htmlescape($name),
-                Html::showToolTip(htmlescape($data['comment']), ['display' => false])
+                !empty($data['comment']) ? Html::showToolTip(htmlescape($data['comment']), ['display' => false]) : ''
             );
             if (!isset($budget_cache[$data['budgets_id']])) {
                 $budget_cache[$data['budgets_id']] = Dropdown::getDropdownName(table: 'glpi_budgets', id: $data['budgets_id'], default: '');

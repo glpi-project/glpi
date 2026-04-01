@@ -228,7 +228,7 @@ class Inventory
             }
             return false;
         } finally {
-            $this->raw_data = $data;
+            $this->raw_data = $this->getCleanedObject($data);
         }
 
         if ($this->inventory_tmpfile !== false) {
@@ -1157,5 +1157,29 @@ class Inventory
             }
         }
         return $itemtypes;
+    }
+
+    private function getCleanedObject(stdClass $data): stdClass
+    {
+        $cleaned = new stdClass();
+        // @phpstan-ignore foreach.nonIterable
+        foreach ($data as $key => $value) {
+            $cleaned->$key = $this->getCleanedValue($value);
+        }
+        return $cleaned;
+    }
+
+    private function getCleanedValue(mixed $value): mixed
+    {
+        if ($value instanceof stdClass) {
+            return $this->getCleanedObject($value);
+        }
+        if (is_array($value)) {
+            return \array_map($this->getCleanedValue(...), $value);
+        }
+        if (\is_string($value)) {
+            return strip_tags($value);
+        }
+        return $value;
     }
 }

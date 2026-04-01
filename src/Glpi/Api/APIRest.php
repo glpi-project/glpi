@@ -501,7 +501,7 @@ class APIRest extends API
 
         // now how about PUT/POST bodies? These override what we got from GET
         $body = trim($this->getHttpBody());
-        if (strlen($body) > 0 && $this->verb == "GET") {
+        if ($body !== '' && $this->verb == "GET") {
             // GET method requires an empty body
             $this->returnError(
                 "GET Request should not have json payload (http body)",

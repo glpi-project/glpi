@@ -1701,10 +1701,10 @@ final class DbUtils
             $id_visible = $_SESSION["glpiis_ids_visible"];
         }
 
-        if (strlen($realname ?? '') > 0) {
-            $formatted = $realname;
+        if ((string) $realname !== '') {
+            $formatted = (string) $realname;
 
-            if (strlen($firstname ?? '') > 0) {
+            if ((string) ($firstname ?? '') !== '') {
                 if ($order == User::FIRSTNAME_BEFORE) {
                     $formatted = $firstname . " " . $formatted;
                 } else {
@@ -2072,7 +2072,7 @@ final class DbUtils
                 $a = explode("=>", $item);
 
                 if (
-                    (strlen($a[0]) > 0)
+                    ($a[0] !== '')
                     && isset($a[1])
                 ) {
                     $tab[urldecode($a[0])] = urldecode($a[1]);

@@ -92,7 +92,11 @@ final class SubmitAnswerController extends AbstractController
             ]);
         } catch (\Throwable $th) {
             $this->logger->error(
-                sprintf('An error occured during the form `%s` submission.', $form->getName()),
+                sprintf(
+                    'An error occured during the form `%s` submission: %s',
+                    $form->getName(),
+                    $th->getMessage(),
+                ),
                 ['exception' => $th]
             );
 

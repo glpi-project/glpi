@@ -81,7 +81,7 @@
 
                      {{ fields.htmlField(
                         '_virtual',
-                        display_recursive_items_link|raw,
+                        display_recursive_items_link,
                         recursive_items_type_data,
                         field_options|merge({
                            add_field_html: unaffect_btn
@@ -151,7 +151,7 @@
 
                   {{ fields.htmlField(
                      '_vrtual',
-                      (add_child ~ show_child)|raw,
+                     add_child ~ show_child,
                      ip_label,
                      field_options
                   ) }}

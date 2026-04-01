@@ -2329,53 +2329,22 @@ class AuthLdapTest extends DbTestCase
     public function testRuleRight()
     {
         //prepare rules
-        $rules = new RuleRight();
-        $rules_id = $rules->add([
-            'sub_type'     => 'RuleRight',
-            'name'         => 'test ldap ruleright',
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-        ]);
-        $criteria = new \RuleCriteria();
-        $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'LDAP_SERVER',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => $this->ldap->getID(),
-        ]);
-        $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'employeenumber',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 8,
-        ]);
-        $actions = new \RuleAction();
-        $actions->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'profiles_id',
-            'value'       => 5, // 'normal' profile
-        ]);
-        $actions->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'entities_id',
-            'value'       => 1, // '_test_child_1' entity
-        ]);
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LDAP_SERVER', \Rule::PATTERN_IS, $this->ldap->getID())
+            ->addCriteria('employeenumber', \Rule::PATTERN_IS, 8)
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', 1); // '_test_child_1' entity
 
         // Test specific_groups_id rule
         $group = new Group();
         $group_id = $group->add(["name" => "testgroup"]);
         $this->assertGreaterThan(0, $group_id);
 
-        $actions->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'specific_groups_id',
-            'value'       => $group_id, // '_test_child_1' entity
-        ]);
+        $rule_builder->addAction('assign', 'specific_groups_id', $group_id);
+        $rule = $this->createRule($rule_builder);
+        $rules_id = $rule->getID();
 
         // login the user to force a real synchronisation and get it's glpi id
         $this->realLogin('brazil6', 'password', false);
@@ -2726,29 +2695,13 @@ class AuthLdapTest extends DbTestCase
     public function testIgnoreImport()
     {
         //prepare rules
-        $rules = new RuleRight();
-        $rules_id = $rules->add([
-            'sub_type'     => 'RuleRight',
-            'name'         => 'test ldap ignore import',
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-        ]);
-        $criteria = new \RuleCriteria();
-        $criteria->add([
-            'rules_id'  => $rules_id,
-            'criteria'  => 'LDAP_SERVER',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => $this->ldap->getID(),
-        ]);
-        $actions = new \RuleAction();
-        $actions->add([
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => '_ignore_user_import',
-            'value'       => '1', // Reject
-        ]);
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LDAP_SERVER', \Rule::PATTERN_IS, $this->ldap->getID())
+            ->addAction('assign', '_ignore_user_import', '1'); // Reject
+        $this->createRule($rule_builder);
+
         // login the user to force synchronisation
         $this->realLogin('brazil6', 'password', false, false);
 
@@ -3191,55 +3144,15 @@ class AuthLdapTest extends DbTestCase
         ])->getID();
 
         // Create a RuleRight that assigns this group to a specific LDAP user
-        $rules_id = $this->createItem(
-            RuleRight::class,
-            [
-                'sub_type'     => 'RuleRight',
-                'name'         => 'test default group preservation',
-                'match'        => 'AND',
-                'is_active'    => 1,
-                'entities_id'  => 0,
-                'is_recursive' => 1,
-            ]
-        )->getID();
-
-        // Rule criteria: match user 'remi'
-        $this->createItem(\RuleCriteria::class, [
-            'rules_id'  => $rules_id,
-            'criteria'  => 'LOGIN',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'remi',
-        ]);
-
-        // Rule actions: assign profile and entity
-        $this->createItem(\RuleAction::class, [
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'profiles_id',
-            'value'       => 5, // 'normal' profile
-        ]);
-        $this->createItem(\RuleAction::class, [
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'entities_id',
-            'value'       => 0,
-        ]);
-
-        // Rule action: assign the group via specific_groups_id
-        $this->createItem(\RuleAction::class, [
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'specific_groups_id',
-            'value'       => $group_id,
-        ]);
-
-        // Rule action: set the same group as the default group (groups_id)
-        $this->createItem(\RuleAction::class, [
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'groups_id',
-            'value'       => $group_id,
-        ]);
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LOGIN', \Rule::PATTERN_IS, 'remi')
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', 0)
+            ->addAction('assign', 'specific_groups_id', $group_id)
+            ->addAction('assign', 'groups_id', $group_id);
+        $this->createRule($rule_builder);
 
         // Import the LDAP user - this will trigger the rule
         $import = AuthLDAP::ldapImportUserByServerId(

@@ -78,21 +78,26 @@ test-setup: ## Setup the plugin for tests
 .PHONY: test-setup
 
 locales-extract: ## Extract locales
-	@$(PLUGIN) vendor/bin/extract-locales
+	@$(CONSOLE) tools:locales:extract --plugin=$(PLUGIN_DIR)
 .PHONY: locales-extract
 
 locales-compile: ## Compile locales
-	@$(PLUGIN) vendor/bin/plugin-release --compile-mo
+	@$(CONSOLE) tools:locales:compile --plugin=$(PLUGIN_DIR)
 .PHONY: locales-compile
+
+plugin-release: ## Build and create plugin release based on HEAD ref, example: make plugin-release
+	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR) --dest=/var/www/glpi/plugins/$(PLUGIN_DIR)/dist/glpi-$(PLUGIN_DIR)-$(shell date +%Y%m%d).tar.bz2
+.PHONY: plugin-release
+
 
 ##—— Licenses  —————————————————————————————————————————————————————————————————
 license-headers-check: ## Verify that the license headers is present all files
-	@$(PLUGIN) vendor/bin/licence-headers-check
+	@$(CONSOLE) tools:licence_headers_check --plugin=$(PLUGIN_DIR)
 .PHONY: license-headers-check
 
-license-headers-fix: ## Add the missing license headers in all files
-	@$(PLUGIN) vendor/bin/licence-headers-check --fix
-.PHONY: license-headers-fix
+license-headers: ## Add the missing license headers in all files
+	@$(CONSOLE) tools:licence_headers_check --fix --plugin=$(PLUGIN_DIR)
+.PHONY: license-headers
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————
 vendor: ## Install dependencies
@@ -116,10 +121,10 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
 test:  ## Run all our lints/tests/static analysis
-	@$(call run_if_exists, tools/HEADER, license-headers-check)
+	@$(call run_if_exists, tools/HEADER, license-headers)
 	@$(call run_always, parallel-lint)
-	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer-check)
-	@$(call run_if_exists, rector.php, rector-check)
+	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer)
+	@$(call run_if_exists, rector.php, rector)
 	@$(call run_if_exists, phpstan.neon, phpstan)
 	@$(call run_if_exists, psalm.xml, psalm)
 	@$(call run_if_exists, phpunit.xml, phpunit)
@@ -156,16 +161,16 @@ rector-check: ## Run rector with dry run
 	@$(PLUGIN) php $(RECTOR_BIN) --dry-run $(c)
 .PHONY: rector
 
-rector-apply: ## Run rector
+rector: ## Run rector
 	@$(eval c ?=)
 	@$(PLUGIN) php $(RECTOR_BIN) $(c)
-.PHONY: rector-apply
+.PHONY: rector
 
 ##—— Coding standards ——————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
 	@$(PLUGIN) $(PHPCSFIXER_BIN) check --diff -vvv
 .PHONY: phpcsfixer-check
 
-phpcsfixer-fix: ## Fix php coding standards issues
+phpcsfixer: ## Fix php coding standards issues
 	@$(PLUGIN) $(PHPCSFIXER_BIN) fix
-.PHONY: phpcsfixer-fix
+.PHONY: phpcsfixer

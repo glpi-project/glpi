@@ -673,6 +673,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 return false;
             }
             $input['tasktemplates_id']  = $input['_tasktemplates_id'];
+            $user = $template->fields['users_id_tech'];
+            if ($user == -1) {
+                $user = Session::getLoginUserID();
+            }
+
             $input = array_replace(
                 [
                     'content'           => $template->getRenderedContent($parent_item),
@@ -680,7 +685,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     'actiontime'        => $template->fields['actiontime'],
                     'state'             => $template->fields['state'],
                     'is_private'        => $template->fields['is_private'],
-                    'users_id_tech'     => $template->fields['users_id_tech'],
+                    'users_id_tech'     => $user,
                     'groups_id_tech'    => $template->fields['groups_id_tech'],
                 ],
                 $input
@@ -1470,10 +1475,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                if (
-                    $item->getFromDB($data["id"])
-                    && $item->canViewItem()
-                ) {
+                $item->getFromResultSet($data);
+                if ($item->canViewItem()) {
                     if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()])) {
                         //not planned
                         if (isset($data['notp_date'])) {

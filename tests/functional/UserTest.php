@@ -43,6 +43,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Psr\Log\LogLevel;
 use User;
+use UserCategory;
 
 class UserTest extends DbTestCase
 {
@@ -2505,5 +2506,40 @@ class UserTest extends DbTestCase
 
         $this->assertEquals("0", $user->fields["_ldap_rules"]["rules_entities_rights"][0][0]); // entities_id
         $this->assertEquals($admin_profile_id, $user->fields["_ldap_rules"]["rules_entities_rights"][0][1]); // profiles_id
+    }
+
+    /**
+     * The TreeBrowse list is available for users, but user categories are not hierarchical.
+     * This test ensures results can be fetched properly even for flat results.
+     * @return void
+     */
+    public function testGetTreeCategoryList()
+    {
+        $this->login();
+
+        $cat1 = $this->createItem(UserCategory::class, [
+            'name' => __FUNCTION__ . '_1',
+        ]);
+        $cat2 = $this->createItem(UserCategory::class, [
+            'name' => __FUNCTION__ . '_2',
+        ]);
+
+        $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_cat1',
+            'usercategories_id' => $cat1->getID(),
+        ]);
+        $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_cat2',
+            'usercategories_id' => $cat2->getID(),
+        ]);
+
+        $tree = User::getTreeCategoryList(User::class, [
+            'itemtype' => User::class,
+            'browse' => 1,
+            'export_all' => true,
+        ]);
+        $this->assertCount(3, $tree);
+        $this->assertStringStartsWith(__FUNCTION__ . '_1', $tree[1]['title']);
+        $this->assertStringStartsWith(__FUNCTION__ . '_2', $tree[0]['title']);
     }
 }

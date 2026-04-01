@@ -3,7 +3,31 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.6] unreleased
+## [11.0.7] unreleased
+
+### Added
+- Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
+- CLI command `security:change_oauth_key` to (re)generate the OAuth keys. This can be used to change keys or to create them in the case they fail to be created during the installation/update process.
+
+### Changed
+
+### Deprecated
+
+### Removed
+- "Associate to an appliance" and "Remove from a rack" actions removed for templates.
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.6] 2026-03-03
 
 ### Added
 
@@ -813,7 +837,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.24] unreleased
+## [10.0.25] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.24] 2026-03-03
 
 ### Added
 

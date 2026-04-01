@@ -544,6 +544,14 @@ class NotificationTargetTest extends DbTestCase
                 "event" => null,
                 "expected" => "/^GLPI_%UUID%\/none\.\d+\.\d+@%UNAME%$/",
             ],
+            [
+                // namespaced itemtype (real GLPI class) - validates RFC 2822 fix
+                // backslashes from namespace must be stripped from message ID
+                "itemtype" => "Glpi\\Socket",
+                "items_id" => 3,
+                "event" => "new",
+                "expected" => "/^GLPI_%UUID%-Glpi-Socket-3\/new@%UNAME%$/",
+            ],
         ];
     }
 
@@ -572,6 +580,9 @@ class NotificationTargetTest extends DbTestCase
         $instance = new NotificationTarget();
         $messageid = $instance->getMessageIdForEvent($itemtype, $items_id, $event);
         $this->assertMatchesRegularExpression($expected, $messageid);
+
+        // Ensure the message ID never contains backslashes (RFC 2822 compliance)
+        $this->assertStringNotContainsString('\\', $messageid, 'Message ID must not contain backslashes to comply with RFC 2822 addr-spec');
     }
 
     public function testGetTargetsWithExclusions()
@@ -675,6 +686,33 @@ class NotificationTargetTest extends DbTestCase
             $notification_target = NotificationTarget::getInstanceByType($notification['itemtype'], $notification['event']);
             $notification_target->addNotificationTargets(0);
             $this->assertSame($has_admin_target, array_key_exists('1_1', $notification_target->notification_targets));
+        }
+    }
+
+    public function testExclusionFieldDoesNotAddRecipient()
+    {
+        $this->login();
+
+        $notification_target = new NotificationTarget();
+
+        // Ensure the notification context is set so getTargets can find exclusions
+        $notification_target->data = [
+            'notifications_id' => 1,
+        ];
+
+        // Add exclusion for "Profil: Technician"
+        $notification_target->add([
+            'notifications_id' => 1, // Assuming notification ID 1 for testing
+            'type'             => Notification::PROFILE_TYPE,
+            'items_id'         => getItemByTypeName('Profile', 'Technician', true),
+            'is_exclusion'     => 1,
+        ]);
+
+        // Ensure the profile is excluded and not added as a recipient
+        $targets = $notification_target->getTargets();
+        foreach ($targets as $target) {
+            $this->assertNotEquals(Notification::PROFILE_TYPE, $target['type']);
+            $this->assertNotEquals(getItemByTypeName('Profile', 'Technician', true), $target['items_id']);
         }
     }
 }

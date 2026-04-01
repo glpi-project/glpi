@@ -313,7 +313,10 @@ abstract class AbstractRightsDropdown
             'FROM' => Group::getTable(),
             'WHERE' => [
                 'name' => ["LIKE", "%$text%"],
-            ] + getEntitiesRestrictCriteria(Group::getTable()) + $additional_conditions,
+            ] + getEntitiesRestrictCriteria(
+                table: Group::getTable(),
+                is_recursive: true,
+            ) + $additional_conditions,
             'START' => $start,
             'LIMIT' => $page_size,
         ]);
@@ -339,7 +342,10 @@ abstract class AbstractRightsDropdown
         $contacts = $contact_item->find(
             [
                 'name' => ["LIKE", "%$text%"],
-            ] + getEntitiesRestrictCriteria(Contact::getTable()),
+            ] + getEntitiesRestrictCriteria(
+                table: Contact::getTable(),
+                is_recursive: true,
+            ),
             [],
             self::LIMIT
         );
@@ -372,7 +378,10 @@ abstract class AbstractRightsDropdown
             'FROM' => Supplier::getTable(),
             'WHERE' => [
                 'name' => ["LIKE", "%$text%"],
-            ] + getEntitiesRestrictCriteria(Supplier::getTable()),
+            ] + getEntitiesRestrictCriteria(
+                table: Supplier::getTable(),
+                is_recursive: true,
+            ),
             'START' => $start,
             'LIMIT' => $page_size,
         ]);

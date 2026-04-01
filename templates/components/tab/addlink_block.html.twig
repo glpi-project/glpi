@@ -53,6 +53,7 @@
 {% for attribute, value in button_attributes %}
         {{ attribute }}="{{ value }}"
 {% endfor %}
+        aria-label="{{ button_label }}"
     >
 {% if button_icon is not empty %}
         <i class="{{ button_icon }}"></i>

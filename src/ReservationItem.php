@@ -426,7 +426,7 @@ TWIG, $twig_params);
             {% if not reserve %}
                 <div id="makesearch" class="text-center mb-3">
                     <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
-                        <i class="{{ 'Planning'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
+                        <i class="{{ 'Reservation'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
                     </a>
                     <button type="button" class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
                         <i class="ti ti-search me-2"></i>{{ find_free_item_label }}
@@ -639,7 +639,7 @@ TWIG, $twig_params);
                 }
                 $cal_href = htmlescape(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
                 $entry['calendar'] = "<a href='$cal_href'>";
-                $entry['calendar'] .= "<i class='" . htmlescape(Planning::getIcon()) . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
+                $entry['calendar'] .= "<i class='" . htmlescape(Reservation::getIcon()) . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
 
                 $ok = true;
                 $entries[] = $entry;
