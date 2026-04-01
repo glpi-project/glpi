@@ -5,12 +5,16 @@ permissions:
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # Nightly builds (daily)
-    - cron: '0 3 * * 0'   # Security rebuild of living tags
+    - cron: '0 0 * * *'   # Daily: nightly builds every day, stable security rebuild on Sundays
   workflow_dispatch:
     inputs:
-      security-rebuild:
-        description: "Run security rebuild (re-pulls base images with no-cache) instead of nightly builds"
+      rebuild-nightly:
+        description: "Rebuild nightly images (branches)"
+        required: false
+        type: boolean
+        default: true
+      rebuild-stable:
+        description: "Rebuild stable living tags (no-cache, re-pulls base images)"
         required: false
         type: boolean
         default: false
@@ -30,9 +34,15 @@ jobs:
         uses: "actions/github-script@v8"
         with:
           script: |
-            const isSecurityRebuild =
-              context.payload.schedule === '0 3 * * 0' ||
-              context.payload.inputs?.['security-rebuild'] === 'true';
+            const isSchedule = context.eventName === 'schedule';
+            const isSunday = new Date().getUTCDay() === 0;
+
+            const mustRebuildNightly =
+              isSchedule
+              || context.payload.inputs?.['rebuild-nightly'] === 'true';
+            const mustRebuildStable =
+              (isSchedule && isSunday)
+              || context.payload.inputs?.['rebuild-stable'] === 'true';
 
             // Parse supported active major/minor versions from env
             const supportedVersions = process.env.SUPPORTED_VERSIONS
@@ -49,26 +59,33 @@ jobs:
 
             let matrix = [];
 
-            if (isSecurityRebuild) {
-              const tags = await github.rest.repos.listTags({
+            if (mustRebuildStable) {
+              // Fetch all non-draft, non-prerelease releases
+              const releases = await github.rest.repos.listReleases({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 per_page: 100,
               });
 
-              // Tags are ordered by creation (newest first), only keep stable tags (i.e: 11.0.6, not 11.0.6-rc1)
-              const stableTags = tags.data
-                .map(t => t.name)
-                .filter(name => /^\d+\.\d+\.\d+$/.test(name));
+              // Keep only stable releases and sort by semver descending
+              const stableTags = releases.data
+                .filter(r => !r.prerelease && !r.draft)
+                .map(r => r.tag_name)
+                .filter(name => /^\d+\.\d+\.\d+$/.test(name))
+                .sort((a, b) => {
+                  const [aMaj, aMin, aPatch] = a.split('.').map(Number);
+                  const [bMaj, bMin, bPatch] = b.split('.').map(Number);
+                  return bMaj - aMaj || bMin - aMin || bPatch - aPatch;
+                });
 
               const latestPerMinorVersion = [];
               for (const supportedVersion of supportedVersions) {
-                // Find the first stable tag that begins with the Major.Minor prefix (i.e: 11.0)
+                // Find the latest stable release for this Major.Minor (e.g. 11.0)
                 const latestVersionTag = stableTags.find(t => t.startsWith(`${supportedVersion}.`));
                 if (latestVersionTag) {
                   latestPerMinorVersion.push({ supportedVersion, version: latestVersionTag });
                 } else {
-                  core.warning(`No stable tags found for supported version: ${supportedVersion}`);
+                  core.warning(`No stable releases found for supported version: ${supportedVersion}`);
                 }
               }
 
@@ -77,9 +94,9 @@ jobs:
                 return;
               }
 
-              core.info(`Security rebuild targets: ${latestPerMinorVersion.map(m => m.version).join(', ')}`);
+              core.info(`Rebuild targets: ${latestPerMinorVersion.map(m => m.version).join(', ')}`);
 
-              matrix = latestPerMinorVersion.map(({ supportedVersion, version }) => {
+              matrix.push(...latestPerMinorVersion.map(({ supportedVersion, version }) => {
                 const major = supportedVersion.split('.')[0];
                 return {
                   'glpi-version': version,
@@ -87,11 +104,11 @@ jobs:
                   'no-cache': true,
                   'use-legacy-marketplace-path': Number(major) < 11,
                 };
-              });
+              }));
+            }
 
-            } else {
-              // Nightly Rebuild Matrix
-              matrix = [
+            if (mustRebuildNightly) {
+              matrix.push(
                 {
                   'glpi-version': 'main',
                   'image-tag': 'dev-nightly',
@@ -107,15 +124,22 @@ jobs:
                     'use-legacy-marketplace-path': Number(major) < 11,
                   };
                 })
-              ];
+              );
+            }
+
+            if (matrix.length === 0) {
+              core.setFailed('Nothing to build: both rebuild-nightly and rebuild-stable are disabled.');
+              return;
             }
 
             core.setOutput('matrix', JSON.stringify({ include: matrix }));
 
             // Job summary
-            const mode = isSecurityRebuild ? 'Security Rebuild' : 'Nightly Build';
+            const modes = [];
+            if (mustRebuildStable) modes.push('Security Rebuild');
+            if (mustRebuildNightly) modes.push('Nightly Build');
             await core.summary
-              .addHeading(`${mode} Matrix`)
+              .addHeading(`${modes.join(' + ')} Matrix`)
               .addCodeBlock(JSON.stringify(matrix, null, 2), 'json')
               .write();
 
