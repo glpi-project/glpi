@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d3bd555b101ff64e4dc77fe4e03aa47",
+    "content-hash": "fcbfe023e46030cebebe698e115aad03",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -9520,16 +9520,16 @@
         },
         {
             "name": "webonyx/graphql-php",
-            "version": "v15.30.2",
+            "version": "v15.31.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "abf6dc5f8b27915bfde26fdda0e92cebfb9aebf5"
+                "reference": "c20acbef1cb4af427ef6797512bfb2e651a85db9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/abf6dc5f8b27915bfde26fdda0e92cebfb9aebf5",
-                "reference": "abf6dc5f8b27915bfde26fdda0e92cebfb9aebf5",
+                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/c20acbef1cb4af427ef6797512bfb2e651a85db9",
+                "reference": "c20acbef1cb4af427ef6797512bfb2e651a85db9",
                 "shasum": ""
             },
             "require": {
@@ -9542,14 +9542,14 @@
                 "amphp/http-server": "^2.1",
                 "dms/phpunit-arraysubset-asserts": "dev-master",
                 "ergebnis/composer-normalize": "^2.28",
-                "friendsofphp/php-cs-fixer": "3.93.1",
+                "friendsofphp/php-cs-fixer": "3.94.2",
                 "mll-lab/php-cs-fixer-config": "5.13.0",
                 "nyholm/psr7": "^1.5",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/extension-installer": "^1.1",
-                "phpstan/phpstan": "2.1.38",
-                "phpstan/phpstan-phpunit": "2.0.12",
-                "phpstan/phpstan-strict-rules": "2.0.8",
+                "phpstan/phpstan": "2.1.43",
+                "phpstan/phpstan-phpunit": "2.0.16",
+                "phpstan/phpstan-strict-rules": "2.0.10",
                 "phpunit/phpunit": "^9.5 || ^10.5.21 || ^11",
                 "psr/http-message": "^1 || ^2",
                 "react/http": "^1.6",
@@ -9558,7 +9558,7 @@
                 "symfony/polyfill-php81": "^1.23",
                 "symfony/var-exporter": "^5 || ^6 || ^7 || ^8",
                 "thecodingmachine/safe": "^1.3 || ^2 || ^3",
-                "ticketswap/phpstan-error-formatter": "1.2.4"
+                "ticketswap/phpstan-error-formatter": "1.2.6"
             },
             "suggest": {
                 "amphp/http-server": "To leverage async resolving with webserver on AMPHP platform",
@@ -9583,15 +9583,19 @@
             ],
             "support": {
                 "issues": "https://github.com/webonyx/graphql-php/issues",
-                "source": "https://github.com/webonyx/graphql-php/tree/v15.30.2"
+                "source": "https://github.com/webonyx/graphql-php/tree/v15.31.3"
             },
             "funding": [
+                {
+                    "url": "https://github.com/spawnia",
+                    "type": "github"
+                },
                 {
                     "url": "https://opencollective.com/webonyx-graphql-php",
                     "type": "open_collective"
                 }
             ],
-            "time": "2026-02-05T16:03:59+00:00"
+            "time": "2026-03-29T18:22:41+00:00"
         }
     ],
     "packages-dev": [
