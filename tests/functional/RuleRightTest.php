@@ -395,8 +395,8 @@ class RuleRightTest extends DbTestCase
         ], true);
 
         // Clean singleton to avoid polluting next tests.
-        \SingletonRuleList::getInstance('RuleRight', 0)->load = 0;
-        \SingletonRuleList::getInstance('RuleRight', 0)->list = [];
+        \SingletonRuleList::getInstance(\RuleRight::class, 0)->load = 0;
+        \SingletonRuleList::getInstance(\RuleRight::class, 0)->list = [];
     }
 
     public function testLocalAccountNoRules()
