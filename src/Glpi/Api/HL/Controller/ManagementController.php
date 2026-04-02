@@ -382,7 +382,7 @@ final class ManagementController extends AbstractController
             'x-itemtype' => Document_Item::class,
             'x-rights-conditions' => [ // Object-level extra permissions
                 'read' => static function () {
-                    if (!Session::haveRight(Document_Item::$rightname, Document_Item::SEEPRIVATE)) {
+                    if (!Session::haveRight(Document::$rightname, Document_Item::SEEPRIVATE)) {
                         return [
                             'WHERE' => [
                                 'OR' => [
