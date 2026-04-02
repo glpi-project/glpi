@@ -704,27 +704,37 @@ class Item_OperatingSystem extends CommonDBRelation
      */
     private function areAllFieldsEmpty(array $input): bool
     {
-        $fields_to_check = [
-            'operatingsystems_id',
-            'operatingsystemversions_id',
-            'operatingsystemservicepacks_id',
-            'operatingsystemarchitectures_id',
-            'operatingsystemkernelversions_id',
-            'operatingsystemeditions_id',
-            'license_number',
-            'licenseid',
-            'company',
-            'owner',
-            'hostid',
+        global $DB;
+
+        // Retrieve all table fields dynamically
+        $table_fields = $DB->listFields(static::getTable());
+        
+        // Exclude structural/metadata fields that don't represent the OS itself
+        $excluded_fields = [
+            'id',
+            'items_id',
+            'itemtype',
+            'entities_id',
+            'is_recursive',
+            'is_deleted',
+            'date_mod',
+            'date_creation'
         ];
 
-        foreach ($fields_to_check as $field) {
+        foreach ($table_fields as $field => $field_data) {
+            // Skip metadata/structural fields
+            if (in_array($field, $excluded_fields)) {
+                continue;
+            }
+
             if (!array_key_exists($field, $input)) {
                 continue;
             }
 
             $value = $input[$field];
 
+            // If we find at least one field that has a valid, non-empty value, 
+            // then the OS record is NOT completely empty.
             if (
                 (is_numeric($value) && (int) $value > 0)
                 || (is_string($value) && trim($value) !== '' && !is_numeric($value))
