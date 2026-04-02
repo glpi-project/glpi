@@ -1450,4 +1450,90 @@ PLAINTEXT,
         $result = $mailcollector->cleanContent($original);
         $this->assertEquals($expected, $result);
     }
+
+    public function testGetAttachedRestoresCrlfForRfc822Parts(): void
+    {
+        // RFC 2822 requires CRLF (\r\n) line endings in email messages.
+        // When the GLPI mail collector receives an email via IMAP, the Laminas MIME parser
+        // strips all \r characters during multipart boundary splitting
+        // (see Laminas\Mime\Decode::splitMime). As a result, embedded emails
+        // (message/rfc822 attachments) lose their CRLF line endings, which breaks
+        // Quoted-Printable soft line breaks (=\r\n becomes =\n) and makes the
+        // extracted EML file unreadable in strict clients such as Outlook.
+        // This test verifies that GLPI restores CRLF line endings in extracted
+        // message/rfc822 attachments.
+
+        // Register EML as a valid document type (not present by default).
+        $this->createItem(\DocumentType::class, [
+            'name'         => 'E-Mail',
+            'ext'          => 'eml',
+            'is_uploadable' => 1,
+        ]);
+
+        $crlf = "\r\n";
+
+        // Build the embedded email (the message/rfc822 part) with CRLF line endings
+        // and Quoted-Printable encoded content that contains non-ASCII characters.
+        // The QP soft line break "=\r\n" must survive extraction to remain valid.
+        $embedded_email = implode($crlf, [
+            'From: original@example.com',
+            'To: receiver@glpi-project.org',
+            'Subject: Original message with special chars',
+            'MIME-Version: 1.0',
+            'Content-Type: text/plain; charset=iso-8859-1',
+            'Content-Transfer-Encoding: quoted-printable',
+            '',
+            'Bonjour, voici un r=E9sum=E9 avec des caract=E8res sp=E9ciaux: caf=E9.',
+            '',
+        ]);
+
+        // Build the outer multipart email that wraps the embedded one.
+        // The whole string uses CRLF, simulating what an IMAP server delivers.
+        $raw = implode($crlf, [
+            'From: sender@example.com',
+            'To: receiver@glpi-project.org',
+            'Message-ID: <rfc822-crlf-test@glpi-project.org>',
+            'Subject: Forwarded: Original message with special chars',
+            'MIME-Version: 1.0',
+            'Content-Type: multipart/mixed; boundary="test-boundary-48"',
+            '',
+            '--test-boundary-48',
+            'Content-Type: text/plain; charset=utf-8',
+            '',
+            'Please find the forwarded email below.',
+            '--test-boundary-48',
+            'Content-Type: message/rfc822',
+            'Content-Disposition: attachment',
+            '',
+            $embedded_email,
+            '--test-boundary-48--',
+            '',
+        ]);
+
+        $message = new Message(['raw' => $raw]);
+
+        $tmp_path = GLPI_TMP_DIR . '/test_rfc822_crlf_' . uniqid();
+        mkdir($tmp_path);
+
+        $collector = new \MailCollector();
+        $files = $collector->getAttached($message, $tmp_path . '/', PHP_INT_MAX);
+
+        $this->assertCount(1, $files, 'Should have extracted exactly one message/rfc822 attachment');
+
+        $filename = array_key_first($files);
+        $extracted_content = file_get_contents($tmp_path . '/' . $filename);
+
+        // Clean up temporary files
+        unlink($tmp_path . '/' . $filename);
+        rmdir($tmp_path);
+
+        // The extracted EML file must use CRLF line endings (RFC 2822 requirement).
+        // Without the fix, Laminas strips all \r during MIME parsing, leaving LF-only
+        // line endings that break Quoted-Printable soft line breaks.
+        $this->assertStringContainsString(
+            "\r\n",
+            $extracted_content,
+            'Extracted EML attachment must use CRLF line endings as required by RFC 2822'
+        );
+    }
 }

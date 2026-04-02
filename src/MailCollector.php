@@ -1791,6 +1791,17 @@ class MailCollector extends CommonDBTM
             }
 
             $contents = $this->getDecodedContent($part);
+
+            // Restore CRLF line endings for message/rfc822 (embedded email) attachments.
+            // The Laminas MIME parser strips all \r characters when splitting multipart
+            // boundaries (see Laminas\Mime\Decode::splitMime), which produces LF-only
+            // line endings. RFC 2822 requires CRLF, and without them, Quoted-Printable
+            // soft line breaks (=\r\n) become invalid (=\n), making the extracted EML
+            // unreadable in strict clients such as Outlook.
+            if (strtolower($content_type) === 'message/rfc822') {
+                $contents = preg_replace('/(?<!\r)\n/', "\r\n", $contents);
+            }
+
             if (file_put_contents($path . $filename, $contents)) {
                 $this->files[$filename] = $filename;
 
