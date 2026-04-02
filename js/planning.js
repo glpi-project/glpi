@@ -122,7 +122,7 @@ var GLPIPlanning  = {
                 listFull: {
                     type: 'list',
                     titleFormat: function() {
-                        return '';
+                        return __('List');
                     },
                     visibleRange: function(currentDate) {
                         var current_year = currentDate.getFullYear();
@@ -396,8 +396,21 @@ var GLPIPlanning  = {
                     .after(
                         $('<i id="refresh_planning" class="ti ti-refresh pointer"></i>')
                     ).after(
-                        $('<div id="planning_datepicker"><a data-toggle><i class="ti ti-calendar pointer"></i></a>')
+                        $('<div id="planning_datepicker"><a data-toggle><i id="planning_calendar_btn" class="ti ti-calendar pointer"></i></a>')
                     );
+
+                $('#refresh_planning').qtip({
+                    position: { viewport: $(window) },
+                    content: { text: __('Refresh') },
+                    style: { classes: 'qtip-shadow qtip-bootstrap' },
+                    hide: { fixed: true, delay: 200, leave: false }
+                });
+                $('#planning_calendar_btn').qtip({
+                    position: { viewport: $(window) },
+                    content: { text: __('Calendar') },
+                    style: { classes: 'qtip-shadow qtip-bootstrap' },
+                    hide: { fixed: true, delay: 200, leave: false }
+                });
 
                 // specific process for full list
                 if (view.type == 'listFull') {
