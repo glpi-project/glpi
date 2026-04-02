@@ -2591,6 +2591,8 @@ class APIRestTest extends TestCase
                     ["key" => "Item_Line:add",                   "label" => "Add a phone line"],
                     ["key" => "Item_Line:remove",                "label" => "Remove a phone line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
+                    ["key" => "MassiveAction:associate_group",   "label" => "Associate group"],
+                    ["key" => "MassiveAction:dissociate_group",  "label" => "Dissociate group"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
@@ -2637,6 +2639,8 @@ class APIRestTest extends TestCase
                     ["key" => "Item_Line:add",                   "label" => "Add a phone line"],
                     ["key" => "Item_Line:remove",                "label" => "Remove a phone line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
+                    ["key" => "MassiveAction:associate_group",   "label" => "Associate group"],
+                    ["key" => "MassiveAction:dissociate_group",  "label" => "Dissociate group"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
@@ -2737,6 +2741,20 @@ class APIRestTest extends TestCase
                 'url' => 'getMassiveActionParameters/Computer/Infocom:activate',
                 'status' => 200,
                 'response' => [],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/MassiveAction:associate_group',
+                'status' => 200,
+                'response' => [
+                    ["name" => "groups_id", "type" => "dropdown"],
+                ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/MassiveAction:dissociate_group',
+                'status' => 200,
+                'response' => [
+                    ["name" => "groups_id", "type" => "dropdown"],
+                ],
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:delete',
