@@ -708,7 +708,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
         // Retrieve all table fields dynamically
         $table_fields = $DB->listFields(static::getTable());
-        
+
         // Exclude structural/metadata fields that don't represent the OS itself
         $excluded_fields = [
             'id',
