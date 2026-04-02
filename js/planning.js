@@ -407,7 +407,7 @@ var GLPIPlanning  = {
                 });
                 $('#planning_calendar_btn').qtip({
                     position: { viewport: $(window) },
-                    content: { text: __('Calendar') },
+                    content: { text: _n('Calendar', 'Calendars', 1) },
                     style: { classes: 'qtip-shadow qtip-bootstrap' },
                     hide: { fixed: true, delay: 200, leave: false }
                 });
