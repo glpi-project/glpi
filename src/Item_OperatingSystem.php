@@ -718,7 +718,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'is_recursive',
             'is_deleted',
             'date_mod',
-            'date_creation'
+            'date_creation',
         ];
 
         foreach ($table_fields as $field => $field_data) {
