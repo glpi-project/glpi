@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
 <div
     class="d-flex mx-n2 my-n2 pe-none"
     data-glpi-knowbase-article
@@ -267,7 +269,92 @@
                         </a>
                     </div>
                 {% endif %}
+
+                {# Visibility dates indicator #}
+                {% if (begin_date is defined or end_date is defined) and mode == 'edit' and can_edit %}
+                    {% set has_dates = (begin_date is defined and begin_date is not null) or (end_date is defined and end_date is not null) %}
+                    <div
+                        class="d-flex align-items-center position-relative {{ not has_dates ? 'd-none' : '' }}"
+                        data-glpi-kb-visibility-dates-indicator
+                        data-testid="visibility-dates-indicator"
+                    >
+                        <div
+                            data-bs-toggle="dropdown"
+                            {# Auto close must be kept disabled due to issues with flat picker.
+                               Without it, changing the month/year in flat picker will close the
+                               dropdown #}
+                            data-bs-auto-close="false"
+                            data-glpi-kb-toggle-visibility-dates
+                            aria-expanded="false"
+                        >
+                            <i class="ti ti-calendar-clock me-1 fs-3"></i>
+                            <a
+                                href="#"
+                                class="text-muted"
+                            >
+                                {{ __("Scheduled") }}
+                            </a>
+                        </div>
+                        <div
+                            class="dropdown-menu kb-schedule-panel p-3"
+                            data-glpi-kb-schedule-panel
+                            data-testid="schedule-panel"
+                            role="dialog"
+                            aria-label="{{ __('Schedule visibility') }}"
+                        >
+                            <p class="fw-semibold mb-2 small text-muted text-uppercase">
+                                {{ __('Schedule visibility') }}
+                            </p>
+                            <div class="mb-2">
+                                <label
+                                    class="form-label small mb-1"
+                                    for="kb_begin_date_input"
+                                >{{ __('Visible from') }}</label>
+                                {{ inputs.date('begin_date', begin_date ?? '', {
+                                    id: "kb_begin_date",
+                                    enableTime: true,
+                                    input_addclass: "form-control-sm",
+                                    addCalendarButton: false,
+                                    additional_attributes: {
+                                        placeholder: __('No start date'),
+                                        'data-glpi-kb-begin-date': "",
+                                    }
+                                }) }}
+                            </div>
+                            <div class="mb-3">
+                                <label
+                                    class="form-label small mb-1"
+                                    for="kb_end_date_input"
+                                >{{ __('Until') }}</label>
+                                {{ inputs.date('end_date', end_date ?? '', {
+                                    id: "kb_end_date",
+                                    enableTime: true,
+                                    input_addclass: "form-control-sm",
+                                    addCalendarButton: false,
+                                    additional_attributes: {
+                                        placeholder: __('No end date'),
+                                        'data-glpi-kb-end-date': "",
+                                    }
+                                }) }}
+                            </div>
+                            <div class="d-flex justify-content-end gap-2">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-secondary"
+                                    data-glpi-kb-schedule-cancel
+                                >{{ __('Cancel') }}</button>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-primary"
+                                    data-glpi-kb-schedule-apply
+                                    data-testid="schedule-apply-btn"
+                                >{{ __('Apply') }}</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
+
         {% endif %}
 
         <hr class="mt-4 mb-4">

@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
+/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken, bootstrap */
 
 import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
@@ -145,6 +145,7 @@ export class GlpiKnowbaseArticleController
                 container.dataset.glpiKbExistingTranslations
             );
             this.#initTranslationMode();
+            this.#initVisibilityDates();
         }
 
         if (mode === 'add') {
@@ -291,6 +292,21 @@ export class GlpiKnowbaseArticleController
             case 'OPEN_MODAL':
                 this.#openModal(params.id, params.key, params.title);
                 break;
+            case 'SCHEDULE_VISIBILITY': {
+                // Show indicator
+                const indicator   = this.#getScheduledArticleIndicator();
+                const toggle_link = this.#getScheduleDropdownToggle();
+                indicator.classList.remove('d-none');
+
+                // Open the dropdown.
+                // Defer show() so that Bootstrap's clearMenus handler (fired
+                // as the triggering click propagates to document) does not
+                // immediately close the dropdown we are about to open.
+                requestAnimationFrame(() => {
+                    bootstrap.Dropdown.getOrCreateInstance(toggle_link).show();
+                });
+                break;
+            }
         }
     }
 
@@ -553,6 +569,59 @@ export class GlpiKnowbaseArticleController
             } catch (e) {
                 checkbox.checked = !value;
                 throw e;
+            }
+        });
+    }
+
+    #initVisibilityDates()
+    {
+        // Gather target nodes
+        const panel       = this.#container.querySelector('[data-glpi-kb-schedule-panel]');
+        const begin_input = panel.querySelector('[data-glpi-kb-begin-date]');
+        const end_input   = panel.querySelector('[data-glpi-kb-end-date]');
+        const apply_btn   = panel.querySelector('[data-glpi-kb-schedule-apply]');
+        const cancel_btn  = panel.querySelector('[data-glpi-kb-schedule-cancel]');
+        const indicator   = this.#getScheduledArticleIndicator();
+        const toggle_link = this.#getScheduleDropdownToggle();
+
+        // Close the dropdown panel on cancel
+        cancel_btn.addEventListener('click', () => {
+            bootstrap.Dropdown.getOrCreateInstance(toggle_link).hide();
+            // Re-hide the indicator if no dates are actually set as the item
+            // won't be "Scheduled".
+            if (!begin_input.value && !end_input.value && indicator) {
+                indicator.classList.add('d-none');
+            }
+        });
+
+        // Save value to backend on apply
+        apply_btn.addEventListener('click', async () => {
+            // Read form values
+            const begin_date = begin_input.value || null;
+            const end_date   = end_input.value || null;
+
+            // Apply loading state feedback to the submit button
+            const original_html = apply_btn.innerHTML;
+            apply_btn.disabled = true;
+            apply_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__('Saving...')}`;
+
+            try {
+                // Sent value to backend
+                await post(`Knowbase/${this.#item_id}/UpdateVisibilityDates`, {
+                    begin_date,
+                    end_date,
+                });
+
+                // Close dropdown panel and remove the indicator if both dates
+                // were set to null.
+                indicator.classList.toggle('d-none', !begin_date && !end_date);
+                bootstrap.Dropdown.getOrCreateInstance(toggle_link).hide();
+
+                glpi_toast_info(__('Visibility dates updated'));
+            } finally {
+                // Restore submit button
+                apply_btn.disabled = false;
+                apply_btn.innerHTML = original_html;
             }
         });
     }
@@ -1146,5 +1215,19 @@ export class GlpiKnowbaseArticleController
         } else {
             delete_btn.classList.add('d-none');
         }
+    }
+
+    #getScheduledArticleIndicator()
+    {
+        return this.#container.querySelector(
+            '[data-glpi-kb-visibility-dates-indicator]'
+        );
+    }
+
+    #getScheduleDropdownToggle()
+    {
+        return this.#container.querySelector(
+            '[data-glpi-kb-toggle-visibility-dates]'
+        );
     }
 }

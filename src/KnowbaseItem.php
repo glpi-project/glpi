@@ -867,6 +867,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['existing_translations'] = array_values(KnowbaseItemTranslation::getAlreadyTranslatedForItem($this));
             $params['default_language']      = $CFG_GLPI['language'];
 
+            // Visibility dates
+            $params['begin_date'] = $this->fields['begin_date'];
+            $params['end_date']   = $this->fields['end_date'];
+
             // Add actions
             $params['actions'] = $mode === "edit" ? $this->getEditorActions() : [];
         } elseif ($mode === "add") {
@@ -1057,6 +1061,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'key' => 'SidePanel/permissions',
                     'title' => _n('Target', 'Targets', Session::getPluralNumber()),
                 ],
+            );
+            $actions[] = new EditorAction(
+                label: __('Schedule visibility'),
+                icon: 'ti ti-calendar-clock',
+                type: EditorActionType::SCHEDULE_VISIBILITY,
+                params: [],
             );
         }
 
