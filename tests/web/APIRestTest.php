@@ -2746,14 +2746,16 @@ class APIRestTest extends TestCase
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:associate_group',
                 'status' => 200,
                 'response' => [
-                    ["name" => "groups_id", "type" => "dropdown"],
+                    ["name" => "fieldname", "type" => "dropdown"],
+                    ["name" => "selected_group[]", "type" => "dropdown"],
                 ],
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:dissociate_group',
                 'status' => 200,
                 'response' => [
-                    ["name" => "groups_id", "type" => "dropdown"],
+                    ["name" => "fieldname", "type" => "dropdown"],
+                    ["name" => "selected_group[]", "type" => "dropdown"],
                 ],
             ],
             [
