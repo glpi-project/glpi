@@ -1506,7 +1506,7 @@ PLAINTEXT,
             'Content-Disposition: attachment',
             '',
             $embedded_email,
-            '--test-boundary-48--'
+            '--test-boundary-48--',
             '',
         ]);
 
