@@ -161,6 +161,7 @@ test.describe('Session', () => {
         const glpi_page = new GlpiPage(anonymousPage);
         await glpi_page.doLogout();
 
+        await login_page.goto();
         await login_page.doLogin(username, 'glpi');
         await login_page.doFillTotpCode(authenticator.generate(secret));
 

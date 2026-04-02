@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 /**
  * @since 0.84
@@ -45,7 +46,11 @@ use Glpi\Exception\Http\BadRequestHttpException;
 Session::checkCentralAccess();
 $contactsupplier = new Contact_Supplier();
 if (isset($_POST["add"])) {
-    $contactsupplier->check(-1, CREATE, $_POST);
+    try {
+        $contactsupplier->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
+        Html::back();
+    }
 
     if (
         isset($_POST["contacts_id"]) && ($_POST["contacts_id"] > 0)

@@ -708,7 +708,7 @@ test('Can duplicate a question and change its type', async ({ page, profile, api
 
     for (let i = 0; i < 2; i++) {
         const q = questions.nth(i);
-        await q.click();
+        await q.getByRole('textbox', { name: 'Question name' }).click();
         await expect(
             q.getByRole('textbox', { name: 'Question name' })
         ).toHaveValue('My question');
@@ -724,9 +724,14 @@ test('Can duplicate a question and change its type', async ({ page, profile, api
 
     // Change the second question's type to "Date and time"
     const second_question = questions.nth(1);
-    await second_question.click();
+    await second_question.getByRole('textbox', { name: 'Question name' }).click();
     const second_type_dd = form.getDropdownByLabel('Question type', second_question);
     await form.doSetDropdownValue(second_type_dd, 'Date and time', false);
+    // The type change triggers two sequential async network requests
+    // (one for category validation, one for type validation). Wait for the
+    // loading overlay added by setQuestionTypeSpecificLoadingState to
+    // disappear before saving, confirming both async operations have settled.
+    await expect(second_question.getByTestId('question-loading')).not.toBeAttached();
 
     // Save and reload
     await form.doSaveFormEditorAndReload();
@@ -737,7 +742,7 @@ test('Can duplicate a question and change its type', async ({ page, profile, api
 
     // First question should still be "Long answer"
     const q0 = questions_after.nth(0);
-    await q0.click();
+    await q0.getByRole('textbox', { name: 'Question name' }).click();
     await expect(
         q0.getByRole('textbox', { name: 'Question name' })
     ).toHaveValue('My question');
@@ -752,7 +757,7 @@ test('Can duplicate a question and change its type', async ({ page, profile, api
 
     // Second question should be "Date and time"
     const q1 = questions_after.nth(1);
-    await q1.click();
+    await q1.getByRole('textbox', { name: 'Question name' }).click();
     await expect(
         q1.getByRole('textbox', { name: 'Question name' })
     ).toHaveValue('My question');
