@@ -733,7 +733,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
             $value = $input[$field];
 
-            // If we find at least one field that has a valid, non-empty value, 
+            // If we find at least one field that has a valid, non-empty value,
             // then the OS record is NOT completely empty.
             if (
                 (is_numeric($value) && (int) $value > 0)
