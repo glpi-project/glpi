@@ -1505,7 +1505,10 @@ PLAINTEXT,
             'Content-Type: message/rfc822',
             'Content-Disposition: attachment',
             '',
-        ]) . $crlf . $embedded_email . $crlf . '--test-boundary-48--' . $crlf;
+            $embedded_email,
+            '--test-boundary-48--'
+            '',
+        ]);
 
         $message = new Message(['raw' => $raw]);
 
