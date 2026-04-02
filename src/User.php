@@ -1326,7 +1326,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (isset($input['profiles_id'])) {
             if (
                 !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
-                && !in_array((int) $input['profiles_id'], $input['_ldap_rules']['rules_profiles_id_default'] ?? [])
                 && $input['profiles_id'] != 0
                 && !in_array($input['profiles_id'], $default_profile_ids)
             ) {
