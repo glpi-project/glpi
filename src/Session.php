@@ -425,7 +425,7 @@ class Session
                     $entities[$val['id']] = $val['id'];
                     if ($val['is_recursive']) {
                         $sons = getSonsOf("glpi_entities", $val['id']);
-                        foreach ($sons as $key2 => $val2) {
+                        foreach (array_keys($sons) as $key2) {
                             $entities[$key2] = $key2;
                         }
                     }
@@ -1482,9 +1482,9 @@ class Session
             return true;
         }
 
-        //If GLPI is using the slave DB -> read only mode
+        //If GLPI is using the replica DB -> read only mode
         if (
-            $DB->isSlave()
+            $DB->isReplica()
             && ($right & (CREATE | UPDATE | DELETE | PURGE))
         ) {
             return false;
@@ -1952,7 +1952,7 @@ class Session
      *
      * @since 0.85
      *
-     * @param string $itemtype itemtype
+     * @param class-string<CommonDBTM> $itemtype itemtype
      * @param string $field    field
      *
      * @return bool
@@ -2006,7 +2006,7 @@ class Session
 
         // Cannot impersonate inactive user
         $user = new User();
-        if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+        if (!$user->getFromDB($user_id) || !$user->isActive()) {
             $message = __("The user is not active.");
             return false;
         }

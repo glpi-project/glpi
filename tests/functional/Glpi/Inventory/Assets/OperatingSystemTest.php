@@ -38,13 +38,11 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use Rule;
 use RuleDictionnaryOperatingSystem;
 use RuleDictionnaryOperatingSystemEdition;
 use RuleDictionnaryOperatingSystemVersion;
 
-#[Group('single-thread')]
 class OperatingSystemTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array

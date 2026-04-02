@@ -51,14 +51,14 @@ use function Safe\preg_replace;
  * @method static QueryExpression bitCount(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_COUNT' SQL function call
  * @method static QueryExpression bitOr(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_OR' SQL function call
  * @method static QueryExpression bitXor(string|QueryExpression $expression, ?string $alias = null) Build a 'BIT_XOR' SQL function call
- * @method static QueryExpression coalesce(array $params, ?string $alias = null) Build a 'COALESCE' function call
- * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
+ * @method static QueryExpression coalesce(array<int|string, mixed> $params, ?string $alias = null) Build a 'COALESCE' function call
+ * @method static QueryExpression concat(array<int|string, mixed> $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
- * @method static QueryExpression greatest(array $params, ?string $alias = null) Build a 'GREATEST' function call
- * @method static QueryExpression jsonExtract(array $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
+ * @method static QueryExpression greatest(array<int|string, mixed> $params, ?string $alias = null) Build a 'GREATEST' function call
+ * @method static QueryExpression jsonExtract(array<int|string, mixed> $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
  * @method static QueryExpression jsonUnquote(string|QueryExpression $expression, ?string $alias = null) Build a 'JSON_UNQUOTE' function call
- * @method static QueryExpression jsonRemove(array $params, ?string $alias = null) Build a 'JSON_REMOVE' function call
- * @method static QueryExpression least(array $params, ?string $alias = null) Build a 'LEAST' function call
+ * @method static QueryExpression jsonRemove(array<int|string, mixed> $params, ?string $alias = null) Build a 'JSON_REMOVE' function call
+ * @method static QueryExpression least(array<int|string, mixed> $params, ?string $alias = null) Build a 'LEAST' function call
  * @method static QueryExpression lower(string|QueryExpression $expression, ?string $alias = null) Build a 'LOWER' SQL function call
  * @method static QueryExpression max(string|QueryExpression $expression, ?string $alias = null) Build a 'MAX' SQL function call
  * @method static QueryExpression min(string|QueryExpression $expression, ?string $alias = null) Build a 'MIN' SQL function call
@@ -71,7 +71,7 @@ class QueryFunction
      * Format the given data as a SQL function call.
      * The alias should not be quoted. It will be done in the returned QueryExpression when its value is evaluated.
      * @param string $func_name SQL function name
-     * @param array $params Array of quoted identifiers or QueryExpressions
+     * @param array<int, string|QueryExpression|null> $params Array of quoted identifiers or QueryExpressions
      * @param string|null $alias Unquoted alias
      * @return QueryExpression
      */
@@ -84,7 +84,7 @@ class QueryFunction
 
     /**
      * @param string $name
-     * @param array $arguments
+     * @param array<int|string, mixed> $arguments
      *
      * @return QueryExpression
      */
@@ -143,7 +143,7 @@ class QueryFunction
 
     /**
      * Build an IF SQL function call
-     * @param string|QueryExpression|array $condition Condition to test
+     * @param string|QueryExpression|array<int|string, mixed> $condition Condition to test
      * @param string|QueryExpression $true_expression Expression to return if condition is true
      * @param string|QueryExpression $false_expression Expression to return if condition is false
      * @param string|null $alias Function result alias (will be automatically quoted)
@@ -174,7 +174,7 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to group
      * @param string|null $separator Separator to use (will be automatically quoted as a value)
      * @param bool $distinct Use DISTINCT or not
-     * @param array|string|null $order_by Order by clause
+     * @param string|array<int, string|QueryExpression>|null $order_by Order by clause
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
@@ -452,6 +452,13 @@ class QueryFunction
         return self::getExpression('LOCATE', [$substring, $expression], $alias);
     }
 
+    /**
+     * Build a CONCAT_WS SQL function call
+     * @param string|QueryExpression $separator Separator to use. Treated like a value if it's a string.
+     * @param array<int, string|QueryExpression|null> $params Array of expressions to concatenate. String values will be treated as identifiers, null values will be ignored.
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
     public static function concat_ws(string|QueryExpression $separator, array $params, ?string $alias = null): QueryExpression
     {
         global $DB;

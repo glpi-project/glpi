@@ -265,8 +265,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $currentNode = clone $this;
 
             if ($currentNode->getFromDB($ID)) {
-                $currentNodeCompleteName = $currentNode->getField("completename");
-                $nextNodeLevel           = ($currentNode->getField("level") + 1);
+                $currentNodeCompleteName = $currentNode->fields['completename'];
+                $nextNodeLevel           = ($currentNode->fields['level'] + 1);
             } else {
                 $nextNodeLevel = 1;
             }
@@ -627,7 +627,7 @@ TWIG, $twig_params);
                     case 'dropdownValue':
                         if (!isset($values_cache[$field['name']][$data[$field['name']]])) {
                             $values_cache[$field['name']][$data[$field['name']]] = Dropdown::getDropdownName(
-                                $field['name'],
+                                getTableNameForForeignKeyField($field['name']),
                                 $data[$field['name']]
                             );
                         }
@@ -890,7 +890,7 @@ TWIG, $twig_params);
     public function getAncestors(): iterable
     {
         $ancestor_ids = getAncestorsOf($this->getTable(), $this->getID());
-        if (empty($ancestor_ids)) {
+        if ($ancestor_ids === []) {
             return [];
         }
         return static::getSeveralFromDBByCrit(['id' => $ancestor_ids]);

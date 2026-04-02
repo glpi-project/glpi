@@ -25,7 +25,7 @@ jobs:
           # build on lower supported version to ensure building tools are compatible with this version
           - {branch: "10.0/bugfixes", version-name: "10.0", php-version: "7.4"}
           - {branch: "11.0/bugfixes", version-name: "11.0", php-version: "8.2"}
-          - {branch: "main", version-name: "dev", php-version: "8.2"}
+          - {branch: "main", version-name: "dev", php-version: "8.3"}
     services:
       app:
         image: "ghcr.io/glpi-project/githubactions-php:${{ matrix.php-version }}"

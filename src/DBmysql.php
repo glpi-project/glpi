@@ -87,11 +87,11 @@ class DBmysql
     protected mysqli $dbh;
 
     /**
-     * Slave management
+     * Replica management
      *
      * @var bool
      */
-    public $slave              = false;
+    public $replica            = false;
 
     /**
      * Defines if connection must use SSL.
@@ -969,13 +969,29 @@ class DBmysql
     }
 
     /**
-     * is a slave database ?
+     * is a replica database?
      *
      * @return bool
      */
+    public function isReplica(): bool
+    {
+        //To remove in v13
+        if (property_exists($this, 'slave')) {
+            return $this->isSlave(); //@phpstan-ignore method.deprecated
+        }
+        return $this->replica;
+    }
+
+    /**
+     * is a slave database ?
+     *
+     * @return bool
+     * @deprecated 12 Use $this->isReplica instead.
+     */
     public function isSlave()
     {
-        return $this->slave;
+        Toolbox::deprecated('Use isReplica()');
+        return $this->slave ?? false;
     }
 
     /**
@@ -983,7 +999,7 @@ class DBmysql
      *
      * @param string $path with file full path
      *
-     * @return bool true if all query are successfull
+     * @return true
      */
     public function runFile($path)
     {
@@ -1316,14 +1332,14 @@ class DBmysql
      * @param string $table  Table name
      * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function insert($table, $params)
     {
-        $result = $this->doQuery(
+        $this->doQuery(
             $this->buildInsert($table, $params)
         );
-        return $result;
+        return true;
     }
 
     /**
@@ -1414,13 +1430,13 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1433,12 +1449,13 @@ class DBmysql
      * @param array   $where   WHERE clause
      * @param bool $onlyone Do the update only one element, defaults to true
      *
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
-        return $this->doQuery($query);
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1500,13 +1517,13 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1515,18 +1532,18 @@ class DBmysql
      * @param string $name   Table name
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return bool|mysqli_result
+     * @return true
      */
     public function dropTable(string $name, bool $exists = false)
     {
-        $res = $this->doQuery(
+        $this->doQuery(
             $this->buildDrop(
                 $name,
                 'TABLE',
                 $exists
             )
         );
-        return $res;
+        return true;
     }
 
     /**
@@ -1535,18 +1552,18 @@ class DBmysql
      * @param string $name   View name
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return bool|mysqli_result
+     * @return true
      */
     public function dropView(string $name, bool $exists = false)
     {
-        $res = $this->doQuery(
+        $this->doQuery(
             $this->buildDrop(
                 $name,
                 'VIEW',
                 $exists
             )
         );
-        return $res;
+        return true;
     }
 
     /**
@@ -1927,7 +1944,7 @@ class DBmysql
                 $excludes[] = 3778; // 'utf8_unicode_ci' is a collation of the deprecated character set UTF8MB3. Please consider using UTF8MB4 with an appropriate collation instead.
             }
             if (!$this->log_deprecation_warnings) {
-                // Mute deprecations related to elements that are heavilly used in old migrations and in plugins
+                // Mute deprecations related to elements that are heavily used in old migrations and in plugins
                 // as it may require a lot of work to fix them.
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }

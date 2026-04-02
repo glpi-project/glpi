@@ -52,7 +52,7 @@ final class GenerateIllustrationTranslationFileCommand extends Command
     }
 
     #[Override]
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $content = "<?php" . PHP_EOL . PHP_EOL;
 

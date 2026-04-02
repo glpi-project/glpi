@@ -34,6 +34,7 @@
 
 namespace Glpi\Api\HL\Search;
 
+use CommonDBTM;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Search;
@@ -149,6 +150,7 @@ final class RecordSet
                 $field_parts = explode('.', $sql_field);
                 $field_only = end($field_parts);
                 // Handle translatable fields
+                /** @var class-string<CommonDBTM> $itemtype */
                 if (Session::haveTranslations($itemtype, $field_only)) {
                     $trans_alias = "{$join_name}__{$field_only}__trans";
                     $trans_alias = hash('xxh3', $trans_alias);
@@ -210,6 +212,9 @@ final class RecordSet
                 unset($row['_itemtype']);
                 // Make sure we have all the needed data
                 foreach ($row as $fkey => $record_ids) {
+                    if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
+                        continue;
+                    }
                     $table = $this->search->getContext()->getTableForFKey($fkey, $schema_name);
                     if ($table === null) {
                         continue;
@@ -220,9 +225,6 @@ final class RecordSet
                     }
                     $itemtype = $itemtype_cache[$table];
 
-                    if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
-                        continue;
-                    }
                     // Find which IDs we need to fetch. We will avoid fetching records multiple times.
                     $ids_to_fetch = explode(chr(0x1D), $record_ids);
                     foreach ($ids_to_fetch as &$id) {

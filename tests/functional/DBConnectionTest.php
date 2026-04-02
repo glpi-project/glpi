@@ -184,11 +184,11 @@ PHP,
         $this->assertEquals($expected, file_get_contents($path));
     }
 
-    public static function slaveConfigPropertiesProvider()
+    public static function replicaConfigPropertiesProvider()
     {
         return [
             [
-                'host'                     => 'slave.db.domain.org',
+                'host'                     => 'replica.db.domain.org',
                 'user'                     => 'glpi',
                 'password'                 => 'secret',
                 'name'                     => 'glpi_db',
@@ -199,18 +199,18 @@ PHP,
                 'allow_signed_keys'        => true,
                 'expected'                 => <<<'PHP'
 <?php
-class DBSlave extends DBmysql {
-   public $dbhost = 'slave.db.domain.org';
+class DBReplica extends DBmysql {
+   public $dbhost = 'replica.db.domain.org';
    public $dbuser = 'glpi';
    public $dbpassword = 'secret';
    public $dbdefault = 'glpi_db';
-   public $slave = true;
+   public $replica = true;
 }
 
 PHP,
             ],
             [
-                'host'                     => 'slave1.db.domain.org slave2.db.domain.org slave3.db.domain.org ',
+                'host'                     => 'replica1.db.domain.org replica2.db.domain.org replica3.db.domain.org ',
                 'user'                     => 'root',
                 'password'                 => '',
                 'name'                     => 'db',
@@ -221,16 +221,16 @@ PHP,
                 'allow_signed_keys'        => false,
                 'expected'                 => <<<'PHP'
 <?php
-class DBSlave extends DBmysql {
+class DBReplica extends DBmysql {
    public $dbhost = array (
-  0 => 'slave1.db.domain.org',
-  1 => 'slave2.db.domain.org',
-  2 => 'slave3.db.domain.org',
+  0 => 'replica1.db.domain.org',
+  1 => 'replica2.db.domain.org',
+  2 => 'replica3.db.domain.org',
 );
    public $dbuser = 'root';
    public $dbpassword = '';
    public $dbdefault = 'db';
-   public $slave = true;
+   public $replica = true;
    public $use_timezones = true;
    public $use_utf8mb4 = true;
    public $allow_datetime = false;
@@ -251,12 +251,12 @@ PHP,
                 'allow_signed_keys'        => true,
                 'expected'                 => <<<'PHP'
 <?php
-class DBSlave extends DBmysql {
+class DBReplica extends DBmysql {
    public $dbhost = '127.0.0.1';
    public $dbuser = 'root';
    public $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
    public $dbdefault = 'db';
-   public $slave = true;
+   public $replica = true;
    public $log_deprecation_warnings = true;
 }
 
@@ -265,8 +265,8 @@ PHP,
         ];
     }
 
-    #[DataProvider('slaveConfigPropertiesProvider')]
-    public function testCreateSlaveConnectionFile(
+    #[DataProvider('replicaConfigPropertiesProvider')]
+    public function testCreateReplicaConnectionFile(
         string $host,
         string $user,
         string $password,
@@ -280,7 +280,7 @@ PHP,
     ): void {
         vfsStream::setup('config-dir', null, []);
 
-        $result = \DBConnection::createSlaveConnectionFile(
+        $result = \DBConnection::createReplicaConnectionFile(
             $host,
             $user,
             $password,
@@ -294,7 +294,7 @@ PHP,
         );
         $this->assertTrue($result);
 
-        $path = vfsStream::url('config-dir/config_db_slave.php');
+        $path = vfsStream::url('config-dir/config_db_replica.php');
         $this->assertTrue(file_exists($path));
         $this->assertEquals($expected, file_get_contents($path), file_get_contents($path));
     }
@@ -303,7 +303,7 @@ PHP,
     {
         return [
             [
-                // Add new boolean + string variables, update float + array variables without slave
+                // Add new boolean + string variables, update float + array variables without replica
                 'init_config_files'     => [
                     'config_db.php' => <<<PHP
 <?php
@@ -321,7 +321,7 @@ PHP,
                     'version'     => 10.2,
                     'prop'        => ['a', 'b'],
                 ],
-                'update_slave'          => true, // Will have no effect as slave not exists
+                'update_replica'          => true, // Will have no effect as replica not exists
                 'expected_config_files' => [
                     'config_db.php' => <<<PHP
 <?php
@@ -340,7 +340,7 @@ PHP,
                 ],
             ],
             [
-                // Add new boolean + float + array variables, update string variables with slave
+                // Add new boolean + float + array variables, update string variables with replica
                 'init_config_files'     => [
                     'config_db.php' => <<<PHP
 <?php
@@ -350,10 +350,10 @@ class DB extends DBmysql {
    public \$test        = 'foobar';
 }
 PHP,
-                    'config_db_slave.php' => <<<PHP
+                    'config_db_replica.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
@@ -366,7 +366,7 @@ PHP,
                     'version'     => 10.2,
                     'prop'        => ['a', 'b'],
                 ],
-                'update_slave'          => true,
+                'update_replica'          => true,
                 'expected_config_files' => [
                     'config_db.php' => <<<PHP
 <?php
@@ -382,10 +382,10 @@ class DB extends DBmysql {
 );
 }
 PHP,
-                    'config_db_slave.php' => <<<PHP
+                    'config_db_replica.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'barfoo';
@@ -400,7 +400,7 @@ PHP,
                 ],
             ],
             [
-                // Add new float variable, update string variable without updating slave
+                // Add new float variable, update string variable without updating replica
                 'init_config_files'     => [
                     'config_db.php' => <<<PHP
 <?php
@@ -410,10 +410,10 @@ class DB extends DBmysql {
    public \$test        = 'foobar';
 }
 PHP,
-                    'config_db_slave.php' => <<<PHP
+                    'config_db_replica.php' => <<<PHP
 <?php
-class DBSlave extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+class DBReplica extends DBmysql {
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
@@ -424,7 +424,7 @@ PHP,
                     'test'    => 'barfoo',
                     'version' => 10.2,
                 ],
-                'update_slave'          => false,
+                'update_replica'          => false,
                 'expected_config_files' => [
                     'config_db.php' => <<<PHP
 <?php
@@ -435,10 +435,10 @@ class DB extends DBmysql {
    public \$version = 10.2;
 }
 PHP,
-                    'config_db_slave.php' => <<<PHP
+                    'config_db_replica.php' => <<<PHP
 <?php
-class DBSlave extends DBmysql {
-   public \$dbhost      = 'slave.domain.org';
+class DBReplica extends DBmysql {
+   public \$dbhost      = 'replica.domain.org';
    public \$dbuser      = 'glpi';
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
@@ -453,7 +453,7 @@ PHP,
                     'test'    => 'foobar',
                     'version' => 10.2,
                 ],
-                'update_slave'          => false,
+                'update_replica'          => false,
                 'expected_config_files' => [],
                 'expected_result'       => false,
             ],
@@ -464,14 +464,14 @@ PHP,
     public function testUpdateConfigProperty(
         array $init_config_files,
         array $properties,
-        bool $update_slave,
+        bool  $update_replica,
         array $expected_config_files,
-        bool $expected_result = true
+        bool  $expected_result = true
     ) {
         vfsStream::setup('config-dir', null, $init_config_files);
 
         foreach ($properties as $name => $new_value) {
-            $result = \DBConnection::updateConfigProperty($name, $new_value, $update_slave, vfsStream::url('config-dir'));
+            $result = \DBConnection::updateConfigProperty($name, $new_value, $update_replica, vfsStream::url('config-dir'));
             $this->assertEquals($expected_result, $result);
         }
 
@@ -486,13 +486,13 @@ PHP,
     public function testUpdateConfigProperties(
         array $init_config_files,
         array $properties,
-        bool $update_slave,
+        bool $update_replica,
         array $expected_config_files,
         bool $expected_result = true
     ) {
         vfsStream::setup('config-dir', null, $init_config_files);
 
-        $result = \DBConnection::updateConfigProperties($properties, $update_slave, vfsStream::url('config-dir'));
+        $result = \DBConnection::updateConfigProperties($properties, $update_replica, vfsStream::url('config-dir'));
         $this->assertEquals($expected_result, $result);
 
         foreach ($expected_config_files as $filename => $contents) {

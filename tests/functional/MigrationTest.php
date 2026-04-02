@@ -275,7 +275,6 @@ class MigrationTest extends DbTestCase
         ], $migration->getMockedQueries());
     }
 
-    #[Group('single-thread')]
     public function testBackupNonExistantTables()
     {
         $migration = $this->getMigrationMock(db_options: [
@@ -285,11 +284,17 @@ class MigrationTest extends DbTestCase
         $migration->backupTables(['table1', 'table2']);
         $migration->executeMigration();
 
+        $db = "mockedglpi";
+        $test_token = getenv('TEST_TOKEN');
+        if ($test_token !== false && $test_token !== '' && $test_token > 1) {
+            $db = $db . '_' . $test_token;
+        }
+
         $this->assertEquals([
             0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
-                . ' WHERE `table_schema` = \'mockedglpi\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
+                . ' WHERE `table_schema` = \'' . $db . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
             1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
-                . ' WHERE `table_schema` = \'mockedglpi\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\'',
+                . ' WHERE `table_schema` = \'' . $db . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\'',
         ], $migration->getMockedQueries());
     }
 

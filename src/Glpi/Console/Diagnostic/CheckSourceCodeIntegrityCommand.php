@@ -87,7 +87,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $diff = $input->getOption('diff');
         $checker = new SourceCodeIntegrityChecker();

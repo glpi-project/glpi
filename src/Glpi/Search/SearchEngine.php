@@ -466,7 +466,11 @@ final class SearchEngine
                                     || !$criterion['meta'])
                             ) {
                                 $data['toview'][] = $criterion['field'];
-                            } elseif ($criterion['field'] == 'all') {
+                            } elseif (
+                                $criterion['field'] == 'all'
+                                && isset($criterion['value'])
+                                && (string) $criterion['value'] !== ''
+                            ) {
                                 $data['search']['all_search'] = true;
                             } elseif ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;
@@ -623,7 +627,7 @@ final class SearchEngine
 
         $params['display_type'] = Search::HTML_OUTPUT;
 
-        echo "<div class='search_page row'>";
+        echo "<div class='search_page row' data-testid='search-page'>";
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);

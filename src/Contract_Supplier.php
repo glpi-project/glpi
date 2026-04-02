@@ -34,8 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-
-use function Safe\preg_match;
+use Glpi\Toolbox\URL;
 
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
@@ -216,6 +215,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -299,12 +299,16 @@ TWIG, $twig_params);
                 'name' => $item->getLink(),
             ];
 
-            $website = $data['website'];
-            if (!empty($website)) {
-                if (!preg_match("?https*://?", $website)) {
-                    $website = "http://" . $website;
-                }
-                $website = "<a target=_blank href='" . htmlescape($website) . "'>" . htmlescape($data['website']) . "</a>";
+            $website = '';
+            if (!empty($data["website"])) {
+                $website_url = URL::sanitizeURL(
+                    Toolbox::formatOutputWebLink(
+                        $data["website"]
+                    )
+                );
+                $website = $website_url !== ''
+                    ? "<a target=_blank href='" . htmlescape($website_url) . "'>" . htmlescape($data["website"]) . "</a>"
+                    : $data["website"];
             }
 
             if (!isset($entity_cache[$data['entity']])) {

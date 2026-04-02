@@ -588,7 +588,7 @@ final class RuleController extends AbstractController
 
         $params = $request->getParameters();
         $filter = $params['filter'] ?? '';
-        $filter .= ';rule.id==' . $request->getAttribute('rule_id');
+        $filter .= ';rule.id==' . $request->getAttribute('id');
         $params['filter'] = $filter;
 
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params);

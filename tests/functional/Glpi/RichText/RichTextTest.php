@@ -44,6 +44,17 @@ class RichTextTest extends GLPITestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {
+        // Native PHP parser is used in PHP 8.4+, and results slightly differ
+        if (\PHP_VERSION_ID < 80400) {
+            $pre_content_separator = "\n";
+            $tbody_opening_tag = "";
+            $tbody_closing_tag = "";
+        } else {
+            $pre_content_separator = "";
+            $tbody_opening_tag = "<tbody>";
+            $tbody_closing_tag = "</tbody>";
+        }
+
         // Empty content would not be altered
         yield [
             'content'                => null,
@@ -328,8 +339,7 @@ HTML,
       bla bla
     </p>
   </blockquote>
-  <pre>
-  public function () {
+  <pre>$pre_content_separator  public function () {
     alert(&#039;Hello world!&#039;);
   }
   </pre>
@@ -342,7 +352,7 @@ HTML,
         yield [
             'content'                => '<table height=100 width=0 align="left" cellspacing=10 style="width: 100%;"><tr><td>Test</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
+            'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;">' . $tbody_opening_tag . '<tr><td>Test</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield 'User mention tag must be preserved' => [
@@ -387,19 +397,19 @@ HTML,
         yield '`border` attribute on table should be preserved' => [
             'content'                => '<table border="1"><tr><td>Cell content</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table border="1"><tr><td>Cell content</td></tr></table>',
+            'expected_result'        => '<table border="1">' . $tbody_opening_tag . '<tr><td>Cell content</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield '`bgcolor` attribute on table elements should be preserved' => [
             'content'                => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
+            'expected_result'        => '<table bgcolor="#f0f0f0">' . $tbody_opening_tag . '<tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield 'table with both `border` and `bgcolor` attributes' => [
             'content'                => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
             'encode_output_entities' => false,
-            'expected_result'        => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
+            'expected_result'        => '<table border="1" bgcolor="#ffffff">' . $tbody_opening_tag . '<tr><td>Test</td></tr>' . $tbody_closing_tag . '</table>',
         ];
 
         yield '`border` attribute should be removed from non-table elements' => [
@@ -412,6 +422,25 @@ HTML,
             'content'                => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
             'encode_output_entities' => false,
             'expected_result'        => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
+        ];
+
+        yield [
+            'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI%20#1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+        ];
+
+        yield [
+            'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<span contenteditable="false" data-user-mention="true" data-user-id="5">&#64;normal</span>',
+        ];
+
+        global $CFG_GLPI;
+        yield [
+            'content'                => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id&#61;5">&#64;normal</a>',
         ];
     }
 
@@ -694,13 +723,42 @@ HTML,
         ];
 
         yield [
-            'content'                => '<p>Multiple images: <img src="/img1.jpg" /><img src="/img2.jpg" /></p>',
-            'expected_result'        => '<p>Multiple images: <img src="/img1.jpg" loading="lazy"><img src="/img2.jpg" loading="lazy"></p>',
+            'content'                => '<p>Multiple images: <img src="/path/to/img1.jpg" /><img src="/path/to/img2.jpg" /></p>',
+            'expected_result'        => '<p>Multiple images: <img src="/path/to/img1.jpg" loading="lazy"><img src="/path/to/img2.jpg" loading="lazy"></p>',
         ];
 
         yield [
-            'content'                => '<p>Image with VML tags:<!-- [if gte vml 1]><v:shape id="Image_x0020_4" o:spid="_x0000_i1027" type="#_x0000_t75" alt="Logo" style="width:71.5pt;height:71.5pt"><v:imagedata src="/img3.jpg" o:href="cid:image003.jpg@01DC8574.422C43D0"/></v:shape><![endif]--><!-- [if !vml]--><img src="/img4.jpg" o:title="an image" /><!-- [endif]--></p>',
-            'expected_result'        => '<p>Image with VML tags:<img src="/img4.jpg" loading="lazy"></p>',
+            'content'                => '<p>Image with VML tags:<!-- [if gte vml 1]><v:shape id="Image_x0020_4" o:spid="_x0000_i1027" type="#_x0000_t75" alt="Logo" style="width:71.5pt;height:71.5pt"><v:imagedata src="/path/to/img3.jpg" o:href="cid:image003.jpg@01DC8574.422C43D0"/></v:shape><![endif]--><!-- [if !vml]--><img src="/path/to/img4.jpg" o:title="an image" /><!-- [endif]--></p>',
+            'expected_result'        => '<p>Image with VML tags:<img src="/path/to/img4.jpg" loading="lazy"></p>',
+        ];
+
+        yield [
+            'content' => str_repeat('<p>Complex case to stress the regex engine:'
+                . '<img src="/path/to/image1.jpg" alt="an image" />'
+                . '<img src="/path/to/image2.jpg" alt="an image" />'
+                . '<img src="/path/to/image3.jpg" alt="an image" />'
+                . '<!--[if !vml]>'
+                  . '<img src="/path/to/image4.jpg" alt="an image" />'
+                  . '<img src="/path/to/image5.jpg" alt="an image" />'
+                  . '<img src="/path/to/image6.jpg" alt="an image" />'
+                . '<![endif]-->'
+                . '</p>', 1000),
+            'expected_result' => str_repeat('<p>Complex case to stress the regex engine:'
+                . '<img src="/path/to/image1.jpg" alt="an image" loading="lazy">'
+                . '<img src="/path/to/image2.jpg" alt="an image" loading="lazy">'
+                . '<img src="/path/to/image3.jpg" alt="an image" loading="lazy">'
+                . '</p>', 1000),
+        ];
+
+        yield [
+            'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI%20#1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+        ];
+
+        global $CFG_GLPI;
+        yield [
+            'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
+            'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
     }
 
@@ -709,7 +767,13 @@ HTML,
     {
         $richtext = new RichText();
 
-        $result = $richtext->getEnhancedHtml($content);
+        $save_pcre_backtrack_limit = ini_get('pcre.backtrack_limit');
+        ini_set('pcre.backtrack_limit', 100); // Lower limit to ensure the effectiveness of regex
+        $this->assertEquals(100, ini_get('pcre.backtrack_limit'));
+
+        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
+
+        ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
 
         $this->assertEquals(
             $expected_result,

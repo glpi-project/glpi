@@ -36,28 +36,58 @@
  * Perform a POST request to a GLPI endpoint.
  *
  * @param {string} url - The relative URL path (without root_doc prefix).
- * @param {Object} values - The data to send as JSON in the request body.
+ * @param {Object | null} values - The data to send as JSON in the request body or null if the request doens't send any data.
  * @returns {Promise<Response>} The fetch Response object.
  * @throws {Error} If the request fails or returns a non-ok status.
  */
-export async function post(url, values)
+export async function post(url, values = null)
 {
     try {
-        const response = await fetch(
-            `${CFG_GLPI.root_doc}/${url}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-                },
-                body: JSON.stringify(values),
-            }
-        );
+        const params = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+            },
+        };
 
+        if (values !== null) {
+            params.body = JSON.stringify(values);
+        }
+
+        const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
         if (!response.ok) {
             throw new Error("POST request failed");
+        }
+
+        return response;
+    } catch (e) {
+        glpi_toast_error(__("An unexpected error occurred."));
+        throw e;
+    }
+}
+
+/**
+ * Perform a GET request to a GLPI endpoint.
+ *
+ * @param {string} url - The relative URL path (without root_doc prefix).
+ * @returns {Promise<Response>} The fetch Response object.
+ * @throws {Error} If the request fails or returns a non-ok status.
+ */
+export async function get(url)
+{
+    try {
+        const params = {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        };
+
+        const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
+        if (!response.ok) {
+            throw new Error("GET request failed");
         }
 
         return response;

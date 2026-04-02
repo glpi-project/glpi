@@ -39,9 +39,11 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
+use Notification;
 use NotificationEvent;
 use NotificationTarget;
 use QueuedNotification;
+use Session;
 use Symfony\Component\Mailer\DelayedEnvelope;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
@@ -65,9 +67,9 @@ class NotificationTest extends DbTestCase
 
         $CFG_GLPI['mailing_signature'] = 'global_signature';
 
-        $this->assertEquals("global_signature", \Notification::getMailingSignature($parent));
-        $this->assertEquals("global_signature", \Notification::getMailingSignature($child_1));
-        $this->assertEquals("global_signature", \Notification::getMailingSignature($child_2));
+        $this->assertEquals("global_signature", Notification::getMailingSignature($parent));
+        $this->assertEquals("global_signature", Notification::getMailingSignature($child_1));
+        $this->assertEquals("global_signature", Notification::getMailingSignature($child_2));
 
         $entity = new \Entity();
         $this->assertTrue($entity->update([
@@ -75,36 +77,36 @@ class NotificationTest extends DbTestCase
             'mailing_signature' => "signature_root",
         ]));
 
-        $this->assertEquals("signature_root", \Notification::getMailingSignature($parent));
-        $this->assertEquals("signature_root", \Notification::getMailingSignature($child_1));
-        $this->assertEquals("signature_root", \Notification::getMailingSignature($child_2));
+        $this->assertEquals("signature_root", Notification::getMailingSignature($parent));
+        $this->assertEquals("signature_root", Notification::getMailingSignature($child_1));
+        $this->assertEquals("signature_root", Notification::getMailingSignature($child_2));
 
         $this->assertTrue($entity->update([
             'id'                => $parent,
             'mailing_signature' => "signature_parent",
         ]));
 
-        $this->assertEquals("signature_parent", \Notification::getMailingSignature($parent));
-        $this->assertEquals("signature_parent", \Notification::getMailingSignature($child_1));
-        $this->assertEquals("signature_parent", \Notification::getMailingSignature($child_2));
+        $this->assertEquals("signature_parent", Notification::getMailingSignature($parent));
+        $this->assertEquals("signature_parent", Notification::getMailingSignature($child_1));
+        $this->assertEquals("signature_parent", Notification::getMailingSignature($child_2));
 
         $this->assertTrue($entity->update([
             'id'                => $child_1,
             'mailing_signature' => "signature_child_1",
         ]));
 
-        $this->assertEquals("signature_parent", \Notification::getMailingSignature($parent));
-        $this->assertEquals("signature_child_1", \Notification::getMailingSignature($child_1));
-        $this->assertEquals("signature_parent", \Notification::getMailingSignature($child_2));
+        $this->assertEquals("signature_parent", Notification::getMailingSignature($parent));
+        $this->assertEquals("signature_child_1", Notification::getMailingSignature($child_1));
+        $this->assertEquals("signature_parent", Notification::getMailingSignature($child_2));
 
         $this->assertTrue($entity->update([
             'id'                => $child_2,
             'mailing_signature' => "signature_child_2",
         ]));
 
-        $this->assertEquals("signature_parent", \Notification::getMailingSignature($parent));
-        $this->assertEquals("signature_child_1", \Notification::getMailingSignature($child_1));
-        $this->assertEquals("signature_child_2", \Notification::getMailingSignature($child_2));
+        $this->assertEquals("signature_parent", Notification::getMailingSignature($parent));
+        $this->assertEquals("signature_child_1", Notification::getMailingSignature($child_1));
+        $this->assertEquals("signature_child_2", Notification::getMailingSignature($child_2));
     }
 
     /**
@@ -127,14 +129,14 @@ class NotificationTest extends DbTestCase
         $CFG_GLPI['notifications_mailing'] = true;
 
         // Activate only new followup notification
-        $success = $DB->update(\Notification::getTable(), ['is_active' => false], [
+        $success = $DB->update(Notification::getTable(), ['is_active' => false], [
             'name' => ['<>', $target_notification],
         ]);
         $this->assertTrue($success);
         $this->assertEquals(
             1,
             countElementsInTable(
-                \Notification::getTable(),
+                Notification::getTable(),
                 ['is_active' => true]
             )
         );
@@ -144,7 +146,7 @@ class NotificationTest extends DbTestCase
         $cat_B = $this->createItem("ITILCategory", ["name" => "cat B"]);
 
         // Filter notification on category
-        /** @var \Notification $notification */
+        /** @var Notification $notification */
         $notification = getItemByTypeName("Notification", $target_notification);
         $success = $notification->saveFilter([
             [
@@ -178,11 +180,11 @@ class NotificationTest extends DbTestCase
     {
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        $update_ticket_notif   = new \Notification();
+        $update_ticket_notif   = new Notification();
         $this->assertTrue($update_ticket_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update']));
-        $update_followup_notif = new \Notification();
+        $update_followup_notif = new Notification();
         $this->assertTrue($update_followup_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_followup']));
-        $update_task_notif = new \Notification();
+        $update_task_notif = new Notification();
         $this->assertTrue($update_task_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'update_task']));
 
         // Create a ticket and attach documents to it
@@ -203,6 +205,11 @@ HTML,
             ],
             '_prefix_filename' => [
                 $prefix,
+            ],
+            '_users_id_requester' => Session::getLoginUserID(),
+            '_users_id_requester_notif'  => [
+                'use_notification'  => 1,
+                'alternative_email' => '',
             ],
         ]);
         $this->assertGreaterThan(0, $ticket_id);
@@ -428,21 +435,17 @@ HTML,
         }
     }
 
-    public function testAttachedDocuments(): void
+    /**
+     * Create a mock mail transport that captures sent emails.
+     */
+    private function createCapturingTransport(): AbstractTransport
     {
-        global $CFG_GLPI, $DB;
-
-        $this->login();
-
-        // Mock mailer transport
-        $transport = new class extends AbstractTransport {
+        return new class extends AbstractTransport {
             public $sent_email;
 
             protected function doSend(SentMessage $message): void
             {
-                // Extract message from envelope
                 $envelope_reflection = new \ReflectionClass(DelayedEnvelope::class);
-                /* @var \Symfony\Component\Mime\Email $email */
                 $this->sent_email = $envelope_reflection->getProperty('message')->getValue($message->getEnvelope());
             }
 
@@ -451,6 +454,53 @@ HTML,
                 return 'test://';
             }
         };
+    }
+
+    /**
+     * Send queued notifications and return the email attachments.
+     *
+     * @return DataPart[]
+     */
+    private function sendAndGetAttachments(array $queued_notifications): array
+    {
+        $transport = $this->createCapturingTransport();
+
+        \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
+        \NotificationEventMailing::send($queued_notifications);
+        \NotificationEventMailing::setMailer(null);
+
+        return $transport->sent_email->getAttachments();
+    }
+
+    /**
+     * Activate only the notification matching the given itemtype and event,
+     * deactivating all others and resetting attach_documents to INHERIT.
+     */
+    private function activateOnlyNotification(string $itemtype, string $event): void
+    {
+        global $DB;
+
+        $notification = new Notification();
+        $this->assertTrue($notification->getFromDBByCrit(['itemtype' => $itemtype, 'event' => $event]));
+
+        $this->assertTrue($DB->update(
+            Notification::getTable(),
+            ['is_active' => false],
+            ['id' => ['<>', $notification->getID()]]
+        ));
+        $this->updateItem(Notification::class, $notification->getID(), [
+            'is_active'        => 1,
+            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+        ]);
+    }
+
+    public function testAttachedDocuments(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $transport = $this->createCapturingTransport();
 
         $provider = $this->attachedDocumentsProvider();
         foreach ($provider as $row) {
@@ -461,12 +511,17 @@ HTML,
             $item_to_update = $row['item_to_update'];
             $expected_attachments = $row['expected_attachments'];
 
+            $notif_crit = [
+                'is_deleted' => 0,
+                'recipient'  => '_test_user@glpi.com',
+            ];
+
             // Enable notifications
             $CFG_GLPI['use_notifications'] = $CFG_GLPI['notifications_mailing'] = true;
 
             // Ensure only tested notification is active
             $deactivated = $DB->update(
-                \Notification::getTable(),
+                Notification::getTable(),
                 ['is_active' => false],
                 ['id' => ['<>', $notification->getID()]]
             );
@@ -498,7 +553,7 @@ HTML,
             }
 
             // Ensure that there is no notification queued
-            $this->assertEmpty(0, countElementsInTable(QueuedNotification::getTable(), ['is_deleted' => 0]));
+            $this->assertEmpty(0, countElementsInTable(QueuedNotification::getTable(), $notif_crit));
 
             // Update item
             $updated = $item_to_update->update([
@@ -508,7 +563,7 @@ HTML,
             $this->assertTrue($updated);
 
             // Check documents attached to notification
-            $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
+            $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), $notif_crit);
             $this->assertCount(1, $queued_notifications);
 
             \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
@@ -533,6 +588,260 @@ HTML,
 
             $this->assertEquals($expected_filenames, $attachement_filenames);
         }
+    }
+
+    public function testSolutionDocumentsAttachedToSolvedNotification(): void
+    {
+        global $DB, $CFG_GLPI;
+
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        foreach ([\Ticket::class, \Change::class, \Problem::class] as $itemtype) {
+            // Arrange - Configure notifications
+            $CFG_GLPI['use_notifications'] = true;
+            $CFG_GLPI['notifications_mailing'] = true;
+            $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+
+            $this->activateOnlyNotification($itemtype, 'solved');
+            $this->assertTrue($DB->delete(QueuedNotification::getTable(), [new QueryExpression('true')]));
+
+            $notification_crit = [
+                'is_deleted' => 0,
+                'event'      => 'solved',
+                'recipient'  => '_test_user@glpi.com',
+            ];
+
+            // Arrange - Create ITIL item with a solution and attach a document to it
+            $itil_item = $this->createItem($itemtype, [
+                'name'        => __FUNCTION__,
+                'content'     => '<p>Test ' . $itemtype . '</p>',
+                'entities_id' => $entity,
+                '_users_id_requester' => Session::getLoginUserID(),
+                '_users_id_requester_notif'  => [
+                    'use_notification'  => 1,
+                    'alternative_email' => '',
+                ],
+            ]);
+
+            $solution_doc = $this->createTxtDocument();
+
+            $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), $notification_crit));
+
+            $solution = $this->createItem(\ITILSolution::class, [
+                'itemtype' => $itemtype,
+                'items_id' => $itil_item->getID(),
+                'content'  => '<p>Solution with attachment</p>',
+            ]);
+
+            $this->createItem(\Document_Item::class, [
+                'documents_id' => $solution_doc->getID(),
+                'itemtype'     => $solution->getType(),
+                'items_id'     => $solution->getID(),
+            ]);
+
+            // Act - Retrieve queued notification
+            $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), $notification_crit);
+
+            // Assert - Solution is the trigger for the notification
+            $this->assertCount(1, $queued_notifications);
+
+            $queued = reset($queued_notifications);
+            $this->assertEquals(\ITILSolution::class, $queued['itemtype_trigger']);
+            $this->assertEquals($solution->getID(), $queued['items_id_trigger']);
+
+            // Act - Send queued notification and assert document is attached
+            $attachments = $this->sendAndGetAttachments($queued_notifications);
+            $this->assertCount(1, $attachments);
+            $this->assertInstanceOf(DataPart::class, $attachments[0]);
+            $this->assertEquals($solution_doc->fields['filename'], $attachments[0]->getFilename());
+        }
+    }
+
+    public function testFollowupDocumentsAttachedToClosedNotification(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Arrange - Configure notifications
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+
+        $this->activateOnlyNotification(\Ticket::class, 'closed');
+
+        $notification_crit = [
+            'is_deleted' => 0,
+            'event'      => 'closed',
+            'recipient'  => '_test_user@glpi.com',
+        ];
+
+        // Arrange - Create ticket with a solution, then a followup accepting it, and attach a document to the followup
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => '<p>Test ticket</p>',
+            'entities_id' => $entity,
+            '_users_id_requester' => Session::getLoginUserID(),
+            '_users_id_requester_notif'  => [
+                'use_notification'  => 1,
+                'alternative_email' => '',
+            ],
+        ]);
+
+        $this->createItem(\ITILSolution::class, [
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => '<p>Solution</p>',
+        ]);
+
+        $followup_doc = $this->createTxtDocument();
+
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), $notification_crit));
+
+        $followup = new \ITILFollowup();
+        $followup_id = $followup->add([
+            'itemtype'  => \Ticket::class,
+            'items_id'  => $ticket->getID(),
+            'content'   => 'Approving solution',
+            'add_close' => 1,
+        ]);
+        $this->assertGreaterThan(0, $followup_id);
+        $followup->getFromDB($followup_id);
+
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $followup_doc->getID(),
+            'itemtype'     => $followup->getType(),
+            'items_id'     => $followup->getID(),
+        ]);
+
+        // Act - Retrieve queued notification
+        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), $notification_crit);
+
+        // Assert - Followup is the trigger for the notification
+        $this->assertCount(1, $queued_notifications);
+
+        $queued = reset($queued_notifications);
+        $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
+        $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
+
+        // Act - Send queued notification and assert followup document is attached
+        $attachments = $this->sendAndGetAttachments($queued_notifications);
+        $this->assertCount(1, $attachments);
+        $this->assertInstanceOf(DataPart::class, $attachments[0]);
+        $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
+    }
+
+    public function testFollowupDocumentsAttachedToRejectSolutionNotification(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Arrange - Configure notifications
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+        $CFG_GLPI['attach_ticket_documents_to_mail'] = \NotificationSetting::ATTACH_FROM_TRIGGER_ONLY;
+
+        $this->assertTrue($DB->update(
+            Notification::getTable(),
+            ['is_active' => false],
+            [new QueryExpression('true')]
+        ));
+
+        $closed_notif = new Notification();
+        $this->assertTrue($closed_notif->getFromDBByCrit(['itemtype' => \Ticket::class, 'event' => 'closed']));
+        $closed_template_link = $DB->request([
+            'FROM'  => 'glpi_notifications_notificationtemplates',
+            'WHERE' => ['notifications_id' => $closed_notif->getID()],
+        ])->current();
+
+        $rejectsolution_notif = $this->createItem(Notification::class, [
+            'name'             => 'Solution rejected test',
+            'itemtype'         => \Ticket::class,
+            'event'            => 'rejectsolution',
+            'is_active'        => 1,
+            'is_recursive'     => 1,
+            'entities_id'      => 0,
+            'attach_documents' => \NotificationSetting::ATTACH_INHERIT,
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $rejectsolution_notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $closed_template_link['notificationtemplates_id'],
+        ]);
+        $this->createItem(NotificationTarget::class, [
+            'notifications_id' => $rejectsolution_notif->getID(),
+            'type'             => Notification::USER_TYPE,
+            'items_id'         => Notification::AUTHOR,
+        ]);
+
+        $notification_crit = [
+            'is_deleted' => 0,
+            'event'      => 'rejectsolution',
+            'recipient'  => '_test_user@glpi.com',
+        ];
+
+        // Arrange - Create ticket with a solution, then a followup rejecting it, and attach a document to the followup
+        $this->updateItem(\Entity::class, $entity, ['autoclose_delay' => \Entity::CONFIG_NEVER]);
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => '<p>Test ticket</p>',
+            'entities_id' => $entity,
+            '_users_id_requester' => Session::getLoginUserID(),
+            '_users_id_requester_notif'  => [
+                'use_notification'  => 1,
+                'alternative_email' => '',
+            ],
+        ]);
+
+        $this->createItem(\ITILSolution::class, [
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content'  => '<p>Solution</p>',
+        ]);
+
+        $followup_doc = $this->createTxtDocument();
+
+        $this->assertEquals(0, countElementsInTable(QueuedNotification::getTable(), $notification_crit));
+
+        $followup = new \ITILFollowup();
+        $followup_id = $followup->add([
+            'itemtype'   => \Ticket::class,
+            'items_id'   => $ticket->getID(),
+            'content'    => 'Rejecting solution',
+            'add_reopen' => 1,
+        ]);
+        $this->assertGreaterThan(0, $followup_id);
+        $followup->getFromDB($followup_id);
+
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $followup_doc->getID(),
+            'itemtype'     => $followup->getType(),
+            'items_id'     => $followup->getID(),
+        ]);
+
+        // Act - Retrieve queued notification
+        $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), $notification_crit);
+
+        // Assert - Followup is the trigger for the notification
+        $this->assertCount(1, $queued_notifications);
+
+        $queued = reset($queued_notifications);
+        $this->assertEquals(\ITILFollowup::class, $queued['itemtype_trigger']);
+        $this->assertEquals($followup->getID(), $queued['items_id_trigger']);
+
+        // Act - Send queued notification and assert followup document is attached
+        $attachments = $this->sendAndGetAttachments($queued_notifications);
+        $this->assertCount(1, $attachments);
+        $this->assertInstanceOf(DataPart::class, $attachments[0]);
+        $this->assertEquals($followup_doc->fields['filename'], $attachments[0]->getFilename());
     }
 
     /**
@@ -594,8 +903,8 @@ HTML,
         ]);
 
         // Set up notifications
-        $DB->update(\Notification::getTable(), ['is_active' => 0], [new QueryExpression('true')]);
-        $active_notification = countElementsInTable(\Notification::getTable(), ['is_active' => 1]);
+        $DB->update(Notification::getTable(), ['is_active' => 0], [new QueryExpression('true')]);
+        $active_notification = countElementsInTable(Notification::getTable(), ['is_active' => 1]);
         $this->assertEquals(0, $active_notification);
 
         // Enable notification
@@ -603,15 +912,15 @@ HTML,
         $CFG_GLPI['use_notifications'] = true;
 
         // Find the "Contract end" notification and enable it
-        $notification = getItemByTypeName(\Notification::class, "Contract End");
-        $this->updateItem(\Notification::class, $notification->getID(), ['is_active' => 1]);
+        $notification = getItemByTypeName(Notification::class, "Contract End");
+        $this->updateItem(Notification::class, $notification->getID(), ['is_active' => 1]);
 
         // Clear any exisiting target then set our group target
         $DB->delete(NotificationTarget::getTable(), ['notifications_id' => $notification->getID()]);
         $this->createItem(NotificationTarget::class, [
             'notifications_id' => $notification->getID(),
             'items_id'         => $group->getID(),
-            'type'             => \Notification::GROUP_TYPE,
+            'type'             => Notification::GROUP_TYPE,
         ]);
 
         // First test case: contract in the root entity with no recursion

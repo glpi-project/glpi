@@ -2704,6 +2704,15 @@ HTML;
             'serial' => 'LAP456',
             'otherserial' => 'INV789',
         ]);
+        // Assigned directly to user and group, should be visible only once
+        $computer_3 = $this->createItem(Computer::class, [
+            'name' => 'Test user and group Laptop',
+            'users_id' => $user_id,
+            'groups_id' => [$group_id],
+            'entities_id' => $entity_id,
+            'serial' => 'LAP789',
+            'otherserial' => 'INV999',
+        ]);
 
         $monitor_1 = $this->createItem(Monitor::class, [
             'name' => 'Test Monitor 24"',
@@ -2779,6 +2788,12 @@ HTML;
                             'itemtype' => Computer::class,
                             'items_id' => $computer_1->getID(),
                         ],
+                        [
+                            'id'       => Computer::class . '_' . $computer_3->getID(),
+                            'text'     => 'Test user and group Laptop - LAP789 - INV999',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_3->getID(),
+                        ],
                     ],
                 ],
                 [
@@ -2838,6 +2853,12 @@ HTML;
                             'text'     => 'Test Laptop - LAP123 - INV456',
                             'itemtype' => Computer::class,
                             'items_id' => $computer_1->getID(),
+                        ],
+                        [
+                            'id'       => Computer::class . '_' . $computer_3->getID(),
+                            'text'     => 'Test user and group Laptop - LAP789 - INV999',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_3->getID(),
                         ],
                         [
                             'id'       => Computer::class . '_' . $computer_2->getID(),

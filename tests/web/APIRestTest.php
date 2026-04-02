@@ -38,6 +38,8 @@ use APIClient;
 use Auth;
 use Computer;
 use Config;
+use Glpi\Api\API;
+use Glpi\Api\APIRest;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
@@ -61,13 +63,13 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use QueuedNotification;
+use ReflectionClass;
+use Ticket;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
+use TicketValidation;
 use User;
 
-/**
- * @engine isolate
- */
 class APIRestTest extends TestCase
 {
     protected $session_token;
@@ -1034,7 +1036,7 @@ class APIRestTest extends TestCase
         );
 
         // create a ticket for another user (glpi - super-admin)
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add([
             'name'                => 'test post-only',
             'content'             => 'test post-only',
@@ -3557,5 +3559,28 @@ class APIRestTest extends TestCase
         foreach ($not_expected as $v) {
             $this->assertNotContains($v, $values);
         }
+    }
+
+    public function testGetFriendlyNames(): void
+    {
+        $rc = new ReflectionClass(API::class);
+        $method = $rc->getMethod('getFriendlyNames');
+        $keys_names = $method->invoke(new APIRest(), [
+            'users_id' => getItemByTypeName(User::class, TU_USER, true),
+            'tickets_id' => getItemByTypeName(Ticket::class, '_ticket01', true),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName(User::class, 'glpi', true),
+        ], [
+            'add_keys_names' => ['users_id', 'tickets_id', 'items_id_target'],
+        ], TicketValidation::class);
+
+        $this->assertEquals(
+            [
+                'users_id' => TU_USER,
+                'tickets_id' => '_ticket01',
+                'items_id_target' => 'glpi',
+            ],
+            $keys_names
+        );
     }
 }

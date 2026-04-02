@@ -95,7 +95,7 @@ class Ticket_Contract extends CommonDBRelation
         /** @var class-string<Ticket|Contract> $linked_itemtype */
         $twig_params['linked_itemtype'] = $linked_itemtype;
 
-        $ID = $item->getField('id');
+        $ID = $item->getID();
         $twig_params['id'] = $ID;
 
         if (!static::canView() || !$item->can($ID, READ)) {
@@ -155,11 +155,13 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'begin_date' => __('Start date'),
                 'end_date' => __('End date'),
+                'expiration_date' => __('Expiration date'),
                 'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ];
             $formatters = [
                 'name' => 'raw_html',
                 'begin_date' => 'date', // No formatter for end_date as Infocom::getWarrantyExpir() already returns a formatted date
+                'end_date' => 'raw_html',
             ];
 
             $entries = [];
@@ -189,6 +191,15 @@ TWIG, $twig_params);
                 }
                 $entry['type'] = $type_cache[$item->fields['contracttypes_id']];
                 $entry['end_date'] = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
+                $entry['expiration_date'] = Infocom::getWarrantyExpir(
+                    $item->fields['begin_date'],
+                    $item->fields['renewal'] == Contract::RENEWAL_EXPRESS ? $item->fields['duration'] + $item->fields['periodicity'] : $item->fields['duration'],
+                    0,
+                    true,
+                    (int) $item->fields['renewal'] === Contract::RENEWAL_TACIT,
+                    $item->fields['periodicity']
+                );
+
                 $entries[] = $entry;
             }
         }

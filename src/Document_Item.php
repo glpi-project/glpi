@@ -320,7 +320,6 @@ class Document_Item extends CommonDBRelation
                     Document::canView()
                     || ($item::class === Ticket::class)
                     || ($item::class === Reminder::class)
-                    || ($item::class === KnowbaseItem::class)
                 ) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nbitem = self::countForItem($item);
@@ -522,15 +521,12 @@ TWIG, $twig_params);
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
-        $ID = $item->getField('id');
-
-        if ($item->isNewID($ID)) {
+        if ($item->isNewItem()) {
             return false;
         }
 
         if (
             ($item::class !== Ticket::class)
-            && ($item::class !== KnowbaseItem::class)
             && ($item::class !== Reminder::class)
             && !Document::canView()
         ) {
@@ -782,6 +778,66 @@ TWIG, $twig_params);
         $specificities['button_labels']['remove_item'] = $specificities['button_labels']['remove'];
 
         return $specificities;
+    }
+
+    /**
+     * @param CommonDBTM|null $checkitem
+     * @return array<string, string>
+     */
+    public function getSpecificMassiveActions($checkitem = null): array
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        // Replace the generic MassiveAction:add_transfer_list with our own processor so that
+        // we can redirect the transfer to the underlying Document instead of the relation
+        $generic_key = MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list';
+        if (isset($actions[$generic_key])) {
+            $label = $actions[$generic_key];
+            unset($actions[$generic_key]);
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list'] = $label;
+        }
+
+        return $actions;
+    }
+
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM $item
+     * @param array<int> $ids
+     */
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ): void {
+        global $CFG_GLPI;
+
+        if ($ma->getAction() !== 'add_transfer_list') {
+            parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+            return;
+        }
+
+        if (!isset($_SESSION['glpitransfer_list'])) {
+            $_SESSION['glpitransfer_list'] = [];
+        }
+
+        // Remove any residual Document_Item entries to avoid errors in transfer list.
+        unset($_SESSION['glpitransfer_list'][Document_Item::class]);
+        if (!isset($_SESSION['glpitransfer_list'][Document::class])) {
+            $_SESSION['glpitransfer_list'][Document::class] = [];
+        }
+
+        foreach ($ids as $id) {
+            if (!$item->getFromDB($id)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                continue;
+            }
+            $doc_id = (int) $item->fields['documents_id'];
+            $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
+            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+        }
+
+        $ma->setRedirect($CFG_GLPI['root_doc'] . '/front/transfer.action.php');
     }
 
     /**

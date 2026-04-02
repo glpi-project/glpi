@@ -39,6 +39,7 @@ use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Marketplace\Controller;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Requirement\PhpSupportedVersion;
@@ -644,9 +645,19 @@ class Central extends CommonGLPI
                     }
                 }
             }
+
+            // Check for available plugin updates
+            $count = Controller::countUpdatablePlugins();
+
+            if ($count > 0) {
+                $messages['warnings'][] = sprintf(
+                    _n('You have %d plugin to update', 'You have %d plugins to update', $count),
+                    $count
+                ) . ' <a href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/marketplace.php">' . __s('View plugins') . '</a>';
+            }
         }
 
-        if ($DB->isSlave() && !$DB->first_connection) {
+        if ($DB->isReplica() && !$DB->first_connection) {
             $messages['warnings'][] = __s('SQL replica: read only');
         }
 

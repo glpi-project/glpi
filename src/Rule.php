@@ -2062,6 +2062,13 @@ TWIG, $twig_params);
      */
     private function handleRankChange($new_rule = false)
     {
+        // Some classes like SlaLevels and OlaLevels extends this class but do
+        // not share the same glpi_rules tables which is used by the `moveRule`
+        // method.
+        if (static::getTable() !== "glpi_rules") {
+            return;
+        }
+
         if (isset($this->input['_ranking'])) {
             if (isset($this->fields['ranking']) && (int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
                 // No change in ranking, nothing to do.
@@ -2357,7 +2364,7 @@ TWIG, $twig_params);
                         return (($tmp == '') ? NOT_AVAILABLE : $tmp);
 
                     case "dropdown_users":
-                        return getUserName($pattern);
+                        return getUserName($pattern ?? 0);
 
                     case "dropdown_assets_itemtype":
                     case "dropdown_tracking_itemtype":
@@ -3010,7 +3017,7 @@ TWIG, ['label' => $this->getTitle()]);
             $this->showForm(0, [
                 'no_header' => true,
                 'short'     => true,
-                'entities_id' => $item->getField('id'),
+                'entities_id' => $item->getID(),
                 'params' => [
                     'formfooter' => false,
                 ],
@@ -3020,7 +3027,7 @@ TWIG, ['label' => $this->getTitle()]);
         // Get all rules and actions
         $crit = [
             'field' => getForeignKeyFieldForTable($item->getTable()),
-            'value' => $item->getField('id'),
+            'value' => $item->getID(),
         ];
 
         $rules = $this->getRulesForCriteria($crit);
@@ -3164,7 +3171,7 @@ TWIG, ['label' => $this->getTitle()]);
                     $valfield => $item->input['_replace_by'],
                 ],
                 [
-                    $valfield   => $item->getField('id'),
+                    $valfield   => $item->getID(),
                     $fieldfield => ['LIKE', $field],
                 ]
             );
@@ -3173,7 +3180,7 @@ TWIG, ['label' => $this->getTitle()]);
                 'SELECT' => [$fieldid],
                 'FROM'   => $table,
                 'WHERE'  => [
-                    $valfield   => $item->getField('id'),
+                    $valfield   => $item->getID(),
                     $fieldfield => ['LIKE', $field],
                 ],
             ]);

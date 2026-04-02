@@ -65,6 +65,16 @@ class ProjectCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
+        if (
+            empty($input['cost'])
+        ) {
+            $input['cost'] = 0;
+        }
+
+        if (Session::getLoginUserID()) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
+
         return parent::prepareInputForAdd($input);
     }
 
@@ -76,6 +86,16 @@ class ProjectCost extends CommonDBChild
             || ($input['end_date'] < $input['begin_date'])
         ) {
             $input['end_date'] = $input['begin_date'];
+        }
+
+        if (
+            empty($input['cost'])
+        ) {
+            $input['cost'] = 0;
+        }
+
+        if (Session::getLoginUserID()) {
+            $input['users_id_lastupdater'] = Session::getLoginUserID();
         }
 
         return parent::prepareInputForUpdate($input);
@@ -97,7 +117,7 @@ class ProjectCost extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Project) {
-            return self::showForProject($item, $withtemplate);
+            return self::showForProject($item);
         }
         return false;
     }
@@ -251,8 +271,8 @@ class ProjectCost extends CommonDBChild
         echo "</td>";
         echo "<td>" . _sn('Cost', 'Costs', 1) . "</td>";
         echo "<td>";
-        echo "<input type='text' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
-             size='14'>";
+        echo "<input type='number' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
+             min='0' max='" . constant('PHP_INT_MAX') . "' step='0.0001' size='14'>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __s('Begin date') . "</td>";
@@ -311,7 +331,7 @@ class ProjectCost extends CommonDBChild
 
         $rand   = mt_rand();
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand(btn) {\n";
@@ -344,6 +364,10 @@ class ProjectCost extends CommonDBChild
 
         if (count($iterator)) {
             echo "<tr><th>" . __s('Name') . "</th>";
+            echo "<th>" . __s('Creation date') . "</th>";
+            echo "<th>" . htmlescape(User::getTypeName(1)) . "</th>";
+            echo "<th>" . __s('Modification date') . "</th>";
+            echo "<th>" . htmlescape(User::getTypeName(1)) . ' (' . __s('Last updater') . ')' . "</th>";
             echo "<th>" . __s('Begin date') . "</th>";
             echo "<th>" . __s('End date') . "</th>";
             echo "<th>" . htmlescape(Budget::getTypeName(1)) . "</th>";
@@ -361,9 +385,22 @@ class ProjectCost extends CommonDBChild
                 )
             );
 
+            $user_links = [];
+
             foreach ($iterator as $data) {
                 $cost_id = (int) $data['id'];
                 $project_id = (int) $data['projects_id'];
+
+                if (!array_key_exists($data['users_id'], $user_links)) {
+                    $user = new User();
+                    $user->getFromDB($data['users_id']);
+                    $user_links[$data['users_id']] = $user->getLink();
+                }
+                if (!array_key_exists($data['users_id_lastupdater'], $user_links)) {
+                    $user = new User();
+                    $user->getFromDB($data['users_id_lastupdater']);
+                    $user_links[$data['users_id_lastupdater']] = $user->getLink();
+                }
 
                 echo "<tr class='tab_bg_2' "
                     . ($canedit ? "style='cursor:pointer' onClick=\"viewEditCost" . $project_id . "_" . $cost_id . "_$rand();\"" : '')
@@ -380,7 +417,7 @@ class ProjectCost extends CommonDBChild
                 printf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
-                    Html::showToolTip(htmlescape($data['comment']), ['display' => false])
+                    !empty($data['comment']) ? Html::showToolTip(htmlescape($data['comment']), ['display' => false]) : ''
                 );
                 if ($canedit) {
                     $js = "function viewEditCost" . $project_id . "_" . $cost_id . "_$rand() {";
@@ -401,6 +438,10 @@ class ProjectCost extends CommonDBChild
                     echo Html::scriptBlock($js);
                 }
                 echo "</td>";
+                echo "<td>" . htmlescape(Html::convDateTime($data['date_creation'])) . "</td>";
+                echo "<td>" . $user_links[$data['users_id']] . "</td>";
+                echo "<td>" . htmlescape(Html::convDateTime($data['date_mod'])) . "</td>";
+                echo "<td>" . $user_links[$data['users_id_lastupdater']] . "</td>";
                 echo "<td>" . htmlescape(Html::convDate($data['begin_date'])) . "</td>";
                 echo "<td>" . htmlescape(Html::convDate($data['end_date'])) . "</td>";
                 echo "<td>" . htmlescape(Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])) . "</td>";

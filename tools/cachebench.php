@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Kernel\Kernel;
 
 if (PHP_SAPI != 'cli') {
@@ -97,7 +98,7 @@ echo "+ Clear sons cache\n";
 $DB->update(
     'glpi_entities',
     ['sons_cache' => null],
-    [true]
+    [new QueryExpression('true')]
 );
 
 $tps = microtime(true);

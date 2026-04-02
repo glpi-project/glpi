@@ -1251,7 +1251,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input[$input_key])
                         && !str_starts_with($input_key, '_') // virtual field
-                        && $input[$input_key] != $this->getField($input_key)
+                        && $input[$input_key] != $this->fields[$input_key]
                     ) {
                         $ignored_fields[] = $input_key;
                     }
@@ -1275,7 +1275,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (
             isset($input["authtype"])
             && $input["authtype"] != Auth::DB_GLPI
-            && $input["authtype"] != $this->getField('authtype')
+            && $input["authtype"] != $this->fields['authtype']
         ) {
             $input["password"] = "";
         }
@@ -2338,7 +2338,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
 
             ///Only process rules if working on the master database
-            if (!$DB->isSlave()) {
+            if (!$DB->isReplica()) {
                 //Instanciate the affectation's rule
                 $rule = new RuleRightCollection();
 
@@ -2564,7 +2564,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         // force authtype as we retrieve this user by imap (we could have login with SSO)
         $this->fields["authtype"] = Auth::MAIL;
 
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
 
@@ -2673,7 +2673,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
         ///Only process rules if working on the master database
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
 
@@ -4646,7 +4646,7 @@ HTML;
     {
         global $CFG_GLPI, $DB;
 
-        $ID = $this->getField('id');
+        $ID = $this->getID();
 
         $start       = intval($_GET["start"] ?? 0);
 
@@ -4749,7 +4749,7 @@ HTML;
                     if ($data[$field_user] == $ID) {
                         $linktypes[] = self::getTypeName(1);
                     }
-                    if (isset($groups[$data['groups_id']])) {
+                    if (isset($groups[$data['groups_id'] ?? ''])) {
                         $linktypes[] = sprintf(
                             __('%1$s = %2$s'),
                             Group::getTypeName(1),

@@ -96,7 +96,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         $this->checkPlugin();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $no_interaction = $input->getOption('no-interaction');
         if (!$no_interaction) {

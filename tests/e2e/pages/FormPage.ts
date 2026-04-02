@@ -101,6 +101,36 @@ export class FormPage extends GlpiPage
         return this.getRegion('Question details').nth(questionIndex);
     }
 
+    public async setQuestionType(question: Locator, type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question type', question)
+                .filter({visible : true}),
+            type,
+            false
+        );
+    }
+
+    public async setSubQuestionType(question: Locator, type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question sub type', question)
+                .filter({visible : true}),
+            type,
+            false
+        );
+    }
+
+    public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Select an itemtype', question)
+                .filter({visible : true}),
+            item_type,
+            false
+        );
+    }
+
     public async addComment(name: string): Promise<Locator>
     {
         await this.getButton("Add a comment").click();
@@ -134,6 +164,17 @@ export class FormPage extends GlpiPage
         await expect(this.editor_save_success_alert).toBeVisible();
     }
 
+    public async doSaveFormEditorAndReload(): Promise<void>
+    {
+        await this.doSaveFormEditor();
+        await this.page.reload();
+    }
+
+    public async doOpenSubmitButtonConditions(): Promise<void>
+    {
+        await this.getConfigureVisiblityButton().click();
+    }
+
     public async doInitVisibilityConditionsDropdown(
         question_index: number
     ): Promise<void> {
@@ -145,6 +186,72 @@ export class FormPage extends GlpiPage
         await this.page.getByTestId('form-editor-left-panel')
             .getByTitle("Configure visibility")
             .filter({visible: true})
+            .click()
+        ;
+    }
+
+    public async doOpenQuestionConditionEditor(
+        question_index: number
+    ): Promise<void> {
+        const question = this.getNthQuestion(question_index);
+        await question.click();
+        await question.getByTitle('Configure visibility')
+            .filter({ visible: true })
+            .click()
+        ;
+    }
+
+    public async doInitCommentVisibilityConditionsDropdown(
+        comment_index: number
+    ): Promise<void> {
+        const comment = this.getRegion('Comment details').nth(comment_index);
+        await comment.click();
+        await comment.getByRole('button', { name: 'More actions' })
+            .filter({ visible: true })
+            .click()
+        ;
+        await this.getButton('Configure visibility').click();
+    }
+
+    public async doOpenCommentConditionEditor(
+        comment_index: number
+    ): Promise<void> {
+        const comment = this.getRegion('Comment details').nth(comment_index);
+        await comment.click();
+        await comment.getByTitle('Configure visibility')
+            .filter({ visible: true })
+            .click()
+        ;
+    }
+
+    public async doDeleteCondition(index: number): Promise<void>
+    {
+        await this.getVisibleConditions()
+            .nth(index)
+            .getByRole('button', { name: 'Delete criteria' })
+            .click()
+        ;
+    }
+
+    public async doInitSectionVisibilityConditionsDropdown(
+        section_index: number
+    ): Promise<void> {
+        const section = this.getRegion('Section details').nth(section_index);
+        await section.click();
+        await section.getByRole('button', { name: 'More actions' })
+            .filter({ visible: true })
+            .click()
+        ;
+        await this.getButton('Configure visibility').click();
+    }
+
+    public async doOpenSectionConditionEditor(
+        section_index: number
+    ): Promise<void> {
+        const section = this.getRegion('Section details').nth(section_index);
+        await section.click();
+        await section.getByTitle('Configure visibility')
+            .filter({ visible: true })
             .click()
         ;
     }
@@ -280,9 +387,51 @@ export class FormPage extends GlpiPage
         return this.page.getByTestId('visibility-condition');
     }
 
+    public getVisibleConditions(): Locator
+    {
+        return this.getConditions().filter({ visible: true });
+    }
+
+    public getConditionLogicOperator(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel(
+            'Logic operator',
+            condition,
+        );
+    }
+
+    public getConditionTarget(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel(
+            'Item',
+            condition,
+        );
+    }
+
+    public getConditionValueOperator(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel(
+            'Value operator',
+            condition,
+        );
+    }
+
+    public getTextConditionValue(condition: Locator): Locator
+    {
+        return condition.getByRole('textbox', {
+            name: "Value",
+            exact: true,
+        }).filter({visible: true});
+    }
+
     public getLastSection(): Locator
     {
         return this.getRegion("Form section").last();
+    }
+
+    public getNthQuestion(index: number): Locator
+    {
+        return this.getRegion("Question details").nth(index);
     }
 
     public getLastQuestion(): Locator
@@ -293,6 +442,28 @@ export class FormPage extends GlpiPage
     public getLastComment(): Locator
     {
         return this.getRegion("Comment details").last();
+    }
+
+    public getConfigureVisiblityButton(): Locator
+    {
+        return this.getRegion('Form properties accordion')
+            .getByTitle("Configure visibility")
+        ;
+    }
+
+    public getConfigureVisiblityButtonDisplayedValue(): Locator
+    {
+        return this.getConfigureVisiblityButton()
+            .getByTestId("active-visibility-setting")
+            .filter({
+                visible: true
+            })
+        ;
+    }
+
+    public getVisiblityConditionDropdown(question: Locator)
+    {
+        return question.getByTestId('visibility-dropdown');
     }
 
     public async getFormHeader(): Promise<Locator>
@@ -325,5 +496,344 @@ export class FormPage extends GlpiPage
         // Initialize rich text if not done yet
         await this.initRichTextByLabel("Comment description", comment);
         return this.getRichTextByLabel("Comment description", comment);
+    }
+
+    public async gotoDestinationTab(id: number): Promise<void>
+    {
+        const tab = "Glpi\\Form\\Destination\\FormDestination$1";
+        await this.page.goto(
+            `/front/form/form.form.php?id=${id}&forcetab=${tab}`
+        );
+    }
+
+    public async doOpenDestinationConditionEditor(): Promise<void>
+    {
+        await this.page.getByTitle('Configure creation conditions').click();
+    }
+
+    public async doSaveDestination(): Promise<void>
+    {
+        await this.getButton('Update item').click();
+        await expect(
+            this.page.getByRole('alert').filter({ hasText: 'Item successfully updated' })
+        ).toBeVisible();
+        await this.getButton('Close').click();
+    }
+
+    public async doOpenDestinationAccordionItem(item_label: string): Promise<void>
+    {
+        const accordion = this.getRegion('Destination fields accordion');
+        const button = accordion.getByRole('button', { name: item_label });
+        await button.click();
+        await expect(accordion.getByRole('region', { name: item_label })).toBeVisible();
+    }
+
+    public async doSaveDestinationAndReopenAccordion(item_label: string): Promise<void>
+    {
+        await this.getButton('Update item').click();
+        await expect(
+            this.page.getByRole('alert').filter({ hasText: 'Item successfully updated' })
+        ).toBeVisible();
+        await this.doOpenDestinationAccordionItem(item_label);
+    }
+
+    public getStrategyDropdown(config: Locator): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        return config.getByTestId('strategy-dropdown').first().locator('+ span').getByRole('combobox');
+    }
+
+    public async doChangeQuestionType(
+        question: Locator,
+        new_type: string,
+    ): Promise<void> {
+        await question.getByRole('textbox', { name: 'Question name' }).click();
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question type', question),
+            new_type,
+            false,
+        );
+        // eslint-disable-next-line playwright/no-raw-locators
+        await question.locator('[data-glpi-loading="true"]').waitFor({ state: 'detached' });
+    }
+
+    public async doInitValidationConfiguration(
+        question_index: number
+    ): Promise<void> {
+        await this.getButton('More actions').nth(question_index).click();
+        await this.getButton('Configure validation').click();
+    }
+
+    public async doOpenValidationConditionEditor(
+        question_index: number
+    ): Promise<void> {
+        const question = this.getNthQuestion(question_index);
+        await question.click();
+        await question.getByTitle('Configure validation')
+            .filter({ visible: true })
+            .click()
+        ;
+    }
+
+    public async doCloseValidationConditionEditor(
+        question_index: number
+    ): Promise<void> {
+        const question = this.getNthQuestion(question_index);
+        await question.getByTitle('Configure validation')
+            .filter({ visible: true })
+            .click()
+        ;
+    }
+
+    private static readonly VALIDATION_STRATEGY_MAP: Record<string, string> = {
+        'No validation': 'no_validation',
+        'Valid if...': 'valid_if',
+        'Invalid if...': 'invalid_if',
+    };
+
+    public async doSetValidationStrategy(strategy: string): Promise<void>
+    {
+        const container = this.page.getByTestId('validation-dropdown-container')
+            .filter({ visible: true });
+
+        const radio = container.getByRole('radio', { name: strategy, exact: true });
+
+        // Wait for the JS controller to be ready (removes pointer-events: none)
+        await expect(radio).not.toHaveAttribute('data-glpi-conditions-editor-disabled');
+
+        const strategy_value = FormPage.VALIDATION_STRATEGY_MAP[strategy];
+        await container.getByTestId(`strategy-label-${strategy_value}`).click();
+    }
+
+    public async doFillValidationCondition(
+        index: number,
+        logic: string | null,
+        operator: string,
+        value: string,
+    ): Promise<void> {
+        const condition = this.getVisibleValidationConditions().nth(index);
+
+        if (logic !== null && index > 0) {
+            await this.doSetDropdownValue(
+                this.getDropdownByLabel('Logic operator', condition),
+                logic,
+            );
+        }
+
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Value operator', condition),
+            operator,
+        );
+
+        await condition.getByRole('textbox', { name: 'Value' }).fill(value);
+    }
+
+    public async doAddValidationCondition(): Promise<void>
+    {
+        await this.getButton('Add another criteria').click();
+    }
+
+    public async doDeleteValidationCondition(index: number): Promise<void>
+    {
+        await this.getVisibleValidationConditions()
+            .nth(index)
+            .getByRole('button', { name: 'Delete criteria' })
+            .click()
+        ;
+    }
+
+    public getValidationConditions(): Locator
+    {
+        return this.page.getByTestId('validation-condition');
+    }
+
+    public getVisibleValidationConditions(): Locator
+    {
+        return this.getValidationConditions().filter({ visible: true });
+    }
+
+    public getValidationConditionValueOperator(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel('Value operator', condition);
+    }
+
+    public getValidationConditionTextValue(condition: Locator): Locator
+    {
+        return condition.getByRole('textbox', {
+            name: 'Value',
+            exact: true,
+        }).filter({ visible: true });
+    }
+
+    public getValidationConditionLogicOperator(condition: Locator): Locator
+    {
+        return this.getDropdownByLabel('Logic operator', condition);
+    }
+
+    public getValidationConditionsCountBadge(
+        question_index: number,
+    ): Locator {
+        return this.getNthQuestion(question_index)
+            .getByRole('status', { name: 'Conditions count' })
+            .filter({ visible: true })
+        ;
+    }
+
+    public async doPreviewForm(): Promise<void>
+    {
+        const preview_link = this.page.getByRole('link', { name: /Preview/ })
+            .filter({ visible: true });
+        const href = await preview_link.getAttribute('href');
+        if (href === null) {
+            throw new Error('Preview link has no href');
+        }
+        await this.page.goto(href);
+    }
+
+    public getValidationErrorMessage(textbox: Locator): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        return textbox.locator('..').getByTestId('validation-error-message');
+    }
+
+    public async doAddDropdownOptions(
+        question: Locator,
+        labels: string[]
+    ): Promise<void> {
+        for (const label of labels) {
+            await question.getByRole('textbox', { name: 'Selectable option' }).last().fill(label);
+        }
+    }
+
+    public async doSelectSingleDropdownOption(
+        question: Locator,
+        option: string
+    ): Promise<void> {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Default option', question),
+            option
+        );
+    }
+
+    public async doToggleMultipleDropdownOption(
+        question: Locator,
+        option: string
+    ): Promise<void> {
+        const dropdown = this.getDropdownByLabel('Default options', question);
+        await dropdown.click();
+        await this.page
+            .getByRole('listbox')
+            .getByRole('option', { name: option, exact: true })
+            .click();
+    }
+
+    public async doSelectMultipleDropdownOption(
+        question: Locator,
+        option: string
+    ): Promise<void> {
+        await this.doToggleMultipleDropdownOption(question, option);
+        await expect(
+            this.getDropdownByLabel('Default options', question)
+        ).toContainText(option);
+    }
+
+    public async doDeselectMultipleDropdownOption(
+        question: Locator,
+        option: string
+    ): Promise<void> {
+        await this.doToggleMultipleDropdownOption(question, option);
+        await expect(
+            this.getDropdownByLabel('Default options', question)
+        ).not.toContainText(option);
+    }
+
+    public async doEnableMultipleDropdownMode(
+        question: Locator
+    ): Promise<void> {
+        await question.getByRole('checkbox', { name: 'Allow multiple options' }).check();
+    }
+
+    public async doDisableMultipleDropdownMode(
+        question: Locator
+    ): Promise<void> {
+        await question.getByRole('checkbox', { name: 'Allow multiple options' }).uncheck();
+    }
+
+    public async doFillVisibilityCondition(
+        item: string,
+        operator: string,
+        value: string,
+    ): Promise<void> {
+        const item_dropdown = this.getDropdownByLabel('Item')
+            .filter({ visible: true }).first();
+        const response_promise = this.page.waitForResponse(
+            (r) => r.url().includes('/Form/Condition/') && r.ok()
+        );
+        await this.doSetDropdownValue(item_dropdown, item);
+        await response_promise;
+
+        const operator_dropdown = this.getDropdownByLabel('Value operator')
+            .filter({ visible: true }).last();
+        await operator_dropdown.waitFor({ state: 'visible' });
+        await this.doSetDropdownValue(operator_dropdown, operator);
+
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Value').filter({ visible: true }).last(),
+            value,
+            false
+        );
+    }
+
+    public getDropdownOptionInputs(question: Locator): Locator
+    {
+        return question.getByRole('textbox', { name: 'Selectable option' });
+    }
+
+    public getSingleDropdownDefault(question: Locator): Locator
+    {
+        return this.getDropdownByLabel('Default option', question);
+    }
+
+    public getMultipleDropdownDefault(question: Locator): Locator
+    {
+        return this.getDropdownByLabel('Default options', question);
+    }
+
+    public async expectDropdownOptionLabels(
+        question: Locator,
+        labels: string[]
+    ): Promise<void> {
+        const textboxes = this.getDropdownOptionInputs(question);
+        await expect(textboxes).toHaveCount(labels.length + 1);
+        for (let i = 0; i < labels.length; i++) {
+            await expect(textboxes.nth(i)).toHaveValue(labels[i]);
+        }
+        await expect(textboxes.last()).toHaveValue('');
+    }
+
+    public async expectSingleDropdownSelection(
+        question: Locator,
+        expected: string | null
+    ): Promise<void> {
+        const dropdown = this.getSingleDropdownDefault(question);
+        if (expected === null) {
+            await expect(dropdown).toContainText('-----');
+        } else {
+            await expect(dropdown).toContainText(expected);
+        }
+    }
+
+    public async expectMultipleDropdownSelection(
+        question: Locator,
+        selected: string[],
+        not_selected: string[]
+    ): Promise<void> {
+        const dropdown = this.getMultipleDropdownDefault(question);
+        for (const label of selected) {
+            await expect(dropdown).toContainText(label);
+        }
+        for (const label of not_selected) {
+            await expect(dropdown).not.toContainText(label);
+        }
     }
 }

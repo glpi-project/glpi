@@ -43,7 +43,11 @@
             <div class="modal-header p-3">
                 <div>
                     <h3 class="mb-2">{{ __("This section contains elements") }}</h3>
-                    <p class="m-0 text-muted" data-glpi-form-editor-delete-section-message>
+                    <p
+                        class="m-0 text-muted"
+                        data-glpi-form-editor-delete-section-message
+                        data-testid="delete-section-message"
+                    >
                         {# Message will be populated dynamically by JavaScript #}
                     </p>
                 </div>

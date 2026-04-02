@@ -60,7 +60,7 @@ return RectorConfig::configure()
             __DIR__ . '/install/migrations',
         ],
     ])
-    ->withPhpVersion(PhpVersion::PHP_82)
+    ->withPhpVersion(PhpVersion::PHP_83)
     ->withCache(
         cacheClass: FileCacheStorage::class,
         cacheDirectory: 'files/_cache/rector',

@@ -36,6 +36,7 @@ namespace Glpi\Tools\Command;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Plugin\Hooks;
+use ReflectionClass;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -51,7 +52,7 @@ final class GenerateHooksDocumentationCommand extends AbstractCommand
         $this->setDescription('Generate plugin hooks documentation');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $hooks_rc = new ReflectionClass(Hooks::class);
         $hook_constants = $hooks_rc->getReflectionConstants();
@@ -118,10 +119,11 @@ final class GenerateHooksDocumentationCommand extends AbstractCommand
         }
 
         $output->writeln('Hooks');
-        $output->writeln('#####');
+        $output->writeln("#####\n");
         foreach ($hooks_docs as $hook) {
-            $output->writeln($hook['name']);
-            $output->writeln(str_repeat('*', strlen($hook['name'])) . "\n");
+            $full_name = 'Glpi\\\\Plugin\\\\Hooks::' . $hook['name'];
+            $output->writeln($full_name);
+            $output->writeln(str_repeat('*', strlen($full_name)) . "\n");
             $output->writeln($hook['description'] . "\n");
         }
 

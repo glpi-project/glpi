@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use CommonDBTM;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Helpdesk\Tile\TileInterface;
@@ -60,10 +59,7 @@ final class AddTileController extends AbstractTileController
         // Validate tile type
         $tile_itemtype = $request->request->getString('_itemtype_tile');
         $tile_item = getItemForItemtype($tile_itemtype);
-        if (
-            !$tile_item instanceof TileInterface
-            || !$tile_item instanceof CommonDBTM
-        ) {
+        if (!$tile_item instanceof TileInterface) {
             throw new BadRequestHttpException();
         }
         if (!$tile_itemtype::canCreate()) {

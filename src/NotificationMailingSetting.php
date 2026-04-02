@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\SMTP\OauthConfig;
+use Symfony\Component\Mailer\Exception\TransportException;
+use Symfony\Component\Mailer\Transport\Dsn;
+use Symfony\Component\Mailer\Transport\NativeTransportFactory;
 
 use function Safe\json_decode;
 
@@ -86,6 +89,7 @@ class NotificationMailingSetting extends NotificationSetting
             'noreply_email',
             'noreply_email_name',
             'attach_ticket_documents_to_mail',
+            'attach_documents_to_notifications_for_anonymous',
             'mailing_signature',
             'smtp_mode',
             'smtp_max_retries',
@@ -151,7 +155,9 @@ class NotificationMailingSetting extends NotificationSetting
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
         $is_mail_function_available = true;
-        if (!function_exists('mail')) {
+        try {
+            (new NativeTransportFactory())->create(Dsn::fromString('native://default'));
+        } catch (TransportException) {
             unset($mail_methods[MAIL_MAIL]);
             $is_mail_function_available = false;
         }

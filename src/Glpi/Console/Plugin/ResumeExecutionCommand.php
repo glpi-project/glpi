@@ -50,7 +50,7 @@ class ResumeExecutionCommand extends AbstractCommand
         $this->setDescription(__('Resume execution of all active plugins'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!(new Plugin())->resumeAllPluginsExecution()) {
             $this->output->writeln(

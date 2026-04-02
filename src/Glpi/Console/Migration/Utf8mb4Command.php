@@ -88,7 +88,7 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
         $this->setDescription(__('Convert database character set from "utf8" to "utf8mb4".'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->checkForPrerequisites();
         $this->migrateToUtf8mb4();

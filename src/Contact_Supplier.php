@@ -34,8 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-
-use function Safe\preg_match;
+use Glpi\Toolbox\URL;
 
 class Contact_Supplier extends CommonDBRelation
 {
@@ -141,16 +140,18 @@ class Contact_Supplier extends CommonDBRelation
         $supplier = new Supplier();
 
         foreach ($suppliers as $data) {
-            $website           = $data["website"];
-
-            if (!empty($website)) {
-                $website = $data["website"];
-
-                if (!preg_match("?https*://?", $website)) {
-                    $website = "http://" . $website;
-                }
-                $website = "<a target=_blank href='" . htmlescape($website) . "'>" . htmlescape($data["website"]) . "</a>";
+            $website = '';
+            if (!empty($data["website"])) {
+                $website_url = URL::sanitizeURL(
+                    Toolbox::formatOutputWebLink(
+                        $data["website"]
+                    )
+                );
+                $website = $website_url !== ''
+                    ? "<a target=_blank href='" . htmlescape($website_url) . "'>" . htmlescape($data["website"]) . "</a>"
+                    : $data["website"];
             }
+
             $supplier->getFromDB($data["id"]);
             if (!isset($suppliertype_cache[$data["suppliertypes_id"]])) {
                 $suppliertype_cache[$data["suppliertypes_id"]] = Dropdown::getDropdownName(

@@ -53,15 +53,17 @@ return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
     ->setCacheFile('files/_cache/php-cs-fixer/php-cs-fixer.cache')
     ->setRules([
-        '@PER-CS3.0' => true,
-        '@PHP84Migration' => true,
+        '@PER-CS3x0' => true,
+        '@PHP8x4Migration' => true,
         'fully_qualified_strict_types' => ['import_symbols' => true],
         'ordered_imports' => ['imports_order' => ['class', 'const', 'function']],
         'no_unused_imports' => true,
         'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
-        'new_expression_parentheses' => false, // breaks compatibility with PHP < 8.4
         'phpdoc_scalar' => true, // Normalize scalar types identifiers in PHPDoc
         'phpdoc_types' => true, // Fixes types case in PHPDoc
+
+        // Rules not compatible with all supported PHP versions
+        'new_expression_parentheses' => false,
     ])
     ->setFinder($finder)
 ;

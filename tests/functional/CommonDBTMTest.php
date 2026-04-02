@@ -39,6 +39,7 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
+use FieldUnicity;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -348,16 +349,17 @@ class CommonDBTMTest extends DbTestCase
         global $DB;
 
         //insert case
-        $res = (int) $DB->updateOrInsert(
-            Computer::getTable(),
-            [
-                'serial' => 'serial-one',
-            ],
-            [
-                'name'   => 'serial-to-change',
-            ]
+        $this->assertTrue(
+            $DB->updateOrInsert(
+                Computer::getTable(),
+                [
+                    'serial' => 'serial-one',
+                ],
+                [
+                    'name'   => 'serial-to-change',
+                ]
+            )
         );
-        $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
             'FROM'   => Computer::getTable(),
@@ -1326,7 +1328,7 @@ class CommonDBTMTest extends DbTestCase
     {
         $this->login();
 
-        $field_unicity = new \FieldUnicity();
+        $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
@@ -1381,7 +1383,7 @@ class CommonDBTMTest extends DbTestCase
 
         // create field unicity rule
         // for Computer itemtype and name field
-        $field_unicity = new \FieldUnicity();
+        $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
@@ -1454,6 +1456,42 @@ class CommonDBTMTest extends DbTestCase
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ])
         );
+    }
+
+    public function testCheckUnicitySystemSQLCriteria()
+    {
+        $this->login();
+
+        $this->createItem(FieldUnicity::class, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'itemtype' => 'Glpi\\CustomAsset\\Test01Asset',
+            'fields' => 'serial',
+            'is_active' => 1,
+            'action_refuse' => 1,
+        ]);
+        // No issues expected as these are different itemtypes
+        $original_asset_id = $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'name' => 'Test asset 1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'serial' => '123456',
+        ])->getID();
+        $this->createItem('Glpi\\CustomAsset\\Test02Asset', [
+            'name' => 'Test asset 1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'serial' => '123456',
+        ]);
+
+        // This should trigger the unicity error as it's the same itemtype and same serial
+        $asset_class = 'Glpi\\CustomAsset\\Test01Asset';
+        $asset = new $asset_class();
+        $this->assertFalse($asset->add([
+            'name' => 'Test asset 2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'serial' => '123456',
+        ]));
+
+        $err_msg = 'Impossible record for Serial number = 123456<br>Other item exist<br>[<a href="/front/asset/asset.form.php?class=Test01&amp;id=' . $original_asset_id . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Test asset 1">Test asset 1</a> - ID: ' . $original_asset_id . ' - Serial number: 123456 - Entity: Root entity &gt; _test_root_entity]';
+        $this->hasSessionMessages(ERROR, [$err_msg]);
     }
 
     public function testAddFilesWithNewFile()
@@ -2402,5 +2440,132 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals("Computer A2", $items[1]->getName());
         $this->assertEquals("Computer A3", $items[2]->getName());
         $this->assertEquals("Computer A4", $items[3]->getName());
+    }
+
+    public static function getTemplateProvider(): iterable
+    {
+        $itemtypes = [
+            \Budget::class,
+            \Cable::class,
+            \Certificate::class,
+            Computer::class,
+            \Contract::class,
+            \Domain::class,
+            \Enclosure::class,
+            \Monitor::class,
+            \NetworkEquipment::class,
+            \PDU::class,
+            \PassiveDCEquipment::class,
+            \Peripheral::class,
+            \Phone::class,
+            \Printer::class,
+            \Project::class,
+            \Rack::class,
+            \Software::class,
+            \SoftwareLicense::class,
+        ];
+
+        foreach ($itemtypes as $itemtype) {
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 1",
+                    'name' => "Test $itemtype 1",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 2",
+                    'name' => "Test $itemtype 2",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 3",
+                    'name' => "Test $itemtype 3",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 4",
+                    'name' => "Test $itemtype 4",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => true,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 5",
+                    'name' => "Test $itemtype 5",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_child_2', true),
+                    'is_recursive' => false,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+
+            yield [
+                'itemtype' => $itemtype,
+                'template_input' => [
+                    'template_name' => "Test $itemtype Template 6",
+                    'name' => "Test $itemtype 6",
+                    'entities_id' => getItemByTypeName(Entity::class, '_test_child_2', true),
+                    'is_recursive' => true,
+                ],
+                'target_entities_id' => getItemByTypeName(Entity::class, '_test_child_1', true),
+                'expected_result' => false,
+            ];
+        }
+    }
+
+    #[DataProvider('getTemplateProvider')]
+    public function testCanCreateFromTemplate(
+        string $itemtype,
+        array $template_input,
+        int $target_entities_id,
+        bool $expected_result
+    ): void {
+        $this->login();
+
+        $template_input['is_template'] = true;
+
+        if ($itemtype == \SoftwareLicense::class) {
+            $software_id = $this->createItem(\Software::class, [
+                'name' => 'Test Software for Template',
+                'entities_id' => $template_input['entities_id'],
+                'is_recursive' => $template_input['is_recursive'],
+            ])->getID();
+            $template_input['softwares_id'] = $software_id;
+        }
+
+        $template = $this->createItem($itemtype, $template_input);
+
+        $input = $template->fields;
+        $input['entities_id'] = $target_entities_id;
+        $this->setEntity($target_entities_id, false);
+
+        $this->assertEquals($expected_result, $template->can($template->getID(), CREATE, $input));
     }
 }

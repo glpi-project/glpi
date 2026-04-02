@@ -2165,42 +2165,103 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
     public function check($ID, int $right, ?array &$input = null): void
     {
-        $error_types = [];
-        $required_fields = [];
-        $must_check = $input !== null && $right == CREATE;
+        if ($input !== null && $right == CREATE) {
+            $error_types = [];
+            $required_fields = [];
 
-        if ($must_check && static::$mustBeAttached_1 === true && (!isset($input[static::$items_id_1]) || empty($input[static::$items_id_1]))) {
-            $itemtype = static::$itemtype_1;
-            if (!preg_match('/^itemtype/', $itemtype)) {
-                $itemtype = static::$itemtype_1::getTypeName(1);
+            foreach (
+                [
+                    [static::$mustBeAttached_1, static::$items_id_1, static::$itemtype_1],
+                    [static::$mustBeAttached_2, static::$items_id_2, static::$itemtype_2],
+                ] as [$must_be_attached, $items_id_field, $itemtype_field]
+            ) {
+                $result = $this->validateAttachedItem($must_be_attached, $items_id_field, $itemtype_field, $input);
+                if ($result !== null) {
+                    $error_types[] = $result['error_type'];
+                    $required_fields[] = $result['required_field'];
+                }
             }
-            $error_types[] = $itemtype;
-            $required_fields[] = static::$items_id_1;
-        }
-        if ($must_check && static::$mustBeAttached_2 === true && (!isset($input[static::$items_id_2]) || empty($input[static::$items_id_2]))) {
-            $itemtype = static::$itemtype_2;
-            if (!preg_match('/^itemtype/', $itemtype)) {
-                $itemtype = static::$itemtype_2::getTypeName(1);
+
+            if ($error_types !== []) {
+                $message = sprintf(
+                    __('Mandatory fields are not filled. Please correct: %s'),
+                    implode(', ', $error_types)
+                );
+                Session::addMessageAfterRedirect(htmlescape($message), true, ERROR);
+
+                throw new ItemLinkException(
+                    sprintf(
+                        'Post data must contain a valid value for: %s',
+                        implode(', ', $required_fields),
+                    )
+                );
             }
-            $error_types[] = $itemtype;
-            $required_fields[] = static::$items_id_2;
-        }
-
-        if (count($error_types) > 0) {
-            $message = sprintf(
-                __('Mandatory fields are not filled. Please correct: %s'),
-                implode(', ', $error_types)
-            );
-            Session::addMessageAfterRedirect(htmlescape($message), true, ERROR);
-
-            throw new ItemLinkException(
-                sprintf(
-                    'Post data must contain (greater than 0): %s',
-                    implode(', ', $required_fields),
-                )
-            );
         }
 
         parent::check($ID, $right, $input);
+    }
+
+    /**
+     * Validate that an attached item field contains a valid (non-new) ID.
+     *
+     * @param bool        $must_be_attached Whether the item must be attached
+     * @param string|null $items_id_field   The field name for the item ID
+     * @param string|null $itemtype_field   The itemtype field name or class name
+     * @param array<string, mixed> $input   The input data
+     * @return array{error_type: string, required_field: string}|null Validation error info, or null if valid
+     */
+    private function validateAttachedItem(
+        bool $must_be_attached,
+        ?string $items_id_field,
+        ?string $itemtype_field,
+        array $input,
+    ): ?array {
+        if (!$must_be_attached || $items_id_field === null || $itemtype_field === null) {
+            return null;
+        }
+
+        $value = $input[$items_id_field] ?? null;
+
+        if (!$this->isValueEmpty($value, $itemtype_field, $input)) {
+            return null;
+        }
+
+        if (preg_match('/^itemtype/', $itemtype_field)) {
+            $error_type = $itemtype_field;
+        } else {
+            $error_type = $itemtype_field::getTypeName(1);
+        }
+
+        return ['error_type' => $error_type, 'required_field' => $items_id_field];
+    }
+
+    /**
+     * Check if a value should be considered empty for attached item validation.
+     *
+     * Delegates to the resolved itemtype's `isNewID()` method, which allows
+     * classes like `Entity` to accept 0 as a valid ID (root entity).
+     *
+     * @param mixed                $value          The value to check
+     * @param string|null          $itemtype_field The itemtype field name or class name
+     * @param array<string, mixed> $input          The complete input array
+     * @return bool True if the value should be considered empty/invalid
+     */
+    private function isValueEmpty(mixed $value, ?string $itemtype_field, array $input): bool
+    {
+        if ($value === null || $value === '') {
+            return true;
+        }
+
+        if ($itemtype_field !== null && preg_match('/^itemtype/', $itemtype_field)) {
+            $itemtype = $input[$itemtype_field] ?? $this->fields[$itemtype_field] ?? null;
+        } else {
+            $itemtype = $itemtype_field;
+        }
+
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
+            throw new RuntimeException('Unable to get itemtype from relation input.');
+        }
+
+        return $itemtype::isNewID($value);
     }
 }

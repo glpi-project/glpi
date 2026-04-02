@@ -60,7 +60,7 @@ class ProfileRight extends CommonDBChild
     {
         global $DB;
 
-        if ($DB->isSlave()) {
+        if ($DB->isReplica()) {
             return false;
         }
         $new_item = new static();

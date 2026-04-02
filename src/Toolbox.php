@@ -1405,6 +1405,15 @@ class Toolbox
             }
         }
 
+        $curl_version = curl_version();
+        if (defined('CURLSSLOPT_NATIVE_CA')
+            && $curl_version
+            && version_compare($curl_version['version'], '7.71', '>=')) {
+            $opts += [
+                CURLOPT_SSL_OPTIONS => CURLSSLOPT_NATIVE_CA,
+            ];
+        }
+
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
@@ -2410,18 +2419,34 @@ class Toolbox
      */
     public static function getDocumentsFromTag(string $content_text): array
     {
+        $all_tags = [];
+
         preg_match_all(
             '/' . Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)') . '/',
             $content_text,
             $matches,
             PREG_PATTERN_ORDER
         );
-        if (!isset($matches[1]) || count($matches[1]) == 0) {
+        if (isset($matches[1]) && count($matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $matches[1]);
+        }
+
+        preg_match_all(
+            '/<img[^>]+id=["\']([a-z0-9\.\-]+)["\'][^>]*>/i',
+            $content_text,
+            $img_matches,
+            PREG_PATTERN_ORDER
+        );
+        if (count($img_matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $img_matches[1]);
+        }
+
+        if (count($all_tags) === 0) {
             return [];
         }
 
         $document = new Document();
-        return $document->find(['tag' => array_unique($matches[1])]);
+        return $document->find(['tag' => array_unique($all_tags)]);
     }
 
     /**
@@ -2796,12 +2821,16 @@ class Toolbox
     /**
      * Format a web link adding http:// if missing
      *
-     * @param string $link link to format
+     * @param ?string $link link to format
      *
      * @return string formatted link.
      **/
     public static function formatOutputWebLink($link)
     {
+        if (empty($link)) {
+            return (string) $link;
+        }
+
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
         }

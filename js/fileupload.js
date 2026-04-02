@@ -155,7 +155,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 
     // Delete button
     var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
-    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').on('click', () => {
+    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').attr('title', __('Delete')).on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
 
         // Trigger an event to notify that an image has been removed

@@ -516,7 +516,7 @@ class QueuedNotification extends CommonDBTM
     public function sendById($ID)
     {
         if ($this->getFromDB($ID)) {
-            $mode = $this->getField('mode');
+            $mode = $this->fields['mode'];
             $eventclass = 'NotificationEvent' . ucfirst($mode);
             $conf = Notification_NotificationTemplate::getMode($mode);
             if ($conf['from'] !== 'core') {
@@ -747,10 +747,7 @@ class QueuedNotification extends CommonDBTM
             return false;
         }
 
-        if ($item instanceof CommonDBTM) {
-            $item->getFromDB($this->fields['items_id']);
-        }
-
+        $item->getFromDB($this->fields['items_id']);
         $target = NotificationTarget::getInstanceByType($item::class);
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/queued_notification.html.twig', [

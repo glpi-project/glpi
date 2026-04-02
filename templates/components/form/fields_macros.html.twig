@@ -84,7 +84,7 @@
        }) %}
    {% endif %}
    {% if item.fields[name] is defined and item.fields[name] is not null %}
-      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? null]) %}
+      {% set value = call('autoName', [item.fields[name], name, (withtemplate == 2), item.getType(), item.fields['entities_id'] ?? -1]) %}
    {% else %}
       {% set value = null %}
    {% endif %}
@@ -97,6 +97,18 @@
    {% set options = {
       'id': '%id%'
    }|merge(options) %}
+
+   {% if name in ['name'] %}
+        {% set current_attrs = options.additional_attributes|default({}) %}
+
+         {% if current_attrs.autocomplete is not defined %}
+            {% set options = options|merge({
+                  'additional_attributes': current_attrs|merge({
+                     'autocomplete': 'off'
+                  })
+            }) %}
+         {% endif %}
+   {% endif %}
 
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
@@ -316,7 +328,9 @@
    {# Add checkbox if needed to regenerate password (controler side) #}
    {% if options.can_regenerate %}
       {% set regenerate_chk %}
-         <input type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}">&nbsp;<label for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+         <div class="d-flex align-items-center gap-1 mt-1">
+             <input class="form-check-input" type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}"><label class="form-check-label" for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+         </div>
       {% endset %}
       {% set field = field ~ regenerate_chk %}
    {% endif %}
@@ -938,7 +952,7 @@
       {% set container_id = '' %}
    {% endif %}
 
-   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }} {% if options.name is defined and options.name is not empty %}data-testid="form-field-{{ options.name }}"{% endif %}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
       {% set flex_class = options.center ? 'd-flex align-items-center' : (options.inline_add_field_html ? 'd-flex' : '') %}
@@ -974,7 +988,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }} {% if options.name is defined and options.name is not empty %}data-testid="form-field-{{ options.name }}"{% endif %}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       <div class="d-flex align-items-center">
          {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
@@ -1036,83 +1050,14 @@
         extra_css_classes: "",
         backdrop: true,
     }|merge(options) %}
-    {% set custom_icon_prefix = constant(
-        'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
-    ) %}
     {% set field %}
-        {% set container_id = "container-" ~ random() %}
-
-        <div id="{{ container_id }}">
-            <input
-                name="{{ name }}"
-                type="hidden"
-                value="{{ value }}"
-                data-glpi-icon-picker-value
-            >
-
-            {# Display the illustration, trigger the modal on click #}
-            {% set modal_id = "illustration-modal-" ~ random() %}
-            <div
-                class="illustration-selector d-flex align-items-center card border-1 {{ options.extra_css_classes }}"
-                role="button"
-                aria-label="{{ __("Select an illustration") }}"
-                data-bs-toggle="modal"
-                data-bs-target="#{{ modal_id }}"
-                data-glpi-icon-picker-value-preview
-            >
-                <div class="card-body aspect-ratio-1">
-                    {% set is_custom_file = value starts with custom_icon_prefix %}
-                    <div
-                        {% if is_custom_file %}
-                            data-glpi-icon-picker-value-preview-custom
-                        {% else %}
-                            data-glpi-icon-picker-value-preview-native
-                        {% endif %}
-                    >
-                        {{ render_illustration(value, 100) }}
-                    </div>
-
-                    {# Keep the other format (native/custom) that wasn't used
-                    in a dedicated div that we can show later if the format
-                    is changed #}
-                    {% if is_custom_file %}
-                        <div
-                            class="d-none"
-                            data-glpi-icon-picker-value-preview-native
-                        >
-                           {{ render_illustration('', 100) }}
-                        </div>
-                    {% else %}
-                        <div
-                            class="d-none"
-                            data-glpi-icon-picker-value-preview-custom
-                        >
-                           {{ render_illustration(custom_icon_prefix, 100) }}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            {# Render the modal content #}
-            {{ include('components/illustration/icon_picker_modal.html.twig', {
-                'id': modal_id,
-                'backdrop': options.backdrop,
-            }, with_context: false) }}
-
-            {# Start js controller #}
-            <script defer type="module">
-                (async () => {
-                    const module = await import(
-                        "/js/modules/IllustrationPicker/Controller.js"
-                    );
-                    new module.GlpiIllustrationPickerController(
-                        document.getElementById('{{ container_id|e('js') }}'),
-                        document.getElementById('{{ modal_id|e('js') }}'),
-                        "{{ custom_icon_prefix|e('js') }}",
-                    );
-                })();
-            </script>
-        </div>
+        {{ include('components/illustration/icon_picker.html.twig', {
+            'name': name,
+            'value': value,
+            'size': 100,
+            'preview_css_classes': "illustration-selector d-flex align-items-center card border-1 " ~ options.extra_css_classes,
+            'backdrop': options.backdrop,
+        }, with_context: false) }}
     {% endset %}
 
     {% set options = {

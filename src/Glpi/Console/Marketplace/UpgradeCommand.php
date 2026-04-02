@@ -51,7 +51,7 @@ class UpgradeCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('marketplace:upgrade');
-        $this->setDescription(__('Download and update all plugins to their latest compatible versions, then reactivate active ones.'));
+        $this->setDescription(__('Download all plugins to their latest compatible versions, update all active plugins and reactivate those that were active.'));
 
         $this->addOption(
             'username',
@@ -61,7 +61,7 @@ class UpgradeCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!Controller::isCLIAllowed()) {
             $output->writeln("<error>" . __('Access to the marketplace CLI commands is disallowed by the GLPI configuration') . "</error>");

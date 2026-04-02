@@ -30,27 +30,44 @@
  # ---------------------------------------------------------------------
  #}
 
-<li class="step-item {{ revision.is_current ? 'active' : '' }}" data-testid="revision">
+<li
+    class="step-item {{ first ? 'active' : '' }}"
+    data-testid="history-event"
+    {% if first %}
+        data-glpi-current-version
+    {% elseif is_revision %}
+        data-glpi-revision-id="{{ event.getRevisionId() }}"
+        data-glpi-kb-id="{{ id }}"
+    {% endif %}
+>
     <div class="d-flex align-items-start justify-content-between">
         <div>
             <div class="h4 m-0">
-                {% if revision.is_current %}
-                    {{ __("Current version") }}
-                {% elseif revision.is_first %}
-                    {{ __("Initial version") }}
-                {% else %}
-                    {{ __("Version %s")|format(revision.revision) }}
-                {% endif %}
+                {{ event.getLabel() }}
             </div>
             <div class="text-secondary small">
-                {% if revision.is_first %}
-                    {{ __("Created by") }}
-                {% else %}
-                    {{ __("Updated by") }}
-                {% endif %}
-                {% if revision.user %}
-                    <a rel="author" href="{{ revision.user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
-                        @{{ revision.user.getFriendlyName() }}
+                <span
+                    {% if is_log and (event.getOldValue() is not null or event.getNewValue() is not null) %}
+                        {% set tooltip_parts = [] %}
+                        {% if event.getOldValue() is not null %}
+                            {% set tooltip_parts = tooltip_parts|merge([__('Before: %s')|format(event.getOldValue())]) %}
+                        {% endif %}
+                        {% if event.getNewValue() is not null %}
+                            {% set tooltip_parts = tooltip_parts|merge([__('After: %s')|format(event.getNewValue())]) %}
+                        {% endif %}
+
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="{{ tooltip_parts|join(' → ') }}"
+                    {% endif %}
+                >
+                    {{ event.getDescription() }}
+                </span>
+
+                {% set user = users.getUser(event.getAuthor()) %}
+                {% if user %}
+                    <a rel="author" href="{{ user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
+                        @{{ user.getFriendlyName() }}
                     </a>
                 {% else %}
                     <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>
@@ -58,19 +75,19 @@
             </div>
             <div class="text-secondary small">
                 <span
-                    title="{{ revision.date }}"
+                    title="{{ event.date }}"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                 >
-                    {{ revision.date|relative_datetime }}
+                    {{ event.date|relative_datetime }}
                 </span>
             </div>
         </div>
-        {% if can_revert and not revision.is_current and revision.id %}
+        {% if is_revision and can_revert %}
             <button
                 type="button"
                 class="btn btn-ghost-secondary btn-sm"
-                data-glpi-revert-revision="{{ revision.id }}"
+                data-glpi-revert-revision="{{ event.getRevisionId() }}"
                 data-glpi-kb-id="{{ id }}"
                 title="{{ __("Restore this version") }}"
                 data-bs-toggle="tooltip"

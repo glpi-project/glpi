@@ -257,10 +257,7 @@ trait CalDAVUriUtilTrait
             return null;
         }
 
-        if (
-            !$item instanceof CalDAVCompatibleItemInterface
-            || !$item instanceof CommonDBTM
-        ) {
+        if (!$item instanceof CalDAVCompatibleItemInterface) {
             return null;
         }
 

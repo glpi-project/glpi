@@ -1566,6 +1566,8 @@ TWIG, $twig_params);
      */
     public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
     {
+        global $CFG_GLPI;
+
         $input = $this->prepareInputDataForTestProcess($condition);
         $rule      = $this->getRuleClass();
         if ($rule === null) {
@@ -1592,7 +1594,7 @@ TWIG, $twig_params);
             'rule_classname' => static::getRuleClassName(),
             'condition' => $condition,
             'params' => [
-                'target' => static::getRulesTestURL(),
+                'target' => $CFG_GLPI["root_doc"] . static::getRulesTestURL(),
             ],
         ]);
 

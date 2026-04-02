@@ -251,18 +251,19 @@ class View extends CommonGLPI
             }
 
             $clean_plugin = [
-                'key'           => $key,
-                'name'          => $plugin['name'],
-                'logo_url'      => $logo_url,
-                'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
-                'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
-                'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
-                'note'          => $apidata['note'] ?? -1,
-                'homepage_url'  => $apidata['homepage_url'] ?? "",
-                'issues_url'    => $apidata['issues_url'] ?? "",
-                'readme_url'    => $apidata['readme_url'] ?? "",
-                'version'       => $plugin['version'] ?? "",
-                'changelog_url' => $apidata['changelog_url'] ?? "",
+                'key'                       => $key,
+                'name'                      => $plugin['name'],
+                'logo_url'                  => $logo_url,
+                'description'               => $apidata['descriptions'][0]['short_description'] ?? "",
+                'authors'                   => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
+                'license'                   => $apidata['license'] ?? $plugin['license'] ?? "",
+                'note'                      => $apidata['note'] ?? -1,
+                'homepage_url'              => $apidata['homepage_url'] ?? "",
+                'issues_url'                => $apidata['issues_url'] ?? "",
+                'readme_url'                => $apidata['readme_url'] ?? "",
+                'version'                   => $plugin['version'] ?? "",
+                'changelog_url'             => $apidata['changelog_url'] ?? "",
+                'highest_available_version' => $plugin['highest_available_version'] ?? "0",
             ];
 
             $plugins[] = $clean_plugin;
@@ -457,10 +458,14 @@ HTML;
             $refresh_lbl  = __s("Refresh plugin list");
             $search_label = __s("Filter plugin list");
 
+            $plugin = new Plugin();
+            $plugin_message = $plugin->getPluginsUpdatableAlert();
+
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
                     <div class='right-panel'>
+                        {$plugin_message}
                         {$suspend_banner}
                         <div class='top-panel'>
                             <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
@@ -525,7 +530,9 @@ JS;
     {
         $plugin_key   = $plugin['key'];
         $plugin_inst  = new Plugin();
-        $plugin_inst->getFromDBbyDir($plugin_key);
+        $exist = $plugin_inst->getFromDBbyDir($plugin_key);
+
+        $must_be_cleaned   = !$exist || !$plugin_inst->isLoadable($plugin_key);
 
         $plugin_info = [
             'key'           => $plugin['key'],
@@ -546,6 +553,7 @@ JS;
             'buttons'       => self::getButtons($plugin_key),
             'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
             'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
+            'updatable'     => !$must_be_cleaned && version_compare($plugin['version'], $plugin['highest_available_version'] ?? '0', '<'),
         ];
         return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
             'tab'    => $tab,

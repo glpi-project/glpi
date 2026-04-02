@@ -37,7 +37,9 @@ namespace Glpi\ContentTemplates;
 
 use CommonITILObject;
 use Glpi\Error\ErrorHandler;
+use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Plugin;
 use Twig\Environment;
 use Twig\Error\Error;
 use Twig\Error\SyntaxError;
@@ -107,14 +109,26 @@ class TemplateManager
         CommonITILObject $itil_item,
         string $template
     ): ?string {
+        global $PLUGIN_HOOKS;
+
         $parameters = $itil_item->getContentTemplatesParametersClassInstance();
+
+        $parameters_value = $parameters->getValues($itil_item);
+        foreach (array_keys($PLUGIN_HOOKS[Hooks::GET_CONTENT_TEMPLATE_VALUE] ?? []) as $plugin) {
+            $plugin_parameters = Plugin::doOneHook((string) $plugin, Hooks::GET_CONTENT_TEMPLATE_VALUE, ['node_name' => $parameters->getDefaultNodeName(), 'id' => $itil_item->fields['id']]);
+            if (is_array($plugin_parameters)) {
+                foreach ($plugin_parameters as $key => $value) {
+                    $parameters_value[$key] = $value;
+                }
+            }
+        }
 
         try {
             $html = TemplateManager::render(
                 $template,
                 [
                     'itemtype' => $itil_item::class,
-                    $parameters->getDefaultNodeName() => $parameters->getValues($itil_item),
+                    $parameters->getDefaultNodeName() => $parameters_value,
                 ]
             );
         } catch (Error $e) {

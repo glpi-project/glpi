@@ -55,11 +55,9 @@ class KnowbaseControllerTest extends HLAPITestCase
     {
         $article_id = getItemByTypeName(KnowbaseItem::class, '_knowbaseitem02', true);
         $this->api->autoTestCRUD('/Knowledgebase/Article/' . $article_id . '/Comment', [
-            'language' => 'en_US',
             'user' => 2,
             'comment' => 'This is a comment on knowbase article',
         ], [
-            'language' => 'en_US',
             'user' => 2,
             'comment' => 'This is an updated comment on knowbase article',
         ]);

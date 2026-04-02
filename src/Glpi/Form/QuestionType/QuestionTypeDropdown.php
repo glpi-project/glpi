@@ -202,7 +202,7 @@ TWIG;
         </div>
 TWIG;
 
-        $template .= parent::renderAdministrationTemplate($question);
+        $parent = parent::renderAdministrationTemplate($question);
 
         $twig = TemplateRenderer::getInstance();
         $values = array_combine(
@@ -221,7 +221,7 @@ TWIG;
             'is_multiple_dropdown'  => $this->isMultipleDropdown($question),
             'default_option_label'  => __('Default option'),
             'default_options_label' => __('Default options'),
-        ]);
+        ]) . $parent;
     }
 
     #[Override]

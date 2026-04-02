@@ -79,8 +79,8 @@ return $config
         'symfony/css-selector', // Required by web tests based on the `FrontBaseClass` class
         'symfony/polyfill-ctype',
         'symfony/polyfill-iconv',
-        'symfony/polyfill-php83',
         'symfony/polyfill-php84',
+        'symfony/polyfill-php85',
         'symfony/property-access',
         'symfony/polyfill-mbstring',
     ], [ErrorType::UNUSED_DEPENDENCY])

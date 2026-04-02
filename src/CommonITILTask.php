@@ -270,7 +270,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function canReadITILItem()
     {
         $item = static::getItilObjectItemInstance();
-        if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
+        if (!$item->can($this->fields[$item::getForeignKeyField()], READ)) {
             return false;
         }
         return true;
@@ -286,7 +286,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function canUpdateITILItem()
     {
         $item = static::getItilObjectItemInstance();
-        if (!$item->can($this->getField($item->getForeignKeyField()), UPDATE)) {
+        if (!$item->can($this->fields[$item::getForeignKeyField()], UPDATE)) {
             return false;
         }
         return true;
@@ -401,7 +401,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField($item::getForeignKeyField()),
+            $this->fields[$item::getForeignKeyField()],
             $item::class,
             $changes,
             static::class,
@@ -610,7 +610,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             if (!$proceed) {
                 if (
                     isset($this->input['_status'])
-                    && $this->input['_status'] != $item->getField('status')
+                    && $this->input['_status'] != $item->fields['status']
                 ) {
                     $proceed = true;
                 }
@@ -648,7 +648,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $this->fields['id'],
             ];
             Log::history(
-                $this->getField($item->getForeignKeyField()),
+                $this->fields[$item->getForeignKeyField()],
                 $item::class,
                 $changes,
                 static::class,
@@ -673,6 +673,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 return false;
             }
             $input['tasktemplates_id']  = $input['_tasktemplates_id'];
+            $user = $template->fields['users_id_tech'];
+            if ($user == -1) {
+                $user = Session::getLoginUserID();
+            }
+
             $input = array_replace(
                 [
                     'content'           => $template->getRenderedContent($parent_item),
@@ -680,7 +685,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     'actiontime'        => $template->fields['actiontime'],
                     'state'             => $template->fields['state'],
                     'is_private'        => $template->fields['is_private'],
-                    'users_id_tech'     => $template->fields['users_id_tech'],
+                    'users_id_tech'     => $user,
                     'groups_id_tech'    => $template->fields['groups_id_tech'],
                 ],
                 $input
@@ -844,7 +849,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField($this->input["_job"]->getForeignKeyField()),
+            $this->fields[$this->input["_job"]->getForeignKeyField()],
             $this->input["_job"]->getTYpe(),
             $changes,
             static::class,
@@ -1470,10 +1475,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                if (
-                    $item->getFromDB($data["id"])
-                    && $item->canViewItem()
-                ) {
+                $item->getFromResultSet($data);
+                if ($item->canViewItem()) {
                     if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()])) {
                         //not planned
                         if (isset($data['notp_date'])) {

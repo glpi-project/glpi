@@ -200,7 +200,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->elements_mapping = []; // Clear elements mapping

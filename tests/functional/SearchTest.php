@@ -47,6 +47,9 @@ use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
@@ -59,11 +62,6 @@ use TaskCategory;
 use Ticket;
 use User;
 
-/* Test for inc/search.class.php */
-
-/**
- * @engine isolate
- */
 class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
@@ -205,7 +203,7 @@ class SearchTest extends DbTestCase
         $data = $this->doSearch('Software', $search_params);
 
         $this->assertMatchesRegularExpression(
-            "/HAVING\s*\(`ITEM_Computer_2`\s+IS\s+NOT\s+NULL\s*\)/",
+            "/HAVING\s*\(\s+NOT\s+\(`ITEM_Computer_2`\s+IS\s+NULL\s*\)/",
             $data['sql']['search']
         );
     }
@@ -453,7 +451,7 @@ class SearchTest extends DbTestCase
             '/LEFT JOIN\s*`glpi_assets_assets_peripheralassets`\s*AS `glpi_assets_assets_peripheralassets_Printer`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_asset`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_asset`\s*=\s*\'Computer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`itemtype_peripheral`\s*=\s*\'Printer\'\s*AND\s*`glpi_assets_assets_peripheralassets_Printer`.`is_deleted`\s*=\s*\'0\'\)/im',
             '/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_assets_assets_peripheralassets_Printer`\.`items_id_peripheral`\s*=\s*`glpi_printers`\.`id`/im',
             // match having
-            "/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/",
+            "/HAVING\s*`ITEM_Budget_2`\s+<>\s+'5'\s+AND\s+\(\(\(\(\s+NOT\s+\(`ITEM_Printer_1`\s+LIKE\s+'%HP%'\)\)\)\s+OR\s+\(`ITEM_Printer_1`\s+IS NULL\)\)\)/",
         ];
 
         foreach ($regexps as $regexp) {
@@ -759,6 +757,83 @@ class SearchTest extends DbTestCase
         $this->assertSame($expected, $data['data']['totalcount']);
     }
 
+    public function testAllCriterionWithEmptyValue()
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $data = $this->doSearch('Ticket', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'all',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertArrayHasKey('totalcount', $data['data']);
+    }
+
+    public static function allCriterionProvider(): array
+    {
+        $cases = [];
+        foreach (['AND', 'AND NOT', 'OR', 'OR NOT'] as $link) {
+            foreach (['contains', 'notcontains'] as $searchtype) {
+                $cases["$link $searchtype"] = [
+                    'link'       => $link,
+                    'searchtype' => $searchtype,
+                ];
+            }
+        }
+        return $cases;
+    }
+
+    #[DataProvider('allCriterionProvider')]
+    public function testAllCriterionNew(string $link, string $searchtype)
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $this->createItem('Project', [
+            'name'        => 'test_all_search_criterion',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $data = $this->doSearch('Project', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => $link,
+                    'field'      => 'all',
+                    'searchtype' => $searchtype,
+                    'value'      => 'test_all_search_criterion',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        // Search must complete without error
+        $this->assertArrayHasKey('totalcount', $data['data']);
+
+        // For "AND/OR contains" (without NOT), the created project must be found
+        if ($searchtype === 'contains' && !str_contains($link, 'NOT')) {
+            $this->assertGreaterThan(0, $data['data']['totalcount']);
+        }
+    }
 
     public function testSearchOnRelationTable()
     {
@@ -2653,7 +2728,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '>100',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` > 100",
+                'expected' => "AND `glpi_items_disks`.`freesize` > '100'",
             ],
             [
                 'link' => ' AND ',
@@ -2663,7 +2738,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '<10000',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
+                'expected' => "AND `glpi_items_disks`.`freesize` < '10000'",
             ],
             [
                 'link' => ' AND ',
@@ -3255,7 +3330,8 @@ class SearchTest extends DbTestCase
             'search_option'     => 4, // type
             'value'             => 'test',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%test%' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_computertypes`.`name` LIKE '%test%'))) OR (`glpi_computertypes`.`name` IS NULL))",
+
         ];
 
         // datatype=dropdown (usehaving=true)
@@ -3264,7 +3340,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 142, // document name
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE '%test%' OR `ITEM_Ticket_142` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Ticket_142` LIKE '%test%'))) OR (`ITEM_Ticket_142` IS NULL))",
         ];
 
         // datatype=itemlink
@@ -3273,7 +3349,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 1, // name
             'value'             => 'test',
             'expected_and'      => "(`glpi_computers`.`name` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%test%' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_computers`.`name` LIKE '%test%'))) OR (`glpi_computers`.`name` IS NULL))",
         ];
 
         // datatype=itemlink (usehaving=true)
@@ -3282,7 +3358,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 50, // parent tickets
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE '%test%' OR `ITEM_Ticket_50` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Ticket_50` LIKE '%test%'))) OR (`ITEM_Ticket_50` IS NULL))",
         ];
 
         // datatype=string
@@ -3291,7 +3367,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 47, // uuid
             'value'             => 'test',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%test%' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_computers`.`uuid` LIKE '%test%'))) OR (`glpi_computers`.`uuid` IS NULL))))",
         ];
 
         // datatype=text
@@ -3300,7 +3376,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 16, // comment
             'value'             => 'test',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%test%' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_computers`.`comment` LIKE '%test%'))) OR (`glpi_computers`.`comment` IS NULL))",
         ];
 
         // datatype=integer
@@ -3341,7 +3417,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 115, // harddrive capacity
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Computer_115` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Computer_115` NOT LIKE '%test%' OR `ITEM_Computer_115` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Computer_115` LIKE '%test%'))) OR (`ITEM_Computer_115` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
@@ -3364,14 +3440,14 @@ class SearchTest extends DbTestCase
             'search_option'     => 7, // value
             'value'             => '1500',
             'expected_and'      => "(`glpi_budgets`.`value` LIKE '%1500.%')",
-            'expected_and_not'  => "(`glpi_budgets`.`value` NOT LIKE '%1500.%' OR `glpi_budgets`.`value` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_budgets`.`value` LIKE '%1500.%'))) OR (`glpi_budgets`.`value` IS NULL))",
         ];
         yield [
             'itemtype'          => \Budget::class,
             'search_option'     => 7, // value
             'value'             => '10.25',
             'expected_and'      => "(`glpi_budgets`.`value` LIKE '%10.2%')",
-            'expected_and_not'  => "(`glpi_budgets`.`value` NOT LIKE '%10.2%' OR `glpi_budgets`.`value` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_budgets`.`value` LIKE '%10.2%'))) OR (`glpi_budgets`.`value` IS NULL))",
         ];
 
         // datatype=decimal (usehaving=true)
@@ -3380,7 +3456,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 11, // totalcost
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Contract_11` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Contract_11` NOT LIKE '%test%' OR `ITEM_Contract_11` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Contract_11` LIKE '%test%'))) OR (`ITEM_Contract_11` IS NULL))",
         ];
         yield [
             'itemtype'          => \Contract::class,
@@ -3396,7 +3472,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 27, // number of followups
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_27` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_27` NOT LIKE '%test%' OR `ITEM_Ticket_27` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Ticket_27` LIKE '%test%'))) OR (`ITEM_Ticket_27` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
@@ -3412,7 +3488,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 111, // memory size
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Computer_111` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Computer_111` NOT LIKE '%test%' OR `ITEM_Computer_111` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Computer_111` LIKE '%test%'))) OR (`ITEM_Computer_111` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
@@ -3460,7 +3536,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 49, // actiontime
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_49` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_49` NOT LIKE '%test%' OR `ITEM_Ticket_49` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Ticket_49` LIKE '%test%'))) OR (`ITEM_Ticket_49` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
@@ -3492,14 +3568,14 @@ class SearchTest extends DbTestCase
             'search_option'     => 188, // next_escalation_level
             'value'             => 'test',
             'expected_and'      => "(`ITEM_Ticket_188` LIKE '%test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_188` NOT LIKE '%test%' OR `ITEM_Ticket_188` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Ticket_188` LIKE '%test%'))) OR (`ITEM_Ticket_188` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
             'search_option'     => 188, // next_escalation_level
             'value'             => '2023-06',
             'expected_and'      => "(`ITEM_Ticket_188` LIKE '%2023-06%')",
-            'expected_and_not'  => "(`ITEM_Ticket_188` NOT LIKE '%2023-06%' OR `ITEM_Ticket_188` IS NULL)",
+            'expected_and_not'  => "(((NOT (`ITEM_Ticket_188` LIKE '%2023-06%'))) OR (`ITEM_Ticket_188` IS NULL))",
         ];
 
         // datatype=date
@@ -3540,7 +3616,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 6, // email
             'value'             => 'test',
             'expected_and'      => "(`glpi_contacts`.`email` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE '%test%' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_contacts`.`email` LIKE '%test%'))) OR (`glpi_contacts`.`email` IS NULL))",
         ];
 
         // datatype=weblink
@@ -3549,7 +3625,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 4, // link
             'value'             => 'test',
             'expected_and'      => "(`glpi_documents`.`link` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%test%' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_documents`.`link` LIKE '%test%'))) OR (`glpi_documents`.`link` IS NULL))",
         ];
 
         // datatype=mac
@@ -3558,14 +3634,14 @@ class SearchTest extends DbTestCase
             'search_option'     => 11, // mac_default
             'value'             => 'test',
             'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%test%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_devicenetworkcards`.`mac_default` LIKE '%test%'))) OR (`glpi_devicenetworkcards`.`mac_default` IS NULL))",
         ];
         yield [
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => 'a2:ef:00',
             'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%a2:ef:00%')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%a2:ef:00%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_devicenetworkcards`.`mac_default` LIKE '%a2:ef:00%'))) OR (`glpi_devicenetworkcards`.`mac_default` IS NULL))",
         ];
 
         // datatype=color
@@ -3581,7 +3657,7 @@ class SearchTest extends DbTestCase
             'search_option'     => 15, // color
             'value'             => '#ffffff',
             'expected_and'      => "(`glpi_cables`.`color` LIKE '%#ffffff%')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%#ffffff%' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_cables`.`color` LIKE '%#ffffff%'))) OR (`glpi_cables`.`color` IS NULL))",
         ];
 
         // datatype=language
@@ -3590,14 +3666,14 @@ class SearchTest extends DbTestCase
             'search_option'     => 17, // language
             'value'             => 'test',
             'expected_and'      => "(`glpi_users`.`language` LIKE '%test%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%test%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_users`.`language` LIKE '%test%'))) OR (`glpi_users`.`language` IS NULL))",
         ];
         yield [
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => 'en_',
             'expected_and'      => "(`glpi_users`.`language` LIKE '%en\\\\_%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%en\\\\_%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and_not'  => "(((NOT (`glpi_users`.`language` LIKE '%en\\\\_%'))) OR (`glpi_users`.`language` IS NULL))",
         ];
 
         // Check `NULL` special value
@@ -3607,8 +3683,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 4, // type
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computertypes`.`name` IS NULL OR `glpi_computertypes`.`name` = '')",
-                'expected_and_not'  => "(`glpi_computertypes`.`name` IS NOT NULL AND `glpi_computertypes`.`name` <> '')",
+                'expected_and'      => "(((`glpi_computertypes`.`name` IS NULL)) OR (`glpi_computertypes`.`name` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_computertypes`.`name` IS NULL)) OR (`glpi_computertypes`.`name` = '')))",
             ];
 
             // datatype=dropdown (usehaving=true)
@@ -3616,8 +3692,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 142, // document name
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_142` IS NULL OR `ITEM_Ticket_142` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_142` IS NOT NULL AND `ITEM_Ticket_142` <> '')",
+                'expected_and'      => "(((`ITEM_Ticket_142` IS NULL)) OR (`ITEM_Ticket_142` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_142` IS NULL)) OR (`ITEM_Ticket_142` = '')))",
             ];
 
             // datatype=itemlink
@@ -3625,8 +3701,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 1, // name
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computers`.`name` IS NULL OR `glpi_computers`.`name` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`name` IS NOT NULL AND `glpi_computers`.`name` <> '')",
+                'expected_and'      => "(((`glpi_computers`.`name` IS NULL)) OR (`glpi_computers`.`name` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_computers`.`name` IS NULL)) OR (`glpi_computers`.`name` = '')))",
             ];
 
             // datatype=itemlink (usehaving=true)
@@ -3634,8 +3710,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 50, // parent tickets
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_50` IS NULL OR `ITEM_Ticket_50` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_50` IS NOT NULL AND `ITEM_Ticket_50` <> '')",
+                'expected_and'      => "(((`ITEM_Ticket_50` IS NULL)) OR (`ITEM_Ticket_50` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_50` IS NULL)) OR (`ITEM_Ticket_50` = '')))",
             ];
 
             // datatype=string
@@ -3643,8 +3719,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 47, // uuid
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computers`.`uuid` IS NULL OR `glpi_computers`.`uuid` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`uuid` IS NOT NULL AND `glpi_computers`.`uuid` <> '')",
+                'expected_and'      => "(((`glpi_computers`.`uuid` IS NULL)) OR (`glpi_computers`.`uuid` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_computers`.`uuid` IS NULL)) OR (`glpi_computers`.`uuid` = '')))",
             ];
 
             // datatype=text
@@ -3652,8 +3728,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 16, // comment
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_computers`.`comment` IS NULL OR `glpi_computers`.`comment` = '')",
-                'expected_and_not'  => "(`glpi_computers`.`comment` IS NOT NULL AND `glpi_computers`.`comment` <> '')",
+                'expected_and'      => "(((`glpi_computers`.`comment` IS NULL)) OR (`glpi_computers`.`comment` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_computers`.`comment` IS NULL)) OR (`glpi_computers`.`comment` = '')))",
             ];
 
             // datatype=integer
@@ -3661,8 +3737,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 4, // port
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`port` IS NULL OR `glpi_authldaps`.`port` = '')",
-                'expected_and_not'  => "(`glpi_authldaps`.`port` IS NOT NULL AND `glpi_authldaps`.`port` <> '')",
+                'expected_and'      => "(((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`port` IS NULL)) OR (`glpi_authldaps`.`port` = '')))",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3675,8 +3751,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \AuthLDAP::class,
                 'search_option'     => 32, // timeout
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_authldaps`.`timeout` IS NULL OR `glpi_authldaps`.`timeout` = '')",
-                'expected_and_not'  => "(`glpi_authldaps`.`timeout` IS NOT NULL AND `glpi_authldaps`.`timeout` <> '')",
+                'expected_and'      => "(((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_authldaps`.`timeout` IS NULL)) OR (`glpi_authldaps`.`timeout` = '')))",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3689,8 +3765,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 115, // harddrive capacity
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Computer_115` IS NULL OR `ITEM_Computer_115` = '')",
-                'expected_and_not'  => "(`ITEM_Computer_115` IS NOT NULL AND `ITEM_Computer_115` <> '')",
+                'expected_and'      => "(((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Computer_115` IS NULL)) OR (`ITEM_Computer_115` = '')))",
             ];
 
             // datatype=decimal
@@ -3698,8 +3774,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Budget::class,
                 'search_option'     => 7, // value
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_budgets`.`value` IS NULL OR `glpi_budgets`.`value` = '')",
-                'expected_and_not'  => "(`glpi_budgets`.`value` IS NOT NULL AND `glpi_budgets`.`value` <> '')",
+                'expected_and'      => "(((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_budgets`.`value` IS NULL)) OR (`glpi_budgets`.`value` = '')))",
             ];
             // log for both AND and AND NOT cases
             $this->hasPhpLogRecordThatContains("Truncated incorrect DECIMAL value: ''", LogLevel::WARNING);
@@ -3710,8 +3786,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Contract::class,
                 'search_option'     => 11, // totalcost
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Contract_11` IS NULL OR `ITEM_Contract_11` = '')",
-                'expected_and_not'  => "(`ITEM_Contract_11` IS NOT NULL AND `ITEM_Contract_11` <> '')",
+                'expected_and'      => "(((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Contract_11` IS NULL)) OR (`ITEM_Contract_11` = '')))",
             ];
 
             // datatype=count (usehaving=true)
@@ -3719,8 +3795,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 27, // number of followups
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_27` IS NULL OR `ITEM_Ticket_27` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_27` IS NOT NULL AND `ITEM_Ticket_27` <> '')",
+                'expected_and'      => "(((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_27` IS NULL)) OR (`ITEM_Ticket_27` = '')))",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3733,8 +3809,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Computer::class,
                 'search_option'     => 111, // memory size
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Computer_111` IS NULL OR `ITEM_Computer_111` = '')",
-                'expected_and_not'  => "(`ITEM_Computer_111` IS NOT NULL AND `ITEM_Computer_111` <> '')",
+                'expected_and'      => "(((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Computer_111` IS NULL)) OR (`ITEM_Computer_111` = '')))",
             ];
 
             // datatype=progressbar (with computation)
@@ -3751,8 +3827,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \CronTask::class,
                 'search_option'     => 6, // frequency
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_crontasks`.`frequency` IS NULL OR `glpi_crontasks`.`frequency` = '')",
-                'expected_and_not'  => "(`glpi_crontasks`.`frequency` IS NOT NULL AND `glpi_crontasks`.`frequency` <> '')",
+                'expected_and'      => "(((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_crontasks`.`frequency` IS NULL)) OR (`glpi_crontasks`.`frequency` = '')))",
             ];
             // log for both AND and AND NOT cases
             if ($is_mariadb) {
@@ -3765,8 +3841,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 49, // actiontime
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_49` IS NULL OR `ITEM_Ticket_49` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_49` IS NOT NULL AND `ITEM_Ticket_49` <> '')",
+                'expected_and'      => "(((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_49` IS NULL)) OR (`ITEM_Ticket_49` = '')))",
             ];
 
             // datatype=datetime
@@ -3783,8 +3859,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Ticket::class,
                 'search_option'     => 188, // next_escalation_level
                 'value'             => $null_value,
-                'expected_and'      => "(`ITEM_Ticket_188` IS NULL OR `ITEM_Ticket_188` = '')",
-                'expected_and_not'  => "(`ITEM_Ticket_188` IS NOT NULL AND `ITEM_Ticket_188` <> '')",
+                'expected_and'      => "(((`ITEM_Ticket_188` IS NULL)) OR (`ITEM_Ticket_188` = ''))",
+                'expected_and_not'  => "(NOT ((((`ITEM_Ticket_188` IS NULL)) OR (`ITEM_Ticket_188` = '')))",
             ];
 
             // datatype=date
@@ -3813,8 +3889,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Contact::class,
                 'search_option'     => 6, // email
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_contacts`.`email` IS NULL OR `glpi_contacts`.`email` = '')",
-                'expected_and_not'  => "(`glpi_contacts`.`email` IS NOT NULL AND `glpi_contacts`.`email` <> '')",
+                'expected_and'      => "(((`glpi_contacts`.`email` IS NULL)) OR (`glpi_contacts`.`email` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_contacts`.`email` IS NULL)) OR (`glpi_contacts`.`email` = '')))",
             ];
 
             // datatype=weblink
@@ -3822,8 +3898,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => Document::class,
                 'search_option'     => 4, // link
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_documents`.`link` IS NULL OR `glpi_documents`.`link` = '')",
-                'expected_and_not'  => "(`glpi_documents`.`link` IS NOT NULL AND `glpi_documents`.`link` <> '')",
+                'expected_and'      => "(((`glpi_documents`.`link` IS NULL)) OR (`glpi_documents`.`link` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_documents`.`link` IS NULL)) OR (`glpi_documents`.`link` = '')))",
             ];
 
             // datatype=mac
@@ -3831,8 +3907,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \DeviceNetworkCard::class,
                 'search_option'     => 11, // mac_default
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` IS NULL OR `glpi_devicenetworkcards`.`mac_default` = '')",
-                'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` IS NOT NULL AND `glpi_devicenetworkcards`.`mac_default` <> '')",
+                'expected_and'      => "(((`glpi_devicenetworkcards`.`mac_default` IS NULL)) OR (`glpi_devicenetworkcards`.`mac_default` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_devicenetworkcards`.`mac_default` IS NULL)) OR (`glpi_devicenetworkcards`.`mac_default` = '')))",
             ];
 
             // datatype=color
@@ -3840,8 +3916,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => \Cable::class,
                 'search_option'     => 15, // color
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_cables`.`color` IS NULL OR `glpi_cables`.`color` = '')",
-                'expected_and_not'  => "(`glpi_cables`.`color` IS NOT NULL AND `glpi_cables`.`color` <> '')",
+                'expected_and'      => "(((`glpi_cables`.`color` IS NULL)) OR (`glpi_cables`.`color` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_cables`.`color` IS NULL)) OR (`glpi_cables`.`color` = '')))",
             ];
 
             // datatype=language
@@ -3849,8 +3925,8 @@ class SearchTest extends DbTestCase
                 'itemtype'          => User::class,
                 'search_option'     => 17, // language
                 'value'             => $null_value,
-                'expected_and'      => "(`glpi_users`.`language` IS NULL OR `glpi_users`.`language` = '')",
-                'expected_and_not'  => "(`glpi_users`.`language` IS NOT NULL AND `glpi_users`.`language` <> '')",
+                'expected_and'      => "(((`glpi_users`.`language` IS NULL)) OR (`glpi_users`.`language` = ''))",
+                'expected_and_not'  => "(NOT ((((`glpi_users`.`language` IS NULL)) OR (`glpi_users`.`language` = '')))",
             ];
         }
 
@@ -3863,21 +3939,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 4, // type
             'value'             => '^test',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE 'test%' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computertypes`.`name` LIKE 'test%'))) OR (`glpi_computertypes`.`name` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%test' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computertypes`.`name` LIKE '%test'))) OR (`glpi_computertypes`.`name` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 4, // type
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computertypes`.`name` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE 'test' OR `glpi_computertypes`.`name` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computertypes`.`name` LIKE 'test'))) OR (`glpi_computertypes`.`name` IS NULL))",
         ];
 
         // datatype=dropdown (usehaving=true)
@@ -3886,21 +3962,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 142, // document name
             'value'             => '^test',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE 'test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE 'test%' OR `ITEM_Ticket_142` IS NULL)",
+            'expected_and_not'  => "(NOT (`ITEM_Ticket_142` LIKE 'test%'))) OR (`ITEM_Ticket_142` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
             'search_option'     => 142, // document name
             'value'             => 'test$',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE '%test')",
-            'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE '%test' OR `ITEM_Ticket_142` IS NULL)",
+            'expected_and_not'  => "(NOT (`ITEM_Ticket_142` LIKE '%test'))) OR (`ITEM_Ticket_142` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
             'search_option'     => 142, // document name
             'value'             => '^test$',
             'expected_and'      => "(`ITEM_Ticket_142` LIKE 'test')",
-            'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE 'test' OR `ITEM_Ticket_142` IS NULL)",
+            'expected_and_not'  => "(NOT (`ITEM_Ticket_142` LIKE 'test'))) OR (`ITEM_Ticket_142` IS NULL))",
         ];
 
         // datatype=itemlink
@@ -3909,21 +3985,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 1, // name
             'value'             => '^test',
             'expected_and'      => "(`glpi_computers`.`name` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE 'test%' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`name` LIKE 'test%'))) OR (`glpi_computers`.`name` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computers`.`name` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%test' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`name` LIKE '%test'))) OR (`glpi_computers`.`name` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 1, // name
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computers`.`name` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE 'test' OR `glpi_computers`.`name` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`name` LIKE 'test'))) OR (`glpi_computers`.`name` IS NULL))",
         ];
 
         // datatype=itemlink (usehaving=true)
@@ -3932,21 +4008,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 50, // parent tickets
             'value'             => '^test',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE 'test%')",
-            'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE 'test%' OR `ITEM_Ticket_50` IS NULL)",
+            'expected_and_not'  => "(NOT (`ITEM_Ticket_50` LIKE 'test%'))) OR (`ITEM_Ticket_50` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
             'search_option'     => 50, // parent tickets
             'value'             => 'test$',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE '%test')",
-            'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE '%test' OR `ITEM_Ticket_50` IS NULL)",
+            'expected_and_not'  => "(NOT (`ITEM_Ticket_50` LIKE '%test'))) OR (`ITEM_Ticket_50` IS NULL))",
         ];
         yield [
             'itemtype'          => Ticket::class,
             'search_option'     => 50, // parent tickets
             'value'             => '^test$',
             'expected_and'      => "(`ITEM_Ticket_50` LIKE 'test')",
-            'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE 'test' OR `ITEM_Ticket_50` IS NULL)",
+            'expected_and_not'  => "(NOT (`ITEM_Ticket_50` LIKE 'test'))) OR (`ITEM_Ticket_50` IS NULL))",
         ];
 
         // datatype=string
@@ -3955,21 +4031,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 47, // uuid
             'value'             => '^test',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE 'test%' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`uuid` LIKE 'test%'))) OR (`glpi_computers`.`uuid` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%test' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`uuid` LIKE '%test'))) OR (`glpi_computers`.`uuid` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 47, // uuid
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computers`.`uuid` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE 'test' OR `glpi_computers`.`uuid` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`uuid` LIKE 'test'))) OR (`glpi_computers`.`uuid` IS NULL))",
         ];
 
         // datatype=text
@@ -3978,21 +4054,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 16, // comment
             'value'             => '^test',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE 'test%')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE 'test%' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`comment` LIKE 'test%'))) OR (`glpi_computers`.`comment` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => 'test$',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE '%test')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%test' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`comment` LIKE '%test'))) OR (`glpi_computers`.`comment` IS NULL))",
         ];
         yield [
             'itemtype'          => Computer::class,
             'search_option'     => 16, // comment
             'value'             => '^test$',
             'expected_and'      => "(`glpi_computers`.`comment` LIKE 'test')",
-            'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE 'test' OR `glpi_computers`.`comment` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_computers`.`comment` LIKE 'test'))) OR (`glpi_computers`.`comment` IS NULL))",
         ];
 
         // datatype=email
@@ -4001,21 +4077,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 6, // email
             'value'             => '^myname@',
             'expected_and'      => "(`glpi_contacts`.`email` LIKE 'myname@%')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE 'myname@%' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_contacts`.`email` LIKE 'myname@%'))) OR (`glpi_contacts`.`email` IS NULL))",
         ];
         yield [
             'itemtype'          => \Contact::class,
             'search_option'     => 6, // email
             'value'             => '@domain.tld$',
             'expected_and'      => "(`glpi_contacts`.`email` LIKE '%@domain.tld')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE '%@domain.tld' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_contacts`.`email` LIKE '%@domain.tld'))) OR (`glpi_contacts`.`email` IS NULL))",
         ];
         yield [
             'itemtype'          => \Contact::class,
             'search_option'     => 6, // email
             'value'             => '^myname@domain.tld$',
             'expected_and'      => "(`glpi_contacts`.`email` LIKE 'myname@domain.tld')",
-            'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE 'myname@domain.tld' OR `glpi_contacts`.`email` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_contacts`.`email` LIKE 'myname@domain.tld'))) OR (`glpi_contacts`.`email` IS NULL))",
         ];
 
         // datatype=weblink
@@ -4024,21 +4100,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 4, // link
             'value'             => '^ftp://',
             'expected_and'      => "(`glpi_documents`.`link` LIKE 'ftp://%')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE 'ftp://%' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_documents`.`link` LIKE 'ftp://%'))) OR (`glpi_documents`.`link` IS NULL))",
         ];
         yield [
             'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '.pdf$',
             'expected_and'      => "(`glpi_documents`.`link` LIKE '%.pdf')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%.pdf' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_documents`.`link` LIKE '%.pdf'))) OR (`glpi_documents`.`link` IS NULL))",
         ];
         yield [
             'itemtype'          => Document::class,
             'search_option'     => 4, // link
             'value'             => '^ftp://domain.tld/document.pdf$',
             'expected_and'      => "(`glpi_documents`.`link` LIKE 'ftp://domain.tld/document.pdf')",
-            'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE 'ftp://domain.tld/document.pdf' OR `glpi_documents`.`link` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_documents`.`link` LIKE 'ftp://domain.tld/document.pdf'))) OR (`glpi_documents`.`link` IS NULL))",
         ];
 
         // datatype=mac
@@ -4047,21 +4123,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 11, // mac_default
             'value'             => '^a2:e5:aa',
             'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE 'a2:e5:aa%')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE 'a2:e5:aa%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_devicenetworkcards`.`mac_default` LIKE 'a2:e5:aa%'))) OR (`glpi_devicenetworkcards`.`mac_default` IS NULL))",
         ];
         yield [
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => 'a2:e5:aa$',
             'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%a2:e5:aa')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%a2:e5:aa' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_devicenetworkcards`.`mac_default` LIKE '%a2:e5:aa'))) OR (`glpi_devicenetworkcards`.`mac_default` IS NULL))",
         ];
         yield [
             'itemtype'          => \DeviceNetworkCard::class,
             'search_option'     => 11, // mac_default
             'value'             => '^15:f4:q4:a2:e5:aa$',
             'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '15:f4:q4:a2:e5:aa')",
-            'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '15:f4:q4:a2:e5:aa' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_devicenetworkcards`.`mac_default` LIKE '15:f4:q4:a2:e5:aa'))) OR (`glpi_devicenetworkcards`.`mac_default` IS NULL))",
         ];
 
         // datatype=color
@@ -4070,21 +4146,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 15, // color
             'value'             => '^#00',
             'expected_and'      => "(`glpi_cables`.`color` LIKE '#00%')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '#00%' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_cables`.`color` LIKE '#00%'))) OR (`glpi_cables`.`color` IS NULL))",
         ];
         yield [
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => 'ff$',
             'expected_and'      => "(`glpi_cables`.`color` LIKE '%ff')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '%ff' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_cables`.`color` LIKE '%ff'))) OR (`glpi_cables`.`color` IS NULL))",
         ];
         yield [
             'itemtype'          => \Cable::class,
             'search_option'     => 15, // color
             'value'             => '^#00aaff$',
             'expected_and'      => "(`glpi_cables`.`color` LIKE '#00aaff')",
-            'expected_and_not'  => "(`glpi_cables`.`color` NOT LIKE '#00aaff' OR `glpi_cables`.`color` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_cables`.`color` LIKE '#00aaff'))) OR (`glpi_cables`.`color` IS NULL))",
         ];
 
         // datatype=language
@@ -4093,21 +4169,21 @@ class SearchTest extends DbTestCase
             'search_option'     => 17, // language
             'value'             => '^en_',
             'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_%')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_%' OR `glpi_users`.`language` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_users`.`language` LIKE 'en\\\\_%'))) OR (`glpi_users`.`language` IS NULL))",
         ];
         yield [
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '_GB$',
             'expected_and'      => "(`glpi_users`.`language` LIKE '%\\\\_GB')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%\\\\_GB' OR `glpi_users`.`language` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_users`.`language` LIKE '%\\\\_GB'))) OR (`glpi_users`.`language` IS NULL))",
         ];
         yield [
             'itemtype'          => User::class,
             'search_option'     => 17, // language
             'value'             => '^en_GB$',
             'expected_and'      => "(`glpi_users`.`language` LIKE 'en\\\\_GB')",
-            'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE 'en\\\\_GB' OR `glpi_users`.`language` IS NULL)",
+            'expected_and_not'  => "(NOT (`glpi_users`.`language` LIKE 'en\\\\_GB'))) OR (`glpi_users`.`language` IS NULL))",
         ];
 
         // Check `>`, `>=`, `<` and `<=` operators on textual fields.
@@ -4122,7 +4198,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 4, // type
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computertypes`.`name` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computertypes`.`name` NOT LIKE '%{$searched_value}%' OR `glpi_computertypes`.`name` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_computertypes`.`name` LIKE '%{$searched_value}%'))) OR (`glpi_computertypes`.`name` IS NULL))",
                 ];
 
                 // datatype=dropdown (usehaving=true)
@@ -4131,7 +4207,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 142, // document name
                     'value'             => $searched_value,
                     'expected_and'      => "(`ITEM_Ticket_142` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`ITEM_Ticket_142` NOT LIKE '%{$searched_value}%' OR `ITEM_Ticket_142` IS NULL)",
+                    'expected_and_not'  => "(NOT (`ITEM_Ticket_142` LIKE '%{$searched_value}%'))) OR (`ITEM_Ticket_142` IS NULL))",
                 ];
 
                 // datatype=itemlink
@@ -4140,7 +4216,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 1, // name
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computers`.`name` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computers`.`name` NOT LIKE '%{$searched_value}%' OR `glpi_computers`.`name` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_computers`.`name` LIKE '%{$searched_value}%'))) OR (`glpi_computers`.`name` IS NULL))",
                 ];
 
                 // datatype=itemlink (usehaving=true)
@@ -4149,7 +4225,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 50, // parent tickets
                     'value'             => $searched_value,
                     'expected_and'      => "(`ITEM_Ticket_50` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`ITEM_Ticket_50` NOT LIKE '%{$searched_value}%' OR `ITEM_Ticket_50` IS NULL)",
+                    'expected_and_not'  => "(NOT (`ITEM_Ticket_50` LIKE '%{$searched_value}%'))) OR (`ITEM_Ticket_50` IS NULL))",
                 ];
 
                 // datatype=string
@@ -4158,7 +4234,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 47, // uuid
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computers`.`uuid` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computers`.`uuid` NOT LIKE '%{$searched_value}%' OR `glpi_computers`.`uuid` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_computers`.`uuid` LIKE '%{$searched_value}%'))) OR (`glpi_computers`.`uuid` IS NULL))",
                 ];
 
                 // datatype=text
@@ -4167,7 +4243,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 16, // comment
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_computers`.`comment` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_computers`.`comment` NOT LIKE '%{$searched_value}%' OR `glpi_computers`.`comment` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_computers`.`comment` LIKE '%{$searched_value}%'))) OR (`glpi_computers`.`comment` IS NULL))",
                 ];
 
                 // datatype=email
@@ -4176,7 +4252,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 6, // email
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_contacts`.`email` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_contacts`.`email` NOT LIKE '%{$searched_value}%' OR `glpi_contacts`.`email` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_contacts`.`email` LIKE '%{$searched_value}%'))) OR (`glpi_contacts`.`email` IS NULL))",
                 ];
 
                 // datatype=weblink
@@ -4185,7 +4261,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 4, // link
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_documents`.`link` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_documents`.`link` NOT LIKE '%{$searched_value}%' OR `glpi_documents`.`link` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_documents`.`link` LIKE '%{$searched_value}%'))) OR (`glpi_documents`.`link` IS NULL))",
                 ];
 
                 // datatype=mac
@@ -4194,7 +4270,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 11, // mac_default
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_devicenetworkcards`.`mac_default` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_devicenetworkcards`.`mac_default` NOT LIKE '%{$searched_value}%' OR `glpi_devicenetworkcards`.`mac_default` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_devicenetworkcards`.`mac_default` LIKE '%{$searched_value}%'))) OR (`glpi_devicenetworkcards`.`mac_default` IS NULL))",
                 ];
 
                 // datatype=color
@@ -4212,7 +4288,7 @@ class SearchTest extends DbTestCase
                     'search_option'     => 17, // language
                     'value'             => $searched_value,
                     'expected_and'      => "(`glpi_users`.`language` LIKE '%{$searched_value}%')",
-                    'expected_and_not'  => "(`glpi_users`.`language` NOT LIKE '%{$searched_value}%' OR `glpi_users`.`language` IS NULL)",
+                    'expected_and_not'  => "(NOT (`glpi_users`.`language` LIKE '%{$searched_value}%'))) OR (`glpi_users`.`language` IS NULL))",
                 ];
             }
         }
@@ -4224,13 +4300,13 @@ class SearchTest extends DbTestCase
             foreach ([15, 2.3, 1.125] as $value) {
                 $searched_values = [
                     // positive values, with or without spaces
-                    "{$operator}{$value}"       => "{$value}",
-                    " {$operator}  {$value} "   => "{$value}",
+                    "{$operator}{$value}"       => "'{$value}'",
+                    " {$operator}  {$value} "   => "'{$value}'",
 
                     // negative values, with or without spaces
-                    "{$operator}-{$value}"      => "-{$value}",
-                    " {$operator} -{$value} "   => "-{$value}",
-                    "{$operator} - {$value} "   => "-{$value}",
+                    "{$operator}-{$value}"      => "'-{$value}'",
+                    " {$operator} -{$value} "   => "'-{$value}'",
+                    "{$operator} - {$value} "   => "'-{$value}'",
                 ];
                 $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
 
@@ -4258,8 +4334,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_115` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_115` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=decimal
@@ -4276,8 +4352,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 11, // totalcost
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Contract_11` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Contract_11` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=count (usehaving=true)
@@ -4285,8 +4361,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_27` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_27` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=mio (usehaving=true)
@@ -4294,8 +4370,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_111` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_111` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=progressbar (with computation)
@@ -4321,8 +4397,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_49` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_49` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} {$signed_value}",
                     ];
                 }
             }
@@ -4362,7 +4438,7 @@ class SearchTest extends DbTestCase
                         'search_option'     => 188, // next_escalation_level
                         'value'             => $searched_value,
                         'expected_and'      => "(`ITEM_Ticket_188` LIKE '%{$like_value}%')",
-                        'expected_and_not'  => "(`ITEM_Ticket_188` NOT LIKE '%{$like_value}%' OR `ITEM_Ticket_188` IS NULL)",
+                        'expected_and_not'  => "(NOT (`ITEM_Ticket_188` LIKE '%{$like_value}%'))) OR (`ITEM_Ticket_188` IS NULL))",
                     ];
 
                     // datatype=date
@@ -6588,6 +6664,165 @@ class SearchTest extends DbTestCase
 
         // we just check that the search did not failed with an exception
         $this->assertTrue(isset($result['data']['totalcount']));
+    }
+
+    public function testMetaTicketForm()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search tickets with meta-criteria on Form ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => '12',
+                    'searchtype' => 'equals',
+                    'value'      => 'all',
+                    'link'       => 'AND',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Form::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $form->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Ticket', $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_forms/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked ticket
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing form ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
+    }
+
+    public function testMetaFormTicket()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search_reverse',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search_reverse',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search_reverse',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search forms with meta-criteria on Ticket ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $ticket->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Form::class, $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked form
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing ticket ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch(Form::class, $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
     }
 }
 

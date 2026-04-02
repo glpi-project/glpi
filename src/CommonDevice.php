@@ -379,6 +379,15 @@ abstract class CommonDevice extends CommonDropdown
             'datatype'           => 'dropdown',
         ];
 
+        $tab[] = [
+            'id'       => 86,
+            'table'      => static::getTable(),
+            'field'      => 'is_recursive',
+            'name'       => __('Child entities'),
+            'datatype'   => 'bool',
+            'searchtype' => 'equals',
+        ];
+
         return $tab;
     }
 
@@ -662,5 +671,11 @@ abstract class CommonDevice extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-components";
+    }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        $options['itemtype'] = static::class;
+        parent::displayFullPageForItem($id, $menus, $options);
     }
 }

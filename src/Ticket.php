@@ -50,7 +50,7 @@ use Safe\DateTime;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;
-use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 use function Safe\strtotime;
 
 /**
@@ -894,6 +894,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function cleanDBonPurge()
     {
+        global $DB;
 
         // OlaLevel_Ticket does not extends CommonDBConnexity
         $olaLevel_ticket = new OlaLevel_Ticket();
@@ -912,6 +913,28 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // CommonITILTask does not extends CommonDBConnexity
         $tt = new TicketTask();
         $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+        // sourceof_items_id / sourceitems_id are not named properly for foreign keys so they cannot be handled by relation.constant.php
+        $DB->update(
+            ITILFollowup::getTable(),
+            ['sourceof_items_id' => 0],
+            ['sourceof_items_id' => $this->fields['id']]
+        );
+        $DB->update(
+            ITILFollowup::getTable(),
+            ['sourceitems_id' => 0],
+            ['sourceitems_id' => $this->fields['id']]
+        );
+        $DB->update(
+            TicketTask::getTable(),
+            ['sourceof_items_id' => 0],
+            ['sourceof_items_id' => $this->fields['id']]
+        );
+        $DB->update(
+            TicketTask::getTable(),
+            ['sourceitems_id' => 0],
+            ['sourceitems_id' => $this->fields['id']]
+        );
 
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -1282,7 +1305,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $sla->setTicketCalendar($calendars_id);
             $sla->addLevelToDo($this, $slalevels_id);
         }
-        SlaLevel_Ticket::replayForTicket($this->getID(), $sla->getField('type'));
+        SlaLevel_Ticket::replayForTicket($this->getID(), $sla->fields['type']);
     }
 
     /**
@@ -1312,7 +1335,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $ola->setTicketCalendar($calendars_id);
             $ola->addLevelToDo($this, $olalevels_id);
         }
-        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
+        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type']);
     }
 
 
@@ -1496,7 +1519,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again ticket to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
@@ -1566,9 +1590,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                                  'glpi_businesscriticities',
                                  $infocom->fields['businesscriticities_id']
                              );
-                        }
-                        if (isset($item->fields['groups_id'])) {
-                            $input['_groups_id_of_item'] = $item->fields['groups_id'];
                         }
                         break(2);
                     }
@@ -2266,18 +2287,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 echo "</td></tr></table>";
                 return true;
 
-            case 'link_to_problem':
-                Toolbox::deprecated('Ticket "link_to_problem" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
-                Problem::dropdown([
-                    'name'      => 'problems_id',
-                    'condition' => Problem::getOpenCriteria(),
-                ]);
-                echo '<br><br>';
-                echo Html::submit(_x('button', 'Link'), [
-                    'name'      => 'link',
-                ]);
-                return true;
-
             case 'resolve_tickets':
                 $rand = mt_rand();
                 $content_id = "content$rand";
@@ -2415,52 +2424,6 @@ JAVASCRIPT;
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     }
                 }
-                return;
-
-            case 'link_to_problem':
-                Toolbox::deprecated('Ticket "link_to_problem" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
-                // Skip if not tickets
-                if ($item::class !== Ticket::class) {
-                    $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
-                    return;
-                }
-
-                // Skip if missing update rights on problems
-                if (!Problem::canUpdate()) {
-                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                    return;
-                }
-
-                // Check input
-                $input = $ma->getInput();
-                if (!isset($input['problems_id'])) {
-                    $ma->addMessage(__s("Missing input: no Problem selected"));
-                    return;
-                }
-
-                $problem = new Problem();
-                if (!$problem->getFromDB($input['problems_id'])) {
-                    $ma->addMessage(__s("Selected Problem can't be loaded"));
-                    return;
-                }
-
-                $em = new Problem_Ticket();
-                foreach ($ids as $id) {
-                    // Add new link
-                    $res = $em->add([
-                        'problems_id' => $input['problems_id'],
-                        'tickets_id'  => $id,
-                    ]);
-
-                    // Check if creation was successful
-                    if ($res) {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                    }
-                }
-
                 return;
 
             case 'resolve_tickets':
@@ -3424,7 +3387,7 @@ JAVASCRIPT;
             ],
             'WHERE'     => [
                 'glpi_items_tickets.itemtype' => get_class($item),
-                'glpi_items_tickets.items_id' => $item->getField('id'),
+                'glpi_items_tickets.items_id' => $item->getID(),
                 'OR'                          => [
                     'glpi_ticketcosts.cost_time'     => ['>', 0],
                     'glpi_ticketcosts.cost_fixed'    => ['>', 0],
@@ -3609,15 +3572,15 @@ JAVASCRIPT;
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();
                 if ($pt->getFromDB($options['_projecttasks_id'])) {
-                    $options['name'] = $pt->getField('name');
-                    $options['content'] = $pt->getField('content');
+                    $options['name'] = $pt->fields['name'];
+                    $options['content'] = $pt->fields['content'];
                 }
             }
             // Override default values from followup if needed
             if (isset($options['_promoted_fup_id']) && !$options['_skip_promoted_fields']) {
                 $fup = new ITILFollowup();
                 if ($fup->getFromDB($options['_promoted_fup_id'])) {
-                    $options['content'] = $fup->getField('content');
+                    $options['content'] = $fup->fields['content'];
                     $options['_users_id_requester'] = $fup->fields['users_id'];
                     // FIXME Use new format
                     $options['_link'] = [
@@ -3626,10 +3589,10 @@ JAVASCRIPT;
                     ];
 
                     // Set entity from parent
-                    $parent_itemtype = $fup->getField('itemtype');
+                    $parent_itemtype = $fup->fields['itemtype'];
                     $parent = getItemForItemtype($parent_itemtype);
-                    if ($parent->getFromDB($fup->getField('items_id'))) {
-                        $options['entities_id'] = $parent->getField('entities_id');
+                    if ($parent->getFromDB($fup->fields['items_id'])) {
+                        $options['entities_id'] = $parent->fields['entities_id'];
                     }
                 }
                 //Allow overriding the default values
@@ -3639,7 +3602,7 @@ JAVASCRIPT;
             if (isset($options['_promoted_task_id']) && !$options['_skip_promoted_fields']) {
                 $tickettask = new TicketTask();
                 if ($tickettask->getFromDB($options['_promoted_task_id'])) {
-                    $options['content'] = $tickettask->getField('content');
+                    $options['content'] = $tickettask->fields['content'];
                     $options['_users_id_requester'] = $tickettask->fields['users_id'];
                     $options['_users_id_assign'] = $tickettask->fields['users_id_tech'];
                     $options['_groups_id_assign'] = $tickettask->fields['groups_id_tech'];
@@ -3651,8 +3614,8 @@ JAVASCRIPT;
 
                     // Set entity from parent
                     $parent = new Ticket();
-                    if ($parent->getFromDB($tickettask->getField('tickets_id'))) {
-                        $options['entities_id'] = $parent->getField('entities_id');
+                    if ($parent->getFromDB($tickettask->fields['tickets_id'])) {
+                        $options['entities_id'] = $parent->fields['entities_id'];
                     }
                 }
                 //Allow overriding the default values
@@ -5366,7 +5329,28 @@ JAVASCRIPT;
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
                     if (preg_match("/" . preg_quote($data, '/') . "/i", $src_attr)) {
-                        $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . htmlescape(Document::getImageTag($tags[$filename])) . "</p>", $html);
+                        $html = preg_replace_callback(
+                            "/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s",
+                            function ($img_matches) use ($tags, $filename) {
+                                $img_tag = $img_matches[0];
+
+                                // Extract width attribute if present
+                                $width_attr = '';
+                                if (preg_match('/\bwidth\s*=\s*["\']?(\d+)["\']?/i', $img_tag, $w_matches)) {
+                                    $width_attr = ' width="' . (int) $w_matches[1] . '"';
+                                }
+
+                                // Extract height attribute if present
+                                $height_attr = '';
+                                if (preg_match('/\bheight\s*=\s*["\']?(\d+)["\']?/i', $img_tag, $h_matches)) {
+                                    $height_attr = ' height="' . (int) $h_matches[1] . '"';
+                                }
+
+                                // Return an img tag with the tag as id, preserving width/height
+                                return '<img id="' . htmlescape($tags[$filename]) . '"' . $width_attr . $height_attr . '>';
+                            },
+                            $html
+                        );
                     }
                 }
             }
@@ -5547,7 +5531,7 @@ JAVASCRIPT;
         Html::showDatesTimelineGraph([
             'title'   => _n('Date', 'Dates', Session::getPluralNumber()),
             'dates'   => $dates,
-            'add_now' => $this->getField('closedate') == "",
+            'add_now' => $this->fields['closedate'] == "",
         ]);
     }
 
@@ -5754,6 +5738,35 @@ JAVASCRIPT;
                         //Cannot retrieve ticket. Abort/fail the merge
                         throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
                     }
+                    if ($ticket->fields['id'] == $merge_target_id) {
+                        // Cannot merge a ticket into itself. Abort/fail the merge
+                        throw new RuntimeException(sprintf(__('Cannot merge ticket %d into itself'), $id), 1);
+                    }
+                    if ($ticket->isDeleted()) {
+                        //ignore deleted tickets
+                        continue;
+                    }
+
+                    $tt = new Ticket_Ticket();
+                    if ($p['link_type'] > 0 && $p['link_type'] < 5) {
+                        // Clean up any existing links between the tickets to avoid duplicates
+                        $tt->deleteByCriteria([
+                            'OR' => [
+                                [
+                                    'AND' => [
+                                        'tickets_id_1' => $merge_target_id,
+                                        'tickets_id_2' => $id,
+                                    ],
+                                ],
+                                [
+                                    'AND' => [
+                                        'tickets_id_2' => $merge_target_id,
+                                        'tickets_id_1' => $id,
+                                    ],
+                                ],
+                            ],
+                        ]);
+                    }
                     //Build followup from the original ticket
                     $input = [
                         'itemtype'        => Ticket::class,
@@ -5837,28 +5850,11 @@ JAVASCRIPT;
                     }
                     if ($p['link_type'] > 0 && $p['link_type'] < 5) {
                         //Add relation (this is parent of merge target)
-                        $tt = new Ticket_Ticket();
                         $linkparams = [
                             'link'         => $p['link_type'],
                             'tickets_id_1' => $id,
                             'tickets_id_2' => $merge_target_id,
                         ];
-                        $tt->deleteByCriteria([
-                            'OR' => [
-                                [
-                                    'AND' => [
-                                        'tickets_id_1' => $merge_target_id,
-                                        'tickets_id_2' => $id,
-                                    ],
-                                ],
-                                [
-                                    'AND' => [
-                                        'tickets_id_2' => $merge_target_id,
-                                        'tickets_id_1' => $id,
-                                    ],
-                                ],
-                            ],
-                        ]);
                         if (!$tt->add($linkparams)) {
                             //Cannot link tickets. Abort/fail the merge
                             throw new RuntimeException(sprintf(__('Failed to link tickets %d and %d'), $merge_target_id, $id), 1);

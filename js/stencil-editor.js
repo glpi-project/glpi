@@ -115,12 +115,16 @@ const StencilEditor = function (container, rand, zones_definition) {
 
                 if (submitButton.data('delete') != '1') {
                     const originalText = submitButton.text();
+                    const originalAriaLabel = submitButton.attr('aria-label');
+                    const confirmText = _.unescape(_x('button', 'Are you sure?'));
 
                     submitButton.data('delete', '1');
-                    submitButton.text(_.unescape(_x('button', 'Are you sure?')));
+                    submitButton.text(confirmText);
+                    submitButton.attr('aria-label', confirmText);
                     setInterval(() => {
                         submitButton.data('delete', '0');
                         submitButton.text(originalText);
+                        submitButton.attr('aria-label', originalAriaLabel);
                     }, 10000);
 
                     e.preventDefault();
@@ -282,6 +286,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // update label
         $(container).find(`.set-zone-data[data-zone-index=${zoneIndex}]`)
+            .attr('aria-label', zones[zoneIndex]['label'])
             .find('span').text(zones[zoneIndex]['label']);
 
         // update data on server
@@ -379,6 +384,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 var template = $('#zone-number-template');
                 var newZoneButton = $(template.html());
                 $(newZoneButton).attr('data-zone-index', index);
+                $(newZoneButton).attr('aria-label', String(index));
                 $(newZoneButton).find('span').text(index);
                 newZoneButton.insertBefore(template);
             },
@@ -424,6 +430,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 // Reset zone data
                 var zoneData = $(`.set-zone-data[data-zone-index="${CSS.escape(zoneId)}"]`);
                 zoneData.removeClass('btn-success').removeClass('btn-warning').addClass('btn-outline-secondary');
+                zoneData.attr('aria-label', String(zoneId));
                 zoneData.find('span').text(zoneId);
                 zoneData.find('i').removeClass('ti-check').addClass('ti-file-unknown');
 

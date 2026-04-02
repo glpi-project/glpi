@@ -51,6 +51,7 @@ use DomainRecord;
 use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Cache\CacheManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
@@ -72,7 +73,6 @@ use Psr\Log\LogLevel;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use RuntimeException;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use Session;
 use Software;
@@ -94,9 +94,6 @@ class GLPITestCase extends TestCase
 
     public function setUp(): void
     {
-        /** @var Translator $TRANSLATE */
-        global $TRANSLATE;
-
         $this->storeGlobals();
 
         global $DB;
@@ -105,18 +102,18 @@ class GLPITestCase extends TestCase
         // By default, no session, not connected
         $this->resetSession();
 
-        // Locale from previous session may persist until another login is done.
-        if ($TRANSLATE->getLocale() !== "en_GB") {
-            // Reload default language only if needed to prevent performance hit
-            Session::loadLanguage();
-        }
-
         // By default, there shouldn't be any pictures in the test files
         $this->resetPictures();
 
         // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
+
+        // Some tests might change the current language, thus storing some
+        // translations in the cache
+        $manager = new CacheManager();
+        $cache = $manager->getTranslationsCacheInstance();
+        $cache->clear();
 
         // Init log handler
         global $PHPLOGGER;
@@ -193,13 +190,13 @@ class GLPITestCase extends TestCase
     {
         // Delete contents of test files/_pictures
         $dir = GLPI_PICTURE_DIR;
-        if (!str_contains($dir, '/tests/files/_pictures')) {
-            throw new RuntimeException('Invalid picture dir: ' . $dir);
-        }
+
         // Delete nested folders and files in dir
         $this->removeDirectory($dir);
-        // We recreate the directory to ensure it's empty and present, as test rely on it being present.
-        mkdir($dir);
+        // We recreate the directory (if needed) to ensure it's empty and present, as test rely on it being present.
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
     }
 
     protected function removeDirectory(string $dir, bool $delete_self = false): void
@@ -515,11 +512,19 @@ class GLPITestCase extends TestCase
      */
     private function resetGlobalsAndStaticValues(): void
     {
+        /** @var Translator $TRANSLATE */
+        global $TRANSLATE;
+
         // Super globals
         $_GET = $this->superglobals_copy['GET'];
         $_POST = $this->superglobals_copy['POST'];
         $_REQUEST = $this->superglobals_copy['REQUEST'];
         $_SERVER = $this->superglobals_copy['SERVER'];
+
+        // Reset language to English if it was changed by a test
+        if ($TRANSLATE->getLocale() !== 'en_GB') {
+            Session::loadLanguage('en_GB');
+        }
 
         // Globals
         global $CFG_GLPI, $FOOTER_LOADED, $HEADER_LOADED;

@@ -16,22 +16,54 @@ The present file will list all changes made to the project; according to the
 ### Removed
 
 ### API changes
+- Type declarations for some `CronTask` methods have been added.
 
 #### Added
 
 #### Changes
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
+- `KnowbaseItem_Comment` is now final
+- `KnowbaseItem_Revision` is now final
+- Use of the `users_id_validate` field for `CommonITILValidation` is no longer supported. Use `items_id_target` and `itemtype_target` instead.
+- Passing additional URL parameters in `Document::getDownloadLink()` is no longer supported.
+- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use `_categories` array instead.
+- Use of the `certificates` and `entities_id` options in `NotificationTargetCertificate` is no longer supported. These values are automatically computed based on the linked certificate.
+- Use of the `domains` and `entities_id` options in `NotificationTargetDomain` is no longer supported. These values are automatically computed based on the linked domain.
+- Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
+- `Ticket:link_to_problem` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
+- `Ticket_Ticket:add` massive action is no longer supported. Use `CommonITILObject_CommonITILObject:add` massive action instead.
+- `countElementsInTable()` / `DbUtils::countElementsInTable()` method signatures changed.
+- `countDistinctElementsInTable` / `DbUtils::countDistinctElementsInTable()` method signatures changed.
+- `getAllDataFromTable` / `DbUtils::getAllDataFromTable()` method signatures changed.
+- Methods in `Dbutils` and the global counterparts in `src/autoload/dbutils-aliases.php` now have strict type declarations except for methods that have been deprecated.
 
 #### Deprecated
+- Usage of coma separated list of fields in `ORDER BY` clause.
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
 - `Glpi\Features\Inventoriable::showInventoryInfo()`
 - `Glpi\Features\Inventoriable::displayAgentInformation()`
 - `User::loadMinimalSession()`
+- `DBConnection::switchToMaster()`
+- `DBConnection::switchToSlave()`
+- `DBmysql::$slave`
+- `DBmysql::isSlave()`
+- `DBSlave` class
+- `countElementsInTableForMyEntities()` / `DbUtils::countElementsInTableForMyEntities()`
+- `getTreeValueName()` / `DbUtils::getTreeValueName()`
+- `getTreeForItem()` / `DbUtils::getTreeForItem()`
+- `contructTreeFromList()` / `DbUtils::constructTreeFromList()`
+- `contructListFromTree()` / `DbUtils::constructListFromTree()`
+- `get_hour_from_sql()` / `DbUtils::getHourFromSql()`
+- `$withcomment` and `$translate` parameters of `getTreeLeafValueName()` and `DbUtils::getTreeLeafValueName()`
 
 #### Removed
 
-- `js/Forms/FaIconSelector.js` module
+- `diff-match-patch` JS library
+- `jquery-prettytextdiff` JS library
+- `Forms/FaIconSelector` JS module
+- `Knowbase` JS module
+- `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -39,9 +71,16 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
-- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
+- `Config::showFormDBSlave()`
+- `DBConnection::PROPERTY_SLAVE` constant
+- `DBConnection::createDBSlaveConfig()`
+- `DBConnection::createSlaveConnectionFile()`
+- `DBConnection::deleteDBSlaveConfig()`
+- `DBConnection::getDBSlaveConf()`
+- `DBConnection::isDBSlaveActive()`
+- `DBConnection::saveDBSlaveConf()`
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
 - `DBmysql::doQueryOrDie()`
@@ -50,61 +89,91 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
-- `Glpi\Toolbox\Sanitizer` class
-- `Migration::setOutputHandler()`
-- `Migration::addNewMessageArea()`
-- `Migration::displayTitle()`
-- `Migration::displayWarning()`
-- `Migration::displayError()`
-- `Timer` class
-- `Toolbox::seems_utf8()`
-- `Toolbox::sendFile()`
-- `Toolbox::addslashes_deep()`
-- `Toolbox::stripslashes_deep()`
-- `Html::entity_decode_deep()`
-- `Html::entities_deep()`
-- `Html::cleanInputText()`
-- `Html::cleanPostForTextArea()`
-- `Html::displayNotFoundError()`
-- `Html::displayRightError()`
-- `Html::displayDebugInfos()`
-- `Html::displayErrorAndDie()`
-- `Html::progressBar()`
-- `Html::createProgressBar()`
-- `Html::changeProgressBarMessage()`
-- `Html::changeProgressBarPosition()`
-- `Html::displayProgressBar()`
-- `Html::ajaxFooter()`
-- `Html::glpi_flush()`
-- `Html::jsGetElementbyID()`
-- `Html::jsSetDropdownValue()`
-- `Html::jsGetDropdownValue()`
 - `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashoboard\Filter::getAll()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Http\Response::sendContent()`
 - `Glpi\Http\Response::sendError()`
 - `Glpi\Http\Response::sendHeaders()`
-- `Glpi\Http\Response::sendContent()`
-- `Glpi\Http\Response::send()`
-- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Inventory\Asset\Software::getCompareKey()`
 - `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
 - `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
-- `ITILFollowup::ADDMYTICKET` constant
-- `ITILFollowup::ADDGROUPTICKET` constant
+- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Toolbox\Sanitizer` class
+- `Html::ajaxFooter()`
+- `Html::changeProgressBarMessage()`
+- `Html::changeProgressBarPosition()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
+- `Html::createProgressBar()`
+- `Html::displayDebugInfos()`
+- `Html::displayErrorAndDie()`
+- `Html::displayNotFoundError()`
+- `Html::displayProgressBar()`
+- `Html::displayRightError()`
+- `Html::entities_deep()`
+- `Html::entity_decode_deep()`
+- `Html::glpi_flush()`
+- `Html::jsGetDropdownValue()`
+- `Html::jsGetElementbyID()`
+- `Html::jsSetDropdownValue()`
+- `Html::progressBar()`
+- `Item_Plug` class
 - `ITILFollowup::ADDALLTICKET` constant
+- `ITILFollowup::ADDGROUPTICKET` constant
+- `ITILFollowup::ADDMYTICKET` constant
+- `KnowbaseItem_Comment::getCommentForm()`
+- `KnowbaseItem_Comment::showForItem()`
+- `KnowbaseItem_Revision::showForItem()`
+- `Migration::addNewMessageArea()`
+- `Migration::setOutputHandler()`
+- `Migration::displayError()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
 - `Pdu_Plug` class
 - `Plugin::getWebDir()`
 - `QueryExprfession` class
 - `QueryParam` class
 - `QuerySubQuery` class
 - `QueryUnion` class
+- `Reminder::addVisibilityRestrict()`
+- `SavedSearch::addVisibilityRestrict()`
 - `Search::joinDropdownTranslations()`
+- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
-- `Glpi\Inventory\Asset\Software::getCompareKey()`
+- `Timer` class
+- `Toolbox::addslashes_deep()`
+- `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
+- `Toolbox::stripslashes_deep()`
+
+## [11.0.7] unreleased
+
+### Added
+- Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
+- CLI command `security:change_oauth_key` to (re)generate the OAuth keys. This can be used to change keys or to create them in the case they fail to be created during the installation/update process.
+
+### Changed
+
+### Deprecated
+
+### Removed
+- "Associate to an appliance" and "Remove from a rack" actions removed for templates.
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
 
 
-## [11.0.6] unreleased
+## [11.0.6] 2026-03-03
 
 ### Added
 
@@ -914,7 +983,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.24] unreleased
+## [10.0.25] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.24] 2026-03-03
 
 ### Added
 

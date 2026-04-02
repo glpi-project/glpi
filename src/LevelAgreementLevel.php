@@ -437,7 +437,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     {
         global $DB;
 
-        $ID = $la->getField('id');
+        $ID = $la->getID();
         if (!$la->can($ID, READ)) {
             return;
         }

@@ -162,6 +162,7 @@ TWIG;
                     'is_horizontal'  : false,
                     'full_width'     : true,
                     'no_label'       : true,
+                    'aria_label'     : question.fields.name,
                     'mb'             : '',
                 }
             ) }}

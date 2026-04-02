@@ -36,12 +36,19 @@
 {% block title %}{{ __("History") }}{% endblock %}
 
 {% block content %}
-    <ul class="steps steps-vertical overflow-auto flex-grow-1 my-n3 py-3" data-glpi-revisions>
-        {% for revision in revisions %}
+    <ul class="steps steps-vertical overflow-auto my-n3 py-3" data-glpi-revisions>
+        {% for event in history.getEvents() %}
+            {% set is_revision = event is instanceof("\\Glpi\\Knowbase\\History\\RevisionEvent") %}
+            {% set is_log = event is instanceof("\\Glpi\\Knowbase\\History\\LogEvent") %}
+
             {{ include('pages/tools/kb/sidepanel/revision_item.html.twig', {
                 id: id,
-                revision: revision,
+                event: event,
+                is_revision: is_revision,
+                is_log: is_log,
                 can_revert: can_revert,
+                users: users,
+                first: loop.first,
             }, with_context = false) }}
         {% endfor %}
     </ul>

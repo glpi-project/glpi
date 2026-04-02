@@ -176,7 +176,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         parent::initDbConnection();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         global $CFG_GLPI;
 

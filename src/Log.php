@@ -1347,11 +1347,15 @@ class Log extends CommonDBTM
         if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
             $affected_field_crit = [];
             foreach ($filters['affected_fields'] as $index => $affected_field) {
+                $index = (int) $index;
                 $affected_field_crit[$index] = [];
                 foreach (explode(";", $affected_field) as $var) {
                     if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
                         $key = $matches['key'];
                         $operator = $matches['operator'];
+                        if (!empty($operator) && $operator != 'NOT') {
+                            throw new RuntimeException('Invalid operator: ' . $operator);
+                        }
                         // Each field can have multiple values for a given filter
                         $values = explode(',', $matches['values']);
 

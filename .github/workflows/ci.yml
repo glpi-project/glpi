@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - {php-version: "8.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
+          - {php-version: "8.3"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.5"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
@@ -131,7 +131,7 @@ jobs:
               {
                 "include": [
                   {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": true},
-                  {"php-version": "8.2", "db-image": "mariadb:10.6", "run-js-tests": false},
+                  {"php-version": "8.3", "db-image": "mariadb:10.6", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:8.4", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:8.0", "run-js-tests": false}
                 ]
@@ -142,7 +142,7 @@ jobs:
               {
                 "include": [
                   {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": true},
-                  {"php-version": "8.2", "db-image": "mysql:8.4", "run-js-tests": false}
+                  {"php-version": "8.3", "db-image": "mysql:8.4", "run-js-tests": false}
                 ]
               }
             '
@@ -203,31 +203,31 @@ jobs:
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "Functional tests"
+      - name: "Functional tests (phpunit)"
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-functional.sh
-      # - name: "Clone databases"
-      #   if: "${{ success() || failure() }}"
-      #   run: |
-      #     docker compose exec -T db bash -c '
-      #       if command -v mariadb &> /dev/null; then
-      #         DB_CLIENT="mariadb"
-      #         DB_DUMP="mariadb-dump"
-      #       else
-      #         DB_CLIENT="mysql"
-      #         DB_DUMP="mysqldump"
-      #       fi
-      #       for i in 2 3 4; do
-      #         $DB_CLIENT -u root -e "CREATE DATABASE glpi_$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-      #         $DB_DUMP -u root --single-transaction glpi | $DB_CLIENT -u root glpi_$i
-      #         echo "Database glpi_$i created and populated"
-      #       done
-      #     '
-      # - name: "Functional tests (paratest)"
-      #   if: "${{ success() || failure() }}"
-      #   run: |
-      #     docker compose exec -T app .github/actions/test_tests-functional_parallel.sh
+      - name: "Clone databases"
+        if: "${{ success() || failure() }}"
+        run: |
+          docker compose exec -T db bash -c '
+            if command -v mariadb &> /dev/null; then
+              DB_CLIENT="mariadb"
+              DB_DUMP="mariadb-dump"
+            else
+              DB_CLIENT="mysql"
+              DB_DUMP="mysqldump"
+            fi
+            for i in 2 3 4; do
+              $DB_CLIENT -u root -e "CREATE DATABASE glpi_$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+              $DB_DUMP -u root --single-transaction glpi | $DB_CLIENT -u root glpi_$i
+              echo "Database glpi_$i created and populated"
+            done
+          '
+      - name: "Functional tests (paratest)"
+        if: "${{ success() || failure() }}"
+        run: |
+          docker compose exec -T app .github/actions/test_tests-functional_parallel.sh
       - name: "Cache tests"
         if: "${{ success() || failure() }}"
         run: |
@@ -300,13 +300,13 @@ jobs:
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
       - name: "Upload GLPI logs"
         if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
             name: glpi-logs
             path: tests/files/_log
@@ -314,9 +314,14 @@ jobs:
   playwright:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
-    name: "Playwright tests"
+    name: "Playwright tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})"
     runs-on: "ubuntu-latest"
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2]
+        shardTotal: [2]
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -359,30 +364,68 @@ jobs:
         run: docker compose exec -T app npx tsc -p tsconfig.json --noEmit
       - name: Run Playwright tests
         if: ${{ !cancelled() }}
-        run: docker compose exec -T app npx playwright test
+        run:  |
+          docker compose exec -T app bin/console config:set url_base http://localhost:8090 --env=e2e_testing
+          docker compose exec -T app npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
-          grep -v '\*\*\* Test logger' tests/e2e/glpi_files/_log/php-errors.log > /tmp/php-errors-filtered.log || true
-          if [[ $(wc -l < /tmp/php-errors-filtered.log) -ge 1 ]]; then
+          if [[ -s tests/e2e/glpi_files/_log/php-errors.log ]]; then
             echo "PHP errors detected in log file"
             echo "==============================="
-            cat /tmp/php-errors-filtered.log
+            cat tests/e2e/glpi_files/_log/php-errors.log
             exit 1
           fi
-      - uses: actions/upload-artifact@v6
+      - name: Upload blob report
         if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          retention-days: 1
+
+  playwright-merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [playwright]
+    permissions:
+      contents: "read"
+    name: "Merge Playwright reports"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v6"
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v6"
+        with:
+          node-version: "lts/*"
+      - name: "Install dependencies"
+        run: npm ci
+      - name: "Download blob reports"
+        uses: actions/download-artifact@v8
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+      - name: "Merge into HTML Report"
+        run: npx playwright merge-reports --reporter=html,playwright-ctrf-json-reporter ./all-blob-reports
+      - name: "Upload HTML report"
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
       - name: "Upload output"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: glpi-playwright-output
           path: tests/e2e/output
           retention-days: 7
-      - name: Publish test summary results
+      - name: "Publish test summary results"
         if: ${{ !cancelled() }}
-        run: npx github-actions-ctrf ctrf/ctrf-report.json
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: ctrf/ctrf-report.json
+          collapse-large-reports: true

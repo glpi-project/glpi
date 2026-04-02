@@ -220,6 +220,7 @@ final class Form extends CommonDBTM implements
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(self::getTable(), [
                 'forms_categories_id' => $item->getID(),
+                'is_draft' => 0,
             ]);
         }
 
@@ -608,7 +609,7 @@ final class Form extends CommonDBTM implements
             // because the keys must be preserved
             $questions_data = (new Question())->find(
                 [$section::getForeignKeyField() => $section->fields['id']],
-                'vertical_rank ASC, horizontal_rank ASC',
+                ['vertical_rank ASC', 'horizontal_rank ASC'],
             );
             foreach ($questions_data as $row) {
                 $question = new Question();

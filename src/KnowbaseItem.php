@@ -40,9 +40,12 @@ use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionSeparator;
 use Glpi\Knowbase\EditorActionType;
+use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
@@ -220,15 +223,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $url;
     }
 
+    /**
+     * @param array<string|array<string>>|null $menus
+     * @param array<string, mixed> $options
+     */
+    public static function displayFullPageForItem(
+        $id,
+        ?array $menus = null,
+        array $options = []
+    ): void {
+        // Load Tiptap editor for KB articles
+        Html::requireJs('tiptap');
+
+        parent::displayFullPageForItem($id, $menus, $options);
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
-        $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
-        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }
@@ -236,21 +252,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case self::class:
                     $ong[1] = self::createTabEntry(self::getTypeName(1));
-                    if ($item->canUpdateItem()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = $item->countVisibilities();
-                        }
-                        $ong[2] = self::createTabEntry(
-                            _n('Target', 'Targets', Session::getPluralNumber()),
-                            $nb,
-                            $item::class
-                        );
-                        $ong[3] = self::createTabEntry(__('Edit'), 0, $item::class, 'ti ti-pencil');
-                    }
                     return $ong;
             }
         }
@@ -264,13 +268,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
         switch ($tabnum) {
             case 1:
-                return (bool) $item->showFull(['edit_mode' => true]);
-
-            case 2:
-                return $item->showVisibility();
-
-            case 3:
-                return $item->showForm($item->getID());
+                return (bool) $item->showFull(['mode' => 'edit']);
 
             default:
                 return false;
@@ -360,14 +358,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ];
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);
-        }
-
-        // Support old "knowbaseitemcategories_id" input
-        if (isset($this->input['knowbaseitemcategories_id'])) {
-            Toolbox::deprecated('knowbaseitemcategories_id input is deprecated. Use _categories instead');
-            $categories = $this->input['knowbaseitemcategories_id'];
-            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
-            unset($this->input['knowbaseitemcategories_id']);
         }
 
         // Handle categories
@@ -488,7 +478,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Handle logged in users
         // Show FAQ for helpdesk user, knowledge base for central users
-        $criteria['WHERE'] = Session::getCurrentInterface() === "helpdesk"
+        $criteria['WHERE'] = Session::getCurrentInterface() === "helpdesk" || !Session::haveRight(self::$rightname, READ)
             ? self::getVisibilityCriteriaFAQ()
             : self::getVisibilityCriteriaKB();
         return $criteria;
@@ -757,14 +747,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ]
         );
 
-        // Support old "knowbaseitemcategories_id" input
-        if (isset($this->input['knowbaseitemcategories_id'])) {
-            Toolbox::deprecated('knowbaseitemcategories_id input is deprecated. Use _categories instead');
-            $categories = $this->input['knowbaseitemcategories_id'];
-            $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
-            unset($this->input['knowbaseitemcategories_id']);
-        }
-
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
         NotificationEvent::raiseEvent('update', $this);
@@ -787,64 +769,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
-        $canedit = $this->can($ID, UPDATE);
-
-        $item = null;
-        // Load ticket solution
-        if (empty($ID) && !empty($options['item_itemtype']) && !empty($options['item_items_id'])) {
-            /** @var ?CommonITILObject $item */
-            if ($item = getItemForItemtype($options['item_itemtype'])) {
-                if ($item->getFromDB($options['item_items_id'])) {
-                    $this->fields['name']   = $item->getField('name');
-                    if (isset($options['_fup_to_kb'])) {
-                        $fup = new ITILFollowup();
-                        $fup->getFromDBByCrit([
-                            'id'           => $options['_fup_to_kb'],
-                            'itemtype'     => $item::class,
-                            'items_id'     => $item->getID(),
-                        ]);
-                        $this->fields['answer'] = $fup->getField('content');
-                    } elseif (isset($options['_task_to_kb'])) {
-                        $task = $item->getTaskClassInstance();
-                        $task->getFromDB($options['_task_to_kb']);
-                        $this->fields['answer'] = $task->getField('content');
-                    } elseif (isset($options['_sol_to_kb'])) {
-                        $solution = new ITILSolution();
-                        $solution->getFromDBByCrit([
-                            'itemtype'     => $item::class,
-                            'items_id'     => $item->getID(),
-                            [
-                                'NOT' => ['status'       => CommonITILValidation::REFUSED],
-                            ],
-                        ]);
-                        $this->fields['answer'] = $solution->getField('content');
-                    }
-                    if ($item->isField('itilcategories_id')) {
-                        $ic = new ITILCategory();
-                        if (
-                            $ic->getFromDB($item->getField('itilcategories_id'))
-                            && $ic->fields['knowbaseitemcategories_id'] > 0
-                        ) {
-                            $this->fields['knowbaseitemcategories_id'] = $ic->fields['knowbaseitemcategories_id'];
-                        }
-                    }
-                }
-            }
-        }
-
-        if (($item !== null) && $item = getItemForItemtype($options['item_itemtype'])) {
-            $item->getFromDB($options['item_items_id']);
-        }
-
-        TemplateRenderer::getInstance()->display('pages/tools/kb/knowbaseitem.html.twig', [
-            'item' => $this,
-            'linked_item' => $item,
-            'no_header' => true,
-            'params' => [
-                'canedit' => $canedit,
-            ] + $options,
-        ]);
-
+        $this->showFull(['mode' => 'add']);
         return true;
     }
 
@@ -878,7 +803,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function showFull($options = [])
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
 
         if (!$this->can($this->fields['id'], READ)) {
             return false;
@@ -886,77 +811,177 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $default_options = [
             'display' => true,
-            'edit_mode' => false,
+            'mode' => "view",
         ];
         $options = array_merge($default_options, $options);
-
-        $linkusers_id = true;
-        if (
-            ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
-            || (Session::getCurrentInterface() === "helpdesk")
-            || !User::canView()
-        ) {
-            $linkusers_id = false;
-        }
+        $mode = $options['mode'];
 
         $this->updateCounter();
 
-        $categories = KnowbaseItem_KnowbaseItemCategory::getItems($this);
-        $article_categories = [];
-        foreach ($categories as $category) {
-            $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
-            $fullcategoryname = getTreeValueCompleteName('glpi_knowbaseitemcategories', $knowbaseitemcategories_id);
-            $article_categories[$knowbaseitemcategories_id] = $fullcategoryname;
+        $params = [
+            'item_id' => $this->fields['id'],
+            'subject' => $this->fields['name'],
+            'answer'  => $this->getAnswer(),
+            'mode'    => $mode,
+        ];
+
+        if ($mode === "edit" || $mode === "view") {
+            $can_update = $this->can($this->fields['id'], UPDATE);
+
+            // Add last update info
+            $last_update_info = $this->getLastUpdateInfo();
+            $params['last_update_date']            = $last_update_info->getRawDate();
+            $params['last_update_relative_date']   = $last_update_info->getRelativeDate();
+            $params['last_update_author_name']     = $last_update_info->getAuthorName();
+            $params['last_update_author_link']     = $last_update_info->getAuthorLink();
+            $params['last_update_can_view_author'] = $last_update_info->canViewAuthor();
+
+            // Add linked documents info
+            $documents = $this->getDocumentsInfo();
+            $params['documents']       = $documents;
+            $params['documents_count'] = count($documents);
+            $params['can_add_documents'] = $can_update;
+
+            // Data for document linking dropdown
+            if ($can_update) {
+                $used_document_ids = array_column($documents, 'id');
+                $params['used_document_ids']    = $used_document_ids;
+                $params['document_idor_token']  = Session::getNewIDORToken('Document', [
+                    'entity_restrict' => -1,
+                ]);
+            }
+
+            // Add associated items info
+            $items                         = $this->getAssociatedItemsInfo();
+            $params['related_items']       = $items;
+            $params['related_items_count'] = count($items);
+            $params['can_link_items']      = $can_update;
+
+            // General fields
+            $params['views']        = $this->fields['view'];
+            $params['can_edit']     = $can_update;
+            $params['illustration'] = $this->fields['illustration'] ?: 'kb-faq';
+
+            // Translations informations
+            $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
+            $params['existing_translations'] = array_values(KnowbaseItemTranslation::getAlreadyTranslatedForItem($this));
+            $params['default_language']      = $CFG_GLPI['language'];
+
+            // Add actions
+            $params['actions'] = $mode === "edit" ? $this->getEditorActions() : [];
+        } elseif ($mode === "add") {
+            $params['can_edit'] = $this->can(-1, CREATE);
         }
 
-        // Show documents attached to the FAQ Item
+        $out = TemplateRenderer::getInstance()->render(
+            'pages/tools/kb/article.html.twig',
+            $params,
+        );
+
+        if ($options['display']) {
+            echo $out;
+        } else {
+            return $out;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return list<array{
+     *      'id': int,
+     *      'filename': string,
+     *      'extension': string,
+     *      'icon_class': string,
+     *      'color_class': string,
+     *      'download_url': string,
+     * }>
+     */
+    private function getDocumentsInfo(): array
+    {
+        global $DB;
+
+        // Get documents attached to the FAQ Item
         $sort = 'filename';
         $order = 'ASC';
         $criteria = Document_Item::getDocumentForItemRequest($this, ["$sort $order"]);
         $criteria['WHERE'][] = ['is_deleted' => '0'];
         $iterator = $DB->request($criteria);
 
-        $attachments = [];
         $documents = [];
-        $heading_names = [];
         if (count($iterator) > 0) {
             $document = new Document();
             foreach ($iterator as $data) {
-                $docID        = $data["id"];
-                $downloadlink = htmlescape(NOT_AVAILABLE);
+                $doc_id = (int) $data["id"];
 
-                if ($document->getFromDB($docID)) {
-                    $downloadlink = $document->getDownloadLink();
-
+                if ($document->getFromDB($doc_id)) {
                     // Enrich documents data for main tab display
-                    $filename = $document->fields['filename'] ?? '';
+                    $filename = (string) ($document->fields['filename'] ?? '');
                     $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-                    $iconAndColor = self::getDocumentIconAndColor($extension);
+                    $icon_and_color = self::getDocumentIconAndColor($extension);
 
                     $documents[] = [
-                        'id' => $docID,
+                        'assoc_id' => $data['assocID'],
+                        'id' => $doc_id,
                         'filename' => $filename,
                         'extension' => $extension,
-                        'icon_class' => $iconAndColor['icon_class'],
-                        'color_class' => $iconAndColor['color_class'],
+                        'icon_class' => $icon_and_color['icon_class'],
+                        'color_class' => $icon_and_color['color_class'],
                         'download_url' => $document->getDownloadUrl(),
                     ];
                 }
-
-                if (!isset($heading_names[$data["documentcategories_id"]])) {
-                    $heading_names[$data["documentcategories_id"]] = Dropdown::getDropdownName(
-                        "glpi_documentcategories",
-                        $data["documentcategories_id"]
-                    );
-                }
-
-                $attachments[] = [
-                    'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                    'filename' => $downloadlink,
-                    'heading' => $heading_names[$data["documentcategories_id"]],
-                    'assocdate' => $data["assocdate"],
-                ];
             }
+        }
+
+        return $documents;
+    }
+
+    /**
+     * @return list<array{
+     *      'id': int,
+     *      'items_id': int,
+     *      'itemtype': string,
+     *      'name': string,
+     *      'link_url': string,
+     *      'type_name': string,
+     *      'icon_class': string,
+     *      'color_class': string,
+     *      'sector': string,
+     * }>
+     */
+    private function getAssociatedItemsInfo(): array
+    {
+        // Fetch related items for the KB article
+        $related_items = [];
+        $linked_items_data = KnowbaseItem_Item::getItems($this);
+
+        foreach ($linked_items_data as $data) {
+            $linked_itemtype = $data['itemtype'];
+            $linked_items_id = $data['items_id'];
+
+            if (!is_a($linked_itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+            /** @var class-string<CommonDBTM> $linked_itemtype */
+
+            $linked_item = new $linked_itemtype();
+            if (!$linked_item->getFromDB($linked_items_id) || !$linked_item->can($linked_items_id, READ)) {
+                continue;
+            }
+
+            $icon_and_color = self::getRelatedItemIconAndColor($linked_itemtype);
+
+            $related_items[] = [
+                'id'          => $data['id'],
+                'items_id'    => $linked_items_id,
+                'itemtype'    => $linked_itemtype,
+                'name'        => $linked_item->getName(),
+                'link_url'    => $linked_item->getLinkURL(),
+                'type_name'   => $linked_itemtype::getTypeName(1),
+                'icon_class'  => $icon_and_color['icon_class'],
+                'color_class' => $icon_and_color['color_class'],
+                'sector'      => $icon_and_color['sector'],
+            ];
         }
 
         $writer_link = '';
@@ -964,23 +989,55 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $writer_link = getUserLink($this->fields["users_id"]);
         }
 
-        $last_update_info = $this->getLastUpdateInfo();
+        return $related_items;
+    }
+
+    /** @return array<EditorAction|EditorActionSeparator> */
+    private function getEditorActions(): array
+    {
         $actions = [];
-        if ($this->canComment()) {
+        if ($this->can($this->fields['id'], UPDATE)) {
             $actions[] = new EditorAction(
-                label: "Comments",
-                icon: "ti ti-message-circle",
+                label: __("History"),
+                icon: "ti ti-history",
                 type: EditorActionType::LOAD_SIDE_PANEL,
                 params: [
                     'id' => $this->fields['id'],
-                    'key' => 'comments',
+                    'key' => 'history',
                 ],
-                counter: countElementsInTable(KnowbaseItem_Comment::getTable(), [
+                // 1 for initial revision
+                counter: 1 + countElementsInTable(KnowbaseItem_Revision::getTable(), [
                     'knowbaseitems_id' => $this->fields['id'],
+                    'language' => '',
                 ]),
             );
-        }
-        if ($this->canUpdateItem()) {
+
+            if ($this->canComment()) {
+                $actions[] = new EditorAction(
+                    label: "Comments",
+                    icon: "ti ti-message-circle",
+                    type: EditorActionType::LOAD_SIDE_PANEL,
+                    params: [
+                        'id' => $this->fields['id'],
+                        'key' => 'comments',
+                    ],
+                    counter: countElementsInTable(KnowbaseItem_Comment::getTable(), [
+                        'knowbaseitems_id' => $this->fields['id'],
+                    ]),
+                );
+            }
+
+            $actions[] = new EditorAction(
+                label: "Service catalog",
+                icon: "ti ti-library",
+                type: EditorActionType::LOAD_SIDE_PANEL,
+                params: [
+                    'id' => $this->fields['id'],
+                    'key' => 'service-catalog',
+                ],
+            );
+
+            $actions[] = new EditorActionSeparator();
             $actions[] = new EditorAction(
                 label: "Add to FAQ",
                 icon: "ti ti-bookmark",
@@ -992,16 +1049,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
             $actions[] = new EditorAction(
-                label: "Service catalog",
-                icon: "ti ti-library",
-                type: EditorActionType::LOAD_SIDE_PANEL,
+                label: _n('Target', 'Targets', Session::getPluralNumber()),
+                icon: "ti ti-eye",
+                type: EditorActionType::OPEN_MODAL,
                 params: [
                     'id' => $this->fields['id'],
-                    'key' => 'service-catalog',
+                    'key' => 'SidePanel/permissions',
+                    'title' => _n('Target', 'Targets', Session::getPluralNumber()),
                 ],
             );
         }
-        if ($this->canDeleteItem()) {
+
+        if ($this->can($this->fields['id'], PURGE)) {
+            $actions[] = new EditorActionSeparator();
             $actions[] = new EditorAction(
                 label: __("Delete article"),
                 icon: "ti ti-trash",
@@ -1012,57 +1072,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 is_danger: true,
             );
         }
-        if ($this->canUpdateItem()) {
-            $actions[] = new EditorAction(
-                label: __("History"),
-                icon: "ti ti-history",
-                type: EditorActionType::LOAD_SIDE_PANEL,
-                params: [
-                    'id' => $this->fields['id'],
-                    'key' => 'revisions',
-                ],
-                counter: countElementsInTable(KnowbaseItem_Revision::getTable(), [
-                    'knowbaseitems_id' => $this->fields['id'],
-                    'language' => '',
-                ]),
-            );
-        }
-        $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
-            'views' => $this->fields['view'],
-            'answer' => $this->getAnswer(),
-            'subject' => $this->fields['name'],
-            'last_update_date' => $last_update_info->getRawDate(),
-            'last_update_relative_date' => $last_update_info->getRelativeDate(),
-            'last_update_author_name' => $last_update_info->getAuthorName(),
-            'last_update_author_link' => $last_update_info->getAuthorLink(),
-            'last_update_can_view_author' => $last_update_info->canViewAuthor(),
-            'documents' => $documents,
-            'documents_count' => count($documents),
-            'can_add_documents' => $this->canUpdateItem(),
-            'item_id' => $this->fields['id'],
-            'edit_mode' => $options['edit_mode'],
-            'actions' => $actions,
-        ]);
-        if ($options['display']) {
-            echo $out;
-        } else {
-            return $out;
-        }
 
-        return true;
+        return $actions;
     }
 
     public function getLastUpdateInfo(): LastUpdateInfo
     {
-        // TODO: the new history feature has not yet been deployed so we can't
-        // use it yet to retrieve the correct information.
-        // For now, we will just use the author + last update date.
-        // It will be improved later.
-        $author = User::getById($this->fields['users_id']) ?: null;
+        $history = (new HistoryBuilder($this))->buildHistory();
+        $event = $history->getLatestEvent();
+
+        $author = User::getById($event->getAuthor()) ?: null;
         return new LastUpdateInfo(
             author_link: $author?->getLinkUrl(),
             author_name: $author?->getName(),
-            date: $this->fields['date_mod'],
+            date: $event->getDate(),
             can_view_author: $author ? $author->can($author->getID(), READ) : false,
         );
     }
@@ -1109,6 +1132,33 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'color_class' => 'text-secondary',
             ],
         };
+    }
+
+    /**
+     * Get icon class and color class for a related item based on its menu sector.
+     *
+     * @param class-string<CommonDBTM> $itemtype The itemtype class name
+     * @return array{icon_class: string, color_class: string, sector: string}
+     */
+    private static function getRelatedItemIconAndColor(string $itemtype): array
+    {
+        $sector = Html::getMenuSectorForItemtype($itemtype);
+
+        $color_mapping = [
+            'assets'     => 'text-azure',   // Blue
+            'helpdesk'   => 'text-yellow',  // Yellow
+            'tools'      => 'text-teal',    // Dark green
+            'management' => 'text-purple',  // Purple
+            'admin'      => 'text-orange',  // Orange
+        ];
+
+        $color_class = $color_mapping[$sector ?? ''] ?? 'text-secondary';
+
+        return [
+            'icon_class' => $itemtype::getIcon(),
+            'color_class' => $color_class,
+            'sector' => $sector ?? 'unknown',
+        ];
     }
 
     /**
@@ -2117,6 +2167,52 @@ TWIG, $twig_params);
             ],
         ];
 
+        $tab[] = [
+            'id'   => 'service_catalog',
+            'name' => __('Service catalog'),
+        ];
+
+        $tab[] = [
+            'id'                 => '84',
+            'table'              => self::getTable(),
+            'field'              => 'show_in_service_catalog',
+            'name'               => __("Show in service catalog"),
+            'datatype'           => 'bool',
+        ];
+
+        $tab[] = [
+            'id'                 => '85',
+            'table'              => self::getTable(),
+            'field'              => 'is_pinned',
+            'name'               => __("Pin to top of the service catalog"),
+            'datatype'           => 'bool',
+        ];
+
+        $tab[] = [
+            'id'                 => '86',
+            'table'              => self::getTable(),
+            'field'              => 'description',
+            'name'               => __("Description"),
+            'datatype'           => 'text',
+        ];
+
+        $tab[] = [
+            'id'                 => '87',
+            'table'              => Category::getTable(),
+            'field'              => 'name',
+            'name'               => _n("Category", "Categories", 1),
+            'datatype'           => 'dropdown',
+        ];
+
+        $tab[] = [
+            'id'                 => '88',
+            'table'              => self::getTable(),
+            'field'              => 'illustration',
+            'name'               => __("Illustration"),
+            'datatype'           => 'text',
+            'search'             => false,
+        ];
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -2137,6 +2233,12 @@ TWIG, $twig_params);
 
     public function pre_updateInDB()
     {
+        // Only create a revision if the answer was modified.
+        // Name changes are tracked separately as "Renamed" events in the history.
+        if (!in_array('answer', $this->updates)) {
+            return;
+        }
+
         $revision = new KnowbaseItem_Revision();
         $kb = new KnowbaseItem();
         $kb->getFromDB($this->getID());
@@ -2187,7 +2289,7 @@ TWIG, $twig_params);
     protected function getShowVisibilityDropdownParams()
     {
         $params = parent::getShowVisibilityDropdownParams();
-        $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
+        $params['right'] = $this->fields['is_faq'] ? 'faq' : 'knowbase';
         $params['allusers'] = 1;
         return $params;
     }
@@ -2206,7 +2308,6 @@ TWIG, $twig_params);
 
         $values = [
             'id'     => $this->getID(),
-            'name'   => $revision->fields['name'],
             'answer' => $revision->fields['answer'],
         ];
 
@@ -2387,5 +2488,15 @@ TWIG, $twig_params);
     public function getServiceCatalogLink(): string
     {
         return $this->getLinkURL();
+    }
+
+    #[Override]
+    public static function getSectorizedDetails(): array
+    {
+        if (Session::getCurrentInterface() == 'central') {
+            return ['tools', "knowbaseitem"];
+        } else {
+            return [];
+        }
     }
 }

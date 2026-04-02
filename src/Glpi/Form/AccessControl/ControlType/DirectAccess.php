@@ -184,7 +184,7 @@ final class DirectAccess implements ControlTypeInterface
             // Disable this fallback for non ajax requests as the token should
             // always be re-specified in this case
             // Keep an exception for links to documents that may be clicked from the form
-            && (Toolbox::isAjax() || str_starts_with('/front/document.send.php', $current_route_path))
+            && (Toolbox::isAjax() || str_starts_with($current_route_path, '/front/document.send.php'))
             // Disable this fallback for the service catalog, as it is out of scope
             && !str_contains($current_route_path, "ServiceCatalog")
         ) {

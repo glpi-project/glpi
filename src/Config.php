@@ -48,6 +48,7 @@ use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
+use Safe\Exceptions\OpcacheException;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\chdir;
@@ -220,19 +221,19 @@ class Config extends CommonDBTM
             $input['proxy_passwd'] = '';
         }
 
-        // Manage DB Slave process
-        if (isset($input['_dbslave_status'])) {
-            $already_active = DBConnection::isDBSlaveActive();
+        // Manage DB replica process
+        if (isset($input['_dbreplica_status'])) {
+            $already_active = DBConnection::isDBReplicaActive();
 
-            if ($input['_dbslave_status']) {
+            if ($input['_dbreplica_status']) {
                 DBConnection::changeCronTaskStatus(true);
 
                 if (!$already_active) {
-                    // Activate Slave from the "system" tab
-                    DBConnection::createDBSlaveConfig();
+                    // Activate replica from the "system" tab
+                    DBConnection::createDBReplicaConfig();
                 } elseif (isset($input["_dbreplicate_dbhost"])) {
                     // Change parameter from the "replicate" tab
-                    DBConnection::saveDBSlaveConf(
+                    DBConnection::saveDBReplicaConf(
                         $input["_dbreplicate_dbhost"],
                         $input["_dbreplicate_dbuser"],
                         $input["_dbreplicate_dbpassword"],
@@ -241,8 +242,8 @@ class Config extends CommonDBTM
                 }
             }
 
-            if (!$input['_dbslave_status'] && $already_active) {
-                DBConnection::deleteDBSlaveConfig();
+            if (!$input['_dbreplica_status'] && $already_active) {
+                DBConnection::deleteDBReplicaConfig();
                 DBConnection::changeCronTaskStatus(false);
             }
         }
@@ -371,7 +372,7 @@ class Config extends CommonDBTM
 
         // Prevent some input values to be saved in DB
         $values_to_filter = [
-            '_dbslave_status',
+            '_dbreplica_status',
             '_dbreplicate_dbhost',
             '_dbreplicate_dbuser',
             '_dbreplicate_dbpassword',
@@ -540,11 +541,11 @@ class Config extends CommonDBTM
 
 
     /**
-     * Print the config form for slave DB
+     * Print the config form for replica DB
      *
      * @return void
-     **/
-    public function showFormDBSlave()
+     */
+    private function showFormDBReplica(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -552,15 +553,15 @@ class Config extends CommonDBTM
             return;
         }
 
-        $DBslave = DBConnection::getDBSlaveConf();
+        $DBReplica = DBConnection::getDBReplicaConf();
         $replica_config = [
-            'host' => is_array($DBslave->dbhost) ? implode(' ', $DBslave->dbhost) : $DBslave->dbhost,
-            'default' => $DBslave->dbdefault,
-            'user' => $DBslave->dbuser,
-            'password' => rawurldecode($DBslave->dbpassword),
+            'host' => is_array($DBReplica->dbhost) ? implode(' ', $DBReplica->dbhost) : $DBReplica->dbhost,
+            'default' => $DBReplica->dbdefault,
+            'user' => $DBReplica->dbuser,
+            'password' => rawurldecode($DBReplica->dbpassword),
         ];
 
-        $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
+        $hosts = is_array($DBReplica->dbhost) ? $DBReplica->dbhost : [$DBReplica->dbhost];
         $replication_delay = [];
         foreach (array_keys($hosts) as $host_num) {
             $replication_delay[$host_num] = DBConnection::getReplicateDelay($host_num);
@@ -754,7 +755,12 @@ class Config extends CommonDBTM
 
         $opcache_info = false;
         $opcache_ext = 'Zend OPcache';
-        $opcache_enabled = extension_loaded($opcache_ext) && ($opcache_info = opcache_get_status(false));
+        $opcache_enabled = false;
+        try {
+            $opcache_enabled = extension_loaded($opcache_ext) && ($opcache_info = opcache_get_status(false));
+        } catch (OpcacheException) {
+            //empty catch
+        }
         $opcache_version = $opcache_enabled ? phpversion($opcache_ext) : '';
 
         $cache_manager = new CacheManager();
@@ -1030,10 +1036,10 @@ class Config extends CommonDBTM
                 }
 
                 if (
-                    DBConnection::isDBSlaveActive()
+                    DBConnection::isDBReplicaActive()
                     && Config::canUpdate()
                 ) {
-                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::class, 'ti ti-database');  // Slave
+                    $tabs[6]  = self::createTabEntry(_n('SQL replica', 'SQL replicas', Session::getPluralNumber()), 0, $item::class, 'ti ti-database');  // replica
                 }
                 return $tabs;
 
@@ -1085,7 +1091,7 @@ class Config extends CommonDBTM
                     break;
 
                 case 6:
-                    $item->showFormDBSlave();
+                    $item->showFormDBReplica();
                     break;
 
                 case 7:

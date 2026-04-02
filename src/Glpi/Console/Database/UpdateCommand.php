@@ -152,7 +152,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         $this->db->disableTableCaching();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (!$output instanceof ConsoleOutputInterface) {
             throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');

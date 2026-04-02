@@ -500,7 +500,9 @@ class Provider
         $ticketUserTable = Ticket_User::getTable();
         $userTable = User::getTable();
 
+        /** @var QueryExpression $ownExceeded */
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
+        /** @var QueryExpression $resolveExceeded */
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
         $slaState = QueryFunction::if(
             condition: [$ownExceeded, $resolveExceeded],
@@ -1479,7 +1481,7 @@ class Provider
             $li_table = Group_Ticket::getTable();
             $ug_table = Group::getTable();
             $n_fields = [
-                "$ug_table.completename as first",
+                "$ug_table.completename as name",
             ];
             $params['icon'] ??= Group::getIcon();
         }
@@ -1568,7 +1570,7 @@ class Provider
             $s_params['criteria'][0]['value'] = $result['actor_id'];
             $data[] = [
                 'number' => $result['nb_tickets'],
-                'label'  => formatUserName($result['actor_id'], $result['username'], $result['second'], $result['first']),
+                'label'  => $case_array[0] === 'user' ? formatUserName($result['actor_id'], $result['username'], $result['second'], $result['first']) : $result['name'],
                 'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
         }
