@@ -150,6 +150,48 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             InputOption::VALUE_NONE,
             __('Use strict configuration, to enforce warnings triggering on deprecated or discouraged usages')
         );
+
+        $this->addOption(
+            'db-ssl',
+            null,
+            InputOption::VALUE_NONE,
+            __('Enable SSL for database connection')
+        );
+
+        $this->addOption(
+            'db-ssl-ca',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            __('Path to the database SSL CA certificate file')
+        );
+
+        $this->addOption(
+            'db-ssl-cert',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            __('Path to the database SSL client certificate file')
+        );
+
+        $this->addOption(
+            'db-ssl-key',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            __('Path to the database SSL client key file')
+        );
+
+        $this->addOption(
+            'db-ssl-capath',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            __('Path to a directory containing trusted SSL CA certificates')
+        );
+
+        $this->addOption(
+            'db-ssl-cipher',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            __('List of allowable ciphers for SSL database connection')
+        );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -204,6 +246,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $reconfigure = $input->getOption('reconfigure');
         $strict_configuration = $input->getOption('strict-configuration');
 
+        $db_ssl         = $input->getOption('db-ssl');
+        $db_ssl_ca      = $input->getOption('db-ssl-ca');
+        $db_ssl_cert    = $input->getOption('db-ssl-cert');
+        $db_ssl_key     = $input->getOption('db-ssl-key');
+        $db_ssl_capath  = $input->getOption('db-ssl-capath');
+        $db_ssl_cipher  = $input->getOption('db-ssl-cipher');
+
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
             // Prevent overriding of existing DB
             throw new EarlyExitException(
@@ -219,17 +268,21 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $output,
             $db_hostport,
             $db_name,
-            $db_user
+            $db_user,
+            $db_ssl
         );
 
         mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new mysqli();
+        if ($db_ssl) {
+            $mysqli->ssl_set($db_ssl_key, $db_ssl_cert, $db_ssl_ca, $db_ssl_capath, $db_ssl_cipher);
+        }
         if (intval($db_port) > 0) {
             // Network port
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port);
         } else {
             // Unix Domain Socket
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port);
         }
 
         if (0 !== $mysqli->connect_errno) {
@@ -264,19 +317,31 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $allow_signed_keys = false;
         } else {
             // Instanciate DB to be able to compute boolean properties flags.
-            $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
+            $db = new class ($db_hostport, $db_user, $db_pass, $db_name, $db_ssl, $db_ssl_key, $db_ssl_cert, $db_ssl_ca, $db_ssl_capath, $db_ssl_cipher) extends DBmysql {
                 /**
                  * @param string $dbhost
                  * @param string $dbuser
                  * @param string $dbpassword
                  * @param string $dbdefault
+                 * @param bool $dbssl
+                 * @param string|null $dbsslkey
+                 * @param string|null $dbsslcert
+                 * @param string|null $dbsslca
+                 * @param string|null $dbsslcapath
+                 * @param string|null $dbsslcacipher
                  */
-                public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
+                public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault, $dbssl, $dbsslkey, $dbsslcert, $dbsslca, $dbsslcapath, $dbsslcacipher)
                 {
                     $this->dbhost     = $dbhost;
                     $this->dbuser     = $dbuser;
                     $this->dbpassword = $dbpassword;
                     $this->dbdefault  = $dbdefault;
+                    $this->dbssl      = $dbssl;
+                    $this->dbsslkey   = $dbsslkey;
+                    $this->dbsslcert  = $dbsslcert;
+                    $this->dbsslca    = $dbsslca;
+                    $this->dbsslcapath    = $dbsslcapath;
+                    $this->dbsslcacipher  = $dbsslcacipher;
                     parent::__construct();
                 }
             };
@@ -307,7 +372,14 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_datetime,
-            $allow_signed_keys
+            $allow_signed_keys,
+            GLPI_CONFIG_DIR,
+            $db_ssl,
+            $db_ssl_key,
+            $db_ssl_cert,
+            $db_ssl_ca,
+            $db_ssl_capath,
+            $db_ssl_cipher
         );
         if (!$result) {
             $message = sprintf(
@@ -330,7 +402,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_datetime,
-            $allow_signed_keys
+            $allow_signed_keys,
+            $db_ssl,
+            $db_ssl_key,
+            $db_ssl_cert,
+            $db_ssl_ca,
+            $db_ssl_capath,
+            $db_ssl_cipher
         ) extends DBmysql {
             /**
              * @param string $dbhost
@@ -342,6 +420,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param bool $use_utf8mb4
              * @param bool $allow_datetime
              * @param bool $allow_signed_keys
+             * @param bool $dbssl
+             * @param string|null $dbsslkey
+             * @param string|null $dbsslcert
+             * @param string|null $dbsslca
+             * @param string|null $dbsslcapath
+             * @param string|null $dbsslcacipher
              */
             public function __construct(
                 $dbhost,
@@ -352,7 +436,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 $log_deprecation_warnings,
                 $use_utf8mb4,
                 $allow_datetime,
-                $allow_signed_keys
+                $allow_signed_keys,
+                $dbssl,
+                $dbsslkey,
+                $dbsslcert,
+                $dbsslca,
+                $dbsslcapath,
+                $dbsslcacipher
             ) {
                 $this->dbhost     = $dbhost;
                 $this->dbuser     = $dbuser;
@@ -365,6 +455,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 $this->allow_signed_keys = $allow_signed_keys;
 
                 $this->log_deprecation_warnings = $log_deprecation_warnings;
+
+                $this->dbssl         = $dbssl;
+                $this->dbsslkey      = $dbsslkey;
+                $this->dbsslcert     = $dbsslcert;
+                $this->dbsslca       = $dbsslca;
+                $this->dbsslcapath   = $dbsslcapath;
+                $this->dbsslcacipher = $dbsslcacipher;
 
                 $this->clearSchemaCache();
             }
@@ -425,6 +522,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      * @param string $db_hostport DB host and port
      * @param string $db_name DB name
      * @param string $db_user DB username
+     * @param bool $db_ssl Whether SSL is enabled
      *
      * @return void
      */
@@ -433,13 +531,15 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         OutputInterface $output,
         $db_hostport,
         $db_name,
-        $db_user
+        $db_user,
+        bool $db_ssl = false
     ) {
 
         $informations = new Table($output);
         $informations->addRow([__('Database host'), $db_hostport]);
         $informations->addRow([__('Database name'), $db_name]);
         $informations->addRow([__('Database user'), $db_user]);
+        $informations->addRow([__('SSL'), $db_ssl ? __('Enabled') : __('Disabled')]);
         $informations->render();
 
         $this->askForConfirmation();
