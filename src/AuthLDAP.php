@@ -600,24 +600,25 @@ TWIG, $twig_params);
 TWIG, ['msg' => _x('button', 'Test')]);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <script>
-                    $(() => {
-                        $('button[name="test_ldap_replicate"]').on('click', (e) => {
-                            const replicate_id = $(e.target).closest('tr').data('id');
-                            $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
-                            $(e.target).prop('disabled', true);
-                            $.post(
-                                '{{ path('ajax/ldap.php')|e('js') }}',
-                                {
-                                    id: '{{ authldaps_id|e('js') }}',
-                                    ldap_replicate_id: replicate_id,
-                                    action: 'test_ldap_replicate'
-                                }
-                            ).then(() => {
-                                displaySessionMessages();
-                                $(e.target).find('.spinner-border').remove();
-                                $(e.target).prop('disabled', false);
-                            });
+                <script type="module">
+                    $('button[name="test_ldap_replicate"]').on('click', (e) => {
+                        const replicate_id = $(e.target).closest('tr').data('id');
+                        $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
+                        $(e.target).prop('disabled', true);
+                        const testUrl = '{{ path('/AuthLDAP/')|e('js') }}{{ authldaps_id }}/Replica/' + replicate_id + '/Test';
+                        $.post(
+                            testUrl,
+                            {
+                                authldaps_id: '{{ authldaps_id|e('js') }}',
+                                authldapreplicates_id: replicate_id,
+                            }
+                        ).then(() => {
+                            glpi_toast_success('{{ __("Test successful")|e('js') }}');
+                        }, () => {
+                            glpi_toast_error('{{ __("Test failed")|e('js') }}');
+                        }).always(() => {
+                            $(e.target).find('.spinner-border').remove();
+                            $(e.target).prop('disabled', false);
                         });
                     });
                 </script>
