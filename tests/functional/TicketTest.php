@@ -4399,7 +4399,7 @@ class TicketTest extends DbTestCase
 
         // Add a task to the child ticket
         $task = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id' => $child_id,
                 'content'    => 'Task on non-deleted child',
