@@ -186,6 +186,7 @@ final class TilesManager
         $it = $DB->request([
             'SELECT' => ['itemtype_tile', 'items_id_tile'],
             'FROM'   => Item_Tile::getTable(),
+            'ORDER' => ['itemtype_item', 'items_id_item', 'rank'],
         ]);
 
         foreach ($it as $row) {
