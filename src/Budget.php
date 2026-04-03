@@ -285,17 +285,7 @@ class Budget extends CommonDropdown
      */
     public static function countForBudget(Budget $item): int
     {
-        /** @var DBmysql $DB */
-        global $DB;
-
-        // Use the same criteria as showItems() but without pagination
-        $count_criteria = [
-            'FROM' => $item->getItemListCriteria(),
-            'COUNT' => 'cpt',
-        ];
-
-        $result = $DB->request($count_criteria)->current();
-        return (int) ($result['cpt'] ?? 0);
+        return $item->getItemCount();
     }
 
     /**
@@ -309,45 +299,7 @@ class Budget extends CommonDropdown
 
         $budgets_id = $this->fields['id'];
 
-        // Get a list of possible itemtypes first, so we can filter them by read permissions
-        $iterator = $DB->request([
-            'SELECT'          => 'itemtype',
-            'DISTINCT'        => true,
-            'FROM'            => 'glpi_infocoms',
-            'WHERE'           => [
-                'budgets_id'   => $budgets_id,
-                'NOT'          => ['itemtype' => [ConsumableItem::class, CartridgeItem::class, Software::class]],
-            ],
-            'ORDER'           => 'itemtype',
-        ]);
-        $itemtypes = [
-            // These types shouldn't be in the glpi_infocoms table, but have their costs elsewhere
-            Contract::class, Ticket::class, Problem::class, Change::class, Project::class,
-        ];
-        foreach ($iterator as $row) {
-            $itemtypes[] = $row['itemtype'];
-        }
-        $infocom_itemtypes = [];
-        $other_cost_tables = [
-            Contract::class => ContractCost::getTable(),
-            Ticket::class => TicketCost::getTable(),
-            Problem::class => ProblemCost::getTable(),
-            Change::class => ChangeCost::getTable(),
-            Project::class => ProjectCost::getTable(),
-        ];
-        foreach ($itemtypes as $itemtype) {
-            if (in_array($itemtype, $infocom_itemtypes)) {
-                continue; // prevent duplicates
-            }
-
-            if (!is_a($itemtype, CommonDBTM::class, true) || !$itemtype::canView()) {
-                continue;
-            }
-
-            if (!in_array($itemtype, [Contract::class, Ticket::class, Problem::class, Change::class, Project::class], true)) {
-                $infocom_itemtypes[] = $itemtype;
-            }
-        }
+        ['infocom_itemtypes' => $infocom_itemtypes, 'other_cost_tables' => $other_cost_tables] = $this->getItemSources();
 
         $queries = [];
 
@@ -458,6 +410,170 @@ class Budget extends CommonDropdown
     }
 
     /**
+     * Count the number of items associated with a budget using lightweight aggregate queries.
+     *
+     * Counting against the union generated for showItems() forces the database to materialize
+     * detailed rows before aggregating them. For large budgets this becomes expensive, so
+     * dedicated count queries are used instead.
+     *
+     * @param bool $entity_restrict Whether to restrict the items to the current entity
+     * @return int
+     */
+    private function getItemCount(bool $entity_restrict = true): int
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $count = 0;
+        foreach ($this->getItemCountCriteria($entity_restrict) as $criteria) {
+            $result = $DB->request($criteria)->current();
+            $count += (int) ($result['cpt'] ?? 0);
+        }
+
+        return $count;
+    }
+
+    /**
+     * Build the per-source count queries for a budget.
+     *
+     * @param bool $entity_restrict Whether to restrict the items to the current entity
+     * @return array<int, array<string, mixed>>
+     */
+    private function getItemCountCriteria(bool $entity_restrict = true): array
+    {
+        $budgets_id = $this->fields['id'];
+
+        ['infocom_itemtypes' => $infocom_itemtypes, 'other_cost_tables' => $other_cost_tables] = $this->getItemSources();
+
+        $queries = [];
+
+        foreach ($infocom_itemtypes as $itemtype) {
+            $item_table = $itemtype::getTable();
+            $item = new $itemtype();
+
+            $criteria = [
+                'COUNT' => 'cpt',
+                'FROM'  => 'glpi_infocoms',
+                'INNER JOIN' => [
+                    $item_table => [
+                        'ON' => [
+                            $item_table      => 'id',
+                            'glpi_infocoms'  => 'items_id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    'glpi_infocoms.itemtype'   => $itemtype,
+                    'glpi_infocoms.budgets_id' => $budgets_id,
+                ],
+            ];
+
+            if ($entity_restrict) {
+                $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
+            }
+
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+
+            $queries[] = $criteria;
+        }
+
+        foreach ($other_cost_tables as $itemtype => $cost_table) {
+            $item_table = $itemtype::getTable();
+            $item = new $itemtype();
+
+            $criteria = [
+                'SELECT' => [
+                    QueryFunction::count("{$item_table}.id", true, 'cpt'),
+                ],
+                'FROM' => $cost_table,
+                'INNER JOIN' => [
+                    $item_table => [
+                        'ON' => [
+                            $item_table => 'id',
+                            $cost_table => $itemtype::getForeignKeyField(),
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    $cost_table . '.budgets_id' => $budgets_id,
+                ],
+            ];
+
+            if ($entity_restrict) {
+                $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
+            }
+
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+
+            $queries[] = $criteria;
+        }
+
+        return $queries;
+    }
+
+    /**
+     * Get the item sources used by both list and count queries.
+     *
+     * @return array{
+     *     infocom_itemtypes: list<class-string<CommonDBTM>>,
+     *     other_cost_tables: array<class-string<CommonDBTM>, string>
+     * }
+     */
+    private function getItemSources(): array
+    {
+        global $DB;
+
+        $budgets_id = $this->fields['id'];
+        $other_cost_tables = [
+            Contract::class => ContractCost::getTable(),
+            Ticket::class => TicketCost::getTable(),
+            Problem::class => ProblemCost::getTable(),
+            Change::class => ChangeCost::getTable(),
+            Project::class => ProjectCost::getTable(),
+        ];
+
+        $iterator = $DB->request([
+            'SELECT'   => 'itemtype',
+            'DISTINCT' => true,
+            'FROM'     => 'glpi_infocoms',
+            'WHERE'    => [
+                'budgets_id' => $budgets_id,
+                'NOT'        => ['itemtype' => [ConsumableItem::class, CartridgeItem::class, Software::class]],
+            ],
+        ]);
+
+        $itemtypes = array_keys($other_cost_tables);
+        foreach ($iterator as $row) {
+            $itemtypes[] = $row['itemtype'];
+        }
+
+        $infocom_itemtypes = [];
+
+        foreach ($itemtypes as $itemtype) {
+            if (in_array($itemtype, $infocom_itemtypes, true)) {
+                continue;
+            }
+
+            if (!is_a($itemtype, CommonDBTM::class, true) || !$itemtype::canView()) {
+                continue;
+            }
+
+            if (!array_key_exists($itemtype, $other_cost_tables)) {
+                $infocom_itemtypes[] = $itemtype;
+            }
+        }
+
+        return [
+            'infocom_itemtypes' => $infocom_itemtypes,
+            'other_cost_tables' => $other_cost_tables,
+        ];
+    }
+
+    /**
      * Print the HTML array of Items on a budget
      *
      * @return bool
@@ -480,11 +596,7 @@ class Budget extends CommonDropdown
             'LIMIT' => $_SESSION['glpilist_limit'],
         ];
         $iterator = $DB->request($criteria);
-
-        $count_criteria = $criteria;
-        unset($count_criteria['START'], $count_criteria['LIMIT']);
-        $count_criteria['COUNT'] = 'cpt';
-        $total_count = $DB->request($count_criteria)->current()['cpt'];
+        $total_count = self::countForBudget($this);
 
         $entries = [];
         $entity_names = [];

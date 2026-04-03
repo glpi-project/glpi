@@ -214,6 +214,51 @@ class BudgetTest extends DbTestCase
     }
 
     /**
+     * Test counter with multiple costs for the same contract
+     */
+    public function testCountForBudgetDoesNotDuplicateSameContractWithMultipleCosts()
+    {
+        $this->login();
+
+        $budget = new \Budget();
+        $budgets_id = $budget->add([
+            'name'        => 'Test Budget ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+            'value'       => 1000,
+        ]);
+        $this->assertGreaterThan(0, $budgets_id);
+        $this->assertTrue($budget->getFromDB($budgets_id));
+
+        $contract = new \Contract();
+        $contracts_id = $contract->add([
+            'name'        => 'Test Contract ' . $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertGreaterThan(0, $contracts_id);
+
+        $contractCost = new \ContractCost();
+        $first_cost_id = $contractCost->add([
+            'contracts_id' => $contracts_id,
+            'budgets_id'   => $budgets_id,
+            'cost'         => 5000,
+            'name'         => 'First cost',
+        ]);
+        $this->assertGreaterThan(0, $first_cost_id);
+
+        $second_cost_id = $contractCost->add([
+            'contracts_id' => $contracts_id,
+            'budgets_id'   => $budgets_id,
+            'cost'         => 2500,
+            'name'         => 'Second cost',
+        ]);
+        $this->assertGreaterThan(0, $second_cost_id);
+
+        // Multiple cost rows on the same contract must still count as one budget item.
+        $count = \Budget::countForBudget($budget);
+        $this->assertEquals(1, $count);
+    }
+
+    /**
      * Test that counter respects permissions
      */
     public function testCountForBudgetWithoutPermissions()
