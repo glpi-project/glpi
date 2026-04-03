@@ -43,6 +43,7 @@ use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
@@ -53,7 +54,10 @@ use function Safe\realpath;
 /**
  * Entity class
  */
-class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, ProvideTranslationsInterface
+class Entity extends CommonTreeDropdown implements
+    LinkableToTilesInterface,
+    ProvideTranslationsInterface,
+    DefaultSearchRequestInterface
 {
     /** @use Clonable<static> */
     use Clonable;
@@ -258,6 +262,15 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $GLPI_CACHE->delete($ckey);
 
         return true;
+    }
+
+
+    public static function getDefaultSearchRequest(): array
+    {
+        return [
+            'sort'  => 1,
+            'order' => 'ASC',
+        ];
     }
 
     public static function getTypeName($nb = 0)
