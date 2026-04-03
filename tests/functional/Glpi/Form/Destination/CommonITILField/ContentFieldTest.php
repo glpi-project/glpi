@@ -92,7 +92,7 @@ final class ContentFieldTest extends DbTestCase
         $ticket = $this->sendFormAndAssertTicketContentContains(
             expected_content: [
                 "<b>1) First name</b>: John &lt;john@doe.fr&gt;",
-                "<b>2) Last name</b>: Doe"
+                "<b>2) Last name</b>: Doe",
             ],
             form: $form,
             answers: [
