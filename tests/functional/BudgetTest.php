@@ -54,7 +54,7 @@ class BudgetTest extends DbTestCase
         $this->login();
 
         // Create a budget
-        $budget = new \Budget();
+        $budget = new Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => $this->getTestRootEntity(true),
@@ -64,7 +64,7 @@ class BudgetTest extends DbTestCase
         $this->assertTrue($budget->getFromDB($budgets_id));
 
         // Initially, there should be no items
-        $count = \Budget::countForBudget($budget);
+        $count = Budget::countForBudget($budget);
         $this->assertEquals(0, $count);
 
         // Create a computer
@@ -76,7 +76,7 @@ class BudgetTest extends DbTestCase
         $this->assertGreaterThan(0, $computers_id);
 
         // Link the computer to the budget via Infocom
-        $infocom = new \Infocom();
+        $infocom = new Infocom();
         $infocoms_id = $infocom->add([
             'itemtype'    => 'Computer',
             'items_id'    => $computers_id,
@@ -88,7 +88,7 @@ class BudgetTest extends DbTestCase
 
         // Now there should be 1 item
         $this->assertTrue($budget->getFromDB($budgets_id));
-        $count = \Budget::countForBudget($budget);
+        $count = Budget::countForBudget($budget);
         $this->assertEquals(1, $count);
 
         // Add another computer
@@ -110,7 +110,7 @@ class BudgetTest extends DbTestCase
 
         // Now there should be 2 items
         $this->assertTrue($budget->getFromDB($budgets_id));
-        $count = \Budget::countForBudget($budget);
+        $count = Budget::countForBudget($budget);
         $this->assertEquals(2, $count);
     }
 
@@ -122,7 +122,7 @@ class BudgetTest extends DbTestCase
         $this->login();
 
         // Create a budget with items
-        $budget = new \Budget();
+        $budget = new Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => $this->getTestRootEntity(true),
@@ -139,7 +139,7 @@ class BudgetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
-        $infocom = new \Infocom();
+        $infocom = new Infocom();
         $infocoms_id = $infocom->add([
             'itemtype'    => 'Computer',
             'items_id'    => $computers_id,
@@ -184,7 +184,7 @@ class BudgetTest extends DbTestCase
         $this->login();
 
         // Create a budget
-        $budget = new \Budget();
+        $budget = new Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => $this->getTestRootEntity(true),
@@ -213,7 +213,7 @@ class BudgetTest extends DbTestCase
 
         // Count should include the contract
         $this->assertTrue($budget->getFromDB($budgets_id));
-        $count = \Budget::countForBudget($budget);
+        $count = Budget::countForBudget($budget);
         $this->assertEquals(1, $count);
     }
 
@@ -224,7 +224,7 @@ class BudgetTest extends DbTestCase
     {
         $this->login();
 
-        $budget = new \Budget();
+        $budget = new Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => $this->getTestRootEntity(true),
@@ -258,7 +258,7 @@ class BudgetTest extends DbTestCase
         $this->assertGreaterThan(0, $second_cost_id);
 
         // Multiple cost rows on the same contract must still count as one budget item.
-        $count = \Budget::countForBudget($budget);
+        $count = Budget::countForBudget($budget);
         $this->assertEquals(1, $count);
     }
 
@@ -270,7 +270,7 @@ class BudgetTest extends DbTestCase
         $this->login();
 
         // Create a budget
-        $budget = new \Budget();
+        $budget = new Budget();
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => $this->getTestRootEntity(true),
@@ -286,7 +286,7 @@ class BudgetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
-        $infocom = new \Infocom();
+        $infocom = new Infocom();
         $infocoms_id = $infocom->add([
             'itemtype'    => 'Computer',
             'items_id'    => $computers_id,
@@ -297,10 +297,10 @@ class BudgetTest extends DbTestCase
         $this->assertGreaterThan(0, $infocoms_id);
 
         // Simulate a budget that can't be read
-        $budget_no_read = new \Budget();
+        $budget_no_read = new Budget();
         $budget_no_read->fields = ['id' => 999999]; // Non-existent budget
 
-        $count = \Budget::countForBudget($budget_no_read);
+        $count = Budget::countForBudget($budget_no_read);
         $this->assertEquals(0, $count);
     }
 

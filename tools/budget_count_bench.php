@@ -260,7 +260,7 @@ function populateInfocomDataset(Budget $budget, int $items, int $entity_id, int 
                 'name'        => sprintf('Budget bench computer %d', $suffix),
                 'is_template' => 0,
                 'is_deleted'  => 0,
-                'is_recursive'=> 0,
+                'is_recursive' => 0,
             ];
 
             $infocoms[] = [
@@ -268,7 +268,7 @@ function populateInfocomDataset(Budget $budget, int $items, int $entity_id, int 
                 'items_id'    => $current_computer_id,
                 'itemtype'    => Computer::class,
                 'entities_id' => $entity_id,
-                'is_recursive'=> 0,
+                'is_recursive' => 0,
                 'value'       => 100,
                 'budgets_id'  => $budget->fields['id'],
             ];
@@ -296,7 +296,7 @@ function populateContractDataset(Budget $budget, int $items, int $costs_per_item
             $contracts[] = [
                 'id'          => $current_contract_id,
                 'entities_id' => $entity_id,
-                'is_recursive'=> 0,
+                'is_recursive' => 0,
                 'name'        => sprintf('Budget bench contract %d', $suffix),
                 'is_template' => 0,
                 'is_deleted'  => 0,
