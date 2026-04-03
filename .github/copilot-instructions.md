@@ -15,6 +15,11 @@ Do not ask clarification questions, except when a real choice between two techni
 Do not generate tests unless requested.
 When generating code, always ensure it is secure and free from vulnerabilities.
 When importing libraries or packages, prefer already imported ones; if using new ones, they must be compatible with GLPI GPLv3+ License.
+Do not introduce service classes, repositories, DTOs, or dependency injection. GLPI uses static methods, CommonDBTM hooks, `global $DB`, and arrays. Follow existing patterns; never "improve" with external architecture patterns.
+Always reference item types using `ClassName::class`, never string literals such as `'Computer'`.
+Always use `$item->can($id, RIGHT)` for permission checks — never `canUpdateItem()`, `canViewItem()`, or `canDeleteItem()` directly. These methods skip global profile rights verification.
+Front controllers are thin routing layers only. Business logic, input validation, and data transformation belong in `prepareInputForAdd()` and `prepareInputForUpdate()`, not in front controllers or AJAX endpoints.
+Never use `var_dump()`, `print_r()`, or `echo` for debugging. Use `Toolbox::logDebug()`, `Toolbox::logInfo()`, or `Toolbox::logError()`.
 
 ## End-to-end tests (Playwright)
 
