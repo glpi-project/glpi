@@ -334,7 +334,7 @@ class Budget extends CommonDropdown
             }
 
             /** @var CommonDBTM $item */
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
 
             $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
             $criteria['SELECT'][] = $item->isField('serial') ? "$item_table.serial" : new QueryExpression('NULL', 'serial');
@@ -354,7 +354,8 @@ class Budget extends CommonDropdown
 
         foreach ($other_cost_tables as $itemtype => $cost_table) {
             $item_table = $itemtype::getTable();
-            $item = new $itemtype();
+            /** @var CommonDBTM $item */
+            $item = getItemForItemtype($itemtype);
             $criteria = [
                 'SELECT' => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
@@ -450,7 +451,8 @@ class Budget extends CommonDropdown
 
         foreach ($infocom_itemtypes as $itemtype) {
             $item_table = $itemtype::getTable();
-            $item = new $itemtype();
+            /** @var CommonDBTM $item */
+            $item = getItemForItemtype($itemtype);
 
             $criteria = [
                 'COUNT' => 'cpt',
@@ -482,7 +484,8 @@ class Budget extends CommonDropdown
 
         foreach ($other_cost_tables as $itemtype => $cost_table) {
             $item_table = $itemtype::getTable();
-            $item = new $itemtype();
+            /** @var CommonDBTM $item */
+            $item = getItemForItemtype($itemtype);
 
             $criteria = [
                 'SELECT' => [
@@ -529,6 +532,7 @@ class Budget extends CommonDropdown
         global $DB;
 
         $budgets_id = $this->fields['id'];
+        /** @var array<class-string<CommonDBTM>, string> $other_cost_tables */
         $other_cost_tables = [
             Contract::class => ContractCost::getTable(),
             Ticket::class => TicketCost::getTable(),
@@ -547,25 +551,25 @@ class Budget extends CommonDropdown
             ],
         ]);
 
-        $itemtypes = array_keys($other_cost_tables);
-        foreach ($iterator as $row) {
-            $itemtypes[] = $row['itemtype'];
-        }
-
         $infocom_itemtypes = [];
-
-        foreach ($itemtypes as $itemtype) {
-            if (in_array($itemtype, $infocom_itemtypes, true)) {
+        foreach ($iterator as $row) {
+            $itemtype = $row['itemtype'] ?? null;
+            if (!is_string($itemtype)) {
                 continue;
             }
 
-            if (!is_a($itemtype, CommonDBTM::class, true) || !$itemtype::canView()) {
+            $item = getItemForItemtype($itemtype);
+            if (!$item instanceof CommonDBTM || !$item::canView()) {
                 continue;
             }
 
-            if (!array_key_exists($itemtype, $other_cost_tables)) {
-                $infocom_itemtypes[] = $itemtype;
+            $itemtype = $item::class;
+
+            if (isset($other_cost_tables[$itemtype]) || in_array($itemtype, $infocom_itemtypes, true)) {
+                continue;
             }
+
+            $infocom_itemtypes[] = $itemtype;
         }
 
         return [
