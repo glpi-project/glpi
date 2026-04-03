@@ -88,6 +88,7 @@ final class TitleField extends AbstractConfigField implements DestinationFieldCo
                 options|merge({
                     'field_class'      : '',
                     'no_label'         : true,
+                    'aria_label'       : __('Title'),
                     'enable_richtext'  : true,
                     'enable_images'    : false,
                     'enable_form_tags' : true,

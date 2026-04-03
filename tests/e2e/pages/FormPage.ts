@@ -111,6 +111,26 @@ export class FormPage extends GlpiPage
         );
     }
 
+    public async setSubQuestionType(question: Locator, type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question sub type', question)
+                .filter({visible : true}),
+            type,
+            false
+        );
+    }
+
+    public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Select an itemtype', question)
+                .filter({visible : true}),
+            item_type,
+            false
+        );
+    }
+
     public async addComment(name: string): Promise<Locator>
     {
         await this.getButton("Add a comment").click();

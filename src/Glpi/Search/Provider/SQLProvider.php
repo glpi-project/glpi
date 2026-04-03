@@ -2768,7 +2768,13 @@ final class SQLProvider implements SearchProviderInterface
 
         // Auto link
         if ($ref_table === $new_table && empty($complexjoin) && !$is_fkey_composite_on_self) {
-            if ($transitemtype = getItemTypeForTable($new_table)) {
+            $transitemtype = getItemTypeForTable($new_table);
+            if ($new_table === \Glpi\Dropdown\Dropdown::getTable() && is_a($itemtype, \Glpi\Dropdown\Dropdown::class, true)) {
+                // `getItemTypeForTable()` does not work for generic dropdowns, since the table refers to an abstract class.
+                // Force the translatable itemtype as a workaround.
+                $transitemtype = $itemtype;
+            }
+            if (is_a($transitemtype, CommonDBTM::class, true)) {
                 if (Session::haveTranslations($transitemtype, $field)) {
                     $transAS = $nt . '_trans_' . $field;
                     return self::getDropdownTranslationJoinCriteria(

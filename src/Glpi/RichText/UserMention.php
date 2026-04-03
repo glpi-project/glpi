@@ -255,8 +255,8 @@ final class UserMention
             . 'data-user-id="' . $user_id . '"[^>]+data-user-mention="true"'
             . ')'
             . '[^>]*>'
-            // @Name
-            . '@[^>]+'
+            // @Name (or &#64;Name)
+            . '(?:&#64;|@)[^>]+'
             // span closing
             . '<\/span>'
             . '/';

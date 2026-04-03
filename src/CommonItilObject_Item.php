@@ -1360,7 +1360,7 @@ TWIG, $twig_params);
 
         $data = getAllDataFromTable(static::getTable(), [static::$items_id_1 => $items_id]);
         $used = [];
-        if (!empty($data)) {
+        if ($data !== []) {
             foreach ($data as $val) {
                 $used[$val['itemtype']][] = $val['items_id'];
             }

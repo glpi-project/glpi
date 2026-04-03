@@ -73,14 +73,14 @@ class SoftwareLicense_User extends CommonDBRelation
 
         // Check quota if not unlimited (-1) and over-quota not allowed
         if (
-            $license->getField('number') != -1
-            && !$license->getField('allow_overquota')
+            $license->fields['number'] != -1
+            && !$license->fields['allow_overquota']
         ) {
             // Count current assignments (users + items)
             $count = self::countForLicense($softwarelicenses_id);
             $count += Item_SoftwareLicense::countForLicense($softwarelicenses_id);
 
-            if ($count >= $license->getField('number')) {
+            if ($count >= $license->fields['number']) {
                 Session::addMessageAfterRedirect(
                     __s('Maximum number of items reached for this license.'),
                     false,

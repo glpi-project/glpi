@@ -104,9 +104,11 @@ if (isset($_GET['action'])) {
             return;
         }
         try {
-            /** @var CommonGLPI $item */
-            $item = getItemForItemtype($_GET['itemtype']);
-            $options = Search::getOptions($item::class);
+            if ($item = getItemForItemtype($_GET['itemtype'])) {
+                $options = Search::getOptions($item::class);
+            } else {
+                $options = [];
+            }
         } catch (Throwable $e) {
             $options = [];
         }

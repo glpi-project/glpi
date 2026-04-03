@@ -314,9 +314,14 @@ jobs:
   playwright:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
-    name: "Playwright tests"
+    name: "Playwright tests (${{ matrix.shardIndex }}/${{ matrix.shardTotal }})"
     runs-on: "ubuntu-latest"
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2]
+        shardTotal: [2]
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -361,7 +366,7 @@ jobs:
         if: ${{ !cancelled() }}
         run:  |
           docker compose exec -T app bin/console config:set url_base http://localhost:8090 --env=e2e_testing
-          docker compose exec -T app npx playwright test
+          docker compose exec -T app npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
@@ -371,7 +376,40 @@ jobs:
             cat tests/e2e/glpi_files/_log/php-errors.log
             exit 1
           fi
-      - name: "Upload report"
+      - name: Upload blob report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          retention-days: 1
+
+  playwright-merge-reports:
+    if: ${{ !cancelled() }}
+    needs: [playwright]
+    permissions:
+      contents: "read"
+    name: "Merge Playwright reports"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 10
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v6"
+      - name: "Setup Node.js"
+        uses: "actions/setup-node@v6"
+        with:
+          node-version: "lts/*"
+      - name: "Install dependencies"
+        run: npm ci
+      - name: "Download blob reports"
+        uses: actions/download-artifact@v8
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+      - name: "Merge into HTML Report"
+        run: npx playwright merge-reports --reporter=html,playwright-ctrf-json-reporter ./all-blob-reports
+      - name: "Upload HTML report"
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
@@ -385,8 +423,7 @@ jobs:
           name: glpi-playwright-output
           path: tests/e2e/output
           retention-days: 7
-      # See: https://github.com/ctrf-io/github-test-reporter?tab=readme-ov-file#available-inputs
-      - name: Publish test summary results
+      - name: "Publish test summary results"
         if: ${{ !cancelled() }}
         uses: ctrf-io/github-test-reporter@v1
         with:

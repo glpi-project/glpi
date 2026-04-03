@@ -109,6 +109,6 @@ test('Can pick a custom illustration', async ({ page, profile, api }) => {
 
     // Verify a custom illustration preview is shown
     await page.reload();
-    const custom_preview = page.getByTestId('custom-illustration-preview');
+    const custom_preview = page.getByTestId('illustration-custom-preview');
     await expect(custom_preview).toBeVisible();
 });

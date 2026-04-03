@@ -33,6 +33,7 @@
 /* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
 
 import { get, post } from "/js/modules/Ajax.js";
+import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 
 export class GlpiKnowbaseArticleController
@@ -85,6 +86,9 @@ export class GlpiKnowbaseArticleController
 
     /** @type {string} */
     #base_title = '';
+
+    /** @type {DocumentLinkController|null} */
+    #document_link_controller = null;
 
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
@@ -165,6 +169,20 @@ export class GlpiKnowbaseArticleController
                 } catch (e) {
                     console.error(e);
                     glpi_toast_error(__("An unexpected error occurred."));
+                }
+            });
+        }
+
+        // Lazy-init DocumentLinkController when the link tab is shown
+        const link_tab = document.getElementById('kb-modal-link-tab');
+        if (link_tab) {
+            link_tab.addEventListener('shown.bs.tab', () => {
+                if (!this.#document_link_controller) {
+                    const link_pane = document.getElementById('kb-modal-link-pane');
+                    const modal = document.getElementById('kb-add-document-modal');
+                    if (link_pane) {
+                        this.#document_link_controller = new DocumentLinkController(link_pane, modal);
+                    }
                 }
             });
         }

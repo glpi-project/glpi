@@ -138,13 +138,13 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
                         $usertype = self::GLPI_USER;
                         $user = new User();
                         $savedsearch = new SavedSearch();
-                        $savedsearch->getFromDB($this->obj->getField('savedsearches_id'));
-                        $user->getFromDB($savedsearch->getField('users_id'));
+                        $savedsearch->getFromDB($this->obj->fields['savedsearches_id']);
+                        $user->getFromDB($savedsearch->fields['users_id']);
                         // Send to user without any check on profile / entity
                         // Do not set users_id
                         $data = ['name'     => $user->getName(),
                             'email'    => $user->getDefaultEmail(),
-                            'language' => $user->getField('language'),
+                            'language' => $user->fields['language'],
                             'users_id' => $user->getID(),
                             'usertype' => $usertype,
                         ];

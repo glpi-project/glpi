@@ -16,6 +16,7 @@ Many people have the idea to propose code modifications from IA Agents, verbatim
 
 You can of course take help from any way you want (including IA agents), but a **human must** review and test the proposal; we do not want to debate with an AI bot.
 
+Another point: licensing around IA agents commit is currently quite uncertain. We prefer keeping things simple, so **we won't accept any code explicitely authored from any IA agent**.
 
 ## Bugs
 

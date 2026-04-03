@@ -308,7 +308,8 @@ class Budget extends CommonDropdown
             $criteria = [
                 'SELECT'       => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
-                    $item_table => ['id', 'entities_id'],
+                    "$item_table.id",
+                    "$item_table.entities_id",
 
                 ],
                 'FROM'         => 'glpi_infocoms',
@@ -335,11 +336,11 @@ class Budget extends CommonDropdown
             /** @var CommonDBTM $item */
             $item = new $itemtype();
 
-            $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : new QueryExpression('0', 'is_deleted');
-            $criteria['SELECT'][$item_table][] = $item->isField('serial') ? 'serial' : new QueryExpression('NULL', 'serial');
-            $criteria['SELECT'][$item_table][] = $item->isField('otherserial') ? 'otherserial' : new QueryExpression('NULL', 'otherserial');
+            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
+            $criteria['SELECT'][] = $item->isField('serial') ? "$item_table.serial" : new QueryExpression('NULL', 'serial');
+            $criteria['SELECT'][] = $item->isField('otherserial') ? "$item_table.otherserial" : new QueryExpression('NULL', 'otherserial');
             if ($item instanceof Item_Devices) {
-                $criteria['SELECT'][$item_table][] = $item::$items_id_2 . ' AS devices_id';
+                $criteria['SELECT'][] = $item_table . '.' . $item::$items_id_2 . ' AS devices_id';
             } else {
                 $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
             }
@@ -397,7 +398,7 @@ class Budget extends CommonDropdown
                 ),
                 default => QueryFunction::sum(expression: "{$cost_table}.cost", alias: 'value'),
             };
-            $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : '0 AS is_deleted';
+            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : '0 AS is_deleted';
 
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
@@ -621,7 +622,7 @@ class Budget extends CommonDropdown
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
                     $tmpitem = getItemForItemtype($items[$itemtype]::$itemtype_2);
-                    if ($tmpitem->getFromDB($data['devices_id'])) {
+                    if ($tmpitem->getFromDB((int) $data['devices_id'])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }
                 } else {

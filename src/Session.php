@@ -425,7 +425,7 @@ class Session
                     $entities[$val['id']] = $val['id'];
                     if ($val['is_recursive']) {
                         $sons = getSonsOf("glpi_entities", $val['id']);
-                        foreach ($sons as $key2 => $val2) {
+                        foreach (array_keys($sons) as $key2) {
                             $entities[$key2] = $key2;
                         }
                     }
@@ -2006,7 +2006,7 @@ class Session
 
         // Cannot impersonate inactive user
         $user = new User();
-        if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+        if (!$user->getFromDB($user_id) || !$user->isActive()) {
             $message = __("The user is not active.");
             return false;
         }

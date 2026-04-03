@@ -112,9 +112,6 @@ class DbUtilsTest extends DbTestCase
         $this->assertTrue(isForeignKeyField('users_id_tech'));
         $this->assertFalse(isForeignKeyField('_id'));
         $this->assertFalse(isForeignKeyField(''));
-        $this->assertFalse(isForeignKeyField(null));
-        $this->assertFalse(isForeignKeyField(false));
-        $this->assertFalse(isForeignKeyField(42));
     }
 
     #[DataProvider('dataTableForeignKey')]
@@ -1482,20 +1479,15 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertSame(
             [],
-            $instance->getDateCriteria('date', null, null)
-        );
-
-        $this->assertSame(
-            [],
             $instance->getDateCriteria('date', '', '')
         );
 
         $this->assertSame(
             [['date' => ['>=', '2018-11-09']]],
-            $instance->getDateCriteria('date', '2018-11-09', null)
+            $instance->getDateCriteria('date', '2018-11-09', '')
         );
 
-        $result = $instance->getDateCriteria('date', null, '2018-11-09');
+        $result = $instance->getDateCriteria('date', '', '2018-11-09');
         $this->assertCount(1, $result);
 
         $this->assertCount(2, $result[0]['date']);
@@ -1524,7 +1516,7 @@ class DbUtilsTest extends DbTestCase
     public function testGetDateCriteriaError1()
     {
         $instance = new \DbUtils();
-        $instance->getDateCriteria('date', '2023-02-19\', INTERVAL 1 DAY)))))', null);
+        $instance->getDateCriteria('date', '2023-02-19\', INTERVAL 1 DAY)))))', '');
         $this->hasPhpLogRecordThatContains(
             'Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.',
             LogLevel::WARNING
@@ -1534,7 +1526,7 @@ class DbUtilsTest extends DbTestCase
     public function testGetDateCriteriaError2()
     {
         $instance = new \DbUtils();
-        $instance->getDateCriteria('date', null, '2023-02-19\', INTERVAL 1 DAY)))))');
+        $instance->getDateCriteria('date', '', '2023-02-19\', INTERVAL 1 DAY)))))');
         $this->hasPhpLogRecordThatContains(
             'Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.',
             LogLevel::WARNING

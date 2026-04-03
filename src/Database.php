@@ -428,7 +428,7 @@ class Database extends CommonDBChild
             )
         );
 
-        if (empty($databases)) {
+        if ($databases === []) {
             echo "<tr><th>" . __s('No database') . "</th></tr>";
         } else {
             echo "<tr class='noHover'><th colspan='10'>" . htmlescape(self::getTypeName(Session::getPluralNumber())) . "</th></tr>";

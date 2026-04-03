@@ -56,11 +56,6 @@ class Item_Kanban extends CommonDBRelation
             throw new RuntimeException($message);
         }
 
-        if (!$item instanceof CommonDBTM) {
-            $message = "Given itemtype do not extends CommonDBTM: " . $itemtype;
-            throw new RuntimeException($message);
-        }
-
         return $item;
     }
 

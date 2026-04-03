@@ -35,7 +35,11 @@
 
 namespace tests\units;
 
+use Budget;
+use Consumable;
+use ConsumableItem;
 use Glpi\Tests\DbTestCase;
+use Infocom;
 
 /**
  * Test class for Budget item counter functionality
@@ -298,5 +302,37 @@ class BudgetTest extends DbTestCase
 
         $count = \Budget::countForBudget($budget_no_read);
         $this->assertEquals(0, $count);
+    }
+
+    public function testGetItemListCriteria(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $rc = new \ReflectionClass(Budget::class);
+        $method = $rc->getMethod('getItemListCriteria');
+
+        $budget = $this->createItem(Budget::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->createItem(Infocom::class, [
+            'itemtype' => Consumable::class,
+            'items_id' => $this->createItem(Consumable::class, [
+                'consumableitems_id' => getItemByTypeName(ConsumableItem::class, '_test_consumableitem01', true),
+            ])->getID(),
+            'budgets_id' => $budget->getID(),
+            'value' => 42,
+        ]);
+
+        $query_union = $method->invoke($budget);
+        // make sure the criteria can be run as a query without throwing an exception
+        $it = $DB->request([
+            'FROM' => $query_union,
+        ]);
+        $this->assertFalse($it->isFailed());
+        $this->assertCount(1, $it);
     }
 }
