@@ -264,11 +264,14 @@ class Entity extends CommonTreeDropdown implements
         return true;
     }
 
-
+    /**
+     * @return array<string, mixed>
+     */
+    #[Override]
     public static function getDefaultSearchRequest(): array
     {
         return [
-            'sort'  => 1,
+            'sort'  => 1, //completename SO
             'order' => 'ASC',
         ];
     }
