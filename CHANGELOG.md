@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 - Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 
 ### Changed
+- "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
 
 ### Deprecated
 
