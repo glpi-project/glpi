@@ -404,6 +404,12 @@ class PendingReason extends CommonDropdown
         $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default']
             ? ($input['is_pending_per_default'] ?? 0) : 0;
 
+        // Prevent auto-solve without a solution template as it raises a PHP warning in PendingReasonCron
+        $solution_template_id = $input['solutiontemplates_id'] ?? $this->fields['solutiontemplates_id'] ?? 0;
+        if ((int) $solution_template_id <= 0) {
+            $input['followups_before_resolution'] = 0;
+        }
+
         return $input;
     }
 
@@ -415,5 +421,23 @@ class PendingReason extends CommonDropdown
     public function prepareInputForUpdate($input)
     {
         return $this->prepareInput($input);
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+        if (!self::isNewID($ID)) {
+            $this->check($ID, READ);
+        } else {
+            // Create item
+            $this->check(-1, CREATE);
+        }
+
+        $fields = $this->getAdditionalFields();
+
+        echo TemplateRenderer::getInstance()->render('pages/setup/pendingreason_form.html.twig', [
+            'item'   => $this,
+            'params' => $options,
+            'additional_fields' => $fields,
+        ]);
     }
 }

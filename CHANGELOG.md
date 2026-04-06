@@ -11,6 +11,11 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 
+- Pending reason UI and save logic changed to prevent auto-resolve without selection of a solution template.
+  Any existing pending reasons with "Follow-ups before automatic resolution" set without a solution template
+  will be automatically updated to set the "Follow-ups before automatic resolution" to "Automatic resolution disabled"
+  to prevent the "Failed to load SolutionTemplate" PHP warnings that were raised previously.
+
 ### Deprecated
 
 ### Removed
