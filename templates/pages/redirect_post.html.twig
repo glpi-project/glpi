@@ -49,13 +49,13 @@
     <title>{{ __('Redirecting...') }}</title>
 </head>
 <body>
-    <form method="POST" action="{{ url }}" id="redirect-post-form" data-submit-once>
+    <form method="{{ http_method }}" action="{{ url }}" id="redirect-form" data-submit-once>
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
         {{ _self.render_inputs(post_data, '') }}
     </form>
-    <script>document.getElementById('redirect-post-form').submit();</script>
+    <script>document.getElementById('redirect-form').submit();</script>
     <noscript>
-        <button form="redirect-post-form" type="submit">{{ __('Continue') }}</button>
+        <button form="redirect-form" type="submit">{{ __('Continue') }}</button>
     </noscript>
 </body>
 </html>
