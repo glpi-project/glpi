@@ -35,7 +35,6 @@
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
-use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
@@ -1774,7 +1773,7 @@ class MassiveAction
 
                 if (!in_array($field_name, ['groups_id', 'groups_id_tech'], true)) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                    $ma->addMessage(__('Invalid field name.'));
+                    $ma->addMessage(__s('Invalid field name.'));
                     return;
                 }
 
