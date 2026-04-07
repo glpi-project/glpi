@@ -1131,7 +1131,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * @param string $extension File extension (lowercase, without dot)
      * @return array{icon_class: string, color_class: string}
      */
-    private static function getDocumentIconAndColor(string $extension): array
+    public static function getDocumentIconAndColor(string $extension): array
     {
         return match ($extension) {
             'pdf' => [
