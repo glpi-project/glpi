@@ -42,6 +42,4 @@ namespace Glpi\Form\QuestionType;
  * Question types that do NOT implement this interface will have their
  * formatted answer automatically HTML-escaped by Answer::getFormattedAnswer().
  */
-interface RawAnswerIsHtmlInterface
-{
-}
+interface RawAnswerIsHtmlInterface {}
