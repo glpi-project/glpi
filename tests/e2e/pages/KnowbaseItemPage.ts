@@ -178,4 +178,34 @@ export class KnowbaseItemPage extends GlpiPage
         // Wait for page reload after upload
         await this.page.waitForLoadState('load');
     }
+
+    public async doEnableSchedulePanel(): Promise<void>
+    {
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('Schedule visibility').click();
+        await expect(this.page.getByTestId('schedule-panel')).toBeVisible();
+    }
+
+    public async doApplyVisibilityDates(): Promise<void>
+    {
+        // Save values
+        await this.page.getByTestId('schedule-apply-btn').click();
+        await expect(this.getAlert('Visibility dates updated')).toBeVisible();
+    }
+
+    public getVisibilityDatesIndicator(): Locator
+    {
+        return this.getLink("Scheduled");
+    }
+
+    public getScheduledStartDateInput(): Locator
+    {
+        return this.page.getByPlaceholder('No start date').filter({visible: true});
+    }
+
+    public getScheduledEndDateInput(): Locator
+    {
+        return this.page.getByPlaceholder('No end date').filter({visible: true});
+    }
 }
+

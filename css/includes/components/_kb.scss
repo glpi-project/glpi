@@ -269,6 +269,11 @@
     }
 }
 
+// KB visibility dates
+.kb-schedule-panel {
+    min-width: 280px;
+}
+
 // Handle shared borders for comments in the same thread.
 .kb-comment-card {
     border-radius: 0 !important;

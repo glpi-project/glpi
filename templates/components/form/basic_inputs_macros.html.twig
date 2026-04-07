@@ -240,6 +240,7 @@
         'readonly': false,
         'disabled': false,
         'maybeempty': false,
+        'addCalendarButton': true,
     }|merge(options) %}
 
     {% set editable = not options.readonly and not options.disabled %}
@@ -284,7 +285,7 @@
             'clearable': false
         })) }}
 
-        {% if editable %}
+        {% if editable and options.addCalendarButton %}
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
                 <i class="{{ calendar_icon }}"></i>
