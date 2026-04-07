@@ -38,7 +38,7 @@ namespace Glpi\Exception;
 
 use Exception;
 
-class RedirectPostException extends Exception
+class ReauthRedirectException extends Exception
 {
     /**
      * @param array<string, string> $post
@@ -46,6 +46,8 @@ class RedirectPostException extends Exception
     public function __construct(
         private readonly string $url,
         private readonly array $post,
+        /** @var 'POST'|'GET' */
+        private readonly string $http_method,
     ) {
         parent::__construct();
     }
@@ -61,5 +63,10 @@ class RedirectPostException extends Exception
     public function getPost(): array
     {
         return $this->post;
+    }
+
+    public function getHttpMethod(): string
+    {
+        return $this->http_method;
     }
 }
