@@ -215,22 +215,33 @@ class Database extends CommonDBChild
         ];
 
         $tab[] = [
-            'id'                 => '12',
-            'table'              => Computer::getTable(),
-            'field'              => 'name',
-            'datatype'           => 'itemlink',
-            'linkfield'          => 'items_id',
-            'name'               => Computer::getTypeName(0),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
+            'id'                 => '14',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Associated item type', 'Associated item types', 1),
+            'datatype'           => 'itemtypename',
+            'nosearch'           => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => DatabaseInstance::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'item_itemtype',
-                        'specific_itemtype'  => 'Computer',
-                    ],
+                'table'              => DatabaseInstance::getTable(),
+                'joinparams'         => [
+                    'jointype'           => 'itemtypeonly',
+                ],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => DatabaseInstance::getTable(),
+            'field'              => 'items_id',
+            'name'               => _n('Associated item', 'Associated items', 1),
+            'nosearch'           => true,
+            'massiveaction'      => false,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'         => [
+                'table'              => DatabaseInstance::getTable(),
+                'joinparams'         => [
+                    'jointype'           => 'item_itemtype',
                 ],
             ],
         ];
