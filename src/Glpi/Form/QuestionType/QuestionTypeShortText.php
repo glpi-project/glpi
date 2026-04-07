@@ -78,14 +78,6 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer, Question $question): string
-    {
-        $formatted_answer = parent::formatRawAnswer($answer, $question);
-
-        return \htmlescape($formatted_answer);
-    }
-
-    #[Override]
     public function listTranslationsHandlers(Question $question): array
     {
         return [
