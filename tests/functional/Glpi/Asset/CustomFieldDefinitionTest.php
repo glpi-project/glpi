@@ -756,7 +756,7 @@ class CustomFieldDefinitionTest extends DbTestCase
                 $this->assertEquals(0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
             } elseif ($name === __FUNCTION__ . '_default') {
                 $this->assertEquals(0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
-            }
+            $this->assertEquals($name === __FUNCTION__ . '_yes' ? 1 : 0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
         }
     }
 }
