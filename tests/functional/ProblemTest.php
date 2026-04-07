@@ -435,8 +435,8 @@ class ProblemTest extends DbTestCase
     {
         $this->login('glpi', 'glpi');
 
-        $tech_user = getItemByTypeName(\User::class, 'tech');
-        $glpi_user = getItemByTypeName(\User::class, 'glpi');
+        $tech_user = getItemByTypeName(User::class, 'tech');
+        $glpi_user = getItemByTypeName(User::class, 'glpi');
 
         $problem = $this->createItem(
             Problem::class,
