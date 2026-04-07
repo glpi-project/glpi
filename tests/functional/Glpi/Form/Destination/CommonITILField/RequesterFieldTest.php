@@ -497,6 +497,41 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testSpecificAnswersFallbackToFormFiller(): void
+    {
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $auth = $this->login();
+        $fallback_user = $this->createItem(User::class, ['name' => 'Fallback requester user']);
+
+        $config = new RequesterFieldConfig(
+            strategies: [
+                ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                ITILActorFieldStrategy::FORM_FILLER,
+            ],
+            specific_question_ids: [
+                $this->getQuestionId($form, "Requester 1"),
+            ]
+        );
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [],
+            expected_actors: [['items_id' => $auth->getUser()->getID()]]
+        );
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [
+                "Requester 1" => [
+                    User::getForeignKeyField() . '-' . $fallback_user->getID(),
+                ],
+            ],
+            expected_actors: [['items_id' => $fallback_user->getID()]]
+        );
+    }
+
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {

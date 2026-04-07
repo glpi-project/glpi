@@ -209,7 +209,10 @@ enum ITILActorFieldStrategy: string
             return null;
         }
 
-        return array_reduce($question_ids, function ($carry, $question_id) use ($itil_actor_field, $answers_set) {
+        $actors = [];
+        $answer_found = false;
+
+        foreach ($question_ids as $question_id) {
             $actors_ids = $this->getActorsForSpecificAnswer(
                 $question_id,
                 $itil_actor_field,
@@ -217,11 +220,21 @@ enum ITILActorFieldStrategy: string
             );
 
             if ($actors_ids === null) {
-                return $carry;
+                continue;
             }
 
-            return array_merge_recursive($carry, $actors_ids);
-        }, []);
+            $answer_found = true;
+            $actors = array_merge_recursive($actors, $actors_ids);
+        }
+
+        // When no answer was found for any of the specified questions (e.g. they
+        // were hidden by conditional visibility), return null so that subsequent
+        // strategies (such as FORM_FILLER) can act as a fallback.
+        if (!$answer_found) {
+            return null;
+        }
+
+        return $actors;
     }
 
     private function getActorsForSpecificAnswer(
@@ -325,7 +338,10 @@ enum ITILActorFieldStrategy: string
             return null;
         }
 
-        return array_reduce($question_ids, function ($carry, $question_id) use ($answers_set, $fk_field) {
+        $actors = [];
+        $answer_found = false;
+
+        foreach ($question_ids as $question_id) {
             $actors_ids = $this->getActorsFromObjectAnswer(
                 $question_id,
                 $answers_set,
@@ -333,11 +349,21 @@ enum ITILActorFieldStrategy: string
             );
 
             if ($actors_ids === null) {
-                return $carry;
+                continue;
             }
 
-            return array_merge_recursive($carry, $actors_ids);
-        }, []);
+            $answer_found = true;
+            $actors = array_merge_recursive($actors, $actors_ids);
+        }
+
+        // When no answer was found for any of the specified questions (e.g. they
+        // were hidden by conditional visibility), return null so that subsequent
+        // strategies can act as a fallback.
+        if (!$answer_found) {
+            return null;
+        }
+
+        return $actors;
     }
 
     private function getActorsFromObjectAnswer(
