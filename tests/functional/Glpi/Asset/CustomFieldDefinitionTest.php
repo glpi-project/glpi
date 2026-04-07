@@ -750,12 +750,6 @@ class CustomFieldDefinitionTest extends DbTestCase
         foreach ($data['data']['rows'] as $row) {
             $raw = $row['raw'];
             $name = $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_1'];
-            if ($name === __FUNCTION__ . '_yes') {
-                $this->assertEquals(1, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
-            } elseif ($name === __FUNCTION__ . '_no') {
-                $this->assertEquals(0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
-            } elseif ($name === __FUNCTION__ . '_default') {
-                $this->assertEquals(0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
             $this->assertEquals($name === __FUNCTION__ . '_yes' ? 1 : 0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
         }
     }
