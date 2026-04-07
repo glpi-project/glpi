@@ -677,8 +677,8 @@ class MassiveAction
             Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             if ($canupdate && Toolbox::hasTrait($itemtype, AssignableItem::class)) {
-                $actions[$self_pref . 'associate_group'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Associate group');
-                $actions[$self_pref . 'dissociate_group'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Dissociate group');
+                $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Associate group');
+                $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Dissociate group');
             }
 
             CommonDBConnexity::getMassiveActionsForItemtype(
@@ -853,7 +853,7 @@ class MassiveAction
             case 'associate_group':
             case 'dissociate_group':
                 $values = [
-                    'groups_id'      => _n('Group', 'Groups', 0),
+                    'groups_id'      => _n('Group', 'Groups', 1),
                     'groups_id_tech' => __('Group in charge'),
                 ];
                 Dropdown::showFromArray('fieldname', $values);
@@ -1769,6 +1769,12 @@ class MassiveAction
 
                 $groups_ids = array_map('intval', (array) ($input['selected_group'] ?? []));
                 $field_name = $input['fieldname'] ?? 'groups_id';
+
+                if (!in_array($field_name, ['groups_id', 'groups_id_tech'], true)) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage(__('Invalid field name.'));
+                    return;
+                }
 
                 if ($groups_ids === []) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
