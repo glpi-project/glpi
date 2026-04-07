@@ -753,7 +753,7 @@ TWIG, $twig_params);
         if (
             $item->getID()
             && !$item->isDeleted()
-            && CommonITILObject::isPossibleToAssignType($item->getType())
+            && (CommonITILObject::isPossibleToAssignType($item->getType()) || $item->getType() == User::class)
             && static::canCreate()
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))

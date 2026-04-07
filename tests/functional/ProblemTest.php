@@ -34,10 +34,13 @@
 
 namespace tests\units;
 
+use CommonITILActor;
 use CommonITILObject;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Problem_User;
+use User;
 
 /* Test for inc/problem.class.php */
 
@@ -89,16 +92,16 @@ class ProblemTest extends DbTestCase
         ]);
         $this->assertFalse($problem->isNewItem());
         $problem->getFromDB($problem->getID());
-        $problemUser = new \Problem_User();
+        $problemUser = new Problem_User();
         $groupProblem = new \group_Problem();
         $rows = $problemUser->find([
             'problems_id' => $problem->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
         $rows = $groupProblem->find([
             'problems_id' => $problem->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
 
@@ -116,18 +119,18 @@ class ProblemTest extends DbTestCase
         ]);
         $this->assertFalse($problem->isNewItem());
         $problem->getFromDB($problem->getID());
-        $problemUser = new \Problem_User();
+        $problemUser = new Problem_User();
         $groupProblem = new \group_Problem();
         $rows = $problemUser->find([
             'problems_id' => $problem->getID(),
             'users_id'    => 4, // tech
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
         $rows = $groupProblem->find([
             'problems_id' => $problem->getID(),
             'groups_id'   => $group->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
 
@@ -145,18 +148,18 @@ class ProblemTest extends DbTestCase
         ]);
         $this->assertFalse($problem->isNewItem());
         $problem->getFromDB($problem->getID());
-        $problemUser = new \Problem_User();
+        $problemUser = new Problem_User();
         $groupProblem = new \group_Problem();
         $rows = $problemUser->find([
             'problems_id' => $problem->getID(),
             'users_id'    => 4, // tech
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
         $rows = $groupProblem->find([
             'problems_id' => $problem->getID(),
             'groups_id'   => $group->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
     }
@@ -164,9 +167,9 @@ class ProblemTest extends DbTestCase
     public function testGetTeamRoles(): void
     {
         $roles = Problem::getTeamRoles();
-        $this->assertContains(\CommonITILActor::ASSIGN, $roles);
-        $this->assertContains(\CommonITILActor::OBSERVER, $roles);
-        $this->assertContains(\CommonITILActor::REQUESTER, $roles);
+        $this->assertContains(CommonITILActor::ASSIGN, $roles);
+        $this->assertContains(CommonITILActor::OBSERVER, $roles);
+        $this->assertContains(CommonITILActor::REQUESTER, $roles);
     }
 
     public function testGetTeamRoleName(): void
@@ -432,8 +435,8 @@ class ProblemTest extends DbTestCase
     {
         $this->login('glpi', 'glpi');
 
-        $tech_user = getItemByTypeName(\User::class, 'tech');
-        $glpi_user = getItemByTypeName(\User::class, 'glpi');
+        $tech_user = getItemByTypeName(User::class, 'tech');
+        $glpi_user = getItemByTypeName(User::class, 'glpi');
 
         $problem = $this->createItem(
             Problem::class,
@@ -458,19 +461,19 @@ class ProblemTest extends DbTestCase
             ]
         );
 
-        $user_problem = new \Problem_User();
+        $user_problem = new Problem_User();
         $this->assertTrue(
             $user_problem->getFromDBByCrit([
                 'problems_id' => $problem->getID(),
                 'users_id' => $glpi_user->getID(),
-                'type' => \CommonITILActor::REQUESTER,
+                'type' => CommonITILActor::REQUESTER,
             ])
         );
         $this->assertTrue(
             $user_problem->getFromDBByCrit([
                 'problems_id' => $problem->getID(),
                 'users_id' => $tech_user->getID(),
-                'type' => \CommonITILActor::ASSIGN,
+                'type' => CommonITILActor::ASSIGN,
             ])
         );
 
@@ -557,4 +560,33 @@ class ProblemTest extends DbTestCase
         $this->assertTrue($problem->getFromDB($problem->getID()));
         $this->assertEquals(Problem::CLOSED, $problem->fields['status']);
     }
+
+    // test with param _users_id_requester e.g in user profile
+    // The user must be the requester
+    public function testCreateProblemFromUser()
+    {
+        $this->login();
+
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+
+        $problems_id = $this->createItem(Problem::class, [
+            'name'        => 'Problem created from the user profile',
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ])->getID();
+
+        $problem = new Problem();
+        $this->assertTrue($problem->getFromDB($problems_id));
+
+        $problem_user = new Problem_User();
+        $found = $problem_user->find([
+            'problems_id' => $problems_id,
+            'users_id'   => $user_id,
+            'type'       => CommonITILActor::REQUESTER, // user is _users_id_requester
+        ]);
+
+        $this->assertCount(1, $found);
+    }
+
 }

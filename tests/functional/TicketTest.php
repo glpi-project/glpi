@@ -10384,4 +10384,32 @@ HTML,
         $this->assertEquals(0, $followup->fields['sourceitems_id']);
         $this->assertEquals(0, $task->fields['sourceitems_id']);
     }
+
+    // test with param _users_id_requester e.g in user profile
+    // The user must be the requester
+    public function testCreateTicketFromUser()
+    {
+        $this->login();
+
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+
+        $ticket_id = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket created from the user profile',
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ])->getID();
+
+        $ticket = new Ticket();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        $ticket_user = new Ticket_User();
+        $found = $ticket_user->find([
+            'tickets_id' => $ticket_id,
+            'users_id'   => $user_id,
+            'type'       => CommonITILActor::REQUESTER, // user is _users_id_requester
+        ]);
+
+        $this->assertCount(1, $found);
+    }
 }
