@@ -221,6 +221,7 @@ if (isset($_GET['getvcard'])) {
 
         Html::back();
     } else {
+        $user->check((int) $_GET['id'], READ, $input);
         $options = $_GET;
         $options['formoptions'] = "data-track-changes=true";
         $menus = ["admin", "user"];

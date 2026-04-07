@@ -2958,7 +2958,24 @@ class CommonDBTM extends CommonGLPI
         $_reauth_needed = static::isUserReauthenticationNeeded();
         $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
-        // Create process
+        /**
+         * Returns the correct value for $allowed depending on $_reaut_needed
+         *
+         * If allowed but reauth needed, allowed becomes false and reauth_needed becomes true
+         */
+        $allowed_against_reauth = static function (bool $allowed) use ($_reauth_needed) {
+            if (!$allowed) {
+                return [false, false]; // not allowed by right, (+ so no reauth needed)
+            }
+
+            if ($_reauth_needed) {
+                return [false, true]; // not allowed + reauth needed
+            }
+
+            return [true, false]; // allowed (+ no reauth needed)
+        };
+
+        // New item
         if (static::isNewID($ID)) {
             if (!isset($this->fields['id'])) {
                 // Only once
@@ -2978,18 +2995,21 @@ class CommonDBTM extends CommonGLPI
                 $this->input = $input;
             }
 
-            if (
-                $this->isPrivate()
-                && ($this->fields['users_id'] == Session::getLoginUserID())
-            ) {
-                return true;
+            $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
+            if (!$allowed) {
+                $allowed = (static::canCreate() && $this->canCreateItem());
             }
-            return (static::canCreate() && $this->canCreateItem());
+
+            [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+
+            return $allowed;
         }
-        // else : Get item if not already loaded
+
+        // Existing item
         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
+                [, $reauth_needed ] = $allowed_against_reauth(false);
                 return false;
             }
         }
@@ -2998,8 +3018,11 @@ class CommonDBTM extends CommonGLPI
         $this->right = $right;
         Plugin::doHook(Hooks::ITEM_CAN, $this);
         if ($this->right !== $right) {
+            [, $reauth_needed] = $allowed_against_reauth(false);
             return false;
         }
+
+
         $this->right = null;
 
         // Share token session-based access (read-only)
@@ -3040,39 +3063,14 @@ class CommonDBTM extends CommonGLPI
                         $reauth_needed = true;
                         return false;
                     }
-                }
-
-            case DELETE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
                     return true;
                 }
-                return (static::canDelete() && $this->canDeleteItem());
+                return false;
 
-            case PURGE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canPurge() && $this->canPurgeItem());
+        // final auth, depending on reauth.
+        [$allowed, $reauth_needed] = $allowed_against_reauth($allowed, $_reauth_needed);
 
-            case CREATE:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canCreate() && $this->canCreateItem());
-        }
-        return false;
+        return $allowed;
     }
 
     /**
@@ -3106,19 +3104,20 @@ class CommonDBTM extends CommonGLPI
         // Check item exists
         if (!$this->checkIfExistOrNew($ID)) {
             throw new NotFoundHttpException();
-        } else {
-            $require_reauth = null;
-            if (!$this->can($ID, $right, $input, $require_reauth)) {
-                if ($require_reauth) {
-                    self::redirectToReauthPrompt();
-                }
+        }
 
-                /** @var class-string<CommonDBTM> $itemtype */
-                $itemtype = static::class;
-                $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-                $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
-                throw new AccessDeniedHttpException($info);
+        $require_reauth = null;
+        if (!$this->can($ID, $right, $input, $require_reauth)) {
+            if ($require_reauth) {
+                self::redirectToReauthPrompt();
+                // redirection processed
             }
+
+            /** @var class-string<CommonDBTM> $itemtype */
+            $itemtype = static::class;
+            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
+            $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
+            throw new AccessDeniedHttpException($info);
         }
     }
 
@@ -3218,8 +3217,7 @@ class CommonDBTM extends CommonGLPI
             default => false,
         };
 
-        // for update right, return false if reauth needed
-        if ($allowed && $right === UPDATE) {
+        if ($allowed) {
             if ($_reauth_needed) {
                 $reauth_needed = true;
 
@@ -6563,13 +6561,8 @@ class CommonDBTM extends CommonGLPI
 
         // New item, check create rights
         if (static::isNewID($id)) {
-            $reauth_needed = null;
-            if (!(new static())->can($id, CREATE, $options, $reauth_needed)) { // @todo bonne usage de la static ? effet ed bord ?
-                // redirect to reauth prompt
-                if ($reauth_needed === true) {
-                    self::redirectToReauthPrompt();
-                }
-
+            // New item, check create rights
+            if (!static::canCreate()) {
                 throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
             }
 
