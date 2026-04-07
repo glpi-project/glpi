@@ -63,7 +63,7 @@ final readonly class RedirectPostExceptionListener implements EventSubscriberInt
 
         // The original CSRF token was already consumed during the initial request validation.
         // Remove it so the Twig template can inject a fresh one via {{ csrf_token() }}.
-        $post_data = $throwable->getPost();
+        $post_data = $throwable->getData();
         unset($post_data['_glpi_csrf_token']);
 
         // Carry the original URL as a POST field so that Html::getRefererUrl() can return
