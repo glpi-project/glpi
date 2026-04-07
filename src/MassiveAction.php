@@ -676,7 +676,9 @@ class MassiveAction
 
             Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
-            if ($canupdate && Toolbox::hasTrait($itemtype, AssignableItem::class)) {
+
+            global $CFG_GLPI;
+            if ($canupdate && in_array($itemtype, $CFG_GLPI['assignable_types'], true)) {
                 $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Associate group');
                 $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Dissociate group');
             }
@@ -885,7 +887,7 @@ class MassiveAction
                         if (
                             Infocom::canApplyOn($itemtype)
                             && (!$itemtype::canUpdate()
-                             || !Infocom::canUpdate())
+                            || !Infocom::canUpdate())
                         ) {
                             $show_all      = false;
                             $show_infocoms = Infocom::canUpdate();
@@ -900,7 +902,7 @@ class MassiveAction
                                     && ($index != 1)
                                     // Permit entities_id is explicitly activate
                                     && (($option["linkfield"] != 'entities_id')
-                                     || (isset($option['massiveaction']) && $option['massiveaction']))
+                                    || (isset($option['massiveaction']) && $option['massiveaction']))
                                 ) {
                                     if (!isset($option['massiveaction']) || $option['massiveaction']) {
                                         if (
