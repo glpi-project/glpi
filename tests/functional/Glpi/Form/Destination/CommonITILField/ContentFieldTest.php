@@ -83,6 +83,40 @@ final class ContentFieldTest extends DbTestCase
         );
     }
 
+    public function testAnswersAfterQuestionWithAngleBracketsAreDisplayed(): void
+    {
+        $this->login();
+        $form = $this->createAndGetFormWithFirstAndLastNameQuestions();
+
+        // Act: send form with answer containing angle brackets
+        $ticket = $this->sendFormAndAssertTicketContentContains(
+            expected_content: [
+                "<b>1) First name</b>: John &lt;john@doe.fr&gt;",
+                "<b>2) Last name</b>: Doe",
+            ],
+            form: $form,
+            answers: [
+                "First name" => "John <john@doe.fr>",
+                "Last name"  => "Doe",
+            ],
+            config: null,
+        );
+
+        // Assert: content is correctly escaped in ticket content field
+        $this->assertStringContainsString('John &lt;john@doe.fr&gt;', $ticket->fields['content']);
+        $this->assertStringNotContainsString('John <john@doe.fr>', $ticket->fields['content']);
+
+        // Act: display content in ticket
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $output = ob_get_clean();
+
+        // Assert: find two lines
+        $this->assertNotFalse($output);
+        $this->assertStringContainsString('<b>1) First name</b>: John &lt;john&#64;doe.fr&gt;', $output);
+        $this->assertStringContainsString("<b>2) Last name</b>: Doe", $output);
+    }
+
     public function testSpecificContent(): void
     {
         $this->sendFormAndAssertTicketContentEquals(
@@ -98,11 +132,13 @@ final class ContentFieldTest extends DbTestCase
         Form $form,
         array $answers,
         ?SimpleValueConfig $config,
-    ): void {
+    ): Ticket {
         $ticket = $this->sendForm($form, $config, $answers);
         foreach ($expected_content as $expected) {
             $this->assertStringContainsString($expected, $ticket->fields['content']);
         }
+
+        return $ticket;
     }
 
     private function sendFormAndAssertTicketContentEquals(
