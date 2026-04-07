@@ -41,11 +41,11 @@ use Exception;
 class ReauthRedirectException extends Exception
 {
     /**
-     * @param array<string, string> $post
+     * @param array<string, string> $data
      */
     public function __construct(
         private readonly string $url,
-        private readonly array $post,
+        private readonly array  $data,
         /** @var 'POST'|'GET' */
         private readonly string $http_method,
     ) {
@@ -54,15 +54,20 @@ class ReauthRedirectException extends Exception
 
     public function getUrl(): string
     {
+        // if method is post, retrieved id and add it in url
+        if ($this->http_method === 'POST' && isset($this->data['id'])) {
+            return $this->url . '?id=' . $this->data['id'];
+        }
+
         return $this->url;
     }
 
     /**
      * @return array<string, string> $post
      */
-    public function getPost(): array
+    public function getData(): array
     {
-        return $this->post;
+        return $this->data;
     }
 
     public function getHttpMethod(): string

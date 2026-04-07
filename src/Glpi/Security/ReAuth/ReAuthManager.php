@@ -67,16 +67,18 @@ final class ReAuthManager
     {
         global $CFG_GLPI;
 
-        $this->setSuccessRedirectURL(\Html::getRefererUrl() ?? $CFG_GLPI['url_base']);
+        $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
+
+        $this->setRedirectURL($current_url);
         $this->setRedirectMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
-        $this->setPostDataForRedirect($_POST);
+        $this->setRedirectData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
 
         throw new RedirectException('/ReAuth/Prompt');
     }
 
     public function isReAuthenticated(): bool
     {
-        if (GLPI_REAUTH) {
+        if (false === GLPI_REAUTH) {
             return true;
         }
 
@@ -113,6 +115,25 @@ final class ReAuthManager
     public function getPromptTemplate(): string
     {
         return $this->getStrategy()->getPromptTemplate();
+    }
+
+    public function getRedirectURL(): string
+    {
+        return $_SESSION['glpi_reauth_redirect'] ?? '/';
+    }
+
+    /** @return array<string, string> */
+    public function getRedirectData(): array
+    {
+        return $_SESSION['glpi_reauth_data'] ?? [];
+    }
+
+    /**
+     * @return 'POST'|'GET'
+     */
+    public function getRedirectMethod(): string
+    {
+        return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
     }
 
     private function getStrategy(): ReAuthStrategyInterface
@@ -155,26 +176,15 @@ final class ReAuthManager
         return $strategies;
     }
 
-    public function getRedirectSuccessURL(): string
-    {
-        return $_SESSION['glpi_reauth_redirect'] ?? '/';
-    }
-
-    private function setSuccessRedirectURL(string $url): void
+    private function setRedirectURL(string $url): void
     {
         $_SESSION['glpi_reauth_redirect'] = $url;
     }
 
     /** @param array<string, string> $post */
-    private function setPostDataForRedirect(array $post): void
+    private function setRedirectData(array $post): void
     {
-        $_SESSION['glpi_reauth_postdata'] = $post;
-    }
-
-    /** @return array<string, string> */
-    public function getPostDataForRedirect(): array
-    {
-        return $_SESSION['glpi_reauth_postdata'] ?? [];
+        $_SESSION['glpi_reauth_data'] = $post;
     }
 
     /**
@@ -187,13 +197,5 @@ final class ReAuthManager
             'POST' => 'POST',
             default => throw new \LogicException(sprintf('Unsupported HTTP method for redirect: %s', $http_method)),
         };
-    }
-
-    /**
-     * @return 'POST'|'GET'
-     */
-    public function getRedirectMethod(): string
-    {
-        return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
     }
 }
