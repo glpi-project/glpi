@@ -197,6 +197,16 @@ export class GlpiKnowbaseArticleController
                 this.#unlinkDocument(button);
             }
         });
+
+        // Delegated listener for item unlink buttons
+        this.#container.addEventListener("click", (e) => {
+            const button = e.target.closest("[data-glpi-kb-unlink-item]");
+            if (button) {
+                e.stopPropagation();
+                e.preventDefault();
+                this.#unlinkItem(button);
+            }
+        });
     }
 
     #initDiffListeners()
@@ -410,6 +420,69 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
+     * Unlink an item from the KB article
+     * @param {HTMLElement} button
+     */
+    async #unlinkItem(button)
+    {
+        const assoc_id = button.dataset.glpiKbUnlinkItem;
+
+        const confirmed = await glpi_confirm_danger({
+            title: __('Unlink item'),
+            message: __('Are you sure you want to unlink this item from the article?'),
+            confirm_label: __('Unlink'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        await post(`Knowbase/UnlinkItem/${assoc_id}`);
+
+        // Remove badge from DOM
+        const badge = this.#container.querySelector(
+            `[data-glpi-item-assoc-id="${assoc_id}"]`
+        );
+        if (badge) {
+            badge.remove();
+        }
+
+        this.#updateRelatedItemCount(-1);
+        glpi_toast_info(__('Item unlinked successfully'));
+    }
+
+    /**
+     * Update related item count in the metadata bar and tab badge
+     * @param {number} delta
+     */
+    #updateRelatedItemCount(delta)
+    {
+        // Tab badge count
+        const tab_badge = this.#container.querySelector(
+            '#kb-items-tab-btn .badge'
+        );
+        if (tab_badge) {
+            const current = parseInt(tab_badge.textContent, 10) || 0;
+            const updated = Math.max(0, current + delta);
+            tab_badge.textContent = updated;
+        }
+
+        // Metadata bar count
+        const meta_link = this.#container.querySelector(
+            '[data-kb-related-items-count]'
+        );
+        if (meta_link) {
+            const current = parseInt(meta_link.textContent, 10) || 0;
+            const updated = Math.max(0, current + delta);
+            if (updated === 0) {
+                meta_link.closest('.d-flex')?.remove();
+            } else {
+                const label = _n('%s related item', '%s related items', updated).replace('%s', updated);
+                meta_link.textContent = label;
+            }
+        }
+    }
+
+    /**
      * Update document count in the metadata bar and tab badge
      * @param {number} delta
      */
@@ -427,7 +500,7 @@ export class GlpiKnowbaseArticleController
 
         // Metadata bar count
         const meta_link = this.#container.querySelector(
-            '[data-testid="documents-count"]'
+            '[data-kb-documents-count]'
         );
         if (meta_link) {
             const current = parseInt(meta_link.textContent, 10) || 0;
@@ -1128,7 +1201,7 @@ export class GlpiKnowbaseArticleController
 
     #updateTranslationsCount()
     {
-        const count_el = this.#container.querySelector('[data-testid="translations-count"]');
+        const count_el = this.#container.querySelector('[data-glpi-kb-toggle-translation-mode]');
         if (count_el) {
             const count = this.#existing_translations.length;
             count_el.textContent = `${count} ${_n('translation', 'translations', count)}`;

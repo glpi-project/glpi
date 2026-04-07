@@ -121,3 +121,39 @@ test('Can link an item to a knowledge base article', async ({ page, profile, api
     await updated_tab.click();
     await expect(page.getByTestId('related-item-chip').filter({ hasText: computer_name })).toBeVisible();
 });
+
+test('Can unlink an item', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+
+    // Create a KB with a linked item
+    const computer_name = `Computer - ${randomUUID()}`;
+    const computer_id = await api.createItem('Computer', {
+        name: computer_name,
+        entities_id: getWorkerEntityId(),
+    });
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: 'KB article for link test',
+        entities_id: getWorkerEntityId(),
+        answer: 'Test content',
+    });
+    await api.createItem('KnowbaseItem_Item', {
+        itemtype: "Computer",
+        items_id: computer_id,
+        knowbaseitems_id: kb_id,
+    });
+
+    // Go to KB
+    const kb = new KnowbaseItemPage(page);
+    await kb.goto(kb_id);
+
+    // Open linked item tab
+    await expect(page.getByTestId('related-items-count')).toBeVisible();
+    await page.getByRole('tab', { name: /Related items/ }).click();
+    await expect(page.getByText(computer_name)).toBeVisible();
+
+    // Unlink item
+    await kb.getButton('Unlink item').click();
+    await kb.getButton('Unlink').click();
+    await expect(page.getByText(computer_name)).not.toBeAttached();
+    await expect(page.getByTestId('related-items-count')).not.toBeAttached();
+});
