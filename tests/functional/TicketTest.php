@@ -10290,7 +10290,7 @@ HTML,
     {
         $this->login();
 
-        $user_id = getItemByTypeName('User', 'glpi', true);
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
 
         $ticket_id = $this->createItem(Ticket::class, [
             'name'        => 'Ticket created from the user profile',

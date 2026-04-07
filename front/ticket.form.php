@@ -284,7 +284,7 @@ if ($id > 0) {
         && isset($_REQUEST['itemtype'])
         && isset($_REQUEST['items_id'])
     ) {
-        if ($_REQUEST['itemtype'] === 'User') {
+        if ($_REQUEST['itemtype'] === User::class) {
             $_REQUEST['_users_id_requester'] = $_REQUEST['items_id'];
             unset($_REQUEST['itemtype']);
             unset($_REQUEST['items_id']);

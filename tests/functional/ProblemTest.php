@@ -40,6 +40,7 @@ use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Problem_User;
+use User;
 
 /* Test for inc/problem.class.php */
 
@@ -566,7 +567,7 @@ class ProblemTest extends DbTestCase
     {
         $this->login();
 
-        $user_id = getItemByTypeName('User', 'glpi', true);
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
 
         $problems_id = $this->createItem(Problem::class, [
             'name'        => 'Problem created from the user profile',

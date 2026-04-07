@@ -40,6 +40,7 @@ use CommonITILActor;
 use CommonITILObject;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use User;
 
 /* Test for inc/change.class.php */
 
@@ -594,7 +595,7 @@ class ChangeTest extends DbTestCase
     {
         $this->login();
 
-        $user_id = getItemByTypeName('User', 'glpi', true);
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
 
         $changes_id = $this->createItem(Change::class, [
             'name'        => 'Change created from the user profile',
