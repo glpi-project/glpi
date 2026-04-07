@@ -37,7 +37,7 @@ declare(strict_types=1);
 namespace Glpi\Kernel\Listener\ExceptionListener;
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Exception\RedirectPostException;
+use Glpi\Exception\ReauthRedirectException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -57,7 +57,7 @@ final readonly class RedirectPostExceptionListener implements EventSubscriberInt
     {
         $throwable = $event->getThrowable();
 
-        if (!$throwable instanceof RedirectPostException) {
+        if (!$throwable instanceof ReauthRedirectException) {
             return;
         }
 
@@ -74,8 +74,9 @@ final readonly class RedirectPostExceptionListener implements EventSubscriberInt
 
         $response = new Response(
             TemplateRenderer::getInstance()->render('pages/redirect_post.html.twig', [
-                'url'       => $throwable->getUrl(),
-                'post_data' => $post_data,
+                'http_method' => $throwable->getHttpMethod(),
+                'url'         => $throwable->getUrl(),
+                'post_data'   => $post_data,
             ])
         );
 
