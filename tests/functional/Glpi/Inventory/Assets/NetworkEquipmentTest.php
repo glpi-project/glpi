@@ -4925,4 +4925,60 @@ Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
         $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment2, $val);
         $this->assertFalse($result, 'Should return false when IPs array is empty');
     }
+
+    public function testTagRemoval(): void
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>ToBeRemoved</KEYVALUE>
+    </ACCOUNTINFO>
+    <BIOS>
+      <MMANUFACTURER>ASUSTeK COMPUTER INC.</MMANUFACTURER>
+      <MSN>315251128227471XYZ</MSN>
+    </BIOS>
+    <HARDWARE>
+      <CHASSIS_TYPE>Desktop</CHASSIS_TYPE>
+      <NAME>tag-issue-demo-01</NAME>
+      <UUID>22a128a9-2fba-4dbb-b6de-f255cfec9b22</UUID>
+      <VMSYSTEM>Physical</VMSYSTEM>
+    </HARDWARE>
+    <VERSIONCLIENT>GLPI-Inventory_v1.17</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>tag-issue-demo-2026-03-31</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+        $agent = $inventory->getAgent();
+        //TAG do not change on network equipments inventory
+        $this->assertSame('ToBeRemoved', $agent->fields['tag']);
+
+        // remove tag
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <BIOS>
+      <MMANUFACTURER>ASUSTeK COMPUTER INC.</MMANUFACTURER>
+      <MSN>315251128227471XYZ</MSN>
+    </BIOS>
+    <HARDWARE>
+      <CHASSIS_TYPE>Desktop</CHASSIS_TYPE>
+      <NAME>tag-issue-demo-01</NAME>
+      <UUID>22a128a9-2fba-4dbb-b6de-f255cfec9b22</UUID>
+      <VMSYSTEM>Physical</VMSYSTEM>
+    </HARDWARE>
+    <VERSIONCLIENT>GLPI-Inventory_v1.17</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>tag-issue-demo-2026-03-31</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>';
+
+        $inventory = $this->doInventory($xml_source, true);
+        $agent = $inventory->getAgent();
+        $this->assertSame('', $agent->fields['tag']);
+    }
 }

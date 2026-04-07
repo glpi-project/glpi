@@ -73,6 +73,8 @@ use Glpi\Inventory\Asset\VirtualMachine;
 use Glpi\Inventory\Asset\Volume;
 use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
+use Glpi\Inventory\MainAsset\NetworkEquipment;
+use Glpi\Inventory\MainAsset\Unmanaged;
 use Lockedfield;
 use Log;
 use RecursiveDirectoryIterator;
@@ -848,6 +850,15 @@ class Inventory
             $this->mainasset->setExtraData($this->data);
             $this->mainasset->setAssets($this->assets);
             $item_start = microtime(true);
+            //cleanup tag
+            if (
+                ($agent = $this->mainasset?->getAgent()) instanceof Agent
+                && !$this->mainasset->isPartial()
+                && !($this->mainasset instanceof NetworkEquipment || $this->mainasset instanceof Unmanaged)
+                && !isset($this->metadata['tag'])
+            ) {
+                $agent->update(['tag' => '', 'id' => $agent->getID()]);
+            }
             $this->mainasset->handle();
             $this->item = $this->mainasset->getItem();
             $this->addBench($this->item->getType(), 'handle', $item_start);
