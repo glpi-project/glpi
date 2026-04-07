@@ -38,7 +38,7 @@ namespace Glpi\Controller\Security;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\RedirectPostException;
+use Glpi\Exception\ReauthRedirectException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
@@ -89,7 +89,11 @@ class ReAuthController extends AbstractController
         if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
 
-            throw new RedirectPostException($this->reAuthManager->getRedirectSuccessURL(), $this->reAuthManager->getPostDataForRedirect());
+            throw new ReauthRedirectException(
+                $this->reAuthManager->getRedirectSuccessURL(),
+                $this->reAuthManager->getPostDataForRedirect(),
+                $this->reAuthManager->getRedirectMethod(),
+            );
         }
 
         return $this->prompt($request, __('Verification failed. Please try again.'));

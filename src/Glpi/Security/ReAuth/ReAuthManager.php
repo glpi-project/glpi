@@ -68,6 +68,7 @@ final class ReAuthManager
         global $CFG_GLPI;
 
         $this->setSuccessRedirectURL(\Html::getRefererUrl() ?? $CFG_GLPI['url_base']);
+        $this->setRedirectMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
         $this->setPostDataForRedirect($_POST);
 
         throw new RedirectException('/ReAuth/Prompt');
@@ -174,5 +175,25 @@ final class ReAuthManager
     public function getPostDataForRedirect(): array
     {
         return $_SESSION['glpi_reauth_postdata'] ?? [];
+    }
+
+    /**
+     * @param 'POST'|'GET' $http_method
+     */
+    private function setRedirectMethod(string $http_method): void
+    {
+        $_SESSION['glpi_reauth_httpmethod'] = match ($http_method) {
+            'GET'  => 'GET',
+            'POST' => 'POST',
+            default => throw new \LogicException(sprintf('Unsupported HTTP method for redirect: %s', $http_method)),
+        };
+    }
+
+    /**
+     * @return 'POST'|'GET'
+     */
+    public function getRedirectMethod(): string
+    {
+        return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
     }
 }
