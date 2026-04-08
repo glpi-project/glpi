@@ -158,7 +158,7 @@ class RuleRightTest extends DbTestCase
 
     public static function ruleAccountAssignAndDefaultProfileAndEntityProvider()
     {
-        yield [
+        yield 'Assign an existing profile without specifying a default' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
@@ -176,7 +176,7 @@ class RuleRightTest extends DbTestCase
             ],
         ];
 
-        yield [
+        yield 'Set an already associated profile as the default' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
@@ -194,7 +194,7 @@ class RuleRightTest extends DbTestCase
             ],
         ];
 
-        yield [
+        yield 'Assign an existing entity without specifying a default' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
@@ -202,17 +202,17 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                'entities_id' => 'Entity1',
+                'entities_id' => 'Entity2',
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
-                'entities_id' => 'Entity1',
+                'entities_id' => 'Entity2',
                 '_entities_id_default' => 0,
             ],
         ];
 
-        yield [
+        yield 'Set an already associated entity as the default' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
@@ -230,7 +230,7 @@ class RuleRightTest extends DbTestCase
             ],
         ];
 
-        yield [
+        yield 'Assign profile and entity and set both as defaults' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
@@ -251,7 +251,7 @@ class RuleRightTest extends DbTestCase
             ],
         ];
 
-        yield [
+        yield 'Attempt to set unassigned profiles and entities as default' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
@@ -272,7 +272,7 @@ class RuleRightTest extends DbTestCase
             ],
         ];
 
-        yield [
+        yield 'Re-assign existing default profile and entity' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 'Profile1',
@@ -293,7 +293,7 @@ class RuleRightTest extends DbTestCase
             ],
         ];
 
-        yield [
+        yield 'Update defaults by assigning a new profile and a new entity' => [
             'user_data' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 'Profile1',
@@ -311,6 +311,24 @@ class RuleRightTest extends DbTestCase
                 '_profiles_id_default' => 'Profile2',
                 'entities_id' => 'Entity2',
                 '_entities_id_default' => 'Entity2',
+            ],
+        ];
+
+        yield 'Assign default profile without giving the profile right' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                '_profiles_id_default' => 'Profile2',
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 0,
+                '_entities_id_default' => 0,
             ],
         ];
     }
@@ -682,5 +700,51 @@ class RuleRightTest extends DbTestCase
         ]);
 
         $this->assertEquals($groups_before, $groups_after);
+    }
+
+    public function testBypassLdapRules()
+    {
+        $this->login();
+
+        $profile_user = new \Profile_User();
+
+        // Create an user and profile and entity to be used in the test
+        $user = $this->createItem(\User::class, [
+            'name'      => __FUNCTION__ . '_user',
+            'password'  => 'test',
+            'password2' => 'test',
+        ], ['password', 'password2']);
+
+        $profile = $this->createItem(\Profile::class, [
+            'name' => 'ProfileBypass',
+        ]);
+
+        $entity = $this->createItem(\Entity::class, [
+            'name' => 'EntityBypass',
+        ]);
+
+        $input = [
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $entity->getID(),
+            '_ldap_rules' => [
+                'rules_entities' => [
+                    [$entity->getID(), 1]
+                ],
+                'rules_profiles' => [
+                    [$profile->getID()]
+                ]
+            ]
+        ];
+
+        // Update the user with the LDAP rules bypass input
+        $user = $this->updateItem(\User::class, $user->getID(), $input, ['profiles_id', 'entities_id']);
+
+        $user->getFromDB($user->getID());
+        $profiles = $profile_user->getUserProfiles($user->getID());
+
+        // Verif if the profile and entity have not been updated by the input because of the LDAP rules bypass in prepareInputForUpdate
+        $this->assertNotEquals($profile->getID(), $user->fields['profiles_id']);
+        $this->assertNotEquals($entity->getID(), $user->fields['entities_id']);
+        $this->assertNotContains($profile->getID(), $profiles);
     }
 }

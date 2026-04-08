@@ -1298,7 +1298,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         $default_entity_id = [];
 
         // Check if LDAP rules are set in input
-        if (isset($input['_ldap_rules'])) {
+        if ($this->must_process_ruleright === true && isset($input['_ldap_rules'])) {
             // Check if LDAP rules contain entity and profile affectations
             if (isset($input['_ldap_rules']['rules_entities_rights'])) {
                 foreach ($input['_ldap_rules']['rules_entities_rights'] as $rule) {
@@ -1315,22 +1315,21 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
 
             // Check if LDAP rules contain profile affectations. One entity is required to be able to apply profile affectation.
-            if (isset($input['_ldap_rules']['rules_profiles']) && count($default_entity_id) > 0) {
-                foreach ($input['_ldap_rules']['rules_profiles'] as $rule) {
+            if (isset($input['_ldap_rules']['rules_rights']) && count($default_entity_id) > 0) {
+                foreach ($input['_ldap_rules']['rules_rights'] as $rule) {
                     $default_profile_ids[] = $rule[0];
                 }
             }
         }
 
         // Security on default profile update
-        if (isset($input['profiles_id'])) {
-            if (
-                !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
-                && $input['profiles_id'] != 0
-                && !in_array($input['profiles_id'], $default_profile_ids)
-            ) {
-                unset($input['profiles_id']);
-            }
+        if (
+            isset($input['profiles_id'])
+            && !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
+            && $input['profiles_id'] != 0
+            && !in_array($input['profiles_id'], $default_profile_ids)
+        ) {
+            unset($input['profiles_id']);
         }
 
         // Security on default entity  update
