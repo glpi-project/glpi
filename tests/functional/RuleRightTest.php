@@ -166,7 +166,7 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                'profiles_id' => 'Profile1',
+                ['profiles_id' => 'Profile1',],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -184,7 +184,7 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                '_profiles_id_default' => 'Profile1',
+                ['_profiles_id_default' => 'Profile1',],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -202,7 +202,7 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                'entities_id' => 'Entity2',
+                ['entities_id' => 'Entity2'],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -220,7 +220,7 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                '_entities_id_default' => 'Entity1',
+                ['_entities_id_default' => 'Entity1'],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -238,10 +238,12 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                'profiles_id' => 'Profile1',
-                '_profiles_id_default' => 'Profile1',
-                'entities_id' => 'Entity1',
-                '_entities_id_default' => 'Entity1',
+                [
+                    'profiles_id' => 'Profile1',
+                    '_profiles_id_default' => 'Profile1',
+                    'entities_id' => 'Entity1',
+                    '_entities_id_default' => 'Entity1',
+                ],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -259,10 +261,12 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                'profiles_id' => 'Profile1',
-                '_profiles_id_default' => 'Profile2',
-                'entities_id' => 'Entity1',
-                '_entities_id_default' => 'Entity2',
+                [
+                    'profiles_id' => 'Profile1',
+                    '_profiles_id_default' => 'Profile2',
+                    'entities_id' => 'Entity1',
+                    '_entities_id_default' => 'Entity2',
+                ],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -280,10 +284,12 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 'Entity1',
             ],
             'actions' => [
-                'profiles_id' => 'Profile1',
-                '_profiles_id_default' => 'Profile1',
-                'entities_id' => 'Entity1',
-                '_entities_id_default' => 'Entity1',
+                [
+                    'profiles_id' => 'Profile1',
+                    '_profiles_id_default' => 'Profile1',
+                    'entities_id' => 'Entity1',
+                    '_entities_id_default' => 'Entity1',
+                ],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
@@ -301,10 +307,12 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 'Entity1',
             ],
             'actions' => [
-                'profiles_id' => 'Profile2',
-                '_profiles_id_default' => 'Profile2',
-                'entities_id' => 'Entity2',
-                '_entities_id_default' => 'Entity2',
+                [
+                    'profiles_id' => 'Profile2',
+                    '_profiles_id_default' => 'Profile2',
+                    'entities_id' => 'Entity2',
+                    '_entities_id_default' => 'Entity2',
+                ],
             ],
             'expected' => [
                 'profiles_id' => 'Profile2',
@@ -322,13 +330,44 @@ class RuleRightTest extends DbTestCase
                 '_entities_id_default' => 0,
             ],
             'actions' => [
-                '_profiles_id_default' => 'Profile2',
+                [
+                    '_profiles_id_default' => 'Profile2',
+                ],
             ],
             'expected' => [
                 'profiles_id' => 'Profile1',
                 '_profiles_id_default' => 0,
                 'entities_id' => 0,
                 '_entities_id_default' => 0,
+            ],
+        ];
+
+        yield 'Assign global profile and entity with two rules' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                [
+                    // Rule 1: Assigns profile dynamically, populating rules_rights
+                    // Also attempts to set it as default profile
+                    'profiles_id' => 'Profile2',
+                    '_profiles_id_default' => 'Profile2',
+                ],
+                [
+                    // Rule 2: Assigns entity dynamically, populating rules_entities
+                    // Also attempts to set it as default entity
+                    'entities_id' => 'Entity2',
+                    '_entities_id_default' => 'Entity2',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile2',
+                '_profiles_id_default' => 'Profile2',
+                'entities_id' => 'Entity2',
+                '_entities_id_default' => 'Entity2',
             ],
         ];
     }
@@ -361,8 +400,11 @@ class RuleRightTest extends DbTestCase
         $search_keys = ['Profile1', 'Profile2', 'Entity1', 'Entity2'];
         $replace_ids = [$profile1->getID(), $profile2->getID(), $entity1->getID(), $entity2->getID()];
 
-        foreach ($actions as $key => $value) {
-            $actions[$key] = intval(str_replace($search_keys, $replace_ids, $value));
+        $parsed_actions = [];
+        foreach ($actions as $index => $rule_actions) {
+            foreach ($rule_actions as $key => $value) {
+                $parsed_actions[$index][$key] = intval(str_replace($search_keys, $replace_ids, $value));
+            }
         }
         foreach ($expected as $key => $value) {
             $expected[$key] = intval(str_replace($search_keys, $replace_ids, $value));
@@ -385,15 +427,18 @@ class RuleRightTest extends DbTestCase
             'entities_id' => $user_data['entities_id'],
         ]);
 
-        // Prepare rule to assign the default profile and default entity.
-        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleRight::class);
-        $rule_builder->setEntity(0)
-            ->addCriteria('LOGIN', \Rule::PATTERN_IS, $user->fields['name'])
-            ->setIsRecursive(1);
-        foreach ($actions as $key => $value) {
-            $rule_builder->addAction('assign', $key, $value);
+        // Prepare rules to assign the default profile and default entity.
+        $created_rules = [];
+        foreach ($parsed_actions as $index => $rule_actions) {
+            $rule_builder = new RuleBuilder(__FUNCTION__ . "_$index", \RuleRight::class);
+            $rule_builder->setEntity(0)
+                ->addCriteria('LOGIN', \Rule::PATTERN_IS, $user->fields['name'])
+                ->setIsRecursive(1);
+            foreach ($rule_actions as $key => $value) {
+                $rule_builder->addAction('assign', $key, $value);
+            }
+            $created_rules[] = $this->createRule($rule_builder);
         }
-        $rule = $this->createRule($rule_builder);
 
         // Login to trigger RuleRight processing.
         $this->realLogin($user->fields['name'], 'test', false);
@@ -408,9 +453,11 @@ class RuleRightTest extends DbTestCase
         $this->assertContains($expected['profiles_id'], $profiles);
 
         // Cleanup
-        $rules->delete([
-            'id' => $rule->getID(),
-        ], true);
+        foreach ($created_rules as $rule) {
+            $rules->delete([
+                'id' => $rule->getID(),
+            ], true);
+        }
 
         // Clean singleton to avoid polluting next tests.
         \SingletonRuleList::getInstance(\RuleRight::class, 0)->load = 0;
@@ -728,12 +775,12 @@ class RuleRightTest extends DbTestCase
             'entities_id' => $entity->getID(),
             '_ldap_rules' => [
                 'rules_entities' => [
-                    [$entity->getID(), 1]
+                    [$entity->getID(), 1],
                 ],
                 'rules_profiles' => [
-                    [$profile->getID()]
-                ]
-            ]
+                    [$profile->getID()],
+                ],
+            ],
         ];
 
         // Update the user with the LDAP rules bypass input

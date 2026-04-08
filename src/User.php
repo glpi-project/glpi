@@ -1317,7 +1317,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             // Check if LDAP rules contain profile affectations. One entity is required to be able to apply profile affectation.
             if (isset($input['_ldap_rules']['rules_rights']) && count($default_entity_id) > 0) {
                 foreach ($input['_ldap_rules']['rules_rights'] as $rule) {
-                    $default_profile_ids[] = $rule[0];
+                    $default_profile_ids[] = $rule;
                 }
             }
         }
