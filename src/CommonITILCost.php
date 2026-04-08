@@ -573,7 +573,7 @@ TWIG, $twig_params);
             $entry = [
                 'itemtype' => static::getType(),
                 'id'       => $data['id'],
-                'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip($data['comment'], ['display' => false])),
+                'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip(htmlescape($data['comment']), ['display' => false])),
                 'begin_date' => $data['begin_date'],
                 'end_date' => $data['end_date'],
                 'budget' => $budget_links[$data['budgets_id']],
