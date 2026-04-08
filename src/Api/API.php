@@ -263,36 +263,11 @@ abstract class API
         $this->checkAppToken();
         $this->logEndpointUsage(__FUNCTION__);
 
-        if (
-            (!isset($params['login'])
-            || empty($params['login'])
-            || !isset($params['password'])
-            || empty($params['password']))
-            && (!isset($params['user_token'])
-             || empty($params['user_token']))
-        ) {
-            $this->returnError(
-                __("parameter(s) login, password or user_token are missing"),
-                400,
-                "ERROR_LOGIN_PARAMETERS_MISSING"
-            );
-        }
+        $login    = $params['login'] ?? '';
+        $password = $params['password'] ?? '';
+        $token    = $params['user_token'] ?? '';
 
-        $auth = new Auth();
-
-        // fill missing params (in case of user_token)
-        if (!isset($params['login'])) {
-            $params['login'] = '';
-        }
-        if (!isset($params['password'])) {
-            $params['password'] = '';
-        }
-
-        $noAuto = true;
-        if (isset($params['user_token']) && !empty($params['user_token'])) {
-            $_REQUEST['user_token'] = Sanitizer::dbEscape($params['user_token']);
-            $noAuto = false;
-        } elseif (!$CFG_GLPI['enable_api_login_credentials']) {
+        if (($login !== '' || $password !== '') && !$CFG_GLPI['enable_api_login_credentials']) {
             $this->returnError(
                 __("usage of initSession resource with credentials is disabled"),
                 400,
@@ -300,21 +275,65 @@ abstract class API
                 false
             );
         }
-
-        if (!isset($params['auth'])) {
-            $params['auth'] = '';
+        if ($token !== '' && !$CFG_GLPI['enable_api_login_external_token']) {
+            $this->returnError(
+                __("usage of initSession resource with user token is disabled"),
+                400,
+                "ERROR_LOGIN_WITH_TOKEN_DISABLED",
+                false
+            );
         }
 
-        // login on glpi
-        if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
-            $err = implode(' ', $auth->getErrors());
-            if (
-                isset($params['user_token'])
-                && !empty($params['user_token'])
-            ) {
-                $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
+        if (
+            (!$CFG_GLPI['enable_api_login_credentials'] || $login === '' || $password === '')
+            && (!$CFG_GLPI['enable_api_login_external_token'] || $token === '')
+        ) {
+            if ($CFG_GLPI['enable_api_login_credentials'] && $CFG_GLPI['enable_api_login_external_token']) {
+                $this->returnError(
+                    __("parameter(s) login, password or user_token are missing"),
+                    400,
+                    "ERROR_LOGIN_PARAMETERS_MISSING"
+                );
+            } elseif ($CFG_GLPI['enable_api_login_credentials']) {
+                $this->returnError(
+                    __("parameter(s) login, password are missing"),
+                    400,
+                    "ERROR_LOGIN_PARAMETERS_MISSING"
+                );
+            } else {
+                $this->returnError(
+                    __("parameter user_token is missing"),
+                    400,
+                    "ERROR_LOGIN_PARAMETERS_MISSING"
+                );
             }
-            $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
+        }
+
+        $authenticated  = false;
+        $error_msg      = '';
+        $error_code     = '';
+        $use_token_auth = $CFG_GLPI['enable_api_login_external_token'] && $token !== '';
+        $use_login_auth = $CFG_GLPI['enable_api_login_credentials'] && $login !== '' && $password !== '';
+
+        if ($use_token_auth) {
+            $_REQUEST['user_token'] = $token;
+
+            $auth = new Auth();
+            $authenticated = $auth->login('', '', false, false, $params['auth'] ?? '');
+            $error_code    = 'ERROR_GLPI_LOGIN_USER_TOKEN';
+            $error_msg     = __("parameter user_token seems invalid");
+        }
+        if (!$authenticated && $use_login_auth) {
+            unset($_REQUEST['user_token']);
+
+            $auth = new Auth();
+            $authenticated = $auth->login($login, $password, true, false, $params['auth'] ?? '');
+            $error_code    = 'ERROR_GLPI_LOGIN';
+            $error_msg     = implode(' ', $auth->getErrors());
+        }
+
+        if (!$authenticated) {
+            $this->returnError($error_msg, 401, $error_code, false);
         }
 
         // stop session and return session key

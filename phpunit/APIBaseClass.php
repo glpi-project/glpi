@@ -52,13 +52,6 @@ abstract class APIBaseClass extends TestCase
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
-        $this->initSessionCredentials();
-    }
-
-    abstract public function initSessionCredentials();
-
-    public static function setUpBeforeClass(): void
-    {
         // To bypass various right checks
         // This is mandatory to create/update/delete some items during tests.
         $_SESSION['glpishowallentities'] = 1;
@@ -70,14 +63,19 @@ abstract class APIBaseClass extends TestCase
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
 
         // enable api config
-        $config = new Config();
-        $config->update([
-            'id'                              => 1,
-            'enable_api'                      => true,
-            'enable_api_login_credentials'    => true,
-            'enable_api_login_external_token' => true,
-        ]);
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api'                      => true,
+                'enable_api_login_credentials'    => true,
+                'enable_api_login_external_token' => true,
+            ]
+        );
+
+        $this->initSessionCredentials();
     }
+
+    abstract public function initSessionCredentials();
 
     /**
      * @tags   api
@@ -95,6 +93,68 @@ abstract class APIBaseClass extends TestCase
             'initSession',
             ['query' => ['user_token' => $token]]
         );
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
+    }
+
+    /**
+     * @tags   api
+     * @covers API::initSession
+     */
+    public function testInitSessionUserTokenFailIfNotEnabled()
+    {
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api_login_external_token' => false,
+            ]
+        );
+
+        $user = new User();
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $this->assertTrue($user->getFromDB($uid));
+        $token = $user->getAuthToken('api_token');
+
+        $this->query(
+            'initSession',
+            ['query' => ['user_token' => $token]],
+            400,
+            'ERROR_LOGIN_WITH_TOKEN_DISABLED'
+        );
+    }
+
+    /**
+     * @tags   api
+     * @covers API::initSession
+     */
+    public function testInitSessionCredentialsFailIfNotEnabled()
+    {
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api_login_credentials' => false,
+            ]
+        );
+
+        $this->query(
+            'initSession',
+            ['query' => ['login' => TU_USER, 'password' => TU_PASS]],
+            400,
+            'ERROR_LOGIN_WITH_CREDENTIALS_DISABLED'
+        );
+    }
+
+    /**
+     * @tags   api
+     * @covers API::initSession
+     */
+    public function testInitSessionFallbackToCredentials()
+    {
+        $data = $this->query(
+            'initSession',
+            ['query' => ['user_token' => 'notvalid', 'login' => TU_USER, 'password' => TU_PASS]],
+        );
+
         $this->assertNotFalse($data);
         $this->assertArrayHasKey('session_token', $data);
     }
