@@ -49,7 +49,7 @@ class TemplateRenderer
 {
     private TwigEnvironment $environment;
 
-    public function __construct(string $rootdir = GLPI_ROOT, ?string $cachedir = null)
+    public function __construct(string $rootdir = GLPI_ROOT)
     {
         $container = $this->getKernelContainer();
 
@@ -57,7 +57,11 @@ class TemplateRenderer
             // Kernel is available: use the fully-configured DI twig service.
             // All GLPI extensions, superglobals, ComponentLexer, ComponentRuntime, etc.
             // are already set up by TwigBundle + Autowiring
-            $this->environment = $container->get('twig');
+            $twig = $container->get('twig');
+            if (!$twig instanceof TwigEnvironment) {
+                throw new \RuntimeException('Twig service is not a TwigEnvironment instance.');
+            }
+            $this->environment = $twig;
             $this->mountPluginPaths($rootdir);
             return;
         }
@@ -83,7 +87,7 @@ class TemplateRenderer
         $active_plugins = Plugin::getPlugins();
         foreach ($active_plugins as $plugin_key) {
             $path = Plugin::getPhpDir($plugin_key . '/templates');
-            if (is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
+            if ($path !== false && is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
                 $loader->addPath($path, $plugin_key);
             }
         }
@@ -100,6 +104,7 @@ class TemplateRenderer
 
     private function getKernelContainer(): ?ContainerInterface
     {
+        /** @var Kernel|null $kernel */
         global $kernel;
 
         if (!$kernel instanceof Kernel) {
@@ -112,7 +117,7 @@ class TemplateRenderer
             return null;
         }
 
-        return $container instanceof ContainerInterface ? $container : null;
+        return $container;
     }
 
     /**

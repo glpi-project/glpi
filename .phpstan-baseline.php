@@ -6818,12 +6818,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/SecurityExtension.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$path of method Twig\\\\Loader\\\\FilesystemLoader\\:\\:addPath\\(\\) expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset non\\-falsy\\-string on array\\<string, mixed\\>\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
