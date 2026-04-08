@@ -317,9 +317,12 @@ abstract class API
             $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
         }
 
+        $session_token = \base64_encode((new GLPIKey())->encrypt($_SESSION['valid_id']));
+        unset($_SESSION['valid_id']); // this is not needed for the API, unsetting it prevents any unexpected exposure
+
         // stop session and return session key
         session_write_close();
-        $data = ['session_token' => $_SESSION['valid_id']];
+        $data = ['session_token' => $session_token];
 
         // Insert session data if requested
         $get_full_session = $params['get_full_session'] ?? false;
