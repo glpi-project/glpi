@@ -698,7 +698,7 @@ TWIG, $twig_params);
             'reset'    => 'reset',
             'criteria' => [
                 [
-                    'field'      => 12,
+                    'field'      => 12, // status
                     'searchtype' => 'equals',
                     'value'      => 'all',
                     'link'       => 'AND',
@@ -708,7 +708,7 @@ TWIG, $twig_params);
 
         if ($item instanceof Supplier && static::$itemtype_1 instanceof CommonITILObject) {
             $params['criteria'][] = [
-                'field'      => 6,
+                'field'      => 6, // supplier
                 'searchtype' => 'equals',
                 'value'      => $item->getID(),
                 'link'       => 'AND',
