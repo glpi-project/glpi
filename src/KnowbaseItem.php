@@ -999,23 +999,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         $actions = [];
 
-        if (KnowbaseItem_Favorite::canCreate()) {
-            $actions[] = new EditorAction(
-                label: __("Add to favorites"),
-                icon: "ti ti-star",
-                type: EditorActionType::TOGGLE_FAVORITE,
-                params: [
-                    'id'      => $this->fields['id'],
-                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']) ? '1' : '0',
-                ],
-            );
-        }
-
+        // Navigation actions (require UPDATE)
         if ($this->can($this->fields['id'], UPDATE)) {
-            if ($actions !== []) {
-                $actions[] = new EditorActionSeparator();
-            }
-
             $actions[] = new EditorAction(
                 label: __("History"),
                 icon: "ti ti-history",
@@ -1056,17 +1041,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
-            $actions[] = new EditorActionSeparator();
-            $actions[] = new EditorAction(
-                label: __("Add to FAQ"),
-                icon: "ti ti-bookmark",
-                type: EditorActionType::TOGGLE_VALUE,
-                params: [
-                    'id'      => $this->fields['id'],
-                    'field'   => 'is_faq',
-                    'checked' => $this->fields['is_faq'] ? '1' : '0',
-                ],
-            );
             $actions[] = new EditorAction(
                 label: _n('Target', 'Targets', Session::getPluralNumber()),
                 icon: "ti ti-eye",
@@ -1077,6 +1051,38 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'title' => _n('Target', 'Targets', Session::getPluralNumber()),
                 ],
             );
+        }
+
+        // Toggle actions
+        $toggles = [];
+        if (KnowbaseItem_Favorite::canCreate()) {
+            $toggles[] = new EditorAction(
+                label: __("Add to favorites"),
+                icon: "ti ti-star",
+                type: EditorActionType::TOGGLE_FAVORITE,
+                params: [
+                    'id'      => $this->fields['id'],
+                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']) ? '1' : '0',
+                ],
+            );
+        }
+        if ($this->can($this->fields['id'], UPDATE)) {
+            $toggles[] = new EditorAction(
+                label: __("Add to FAQ"),
+                icon: "ti ti-bookmark",
+                type: EditorActionType::TOGGLE_VALUE,
+                params: [
+                    'id'      => $this->fields['id'],
+                    'field'   => 'is_faq',
+                    'checked' => $this->fields['is_faq'] ? '1' : '0',
+                ],
+            );
+        }
+        if ($toggles !== []) {
+            if ($actions !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
+            array_push($actions, ...$toggles);
         }
 
         if ($this->can($this->fields['id'], PURGE)) {

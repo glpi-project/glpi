@@ -173,13 +173,13 @@
                                             {% endif %}
 
                                             {% if action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_VALUE') or action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_FAVORITE') %}
-                                                <label class="form-check form-switch ms-auto mb-0">
+                                                <span class="form-check form-switch ms-auto mb-0">
                                                     <input
                                                         type="checkbox"
                                                         class="form-check-input ms-0"
                                                         {{ action.params.checked ? 'checked' : '' }}
                                                     >
-                                                </label>
+                                                </span>
                                             {% endif %}
                                         </button>
                                     </li>
