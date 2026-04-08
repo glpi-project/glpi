@@ -3911,4 +3911,25 @@ final class FormMigrationTest extends DbTestCase
         // Assert: migration should be done without error
         $this->assertTrue($result->isFullyProcessed());
     }
+
+    public function testFormMigrationActorsWithEmptyDefaultValue(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with an actor question with an empty default value
+        $this->createSimpleFormcreatorForm('Actor test with empty default value', [
+            [
+                'name'           => 'Actor',
+                'fieldtype'      => 'actor',
+                'default_values' => '',
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error
+        $this->assertTrue($result->isFullyProcessed());
+    }
 }
