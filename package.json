@@ -52,7 +52,7 @@
         "leaflet-spin": "^1.1.0",
         "leaflet.awesome-markers": "^2.0.5",
         "leaflet.markercluster": "^1.4.1",
-        "lodash": "^4.17.21",
+        "lodash": "^4.18.1",
         "masonry-layout": "^4.2.2",
         "photoswipe": "^4.1.3",
         "plain-scrollbar": "github:ewya/PlainScrollbar#35221e7c7fa9633d6f61bcd9d7b418b6de6da73b",
@@ -96,5 +96,10 @@
         "terser": "^5.43.1",
         "webpack": "^5.105.4",
         "webpack-cli": "^6.0.1"
+    },
+    "overrides": {
+        "chartist-plugin-tooltips-updated": {
+            "lodash": "^4.18.1"
+        }
     }
 }
