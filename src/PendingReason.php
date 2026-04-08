@@ -439,5 +439,6 @@ class PendingReason extends CommonDropdown
             'params' => $options,
             'additional_fields' => $fields,
         ]);
+        return true;
     }
 }

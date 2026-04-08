@@ -56,4 +56,6 @@ if (!$pending_reason) {
 echo json_encode([
     'followup_frequency'          => $pending_reason->fields['followup_frequency'],
     'followups_before_resolution' => $pending_reason->fields['followups_before_resolution'],
+    'itilfollowuptemplates_id' => $pending_reason->fields['itilfollowuptemplates_id'],
+    'solutiontemplates_id' => $pending_reason->fields['solutiontemplates_id'],
 ]);

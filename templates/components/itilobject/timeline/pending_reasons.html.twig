@@ -33,143 +33,156 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
-   {% set default_pending = call('PendingReason::getDefault') %}
-   {% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
-   {% set pending_item_parent = call('PendingReason_Item::getForItem', [item, true]) %}
-   {% set pendingreasons_id = pending_item.fields['pendingreasons_id'] ?? pending_item_parent.fields['pendingreasons_id'] ?? default_pending.fields['id'] ?? 0 %}
+    {% set default_pending = call('PendingReason::getDefault') %}
+    {% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
+    {% set pending_item_parent = call('PendingReason_Item::getForItem', [item, true]) %}
+    {% set pendingreasons_id = pending_item.fields['pendingreasons_id'] ?? pending_item_parent.fields['pendingreasons_id'] ?? default_pending.fields['id'] ?? 0 %}
 
-   <div class="row">
-      <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
-           data-bs-toggle="tooltip" data-bs-placement="top">
-         {% set pendingreasons_lbl %}
-            <i class="ti ti-tags"></i>
-         {% endset %}
-         {% set pending_reasons_id_script %}
-            <script>
-               var myCollapsible = $('#pending-reasons-setup-{{ rand }}')[0];
-               myCollapsible.addEventListener('show.bs.collapse', function () {
-                  $('#pending-reasons-control-{{ rand }}').addClass('flex-fill');
-               });
-               myCollapsible.addEventListener('hide.bs.collapse', function () {
-                  $('#pending-reasons-control-{{ rand }}').removeClass('flex-fill');
-               });
+    <div class="row">
+        <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
+             data-bs-toggle="tooltip" data-bs-placement="top">
+            {% set pendingreasons_lbl %}
+                <i class="ti ti-tags"></i>
+            {% endset %}
+            {% set pending_reasons_id_script %}
+                <script>
+                    var myCollapsible = $('#pending-reasons-setup-{{ rand }}')[0];
+                    myCollapsible.addEventListener('show.bs.collapse', function () {
+                        $('#pending-reasons-control-{{ rand }}').addClass('flex-fill');
+                    });
+                    myCollapsible.addEventListener('hide.bs.collapse', function () {
+                        $('#pending-reasons-control-{{ rand }}').removeClass('flex-fill');
+                    });
+                </script>
+            {% endset %}
+            {{ fields.dropdownField(
+                'PendingReason',
+                'pendingreasons_id',
+                pendingreasons_id,
+                pendingreasons_lbl,
+                {
+                    'label_class': 'col-1',
+                    'input_class': 'col-10 ms-1',
+                    'rand': rand,
+                    'mb': '',
+                    'hide_if_no_elements': true,
+                    'addicon': false,
+                    'comments': false,
+                    'width': '95%',
+                    'field_class': 'flex-nowrap',
+                    'add_field_html': pending_reasons_id_script,
+                    'aria_label': _n('Pending reason', 'Pending reasons', 1),
+                }
+            ) }}
+            <script type="module">
+                // Initialize a flag to check if the pending reasons dropdown has been initialized
+                let pendingReasonsInitalized{{ rand }} = false;
+
+                let handlePendingReasonsChange{{ rand }} = async () => {
+                    let pending_val = $('#dropdown_pendingreasons_id{{ rand }}').val();
+
+                    if (pending_val > 0) {
+                        $('#pending-reasons-more_options_{{ rand }}').addClass('show');
+                        let data = await $.ajax({
+                            url: '{{ path("ajax/pendingreason.php") }}',
+                            type: 'POST',
+                            data: {
+                                pendingreasons_id: pending_val
+                            }
+                        });
+
+                        if (data.itilfollowuptemplates_id) {
+                            $('#dropdown_followup_frequency{{ rand }}')
+                                .val(data.followup_frequency)
+                                .trigger('change');
+                            $('#dropdown_followup_frequency{{ rand }}').closest('.form-field').parent().removeClass('d-none');
+                        } else {
+                            $('#dropdown_followup_frequency{{ rand }}')
+                                .closest('.form-field').parent().addClass('d-none');
+                        }
+                        if (data.solutiontemplates_id) {
+                            $('#dropdown_followups_before_resolution{{ rand }}')
+                                .val(data.followups_before_resolution)
+                                .removeClass('d-none')
+                                .trigger('change');
+                            $('#dropdown_followups_before_resolution{{ rand }}').closest('.form-field').parent().removeClass('d-none');
+                        } else {
+                            $('#dropdown_followups_before_resolution{{ rand }}')
+                                .closest('.form-field').parent().addClass('d-none');
+                        }
+                    } else {
+                        $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
+                    }
+                }
+
+                await handlePendingReasonsChange{{ rand }}();
+
+                // If this is the first time the dropdown is being initialized
+                // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
+                if (!pendingReasonsInitalized{{ rand }}) {
+                    pendingReasonsInitalized{{ rand }} = true;
+                    setHasUnsavedChanges(false);
+                }
+
+                $('#dropdown_pendingreasons_id{{ rand }}').change(handlePendingReasonsChange{{ rand }});
             </script>
-         {% endset %}
-         {{ fields.dropdownField(
-            'PendingReason',
-            'pendingreasons_id',
-            pendingreasons_id,
-            pendingreasons_lbl,
-            {
-               'label_class': 'col-1',
-               'input_class': 'col-10 ms-1',
-               'rand': rand,
-               'mb': '',
-               'hide_if_no_elements': true,
-               'addicon': false,
-               'comments': false,
-               'width': '95%',
-               'field_class': 'flex-nowrap',
-               'add_field_html': pending_reasons_id_script,
-               'aria_label': _n('Pending reason', 'Pending reasons', 1),
-            }
-         ) }}
-         <script type="module">
-            // Initialize a flag to check if the pending reasons dropdown has been initialized
-            let pendingReasonsInitalized{{ rand }} = false;
+        </div>
 
-            let handlePendingReasonsChange{{ rand }} = async () => {
-               let pending_val = $('#dropdown_pendingreasons_id{{ rand }}').val();
-
-               if (pending_val > 0) {
-                  $('#pending-reasons-more_options_{{ rand }}').addClass('show');
-                  let data = await $.ajax({
-                     url: '{{ path("ajax/pendingreason.php") }}',
-                     type: 'POST',
-                     data: {
-                        pendingreasons_id: pending_val
-                     }
-                  });
-
-                  $('#dropdown_followup_frequency{{ rand }}')
-                     .val(data.followup_frequency)
-                     .trigger('change');
-                  $('#dropdown_followups_before_resolution{{ rand }}')
-                     .val(data.followups_before_resolution)
-                     .trigger('change');
-               } else {
-                  $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
-               }
-            }
-
-            await handlePendingReasonsChange{{ rand }}();
-
-            // If this is the first time the dropdown is being initialized
-            // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
-            if (!pendingReasonsInitalized{{ rand }}) {
-               pendingReasonsInitalized{{ rand }} = true;
-               setHasUnsavedChanges(false);
-            }
-
-            $('#dropdown_pendingreasons_id{{ rand }}').change(handlePendingReasonsChange{{ rand }});
-         </script>
-      </div>
-
-      <div class="collapse col-12 col-sm-8 {{ pendingreasons_id ? "show" : "" }}" id="pending-reasons-more_options_{{ rand }}">
-         <div class="row">
-            <div class="col-12 col-sm-6" title="{{ __('Automatic follow-up') }}"
-                  data-bs-toggle="tooltip" data-bs-placement="top">
-               {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
-                  pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent ? pending_item_parent.fields['followup_frequency'] : null,
-                  "",
-                  {
-                     'rand': rand
-                  },
-                  false
-               ]) %}
-               {% set pendingreasons_frequency_lbl %}
-                  <i class="ti ti-reload"></i>
-               {% endset %}
-               {{ fields.field(
-                  'followup_frequency',
-                  pendingreasons_frequency_field,
-                  pendingreasons_frequency_lbl,
-                  {
-                     'field_class': '',
-                     'label_class': 'col-1',
-                     'input_class': 'col-10 ms-1',
-                     'rand': rand,
-                     'mb': '',
-                  }
-               ) }}
+        <div class="collapse col-12 col-sm-8 {{ pendingreasons_id ? "show" : "" }}" id="pending-reasons-more_options_{{ rand }}">
+            <div class="row">
+                <div class="col-12 col-sm-6" title="{{ __('Automatic follow-up') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                    {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
+                        pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent ? pending_item_parent.fields['followup_frequency'] : null,
+                        "",
+                        {
+                            'rand': rand
+                        },
+                        false
+                    ]) %}
+                    {% set pendingreasons_frequency_lbl %}
+                        <i class="ti ti-reload"></i>
+                    {% endset %}
+                    {{ fields.field(
+                        'followup_frequency',
+                        pendingreasons_frequency_field,
+                        pendingreasons_frequency_lbl,
+                        {
+                            'field_class': '',
+                            'label_class': 'col-1',
+                            'input_class': 'col-10 ms-1',
+                            'rand': rand,
+                            'mb': '',
+                        }
+                    ) }}
+                </div>
+                <div class="col-12 col-sm-6" title="{{ __('Automatic resolution') }}"
+                     data-bs-toggle="tooltip" data-bs-placement="top">
+                    {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
+                        pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent ? pending_item_parent.fields['followups_before_resolution'] : null,
+                        "",
+                        {
+                            'rand': rand
+                        },
+                        false
+                    ]) %}
+                    {% set pendingreasons_resolution_lbl %}
+                        <i class="ti ti-check"></i>
+                    {% endset %}
+                    {{ fields.field(
+                        'followups_before_resolution',
+                        pendingreasons_resolution_field,
+                        pendingreasons_resolution_lbl,
+                        {
+                            'field_class': '',
+                            'label_class': 'col-1',
+                            'input_class': 'col-10 ms-1',
+                            'rand': rand,
+                            'mb': '',
+                        }
+                    ) }}
+                </div>
             </div>
-            <div class="col-12 col-sm-6" title="{{ __('Automatic resolution') }}"
-                 data-bs-toggle="tooltip" data-bs-placement="top">
-               {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
-                     pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent ? pending_item_parent.fields['followups_before_resolution'] : null,
-                     "",
-                     {
-                        'rand': rand
-                     },
-                     false
-               ]) %}
-               {% set pendingreasons_resolution_lbl %}
-                  <i class="ti ti-check"></i>
-               {% endset %}
-               {{ fields.field(
-                  'followups_before_resolution',
-                  pendingreasons_resolution_field,
-                  pendingreasons_resolution_lbl,
-                  {
-                     'field_class': '',
-                     'label_class': 'col-1',
-                     'input_class': 'col-10 ms-1',
-                     'rand': rand,
-                     'mb': '',
-                  }
-               ) }}
-            </div>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
 {% endif %}
