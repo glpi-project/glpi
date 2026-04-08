@@ -56,7 +56,6 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Throwable;
 
 final class Kernel extends BaseKernel
