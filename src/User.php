@@ -4708,7 +4708,7 @@ HTML;
                     'SELECT'  => [
                         "$itemtable.*",
                         "$relation_table.groups_id",
-                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype')
+                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
                     ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
@@ -4736,7 +4736,7 @@ HTML;
 
                 $item_iterator = $DB->request($iterator_params);
 
-                $type_name = $item->getTypeName();
+                $type_name = $item->getTypeName(1);
 
                 foreach ($item_iterator as $data) {
                     $cansee = $item->can($data["id"], READ);
