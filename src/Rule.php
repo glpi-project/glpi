@@ -1938,7 +1938,7 @@ TWIG, $twig_params);
             $link = sprintf(
                 __('%1$s %2$s'),
                 $link,
-                Html::showToolTip($this->fields["comment"], ['display' => false])
+                Html::showToolTip(htmlescape($this->fields["comment"]), ['display' => false])
             );
         }
         $data['name'] = $link;
