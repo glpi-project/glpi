@@ -344,6 +344,7 @@ class Inventory
             }
             $contents = $this->raw_data->content;
             $all_props = get_object_vars($contents);
+
             unset($all_props['versionclient'], $all_props['versionprovider']); //already handled in extractMetadata
 
             $empty_props = [];
@@ -712,6 +713,7 @@ class Inventory
                 case 'network_device': //handled from Asset\NetworkEquipment
                 case 'network_components': //handled from Asset\NetworkEquipment
                 case 'pagecounters': //handled from Asset\Printer
+                case 'pdu': //handled from Asset\PDU
                     break;
                 case 'cpus':
                     $assettype = Processor::class;
