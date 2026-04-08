@@ -45,6 +45,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
 use Sabre\VObject\Component\VCard;
@@ -4642,6 +4643,11 @@ HTML;
         $ID = $this->getField('id');
 
         $start       = intval($_GET["start"] ?? 0);
+        $filters     = $_GET['filters'] ?? [];
+        $extra_criteria = [];
+        if (!empty($filters['type'])) {
+            $extra_criteria['HAVING']['itemtype'] = ['LIKE', SQLProvider::makeTextSearchValue($filters['type'])];
+        }
 
         if ($tech) {
             $field_user  = 'users_id_tech';
@@ -4699,7 +4705,11 @@ HTML;
                 $itemtable = getTableForItemType($itemtype);
                 $relation_table = Group_Item::getTable();
                 $iterator_params = [
-                    'SELECT'  => ["$itemtable.*", "$relation_table.groups_id"],
+                    'SELECT'  => [
+                        "$itemtable.*",
+                        "$relation_table.groups_id",
+                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype')
+                    ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
                         Group_Item::getTable() => [
@@ -4715,7 +4725,7 @@ HTML;
                     ],
                     'WHERE'   => ['entities_id' => $this->getEntities()] + $criteria + $item::getSystemSQLCriteria(),
                     'GROUPBY' => "$itemtable.id",
-                ];
+                ] + $extra_criteria;
 
                 if ($item->maybeTemplate()) {
                     $iterator_params['WHERE']['is_template'] = 0;
@@ -4772,8 +4782,8 @@ HTML;
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start'                 => $start,
             'is_tab'                => true,
+            'limit'                 => $_SESSION['glpilist_limit'],
             'items_id'              => $ID,
-            'nofilter'              => true,
             'columns'               => [
                 'type'          => _n('Type', 'Types', 1),
                 'entity'        => Entity::getTypeName(1),
@@ -4783,6 +4793,7 @@ HTML;
                 'states'        => __('Status'),
                 'linktype'      => '',
             ],
+            'filters' => $filters,
             'formatters' => [
                 'name'          => 'raw_html',
             ],
