@@ -37,6 +37,7 @@ namespace Glpi\Controller\Config;
 use AuthLDAP;
 use AuthLdapReplicate;
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,6 +56,9 @@ final class LDAPController extends AbstractController
     )]
     public function testReplica(Request $request): Response
     {
+        if (!AuthLDAP::canUpdate()) {
+            throw new AccessDeniedHttpException();
+        }
         $authldap = new AuthLDAP();
         $replicate = new AuthLdapReplicate();
         if (!$authldap->getFromDB($request->get('authldaps_id')) || !$replicate->getFromDB($request->get('authldapreplicates_id'))) {
