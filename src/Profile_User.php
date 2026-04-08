@@ -1113,6 +1113,7 @@ TWIG, $avatar_params) . $username;
 
         $specificities['dropdown_method_2']       = 'dropdownUnder';
         $specificities['can_remove_all_at_once']  = false;
+        $specificities['can_link_several_times']  = true;
 
         return $specificities;
     }
