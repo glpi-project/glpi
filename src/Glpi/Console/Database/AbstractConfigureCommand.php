@@ -48,6 +48,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 use function Safe\ob_get_clean;
@@ -197,6 +198,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     protected function interact(InputInterface $input, OutputInterface $output)
     {
 
+        $question_helper = new QuestionHelper();
+
         $questions = [
             'db-name'     => new Question(__('Database name:'), ''), // Required
             'db-user'     => new Question(__('Database user:'), ''), // Required
@@ -206,9 +209,36 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         foreach ($questions as $name => $question) {
             if (null === $input->getOption($name)) {
-                $question_helper = new QuestionHelper();
                 $value = $question_helper->ask($input, $output, $question);
                 $input->setOption($name, $value);
+            }
+        }
+
+        // Ask whether to enable SSL if not explicitly provided via CLI
+        if (!$input->hasParameterOption('--db-ssl')) {
+            $db_ssl = $question_helper->ask(
+                $input,
+                $output,
+                new ConfirmationQuestion(__('Enable SSL for database connection?') . ' [yes/No] ', false)
+            );
+            $input->setOption('db-ssl', $db_ssl);
+        }
+
+        // Ask for SSL details if SSL is enabled
+        if ($input->getOption('db-ssl')) {
+            $ssl_options = [
+                'db-ssl-ca'     => __('Path to SSL CA certificate file (optional):') . ' ',
+                'db-ssl-cert'   => __('Path to SSL client certificate file (optional):') . ' ',
+                'db-ssl-key'    => __('Path to SSL client key file (optional):') . ' ',
+                'db-ssl-capath' => __('Path to directory containing trusted SSL CA certificates (optional):') . ' ',
+                'db-ssl-cipher' => __('List of allowable ciphers for SSL connection (optional):') . ' ',
+            ];
+
+            foreach ($ssl_options as $name => $label) {
+                if (null === $input->getOption($name)) {
+                    $value = $question_helper->ask($input, $output, new Question($label, null));
+                    $input->setOption($name, $value ?: null);
+                }
             }
         }
     }
