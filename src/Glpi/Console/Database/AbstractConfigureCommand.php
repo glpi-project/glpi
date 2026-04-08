@@ -200,6 +200,20 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         $question_helper = new QuestionHelper();
 
+        // Ask for optional connection options
+        $optional_options = [
+            'db-host' => ['-H', __('Database host:')],
+            'db-port' => ['-P', __('Database port (optional):')],
+        ];
+        foreach ($optional_options as $name => [$short, $label]) {
+            if (!$input->hasParameterOption('--' . $name) && !$input->hasParameterOption($short)) {
+                $default = $this->getDefinition()->getOption($name)->getDefault();
+                $hint    = $default !== null ? ' [' . $default . ']' : '';
+                $value   = $question_helper->ask($input, $output, new Question($label . $hint . ' ', $default));
+                $input->setOption($name, $value ?: $default);
+            }
+        }
+
         $questions = [
             'db-name'     => new Question(__('Database name:'), ''), // Required
             'db-user'     => new Question(__('Database user:'), ''), // Required
