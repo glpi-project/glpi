@@ -131,7 +131,7 @@ for (const actor_type of actor_types) {
         });
 
 
-        test.beforeEach(async ({ page, profile, api, formImporter }) => {
+        test.beforeEach(async ({ page, formImporter }) => {
             form_page = new FormPage(page);
             const info = await formImporter.importForm(actor_type.fixture);
             await form_page.gotoDestinationTab(info.getId());
