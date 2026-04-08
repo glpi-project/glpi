@@ -1144,16 +1144,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             is_writable(GLPI_UPLOAD_DIR)
             && is_writable($fullpath)
         ) { // Move if allowed
-            if (self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
-                Session::addMessageAfterRedirect(__s('Document move succeeded.'));
-            } else {
+            if (!self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
                 Session::addMessageAfterRedirect(__s('File move failed.'), false, ERROR);
                 return false;
             }
         } else { // Copy (will overwrite dest file is present)
             try {
                 copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
-                Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
             } catch (FilesystemException $e) {
                 Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
                 return false;
@@ -1265,7 +1262,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         // Copy (will overwrite dest file if present)
         try {
             copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
-            Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
         } catch (FilesystemException $e) {
             Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
             @unlink($fullpath);
@@ -1313,7 +1309,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                __s("Documents directory doesn't exist."),
+                __s("An unexpected error occured."),
                 false,
                 ERROR
             );
@@ -1324,10 +1320,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
             try {
                 mkdir(GLPI_DOC_DIR . "/" . $subdir, 0o777, true);
-                Session::addMessageAfterRedirect(sprintf(
-                    __s('Create the directory %s'),
-                    $subdir
-                ));
             } catch (FilesystemException $e) {
                 //emtpy catch
             }
@@ -1343,7 +1335,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             );
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __s('Failed to create the directory %s. Verify that you have the correct permission'),
+                    __s('An unexpected error occured.'),
                     htmlescape($subdir)
                 ),
                 false,
