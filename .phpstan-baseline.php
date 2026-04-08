@@ -10160,12 +10160,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/ServiceCatalogManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Tag\\\\AnswerTagProvider\\:\\:getTagContentForValue\\(\\) should return string but returns string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Tag/AnswerTagProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 1 might not exist on array\\{0\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 4,

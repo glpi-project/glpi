@@ -37,6 +37,7 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Override;
 
@@ -70,7 +71,7 @@ final class QuestionTagProvider implements TagProviderInterface, TagWithIdValueI
         if (!$question) {
             return '';
         }
-        return $question->fields['name'];
+        return FormTranslation::translate($question, Question::TRANSLATION_KEY_NAME) ?? $question->fields['name'];
     }
 
     #[Override]
