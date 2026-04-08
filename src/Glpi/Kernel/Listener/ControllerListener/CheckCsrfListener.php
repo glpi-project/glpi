@@ -34,8 +34,8 @@
 
 namespace Glpi\Kernel\Listener\ControllerListener;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\SessionManager;
-use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -77,6 +77,54 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
             return;
         }
 
-        return;
+        if (!$this->validateRequestIsSafeFromCSRF($request)) {
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
+            throw $exception;
+        }
+    }
+
+    private function validateRequestIsSafeFromCSRF(Request $request): bool
+    {
+        global $CFG_GLPI;
+
+        // The 'Sec-Fetch-Site' contains details about the request origin and is
+        // a protected header so browsers will always send a legitimate value.
+        // It is supported by all browsers since 2023.
+        $sec_fetch_site = $request->headers->get('Sec-Fetch-Site');
+        if ($sec_fetch_site !== null) {
+            return $this->validateSecFetchSiteHeader($sec_fetch_site);
+        }
+
+        // We fallback to the 'Origin' header for older browsers (which is also
+        // a protected header).
+        $origin = $request->headers->get('Origin');
+        if ($origin !== null) {
+            return $origin === $CFG_GLPI['url_base'];
+        }
+
+        // If both 'Sec-Fetch-Site' and 'Origin' are missing then the request
+        // did not come from a browser and thus is not subject to CSRF.
+        return true;
+    }
+
+    private function validateSecFetchSiteHeader(string $sec_fetch_site): bool
+    {
+        return match ($sec_fetch_site) {
+            // Request comes from GLPI itself.
+            'same-origin' => true,
+
+            // Request comes from an user action (e.g clicking on a bookmark).
+            'none' => true,
+
+            // Request comes form an external site.
+            'cross-site' => false,
+
+            // Request comes the same site but with a different subdomain.
+            'same-site' => false,
+
+            // Should not be possible. False to be safe.
+            default => false,
+        };
     }
 }
