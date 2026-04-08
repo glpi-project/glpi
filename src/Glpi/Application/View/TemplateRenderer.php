@@ -35,30 +35,11 @@
 namespace Glpi\Application\View;
 
 use Glpi\Application\Environment as GLPIEnvironment;
-use Glpi\Application\View\Extension\ConfigExtension;
-use Glpi\Application\View\Extension\DataHelpersExtension;
-use Glpi\Application\View\Extension\DocumentExtension;
-use Glpi\Application\View\Extension\FrontEndAssetsExtension;
-use Glpi\Application\View\Extension\HtmlExtension;
-use Glpi\Application\View\Extension\I18nExtension;
-use Glpi\Application\View\Extension\IllustrationExtension;
-use Glpi\Application\View\Extension\ItemtypeExtension;
-use Glpi\Application\View\Extension\PhpExtension;
-use Glpi\Application\View\Extension\PluginExtension;
-use Glpi\Application\View\Extension\RoutingExtension;
-use Glpi\Application\View\Extension\SearchExtension;
-use Glpi\Application\View\Extension\SecurityExtension;
-use Glpi\Application\View\Extension\SessionExtension;
-use Glpi\Application\View\Extension\SuperGlobalsExtension;
-use Glpi\Application\View\Extension\TeamExtension;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\Kernel;
 use Plugin;
-use Session;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment as TwigEnvironment;
-use Twig\Extension\DebugExtension;
-use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
