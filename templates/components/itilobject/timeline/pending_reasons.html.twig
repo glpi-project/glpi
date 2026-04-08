@@ -98,6 +98,7 @@
                             $('#dropdown_followup_frequency{{ rand }}').closest('.form-field').parent().removeClass('d-none');
                         } else {
                             $('#dropdown_followup_frequency{{ rand }}')
+                                .val('0')
                                 .closest('.form-field').parent().addClass('d-none');
                         }
                         if (data.solutiontemplates_id) {
@@ -108,6 +109,7 @@
                             $('#dropdown_followups_before_resolution{{ rand }}').closest('.form-field').parent().removeClass('d-none');
                         } else {
                             $('#dropdown_followups_before_resolution{{ rand }}')
+                                .val('0')
                                 .closest('.form-field').parent().addClass('d-none');
                         }
                     } else {
