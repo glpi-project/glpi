@@ -69,12 +69,9 @@ for (const actor_type of actor_types) {
         const authorized_group_name = `Test ${actor_type.name} group authorized - ${unique}`;
         const unauthorized_group_name = `Test ${actor_type.name} group unauthorized - ${unique}`;
 
-        test.beforeEach(async ({ page, profile, api, formImporter }) => {
+        test.beforeAll(async ({ profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
-            form_page = new FormPage(page);
             const entity_id = getWorkerEntityId();
-
-            const info = await formImporter.importForm(actor_type.fixture);
 
             // Create a possible actor
             const actor_id = await api.createItem('User', {
@@ -131,7 +128,12 @@ for (const actor_type of actor_types) {
                 groups_id: authorized_group_id,
                 groups_id_tech: authorized_group_id,
             });
+        });
 
+
+        test.beforeEach(async ({ page, profile, api, formImporter }) => {
+            form_page = new FormPage(page);
+            const info = await formImporter.importForm(actor_type.fixture);
             await form_page.gotoDestinationTab(info.getId());
         });
 
