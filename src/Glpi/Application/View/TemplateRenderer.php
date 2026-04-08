@@ -49,11 +49,13 @@ use Glpi\Application\View\Extension\RoutingExtension;
 use Glpi\Application\View\Extension\SearchExtension;
 use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
+use Glpi\Application\View\Extension\SuperGlobalsExtension;
 use Glpi\Application\View\Extension\TeamExtension;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\Kernel;
 use Plugin;
 use Session;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
@@ -68,19 +70,65 @@ class TemplateRenderer
 
     public function __construct(string $rootdir = GLPI_ROOT, ?string $cachedir = null)
     {
+        $container = $this->getKernelContainer();
+
+        if ($container !== null && $container->has('twig')) {
+            // Kernel is available: use the fully-configured DI twig service.
+            // All GLPI extensions, superglobals, ComponentLexer, ComponentRuntime, etc.
+            // are already set up by TwigBundle + Autowiring
+            $this->environment = $container->get('twig');
+            $this->mountPluginPaths($rootdir);
+            return;
+        }
+
+        // Fallback: CLI / install / upgrade path — build env manually.
+        $this->buildStandaloneEnvironment($rootdir, $cachedir);
+    }
+
+    /**
+     * Mount plugin template namespaces and test templates onto the DI twig env's loader.
+     *
+     * The TwigBundle filesystem loader already has the main templates/ path.
+     * We extend it at runtime with per-plugin namespaces and (in test mode) the test namespace.
+     *
+     * Otherwise, the Sf components won't be usable in plugins templates.
+     */
+    private function mountPluginPaths(string $rootdir): void
+    {
+        $loader = $this->environment->getLoader();
+        if (!$loader instanceof FilesystemLoader) {
+            return;
+        }
+
+        $active_plugins = Plugin::getPlugins();
+        foreach ($active_plugins as $plugin_key) {
+            $path = Plugin::getPhpDir($plugin_key . '/templates');
+            if (is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
+                $loader->addPath($path, $plugin_key);
+            }
+        }
+
+        $glpi_environment = GLPIEnvironment::get();
+        if (
+            $glpi_environment->shouldEnableTestResources()
+            && \file_exists("$rootdir/tests/templates")
+            && !\in_array("$rootdir/tests/templates", $loader->getPaths('test'), true)
+        ) {
+            $loader->addPath($rootdir . '/tests/templates', 'test');
+        }
+    }
+
+    /**
+     * Build a standalone Twig environment for contexts where the DI kernel is not available
+     * (CLI tools, install/upgrade scripts, early bootstrap).
+     */
+    private function buildStandaloneEnvironment(string $rootdir, ?string $cachedir): void
+    {
         if ($cachedir === null) {
             $cachedir = Kernel::getCacheRootDir();
         }
 
         $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
-
-        $active_plugins = Plugin::getPlugins();
-        foreach ($active_plugins as $plugin_key) {
-            // Add a dedicated namespace for each active plugin, so templates would be loadable using
-            // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
-            // is the path of the template inside the `/templates` directory of the plugin.
-            $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
-        }
 
         $glpi_environment = GLPIEnvironment::get();
         $env_params = [
@@ -88,15 +136,6 @@ class TemplateRenderer
             'auto_reload' => $glpi_environment->shouldExpectResourcesToChange(),
             'strict_variables' => GLPI_STRICT_ENV,
         ];
-
-        if (
-            $glpi_environment->shouldEnableTestResources()
-            && \file_exists("$rootdir/tests/templates")
-        ) {
-            // Add a dedicated namespace for specific test templates.
-            // For instance `@test/templates/path/to/template.html.twig`
-            $loader->addPath($rootdir . '/tests/templates', 'test');
-        }
 
         $tpl_cachedir = $cachedir . '/templates';
         if (
@@ -108,10 +147,10 @@ class TemplateRenderer
             $env_params['cache'] = $tpl_cachedir;
         }
 
-        $this->environment = new TwigEnvironment(
-            $loader,
-            $env_params
-        );
+        $this->environment = new TwigEnvironment($loader, $env_params);
+
+        $this->mountPluginPaths($rootdir);
+
         // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
@@ -132,10 +171,25 @@ class TemplateRenderer
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
 
-        // add superglobals
-        $this->environment->addGlobal('_post', $_POST);
-        $this->environment->addGlobal('_get', $_GET);
-        $this->environment->addGlobal('_request', $_REQUEST);
+        // Superglobals
+        $this->environment->addExtension(new SuperGlobalsExtension());
+    }
+
+    private function getKernelContainer(): ?ContainerInterface
+    {
+        global $kernel;
+
+        if (!$kernel instanceof Kernel) {
+            return null;
+        }
+
+        try {
+            $container = $kernel->getContainer();
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return $container instanceof ContainerInterface ? $container : null;
     }
 
     /**

@@ -44,6 +44,7 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -55,6 +56,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Throwable;
 
 final class Kernel extends BaseKernel
@@ -121,12 +123,12 @@ final class Kernel extends BaseKernel
         $bundles = [];
 
         $bundles[] = new FrameworkBundle();
+        $bundles[] = new TwigBundle();
 
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
                 DebugBundle::class,
-                TwigBundle::class,
             ];
             foreach ($dev_bundles_classes as $bundle_class) {
                 if (\class_exists($bundle_class)) {
@@ -175,6 +177,25 @@ final class Kernel extends BaseKernel
     }
 
     #[Override()]
+    protected function build(ContainerBuilder $container): void
+    {
+        // TemplateRenderer retrieves the DI-managed Twig environment via the compiled
+        // container at runtime ($kernel->getContainer()->get('twig')).
+        // TwigBundle registers 'twig' as private; this compiler pass forces it public
+        // so it survives compilation and is accessible in Symfony components for example.
+        $container->addCompilerPass(new class implements CompilerPassInterface {
+            public function process(ContainerBuilder $container): void
+            {
+                if ($container->hasDefinition('twig')) {
+                    $container->getDefinition('twig')->setPublic(true);
+                }
+            }
+        });
+
+        parent::build($container);
+    }
+
+    #[Override()]
     protected function buildContainer(): ContainerBuilder
     {
         // Exit with a clear message if there is a missing write access that would prevent the Symfony container
@@ -203,6 +224,7 @@ final class Kernel extends BaseKernel
 
         $container->import($projectDir . '/dependency_injection/services.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
 
