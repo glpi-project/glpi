@@ -161,35 +161,35 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $this->addOption(
             'db-ssl-ca',
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             __('Path to the database SSL CA certificate file')
         );
 
         $this->addOption(
             'db-ssl-cert',
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             __('Path to the database SSL client certificate file')
         );
 
         $this->addOption(
             'db-ssl-key',
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             __('Path to the database SSL client key file')
         );
 
         $this->addOption(
             'db-ssl-capath',
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             __('Path to a directory containing trusted SSL CA certificates')
         );
 
         $this->addOption(
             'db-ssl-cipher',
             null,
-            InputOption::VALUE_OPTIONAL,
+            InputOption::VALUE_REQUIRED,
             __('List of allowable ciphers for SSL database connection')
         );
     }
@@ -269,7 +269,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $db_hostport,
             $db_name,
             $db_user,
-            $db_ssl
+            $db_ssl,
+            $db_ssl_ca,
+            $db_ssl_cert,
+            $db_ssl_key,
+            $db_ssl_capath,
+            $db_ssl_cipher
         );
 
         mysqli_report(MYSQLI_REPORT_OFF);
@@ -523,6 +528,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      * @param string $db_name DB name
      * @param string $db_user DB username
      * @param bool $db_ssl Whether SSL is enabled
+     * @param string|null $db_ssl_ca Path to SSL CA certificate file
+     * @param string|null $db_ssl_cert Path to SSL client certificate file
+     * @param string|null $db_ssl_key Path to SSL client key file
+     * @param string|null $db_ssl_capath Path to directory containing trusted SSL CA certificates
+     * @param string|null $db_ssl_cipher List of allowable ciphers for SSL connection
      *
      * @return void
      */
@@ -532,7 +542,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $db_hostport,
         $db_name,
         $db_user,
-        bool $db_ssl = false
+        bool $db_ssl = false,
+        ?string $db_ssl_ca = null,
+        ?string $db_ssl_cert = null,
+        ?string $db_ssl_key = null,
+        ?string $db_ssl_capath = null,
+        ?string $db_ssl_cipher = null
     ) {
 
         $informations = new Table($output);
@@ -540,6 +555,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $informations->addRow([__('Database name'), $db_name]);
         $informations->addRow([__('Database user'), $db_user]);
         $informations->addRow([__('SSL'), $db_ssl ? __('Enabled') : __('Disabled')]);
+        if ($db_ssl) {
+            $informations->addRow([__('SSL CA certificate'), $db_ssl_ca ?? __('None')]);
+            $informations->addRow([__('SSL client certificate'), $db_ssl_cert ?? __('None')]);
+            $informations->addRow([__('SSL client key'), $db_ssl_key ?? __('None')]);
+            $informations->addRow([__('SSL CA path'), $db_ssl_capath ?? __('None')]);
+            $informations->addRow([__('SSL cipher'), $db_ssl_cipher ?? __('None')]);
+        }
         $informations->render();
 
         $this->askForConfirmation();
