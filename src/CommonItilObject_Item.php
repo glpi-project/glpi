@@ -707,13 +707,11 @@ TWIG, $twig_params);
         ];
 
         if ($item instanceof Supplier && static::$itemtype_1 instanceof CommonITILObject) {
-            $params['criteria'] = [
-                [
-                    'field'      => 6,
-                    'searchtype' => 'equals',
-                    'value'      => $item->getID(),
-                    'link'       => 'AND',
-                ],
+            $params['criteria'][] = [
+                'field'      => 6,
+                'searchtype' => 'equals',
+                'value'      => $item->getID(),
+                'link'       => 'AND',
             ];
         } else {
             $params['metacriteria'] = $options['metacriteria'] ?? [
