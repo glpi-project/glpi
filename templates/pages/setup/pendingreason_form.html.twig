@@ -47,13 +47,11 @@
             } else {
                 followups_before_resolution.closest('.form-field').removeClass('d-none');
                 itilfollowuptemplates_id.closest('.form-field').removeClass('d-none');
-                solutiontemplates_id.closest('.form-field').removeClass('d-none');
-            }
-
-            if (parseInt(followups_before_resolution.val()) <= 0) {
-                solutiontemplates_id.closest('.form-field').addClass('d-none');
-            } else {
-                solutiontemplates_id.closest('.form-field').removeClass('d-none');
+                if (parseInt(followups_before_resolution.val()) <= 0) {
+                    solutiontemplates_id.closest('.form-field').addClass('d-none');
+                } else {
+                    solutiontemplates_id.closest('.form-field').removeClass('d-none');
+                }
             }
         }
         updateFieldVisibility();
