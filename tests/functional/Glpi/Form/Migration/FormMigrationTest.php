@@ -99,6 +99,7 @@ use LogicException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Ramsey\Uuid\Uuid;
 use Ticket;
 
 final class FormMigrationTest extends DbTestCase
@@ -3959,6 +3960,51 @@ final class FormMigrationTest extends DbTestCase
 
         // Assert: migration should be done without error
         $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormMigrationWithDuplicateFormNames(): void
+    {
+        global $DB;
+
+        // Arrange: create two formcreator forms with the exact same name, entity
+        // and category. This reproduces a real-world scenario where users had
+        // duplicated form names in formcreator.
+        $duplicate_name = 'Duplicate form name test';
+        $this->createSimpleFormcreatorForm(
+            name: $duplicate_name,
+            questions: [
+                ['name' => 'Question in first form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => Uuid::uuid4(),
+            ]
+        );
+        $this->createSimpleFormcreatorForm(
+            name: $duplicate_name,
+            questions: [
+                ['name' => 'Question in second form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => Uuid::uuid4(),
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: both forms must have been migrated as distinct GLPI forms.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => $duplicate_name],
+        ]);
+        $this->assertEquals(
+            2,
+            $migrated_forms->count(),
+            'Two distinct forms should have been created, one per formcreator form'
+        );
     }
 
     public function testFormMigrationActorsWithEmptyDefaultValue(): void
