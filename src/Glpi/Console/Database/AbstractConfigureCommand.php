@@ -208,6 +208,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         foreach ($optional_options as $name => [$short, $label]) {
             if (!$input->hasParameterOption('--' . $name) && !$input->hasParameterOption($short)) {
                 $default = $this->getDefinition()->getOption($name)->getDefault();
+                $default = is_string($default) || is_numeric($default) ? $default : null;
                 $hint    = $default !== null ? ' [' . $default . ']' : '';
                 $value   = $question_helper->ask($input, $output, new Question($label . $hint . ' ', $default));
                 $input->setOption($name, $value ?: $default);
