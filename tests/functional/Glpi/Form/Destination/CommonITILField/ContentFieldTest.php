@@ -38,6 +38,9 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -115,6 +118,45 @@ final class ContentFieldTest extends DbTestCase
         $this->assertNotFalse($output);
         $this->assertStringContainsString('<b>1) First name</b>: John &lt;john&#64;doe.fr&gt;', $output);
         $this->assertStringContainsString("<b>2) Last name</b>: Doe", $output);
+    }
+
+    public function testRadioAnswerWithAngleBracketsIsEscaped(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder("Radio form"))
+                ->addQuestion(
+                    name: "Pick one",
+                    type: QuestionTypeRadio::class,
+                    extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                        'opt1' => 'Option <br>test',
+                        'opt2' => 'Normal option',
+                    ]))
+                )
+        );
+
+        $this->sendFormAndAssertTicketContentContains(
+            expected_content: ["Option &lt;br&gt;test"],
+            form: $form,
+            answers: ["Pick one" => "opt1"],
+            config: null,
+        );
+    }
+
+    public function testLongTextAnswerHtmlIsPreserved(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder("Long text form"))
+                ->addQuestion("Description", QuestionTypeLongText::class)
+        );
+
+        $html_answer = "<p>Bold <strong>text</strong></p>";
+
+        $this->sendFormAndAssertTicketContentContains(
+            expected_content: [$html_answer],
+            form: $form,
+            answers: ["Description" => $html_answer],
+            config: null,
+        );
     }
 
     public function testSpecificContent(): void

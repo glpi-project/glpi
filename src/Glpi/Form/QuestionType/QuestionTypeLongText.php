@@ -55,7 +55,8 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
     FormQuestionDataConverterInterface,
     UsedAsCriteriaInterface,
     TranslationAwareQuestionType,
-    ConditionValueTransformerInterface
+    ConditionValueTransformerInterface,
+    RawAnswerIsHtmlInterface
 {
     #[Override]
     public function getFormEditorJsOptions(): string
