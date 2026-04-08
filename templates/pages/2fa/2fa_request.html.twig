@@ -39,7 +39,6 @@
 
 {% block content_block %}
    <form method="post" action="{{ path(action, {"redirect": redirect}) }}" data-submit-once autocomplete="off" class="m-md-n4" data-code-type="code">
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       <div>
          {{ tfa.tfa_code_input() }}
          <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>

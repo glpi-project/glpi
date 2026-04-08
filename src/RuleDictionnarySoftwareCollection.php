@@ -92,7 +92,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     </div>
                     <div class="card-footer d-flex flex-row-reverse">
                         <input type="hidden" name="replay_confirm" value="replay_confirm">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" name="replay_rule" class="btn btn-primary">{{ btn_label }}</button>
                     </div>
                 </div>

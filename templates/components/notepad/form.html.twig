@@ -79,7 +79,6 @@
 
                     <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
                         <div class="modal-body">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                             <input type="hidden" name="itemtype" value="{{ itemtype }}" />
                             <input type="hidden" name="items_id" value="{{ items_id }}" />
                             {{ fields.textareaField(
@@ -140,7 +139,6 @@
             <div id="{{ id }}" class="accordion-collapse collapse show">
                 <div class="accordion-body pt-0">
                     <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                         <input type="hidden" name="id" value="{{ note['id'] }}" />
                         <div class="d-flex justify-content-between mb-2">
                             <span class="d-inline-flex creator">
@@ -203,7 +201,6 @@
                         <div class="modal-dialog modal-xl">
                             <div class="modal-content">
                                 <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                                     <input type="hidden" name="id" value="{{ note['id'] }}" />
 
                                     <div class="modal-header">

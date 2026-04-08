@@ -185,7 +185,6 @@ class Config extends CommonDBTM
         if (!empty($input['config_context'])) {
             $config_context = $input['config_context'];
             unset($input['id']);
-            unset($input['_glpi_csrf_token']);
             unset($input['_update']);
             unset($input['config_context']);
             if (
@@ -307,7 +306,6 @@ class Config extends CommonDBTM
 
         // Beware : with new management system, we must update each value
         unset($input['id']);
-        unset($input['_glpi_csrf_token']);
         unset($input['_update']);
 
         // Add skipMaintenance if maintenance mode update
@@ -530,7 +528,6 @@ class Config extends CommonDBTM
 
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/setup/authentication/setup.html.twig', [
-            'token'                                    => Session::getNewCSRFToken(),
             'user_restored_ldap_choices'               => AuthLDAP::getLdapRestoredUserActionOptions(),
             'gmt_values'                               => Dropdown::getGMTValues(),
             'user_deleted_ldap_user_choices'           => AuthLDAP::getLdapDeletedUserActionOptions_User(),

@@ -127,7 +127,7 @@
                            {% else %}
                               {{ item.fields['lastrun']|formatted_datetime }}
                               {% if can_execute %}
-                                 {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                                 {# ID field is defined in components/form/buttons.html.twig #}
                                  <button class="btn btn-icon border-0" type="submit" name="resetdate" title="{{ __('Blank') }}">
                                     <i class="ti ti-circle-x me-1"></i>
                                  </button>
@@ -149,7 +149,7 @@
                                  {{ __('Maintenance mode enabled, running tasks is disabled') }}
                               </div>
                            {% elseif can_execute and launch %}
-                              {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                              {# ID is defined in components/form/buttons.html.twig #}
                               <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">
                                  <i class="ti ti-player-play me-1"></i>
                                  {{ __('Execute') }}
@@ -157,7 +157,7 @@
                            {% endif %}
 
                            {% if can_execute and item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
-                              {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                              {# ID field is defined in components/form/buttons.html.twig #}
                               <button class="btn btn-primary" type="submit" name="resetstate">
                                  <i class="ti ti-circle-x me-1"></i>
                                  {{ __('Blank') }}

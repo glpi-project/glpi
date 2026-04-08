@@ -51,7 +51,6 @@
 
 <div class="asset">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
 

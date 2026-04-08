@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, glpi_toast_error */
+/* global glpi_toast_error */
 
 /**
  * Perform a POST request to a GLPI endpoint.
@@ -48,7 +48,6 @@ export async function post(url, values = null)
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             },
         };
 

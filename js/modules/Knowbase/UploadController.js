@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, bootstrap, glpi_toast_error, glpi_toast_info */
+/* global bootstrap, glpi_toast_error, glpi_toast_info */
 
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';

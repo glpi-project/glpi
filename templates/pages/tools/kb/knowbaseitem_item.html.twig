@@ -33,7 +33,6 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 <form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}" class="kb-link-item-form">
-    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
     {% if get_class(item) == 'KnowbaseItem' %}
         {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
     {% else %}

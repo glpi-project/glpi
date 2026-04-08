@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_toast_info, glpi_html_dialog, getAjaxCsrfToken */
+/* global glpi_toast_error, glpi_toast_info, glpi_html_dialog */
 
 const revert_selector = "[data-glpi-revert-revision]";
 const revision_selector = "[data-glpi-revision-id]";
@@ -199,7 +199,6 @@ export class GlpiKnowbaseRevisionsPanelController
                 method: "POST",
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 

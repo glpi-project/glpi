@@ -44,7 +44,6 @@
                 <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                     <div class="row flex-row align-items-start flex-grow-1">
                         <div class="row flex-row">
-                            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                             {{ inputs.hidden(source_itemtype|itemtype_foreign_key, source_items_id) }}
                             {{ fields.largeTitle(__('Add an authorization to a user')) }}
                             {% if source_itemtype != 'Entity' %}

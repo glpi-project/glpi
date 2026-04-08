@@ -1252,7 +1252,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     {{ inputs.hidden('item_itemtype', options.item_itemtype) }}
                     {{ inputs.hidden('item_items_id', options.item_items_id) }}
                 {% endif %}
-                {{ inputs.hidden('glpi_csrf_token', csrf_token()) }}
             </form>
 TWIG, $twig_params);
     }

@@ -264,8 +264,6 @@ class Appliance_Item_Relation extends CommonDBRelation
                 . Html::submit(_x('button', "Add"), ['name' => 'add'])
                 . Html::closeForm(false);
 
-            $crsf_token = Session::getNewCSRFToken();
-
             $js = "
                 $(function() {
                     $(document).on('click', '.add_relation', function() {
@@ -286,7 +284,6 @@ class Appliance_Item_Relation extends CommonDBRelation
 
                         $.post('" . jsescape($form_url) . "', {
                             'id': relations_id,
-                            '_glpi_csrf_token': '" . jsescape($crsf_token) . "',
                             'purge': 1,
                         }, function() {
                             location.reload();

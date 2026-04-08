@@ -70,7 +70,6 @@ function showSecurityKeyCheckForm(): void
     echo '<form action="update.php" method="post">';
     echo '<input type="hidden" name="continue" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
-    echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
     echo '<div class="text-center">';
     echo '<h3>' . __s('Missing security key file') . '</h3>';
     echo '<div class="d-flex alert alert-warning">';

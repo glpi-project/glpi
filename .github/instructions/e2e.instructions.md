@@ -66,7 +66,7 @@ expect(a11y_results.violations).toEqual([]);
 
 ## Fixtures and Utilities
 
-Use the custom GLPI fixture (`tests/e2e/fixtures/glpi_fixture.ts`) which provides `page`, `profile`, `entity`, `csrf`, `formImporter`, and `api` helpers. Use the `api` fixture to create test data instead of navigating the UI for setup.
+Use the custom GLPI fixture (`tests/e2e/fixtures/glpi_fixture.ts`) which provides `page`, `profile`, `entity`,  `formImporter`, and `api` helpers. Use the `api` fixture to create test data instead of navigating the UI for setup.
 
 ## Running & Linting
 

@@ -434,7 +434,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     <form method="post" action="{{ link_class|itemtype_form_path }}">
                         <div class="d-flex w-100 flex-column">
                             <input type="hidden" name="{{ itil_object|itemtype_foreign_key }}" value="{{ itil_object.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% if requester_id > 0 %}
                                 {% do call([link_class, 'dropdownMyDevices'], [requester_id, itil_object.getEntityID(), null, 0, {(itil_object|itemtype_foreign_key): itil_object.getID()}]) %}
                             {% endif %}

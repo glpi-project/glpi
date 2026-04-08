@@ -76,11 +76,7 @@ applyTo: "**/*.php"
 
 ### CSRF
 
-- Never write or render a `<form>` without including the CSRF token: use `{{ csrf_token() }}` in Twig or `Html::getCsrfTokenInput()` in PHP.
-- GLPI validates CSRF automatically via `CheckCsrfListener` on all state-changing requests (POST/PUT/PATCH/DELETE). Do not bypass or disable this listener.
-- For AJAX calls, send the token in the `X-Glpi-Csrf-Token` HTTP header, not in the body.
-- CSRF tokens are single-use by default; pass `preserve_token: true` only when a single form can trigger multiple AJAX requests without reload.
-- Never expose CSRF tokens in URLs, logs, or API responses.
+- CSRF is handled internally by the framework using header metadata.
 
 ### XSS — Output Encoding
 

@@ -31,7 +31,6 @@
  */
 
 import { APIRequestContext } from 'playwright/test';
-import { CsrfFetcher } from './CsrfFetcher';
 
 // Mirrors Session::NORMAL_MODE and Session::DEBUG_MODE constants from PHP.
 const enum DebugMode
@@ -44,12 +43,9 @@ export class DebugModeSwitcher
 {
     private request: APIRequestContext;
 
-    private csrf: CsrfFetcher;
-
-    public constructor(request: APIRequestContext, csrf: CsrfFetcher)
+    public constructor(request: APIRequestContext)
     {
         this.request = request;
-        this.csrf = csrf;
     }
 
     public async enable(): Promise<void>
@@ -68,7 +64,6 @@ export class DebugModeSwitcher
             form: { mode },
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': await this.csrf.get(),
             },
         });
     }

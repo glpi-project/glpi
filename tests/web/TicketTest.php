@@ -53,7 +53,6 @@ class TicketTest extends FrontBaseClass
                 'add'  => true,
                 'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value'),
             ]
         );
 

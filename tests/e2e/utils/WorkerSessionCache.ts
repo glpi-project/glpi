@@ -36,10 +36,6 @@ export class WorkerSessionCache
 {
     private current_profile_id: number|null = null;
 
-    private csrf_token: string|null = null;
-
-    private csrf_token_test_count: number = 0;
-
     private api_client: AxiosInstance|null = null;
 
     public setCurrentProfileId(current_profile_id: number): void
@@ -50,33 +46,6 @@ export class WorkerSessionCache
     public getCurrentProfileId(): number|null
     {
         return this.current_profile_id;
-    }
-
-    public setCsrfToken(token: string): void
-    {
-        this.csrf_token = token;
-        this.csrf_token_test_count = 0;
-    }
-
-    public getCsrfToken(): string|null
-    {
-        return this.csrf_token;
-    }
-
-    public incrementCsrfTokenTestCount(): void
-    {
-        this.csrf_token_test_count++;
-    }
-
-    public getCsrfTokenTestCount(): number
-    {
-        return this.csrf_token_test_count;
-    }
-
-    public invalidateCsrfToken(): void
-    {
-        this.csrf_token = null;
-        this.csrf_token_test_count = 0;
     }
 
     public setApiClient(token: AxiosInstance): void

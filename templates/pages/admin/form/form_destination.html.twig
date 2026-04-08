@@ -59,7 +59,6 @@
                 action="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}"
             >
                 <input type="hidden" name="name" value="{{ label }}"/>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" name="add" value=""/>
             </form>
         {% endfor %}

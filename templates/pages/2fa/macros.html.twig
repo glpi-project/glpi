@@ -124,7 +124,6 @@
                      </div>
                      <input type="hidden" name="secret" value="{{ secret }}" />
                      <input type="hidden" name="_idor_token" value="{{ idor_token('', {'secret': secret}) }}" />
-                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                   </div>
                </div>
                <div class="mt-3">{{ __('3. After entering the code into your authenticator, enter the code shown in the app to finish the setup') }}</div>

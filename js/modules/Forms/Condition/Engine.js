@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, getAjaxCsrfToken */
+/* global glpi_toast_error */
 
 export class GlpiFormConditionEngine
 {
@@ -163,7 +163,6 @@ export class GlpiFormConditionEngine
             body: form_data,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             }
         });
 

@@ -366,13 +366,6 @@ final class SystemConfigurator
 
     private function checkForObsoleteConstants(): void
     {
-        if (defined('GLPI_USE_CSRF_CHECK')) {
-            trigger_error(
-                'The `GLPI_USE_CSRF_CHECK` constant is now ignored for security reasons.',
-                E_USER_WARNING
-            );
-        }
-
         if (defined('PLUGINS_DIRECTORIES')) {
             trigger_error(
                 'The `PLUGINS_DIRECTORIES` constant is deprecated. Use the `GLPI_PLUGINS_DIRECTORIES` constant instead.',

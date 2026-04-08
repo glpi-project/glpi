@@ -452,7 +452,6 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domains_id) }}
 
                         <div class="d-flex">

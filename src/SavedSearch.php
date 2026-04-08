@@ -513,7 +513,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     'delete_search_count',
                     'delete_search_count2',
                     'start',
-                    '_glpi_csrf_token',
                 ];
                 foreach ($fields_toclean as $field) {
                     if (isset($query_tab[$field])) {

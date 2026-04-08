@@ -139,7 +139,6 @@ class NetworkPort_Vlan extends CommonDBRelation
                     <form method="post" action="{{ 'NetworkPort_Vlan'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="networkports_id" value="{{ id }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Vlan', 'vlans_id', 0, null, {
                                 no_label: true,
                                 used: used

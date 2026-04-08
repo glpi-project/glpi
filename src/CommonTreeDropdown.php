@@ -548,7 +548,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     <form action="{{ form_url }}" method="post">
                         {{ fields.largeTitle(header) }}
                         <input type="hidden" name="{{ fk }}" value="{{ id }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div>
                             <div>
                                 {{ fields.textField('name', '', name_label, {

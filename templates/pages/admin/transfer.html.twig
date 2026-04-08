@@ -52,8 +52,6 @@
             input_class: 'col-xxl-7 d-flex',
             add_field_html: execute_btn,
          }) }}
-         {# The regular form buttons aren't added so the CSRF token isn't added either. Need to add it manually here #}
-         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       {% endif %}
 
       {% if edit_mode %}

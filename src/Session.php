@@ -69,12 +69,6 @@ class Session
     public const DEBUG_MODE        = 2;
 
     /**
-     * Max count of CSRF tokens to keep in session.
-     * Prevents intensive use of forms from resulting in an excessively cumbersome session.
-     */
-    private const CSRF_MAX_TOKENS = 500;
-
-    /**
      * Max count of IDOR tokens to keep in session.
      * Prevents intensive use of dropdowns from resulting in an excessively cumbersome session.
      */
@@ -125,7 +119,7 @@ class Session
 
         if ($auth->auth_succeded) {
             // Restart GLPI session : complete destroy to prevent lost datas
-            $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+            $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS',
                 'glpiskipMaintenance',
                 'glpi_remote_user',
             ];
@@ -206,7 +200,6 @@ class Session
                         // Make sure we are not in debug mode, as it could trigger some ajax request that would
                         // fail the session check (as we use a special partial session here without profiles) and thus
                         // destroy the session (which would make the "password expired" form impossible to submit as the
-                        // csrf check would fail as the session data would be empty).
                         $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
                         $_SESSION['glpi_password_expired'] = 1;
                         // Do not init profiles, as user has to update its password to be able to use GLPI
@@ -1706,124 +1699,6 @@ class Session
         }
         return true;
     }
-
-
-
-    /**
-     * Get new CSRF token
-     *
-     * @param bool $standalone
-     *    Generates a standalone token that will not be shared with other component of current request.
-     *
-     * @since 0.83.3
-     *
-     * @return string
-     **/
-    public static function getNewCSRFToken(bool $standalone = false)
-    {
-        /** @var string $CURRENTCSRFTOKEN */
-        global $CURRENTCSRFTOKEN;
-
-        $token = $standalone ? '' : $CURRENTCSRFTOKEN;
-
-        if (empty($token)) {
-            do {
-                $token = bin2hex(random_bytes(32));
-            } while ($token == '');
-        }
-
-        if (!isset($_SESSION['glpicsrftokens'])) {
-            $_SESSION['glpicsrftokens'] = [];
-        }
-        $_SESSION['glpicsrftokens'][$token] = 1;
-
-        if (!$standalone) {
-            $CURRENTCSRFTOKEN = $token;
-        }
-
-        return $token;
-    }
-
-
-    /**
-     * Clean expired CSRF tokens
-     *
-     * @since 0.83.3
-     *
-     * @return void
-     **/
-    public static function cleanCSRFTokens()
-    {
-        if (
-            isset($_SESSION['glpicsrftokens'])
-            && is_array($_SESSION['glpicsrftokens'])
-            && count($_SESSION['glpicsrftokens']) > self::CSRF_MAX_TOKENS
-        ) {
-            $overflow = count($_SESSION['glpicsrftokens']) - self::CSRF_MAX_TOKENS;
-            $_SESSION['glpicsrftokens'] = array_slice(
-                $_SESSION['glpicsrftokens'],
-                $overflow,
-                null,
-                true
-            );
-        }
-    }
-
-
-    /**
-     * Validate that the page has a CSRF token in the POST data
-     * and that the token is legit/not expired.  If the token is valid
-     * it will be removed from the list of valid tokens.
-     *
-     * @since 0.83.3
-     *
-     * @param array $data           $_POST data
-     * @param bool  $preserve_token Whether to preserve token after it has been validated.
-     *
-     * @return bool
-     **/
-    public static function validateCSRF($data, bool $preserve_token = false)
-    {
-        Session::cleanCSRFTokens();
-
-        if (!isset($data['_glpi_csrf_token'])) {
-            return false;
-        }
-        $requestToken = $data['_glpi_csrf_token'];
-        if (isset($_SESSION['glpicsrftokens'][$requestToken])) {
-            if (!$preserve_token) {
-                unset($_SESSION['glpicsrftokens'][$requestToken]);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Check CSRF data
-     *
-     * @since 0.84.2
-     *
-     * @param array $data           $_POST data
-     * @param bool  $preserve_token Whether to preserve token after it has been validated.
-     *
-     * @return void
-     **/
-    public static function checkCSRF($data, bool $preserve_token = false)
-    {
-        if (!Session::validateCSRF($data, $preserve_token)) {
-            $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
-            $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
-
-            $exception = new AccessDeniedHttpException();
-            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
-            throw $exception;
-        }
-    }
-
 
     /**
      * Get new IDOR token

@@ -2791,11 +2791,9 @@ HTML;
             $impersonate_form = htmlescape(self::getFormURLWithID($ID));
             if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
-                $csrf_token = htmlescape(Session::getNewCSRFToken());
                 $impersonate_btn = <<<HTML
                     <form method="post" action="{$impersonate_form}">
                         <input type="hidden" name="id" value="{$ID}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{$csrf_token}">
                         <button type="button" name="impersonate" value="1"
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"

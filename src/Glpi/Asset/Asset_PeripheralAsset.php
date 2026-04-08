@@ -503,7 +503,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         {{ fields.dropdownItemsFromItemtypes('', label, dropdown_params) }}
                         {{ fields.hiddenField('items_id_peripheral', peripheral.getID()) }}
                         {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
-                        {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
                             <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>

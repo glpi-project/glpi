@@ -1155,7 +1155,6 @@ class Conf extends CommonGLPI
         }
 
         $defaults = self::getDefaults();
-        unset($values['_glpi_csrf_token']);
 
         $ext_configs = array_filter($values, static fn($k, $v) => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
 

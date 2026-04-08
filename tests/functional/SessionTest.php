@@ -696,73 +696,6 @@ class SessionTest extends DbTestCase
         }
     }
 
-    public function testGetNewCSRFToken(): void
-    {
-        /** @var string $CURRENTCSRFTOKEN */
-        global $CURRENTCSRFTOKEN;
-
-        $CURRENTCSRFTOKEN = null;
-
-        $shared_token = \Session::getNewCSRFToken();
-        $this->assertNotEmpty($shared_token);
-
-        $standalone_token = null;
-        for ($i = 0; $i < 10; $i++) {
-            $previous_shared_token = $shared_token;
-            $shared_token = \Session::getNewCSRFToken(false);
-            $this->assertEquals($previous_shared_token, $shared_token);
-            $this->assertEquals($CURRENTCSRFTOKEN, $shared_token);
-
-            $previous_standalone_token = $standalone_token;
-            $standalone_token = \Session::getNewCSRFToken(true);
-            $this->assertNotEmpty($standalone_token);
-            $this->assertNotEquals($shared_token, $standalone_token);
-            $this->assertNotEquals($previous_standalone_token, $standalone_token);
-        }
-    }
-
-    public function testValidateCSRF(): void
-    {
-        for ($i = 0; $i < 10; $i++) {
-            // A shared token is only valid once
-            $shared_token = \Session::getNewCSRFToken(false);
-            $this->assertTrue(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]));
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]));
-
-            // A standalone token is only valid once
-            $standalone_token = \Session::getNewCSRFToken(true);
-            $this->assertTrue(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]));
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]));
-
-            // A fake token is never valid
-            $this->assertFalse(\Session::validateCSRF(['_glpi_csrf_token' => bin2hex(random_bytes(32))]));
-        }
-    }
-
-    public function testCleanCSRFTokens(): void
-    {
-        $refected_class = new ReflectionClass(\Session::class);
-        $max = $refected_class->getConstant('CSRF_MAX_TOKENS');
-        $overflow = 100;
-
-        $tokens = [];
-        for ($i = 1; $i < $max + $overflow; $i++) {
-            $tokens[$i] = \Session::getNewCSRFToken(true);
-        }
-
-        \Session::cleanCSRFTokens();
-
-        // Ensure that only max token count has been preserved
-        $this->assertCount($max, $_SESSION['glpicsrftokens']);
-
-        // Ensure that latest tokens are preserved during cleaning
-        for ($i = 1; $i < $max + $overflow; $i++) {
-            $result = \Session::validateCSRF(['_glpi_csrf_token' => $tokens[$i]]);
-            // if $i < $overflow, then the token should have been dropped from the list
-            $this->assertEquals($i >= $overflow, $result);
-        }
-    }
-
     public function testCanImpersonate()
     {
         global $DB;
@@ -1555,16 +1488,6 @@ class SessionTest extends DbTestCase
         }
         \Session::checkSeveralRightsOr($rights);
     }
-
-    public function testCheckCSRF(): void
-    {
-        $token = \Session::getNewCSRFToken();
-        \Session::checkCSRF(['_glpi_csrf_token' => $token]); // No exception thrown
-
-        $this->expectException(AccessDeniedHttpException::class);
-        \Session::checkCSRF(['_glpi_csrf_token' => 'invalid token']);
-    }
-
     public function testRightCheckBypass()
     {
         $this->login();
