@@ -81,8 +81,7 @@ class TemplateRenderer
             return;
         }
 
-        // Fallback: CLI / install / upgrade path — build env manually.
-        $this->buildStandaloneEnvironment($rootdir, $cachedir);
+        throw new \RuntimeException('Kernel and Twig environment not available.');
     }
 
     /**
@@ -116,63 +115,6 @@ class TemplateRenderer
         ) {
             $loader->addPath($rootdir . '/tests/templates', 'test');
         }
-    }
-
-    /**
-     * Build a standalone Twig environment for contexts where the DI kernel is not available
-     * (CLI tools, install/upgrade scripts, early bootstrap).
-     */
-    private function buildStandaloneEnvironment(string $rootdir, ?string $cachedir): void
-    {
-        if ($cachedir === null) {
-            $cachedir = Kernel::getCacheRootDir();
-        }
-
-        $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
-
-        $glpi_environment = GLPIEnvironment::get();
-        $env_params = [
-            'debug' => $glpi_environment->shouldEnableExtraDevAndDebugTools() || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
-            'auto_reload' => $glpi_environment->shouldExpectResourcesToChange(),
-            'strict_variables' => GLPI_STRICT_ENV,
-        ];
-
-        $tpl_cachedir = $cachedir . '/templates';
-        if (
-            (file_exists($tpl_cachedir) && !is_writable($tpl_cachedir))
-            || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
-        ) {
-            trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
-        } else {
-            $env_params['cache'] = $tpl_cachedir;
-        }
-
-        $this->environment = new TwigEnvironment($loader, $env_params);
-
-        $this->mountPluginPaths($rootdir);
-
-        // Vendor extensions
-        $this->environment->addExtension(new DebugExtension());
-        $this->environment->addExtension(new StringExtension());
-        // GLPI extensions
-        $this->environment->addExtension(new ConfigExtension());
-        $this->environment->addExtension(new SecurityExtension());
-        $this->environment->addExtension(new DataHelpersExtension());
-        $this->environment->addExtension(new DocumentExtension());
-        $this->environment->addExtension(new FrontEndAssetsExtension());
-        $this->environment->addExtension(new HtmlExtension());
-        $this->environment->addExtension(new I18nExtension());
-        $this->environment->addExtension(new IllustrationExtension());
-        $this->environment->addExtension(new ItemtypeExtension());
-        $this->environment->addExtension(new PhpExtension());
-        $this->environment->addExtension(new PluginExtension());
-        $this->environment->addExtension(new RoutingExtension());
-        $this->environment->addExtension(new SearchExtension());
-        $this->environment->addExtension(new SessionExtension());
-        $this->environment->addExtension(new TeamExtension());
-
-        // Superglobals
-        $this->environment->addExtension(new SuperGlobalsExtension());
     }
 
     private function getKernelContainer(): ?ContainerInterface
