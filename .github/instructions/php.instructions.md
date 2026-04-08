@@ -18,7 +18,7 @@ applyTo: "**/*.php"
 - Classes: `PascalCase`
 - Constants: `UPPER_SNAKE`
 - Always reference item types using `ClassName::class`, never string literals such as `'Computer'`.
-- Use `_s()` for all translatable strings; no hardcoded IDs or magic numbers.
+- Use `__s()` for all translatable strings; no hardcoded IDs or magic numbers.
 
 ## Rights
 
