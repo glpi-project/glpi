@@ -40,7 +40,6 @@
         const solutiontemplates_id = $('select[name="solutiontemplates_id"]');
 
         function updateFieldVisibility() {
-            console.log('Updating field visibility');
             if (followup_frequency.val() === '0') {
                 followups_before_resolution.closest('.form-field').addClass('d-none');
                 itilfollowuptemplates_id.closest('.form-field').addClass('d-none');
