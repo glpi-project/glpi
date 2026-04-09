@@ -779,8 +779,8 @@ class RuleRightTest extends DbTestCase
                         $entity->getID(),
                         $profile->getID(),
                         1,
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
 
