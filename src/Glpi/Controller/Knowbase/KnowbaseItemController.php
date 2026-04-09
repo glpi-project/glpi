@@ -67,7 +67,7 @@ final class KnowbaseItemController extends AbstractController
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
-        return new Response($kbitem->fields['answer']);
+        return new Response(RichText::getSafeHtml($kbitem->fields['answer']));
     }
 
     #[Route(
