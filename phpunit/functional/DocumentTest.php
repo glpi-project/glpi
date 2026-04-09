@@ -180,6 +180,77 @@ class DocumentTest extends DbTestCase
         $this->assertSame('Document: Computer - Documented Computer', $prepare['name']);
     }
 
+    public function testPrepareInputForAddIgnoreBlacklistedFields(): void
+    {
+        $_ignored = 'should_be_ignored';
+        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+        $prepare = (new \Document())->prepareInputForAdd($input);
+
+        $this->assertArrayNotHasKey('filepath', $prepare);
+        $this->assertArrayNotHasKey('sha1sum', $prepare);
+    }
+
+    /**
+     * Ensure filepath and sha1sum are not updated by prepareInputForUpdate, even if they are present in the input.
+     */
+    public function testPrepareInputForUpdateIgnoreBlacklistedFields(): void
+    {
+        $_ignored = 'should_be_ignored';
+        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+
+        $doc_id = (new \Document())->add(['name' => 'le document']);
+        $prepare = (new \Document())->prepareInputForUpdate($input + ['id' => $doc_id]);
+
+        $this->assertArrayNotHasKey('filepath', $prepare);
+        $this->assertArrayNotHasKey('sha1sum', $prepare);
+    }
+
+    public function testPrepareInputForUpdateIgnoreBlacklistedFieldsWithUpload(): void
+    {
+        $this->login();
+
+        // Create a document with a mocked file upload
+        $mdoc = $this->getMockBuilder(\Document::class)
+            ->onlyMethods(['moveUploadedDocument'])
+            ->getMock();
+        $mdoc->method('moveUploadedDocument')->willReturn(true);
+
+        $doc_id = $mdoc->add([
+            'name'        => 'test document with upload',
+            'upload_file' => 'filename.txt',
+        ]);
+        $this->assertGreaterThan(0, $doc_id);
+
+        // Read back the stored values right after the upload-add
+        $doc = new \Document();
+        $this->assertTrue($doc->getFromDB($doc_id));
+        $original_filepath = $doc->fields['filepath'];
+        $original_sha1sum  = $doc->fields['sha1sum'];
+
+        // Attempt to update the document with blacklisted fields
+        $_fake = 'should_be_ignored';
+        $doc->update([
+            'id'       => $doc_id,
+            'name'     => 'updated name',
+            'filepath' => $_fake,
+            'sha1sum'  => $_fake,
+        ]);
+
+        // Re-read from DB and verify blacklisted fields were NOT overwritten
+        $doc_after = new \Document();
+        $this->assertTrue($doc_after->getFromDB($doc_id));
+
+        $this->assertNotSame($_fake, $doc_after->fields['filepath']);
+        $this->assertNotSame($_fake, $doc_after->fields['sha1sum']);
+
+        // Values must be identical to what they were right after the upload
+        $this->assertSame($original_filepath, $doc_after->fields['filepath']);
+        $this->assertSame($original_sha1sum, $doc_after->fields['sha1sum']);
+
+        // Non-blacklisted field must have been updated correctly
+        $this->assertSame('updated name', $doc_after->fields['name']);
+    }
+
     /** Cannot work without a real document uploaded.
      *  Mock would be a solution but GLPI will try to use
      *  a table based on mocked class name, this is wrong.
