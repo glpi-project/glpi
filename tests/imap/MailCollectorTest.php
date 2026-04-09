@@ -1565,6 +1565,8 @@ PLAINTEXT,
 
     public function testBlacklistedDocumentNotImportedFromMail()
     {
+        global $DB;
+
         // Use existing test fixture files
         $png_file = GLPI_ROOT . '/tests/fixtures/uploads/foo.png';
 
@@ -1572,16 +1574,16 @@ PLAINTEXT,
         $png_sha1 = sha1_file($png_file);
 
         // Create blacklisted documents with matching SHA1
-        $this->createItem(
+        $doc = $this->createItem(
             \Document::class,
             [
                 'entities_id' => 0,
                 'name' => 'Blacklisted PNG Document',
                 'filename' => 'blacklisted.png',
-                'sha1sum' => $png_sha1,
                 'is_blacklisted' => 1,
             ]
         );
+        $this->assertTrue($DB->update(\Document::getTable(), ['sha1sum' => $png_sha1], ['id' => $doc->getID()]));
 
         // Test 1: Auto-import (mail collector) should be blocked
         \Safe\copy($png_file, GLPI_TMP_DIR . '/foo.png');
