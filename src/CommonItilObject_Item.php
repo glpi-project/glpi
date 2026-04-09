@@ -706,7 +706,7 @@ TWIG, $twig_params);
             ],
         ];
 
-        if ($item instanceof Supplier && is_a(static::$itemtype_1, CommonITILObject::class, true)) {
+        if ($item instanceof Supplier && is_a(static::$itemtype_1 ?? '', CommonITILObject::class, true)) {
             $params['criteria'][] = [
                 'field'      => 6, // supplier
                 'searchtype' => 'equals',
