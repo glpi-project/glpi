@@ -124,21 +124,25 @@ class DocumentTest extends DbTestCase
 
         $doc = new \Document();
         $prepare = $doc->prepareInputForAdd($input);
-        $this->assertCount(3, $prepare);
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(4, $prepare);
         $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
 
         $this->login();
         $uid = getItemByTypeName('User', TU_USER, true);
         $prepare = $doc->prepareInputForAdd($input);
-        $this->assertCount(4, $prepare);
         $this->assertArrayHasKey('users_id', $prepare);
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(5, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
 
         $item = new \Computer();
@@ -161,13 +165,15 @@ class DocumentTest extends DbTestCase
         $input['upload_file'] = 'filename.ext';
 
         $prepare = $mdoc->prepareInputForAdd($input);
-        $this->assertCount(6, $prepare);
         $this->assertArrayHasKey('users_id', $prepare);
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('itemtype', $prepare);
         $this->assertArrayHasKey('items_id', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(7, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);

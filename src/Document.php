@@ -239,6 +239,10 @@ class Document extends CommonDBTM
             unset($input['filename']);
         }
 
+        // current_filename is not necessary (item is new, current_filename should not exists)
+        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        $input['current_filename'] = '';
+
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
         }
@@ -406,6 +410,10 @@ class Document extends CommonDBTM
         }
 
         if (isset($input['current_filepath'])) {
+            // Always use the values stored in DB to prevent arbitrary file deletion
+            $input['current_filepath'] = $this->fields['filepath'];
+            $input['current_filename'] = $this->fields['filename'];
+
             if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
                 $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
             } elseif (isset($input["upload_file"]) && !empty($input["upload_file"])) {
