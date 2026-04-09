@@ -672,12 +672,13 @@ class Document_ItemTest extends DbTestCase
         // Verify private document is NOT in notification when show_private is false
         $this->assertNotContains('Private document for notification test', $document_names);
 
-        // Now test with show_private = true (user has SEEPRIVATE right)
+        // Now test with show_private_documents = true (user has document SEEPRIVATE right)
         $notif_data_with_private = $notification->getDataForObject($ticket, [
             'additionnaloption' => [
                 'usertype' => \NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
-                'show_private' => true, // User has SEEPRIVATE right
+                'show_private' => true,
+                'show_private_documents' => true, // User has document SEEPRIVATE right
             ],
         ]);
 
