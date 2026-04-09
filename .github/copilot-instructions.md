@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-GLPI is a Free Asset and IT Management Software written in PHP 8.3+, Symfony 6.4, Vue 3 for frontend, and Playwright for E2E testing. Use the GLPI framework whenever possible.
+GLPI is a Free Asset and IT Management Software written in PHP 8.3+, Symfony 6.4, Twig and some Vue 3 for frontend, and Playwright for E2E testing. Use the GLPI framework whenever possible.
 
 ## Repository Structure
 
