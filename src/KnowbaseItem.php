@@ -57,11 +57,15 @@ use function Safe\preg_replace_callback;
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface
+class KnowbaseItem extends CommonDBTM  implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface
 {
     /** @use Clonable<static> */
     use Clonable;
     use TreeBrowse;
+
+    use CommonDBVisible {
+        CommonDBVisible::haveVisibilityAccess as traitHaveVisibilityAccess;
+    }
 
     public static bool $browse_default = true;
 
@@ -448,7 +452,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
-        return parent::haveVisibilityAccess();
+        return $this->traitHaveVisibilityAccess();
     }
 
     /**
