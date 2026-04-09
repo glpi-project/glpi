@@ -1475,7 +1475,6 @@ Regards,',
         $DB->doQuery($query);
 
         //migrate kernel versions.
-        $kver = new OperatingSystemKernelVersion();
         $mapping = [];
         foreach (
             $DB->request(['SELECT' => ['id', 'os_kernel_version'],
@@ -1487,8 +1486,8 @@ Regards,',
             if (!isset($mapping[$key])) {
                 $mapping[$key] = [];
             }
-            $kver->add(['version' => $data['os_kernel_version']]);
-            $mapping[$key][$data['id']] = $kver->getID();
+            $kver_id = $DB->add(OperatingSystemKernelVersion::getTable(), ['version' => $data['os_kernel_version']]);
+            $mapping[$key][$data['id']] = $kver_id;
         }
 
         foreach ($mapping as $map) {
