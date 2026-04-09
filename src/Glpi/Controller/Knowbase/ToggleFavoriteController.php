@@ -36,15 +36,12 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem_Favorite;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
-use function Safe\json_decode;
 
 final class ToggleFavoriteController extends AbstractController
 {
@@ -60,18 +57,13 @@ final class ToggleFavoriteController extends AbstractController
     )]
     public function __invoke(int $id, Request $request): Response
     {
-        // Decode submitted data
-        $data = json_decode($request->getContent(), true);
-        $value = $data['value'] ?? null;
+        $value = $request->getPayload()->get('value');
 
         if ($value === null) {
             throw new BadRequestHttpException();
         }
 
         $user_id = Session::getLoginUserID();
-        if ($user_id === false) {
-            throw new AccessDeniedHttpException();
-        }
 
         $criteria = [
             'knowbaseitems_id' => $id,
