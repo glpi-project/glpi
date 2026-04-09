@@ -35,6 +35,7 @@
 
 namespace Glpi\Api;
 
+use GLPIKey;
 use Toolbox;
 
 class APIXmlrpc extends API
@@ -268,6 +269,11 @@ class APIXmlrpc extends API
         $this->parameters = (isset($parameters[0]) && is_array($parameters[0])
                           ? $parameters[0]
                           : []);
+
+        // decrypt session token
+        if (\array_key_exists('session_token', $this->parameters)) {
+            $this->parameters['session_token'] = (new GLPIKey())->decrypt(\base64_decode($this->parameters['session_token']));
+        }
 
         // transform input from array to object
         if (
