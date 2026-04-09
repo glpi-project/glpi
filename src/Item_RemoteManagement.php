@@ -46,6 +46,7 @@ class Item_RemoteManagement extends CommonDBChild
     public const MESHCENTRAL = 'meshcentral';
     public const SUPREMO = 'supremo';
     public const RUSTDESK = 'rustdesk';
+    public const TACTICALRMM = 'tacticalrmm';
 
 
     public static function getTypeName($nb = 0)
@@ -177,6 +178,12 @@ class Item_RemoteManagement extends CommonDBChild
             case self::RUSTDESK:
                 $href = "rustdesk://$id";
                 break;
+            case self::MESHCENTRAL:
+                $href = "https://meshcentral.exemple.com/?viewmode=11&gotonode=$id";
+                break;
+            case self::TACTICALRMM:
+                $href = "https://trmm.exemple.com/agents/$id";
+                break;
         }
 
         if ($href === null) {
@@ -306,6 +313,7 @@ class Item_RemoteManagement extends CommonDBChild
             self::MESHCENTRAL => 'MeshCentral',
             self::SUPREMO => 'SupRemo',
             self::RUSTDESK => 'RustDesk',
+            self::TACTICALRMM => 'TacticalRMM',
         ];
 
         $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
