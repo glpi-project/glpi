@@ -1486,7 +1486,7 @@ Regards,',
             if (!isset($mapping[$key])) {
                 $mapping[$key] = [];
             }
-            $DB->insert(OperatingSystemKernelVersion::getTable(), ['version' => $data['os_kernel_version']]);
+            $DB->insert('glpi_operatingsystemkernelversions', ['version' => $data['os_kernel_version']]);
             $kver_id = $DB->insertId();
             $mapping[$key][$data['id']] = $kver_id;
         }

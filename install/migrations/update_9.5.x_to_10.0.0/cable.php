@@ -216,7 +216,7 @@ if ($DB->tableExists('glpi_netpoints')) {
                 'date_creation'   => $data['date_creation'],
                 'date_mod'        => $data['date_mod'],
             ];
-            $DB->insert(Socket::getTable(), $input);
+            $DB->insert('glpi_sockets', $input);
         }
     }
     //remove "useless "netpoints_id" field
