@@ -1811,7 +1811,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Closed tickets
             || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
-            $allowed_fields                    = ['id'];
+            $allowed_fields                    = ['id', 'date_mod'];
             $check_allowed_fields_for_template = true;
 
             if (in_array($this->fields['status'], static::getClosedStatusArray())) {
