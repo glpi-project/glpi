@@ -883,7 +883,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
-     * @param array $data{users_id?: int}
+     * @param array{users_id?: int} $data
      *
      * @return bool
      */
