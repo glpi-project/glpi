@@ -24,6 +24,7 @@ applyTo: "**/*.php"
 
 - In front controllers, use `$item->check($id, RIGHT, $input)` — it throws `AccessDeniedHttpException` automatically on failure.
 - Use `Session::haveRight($module, $right)` only for module-level (global) checks outside of item context.
+- Never use `canUpdateItem()`, `canViewItem()`, or `canDeleteItem()` for access control — they only check entity access and **skip global rights** (`Session::haveRight()`). Always use `$item->can($id, RIGHT)` which enforces both global rights and item-level checks.
 - Use the standard right constants: `READ`, `UPDATE`, `CREATE`, `DELETE`, `PURGE`, `READNOTE`, `UPDATENOTE`, `UNLOCK`, `READ_ASSIGNED`, `UPDATE_ASSIGNED`, `READ_OWNED`, `UPDATE_OWNED`.
 
 ## Database
