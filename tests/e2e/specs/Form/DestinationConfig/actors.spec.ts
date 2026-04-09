@@ -42,18 +42,21 @@ const actor_types = [
         fixture: 'destination_config_fields/requester-config.json',
         data_attr: 'requester',
         default_value: 'User who filled the form',
+        group_right_field: 'is_requester',
     },
     {
         name: 'Assignee',
         fixture: 'destination_config_fields/assignee-config.json',
         data_attr: 'assign',
         default_value: 'From template',
+        group_right_field: 'is_assign',
     },
     {
         name: 'Observer',
         fixture: 'destination_config_fields/observer-config.json',
         data_attr: 'observer',
         default_value: 'From template',
+        group_right_field: 'is_watcher',
     },
 ];
 
@@ -61,18 +64,18 @@ for (const actor_type of actor_types) {
     test.describe(`${actor_type.name} configuration`, () => {
         let form_page: FormPage;
         const unique = randomUUID();
-        const actor_name = `Test ${actor_type.name} - ${unique}`;
+        const authorized_actor_name = `Test ${actor_type.name} authorized - ${unique}`;
+        const unauthorized_actor_name = `Test ${actor_type.name} unauthorized - ${unique}`;
+        const authorized_group_name = `Test ${actor_type.name} group authorized - ${unique}`;
+        const unauthorized_group_name = `Test ${actor_type.name} group unauthorized - ${unique}`;
 
-        test.beforeEach(async ({ page, profile, api, formImporter }) => {
+        test.beforeAll(async ({ profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
-            form_page = new FormPage(page);
             const entity_id = getWorkerEntityId();
-
-            const info = await formImporter.importForm(actor_type.fixture);
 
             // Create a possible actor
             const actor_id = await api.createItem('User', {
-                name: actor_name,
+                name: authorized_actor_name,
             });
             await api.createItem('Profile_User', {
                 users_id: actor_id,
@@ -81,10 +84,38 @@ for (const actor_type of actor_types) {
                 is_recursive: 1,
             });
 
-            // Create a Group
-            const group_id = await api.createItem('Group', {
-                name: `Test Group - ${unique}`,
+            if (actor_type.name === 'Assignee') {
+                const unauthorized_actor_id = await api.createItem('User', {
+                    name: unauthorized_actor_name,
+                });
+                await api.createItem('Profile_User', {
+                    users_id: unauthorized_actor_id,
+                    profiles_id: Profiles.SelfService,
+                    entities_id: entity_id,
+                    is_recursive: 1,
+                });
+            }
+
+            const no_group_rights = {
+                is_requester: 0,
+                is_watcher: 0,
+                is_assign: 0,
+            };
+            const authorized_group_right = {
+                [actor_type.group_right_field]: 1,
+            };
+
+            // Create groups for authorized and unauthorized checks
+            const authorized_group_id = await api.createItem('Group', {
+                name: authorized_group_name,
                 entities_id: entity_id,
+                ...no_group_rights,
+                ...authorized_group_right,
+            });
+            await api.createItem('Group', {
+                name: unauthorized_group_name,
+                entities_id: entity_id,
+                ...no_group_rights,
             });
 
             // Create a Computer with assigned user and group
@@ -94,10 +125,15 @@ for (const actor_type of actor_types) {
                 entities_id: entity_id,
                 users_id: worker_user_id,
                 users_id_tech: worker_user_id,
-                groups_id: group_id,
-                groups_id_tech: group_id,
+                groups_id: authorized_group_id,
+                groups_id_tech: authorized_group_id,
             });
+        });
 
+
+        test.beforeEach(async ({ page, formImporter }) => {
+            form_page = new FormPage(page);
+            const info = await formImporter.importForm(actor_type.fixture);
             await form_page.gotoDestinationTab(info.getId());
         });
 
@@ -133,7 +169,7 @@ for (const actor_type of actor_types) {
                 /* eslint-disable playwright/no-conditional-in-test */
                 if (option === 'Specific actors') {
                     const actors_dropdown = form_page.getDropdownByLabel('Select actors...', config);
-                    await form_page.doSearchAndClickDropdownValue(actors_dropdown, actor_name, false);
+                    await form_page.doSearchAndClickDropdownValue(actors_dropdown, authorized_actor_name, false);
                 } else if (option === 'Answer from specific questions') {
                     const questions_dropdown = form_page.getDropdownByLabel('Select questions...', config);
                     await form_page.doSetDropdownValue(questions_dropdown, `My ${actor_type.name} question`);
@@ -149,6 +185,23 @@ for (const actor_type of actor_types) {
 
                 await form_page.doSaveDestinationAndReopenAccordion('Actors');
                 await expect(strategy_dropdown).toHaveText(option);
+            }
+        });
+
+        test('Cannot select unauthorized actors with "Specific actors"', async () => {
+            await form_page.doOpenDestinationAccordionItem('Actors');
+
+            const config = form_page.getRegion(`${actor_type.name}s configuration`);
+            const strategy_dropdown = form_page.getStrategyDropdown(config);
+            await form_page.doSetDropdownValue(strategy_dropdown, 'Specific actors');
+
+            const actors_dropdown = form_page.getDropdownByLabel('Select actors...', config);
+            await form_page.doSearchAndClickDropdownValue(actors_dropdown, authorized_group_name, false);
+
+            await form_page.doAssertDropdownValueIsNotAvailable(actors_dropdown, unauthorized_group_name);
+
+            if (actor_type.name === 'Assignee') {
+                await form_page.doAssertDropdownValueIsNotAvailable(actors_dropdown, unauthorized_actor_name);
             }
         });
 
