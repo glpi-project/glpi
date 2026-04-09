@@ -1867,7 +1867,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if ($options['state_done']) {
+        if (!$options['state_done']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = [
                 'OR' => [
