@@ -34,12 +34,13 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Config;
 use Glpi\Inventory\Conf;
-use Glpi\Tests\GLPITestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
-class ConfTest extends GLPITestCase
+class ConfTest extends DbTestCase
 {
     public function testKnownInventoryExtensions()
     {
@@ -84,6 +85,7 @@ class ConfTest extends GLPITestCase
     {
         $provider = [];
         $defaults = Conf::getDefaults();
+        $defaults['auth_required'] = Conf::NO_AUTH;
         foreach ($defaults as $key => $value) {
             $provider[] = [
                 'key'    => $key,
@@ -106,5 +108,35 @@ class ConfTest extends GLPITestCase
         $this->assertNull($conf->doesNotExists);
         $this->hasPhpLogRecordThatContains('Property doesNotExists does not exists!', LogLevel::WARNING);
         $this->hasSessionMessages(WARNING, ['Property doesNotExists does not exists!']);
+    }
+
+    public static function invalidAuthRequiredProvider(): iterable
+    {
+        yield 'empty string' => [''];
+        yield 'null value' => [null];
+        yield 'unexpected value' => ['unexpected_value'];
+    }
+
+    #[DataProvider('invalidAuthRequiredProvider')]
+    public function testSaveConfRejectsInvalidAuthRequiredWhenInventoryIsEnabled(mixed $auth_required): void
+    {
+        $this->login();
+
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => 1,
+            'auth_required'     => Conf::NO_AUTH,
+        ]);
+
+        $conf = new Conf();
+        $result = $conf->saveConf([
+            'enabled_inventory' => 1,
+            'auth_required'     => $auth_required,
+        ]);
+
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, [
+            'Inventory is enabled. Please select a valid authorization header method.',
+        ]);
+        $this->assertSame(Conf::NO_AUTH, Config::getConfigurationValue('inventory', 'auth_required'));
     }
 }

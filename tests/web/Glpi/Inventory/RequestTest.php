@@ -40,6 +40,7 @@ use GLPIKey;
 use GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -343,10 +344,59 @@ class RequestTest extends TestCase
         // disable basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => 'none',
+            'auth_required'       => Conf::NO_AUTH,
             'basic_auth_login'    => '',
             'basic_auth_password' => '',
         ]);
+    }
+
+    public static function provideInvalidAuthRequiredValues(): iterable
+    {
+        yield 'empty_string' => [''];
+        yield 'null' => [null];
+        yield 'unexpected_value' => ['unexpected_value'];
+    }
+
+    #[DataProvider('provideInvalidAuthRequiredValues')]
+    public function testAuthRequiredMisconfiguration(mixed $auth_required): void
+    {
+        try {
+            Config::setConfigurationValues('inventory', [
+                'enabled_inventory' => true,
+                'auth_required'     => $auth_required,
+            ]);
+
+            try {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'Inventory',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml',
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                            . '<REQUEST>'
+                            . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                            . '<QUERY>PROLOG</QUERY>'
+                            . '</REQUEST>',
+                    ]
+                );
+                $this->fail('Expected a 503 response due to invalid inventory auth_required configuration.');
+            } catch (RequestException $e) {
+                $response = $e->getResponse();
+                $this->assertInstanceOf(Response::class, $response);
+                $this->checkJsonResponse(
+                    $response,
+                    '{"status":"error","message":"Server configuration error: invalid inventory authentication setting. Please configure the Inventory \u2192 Authorization header in GLPI.","expiration":24}',
+                    503
+                );
+            }
+        } finally {
+            Config::setConfigurationValues('inventory', [
+                'enabled_inventory' => true,
+                'auth_required'     => Conf::NO_AUTH,
+            ]);
+        }
     }
 
     public function testAuthBasicMalformed()
@@ -412,7 +462,7 @@ class RequestTest extends TestCase
         // disable basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => 'none',
+            'auth_required'       => Conf::NO_AUTH,
             'basic_auth_login'    => '',
             'basic_auth_password' => '',
         ]);
@@ -484,7 +534,7 @@ class RequestTest extends TestCase
         // disable basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => 'none',
+            'auth_required'       => Conf::NO_AUTH,
             'basic_auth_login'    => '',
             'basic_auth_password' => '',
         ]);
@@ -598,7 +648,7 @@ class RequestTest extends TestCase
         // disable oauth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required'     => 'none',
+            'auth_required'     => Conf::NO_AUTH,
         ]);
     }
 
@@ -715,7 +765,7 @@ class RequestTest extends TestCase
         // disable oauth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required'     => 'none',
+            'auth_required'     => Conf::NO_AUTH,
         ]);
     }
 
@@ -781,7 +831,7 @@ class RequestTest extends TestCase
         // disable oauth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required'     => 'none',
+            'auth_required'     => Conf::NO_AUTH,
         ]);
     }
 }

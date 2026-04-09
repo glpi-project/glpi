@@ -1182,6 +1182,24 @@ class Conf extends CommonGLPI
             $values['stale_agents_status_condition'] = ['all'];
         }
 
+        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
+        if ($enabled_inventory) {
+            $allowed_auth_required = [
+                self::CLIENT_CREDENTIALS,
+                self::BASIC_AUTH,
+                self::NO_AUTH,
+            ];
+            $auth_required = $values['auth_required'] ?? null;
+            if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
+                Session::addMessageAfterRedirect(
+                    __s('Inventory is enabled. Please select a valid authorization header method.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
         if (isset($values['auth_required']) && $values['auth_required'] === Conf::BASIC_AUTH) {
             if (
                 !empty($values['basic_auth_password'])
