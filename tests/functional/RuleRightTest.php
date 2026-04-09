@@ -749,7 +749,7 @@ class RuleRightTest extends DbTestCase
         $this->assertEquals($groups_before, $groups_after);
     }
 
-    public function testBypassLdapRules()
+    public function testBypassRightsRulesOnUserUpdate()
     {
         $this->login();
 
@@ -774,12 +774,13 @@ class RuleRightTest extends DbTestCase
             'profiles_id' => $profile->getID(),
             'entities_id' => $entity->getID(),
             '_ldap_rules' => [
-                'rules_entities' => [
-                    [$entity->getID(), 1],
-                ],
-                'rules_profiles' => [
-                    [$profile->getID()],
-                ],
+                'rules_entities_rights' => [
+                    [
+                        $entity->getID(),
+                        $profile->getID(),
+                        1,
+                    ]
+                ]
             ],
         ];
 
