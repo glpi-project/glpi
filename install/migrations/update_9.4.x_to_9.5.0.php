@@ -1044,7 +1044,8 @@ function update94xto950()
             unset($default_dashboard['_items']);
 
             // add current dashboard
-            $dashboard_id = $DB->add($dashboard_obj::getTable(), $default_dashboard);
+            $DB->insert($dashboard_obj::getTable(), $default_dashboard);
+            $dashboard_id = $DB->insertId();
 
             // add items to this new dashboard
             $query = $DB->buildInsert(
