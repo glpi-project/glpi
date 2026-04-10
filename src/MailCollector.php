@@ -378,7 +378,7 @@ class MailCollector extends CommonDBTM
         if ($type != 'pop') {
             echo Html::scriptBlock("$(function() {
 
-            var isNewItem = (" . (int)$ID . " <= 0);
+            var isNewItem = (" . (int) $ID . " <= 0);
             var serverFieldNames = ['mail_server', 'server_type', 'server_ssl', 'server_tls', 'server_cert', 'server_rsh', 'server_secure', 'server_debug', 'server_mailbox', 'server_port'];
             var form = $('input[name=\"mail_server\"]').closest('form');
             var initialValues = {};
@@ -425,7 +425,7 @@ class MailCollector extends CommonDBTM
 
                const data = {
                         action: 'getFoldersList',
-                        id: " . (int)$ID . ",
+                        id: " . (int) $ID . ",
                         input_id: input.attr('id')
                     };
 
