@@ -55,9 +55,7 @@ if (isset($_REQUEST['action'])) {
                 !array_key_exists('id', $_REQUEST)
                 || !$mailcollector->getFromDB($_REQUEST['id'])
             ) {
-                $exception = new AccessDeniedHttpException();
-                $exception->setMessageToDisplay(__('Mail collector must be saved before browsing folders.'));
-                throw $exception;
+                Html::displayErrorAndDie(__('Mail collector must be saved before browsing folders.'));
             }
 
             $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
