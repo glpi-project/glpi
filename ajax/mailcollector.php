@@ -50,43 +50,17 @@ $mailcollector = new MailCollector();
 if (isset($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
         case "getFoldersList":
-            // Load config if already exists
-            // Necessary if password is not updated
-            if (array_key_exists('id', $_REQUEST)) {
-                $mailcollector->getFromDB($_REQUEST['id']);
+            // The collector must already exist in database.
+            if (
+                !array_key_exists('id', $_REQUEST)
+                || !$mailcollector->getFromDB($_REQUEST['id'])
+            ) {
+                $exception = new AccessDeniedHttpException();
+                $exception->setMessageToDisplay(__('Mail collector must be saved before browsing folders.'));
+                throw $exception;
             }
 
-            // Update fields with input values
-            $input = $_REQUEST;
-            if (array_key_exists('passwd', $input)) {
-                // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-                $input['passwd'] = $_UREQUEST['passwd'];
-            }
-            $input['login'] = stripslashes($input['login']);
-
-            if (isset($input["passwd"])) {
-                if (empty($input["passwd"])) {
-                    unset($input["passwd"]);
-                } else {
-                    $input["passwd"] = (new GLPIKey())->encrypt($input["passwd"]);
-                }
-            }
-
-            if (!empty($input['mail_server'])) {
-                $input["host"] = Toolbox::constructMailServerConfig($input);
-                if (!isset($input['passwd'])) {
-                    throw new \RuntimeException(
-                        __('Password is required to list mail folders.')
-                    );
-                }
-            }
-
-            if (!isset($input['errors'])) {
-                $input['errors'] = 0;
-            }
-
-            $mailcollector->fields = array_merge($mailcollector->fields, $input);
-            $mailcollector->displayFoldersList($_REQUEST['input_id']);
+            $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
             break;
     }
 }

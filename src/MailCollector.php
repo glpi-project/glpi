@@ -378,20 +378,61 @@ class MailCollector extends CommonDBTM
         if ($type != 'pop') {
             echo Html::scriptBlock("$(function() {
 
-            $(document).on('click', '.get-imap-folder', function() {
+            var isNewItem = (" . (int)$ID . " <= 0);
+            var serverFieldNames = ['mail_server', 'server_type', 'server_ssl', 'server_tls', 'server_cert', 'server_rsh', 'server_secure', 'server_debug', 'server_mailbox', 'server_port'];
+            var form = $('input[name=\"mail_server\"]').closest('form');
+            var initialValues = {};
+
+            serverFieldNames.forEach(function(name) {
+               var el = form.find('[name=\"' + name + '\"]');
+               if (el.length) {
+                  initialValues[name] = el.val();
+               }
+            });
+
+            function hasServerFieldsChanged() {
+               for (var i = 0; i < serverFieldNames.length; i++) {
+                  var el = form.find('[name=\"' + serverFieldNames[i] + '\"]');
+                  if (el.length && el.val() !== initialValues[serverFieldNames[i]]) {
+                     return true;
+                  }
+               }
+               return false;
+            }
+
+            function updateFolderButtonsState() {
+               if (isNewItem || hasServerFieldsChanged()) {
+                  $('.get-imap-folder').addClass('disabled').attr('aria-disabled', 'true').css('pointer-events', 'none');
+               } else {
+                  $('.get-imap-folder').removeClass('disabled').removeAttr('aria-disabled').css('pointer-events', '');
+               }
+            }
+
+            updateFolderButtonsState();
+
+            serverFieldNames.forEach(function(name) {
+               form.on('change input', '[name=\"' + name + '\"]', updateFolderButtonsState);
+            });
+
+            $(document).on('click', '.get-imap-folder', function(e) {
+               if ($(this).hasClass('disabled')) {
+                  e.preventDefault();
+                  e.stopImmediatePropagation();
+                  return false;
+               }
+
                var input = $(this).prev('input');
 
-               var data = 'action=getFoldersList';
-               data += '&input_id=' + input.attr('id');
-               // Get form values without server_mailbox value to prevent filtering
-               data += '&' + $(this).closest('form').find(':not([name=\"server_mailbox\"])').serialize();
-               // Force empty value for server_mailbox
-               data += '&server_mailbox=';
+               const data = {
+                        action: 'getFoldersList',
+                        id: " . (int)$ID . ",
+                        input_id: input.attr('id')
+                    };
 
                // Ask for password if missing
                if ($(this).closest('form').find('input[name=\"passwd\"]').val() == '') {
                   var passwd = prompt(__('Please enter password to list folders'));
-                  data += '&passwd=' + encodeURIComponent(passwd);
+                  data.passwd = passwd;
                }
 
                glpi_ajax_dialog({
