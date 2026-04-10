@@ -1811,7 +1811,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Closed tickets
             || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
-            $allowed_fields                    = ['id', 'date_mod'];
+            $allowed_fields                    = ['id'];
             $check_allowed_fields_for_template = true;
 
             if (in_array($this->fields['status'], static::getClosedStatusArray())) {
@@ -1870,6 +1870,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = '_prefix_content';
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
                     $allowed_fields[] = 'takeintoaccountdate';
+                }
+                if (isset($input['_do_update_date_mod'])) {
+                    $allowed_fields[] = 'date_mod';
                 }
             }
 
