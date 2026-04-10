@@ -6,8 +6,9 @@ applyTo: "**/*.php"
 
 ## Architecture
 
-- Do not introduce service classes, repositories, DTOs, or dependency injection. GLPI uses static methods, CommonDBTM hooks, `global $DB`, and arrays. Follow existing patterns; never "improve" with external architecture patterns.
-- Front controllers are thin routing layers only. Business logic, input validation, and data transformation belong in `prepareInputForAdd()` and `prepareInputForUpdate()`, not in front controllers or AJAX endpoints.
+- GLPI is transitioning toward service classes (or singleton pseudo-services), DTOs, and dependency injection. Avoid static methods in new code. Follow the patterns used in the surrounding code — do not make architecture decisions autonomously unless specifically requested.
+- Business logic, input validation, and data transformation belong in `prepareInputForAdd()` and `prepareInputForUpdate()` or in dedicated service classes, not in controllers.
+- Do not create new `/front/` or `/ajax/` files. Use controllers in `src/Glpi/Controller/` with Symfony routing.
 - Modern GLPI code lives in `src/` (namespaced as `Glpi\...`). Plugin code goes in `src/` namespaced as `GlpiPlugin\PluginName\...`. Do not add legacy files in `inc/`.
 - Use Twig templates (`templates/`) for all HTML rendering. Never concatenate raw HTML strings in PHP.
 
@@ -18,7 +19,6 @@ applyTo: "**/*.php"
 - Classes: `PascalCase`
 - Constants: `UPPER_SNAKE`
 - Always reference item types using `ClassName::class`, never string literals such as `'Computer'`.
-- Use `__s()` for all translatable strings; no hardcoded IDs or magic numbers.
 
 ## Rights
 
@@ -50,21 +50,6 @@ applyTo: "**/*.php"
 - `cleanDBonPurge()` — Delete related records before permanent deletion. Always call `parent::cleanDBonPurge()` if overriding.
 - `post_getFromDB()` — Enrich `$this->fields` after a DB read. Keep lightweight; do not run extra queries unless necessary.
 - Never override `add()`, `update()`, or `delete()` directly — use the hooks above.
-
-## Front Controllers
-
-- Always start with `require_once(__DIR__ . '/_check_webserver_config.php')`.
-- Check session access early: `Session::checkCentralAccess()` or `Session::checkLoginUser()`.
-- Route on `$_POST` keys (`isset($_POST['add'])`, `isset($_POST['update'])`, `isset($_POST['purge'])`).
-- After every write action, redirect with `Html::redirect($url)` or `Html::back()`. Never render HTML in a POST handler.
-- If no action matches, throw `new BadRequestHttpException()` — never silently return.
-
-## AJAX Endpoints
-
-- Output JSON directly with `echo json_encode($data)`. Do not use `Html::header()` / `Html::footer()`.
-- Always check session and rights before processing: `Session::checkLoginUser()` or `$item->check()`.
-- Return structured arrays: `['success' => true, 'data' => [...]]` for success, `['success' => false, 'error' => '...']` for failure.
-- Never echo arbitrary user input — always sanitize or encode before output.
 
 ## Translations
 
@@ -119,7 +104,7 @@ applyTo: "**/*.php"
 
 ### Privilege Escalation & Entity Isolation
 
-- Every database query that returns user data must be scoped to the current user's entities: use `getMyEntities()` or `'entities_id' => $_SESSION['glpiactive_entity']` in criteria.
+- Every database query that returns user data must be scoped to the current user's entities: use `getEntitiesRestrictCriteria()` to build the appropriate criteria array.
 - When an item has an `entities_id` column, always check `$item->can($id, $right)` — it enforces entity belonging automatically.
 - Never accept `entities_id` from user input without verifying the user has access to that entity: `Session::haveAccessToEntity($entities_id)`.
 
@@ -152,9 +137,6 @@ applyTo: "**/*.php"
 
 ### API Security
 
-- Declare the required OAuth scope in every new API endpoint using the `#[SecurityStrategy]` attribute or by registering the route with the appropriate middleware.
-- Validate IP restrictions via `IPRestrictionRequestMiddleware` — do not roll your own IP check.
-- Generate API client secrets with `bin2hex(random_bytes(...))` and store them encrypted. Never generate tokens with `rand()`, `uniqid()`, or `mt_rand()`.
 - Never return internal stack traces, SQL queries, or filesystem paths in API error responses. Use generic messages and log details server-side.
 
 ### General Rules
