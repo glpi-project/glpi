@@ -39,48 +39,25 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("config", READ);
+Session::checkRight("config", UPDATE);
 
 $mailcollector = new MailCollector();
 
 if (isset($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
         case "getFoldersList":
-            // Load config if already exists
-            // Necessary if password is not updated
-            if (array_key_exists('id', $_REQUEST)) {
-                $mailcollector->getFromDB($_REQUEST['id']);
+            // The collector must already exist in database.
+            if (
+                !array_key_exists('id', $_REQUEST)
+                || !$mailcollector->getFromDB($_REQUEST['id'])
+            ) {
+                $exception = new AccessDeniedHttpException();
+                $exception->setMessageToDisplay(__('Mail collector must be saved before browsing folders.'));
+                throw $exception;
             }
 
             // Update fields with input values
-            $input = $_REQUEST;
-
-            if (isset($input["passwd"])) {
-                if (empty($input["passwd"])) {
-                    unset($input["passwd"]);
-                } else {
-                    $input["passwd"] = (new GLPIKey())->encrypt($input["passwd"]);
-                }
-            }
-
-            if (!empty($input['mail_server'])) {
-                $input["host"] = Toolbox::constructMailServerConfig($input);
-                // In some case (like oauth imap) provide password is not possible
-                // So, ask for password only if there is one stored in database and it's not an OAuth connection
-                $is_oauth = !empty($input['server_type']) && str_contains($input['server_type'], 'oauth');
-                if (!$is_oauth && !isset($input['passwd']) && !empty($mailcollector->fields['passwd'])) {
-                    $exception = new AccessDeniedHttpException();
-                    $exception->setMessageToDisplay(__('Password is required to list mail folders.'));
-                    throw $exception;
-                }
-            }
-
-            if (!isset($input['errors'])) {
-                $input['errors'] = 0;
-            }
-
-            $mailcollector->fields = array_merge($mailcollector->fields, $input);
-            $mailcollector->displayFoldersList($_REQUEST['input_id']);
+            $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
             break;
     }
 }
