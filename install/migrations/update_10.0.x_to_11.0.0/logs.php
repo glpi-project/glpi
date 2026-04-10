@@ -57,7 +57,7 @@ $migration->addField(
     ]
 );
 
-// First migrate only column changes so MySQL can use ALTER TABLE with the INSTANT algorithm
+// First migrate only column changes so MySQL/MariaDB can optimize the ALTER TABLE query to perform only metadata changes rather than a rebuild
 // (no AFTER clause).
 $migration->migrationOneTable("glpi_logs");
 
