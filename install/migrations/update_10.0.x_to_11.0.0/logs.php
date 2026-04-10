@@ -58,7 +58,6 @@ $migration->addField(
 );
 
 // First migrate only column changes so MySQL/MariaDB can optimize the ALTER TABLE query to perform only metadata changes rather than a rebuild
-// (no AFTER clause).
 $migration->migrationOneTable("glpi_logs");
 
 // Then create indexes in a separate step to significantly reduce migration time on large tables
