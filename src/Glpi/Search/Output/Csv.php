@@ -58,9 +58,4 @@ final class Csv extends Spreadsheet
     {
         return "glpi.csv";
     }
-
-    protected function supportsNativeDateType(): bool
-    {
-        return false;
-    }
 }

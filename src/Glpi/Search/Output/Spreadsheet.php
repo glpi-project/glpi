@@ -40,6 +40,7 @@ use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
 use PhpOffice\PhpSpreadsheet\Writer\IWriter;
 use Safe\DateTime;
@@ -129,13 +130,13 @@ abstract class Spreadsheet extends ExportSearchOutput
                 );
             }
 
-            $worksheet->setCellValue([$col_num, $line_num], $name);
+            $this->formatValue($worksheet, [$col_num, $line_num], $name);
         }
 
         // Add specific column Header
         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             ++$col_num;
-            $worksheet->setCellValue([$col_num, $line_num], __('Item type'));
+            $this->formatValue($worksheet, [$col_num, $line_num], __('Item type'));
         }
 
         //column headers in bold
@@ -152,47 +153,7 @@ abstract class Spreadsheet extends ExportSearchOutput
             foreach ($data['data']['cols'] as $col) {
                 ++$col_num;
                 $colkey = "{$col['itemtype']}_{$col['id']}";
-
-                $is_date = in_array($col['searchopt']['datatype'] ?? '', ['date', 'datetime']);
-                $raw_val = $row[$colkey][0]['name'] ?? null;
-                $is_single_value = ($row[$colkey]['count'] ?? 0) === 1;
-
-                if ($is_date && $is_single_value && !empty($raw_val) && $raw_val !== 'NULL') {
-                    try {
-                        $dateTime = new DateTime($raw_val);
-                        $glpiFormat = (int) ($_SESSION["glpidate_format"] ?? 0);
-
-                        $formatMap = [
-                            0 => ['php' => 'Y-m-d', 'excel' => 'yyyy-mm-dd'],
-                            1 => ['php' => 'd-m-Y', 'excel' => 'dd-mm-yyyy'],
-                            2 => ['php' => 'm-d-Y', 'excel' => 'mm-dd-yyyy'],
-                        ];
-                        $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
-
-                        if (!$this->supportsNativeDateType()) {
-                            // For formats without native date type support, use a formatted string.
-                            $phpFormat = $selected['php'] . (($col['searchopt']['datatype'] === 'datetime') ? ' H:i' : '');
-                            $worksheet->setCellValue([$col_num, $line_num], $dateTime->format($phpFormat));
-                        } else {
-                            // For formats supporting native date type, use PHPToExcel
-                            $excelDateValue = Date::PHPToExcel($dateTime);
-                            $worksheet->setCellValue([$col_num, $line_num], $excelDateValue);
-
-                            $excelFormat = $selected['excel'] . (($col['searchopt']['datatype'] === 'datetime') ? ' hh:mm' : '');
-
-                            // Apply the number format style
-                            $worksheet->getStyle([$col_num, $line_num])
-                                ->getNumberFormat()
-                                ->setFormatCode($excelFormat);
-                        }
-                    } catch (\Throwable $e) {
-                        $value = DataExport::normalizeValueForTextExport($row[$colkey]['displayname'] ?? '');
-                        $worksheet->setCellValue([$col_num, $line_num], $value);
-                    }
-                } else {
-                    $value = DataExport::normalizeValueForTextExport($row[$colkey]['displayname'] ?? '');
-                    $worksheet->setCellValue([$col_num, $line_num], $value);
-                }
+                $this->formatValue($worksheet, [$col_num, $line_num], $row[$colkey], $col);
             }
 
             if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
@@ -202,8 +163,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
                     }
                 }
-                $value = DataExport::normalizeValueForTextExport($typenames[$row["TYPE"]] ?? '');
-                $worksheet->setCellValue([$col_num, $line_num], $value);
+                $this->formatValue($worksheet, [$col_num, $line_num], $typenames[$row["TYPE"]] ?? '');
             }
 
             if ($line_num % 2 != 0) {
@@ -564,7 +524,57 @@ abstract class Spreadsheet extends ExportSearchOutput
         );
     }
 
+    /**
+     /**
+      * Format and set the value of a cell
+      *
+      * @param Worksheet $worksheet
+      * @param array{int, int}|string $coordinate
+      * @param mixed $value
+      * @param array<string, mixed> $options
+      * @return void
+      */
+    protected function formatValue(
+        Worksheet $worksheet,
+        $coordinate,
+        mixed $value,
+        array $options = []
+    ): void {
+
+        // If the value is an array and search options are provided, it's a search result item
+        if (is_array($value) && isset($options['searchopt'])) {
+            $is_date = in_array($options['searchopt']['datatype'] ?? '', ['date', 'datetime']);
+            $raw_val = $value[0]['name'] ?? null;
+            $is_single_value = ($value['count'] ?? 0) === 1;
+
+            // Attempt to format as a specialized date string if applicable
+            if ($is_date && $is_single_value && !empty($raw_val) && $raw_val !== 'NULL') {
+                try {
+                    $dateTime = new DateTime($raw_val);
+                    $glpiFormat = (int) ($_SESSION["glpidate_format"] ?? 0);
+
+                    $formatMap = [
+                        0 => ['php' => 'Y-m-d'],
+                        1 => ['php' => 'd-m-Y'],
+                        2 => ['php' => 'm-d-Y'],
+                    ];
+                    $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
+
+                    $phpFormat = $selected['php'] . (($options['searchopt']['datatype'] === 'datetime') ? ' H:i' : '');
+                    $worksheet->setCellValue($coordinate, $dateTime->format($phpFormat));
+                    return;
+                } catch (\Throwable $e) {
+                    // Fallback
+                }
+            }
+
+            $value = DataExport::normalizeValueForTextExport($value['displayname'] ?? '');
+        }
+
+        // Write the final value to the cell
+        $worksheet->setCellValue($coordinate, $value);
+    }
+
     abstract public function getMime(): string;
     abstract public function getFileName(): string;
-    abstract protected function supportsNativeDateType(): bool;
 }
