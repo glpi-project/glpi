@@ -47,6 +47,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
+use Glpi\Api\HL\Search\CursorPagination;
 use Glpi\Api\HL\Search\RecordSet;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Application\Environment;
@@ -91,12 +92,25 @@ final class Search
     private Parser $rsql_parser;
     private SearchContext $context;
     private DBmysql $db_read;
+    private ?array $cursor_params = null;
 
     private function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
         $this->rsql_parser = new Parser($this);
         $this->db_read = DBConnection::getReadConnection();
+
+        if (isset($request_params['cursor'])) {
+            try {
+                $this->cursor_params = json_decode(base64_decode($request_params['cursor']), true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new APIException(
+                    message: 'Invalid cursor token: ' . $e->getMessage(),
+                    user_message: 'Invalid cursor token: ' . $e->getMessage(),
+                    code: 400,
+                );
+            }
+        }
     }
 
     public function getContext(): SearchContext
@@ -250,6 +264,7 @@ final class Search
         }
         return null;
     }
+
     /**
      * @return array SELECT criteria for all properties
      * @see Doc\Schema::flattenProperties()
@@ -491,40 +506,11 @@ final class Search
         // Handle pagination
         $start = $this->context->getRequestParameter('start');
         $limit = $this->context->getRequestParameter('limit');
-        // Parameter for cursor-based pagination
-        $after = $this->context->getRequestParameter('after');
 
-        if ($after !== null) {
-            // cursor is an encoded array of fields and values to start after (to work with multiple sort fields) in the order of the sort fields.
-            $after = json_decode(base64_decode($after), true, 512, JSON_THROW_ON_ERROR);
-            $tuple_comparison = [];
-            // Build the criteria to start after the specified values
-            /** @var array{field: string, direction: string, value: mixed} $field */
-            foreach ($after as $field) {
-                $field_name = $field['field'];
-                $direction = strtoupper($field['direction']) === 'DESC' ? 'DESC' : 'ASC';
-                $value = $field['value'];
-                // Verify the property is valid
-                if (!isset($this->context->getFlattenedProperties()[$field_name])) {
-                    throw new APIException(
-                        message: 'Invalid property for cursor-based pagination: ' . $field_name,
-                        user_message: 'Invalid property for cursor-based pagination: ' . $field_name,
-                        code: 400,
-                    );
-                }
-                $sql_field = $this->getSQLFieldForProperty($field_name);
-                // Append the criteria as a tuple comparison (key 0 = left, key 1 = right)
-                // Tuple comparison will always use >, so DESC fields should put the value on the left side.
-                if ($direction === 'ASC') {
-                    $tuple_comparison[0][] = $this->db_read::quoteName($sql_field);
-                    $tuple_comparison[1][] = $this->db_read::quoteValue($value);
-                } else {
-                    $tuple_comparison[0][] = $this->db_read::quoteValue($value);
-                    $tuple_comparison[1][] = $this->db_read::quoteName($sql_field);
-                }
-            }
-            if (!empty($tuple_comparison)) {
-                $criteria['WHERE'][] = [new QueryExpression('(' . implode(',', $tuple_comparison[0]) . ') > (' . implode(',', $tuple_comparison[1]) . ')')];
+        if ($this->cursor_params !== null) {
+            $cursor_criteria = CursorPagination::getCriteriaFromCursor($this->cursor_params, $this);
+            if (!empty($cursor_criteria)) {
+                $criteria['WHERE'][] = $cursor_criteria;
             }
         } elseif (is_numeric($start)) {
             $criteria['START'] = (int) $start;
@@ -826,11 +812,12 @@ final class Search
         // Initialize a new search
         $search = new self($schema, $request_params);
         Profiler::getInstance()->start('Get matching records', Profiler::CATEGORY_HLAPI);
+        //TODO Fetch 1 extra record on each side to determine if there are previous/next pages, then discard the extras before hydration
         $record_set = $search->getMatchingRecords();
         Profiler::getInstance()->stop('Get matching records');
         Profiler::getInstance()->start('Hydrate matching records', Profiler::CATEGORY_HLAPI);
         $results = $record_set->hydrate();
-        $cursor = $record_set->getCursor($results);
+        $cursors = $record_set->getCursors($results);
         Profiler::getInstance()->stop('Hydrate matching records');
 
         $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn($prop) => isset($prop['x-mapper']));
@@ -888,7 +875,8 @@ final class Search
             'results' => array_values($results),
             'start' => $criteria['START'] ?? 0,
             'limit' => $criteria['LIMIT'] ?? count($results),
-            'cursor_after' => $cursor,
+            'prev_cursor' => $cursors['prev_cursor'],
+            'next_cursor' => $cursors['next_cursor'],
             'total' => $total,
         ];
     }

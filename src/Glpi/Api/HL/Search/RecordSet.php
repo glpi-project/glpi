@@ -424,16 +424,16 @@ final class RecordSet
 
     /**
      * @param list<mixed> $hydrated_records
-     * @return string A cursor that can be used to fetch the next page of results based on the search criteria sorts
+     * @return array{prev_cursor: string, next_cursor: string} Cursors that can be used to fetch the previous and next page of results based on the search criteria sorts.
      * @throws \JsonException
+     * @internal
      */
-    public function getCursor(array $hydrated_records): string
+    public function getCursors(array $hydrated_records): array
     {
         // Return a base64 encoded json string to represent the cursor
+        $first_record = reset($hydrated_records);
         $last_record = end($hydrated_records);
-        if ($last_record === false) {
-            return '';
-        }
+
         $sort = [];
         foreach ($this->criteria['ORDERBY'] ?? [] as $k => $order) {
             if (is_array($order)) {
@@ -447,20 +447,10 @@ final class RecordSet
         if (!isset($sort['id'])) {
             $sort['id'] = 'ASC';
         }
-        $cursor = [];
-        foreach ($sort as $field => $direction) {
-            $field_path = str_replace(chr(0x1F), '.', $field);
-            $value = ArrayPathAccessor::getElementByArrayPath($last_record, $field_path);
-            if (is_array($value)) {
-                // We can't handle array values in the cursor
-                $value = null;
-            }
-            $cursor[] = [
-                'field' => $field,
-                'direction' => $direction,
-                'value' => $value,
-            ];
-        }
-        return base64_encode(json_encode($cursor, JSON_THROW_ON_ERROR));
+        //TODO Allow generating cursors for adjacent pages (given a value of 2 for adjacency, generate tokens for 2 pages back and 2 pages forward)
+        return [
+            'prev_cursor' => CursorPagination::generateCursorToken('previous', $first_record, $sort),
+            'next_cursor' => CursorPagination::generateCursorToken('next', $last_record, $sort),
+        ];
     }
 }
