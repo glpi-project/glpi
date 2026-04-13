@@ -206,7 +206,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             'db-port' => ['-P', __('Database port (optional):')],
         ];
         foreach ($optional_options as $name => [$short, $label]) {
-            if (!$input->hasParameterOption('--' . $name) && !$input->hasParameterOption($short)) {
+            if (!$input->hasParameterOption(['--' . $name, $short])) {
                 $default = $this->getDefinition()->getOption($name)->getDefault();
                 $default = is_string($default) || is_numeric($default) ? $default : null;
                 $hint    = $default !== null ? ' [' . $default . ']' : '';
