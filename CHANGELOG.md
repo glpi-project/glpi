@@ -12,7 +12,7 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - The Planning widget on the homepage now only shows events +/- 1 year from the current date instead of 5 to improve performance.
   Future versions may reduce this even more to only show relevant events.
-- The planning widget on the homepage do longer shows completed events to improve performance and relevance.
+- The planning widget on the homepage no longer shows completed events to improve performance and relevance.
   Previously, it would display completed events if that filter was enabled in the calendar view.
 
 ### Deprecated
