@@ -171,30 +171,6 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
-     * Should the user reauthenticate ?
-     *
-     * Depends on
-     * - context : always false on api & cli contexts
-     * - itemtype : may require it ( static::itemTypeRequiresReauthentication() )
-     * - user has a valid reauthentication (new ReAuthManager())->isReAuthenticated()
-     */
-    final public static function isUserReauthenticationNeeded(): bool
-    {
-        // no reauthentication for http requests (not for API or CLI)
-        if (isAPI() || isCommandLine()) {
-            return false;
-        }
-
-        // Itemtype doesn't need re-authentication
-        if (!static::itemTypeRequiresReauthentication()) {
-            return false;
-        }
-
-        // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
-        return !(new ReAuthManager())->isReAuthenticated();
-    }
-
-    /**
      * @throws RedirectException
      */
     final public static function redirectToReauthPrompt(): never
@@ -247,15 +223,6 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
-     * Override this method to return true in itemtypes that need re-authentication
-     * @return bool
-     */
-    protected static function itemTypeRequiresReauthentication(): bool
-    {
-        return false;
-    }
-
-    /**
      * Check right on an item.
      *
      * Parameter $reauth_needed value changes depending if reauthentication is needed
@@ -295,14 +262,11 @@ class CommonGLPI implements CommonGLPIInterface
 
         // not allowed
         $reauth_needed = false;
-
         return false;
     }
 
     /**
      * Check the global "creation" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canCreate(): bool
     {
@@ -327,8 +291,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "update" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canUpdate(): bool
     {
@@ -340,8 +302,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "delete" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canDelete(): bool
     {
@@ -353,8 +313,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "purge" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canPurge(): bool
     {
