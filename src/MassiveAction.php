@@ -703,7 +703,7 @@ class MassiveAction
                 } else {
                     $actions[$self_pref . 'purge'] = _sx('button', 'Delete permanently');
                 }
-                if ($item instanceof CommonDropdown) {
+                if ($item instanceof CommonDropdown && !$item instanceof ValidationStep) {
                     $actions[$self_pref . 'purge_but_item_linked']
                      = _sx('button', 'Delete permanently even if linked items');
                 }
