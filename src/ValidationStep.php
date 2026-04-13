@@ -219,4 +219,11 @@ class ValidationStep extends CommonDropdown
 
         return false;
     }
+
+    public function getForbiddenStandardMassiveAction()
+    {
+        $forbidden   = parent::getForbiddenStandardMassiveAction();
+        $forbidden[] = 'purge_but_item_linked';
+        return $forbidden;
+    }
 }
