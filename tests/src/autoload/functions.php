@@ -40,6 +40,7 @@ use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 function loadDataset()
@@ -953,6 +954,8 @@ function loadDataset()
         Search::$search = [];
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
+
+    Config::setConfigurationValues('inventory', ['auth_required' => Conf::NO_AUTH]);
     $DB->commit();
 
     $_SESSION = $session_bak; // Unset force session variables
