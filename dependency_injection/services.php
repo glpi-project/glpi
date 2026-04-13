@@ -75,9 +75,10 @@ return static function (ContainerConfigurator $container): void {
         $projectDir . '/src/Glpi/UI/*Manager.php'
     );
     $services->load(
-        'Glpi\Application\View\Extension\\',
-        $projectDir . '/src/Glpi/Application/View/Extension'
+        'Glpi\Application\View\\',
+        $projectDir . '/src/Glpi/Application/View'
     );
+
 
     // Prevent Symfony to register its own default logger.
     // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass

@@ -50,7 +50,7 @@ define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
 (new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
-global $GLPI_CACHE;
+global $GLPI_CACHE, $kernel;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 

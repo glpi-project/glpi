@@ -36,8 +36,10 @@ namespace Glpi\Application\View;
 
 use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Debug\Profiler;
+use Glpi\DependencyInjection\PublicService;
 use Glpi\Kernel\Kernel;
 use Plugin;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\FilesystemLoader;
@@ -45,28 +47,19 @@ use Twig\Loader\FilesystemLoader;
 /**
  * @since 10.0.0
  */
-class TemplateRenderer
+class TemplateRenderer implements PublicService
 {
     private TwigEnvironment $environment;
 
-    public function __construct(string $rootdir = GLPI_ROOT)
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')]
+        string $rootdir,
+        #[Autowire(service: 'twig')]
+        TwigEnvironment $twig
+    )
     {
-        $container = $this->getKernelContainer();
-
-        if ($container !== null && $container->has('twig')) {
-            // Kernel is available: use the fully-configured DI twig service.
-            // All GLPI extensions, superglobals, ComponentLexer, ComponentRuntime, etc.
-            // are already set up by TwigBundle + Autowiring
-            $twig = $container->get('twig');
-            if (!$twig instanceof TwigEnvironment) {
-                throw new \RuntimeException('Twig service is not a TwigEnvironment instance.');
-            }
-            $this->environment = $twig;
-            $this->mountPluginPaths($rootdir);
-            return;
-        }
-
-        throw new \RuntimeException('Kernel and Twig environment not available.');
+        $this->environment = $twig;
+        $this->mountPluginPaths($rootdir);
     }
 
     /**
@@ -102,24 +95,6 @@ class TemplateRenderer
         }
     }
 
-    private function getKernelContainer(): ?ContainerInterface
-    {
-        /** @var Kernel|null $kernel */
-        global $kernel;
-
-        if (!$kernel instanceof Kernel) {
-            return null;
-        }
-
-        try {
-            $container = $kernel->getContainer();
-        } catch (\Throwable) {
-            return null;
-        }
-
-        return $container;
-    }
-
     /**
      * Return singleton instance of self.
      *
@@ -127,13 +102,8 @@ class TemplateRenderer
      */
     public static function getInstance(): TemplateRenderer
     {
-        static $instance = null;
-
-        if ($instance === null) {
-            $instance = new self();
-        }
-
-        return $instance;
+        global $kernel;
+        return $kernel->getContainer()->get(static::class);
     }
 
     /**
