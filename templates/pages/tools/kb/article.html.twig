@@ -137,7 +137,7 @@
 
                 {# Actions dropdown #}
                 <div class="dropdown cursor-pointer d-flex align-items-center">
-                    {% if mode == "edit" and actions|length > 0 %}
+                    {% if actions|length > 0 %}
                         <i
                             class="ti ti-dots-vertical"
                             data-glpi-kb-dots
@@ -174,14 +174,14 @@
                                                 >{{ action.counter }}</span>
                                             {% endif %}
 
-                                            {% if action.type.value == "TOGGLE_VALUE" %}
-                                                <label class="form-check form-switch ms-auto mb-0">
+                                            {% if action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_VALUE') or action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_FAVORITE') %}
+                                                <span class="form-check form-switch ms-auto mb-0">
                                                     <input
                                                         type="checkbox"
                                                         class="form-check-input ms-0"
                                                         {{ action.params.checked ? 'checked' : '' }}
                                                     >
-                                                </label>
+                                                </span>
                                             {% endif %}
                                         </button>
                                     </li>

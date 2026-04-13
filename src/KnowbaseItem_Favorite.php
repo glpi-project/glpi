@@ -32,17 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase;
-
-final readonly class EditorAction
+class KnowbaseItem_Favorite extends CommonDBRelation
 {
-    /** @param array<string, string|int> $params */
-    public function __construct(
-        public string $label,
-        public string $icon,
-        public EditorActionType $type,
-        public array $params = [],
-        public ?int $counter = null,
-        public bool $is_danger = false,
-    ) {}
+    // From CommonDBRelation
+    public static ?string $itemtype_1 = KnowbaseItem::class;
+    public static ?string $items_id_1 = 'knowbaseitems_id';
+    public static ?string $itemtype_2 = User::class;
+    public static ?string $items_id_2 = 'users_id';
+
+    public static int $checkItem_1_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static int $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static bool $logs_for_item_1 = false;
+    public static bool $logs_for_item_2 = false;
+
+    public static function isFavoriteForCurrentUser(int $knowbaseitems_id): bool
+    {
+        $user_id = Session::getLoginUserID();
+        if ($user_id === false) {
+            return false;
+        }
+
+        return countElementsInTable(self::getTable(), [
+            'knowbaseitems_id' => $knowbaseitems_id,
+            'users_id'         => $user_id,
+        ]) > 0;
+    }
 }

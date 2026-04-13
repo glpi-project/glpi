@@ -96,6 +96,16 @@ export class KnowbaseItemPage extends GlpiPage
         await response_promise;
     }
 
+    public async doToggleFavoriteStatus(): Promise<void>
+    {
+        const favorite_toggle = this.getButton('Add to favorites');
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleFavorite')
+        );
+        await favorite_toggle.click();
+        await response_promise;
+    }
+
     public get childEntitiesCheckbox(): Locator
     {
         return this.page.getByRole('checkbox', { name: 'Child entities' });

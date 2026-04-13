@@ -390,6 +390,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             [
                 Entity_KnowbaseItem::class,
                 Group_KnowbaseItem::class,
+                KnowbaseItem_Favorite::class,
                 KnowbaseItem_KnowbaseItemCategory::class,
                 KnowbaseItem_Item::class,
                 KnowbaseItem_Profile::class,
@@ -823,6 +824,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'subject' => $this->fields['name'],
             'answer'  => $this->getAnswer(),
             'mode'    => $mode,
+            'actions' => [],
         ];
 
         if ($mode === "edit" || $mode === "view") {
@@ -872,7 +874,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['end_date']   = $this->fields['end_date'];
 
             // Add actions
-            $params['actions'] = $mode === "edit" ? $this->getEditorActions() : [];
+            $params['actions'] = $this->getEditorActions();
         } elseif ($mode === "add") {
             $params['can_edit'] = $this->can(-1, CREATE);
         }
@@ -1000,6 +1002,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     private function getEditorActions(): array
     {
         $actions = [];
+
+        // Navigation actions (require UPDATE)
         if ($this->can($this->fields['id'], UPDATE)) {
             $actions[] = new EditorAction(
                 label: __("History"),
@@ -1041,17 +1045,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
-            $actions[] = new EditorActionSeparator();
-            $actions[] = new EditorAction(
-                label: "Add to FAQ",
-                icon: "ti ti-bookmark",
-                type: EditorActionType::TOGGLE_VALUE,
-                params: [
-                    'id' => $this->fields['id'],
-                    'field' => 'is_faq',
-                    'checked' => $this->fields['is_faq'],
-                ],
-            );
             $actions[] = new EditorAction(
                 label: _n('Target', 'Targets', Session::getPluralNumber()),
                 icon: "ti ti-eye",
@@ -1068,6 +1061,38 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 type: EditorActionType::SCHEDULE_VISIBILITY,
                 params: [],
             );
+        }
+
+        // Toggle actions
+        $toggles = [];
+        if (KnowbaseItem_Favorite::canCreate()) {
+            $toggles[] = new EditorAction(
+                label: __("Add to favorites"),
+                icon: "ti ti-star",
+                type: EditorActionType::TOGGLE_FAVORITE,
+                params: [
+                    'id'      => $this->fields['id'],
+                    'checked' => KnowbaseItem_Favorite::isFavoriteForCurrentUser($this->fields['id']) ? '1' : '0',
+                ],
+            );
+        }
+        if ($this->can($this->fields['id'], UPDATE)) {
+            $toggles[] = new EditorAction(
+                label: __("Add to FAQ"),
+                icon: "ti ti-bookmark",
+                type: EditorActionType::TOGGLE_VALUE,
+                params: [
+                    'id'      => $this->fields['id'],
+                    'field'   => 'is_faq',
+                    'checked' => $this->fields['is_faq'] ? '1' : '0',
+                ],
+            );
+        }
+        if ($toggles !== []) {
+            if ($actions !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
+            array_push($actions, ...$toggles);
         }
 
         if ($this->can($this->fields['id'], PURGE)) {
@@ -2175,6 +2200,19 @@ TWIG, $twig_params);
                     ],
                 ],
             ],
+        ];
+
+        $tab[] = [
+            'id'                 => '89',
+            'table'              => KnowbaseItem_Favorite::getTable(),
+            'field'              => 'id',
+            'name'               => __('Is favorite'),
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype'  => 'child',
+                'condition' => ['NEWTABLE.users_id' => Session::getLoginUserID()],
+            ],
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
