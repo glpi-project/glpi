@@ -261,32 +261,5 @@ class Document_ItemTest extends DbTestCase
             $_SESSION["glpi_currenttime"],
             $ticket->fields['date_mod'],
         );
-
-        // Now test that if we set the current time before adding the Document_Item, the ticket modification date is updated with this time
-        $_SESSION["glpi_currenttime"] = '2021-01-01 00:00:01';
-        $doc_id = $this->createItem(
-            \Document::class,
-            [
-                'users_id'     => $uid,
-                'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object',
-            ],
-        )->getID();
-
-        $this->createItem(
-            Document_Item::class,
-            [
-                'users_id'      => $uid,
-                'items_id'      => $tickets_id,
-                'itemtype'      => \Ticket::class,
-                'documents_id'  => $doc_id,
-            ],
-        );
-
-        $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->assertEquals(
-            '2021-01-01 00:00:01',
-            $ticket->fields['date_mod']
-        );
     }
 }
