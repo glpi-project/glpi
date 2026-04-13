@@ -102,6 +102,8 @@ for (const actor_type of actor_types) {
         });
 
         test('Can use all possible configuration options', async () => {
+            test.slow();
+
             await form_page.doOpenDestinationAccordionItem('Actors');
 
             const config = form_page.getRegion(`${actor_type.name}s configuration`);
