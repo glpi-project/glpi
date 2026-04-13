@@ -57,7 +57,7 @@ use function Safe\preg_replace_callback;
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBTM  implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface
+class KnowbaseItem extends CommonDBTM implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface
 {
     /** @use Clonable<static> */
     use Clonable;

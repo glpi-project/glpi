@@ -51,7 +51,7 @@ class Group_ITILValidationTemplate extends CommonDBRelation
      **/
     public static function getGroups(ITILValidationTemplate $itilvalidationTemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $results   = [];
         $iterator = $DB->request([

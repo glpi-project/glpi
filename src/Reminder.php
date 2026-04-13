@@ -46,7 +46,7 @@ use Sabre\VObject\Component\VTodo;
 /**
  * Reminder Class
  **/
-class Reminder extends CommonDBTM  implements
+class Reminder extends CommonDBTM implements
     CalDAVCompatibleItemInterface,
     ExtraVisibilityCriteria
 {

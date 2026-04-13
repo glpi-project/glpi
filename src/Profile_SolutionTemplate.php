@@ -51,7 +51,7 @@ class Profile_SolutionTemplate extends CommonDBRelation
      **/
     public static function getProfiles($solutiontemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
         $iterator = $DB->request([

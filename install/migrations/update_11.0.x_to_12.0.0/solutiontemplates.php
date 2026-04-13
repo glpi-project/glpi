@@ -32,12 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();

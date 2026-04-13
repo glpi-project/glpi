@@ -49,7 +49,7 @@ class Entity_ITILFollowupTemplate extends CommonDBRelation
      **/
     public static function getEntities($template)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $ent   = [];
         $iterator = $DB->request([

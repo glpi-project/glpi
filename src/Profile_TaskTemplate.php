@@ -51,7 +51,7 @@ class Profile_TaskTemplate extends CommonDBRelation
      **/
     public static function getProfiles($tasktemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
         $iterator = $DB->request([

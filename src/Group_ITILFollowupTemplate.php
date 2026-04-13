@@ -51,7 +51,7 @@ class Group_ITILFollowupTemplate extends CommonDBRelation
      **/
     public static function getGroups(ITILFollowupTemplate $itilfollowupTemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $results   = [];
         $iterator = $DB->request([

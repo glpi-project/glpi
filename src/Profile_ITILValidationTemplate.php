@@ -49,7 +49,7 @@ class Profile_ITILValidationTemplate extends CommonDBRelation
      **/
     public static function getProfiles($itilvalidationtemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
         $iterator = $DB->request([

@@ -49,7 +49,7 @@ class Profile_ITILFollowupTemplate extends CommonDBRelation
      **/
     public static function getProfiles($itilfollowuptemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
         $iterator = $DB->request([

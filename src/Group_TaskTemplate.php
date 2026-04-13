@@ -51,7 +51,7 @@ class Group_TaskTemplate extends CommonDBRelation
      **/
     public static function getGroups(TaskTemplate $taskTemplate)
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         $results   = [];
         $iterator = $DB->request([
