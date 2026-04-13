@@ -52,6 +52,7 @@ use DBConnection;
 use DBmysql;
 use DBmysqlIterator;
 use Document;
+use Document_Item;
 use Dropdown;
 use Entity;
 use Entity_KnowbaseItem;
@@ -1096,6 +1097,17 @@ final class SQLProvider implements SearchProviderInterface
             case Form::class:
                 // Do not show unsaved drafts in the form list
                 $criteria = ['is_draft' => 0];
+                break;
+
+            case Document_Item::class:
+                if (!Session::haveRight(Document::$rightname, Document_Item::SEEPRIVATE)) {
+                    $criteria = [
+                        'OR' => [
+                            'glpi_documents_items.is_private' => 0,
+                            'glpi_documents_items.users_id' => Session::getLoginUserID(),
+                        ],
+                    ];
+                }
                 break;
 
             default:

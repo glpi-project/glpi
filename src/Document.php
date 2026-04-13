@@ -309,10 +309,14 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                     && ($this->input["itemtype"] === 'Entity'))) && !empty($this->input["itemtype"])
         ) {
             $docitem = new Document_Item();
-            $docitem->add(['documents_id' => $this->fields['id'],
+            $docitem_input = [
+                'documents_id' => $this->fields['id'],
                 'itemtype'     => $this->input["itemtype"],
                 'items_id'     => $this->input["items_id"],
-            ]);
+                'is_private'   => (bool) ($this->input['is_private'] ?? false),
+            ];
+
+            $docitem->add($docitem_input);
 
             if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
                 $main_item = new $this->input["itemtype"]();

@@ -31,9 +31,17 @@
  #}
 
 {% set fk = item.getForeignKeyField() %}
+{% set is_private = document['item']['is_private'] ?? 0 %}
 
 <div class="col-auto">
     <div class="list-group-item-actions d-flex flex-column">
+        {% if is_private %}
+            <span class="badge bg-warning text-dark mb-1" title="{{ __('Private') }}"
+                  data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="ti ti-lock"></i>
+            </span>
+        {% endif %}
+
         {% if document['item']['_can_edit'] %}
             <a href="{{ 'Document'|itemtype_form_path(document['item']['id']) }}"
                class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"

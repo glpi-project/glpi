@@ -52,6 +52,14 @@ class Document_Item extends CommonDBRelation
     public static ?string $items_id_2    = 'items_id';
     public static bool $take_entity_2 = false;
 
+    /**
+     * Right constant to see private documents attached to items.
+     * This follows the ITILSubItemRights pattern (value 8192).
+     *
+     * @var int
+     */
+    public const SEEPRIVATE = 8192;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Document item', 'Document items', $nb);
@@ -78,6 +86,25 @@ class Document_Item extends CommonDBRelation
         }
 
         return parent::canCreateItem();
+    }
+
+    public function canViewItem(): bool
+    {
+        if (!parent::canViewItem()) {
+            return false;
+        }
+
+        if ((bool) $this->fields['is_private']) {
+            if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+                return true;
+            }
+            if ($this->fields['users_id'] === Session::getLoginUserID()) {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
     }
 
     public function prepareInputForAdd($input)
@@ -994,6 +1021,25 @@ TWIG, $twig_params);
         }
 
         return $criteria;
+    }
+
+    /**
+     * Get rights definitions for this class.
+     * Adds the SEEPRIVATE right for viewing private documents on ITIL objects.
+     *
+     * @param string $interface Interface type ('central' or 'helpdesk')
+     *
+     * @return array<int, string> Array of rights with their labels
+     */
+    public function getRights($interface = 'central'): array
+    {
+        $values = [];
+
+        if ($interface === 'central') {
+            $values[self::SEEPRIVATE] = __('See private ones');
+        }
+
+        return $values;
     }
 
     public static function getIcon()
