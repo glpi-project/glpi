@@ -375,6 +375,12 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             'db-name',
             'db-user',
             'db-password',
+            'db-ssl',
+            'db-ssl-ca',
+            'db-ssl-cert',
+            'db-ssl-key',
+            'db-ssl-capath',
+            'db-ssl-cipher',
         ];
         foreach ($config_options as $option) {
             $default_value = $this->getDefinition()->getOption($option)->getDefault();
