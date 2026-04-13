@@ -87,6 +87,7 @@ var GLPIPlanning  = {
         var enabled_days = CFG_GLPI.planning_work_days;
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
         var loadedLocales = Object.keys(FullCalendarLocales);
+        const list_full_year_range = options.full_view ? 5 : 1; // +/- number of years to display in list full view
 
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
             plugins:     options.plugins,
@@ -127,8 +128,8 @@ var GLPIPlanning  = {
                     visibleRange: function(currentDate) {
                         var current_year = currentDate.getFullYear();
                         return {
-                            start: (new Date(currentDate.getTime())).setFullYear(current_year - 5),
-                            end: (new Date(currentDate.getTime())).setFullYear(current_year + 5)
+                            start: (new Date(currentDate.getTime())).setFullYear(current_year - list_full_year_range),
+                            end: (new Date(currentDate.getTime())).setFullYear(current_year + list_full_year_range)
                         };
                     }
                 },
@@ -645,10 +646,14 @@ var GLPIPlanning  = {
             type: 'POST',
             extraParams: function () {
                 var view_name =  GLPIPlanning.calendar.state.viewType;
-                return {
+                const extra_params = {
                     'action': 'get_events',
-                    'view_name': view_name
+                    'view_name': view_name,
                 };
+                if (!options.full_view) {
+                    extra_params['state_done'] = false;
+                }
+                return extra_params;
             },
             success: function (data) {
                 if (!options.full_view && data.length === 0) {

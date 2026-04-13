@@ -10,6 +10,10 @@ The present file will list all changes made to the project; according to the
 - CLI command `security:change_oauth_key` to (re)generate the OAuth keys. This can be used to change keys or to create them in the case they fail to be created during the installation/update process.
 
 ### Changed
+- The Planning widget on the homepage now only shows events +/- 1 year from the current date instead of 5 to improve performance.
+  Future versions may reduce this even more to only show relevant events.
+- The planning widget on the homepage no longer shows completed events to improve performance and relevance.
+  Previously, it would display completed events if that filter was enabled in the calendar view.
 
 ### Deprecated
 
