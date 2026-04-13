@@ -451,8 +451,7 @@ var GLPIPlanning  = {
                         type: 'POST',
                         data: {
                             action: 'view_changed',
-                            view: view_type,
-                            full_view: options?.full_view ? 1 : 0
+                            view: view_type
                         }
                     });
                 } else {
