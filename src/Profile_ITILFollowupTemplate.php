@@ -47,19 +47,21 @@ class Profile_ITILFollowupTemplate extends CommonDBRelation
      *
      * @return array<int, mixed>
      **/
-    public static function getProfiles($itilfollowuptemplate): array
+    public static function getProfiles(ITILFollowupTemplate $itilfollowuptemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                self::$items_id_1 => $itilfollowuptemplate->getID(),
-            ],
-        ]);
-        foreach ($iterator as $data) {
-            $prof[$data['profiles_id']][] = $data;
+        if ($itilfollowuptemplate->getID()) {
+            $iterator = $DB->request([
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    self::$items_id_1 => $itilfollowuptemplate->getID(),
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $prof[$data['profiles_id']][] = $data;
+            }
         }
         return $prof;
     }

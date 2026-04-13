@@ -52,15 +52,18 @@ class ITILFollowupTemplate_User extends CommonDBRelation
         /** @var DBmysql $DB */
         global $DB;
         $results   = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                self::$items_id_1 => $itilfollowupTemplate->getID(),
-            ],
-        ]);
-        foreach ($iterator as $data) {
-            $results[$data[self::$items_id_2]][] = $data;
+        if ($itilfollowupTemplate->getID()) {
+            $iterator = $DB->request([
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    self::$items_id_1 => $itilfollowupTemplate->getID(),
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $results[$data[self::$items_id_2]][] = $data;
+            }
         }
+
         return $results;
     }
 }

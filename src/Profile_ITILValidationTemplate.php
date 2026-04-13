@@ -52,14 +52,16 @@ class Profile_ITILValidationTemplate extends CommonDBRelation
         /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                self::$items_id_1 => $itilvalidationtemplate->getID(),
-            ],
-        ]);
-        foreach ($iterator as $data) {
-            $prof[$data['profiles_id']][] = $data;
+        if ($itilvalidationtemplate->getID()) {
+            $iterator = $DB->request([
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    self::$items_id_1 => $itilvalidationtemplate->getID(),
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $prof[$data['profiles_id']][] = $data;
+            }
         }
         return $prof;
     }

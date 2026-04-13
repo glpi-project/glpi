@@ -54,14 +54,16 @@ class Profile_SolutionTemplate extends CommonDBRelation
         /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                self::$items_id_1 => $solutiontemplate->getID(),
-            ],
-        ]);
-        foreach ($iterator as $data) {
-            $prof[$data['profiles_id']][] = $data;
+        if ($solutiontemplate->getID()) {
+            $iterator = $DB->request([
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    self::$items_id_1 => $solutiontemplate->getID(),
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $prof[$data['profiles_id']][] = $data;
+            }
         }
         return $prof;
     }

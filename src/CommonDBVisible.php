@@ -131,7 +131,7 @@ trait CommonDBVisible
      *
      * @return bool
      **/
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         // Author
         if ($this->fields['users_id'] == Session::getLoginUserID()) {
@@ -143,8 +143,7 @@ trait CommonDBVisible
         }
 
         // Groups
-        if (
-            count($this->groups)
+        if (count($this->groups)
             && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
         ) {
             foreach ($this->groups as $data) {
@@ -164,8 +163,7 @@ trait CommonDBVisible
         }
 
         // Entities
-        if (
-            count($this->entities)
+        if (count($this->entities)
             && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
         ) {
             foreach ($this->entities as $data) {
@@ -178,8 +176,7 @@ trait CommonDBVisible
         }
 
         // Profiles
-        if (
-            count($this->profiles)
+        if (count($this->profiles)
             && isset($_SESSION["glpiactiveprofile"])
             && isset($_SESSION["glpiactiveprofile"]['id'])
         ) {
@@ -399,7 +396,7 @@ trait CommonDBVisible
      *
      * @return array{type: string, right: string, entity?: int, is_recursive?: bool}
      */
-    protected function getShowVisibilityDropdownParams()
+    protected function getShowVisibilityDropdownParams(): array
     {
         $params = ['type' => '__VALUE__'];
         if ($right = $this->getVisibilityRight()) {

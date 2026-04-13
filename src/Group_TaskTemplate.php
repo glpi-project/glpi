@@ -54,14 +54,16 @@ class Group_TaskTemplate extends CommonDBRelation
         /** @var DBmysql $DB */
         global $DB;
         $results   = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                self::$items_id_1 => $taskTemplate->getID(),
-            ],
-        ]);
-        foreach ($iterator as $data) {
-            $results[$data[self::$items_id_2]][] = $data;
+        if ($taskTemplate->getID()) {
+            $iterator = $DB->request([
+                'FROM'   => self::getTable(),
+                'WHERE'  => [
+                    self::$items_id_1 => $taskTemplate->getID(),
+                ],
+            ]);
+            foreach ($iterator as $data) {
+                $results[$data[self::$items_id_2]][] = $data;
+            }
         }
         return $results;
     }

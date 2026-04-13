@@ -54,14 +54,18 @@ class Profile_TaskTemplate extends CommonDBRelation
         /** @var DBmysql $DB */
         global $DB;
         $prof  = [];
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
-            'WHERE'  => [
-                self::$items_id_1 => $tasktemplate->getID(),
-            ],
-        ]);
-        foreach ($iterator as $data) {
-            $prof[$data['profiles_id']][] = $data;
+        if ($tasktemplate->getID()) {
+            if ($tasktemplate->getID()) {
+                $iterator = $DB->request([
+                    'FROM'   => self::getTable(),
+                    'WHERE'  => [
+                        self::$items_id_1 => $tasktemplate->getID(),
+                    ],
+                ]);
+                foreach ($iterator as $data) {
+                    $prof[$data['profiles_id']][] = $data;
+                }
+            }
         }
         return $prof;
     }
