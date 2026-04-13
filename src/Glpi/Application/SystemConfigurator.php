@@ -169,7 +169,6 @@ final class SystemConfigurator
                 // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
                 'GLPI_LOG_LVL'                             => LogLevel::WARNING,
-                'GLPI_REAUTH'                              => true,  // `false` to bypass re-authentication checks
                 'GLPI_SKIP_UPDATES'                        => false, // `true` to bypass minor versions DB updates
                 'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
 

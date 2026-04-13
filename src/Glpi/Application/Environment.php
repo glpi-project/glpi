@@ -179,13 +179,11 @@ enum Environment: string
                     '{GLPI_MARKETPLACE_DIR}',
                     $root_dir . '/tests/fixtures/plugins',
                 ],
-                'GLPI_REAUTH' => false,
             ],
             self::DEVELOPMENT => [
                 'GLPI_LOG_LVL'                       => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'                    => true,
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1',
-                'GLPI_REAUTH' => false,
             ],
             self::E2E => [
                 'GLPI_CONFIG_DIR'          => $root_dir . '/tests/e2e/glpi_config',
@@ -196,7 +194,6 @@ enum Environment: string
                     $root_dir . '/plugins',
                     $root_dir . '/tests/fixtures/plugins',
                 ],
-                'GLPI_REAUTH' => false,
             ],
         };
     }

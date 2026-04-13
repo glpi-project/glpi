@@ -78,10 +78,6 @@ final class ReAuthManager
 
     public function isReAuthenticated(): bool
     {
-        if (false === GLPI_REAUTH) {
-            return true;
-        }
-
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
         $calculated_limit_timestamp = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp();
 
