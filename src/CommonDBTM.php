@@ -2474,8 +2474,6 @@ class CommonDBTM extends CommonGLPI
      * Default is true and check entity if the objet is entity assign
      *
      * May be overloaded if needed
-     *
-     * @return bool
      **/
     public function canUpdateItem(): bool
     {

@@ -59,8 +59,6 @@ class Fieldblacklist extends CommonDropdown
         return static::canUpdate();
     }
 
-
-
     public function getAdditionalFields()
     {
 
