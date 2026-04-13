@@ -67,4 +67,12 @@ class RoutingTest extends FrontBaseClass
         $crawler = $this->http_client->request('GET', $this->base_uri . 'plugins/tester/Testuri');
         $this->assertSame('<body><p>Greeting from tester plugin controller /Testuri route.</p></body>', $crawler->html());
     }
+
+    public function testPluginPostOnlyRoute(): void
+    {
+        // Regression test: plugin POST-only routes must be matched by the plugin router.
+        // The route is stateless so no auth/CSRF token is needed.
+        $crawler = $this->http_client->request('POST', $this->base_uri . 'plugins/tester/post-only');
+        $this->assertSame('<body><p>Greeting from tester plugin POST-only route.</p></body>', $crawler->html());
+    }
 }
