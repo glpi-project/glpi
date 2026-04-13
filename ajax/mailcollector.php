@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $_UREQUEST */
-global $_UREQUEST;
-
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -47,18 +44,13 @@ Session::checkRight("config", UPDATE);
 
 $mailcollector = new MailCollector();
 
-if (isset($_REQUEST['action'])) {
-    switch ($_REQUEST['action']) {
-        case "getFoldersList":
-            // The collector must already exist in database.
-            if (
-                !array_key_exists('id', $_REQUEST)
-                || !$mailcollector->getFromDB($_REQUEST['id'])
-            ) {
-                Html::displayErrorAndDie(__('Mail collector must be saved before browsing folders.'));
-            }
-
-            $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
-            break;
+if ($_REQUEST['action'] === "getFoldersList") {
+    if (
+        !array_key_exists('id', $_REQUEST)
+        || !$mailcollector->getFromDB($_REQUEST['id'])
+    ) {
+        Html::displayErrorAndDie(__('Mail collector must be saved before browsing folders.'));
     }
+
+    $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
 }
