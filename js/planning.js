@@ -443,30 +443,30 @@ var GLPIPlanning  = {
                 var view_type = info.view.type;
 
                 GLPIPlanning.last_view = view_type;
-                // inform backend we changed view (to store it in session)
-                $.ajax({
-                    url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-                    type: 'POST',
-                    data: {
-                        action: 'view_changed',
-                        view:   view_type
-                    }
-                }).done(function() {
-                    // indicate to central page we're done rendering
-                    if (!options.full_view) {
-                        // Observe changes in the DOM before triggering
-                        const observer = new MutationObserver((mutations, obs) => {
-                            if (document.readyState === 'complete') {
-                                obs.disconnect(); // Stop observation once the DOM is stable
-                                setTimeout(() => {
-                                    $(document).trigger('masonry_grid:layout');
-                                }, 100);
-                            }
-                        });
 
-                        observer.observe(document.body, { childList: true, subtree: true });
-                    }
-                });
+                if (options.full_view) {
+                    // inform backend we changed view (to store it in session)
+                    $.ajax({
+                        url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                        type: 'POST',
+                        data: {
+                            action: 'view_changed',
+                            view: view_type
+                        }
+                    });
+                } else {
+                    // Observe changes in the DOM before triggering
+                    const observer = new MutationObserver((mutations, obs) => {
+                        if (document.readyState === 'complete') {
+                            obs.disconnect(); // Stop observation once the DOM is stable
+                            setTimeout(() => {
+                                $(document).trigger('masonry_grid:layout');
+                            }, 100);
+                        }
+                    });
+
+                    observer.observe(document.body, {childList: true, subtree: true});
+                }
 
                 // set end of day markers for timeline
                 GLPIPlanning.setEndofDays(info.view);
