@@ -47,7 +47,7 @@ class Profile_SolutionTemplate extends CommonDBRelation
      *
      * @param $solutiontemplate SolutionTemplate solution template
      *
-     * @return array of profiles linked to a solution template
+     * @return array<int, mixed> of profiles linked to a solution template
      **/
     public static function getProfiles(SolutionTemplate $solutiontemplate): array
     {

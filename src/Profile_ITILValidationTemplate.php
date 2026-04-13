@@ -45,7 +45,7 @@ class Profile_ITILValidationTemplate extends CommonDBRelation
     /**
      * @param $itilvalidationtemplate ITILValidationTemplate itilvalidation template
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getProfiles(ITILValidationTemplate $itilvalidationtemplate): array
     {

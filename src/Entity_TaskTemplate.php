@@ -45,7 +45,7 @@ class Entity_TaskTemplate extends CommonDBRelation
     /**
      * @param TaskTemplate $template TaskTemplate instance
      *
-     * @return array of entities
+     * @return array<int, mixed> of entities
      **/
     public static function getEntities(TaskTemplate $template): array
     {

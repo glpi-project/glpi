@@ -47,7 +47,7 @@ class Profile_TaskTemplate extends CommonDBRelation
      *
      * @param $tasktemplate TaskTemplate task template
      *
-     * @return array of profiles linked to a task template
+     * @return array<int, mixed> of profiles linked to a task template
      **/
     public static function getProfiles(TaskTemplate $tasktemplate): array
     {

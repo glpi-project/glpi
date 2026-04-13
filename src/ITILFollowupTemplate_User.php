@@ -45,7 +45,7 @@ class ITILFollowupTemplate_User extends CommonDBRelation
     /**
      * @param ITILFollowupTemplate $itilfollowupTemplate ITILFollowupTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getUsers(ITILFollowupTemplate $itilfollowupTemplate): array
     {

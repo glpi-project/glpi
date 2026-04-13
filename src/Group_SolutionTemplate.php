@@ -47,7 +47,7 @@ class Group_SolutionTemplate extends CommonDBRelation
      *
      * @param SolutionTemplate $solutionTemplate SolutionTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getGroups(SolutionTemplate $solutionTemplate): array
     {

@@ -46,7 +46,7 @@ class SolutionTemplate_User extends CommonDBRelation
     /**
      * @param SolutionTemplate $solutionTemplate SolutionTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getUsers(SolutionTemplate $solutionTemplate): array
     {

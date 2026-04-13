@@ -46,7 +46,7 @@ class TaskTemplate_User extends CommonDBRelation
     /**
      * @param TaskTemplate $taskTemplate TaskTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getUsers(TaskTemplate $taskTemplate): array
     {

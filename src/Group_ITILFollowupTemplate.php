@@ -47,7 +47,7 @@ class Group_ITILFollowupTemplate extends CommonDBRelation
      *
      * @param ITILFollowupTemplate $itilfollowupTemplate ITILFollowupTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getGroups(ITILFollowupTemplate $itilfollowupTemplate): array
     {

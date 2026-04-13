@@ -45,7 +45,7 @@ class Profile_ITILFollowupTemplate extends CommonDBRelation
     /**
      * @param $itilfollowuptemplate ITILFollowupTemplate itilfollowup template
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getProfiles($itilfollowuptemplate): array
     {

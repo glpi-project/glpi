@@ -47,7 +47,7 @@ class Group_ITILValidationTemplate extends CommonDBRelation
      *
      * @param ITILValidationTemplate $itilvalidationTemplate ITILValidationTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getGroups(ITILValidationTemplate $itilvalidationTemplate): array
     {

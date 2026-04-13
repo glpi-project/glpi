@@ -45,7 +45,7 @@ class Entity_SolutionTemplate extends CommonDBRelation
     /**
      * @param SolutionTemplate $template SolutionTemplate instance
      *
-     * @return array of entities
+     * @return array<int, mixed> of entities
      **/
     public static function getEntities(SolutionTemplate $template): array
     {

@@ -45,7 +45,7 @@ class Entity_ITILFollowupTemplate extends CommonDBRelation
     /**
      * @param ITILFollowupTemplate $template ITILFollowupTemplate instance
      *
-     * @return array of entities
+     * @return array<int, mixed> of entities
      **/
     public static function getEntities(ITILFollowupTemplate $template): array
     {

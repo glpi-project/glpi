@@ -45,7 +45,7 @@ class Entity_ITILValidationTemplate extends CommonDBRelation
     /**
      * @param ITILValidationTemplate $template ITILValidationTemplate instance
      *
-     * @return array of entities
+     * @return array<int, mixed> of entities
      **/
     public static function getEntities(ITILValidationTemplate $template): array
     {

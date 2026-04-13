@@ -47,7 +47,7 @@ class Group_TaskTemplate extends CommonDBRelation
      *
      * @param TaskTemplate $taskTemplate TaskTemplate instance
      *
-     * @return array
+     * @return array<int, mixed>
      **/
     public static function getGroups(TaskTemplate $taskTemplate): array
     {
