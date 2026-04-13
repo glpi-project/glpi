@@ -1023,4 +1023,35 @@ class LogTest extends DbTestCase
         $this->assertEquals(255, mb_strlen($log_entry['old_value']));
         $this->assertEquals(255, mb_strlen($log_entry['new_value']));
     }
+
+    /**
+     * Verify that Log::history can handle values in the form of arrays without generating a TypeError
+     * This occurs when fields with multiple values are passed as arrays
+     */
+    public function testHistoryWithArrayValues()
+    {
+        global $DB;
+
+        $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        Log::history(
+            $computer_id,
+            Computer::class,
+            [0, ['value1', 'value2'], ['value3', 'value4']]
+        );
+
+        $log_entry = $DB->request([
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'  => Computer::class,
+                'items_id'  => $computer_id,
+            ],
+            'ORDER'  => 'id DESC',
+            'LIMIT'  => 1,
+        ])->current();
+
+        $this->assertNotNull($log_entry);
+        $this->assertEquals('', $log_entry['old_value']);
+        $this->assertEquals('', $log_entry['new_value']);
+    }
 }
