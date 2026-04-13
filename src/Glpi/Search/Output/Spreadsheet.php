@@ -38,7 +38,6 @@ namespace Glpi\Search\Output;
 use Dropdown;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
@@ -130,13 +129,13 @@ abstract class Spreadsheet extends ExportSearchOutput
                 );
             }
 
-            $this->formatValue($worksheet, [$col_num, $line_num], $name);
+            $this->formatValue($worksheet, $col_num, $line_num, $name);
         }
 
         // Add specific column Header
         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             ++$col_num;
-            $this->formatValue($worksheet, [$col_num, $line_num], __('Item type'));
+            $this->formatValue($worksheet, $col_num, $line_num, __('Item type'));
         }
 
         //column headers in bold
@@ -153,7 +152,7 @@ abstract class Spreadsheet extends ExportSearchOutput
             foreach ($data['data']['cols'] as $col) {
                 ++$col_num;
                 $colkey = "{$col['itemtype']}_{$col['id']}";
-                $this->formatValue($worksheet, [$col_num, $line_num], $row[$colkey], $col);
+                $this->formatValue($worksheet, $col_num, $line_num, $row[$colkey], $col);
             }
 
             if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
@@ -163,7 +162,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
                     }
                 }
-                $this->formatValue($worksheet, [$col_num, $line_num], $typenames[$row["TYPE"]] ?? '');
+                $this->formatValue($worksheet, $col_num, $line_num, $typenames[$row["TYPE"]] ?? '');
             }
 
             if ($line_num % 2 != 0) {
@@ -525,18 +524,19 @@ abstract class Spreadsheet extends ExportSearchOutput
     }
 
     /**
-     /**
       * Format and set the value of a cell
       *
       * @param Worksheet $worksheet
-      * @param array{int, int}|string $coordinate
+      * @param int $x_coordinate Column index
+      * @param int $y_coordinate Row index
       * @param mixed $value
       * @param array<string, mixed> $options
       * @return void
       */
     protected function formatValue(
         Worksheet $worksheet,
-        $coordinate,
+        int $x_coordinate,
+        int $y_coordinate,
         mixed $value,
         array $options = []
     ): void {
@@ -561,7 +561,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                     $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
 
                     $phpFormat = $selected['php'] . (($options['searchopt']['datatype'] === 'datetime') ? ' H:i' : '');
-                    $worksheet->setCellValue($coordinate, $dateTime->format($phpFormat));
+                    $worksheet->setCellValue([$x_coordinate, $y_coordinate], $dateTime->format($phpFormat));
                     return;
                 } catch (\Throwable $e) {
                     // Fallback
@@ -572,7 +572,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         }
 
         // Write the final value to the cell
-        $worksheet->setCellValue($coordinate, $value);
+        $worksheet->setCellValue([$x_coordinate, $y_coordinate], $value);
     }
 
     abstract public function getMime(): string;

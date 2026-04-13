@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Safe\DateTime;
 
 final class Xlsx extends Spreadsheet
@@ -58,15 +60,17 @@ final class Xlsx extends Spreadsheet
     /**
      * Format and set the value of a cell
      *
-     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet
-     * @param array{int, int}|string $coordinate
+     * @param Worksheet $worksheet
+     * @param int $x_coordinate Column index
+     * @param int $y_coordinate Row index
      * @param mixed $value
      * @param array<string, mixed> $options
      * @return void
      */
     protected function formatValue(
-        \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $worksheet,
-        $coordinate,
+        Worksheet $worksheet,
+        int $x_coordinate,
+        int $y_coordinate,
         mixed $value,
         array $options = []
     ): void {
@@ -90,13 +94,13 @@ final class Xlsx extends Spreadsheet
                     $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
 
                     // Convert to Excel numeric date format
-                    $excelDateValue = \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($dateTime);
-                    $worksheet->setCellValue($coordinate, $excelDateValue);
+                    $excelDateValue = Date::PHPToExcel($dateTime);
+                    $worksheet->setCellValue([$x_coordinate, $y_coordinate], $excelDateValue);
 
                     $excelFormat = $selected['excel'] . (($options['searchopt']['datatype'] === 'datetime') ? ' hh:mm' : '');
 
                     // Apply the native Excel cell style for dates
-                    $worksheet->getStyle($coordinate)
+                    $worksheet->getStyle([$x_coordinate, $y_coordinate])
                         ->getNumberFormat()
                         ->setFormatCode($excelFormat);
                     return; // Success: native date applied, we exit.
@@ -108,6 +112,6 @@ final class Xlsx extends Spreadsheet
         }
 
         // Fallback: delegate to the parent class for standard text/date string formatting
-        parent::formatValue($worksheet, $coordinate, $value, $options);
+        parent::formatValue($worksheet, $x_coordinate, $y_coordinate, $value, $options);
     }
 }
