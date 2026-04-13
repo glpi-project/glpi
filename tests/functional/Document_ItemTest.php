@@ -244,7 +244,7 @@ class Document_ItemTest extends DbTestCase
             ],
         )->getID();
 
-        // Link the document to the ticket via Document_Item, which should not update the ticket modification date
+        // Link the document to the ticket via Document_Item
         $this->createItem(
             Document_Item::class,
             [
