@@ -1942,7 +1942,10 @@ class DBmysql
                 $now->setTimezone(new DateTimeZone($row['name']));
                 $list[$row['name']] = $row['name'] . $now->format(" (T P)");
             }
-            $GLPI_CACHE->set('timezones', $list);
+            if (!empty($list)) {
+                // Only cache if there are some timezones. This method may be called before timezones are properly setup, and we don't want to cache an empty list.
+                $GLPI_CACHE->set('timezones', $list);
+            }
         } else {
             $list = $GLPI_CACHE->get('timezones');
         }
