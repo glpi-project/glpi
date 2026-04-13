@@ -84,6 +84,26 @@ class APIRestTest extends TestCase
 
         $GLPI_CACHE->clear();
 
+        // To bypass various right checks
+        // This is mandatory to create/update/delete some items during tests.
+        $_SESSION['glpishowallentities'] = 1;
+        $_SESSION['glpiactive_entity']   = 0;
+        $_SESSION['glpiactiveentities']  = [0];
+        $_SESSION['glpiactiveentities_string'] = "'0'";
+
+        // Force "cron" mode to prevent user related behaviors
+        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+
+        // enable api config
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api'                      => true,
+                'enable_api_login_credentials'    => true,
+                'enable_api_login_external_token' => true,
+            ]
+        );
+
         // Empty log file
         $file_updated = file_put_contents($this->getLogFilePath(), "");
         $this->assertNotSame(false, $file_updated);
@@ -105,28 +125,6 @@ class APIRestTest extends TestCase
     protected function getLogFilePath(): string
     {
         return GLPI_LOG_DIR . "/php-errors.log";
-    }
-
-    public static function setUpBeforeClass(): void
-    {
-        // To bypass various right checks
-        // This is mandatory to create/update/delete some items during tests.
-        $_SESSION['glpishowallentities'] = 1;
-        $_SESSION['glpiactive_entity']   = 0;
-        $_SESSION['glpiactiveentities']  = [0];
-        $_SESSION['glpiactiveentities_string'] = "'0'";
-
-        // Force "cron" mode to prevent user related behaviors
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-
-        // enable api config
-        $config = new Config();
-        $config->update([
-            'id'                              => 1,
-            'enable_api'                      => true,
-            'enable_api_login_credentials'    => true,
-            'enable_api_login_external_token' => true,
-        ]);
     }
 
     public function testAppToken()
@@ -1945,6 +1943,57 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('session', $data);
         $this->assertEquals($uid, $data['session']['glpiID']);
     }
+
+    public function testInitSessionUserTokenFailIfNotEnabled()
+    {
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api_login_external_token' => false,
+            ]
+        );
+
+        $user = new User();
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $this->assertTrue($user->getFromDB($uid));
+        $token = $user->getAuthToken('api_token');
+
+        $this->query(
+            'initSession',
+            ['query' => ['user_token' => $token]],
+            400,
+            'ERROR_LOGIN_WITH_TOKEN_DISABLED'
+        );
+    }
+
+    public function testInitSessionCredentialsFailIfNotEnabled()
+    {
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api_login_credentials' => false,
+            ]
+        );
+
+        $this->query(
+            'initSession',
+            ['query' => ['login' => TU_USER, 'password' => TU_PASS]],
+            400,
+            'ERROR_LOGIN_WITH_CREDENTIALS_DISABLED'
+        );
+    }
+
+    public function testInitSessionFallbackToCredentials()
+    {
+        $data = $this->query(
+            'initSession',
+            ['query' => ['user_token' => 'notvalid', 'login' => TU_USER, 'password' => TU_PASS]],
+        );
+
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
+    }
+
 
     public function testBadEndpoint()
     {
