@@ -49,7 +49,7 @@ class Group_ITILFollowupTemplate extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getGroups(ITILFollowupTemplate $itilfollowupTemplate)
+    public static function getGroups(ITILFollowupTemplate $itilfollowupTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

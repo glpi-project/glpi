@@ -49,7 +49,7 @@ class Group_SolutionTemplate extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getGroups(SolutionTemplate $solutionTemplate)
+    public static function getGroups(SolutionTemplate $solutionTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

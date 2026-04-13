@@ -49,7 +49,7 @@ class Profile_TaskTemplate extends CommonDBRelation
      *
      * @return array of profiles linked to a task template
      **/
-    public static function getProfiles($tasktemplate)
+    public static function getProfiles(TaskTemplate $tasktemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

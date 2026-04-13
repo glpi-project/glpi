@@ -49,7 +49,7 @@ class Group_TaskTemplate extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getGroups(TaskTemplate $taskTemplate)
+    public static function getGroups(TaskTemplate $taskTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

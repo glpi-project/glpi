@@ -47,7 +47,7 @@ class Profile_ITILFollowupTemplate extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getProfiles($itilfollowuptemplate)
+    public static function getProfiles($itilfollowuptemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

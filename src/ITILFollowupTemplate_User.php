@@ -47,7 +47,7 @@ class ITILFollowupTemplate_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getUsers(ITILFollowupTemplate $itilfollowupTemplate)
+    public static function getUsers(ITILFollowupTemplate $itilfollowupTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

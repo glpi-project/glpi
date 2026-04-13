@@ -47,7 +47,7 @@ class ITILValidationTemplate_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getUsers(ITILValidationTemplate $itilvalidationTemplate)
+    public static function getUsers(ITILValidationTemplate $itilvalidationTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

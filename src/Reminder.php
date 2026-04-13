@@ -178,7 +178,7 @@ class Reminder extends CommonDBTM implements
         ];
     }
 
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         if (!self::canView()) {
             return false;

@@ -48,7 +48,7 @@ class TaskTemplate_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getUsers(TaskTemplate $taskTemplate)
+    public static function getUsers(TaskTemplate $taskTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

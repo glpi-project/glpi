@@ -47,7 +47,7 @@ class Profile_ITILValidationTemplate extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getProfiles($itilvalidationtemplate)
+    public static function getProfiles(ITILValidationTemplate $itilvalidationtemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

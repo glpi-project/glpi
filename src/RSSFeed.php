@@ -147,7 +147,7 @@ class RSSFeed extends CommonDBTM implements ExtraVisibilityCriteria
         );
     }
 
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         if (!self::canView()) {
             return false;

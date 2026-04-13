@@ -47,7 +47,7 @@ class Entity_ITILFollowupTemplate extends CommonDBRelation
      *
      * @return array of entities
      **/
-    public static function getEntities($template)
+    public static function getEntities(ITILFollowupTemplate $template): array
     {
         /** @var DBmysql $DB */
         global $DB;

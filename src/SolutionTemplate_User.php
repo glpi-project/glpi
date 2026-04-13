@@ -48,7 +48,7 @@ class SolutionTemplate_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getUsers(SolutionTemplate $solutionTemplate)
+    public static function getUsers(SolutionTemplate $solutionTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

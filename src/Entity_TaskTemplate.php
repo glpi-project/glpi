@@ -47,7 +47,7 @@ class Entity_TaskTemplate extends CommonDBRelation
      *
      * @return array of entities
      **/
-    public static function getEntities($template)
+    public static function getEntities(TaskTemplate $template): array
     {
         /** @var DBmysql $DB */
         global $DB;

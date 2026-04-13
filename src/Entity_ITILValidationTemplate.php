@@ -47,7 +47,7 @@ class Entity_ITILValidationTemplate extends CommonDBRelation
      *
      * @return array of entities
      **/
-    public static function getEntities($template)
+    public static function getEntities(ITILValidationTemplate $template): array
     {
         /** @var DBmysql $DB */
         global $DB;

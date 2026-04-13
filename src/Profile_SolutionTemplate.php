@@ -49,7 +49,7 @@ class Profile_SolutionTemplate extends CommonDBRelation
      *
      * @return array of profiles linked to a solution template
      **/
-    public static function getProfiles($solutiontemplate)
+    public static function getProfiles(SolutionTemplate $solutiontemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;

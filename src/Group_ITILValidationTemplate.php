@@ -49,7 +49,7 @@ class Group_ITILValidationTemplate extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getGroups(ITILValidationTemplate $itilvalidationTemplate)
+    public static function getGroups(ITILValidationTemplate $itilvalidationTemplate): array
     {
         /** @var DBmysql $DB */
         global $DB;
