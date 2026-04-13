@@ -13292,12 +13292,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$source_itemtype of method Glpi\\\\Migration\\\\AbstractPluginMigration\\:\\:updateItemtypeReferences\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$identifier of method Glpi\\\\OAuth\\\\AccessToken\\:\\:setUserIdentifier\\(\\) expects non\\-empty\\-string, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
