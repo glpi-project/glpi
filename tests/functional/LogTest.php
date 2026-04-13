@@ -1034,24 +1034,65 @@ class LogTest extends DbTestCase
 
         $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
 
-        Log::history(
-            $computer_id,
-            Computer::class,
-            [0, ['value1', 'value2'], ['value3', 'value4']]
-        );
-
-        $log_entry = $DB->request([
-            'FROM'   => Log::getTable(),
-            'WHERE'  => [
-                'itemtype'  => Computer::class,
-                'items_id'  => $computer_id,
+        $test_cases = [
+            'arrays in both values' => [
+                'input_old_value' => ['value1', 'value2'],
+                'input_new_value' => ['value3', 'value4'],
+                'expected_old_value' => '',
+                'expected_new_value' => '',
             ],
-            'ORDER'  => 'id DESC',
-            'LIMIT'  => 1,
-        ])->current();
+            'objects in both values' => [
+                'input_old_value' => (object)['key1' => 'value1', 'key2' => 'value2'],
+                'input_new_value' => (object)['key3' => 'value3', 'key4' => 'value4'],
+                'expected_old_value' => '',
+                'expected_new_value' => '',
+            ],
+            'json encoded object in old value' => [
+                'input_old_value' => json_encode(['key1' => 'value1']),
+                'input_new_value' => 'string_value',
+                'expected_old_value' => '',
+                'expected_new_value' => 'string_value',
+            ],
+            'array in old value string in new value' => [
+                'input_old_value' => ['value1', 'value2'],
+                'input_new_value' => 'string_value',
+                'expected_old_value' => '',
+                'expected_new_value' => 'string_value',
+            ],
+            'string in old value and array in new value' => [
+                'input_old_value' => 'string_value',
+                'input_new_value' => ['value3', 'value4'],
+                'expected_old_value' => 'string_value',
+                'expected_new_value' => '',
+            ],
+            'string values' => [
+                'input_old_value' => 'simple string',
+                'input_new_value' => 'another string',
+                'expected_old_value' => 'simple string',
+                'expected_new_value' => 'another string',
+            ],
+        ];
 
-        $this->assertNotNull($log_entry);
-        $this->assertEquals('', $log_entry['old_value']);
-        $this->assertEquals('', $log_entry['new_value']);
+        foreach ($test_cases as $case_name => $test_data) {
+            Log::history(
+                $computer_id,
+                Computer::class,
+                [0, $test_data['input_old_value'], $test_data['input_new_value']]
+            );
+
+            $log_entry = $DB->request([
+                'FROM'   => Log::getTable(),
+                'WHERE'  => [
+                    'itemtype'  => Computer::class,
+                    'items_id'  => $computer_id,
+                ],
+                'ORDER'  => 'id DESC',
+                'LIMIT'  => 1,
+            ])->current();
+
+            $this->assertNotNull($log_entry, "Log entry should exist for case: $case_name");
+            $this->assertEquals($test_data['expected_old_value'], $log_entry['old_value'], "Old value mismatch for case: $case_name");
+            $this->assertEquals($test_data['expected_new_value'], $log_entry['new_value'], "New value mismatch for case: $case_name");
+        }
     }
 }
