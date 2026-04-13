@@ -36,6 +36,7 @@ import { tmpdir } from "os";
 import { join } from "path";
 import { Config } from "./Config";
 import { WorkerSessionCache } from "./WorkerSessionCache";
+import { KnowbaseApi } from "./KnowbaseApi";
 
 const ENTITY_LOCK_FILE = join(tmpdir(), 'glpi-e2e-entity-creation.lock');
 const ASSET_DEFINITION_LOCK_FILE = join(tmpdir(), 'glpi-e2e-asset-definition-creation.lock');
@@ -56,9 +57,12 @@ export class Api
 {
     private cache: WorkerSessionCache;
 
+    public knowbase: KnowbaseApi;
+
     public constructor(cache: WorkerSessionCache)
     {
         this.cache = cache;
+        this.knowbase = new KnowbaseApi(this);
     }
 
     public async getItem(itemtype: string, id: number): Promise<any>

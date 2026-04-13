@@ -40,6 +40,7 @@ use Glpi\UI\IllustrationManager;
 use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
+use KnowbaseItemTranslation;
 use Log;
 use LogicException;
 use Profile;
@@ -58,7 +59,9 @@ final class HistoryBuilder
     public function buildHistory(): HistoryEventList
     {
         $this->addCurrentVersionToHistory();
+        $this->addCurrentTranslationsToHistory();
         $this->addRevisionsToHistory();
+        $this->addTranslationRevisionsToHistory();
         $this->addFaqStatusChangesToHistory();
         $this->addServiceCatalogChangesToHistory();
         $this->addAssociatedItemChangesToHistory();
@@ -106,6 +109,56 @@ final class HistoryBuilder
         }
     }
 
+    private function addTranslationRevisionsToHistory(): void
+    {
+        global $DB;
+
+        // Load revisions for the given KB entry.
+        // We only load revisions with a defined language (which means it is
+        // for a translation).
+        $result = $DB->request([
+            'SELECT' => [
+                'id',
+                'revision',
+                'users_id',
+                'date',
+                'language',
+            ],
+            'FROM' => KnowbaseItem_Revision::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id' => $this->kb->getID(),
+                ['NOT' => ['language' => '']],
+            ],
+            'ORDER' => ['language ASC', 'revision DESC'],
+        ]);
+
+        // Group revisions by language, this is needed so we can compute the
+        // revision index compared to others revisions from the same language
+        // only.
+        $by_language = [];
+        foreach ($result as $row) {
+            $by_language[$row['language']][] = $row;
+        }
+
+        // Insert events into the history.
+        foreach ($by_language as $language => $rows) {
+            $total = \count($rows);
+            $current = $total;
+
+            foreach ($rows as $row) {
+                $this->history->addEvent(new TranslationRevisionEvent(
+                    id: $row['id'],
+                    index: $current,
+                    date: $row['date'],
+                    author_id: (int) $row['users_id'],
+                    language: $language,
+                ));
+
+                $current--;
+            }
+        }
+    }
+
     private function addCurrentVersionToHistory(): void
     {
         global $DB;
@@ -139,12 +192,35 @@ final class HistoryBuilder
 
         $row = $result->current();
 
-        $this->history->addEvent(new LogEvent(
-            label: __("Current version"),
-            description: __("Updated by"),
+        $this->history->addEvent(new CurrentVersionLogEvent(
             date: $row['date_mod'],
             author: $row['user_name'],
         ));
+    }
+
+    private function addCurrentTranslationsToHistory(): void
+    {
+        global $DB;
+
+        $translations = $DB->request([
+            'SELECT' => [
+                'language',
+                'users_id',
+                'date_mod',
+            ],
+            'FROM' => KnowbaseItemTranslation::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id' => $this->kb->getID(),
+            ],
+        ]);
+
+        foreach ($translations as $translation) {
+            $this->history->addEvent(new CurrentTranslationEvent(
+                language       : $translation['language'],
+                date       : $translation['date_mod'],
+                author     : $translation['users_id'],
+            ));
+        }
     }
 
     private function addPermissionChangesToHistory(): void

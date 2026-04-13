@@ -152,6 +152,11 @@ export class GlpiKnowbaseArticleSidePanelController
         $(target).html(html);
         this.#open();
 
+        // Notify controllers that new content was loaded
+        target.dispatchEvent(new CustomEvent('glpi:kb:panel-loaded', {
+            bubbles: true,
+        }));
+
         // Trigger bootstrap tooltips
         new bootstrap.Tooltip(target, {
             selector: "[data-bs-toggle='tooltip']"

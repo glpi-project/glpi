@@ -225,11 +225,57 @@ export class GlpiKnowbaseArticleController
     #initDiffListeners()
     {
         this.#container.addEventListener('glpi:kb:compare', (e) => {
+            if (this.#is_editing) {
+                e.preventDefault();
+                glpi_alert({
+                    title: __('Preview unavailable'),
+                    message: __('Please save or cancel your current changes before previewing a revision.'),
+                });
+                return;
+            }
             this.#showDiff(e.detail);
         });
 
         this.#container.addEventListener('glpi:kb:compare-off', () => {
             this.#hideDiff();
+        });
+
+        this.#container.addEventListener('glpi:kb:compare-translation', async (e) => {
+            if (this.#is_editing) {
+                e.preventDefault();
+                glpi_alert({
+                    title: __('Preview unavailable'),
+                    message: __('Please save or cancel your current changes before previewing a translation revision.'),
+                });
+                return;
+            }
+            await this.#showTranslationDiff(e.detail);
+        });
+
+        this.#container.addEventListener('glpi:kb:translation-reverted', async (e) => {
+            const {language} = e.detail;
+            if (this.#translation_language === language) {
+                await this.#loadTranslationContent(language);
+            }
+        });
+
+        this.#container.addEventListener('glpi:kb:show-translation', async (e) => {
+            const {language} = e.detail;
+
+            if (this.#is_editing) {
+                e.preventDefault();
+                glpi_alert({
+                    title: __('Action unavailable'),
+                    message: __('Please save or cancel your current changes first.'),
+                });
+                return;
+            }
+
+            await this.#enterTranslationPreviewForLanguage(language);
+        });
+
+        this.#container.addEventListener('glpi:kb:exit-translation', () => {
+            this.#exitTranslationMode();
         });
     }
 
@@ -242,6 +288,11 @@ export class GlpiKnowbaseArticleController
 
         if (!contentEl) {
             return;
+        }
+
+        // Exit translation before showing the diff
+        if (this.#translation_language) {
+            this.#exitTranslationMode();
         }
 
         // Save original content on first activation
@@ -280,6 +331,91 @@ export class GlpiKnowbaseArticleController
 
         this.#originalContent = null;
         this.#isDiffMode = false;
+    }
+
+    /**
+     * @param {{content_diff: string, language: string}} detail
+     */
+    async #showTranslationDiff({content_diff, language})
+    {
+        // If we are already in translation mode for a different language, exit first
+        if (this.#translation_language && this.#translation_language !== language) {
+            this.#exitTranslationMode();
+        }
+
+        // Enter translation mode for this language if not already in it
+        if (!this.#translation_language) {
+            await this.#enterTranslationPreviewForLanguage(language);
+        }
+
+        // Now overlay the diff
+        const contentEl = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!contentEl) {
+            return;
+        }
+
+        if (this.#originalContent === null) {
+            this.#originalContent = contentEl.innerHTML;
+        }
+
+        contentEl.innerHTML = content_diff;
+
+        const article = this.#container.querySelector('.kb-article');
+        if (article) {
+            article.classList.add('kb-article--diff-mode');
+        }
+
+        this.#isDiffMode = true;
+    }
+
+    /**
+     * Enter translation mode for a specific language (used by revision preview).
+     * Unlike #enterTranslationMode, this does not enable editing.
+     * @param {string} language
+     */
+    async #enterTranslationPreviewForLanguage(language)
+    {
+        const alert_el = this.#container.querySelector('[data-glpi-kb-translation-alert]');
+        const language_select = this.#container.querySelector('[data-glpi-kb-translation-language]');
+
+        this.#base_content = this.#original_content;
+        this.#base_title = this.#original_title;
+
+        const response = await get(`Knowbase/KnowbaseItem/${this.#item_id}/Languages`);
+        const data = await response.json();
+        this.#populateLanguageDropdown(language_select, data.languages);
+
+        language_select.value = language;
+        this.#translation_language = language;
+
+        // Hide controls, user is not allowed to edit while previewing from the
+        // history.
+        const save_btn = this.#container.querySelector('[data-glpi-kb-translation-save]');
+        const delete_btn = this.#container.querySelector('[data-glpi-kb-translation-delete]');
+        const dropdown = this.#container.querySelector('[data-glpi-kb-translation-language]');
+        delete_btn.classList.add('d-none');
+        save_btn.classList.add('d-none');
+        dropdown.disabled = true;
+
+        await this.#loadTranslationContent(language);
+
+        alert_el.classList.remove('d-none');
+        alert_el.classList.add('d-flex');
+
+        const editor_actions = this.#container.querySelector('.kb-editor-actions');
+        if (editor_actions) {
+            editor_actions.classList.remove('d-flex');
+            editor_actions.classList.add('d-none');
+        }
+    }
+
+    /**
+     * Sent an event to indicate that the user is no longer viewing a diff
+     * from the side panel.
+     */
+    #broadcastDiffExit()
+    {
+        document.dispatchEvent(new CustomEvent('glpi:kb:exit-diff'));
     }
 
     /**
@@ -796,6 +932,8 @@ export class GlpiKnowbaseArticleController
         if (cancel_button) {
             cancel_button.classList.remove('d-none');
         }
+
+        this.#broadcastDiffExit();
     }
 
     #enableTitleEditing()
@@ -992,8 +1130,15 @@ export class GlpiKnowbaseArticleController
 
         const selected_language = language_select.value;
         this.#translation_language = selected_language;
+
         this.#updateDeleteButtonVisibility();
+
+        // Clean up state from preview that might have disabled some options.
+        this.#container.querySelector('[data-glpi-kb-translation-save]').classList.remove('d-none');
+        this.#container.querySelector('[data-glpi-kb-translation-language]').disabled = false;
         await this.#loadTranslationContent(selected_language);
+
+        this.#broadcastDiffExit();
 
         const editor_element = this.#container.querySelector('#kb-tiptap-editor');
         if (editor_element && edit_button) {

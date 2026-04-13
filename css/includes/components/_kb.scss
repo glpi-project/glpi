@@ -159,7 +159,10 @@
 }
 
 // KB revision comparison - side panel state
-.kb-sidepanel [data-glpi-revision-id] {
+.kb-sidepanel [data-glpi-current-version],
+.kb-sidepanel [data-glpi-revision-id],
+.kb-sidepanel [data-glpi-translation-revision-id],
+.kb-sidepanel [data-glpi-current-translation-language] {
     cursor: pointer;
     transition: background-color 0.15s ease, box-shadow 0.15s ease;
 
@@ -167,7 +170,7 @@
         background-color: var(--tblr-bg-surface-secondary);
     }
 
-    &.kb-revision--comparing {
+    &.kb-revision--selected {
         background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
         box-shadow: inset -3px 0 0 var(--tblr-primary);
     }

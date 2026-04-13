@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\History;
+namespace tests\unit\Glpi\Knowbase\History;
 
 use Computer;
 use Document;
@@ -40,12 +40,19 @@ use Document_Item;
 use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Form\Category;
+use Glpi\Knowbase\History\CreationEvent;
+use Glpi\Knowbase\History\CurrentTranslationEvent;
+use Glpi\Knowbase\History\HistoryBuilder;
+use Glpi\Knowbase\History\LogEvent;
+use Glpi\Knowbase\History\RevisionEvent;
+use Glpi\Knowbase\History\TranslationRevisionEvent;
 use Glpi\Tests\DbTestCase;
-use Glpi\UI\IllustrationManager;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
+use KnowbaseItemTranslation;
+use Session;
 use Ticket;
 use User;
 
@@ -934,37 +941,179 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertInstanceOf(CreationEvent::class, $events[1]);
     }
 
-    public function testCustomIllustrationChangeAppearsInHistory(): void
+    public function testCurrentTranslationAppearsInHistory(): void
     {
         $this->login();
         $this->setCurrentTime("2026-01-15 10:00:00");
 
+        // Arrange: create a KB with two translations
         $kb = $this->createItem(KnowbaseItem::class, [
             'users_id' => 2,
             'entities_id' => $this->getTestRootEntity(only_id: true),
             'name' => 'Test article',
             'answer' => 'Test content',
-            'illustration' => 'kb-faq',
         ]);
-
-        $custom_illustration = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX . 'my-custom-icon';
 
         $this->setCurrentTime("2026-01-15 11:00:00");
-        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
-            'illustration' => $custom_illustration,
+        $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language' => 'fr_FR',
+            'name' => 'Article de test',
+            'answer' => 'Contenu de test',
+            'users_id' => Session::getLoginUserID(),
         ]);
 
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language' => 'de_DE',
+            'name' => 'Testartikel',
+            'answer' => 'Testinhalt',
+            'users_id' => Session::getLoginUserID(),
+        ]);
+
+        // Act: build history for this KB and get all CurrentTranslationEvents
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+        $translation_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof CurrentTranslationEvent
+        ));
+
+        // Assert: there should be two events: one per translations
+        $de_event = $translation_events[0];
+        $this->assertEquals("2026-01-15 12:00:00", $de_event->getDate());
+        $this->assertEquals("Deutsch — Current version", $de_event->getLabel());
+        $this->assertEquals("Updated by", $de_event->getDescription());
+        $this->assertEquals(Session::getLoginUserID(), $de_event->getAuthor());
+
+        $fr_event = $translation_events[1];
+        $this->assertEquals("2026-01-15 11:00:00", $fr_event->getDate());
+        $this->assertEquals("Français — Current version", $fr_event->getLabel());
+        $this->assertEquals("Updated by", $fr_event->getDescription());
+        $this->assertEquals(Session::getLoginUserID(), $fr_event->getAuthor());
+
+        $this->assertCount(2, $translation_events);
+    }
+
+    public function testTranslationRevisionsAppearInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        // Assert: create a KB with 3 french translations
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $translation = $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language' => 'fr_FR',
+            'name' => 'Article de test',
+            'answer' => 'Contenu V1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
+            'answer' => 'Contenu V2',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItemTranslation::class, $translation->getID(), [
+            'answer' => 'Contenu V3',
+        ]);
+
+        // Act: build history for this KB and get all TranslationRevisionEvent
         $kb->getFromDB($kb->getID());
         $history = (new HistoryBuilder($kb))->buildHistory();
         $events = $history->getEvents();
 
-        $this->assertCount(2, $events);
+        $revision_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof TranslationRevisionEvent
+        ));
 
-        $this->assertInstanceOf(LogEvent::class, $events[0]);
-        $this->assertEquals("Illustration updated", $events[0]->getLabel());
-        $this->assertEquals("Custom illustration set by", $events[0]->getDescription());
-        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+        $this->assertCount(2, $revision_events);
 
-        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+        // Assert: there should be two events: one per translations minus the one
+        // because the most recent one is a CurrentTranslationEvent event.
+        $fr_2 = $revision_events[0];
+        $this->assertEquals('fr_FR', $fr_2->getLanguage());
+        $this->assertEquals("2026-01-15 11:00:00", $fr_2->getDate());
+        $this->assertEquals('Français — Version 2', $fr_2->getLabel());
+        $this->assertEquals("Updated by", $fr_2->getDescription());
+
+        $fr_1 = $revision_events[1];
+        $this->assertEquals('fr_FR', $fr_1->getLanguage());
+        $this->assertEquals("2026-01-15 10:00:00", $fr_1->getDate());
+        $this->assertEquals('Français — Version 1', $fr_1->getLabel());
+        $this->assertEquals("Created by", $fr_1->getDescription());
+    }
+
+    public function testTranslationRevisionsFromMultipleLanguagesAreIndexedIndependently(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        // Assert: create a KB with 2 french translations and 2 german translations
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $fr_translation = $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language' => 'fr_FR',
+            'name' => 'French',
+            'answer' => 'FR V1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItemTranslation::class, $fr_translation->getID(), [
+            'answer' => 'FR V2',
+        ]);
+
+        $de_translation = $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'language' => 'de_DE',
+            'name' => 'German',
+            'answer' => 'DE V1',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItemTranslation::class, $de_translation->getID(), [
+            'answer' => 'DE V2',
+        ]);
+
+        // Act: build history for this KB and get all TranslationRevisionEvent
+        // for each languages
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $fr_revisions = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof TranslationRevisionEvent && $e->getLanguage() === 'fr_FR'
+        ));
+        $de_revisions = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof TranslationRevisionEvent && $e->getLanguage() === 'de_DE'
+        ));
+
+        // Assert: the event should be indexed properly
+        $this->assertCount(1, $fr_revisions);
+        $this->assertEquals(
+            'Français — Version 1',
+            $fr_revisions[0]->getLabel(),
+        );
+
+        $this->assertCount(1, $de_revisions);
+        $this->assertEquals('Deutsch — Version 1', $de_revisions[0]->getLabel());
     }
 }

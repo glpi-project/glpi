@@ -33,8 +33,15 @@
 <li
     class="step-item {{ first ? 'active' : '' }}"
     data-testid="history-event"
-    {% if first %}
+    {# If the item doesn't have any versions, the creation event will be used instead #}
+    {% if is_curent_version or is_creation_event %}
         data-glpi-current-version
+    {% elseif is_current_translation %}
+        data-glpi-current-translation-language="{{ event.getLanguage() }}"
+    {% elseif is_translation_revision %}
+        data-glpi-translation-revision-id="{{ event.getRevisionId() }}"
+        data-glpi-translation-revision-language="{{ event.getLanguage() }}"
+        data-glpi-kb-id="{{ id }}"
     {% elseif is_revision %}
         data-glpi-revision-id="{{ event.getRevisionId() }}"
         data-glpi-kb-id="{{ id }}"
@@ -83,7 +90,20 @@
                 </span>
             </div>
         </div>
-        {% if is_revision and can_revert %}
+        {% if is_translation_revision and can_revert %}
+            <button
+                type="button"
+                class="btn btn-ghost-secondary btn-sm"
+                data-glpi-revert-translation-revision="{{ event.getRevisionId() }}"
+                data-glpi-translation-revision-language="{{ event.getLanguage() }}"
+                data-glpi-kb-id="{{ id }}"
+                title="{{ __("Restore this translation version") }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+            >
+                <i class="ti ti-restore"></i>
+            </button>
+        {% elseif is_revision and can_revert %}
             <button
                 type="button"
                 class="btn btn-ghost-secondary btn-sm"

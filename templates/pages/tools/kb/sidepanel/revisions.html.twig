@@ -39,17 +39,27 @@
     <ul class="steps steps-vertical overflow-auto my-n3 py-3" data-glpi-revisions>
         {% for event in history.getEvents() %}
             {% set is_revision = event is instanceof("\\Glpi\\Knowbase\\History\\RevisionEvent") %}
+            {% set is_translation_revision = event is instanceof("\\Glpi\\Knowbase\\History\\TranslationRevisionEvent") %}
+            {% set is_current_translation = event is instanceof("\\Glpi\\Knowbase\\History\\CurrentTranslationEvent") %}
             {% set is_log = event is instanceof("\\Glpi\\Knowbase\\History\\LogEvent") %}
+            {% set is_curent_version = event is instanceof("\\Glpi\\Knowbase\\History\\CurrentVersionLogEvent") %}
+            {% set is_creation_event = event is instanceof("\\Glpi\\Knowbase\\History\\CreationEvent") %}
 
             {{ include('pages/tools/kb/sidepanel/revision_item.html.twig', {
                 id: id,
                 event: event,
                 is_revision: is_revision,
+                is_translation_revision: is_translation_revision,
+                is_current_translation: is_current_translation,
                 is_log: is_log,
                 can_revert: can_revert,
                 users: users,
                 first: loop.first,
+                is_curent_version: is_curent_version,
+                is_creation_event: is_creation_event,
             }, with_context = false) }}
+
+
         {% endfor %}
     </ul>
 {% endblock %}

@@ -223,5 +223,21 @@ export class KnowbaseItemPage extends GlpiPage
     {
         return this.page.getByPlaceholder('No end date').filter({visible: true});
     }
+
+    public async doOpenHistoryPanel(): Promise<void>
+    {
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('History').click();
+    }
+
+    public getHistoryEvents(): Locator
+    {
+        return this.page.getByTestId('history-event').filter({visible: true});
+    }
+
+    public getHistoryEventByText(text: string): Locator
+    {
+        return this.getHistoryEvents().filter({hasText: text});
+    }
 }
 
