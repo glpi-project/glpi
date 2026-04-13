@@ -1707,6 +1707,8 @@ TWIG, $twig_params);
             'nosort' => true,
             'start' => $values['start'],
             'limit' => $_SESSION['glpilist_limit'],
+            // preserve all existing parameters in the URL except start and order which are managed by the datatable component
+            'additional_params' => http_build_query(array_filter($values, static fn($key) => !in_array($key, ['start', 'order']), ARRAY_FILTER_USE_KEY)),
             'columns' => $columns,
             'formatters' => [
                 'user' => 'raw_html',
