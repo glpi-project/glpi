@@ -37,10 +37,9 @@ namespace Glpi\Application\View;
 use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PublicService;
-use Glpi\Kernel\Kernel;
 use Plugin;
+use Session;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment as TwigEnvironment;
 use Twig\Loader\FilesystemLoader;
 
@@ -58,7 +57,27 @@ class TemplateRenderer implements PublicService
     )
     {
         $this->environment = $twig;
+        $this->configureTwigEnvironment();
         $this->mountPluginPaths($rootdir);
+    }
+
+    private function configureTwigEnvironment(): void
+    {
+        $glpi_environment = GLPIEnvironment::get();
+
+        $is_debug = $glpi_environment->shouldEnableExtraDevAndDebugTools() || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE;
+        if ($is_debug) {
+            $this->environment->enableDebug();
+        }
+
+        $should_auto_reload = $glpi_environment->shouldExpectResourcesToChange();
+        if ($should_auto_reload) {
+            $this->environment->enableAutoReload();
+        }
+
+        if (GLPI_STRICT_ENV) {
+            $this->environment->enableStrictVariables();
+        }
     }
 
     /**
