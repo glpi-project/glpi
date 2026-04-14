@@ -95,10 +95,8 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
      *
      * The TwigBundle filesystem loader already has the main templates/ path.
      * We extend it at runtime with per-plugin namespaces and (in test mode) the test namespace.
-     *
-     * Otherwise, the Sf components won't be usable in plugins templates.
      */
-    private function mountPluginPaths(): void
+    private function registerSpecificPaths(): void
     {
         $loader = $this->twig_environment->getLoader();
         if (!$loader instanceof FilesystemLoader) {
@@ -113,7 +111,7 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
             }
 
             $path .= '/templates';
-            if (is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
+            if (is_dir($path)) {
                 // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
                 // is the path of the template inside the `/templates` directory of the plugin.
                 $loader->addPath($path, $plugin_key);
@@ -124,7 +122,6 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
         if (
             $glpi_environment->shouldEnableTestResources()
             && \file_exists("$this->glpi_root/tests/templates")
-            && !\in_array("$this->glpi_root/tests/templates", $loader->getPaths('test'), true)
         ) {
             // Add a dedicated namespace for specific test templates.
             // For instance `@test/templates/path/to/template.html.twig`

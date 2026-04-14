@@ -40,9 +40,6 @@ use Twig\Extension\GlobalsInterface;
 /**
  * Exposes PHP superglobals as Twig globals (_post, _get, _request).
  *
- * Registered as a DI service so the TwigBundle-managed environment gets the
- * same globals that TemplateRenderer added before manually via addGlobal().
- *
  * @since 12.0.0
  */
 class SuperGlobalsExtension extends AbstractExtension implements GlobalsInterface
