@@ -25,7 +25,7 @@ PLAYWRIGHT = docker run \
 	-w /app \
 	-p 9323:9323 \
 	-e E2E_BASE_URL=$(E2E_BASE_URL) \
-	--add-host host.docker.internal:host-gateway \
+	--network host \
 	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
 	npx playwright
 
