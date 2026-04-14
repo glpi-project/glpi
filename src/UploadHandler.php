@@ -695,7 +695,7 @@ class UploadHandler
     {
         return preg_replace_callback(
             '/(?:(?: \(([\d]+)\))?(\.[^.]+))?$/',
-            [$this, 'upcount_name_callback'],
+            $this->upcount_name_callback(...),
             $name,
             1
         );
