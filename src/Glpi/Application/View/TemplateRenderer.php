@@ -125,7 +125,13 @@ class TemplateRenderer implements PublicService
     public static function getInstance(): TemplateRenderer
     {
         global $kernel;
-        return $kernel->getContainer()->get(static::class);
+
+        $renderer = $kernel->getContainer()->get(static::class);
+        if (!$renderer instanceof TemplateRenderer) {
+            throw new \RuntimeException('TemplateRenderer is expected to be registered as a service.');
+        }
+
+        return $renderer;
     }
 
     /**
