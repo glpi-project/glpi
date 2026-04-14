@@ -8,7 +8,7 @@
 # 孔南, 2025
 # Robert Zhang, 2025
 # Cédric Anne, 2025
-# WangHongbin <wanghongbin@outlook.com>, 2025
+# WangHongbin <wanghongbin@outlook.com>, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 李赋 <fu792659@163.com>, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
@@ -15984,7 +15984,7 @@ msgstr "名称"
 
 #: src/PDU_Rack.php:590 src/Item_Rack.php:845
 msgid "serial"
-msgstr "串口"
+msgstr "序列号"
 
 #: src/PDU_Rack.php:602 src/Item_Rack.php:857
 msgid "model"
