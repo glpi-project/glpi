@@ -32,10 +32,12 @@
 
 /* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
-/* global TiptapFileHandler, getAjaxCsrfToken, glpi_toast_error */
+/* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { post } from '/js/modules/Ajax.js';
+import { FileUploader } from '/js/modules/FileUploader.js';
 
 /**
  * Knowbase article editor based on Tiptap
@@ -152,6 +154,21 @@ class KnowbaseEditor {
                 onPaste: (editor, files) => {
                     for (const file of files) {
                         this.#uploadAndInsertImage(editor, file);
+                    }
+                },
+            }));
+
+            // Intercept base64 images that bypass the FileHandler (e.g. pasted
+            // HTML from external sources) and convert them to server uploads.
+            extensions.push(Base64ImageHandler.configure({
+                uploadHandler: async (dataUri) => {
+                    try {
+                        const file = this.#dataUriToFile(dataUri);
+                        return await this.#uploadImageFile(file);
+                    } catch (error) {
+                        glpi_toast_error(__('Image upload failed'));
+                        console.error('Base64 image upload error:', error);
+                        return null;
                     }
                 },
             }));
@@ -367,6 +384,31 @@ class KnowbaseEditor {
     }
 
     /**
+     * Upload an image file to GLPI and create a Document linked to this KB item.
+     * @param {File} file - Image file to upload
+     * @returns {Promise<string>} The document.send.php URL for the uploaded image
+     */
+    async #uploadImageFile(file) {
+        // Step 1: Upload to GLPI temp dir
+        const file_info = await FileUploader.uploadFile(file);
+
+        // Step 2: Create Document via controller
+        const doc_response = await post(
+            `Knowbase/${this.#options.item_id}/UploadInlineImage`,
+            {
+                filename: file_info.name,
+                prefix: file_info.prefix || '',
+            }
+        );
+        const doc_data = await doc_response.json();
+        if (!doc_data.success) {
+            throw new Error(doc_data.message || __('Document creation failed'));
+        }
+
+        return doc_data.url;
+    }
+
+    /**
      * Upload an image file and insert it into the editor
      * @param {object} editor - TipTap editor instance
      * @param {File} file - Image file
@@ -374,54 +416,8 @@ class KnowbaseEditor {
      */
     async #uploadAndInsertImage(editor, file, pos) {
         try {
-            // Step 1: Upload to GLPI temp dir
-            const form_data = new FormData();
-            form_data.append('name', 'filename');
-            form_data.append('filename', file);
+            const image_url = await this.#uploadImageFile(file);
 
-            const upload_response = await fetch(
-                `${CFG_GLPI.root_doc}/ajax/fileupload.php`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-                    },
-                    body: form_data,
-                }
-            );
-
-            if (!upload_response.ok) {
-                throw new Error('File upload failed');
-            }
-
-            const upload_result = await upload_response.json();
-            const file_info = upload_result.filename?.[0];
-            if (!file_info || file_info.error) {
-                throw new Error(file_info?.error || 'File upload failed');
-            }
-
-            const temp_info = {
-                name: file_info.name,
-                prefix: file_info.prefix || '',
-                display: file_info.display || '',
-            };
-
-            // Step 2: Create Document via controller
-            const doc_response = await post(
-                `Knowbase/${this.#options.item_id}/UploadInlineImage`,
-                {
-                    filename: temp_info.name,
-                    prefix: temp_info.prefix,
-                }
-            );
-            const doc_data = await doc_response.json();
-            if (!doc_data.success) {
-                throw new Error(doc_data.message || 'Document creation failed');
-            }
-            const image_url = doc_data.url;
-
-            // Step 3: Insert image in editor
             const attrs = { src: image_url };
             if (pos !== undefined) {
                 editor.chain().focus().insertContentAt(pos, {
@@ -435,6 +431,35 @@ class KnowbaseEditor {
             glpi_toast_error(__('Image upload failed'));
             console.error('Image upload error:', error);
         }
+    }
+
+    /**
+     * Convert a data: URI to a File object
+     * @param {string} dataUri - The data: URI (e.g. "data:image/png;base64,...")
+     * @returns {File}
+     */
+    #dataUriToFile(dataUri) {
+        const commaIndex = dataUri.indexOf(',');
+        if (commaIndex === -1) {
+            throw new Error('Invalid data URI: missing comma separator');
+        }
+        const header = dataUri.slice(0, commaIndex);
+        const base64Data = dataUri.slice(commaIndex + 1);
+        const mimeMatch = header.match(/:(.*?);/);
+        if (!mimeMatch) {
+            throw new Error('Invalid data URI: could not extract MIME type');
+        }
+        const mime = mimeMatch[1];
+        if (mime === 'image/svg+xml') {
+            throw new Error('SVG images are not supported');
+        }
+        const binary = atob(base64Data);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        const ext = mime.split('/')[1].replace('+xml', '');
+        return new File([bytes], `pasted-image.${ext}`, { type: mime });
     }
 
     /**

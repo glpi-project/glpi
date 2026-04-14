@@ -42,7 +42,6 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Html;
 use KnowbaseItem;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -109,8 +108,8 @@ final class UploadInlineImageController extends AbstractController
             '_filename'               => [$filename],
             '_only_if_upload_succeed'  => 1,
             '_no_message'             => 1,
-            'entities_id'             => $kbitem->fields['entities_id'] ?? 0,
-            'is_recursive'            => $kbitem->fields['is_recursive'] ?? 0,
+            'entities_id'             => $kbitem->getEntityID(),
+            'is_recursive'            => $kbitem->isRecursive(),
             'name'                    => $display_name,
         ];
         // Only pass prefix if it's a real prefix (shorter than filename)
@@ -136,14 +135,14 @@ final class UploadInlineImageController extends AbstractController
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
         // Build the document serving URL
-        $url = Html::getPrefixedUrl(
-            '/front/document.send.php?'
+        $url = $request->getBasePath()
+            . '/front/document.send.php?'
             . http_build_query([
                 'docid'    => $doc_id,
                 'itemtype' => KnowbaseItem::class,
                 'items_id' => $knowbaseitems_id,
             ])
-        );
+        ;
 
         return new JsonResponse([
             'success' => true,

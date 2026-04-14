@@ -474,7 +474,7 @@ TWIG, $twig_params);
                     }
                     $entries[] = [
                         'itemtype' => self::class,
-                        'row_class' => ($data['is_deleted'] ?? 0) ? 'table-danger' : '',
+                        'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                         'id'       => $data['linkid'],
                         'linked_itemtype' => $item::getTypeName(1),
                         'name'    => $name,
@@ -724,7 +724,7 @@ TWIG, $twig_params);
             }
             $entries[] = [
                 'itemtype' => self::class,
-                'row_class' => ($data['is_deleted'] ?? 0) ? 'table-danger' : '',
+                'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'id'       => $data['assocID'],
                 'name'     => $name,
                 'entity'   => $data['entity'],

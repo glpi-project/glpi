@@ -60,12 +60,16 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
             const dialog = kb.imageDialog;
             await expect(dialog).toBeVisible();
 
-            const dataUri = `data:image/png;base64,${TEST_IMAGE_BASE64}`;
-            await dialog.getByLabel('Source').fill(dataUri);
+            const imageUrl = '/pics/glpi.png';
+
+            await dialog.getByLabel('Source').fill(imageUrl);
             await dialog.getByRole('button', { name: 'Save' }).click();
 
             await expect(dialog).toBeHidden();
-            await expect(kb.editor.contentContainer.locator(`img[src="${dataUri}"]`)).toBeVisible();
+
+            const img = kb.editor.contentContainer.getByRole('img');
+            await expect(img).toBeVisible();
+            await expect(img).toHaveAttribute('src', imageUrl);
         });
 
         test('Dialog closes on Cancel', async ({ page, profile, api }) => {

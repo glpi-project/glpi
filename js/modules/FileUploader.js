@@ -138,6 +138,50 @@ export class FileUploader
         this.#abortController.abort();
     }
 
+    /**
+     * Upload a single file to the GLPI temp directory without requiring
+     * an instance or any DOM elements.
+     *
+     * @param {File} file - The file to upload
+     * @returns {Promise<{name: string, prefix: string, display: string, id: string}>}
+     * @throws {Error} If the upload fails or the server returns an error.
+     */
+    static async uploadFile(file)
+    {
+        const uniquePrefix = uniqid('', true);
+        const uploadName = uniquePrefix + file.name;
+        const renamedFile = new File([file], uploadName, { type: file.type });
+
+        const formData = new FormData();
+        formData.append('name', 'filename');
+        formData.append('filename[]', renamedFile);
+
+        const response = await fetch(
+            `${CFG_GLPI.root_doc}/ajax/fileupload.php`,
+            {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                },
+                body: formData,
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(__('Upload failed'));
+        }
+
+        const result = await response.json();
+        const fileData = result.filename?.[0];
+
+        if (!fileData || fileData.error) {
+            throw new Error(fileData?.error || __('Upload failed'));
+        }
+
+        return fileData;
+    }
+
     #bindEvents()
     {
         const signal = this.#abortController.signal;
