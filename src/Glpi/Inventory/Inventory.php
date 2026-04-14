@@ -853,7 +853,6 @@ class Inventory
             //cleanup tag
             if (
                 ($agent = $this->mainasset?->getAgent()) instanceof Agent
-                && !$this->mainasset->isPartial()
                 && !($this->mainasset instanceof NetworkEquipment || $this->mainasset instanceof Unmanaged)
                 && !isset($this->metadata['tag'])
             ) {
