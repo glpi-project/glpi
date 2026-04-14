@@ -63,7 +63,9 @@ abstract class AbstractDocumentUploadController extends AbstractController
     final protected function createDocuments(
         array $files,
         string $itemtype,
-        int $items_id
+        int $items_id,
+        ?int $entities_id = null,
+        ?bool $is_recursive = null,
     ): array {
         $created = [];
 
@@ -81,7 +83,7 @@ abstract class AbstractDocumentUploadController extends AbstractController
             }
 
             // Add document
-            $document = $this->add(Document::class, [
+            $input = [
                 'name'             => $name,
                 'comment'          => $comment,
                 '_filename'        => [$temp_name],
@@ -89,7 +91,14 @@ abstract class AbstractDocumentUploadController extends AbstractController
                 '_tag_filename'    => [$tag],
                 'itemtype'         => $itemtype,
                 'items_id'         => $items_id,
-            ]);
+            ];
+            if ($entities_id !== null) {
+                $input['entities_id'] = $entities_id;
+            }
+            if ($is_recursive !== null) {
+                $input['is_recursive'] = $is_recursive;
+            }
+            $document = $this->add(Document::class, $input);
 
             // Fetch document item link
             $doc_id   = $document->getID();
