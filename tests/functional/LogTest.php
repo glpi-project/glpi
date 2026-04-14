@@ -1042,8 +1042,8 @@ class LogTest extends DbTestCase
                 'expected_new_value' => '',
             ],
             'objects in both values' => [
-                'input_old_value' => (object)['key1' => 'value1', 'key2' => 'value2'],
-                'input_new_value' => (object)['key3' => 'value3', 'key4' => 'value4'],
+                'input_old_value' => (object) ['key1' => 'value1', 'key2' => 'value2'],
+                'input_new_value' => (object) ['key3' => 'value3', 'key4' => 'value4'],
                 'expected_old_value' => '',
                 'expected_new_value' => '',
             ],
