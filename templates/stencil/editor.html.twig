@@ -48,13 +48,14 @@
             <input type="number" id="nb_zones-{{ rand }}" name="nb_zones" class="form-control d-inline-block" style="width: 65px" min="1" max="{{ stencil.getMaxZoneNumber() }}" value="{{ nb_zones }}">
 
         {% else %}
-            <label class="form-label">
+            <label class="form-label mb-1">
                 {% if params.define_zones_label is defined %}
                     {{ params['define_zones_label'] }}
                 {% else %}
                     {{ __("Define zone in image") }}
                 {% endif %}
             </label>
+
             <div class="col-12 d-flex flex-wrap gap-1">
                 {% if nb_zones > 0 %}
                     {% set start_zone_index = params.start_zone_index ?? 1 %}
@@ -86,7 +87,7 @@
         {% endif %}
 
         <div id="zone-data-{{ rand }}" class="row d-none mt-2">
-            <form id="zone-data-form-{{ rand }}">
+            <form id="zone-data-form-{{ rand }}" class="d-flex flex-wrap align-items-center gap-2">
                 <div class="col-auto">
                     <div class="row">
                         {% if params.zone_label is defined %}
@@ -109,6 +110,31 @@
                         <div class="col-auto">
                             <input type="text" id="zone_number-{{ rand }}" class="form-control" placeholder="" form="zone-data-form-{{ rand }}">
                         </div>
+                    </div>
+                </div>
+                <div class="col-auto align-self-center d-none" id="auto-detect-tolerance-col-{{ rand }}">
+                    <button type="button"
+                            id="auto-detect-btn-{{ rand }}"
+                            class="btn btn-sm btn-outline-primary"
+                            aria-label="{{ __('Auto-Detect') }}">
+                        <i class="ti ti-scan"></i>
+                        <span>{{ __('Auto-Detect') }}</span>
+                    </button>
+                </div>
+                <div class="col-auto d-none" id="auto-detect-tolerance-slider-col-{{ rand }}">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="auto-detect-tolerance-{{ rand }}" class="col-form-label text-nowrap">{{ __('Tolerance') }}</label>
+                        <input type="range"
+                               id="auto-detect-tolerance-{{ rand }}"
+                               class="form-range"
+                               min="0"
+                               max="100"
+                               value="10"
+                               style="max-width: 120px;"
+                               aria-label="{{ __('Detection tolerance') }}">
+                        <output for="auto-detect-tolerance-{{ rand }}"
+                                id="auto-detect-tolerance-output-{{ rand }}"
+                                class="badge">10%</output>
                     </div>
                 </div>
                 <div class="col-auto">
@@ -160,6 +186,53 @@
                 } only %}
             </div>
         {% endfor %}
+
+        <div class="d-flex gap-2 mt-2">
+            <button type="button"
+                    id="grid-replicate-{{ rand }}"
+                    class="btn btn-sm btn-outline-secondary d-none"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    data-bs-title="{{ __('Replicate detected zone as a grid') }}"
+                    aria-label="{{ __('Replicate detected zone as a grid') }}">
+                <i class="ti ti-layout-grid"></i>
+                <span>{{ __('Replicate as grid') }}</span>
+            </button>
+        </div>
+
+        <div id="grid-dialog-{{ rand }}" class="card mt-2 d-none" style="max-width: 360px;">
+            <div class="card-body">
+                <h6 class="card-title">{{ __('Grid replication') }}</h6>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label for="grid-cols-{{ rand }}" class="form-label">{{ __('Columns') }}</label>
+                        <input type="number" id="grid-cols-{{ rand }}" class="form-control form-control-sm" min="1" value="1">
+                    </div>
+                    <div class="col-6">
+                        <label for="grid-rows-{{ rand }}" class="form-label">{{ __('Rows') }}</label>
+                        <input type="number" id="grid-rows-{{ rand }}" class="form-control form-control-sm" min="1" value="1">
+                    </div>
+                    <div class="col-6">
+                        <label for="grid-spacing-x-{{ rand }}" class="form-label">{{ __('Spacing X (px)') }}</label>
+                        <input type="number" id="grid-spacing-x-{{ rand }}" class="form-control form-control-sm" min="0" value="0">
+                    </div>
+                    <div class="col-6">
+                        <label for="grid-spacing-y-{{ rand }}" class="form-label">{{ __('Spacing Y (px)') }}</label>
+                        <input type="number" id="grid-spacing-y-{{ rand }}" class="form-control form-control-sm" min="0" value="0">
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" id="grid-apply-{{ rand }}" class="btn btn-sm btn-primary">
+                        <i class="ti ti-check"></i>
+                        <span>{{ __('Apply') }}</span>
+                    </button>
+                    <button type="button" id="grid-cancel-{{ rand }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="ti ti-x"></i>
+                        <span>{{ __('Cancel') }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     {% endif %}
 
     <script>
