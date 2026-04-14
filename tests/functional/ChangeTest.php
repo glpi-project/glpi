@@ -616,4 +616,17 @@ class ChangeTest extends DbTestCase
 
         $this->assertCount(1, $found);
     }
+
+    public function testTitleIsTruncatedTo255Characters(): void
+    {
+        $this->login();
+
+        $change = $this->createItem(Change::class, [
+            'name'        => str_repeat('a', 300),
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['name']);
+
+        $this->assertSame(255, mb_strlen($change->fields['name']));
+    }
 }

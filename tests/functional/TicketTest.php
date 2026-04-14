@@ -10412,4 +10412,17 @@ HTML,
 
         $this->assertCount(1, $found);
     }
+
+    public function testTitleIsTruncatedTo255Characters(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => str_repeat('a', 300),
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['name']);
+
+        $this->assertSame(255, mb_strlen($ticket->fields['name']));
+    }
 }
