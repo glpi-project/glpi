@@ -36,6 +36,7 @@ namespace Glpi\Application\View;
 
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PublicService;
+use Glpi\Kernel\Kernel;
 use Twig\Environment as TwigEnvironment;
 
 /**
@@ -57,6 +58,7 @@ class TemplateRenderer implements PublicService
      */
     public static function getInstance(): TemplateRenderer
     {
+        /** @var Kernel $kernel */
         global $kernel;
 
         $renderer = $kernel->getContainer()->get(static::class);

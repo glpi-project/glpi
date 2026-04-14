@@ -107,8 +107,13 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
 
         $active_plugins = Plugin::getPlugins();
         foreach ($active_plugins as $plugin_key) {
-            $path = Plugin::getPhpDir($plugin_key) . '/templates';
-            if ($path !== false && is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
+            $path = Plugin::getPhpDir($plugin_key);
+            if (!$path) {
+                continue;
+            }
+
+            $path .= '/templates';
+            if (is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
                 // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
                 // is the path of the template inside the `/templates` directory of the plugin.
                 $loader->addPath($path, $plugin_key);
