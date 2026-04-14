@@ -440,7 +440,7 @@ export class GlpiKnowbaseArticleController
 
         // Remove badge from DOM
         const badge = this.#container.querySelector(
-            `[data-glpi-item-assoc-id="${assoc_id}"]`
+            `[data-glpi-item-assoc-id="${CSS.escape(assoc_id)}"]`
         );
         if (badge) {
             badge.remove();
