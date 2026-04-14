@@ -116,7 +116,7 @@
     {% if connect_opts['type'] != 'pop' %}
         {{ fields.smallTitle(__('Folders setup')) }}
         {% set get_imap_folder_btn %}
-            <div class="btn btn-outline-secondary get-imap-folder cursor-pointer{% if item.isNewItem %} disabled{% endif %}"
+            <div class="btn btn-outline-secondary get-imap-folder cursor-pointer{% if item.isNewItem() %} disabled{% endif %}"
                  {% if item.isNewItem %}style="pointer-events: none;"{% endif %}>
                 <i class="ti ti-list"></i>
             </div>
@@ -259,7 +259,7 @@
 
                 const data = {
                     action: 'getFoldersList',
-                    id: {{ item.fields['id']|default(0) }},
+                    id: '{{ item.fields['id']|default(0)|e('js') }}',
                         input_id: input.attr('id')
                     };
 

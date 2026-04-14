@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
@@ -43,21 +43,14 @@ Session::checkRight("config", UPDATE);
 
 $mailcollector = new MailCollector();
 
-if (isset($_REQUEST['action'])) {
-    switch ($_REQUEST['action']) {
-        case "getFoldersList":
-            // The collector must already exist in database.
-            if (
-                !array_key_exists('id', $_REQUEST)
-                || !$mailcollector->getFromDB($_REQUEST['id'])
-            ) {
-                $exception = new AccessDeniedHttpException();
-                $exception->setMessageToDisplay(__('Mail collector must be saved before browsing folders.'));
-                throw $exception;
-            }
-
-            // Update fields with input values
-            $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
-            break;
+if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'getFoldersList') {
+    // The collector must already exist in database.
+    if (
+        !array_key_exists('id', $_REQUEST)
+        || !$mailcollector->getFromDB($_REQUEST['id'])
+    ) {
+        throw new NotFoundHttpException();
     }
+
+    $mailcollector->displayFoldersList($_REQUEST['input_id'] ?? '');
 }
