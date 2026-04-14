@@ -60,6 +60,48 @@ class Widget
     /** @var int */
     public static $animation_duration = 1000; // in millseconds
 
+    /**
+     * Get toolbox options for ECharts, with colors adapted to the widget palette.
+     * @param string $fg_color
+     * @param string $bg_color
+     * @return array<string, mixed>
+     */
+    public static function getEChartsToolboxOptions(string $fg_color, string $bg_color): array
+    {
+        return [
+            'show'    => false,
+            'feature' => [
+                'dataView'    => [
+                    'show'     => true,
+                    'readOnly' => true,
+                    'title'    => __('View data'),
+                    'emphasis' => [
+                        'iconStyle' => [
+                            'color' => $fg_color,
+                            'textBackgroundColor' => $bg_color,
+                            'textPadding' => 5,
+                        ],
+                    ],
+                    'lang' => [
+                        __('Data view'),
+                        __('Close'),
+                        __('Refresh'),
+                    ],
+                ],
+                'saveAsImage' => [
+                    'show'  => true,
+                    'title' => __('Save as image'),
+                    'emphasis' => [
+                        'iconStyle' => [
+                            'color' => $fg_color,
+                            'textBackgroundColor' => $bg_color,
+                            'textPadding' => 5,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
 
     /**
      * Define all possible widget types with their $labels/
@@ -438,6 +480,7 @@ HTML;
             'icon'         => '',
             'limit'        => 99999,
             'use_gradient' => false,
+            'palette'      => '',
             'class'        => "multiple-numbers",
             'filters'      => [],
             'rand'         => mt_rand(),
@@ -713,34 +756,7 @@ HTML;
                 'trigger'      => 'item',
                 'appendToBody' => true,
             ],
-            'toolbox' => [
-                'show'    => false,
-                'feature' => [
-                    'dataView'    => [
-                        'show'     => true,
-                        'readOnly' => true,
-                        'title'    => __('View data'),
-                        'emphasis' => [
-                            'iconStyle' => [
-                                'color' => $dark_fg_color,
-                                'textBackgroundColor' => $dark_bg_color,
-                                'textPadding' => 5,
-                            ],
-                        ],
-                    ],
-                    'saveAsImage' => [
-                        'show'  => true,
-                        'title' => __('Save as image'),
-                        'emphasis' => [
-                            'iconStyle' => [
-                                'color' => $dark_fg_color,
-                                'textBackgroundColor' => $dark_bg_color,
-                                'textPadding' => 5,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
             'series' => [
                 [
                     'type'              => 'pie',
@@ -1212,34 +1228,7 @@ HTML;
                 'top'          => $p['legend'] ? '40' : '20',
                 'containLabel' => true,
             ],
-            'toolbox' => [
-                'show'    => false,
-                'feature' => [
-                    'dataView'    => [
-                        'show'     => true,
-                        'readOnly' => true,
-                        'title'    => __('View data'),
-                        'emphasis' => [
-                            'iconStyle' => [
-                                'color' => $dark_fg_color,
-                                'textBackgroundColor' => $dark_bg_color,
-                                'textPadding' => 5,
-                            ],
-                        ],
-                    ],
-                    'saveAsImage' => [
-                        'show'  => true,
-                        'title' => __('Save as image'),
-                        'emphasis' => [
-                            'iconStyle' => [
-                                'color' => $dark_fg_color,
-                                'textBackgroundColor' => $dark_bg_color,
-                                'textPadding' => 5,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
             'series' => $echarts_series,
             'xAxis'  => [
                 'type' => 'category',
@@ -1605,34 +1594,7 @@ HTML;
                 'bottom'       => '3%',
                 'containLabel' => true,
             ],
-            'toolbox' => [
-                'show'    => false,
-                'feature' => [
-                    'dataView'    => [
-                        'show'     => true,
-                        'readOnly' => true,
-                        'title' => __('View data'),
-                        'emphasis' => [
-                            'iconStyle' => [
-                                'color' => $dark_fg_color,
-                                'textBackgroundColor' => $dark_bg_color,
-                                'textPadding' => 5,
-                            ],
-                        ],
-                    ],
-                    'saveAsImage' => [
-                        'show'  => true,
-                        'title' => __('Save as image'),
-                        'emphasis' => [
-                            'iconStyle' => [
-                                'color' => $dark_fg_color,
-                                'textBackgroundColor' => $dark_bg_color,
-                                'textPadding' => 5,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
+            'toolbox' => self::getEChartsToolboxOptions($dark_fg_color, $dark_bg_color),
             'xAxis'  => [
                 'type'        => 'category',
                 'data'        => $labels,

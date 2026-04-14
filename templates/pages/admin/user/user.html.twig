@@ -86,7 +86,7 @@
                             {% if not is_preference_form and show_sync_field %}
                                 {{ fields.htmlField(
                                     'sync_field',
-                                    item.fields['sync_field']|default(constant('Dropdown::EMPTY_VALUE')),
+                                    item.fields['sync_field']|default(constant('Dropdown::EMPTY_VALUE'))|e,
                                     __('Synchronization field')
                                 ) }}
                                 {{ fields.nullField() }}
@@ -106,7 +106,7 @@
                                 })) }}
                             {% elseif has_profile_right('config', constant('READ')) %}
                                 {% set tz_not_config = __('Timezone usage has not been activated.') ~ ' ' ~ __('Run the "%1$s" command to activate it.')|format('php bin/console database:enable_timezones') %}
-                                {{ fields.htmlField('', tz_not_config, __('Timezone'), field_options) }}
+                                {{ fields.htmlField('', tz_not_config|e, __('Timezone'), field_options) }}
                             {% endif %}
 
                             {% if not is_preference_form %}
@@ -268,7 +268,7 @@
                                     clearable: false,
                                     is_copyable: true,
                                     additional_attributes: {
-                                        autocomplete: 'off',
+                                        autocomplete: 'new-password',
                                     },
                                 }) }}
                                 {% if not external_auth %}
@@ -290,7 +290,13 @@
                                                     }
                                                 });
                                             </script>
-                                            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_password_{{ rand_field }}">
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal_password_{{ rand_field }}"
+                                                aria-label="{{ __('Change password') }}"
+                                            >
                                                 <i class="ti ti-lock"></i>
                                                 {{ __('Change password') }}
                                             </button>

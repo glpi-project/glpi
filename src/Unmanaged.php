@@ -153,6 +153,14 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         ];
 
         $tab[] = [
+            'id'        => '72',
+            'table'     => $this->getTable(),
+            'field'     => 'accepted',
+            'name'      => __('Approved device'),
+            'datatype'  => 'bool',
+        ];
+
+        $tab[] = [
             'id'        => '8',
             'table'     => 'glpi_entities',
             'field'     => 'completename',

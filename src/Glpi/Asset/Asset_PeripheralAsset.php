@@ -260,10 +260,11 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
-        $specificities = self::getRelationMassiveActionsSpecificities();
+        global $CFG_GLPI;
 
-        if (in_array($itemtype, $specificities['itemtypes'], true)) {
+        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
+
+        if (in_array($itemtype, $CFG_GLPI['directconnect_types'], true)) {
             $actions[$action_prefix . 'add']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Connect');
             $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off'></i>" . _sx('button', 'Disconnect');
         }
@@ -275,7 +276,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
-        $specificities['itemtypes'] = $CFG_GLPI['directconnect_types'];
+        $specificities['itemtypes'] = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
         $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
@@ -309,11 +310,15 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $used  = [];
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
-                $iterator = self::getUsedPeripherals($itemtype);
+                $iterator = self::getPeripheralAssets($asset, $itemtype);
+                $usediterator = self::getUsedPeripherals($itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
                     $datas[]           = $data;
+                }
+
+                foreach ($usediterator as $data) {
                     $used[$itemtype][] = $data['id'];
                 }
             }
@@ -334,7 +339,10 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'source_itemtype' => $asset::class,
                 'source_items_id' => $asset->getID(),
                 'link_types' => $CFG_GLPI['directconnect_types'],
+                'generic_source' => true,
                 'generic_target' => true,
+                'source_suffix' => '_asset',
+                'target_suffix' => '_peripheral',
                 'dropdown_options' => [
                     'entity'      => $asset->getEntityID(),
                     'entity_sons' => $asset->isRecursive(),
@@ -499,7 +507,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -867,8 +875,7 @@ TWIG, $twig_params);
             return 2;
         }
 
-        // Else we cannot define !
-        return 0;
+        return parent::getRelationMassiveActionsPeerForSubForm($ma);
     }
 
     /**

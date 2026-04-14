@@ -963,7 +963,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                                 field_class: 'col-4',
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ add_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ add_label }}</span></button>
                                 <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
                                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% endset %}

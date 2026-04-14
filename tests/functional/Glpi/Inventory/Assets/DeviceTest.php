@@ -35,9 +35,7 @@
 namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Tests\AbstractInventoryAsset;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class DeviceTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array

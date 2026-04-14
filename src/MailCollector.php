@@ -1274,7 +1274,7 @@ class MailCollector extends CommonDBTM
     public function cleanSubject($text)
     {
         $text = str_replace("=20", "\n", $text);
-        return $text;
+        return mb_substr($text, 0, 255, 'UTF-8');
     }
 
 
@@ -1641,6 +1641,17 @@ class MailCollector extends CommonDBTM
             }
 
             $contents = $this->getDecodedContent($part);
+
+            // Restore CRLF line endings for message/rfc822 (embedded email) attachments.
+            // The Laminas MIME parser strips all \r characters when splitting multipart
+            // boundaries (see Laminas\Mime\Decode::splitMime), which produces LF-only
+            // line endings. RFC 2822 requires CRLF, and without them, Quoted-Printable
+            // soft line breaks (=\r\n) become invalid (=\n), making the extracted EML
+            // unreadable in strict clients such as Outlook.
+            if (strtolower($content_type) === 'message/rfc822') {
+                $contents = preg_replace('/(?<!\r)\n/', "\r\n", $contents);
+            }
+
             if (file_put_contents($path . $filename, $contents)) {
                 $this->files[$filename] = $filename;
 
@@ -2256,7 +2267,7 @@ class MailCollector extends CommonDBTM
         $new_pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
-            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
+            . '(-(?<itemtype>[a-z\-]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
             . '\/(?<event>[a-z_]+)' // event
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
@@ -2265,7 +2276,7 @@ class MailCollector extends CommonDBTM
         if (preg_match($new_pattern, $header, $values) === 1) {
             return [
                 'uuid'     => $values['uuid'],
-                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'itemtype' => !empty($values['itemtype']) ? str_replace('-', '\\', $values['itemtype']) : null, // restore backslashes in namespaced classes
                 'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
                 'event'    => $values['event'],
             ];

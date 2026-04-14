@@ -783,6 +783,55 @@ final class Transfer extends CommonDBTM
                 $this->evaluateTransfer(Contract::class, $data['contracts_id'], $data['entities_id'], $data['is_recursive']);
             }
         }
+
+        if ($this->haveItemsToTransfer(Ticket::class)) {
+            // Clean DB
+            $DB->delete('glpi_tickets_contracts', ['glpi_contracts.id'  => null], [
+                'LEFT JOIN' => [
+                    'glpi_contracts'  => [
+                        'ON' => [
+                            'glpi_tickets_contracts'  => 'contracts_id',
+                            'glpi_contracts'          => 'id',
+                        ],
+                    ],
+                ],
+            ]);
+
+            $DB->delete('glpi_tickets_contracts', ['glpi_tickets.id'  => null], [
+                'LEFT JOIN' => [
+                    'glpi_tickets'  => [
+                        'ON' => [
+                            'glpi_tickets_contracts'  => 'tickets_id',
+                            'glpi_tickets'            => 'id',
+                        ],
+                    ],
+                ],
+            ]);
+
+            $iterator = $DB->request([
+                'SELECT'    => [
+                    'contracts_id',
+                    'glpi_contracts.entities_id',
+                    'glpi_contracts.is_recursive',
+                ],
+                'FROM'      => 'glpi_tickets_contracts',
+                'LEFT JOIN' => [
+                    'glpi_contracts' => [
+                        'ON' => [
+                            'glpi_tickets_contracts'  => 'contracts_id',
+                            'glpi_contracts'          => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    'tickets_id'  => $this->needtobe_transfer[Ticket::class],
+                ],
+            ]);
+
+            foreach ($iterator as $data) {
+                $this->evaluateTransfer(Contract::class, $data['contracts_id'], $data['entities_id'], $data['is_recursive']);
+            }
+        }
     }
 
     private function simulateSuppliers(): void
@@ -1256,6 +1305,10 @@ final class Transfer extends CommonDBTM
         if (in_array($itemtype, [Ticket::class, Problem::class, Change::class])) {
             $this->transferTaskCategory($itemtype, $ID, $newID);
             $this->transferLinkedSuppliers($itemtype, $ID, $newID);
+        }
+
+        if ($itemtype === Ticket::class) {
+            $this->transferTicketContracts($ID, $newID);
         }
 
         if (in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
@@ -1732,8 +1785,15 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $stmt->bind_param('sii', $itemtype, $ID, $newversID);
-                    $stmt->execute();
+                    $DB->executeStatement(
+                        $stmt,
+                        [
+                            $itemtype,
+                            $ID,
+                            $newversID,
+                        ],
+                        ['s', 'i', 'i']
+                    );
                     $result = $stmt->get_result();
                     $row = $result->fetch_assoc();
 
@@ -2313,6 +2373,21 @@ final class Transfer extends CommonDBTM
                 }
             }
         } else {// else unlink
+            $contract = new Contract();
+            $iterator = $DB->request([
+                'SELECT' => ['contracts_id'],
+                'FROM'   => 'glpi_contracts_items',
+                'WHERE'  => [
+                    'items_id'  => $ID,
+                    'itemtype'  => $itemtype,
+                ],
+            ]);
+
+            $contracts_to_check = [];
+            foreach ($iterator as $data) {
+                $contracts_to_check[] = $data['contracts_id'];
+            }
+
             $DB->delete(
                 'glpi_contracts_items',
                 [
@@ -2320,6 +2395,243 @@ final class Transfer extends CommonDBTM
                     'itemtype'  => $itemtype,
                 ]
             );
+
+            foreach ($contracts_to_check as $contract_id) {
+                $remain_tickets = $DB->request([
+                    'COUNT'  => 'cpt',
+                    'FROM'   => 'glpi_tickets_contracts',
+                    'WHERE'  => ['contracts_id' => $contract_id],
+                ])->current();
+
+                $remain_items = $DB->request([
+                    'COUNT'  => 'cpt',
+                    'FROM'   => 'glpi_contracts_items',
+                    'WHERE'  => ['contracts_id' => $contract_id],
+                ])->current();
+
+                if ($remain_tickets['cpt'] == 0 && $remain_items['cpt'] == 0) {
+                    $contract->delete(['id' => $contract_id], true);
+                }
+            }
+        }
+    }
+
+    /**
+     * Transfer contracts for tickets
+     *
+     * @param int $ID     Original ticket ID
+     * @param int $newID  New ticket ID
+     *
+     * @return void
+     **/
+    private function transferTicketContracts(int $ID, int $newID): void
+    {
+        global $DB;
+
+        if ($this->options['keep_contract']) {
+            $contract = new Contract();
+            $tickets_contracts_query = [
+                'SELECT' => ['id', 'contracts_id'],
+                'FROM'   => 'glpi_tickets_contracts',
+                'WHERE'  => [
+                    'tickets_id'  => $ID,
+                ],
+            ];
+            if (!empty($this->noneedtobe_transfer[Contract::class])) {
+                $tickets_contracts_query['WHERE'][] = [
+                    'NOT' => ['contracts_id' => $this->noneedtobe_transfer[Contract::class]],
+                ];
+            }
+            $iterator = $DB->request($tickets_contracts_query);
+
+            foreach ($iterator as $data) {
+                $need_clean_process = false;
+                $item_ID            = $data['contracts_id'];
+                $newcontractID      = -1;
+
+                if (isset($this->already_transfer[Contract::class][$item_ID])) {
+                    $newcontractID = $this->already_transfer[Contract::class][$item_ID];
+                    if ($newcontractID != $item_ID) {
+                        $need_clean_process = true;
+                    }
+                } else {
+                    $canbetransfer = true;
+
+                    $ticket_links = $DB->request([
+                        'COUNT'  => 'cpt',
+                        'FROM'   => 'glpi_tickets_contracts',
+                        'WHERE'  => [
+                            'contracts_id' => $item_ID,
+                            'NOT'          => ['tickets_id' => $this->needtobe_transfer[Ticket::class] ?? []],
+                        ],
+                    ])->current();
+
+                    if ($ticket_links['cpt'] > 0) {
+                        $canbetransfer = false;
+                    }
+
+                    if ($canbetransfer) {
+                        $types_iterator = Contract_Item::getDistinctTypes($item_ID);
+                        foreach ($types_iterator as $data_type) {
+                            $dtype = $data_type['itemtype'];
+
+                            if ($this->haveItemsToTransfer($dtype)) {
+                                $result = $DB->request([
+                                    'COUNT'  => 'cpt',
+                                    'FROM'   => 'glpi_contracts_items',
+                                    'WHERE'  => [
+                                        'contracts_id' => $item_ID,
+                                        'itemtype'     => $dtype,
+                                        'NOT'          => ['items_id' => $this->needtobe_transfer[$dtype]],
+                                    ],
+                                ])->current();
+
+                                if ($result['cpt'] > 0) {
+                                    $canbetransfer = false;
+                                }
+                            } else {
+                                $canbetransfer = false;
+                            }
+
+                            if (!$canbetransfer) {
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($canbetransfer) {
+                        $this->transferItem(Contract::class, $item_ID, $item_ID);
+                        $newcontractID = $item_ID;
+                    } else {
+                        $need_clean_process = true;
+                        $contract->getFromDB($item_ID);
+                        $contract_iterator = $DB->request([
+                            'SELECT' => 'id',
+                            'FROM'   => 'glpi_contracts',
+                            'WHERE'  => [
+                                'entities_id'  => $this->to,
+                                'name'         => $contract->fields['name'],
+                            ],
+                        ]);
+
+                        if (count($contract_iterator)) {
+                            $result = $contract_iterator->current();
+                            $newcontractID = $result['id'];
+                            $this->addToAlreadyTransfer(Contract::class, $item_ID, $newcontractID);
+                        }
+
+                        if ($newcontractID < 0) {
+                            unset($contract->fields['id']);
+                            $input                = $contract->fields;
+                            $input['entities_id'] = $this->to;
+                            $contract->fields = [];
+                            $newcontractID        = (int) $contract->add($input);
+                            if ($newcontractID > 0) {
+                                $this->transferItem(Contract::class, $item_ID, $newcontractID);
+                            }
+                        }
+                    }
+                }
+
+                if ($ID == $newID) {
+                    if ($item_ID != $newcontractID) {
+                        $DB->update(
+                            'glpi_tickets_contracts',
+                            [
+                                'contracts_id' => $newcontractID,
+                            ],
+                            [
+                                'id' => $data['id'],
+                            ]
+                        );
+                    }
+                } else {
+                    if ($item_ID != $newcontractID) {
+                        $DB->insert(
+                            'glpi_tickets_contracts',
+                            [
+                                'contracts_id' => $newcontractID,
+                                'tickets_id'   => $newID,
+                            ]
+                        );
+                    } else {
+                        $DB->update(
+                            'glpi_tickets_contracts',
+                            [
+                                'tickets_id' => $newID,
+                            ],
+                            [
+                                'id' => $data['id'],
+                            ]
+                        );
+                    }
+                }
+
+                if (
+                    $need_clean_process
+                    && $this->options['clean_contract']
+                ) {
+                    $remain_tickets = $DB->request([
+                        'COUNT'  => 'cpt',
+                        'FROM'   => 'glpi_tickets_contracts',
+                        'WHERE'  => ['contracts_id' => $item_ID],
+                    ])->current();
+
+                    $remain_items = $DB->request([
+                        'COUNT'  => 'cpt',
+                        'FROM'   => 'glpi_contracts_items',
+                        'WHERE'  => ['contracts_id' => $item_ID],
+                    ])->current();
+
+                    if ($remain_tickets['cpt'] == 0 && $remain_items['cpt'] == 0) {
+                        if ($this->options['clean_contract'] == 1) {
+                            $contract->delete(['id' => $item_ID]);
+                        }
+                        if ($this->options['clean_contract'] == 2) {
+                            $contract->delete(['id' => $item_ID], true);
+                        }
+                    }
+                }
+            }
+        } else {
+            $contract = new Contract();
+            $iterator = $DB->request([
+                'SELECT' => ['contracts_id'],
+                'FROM'   => 'glpi_tickets_contracts',
+                'WHERE'  => [
+                    'tickets_id'  => $ID,
+                ],
+            ]);
+
+            $contracts_to_check = [];
+            foreach ($iterator as $data) {
+                $contracts_to_check[] = $data['contracts_id'];
+            }
+
+            $DB->delete(
+                'glpi_tickets_contracts',
+                [
+                    'tickets_id'  => $ID,
+                ]
+            );
+
+            foreach ($contracts_to_check as $contract_id) {
+                $remain_tickets = $DB->request([
+                    'COUNT'  => 'cpt',
+                    'FROM'   => 'glpi_tickets_contracts',
+                    'WHERE'  => ['contracts_id' => $contract_id],
+                ])->current();
+
+                $remain_items = $DB->request([
+                    'COUNT'  => 'cpt',
+                    'FROM'   => 'glpi_contracts_items',
+                    'WHERE'  => ['contracts_id' => $contract_id],
+                ])->current();
+
+                if ($remain_tickets['cpt'] == 0 && $remain_items['cpt'] == 0) {
+                    $contract->delete(['id' => $contract_id], true);
+                }
+            }
         }
     }
 

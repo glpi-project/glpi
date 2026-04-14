@@ -1167,7 +1167,7 @@ msgstr "このアイテムの新しい%s"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "%d linked %s"
-msgstr "%d が %s リンク "
+msgstr "%d 件のリンクした %s"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
@@ -2938,7 +2938,7 @@ msgstr "警告"
 #: templates/components/itilobject/service_levels.html.twig
 #: src/RuleAction.php:396 src/Ticket.php:5324 src/SLM.php:279
 msgid "Assign"
-msgstr "担当"
+msgstr "割り当て"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Entity.php:264
 #: src/Glpi/Form/Destination/CommonITILField/EntityField.php:61
@@ -3641,7 +3641,7 @@ msgstr[0] "関係者"
 #: src/Stat.php:1840 src/Group.php:379 src/CommonITILObject.php:4212
 #: src/CommonITILObject.php:5005
 msgid "Assigned to"
-msgstr "担当"
+msgstr "割り当て先"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Edit notification settings"
@@ -10064,7 +10064,7 @@ msgstr "標準値なし"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Translation row for %s"
-msgstr ""
+msgstr "%s の翻訳行"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10087,7 +10087,7 @@ msgstr "標準値"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation actions"
-msgstr ""
+msgstr "翻訳操作"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10148,7 +10148,7 @@ msgstr "翻訳を入力"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Copy default value to translation"
-msgstr ""
+msgstr "標準値を翻訳にコピー"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
@@ -11067,7 +11067,7 @@ msgstr "カスタムイラストのプレビューと選択"
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Recommended size: %s"
-msgstr ""
+msgstr "推奨サイズ : %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited illustration preview"
@@ -11887,7 +11887,7 @@ msgstr "FAQ"
 
 #: install/update.php:75
 msgid "Missing security key file"
-msgstr "セキュリティキーファイルがありません"
+msgstr "セキュリティーキー ファイルがありません"
 
 #: install/update.php:80 src/Glpi/Console/Database/UpdateCommand.php:219
 #, php-format
@@ -11914,7 +11914,7 @@ msgstr "GLPIに戻る"
 #: install/update.php:134
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
-msgstr "警告！ 次のGLPIデータベースをアップグレードしようとしています: %s"
+msgstr "注意！ 名前「%s」の GLPI データベースを更新します"
 
 #: install/update.php:164
 msgid "Updating the database..."
@@ -11996,7 +11996,7 @@ msgstr "データベースの初期化"
 
 #: install/install.php:282 src/Glpi/Console/Database/InstallCommand.php:230
 msgid "Security key cannot be generated!"
-msgstr "セキュリティキーを生成できません！"
+msgstr "セキュリティーキーを生成できません！"
 
 #: install/install.php:305
 msgid "You didn't select a database!"
@@ -15691,7 +15691,7 @@ msgstr "サブエンティティーを含むエンティティーは削除でき
 
 #: src/Entity.php:377
 msgid "You do not have rights for this entity."
-msgstr ""
+msgstr "このエンティティーに対する権限がありません"
 
 #: src/Entity.php:396
 msgid "You can't add an entity without name"
@@ -20058,13 +20058,13 @@ msgstr "TLS Key ファイルのパスが不正"
 
 #: src/CommonGLPI.php:730
 msgid "Creating from template"
-msgstr ""
+msgstr "テンプレートから作成中"
 
 #: src/CommonGLPI.php:731
 msgid ""
 "You are currently creating an object from a template. You need to save it, "
 "in the main tab, before editing data in other tabs."
-msgstr ""
+msgstr "テンプレートからオブジェクトを作成しています。ほかのタブのデータを編集する前に、必ずメインタブで保存してください。"
 
 #: src/CommonGLPI.php:1160
 msgid "First"
@@ -22656,15 +22656,15 @@ msgstr "更新中にエラーが発生しました。エラー : %s"
 
 #: src/Update.php:292
 msgid "Creating default forms and helpdesk tiles if needed…"
-msgstr ""
+msgstr "必要に応じて、標準フォームとヘルプデスクを作成しています"
 
 #: src/Update.php:297
 msgid "Default forms and helpdesk tiles created."
-msgstr ""
+msgstr "標準フォームとヘルプデスクのタイルを作成しました。"
 
 #: src/Update.php:301
 msgid "Initializing default rules if needed…"
-msgstr ""
+msgstr "必要に応じて、標準ルールを初期化しています..."
 
 #: src/Update.php:305 src/Toolbox.php:2295
 msgid "Default rules initialized."
@@ -22680,7 +22680,7 @@ msgstr "更新の最終処理中..."
 
 #: src/Update.php:390
 msgid "Generating security keys if needed…"
-msgstr ""
+msgstr "必要に応じて、セキュリティーキーを生成しています..."
 
 #: src/Update.php:398
 #, php-format
@@ -23830,7 +23830,7 @@ msgstr "SLAステータスと技術者グループによるチケット"
 
 #: src/Glpi/Dashboard/Provider.php:912
 msgid "without"
-msgstr "未記載"
+msgstr "未記入"
 
 #: src/Glpi/Dashboard/Provider.php:1634
 #: src/Glpi/Dashboard/FakeProvider.php:544 src/CommonITILObject.php:4807
@@ -27507,11 +27507,11 @@ msgstr "移行が必要な %1$s フィールドと %2$s 構成エントリが見
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:85
 msgid "Unable to change security key!"
-msgstr "セキュリティキーを変更できません。"
+msgstr "セキュリティーキーを変更できません。"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:93
 msgid "New security key generated; database updated."
-msgstr "新しいセキュリティキーを生成しました。 データベースを更新しました。"
+msgstr "新しいセキュリティーキーを生成しました。 データベースを更新しました。"
 
 #: src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php:52
 #: src/Glpi/Console/Migration/FormCreatorPluginToCoreCommand.php:54
@@ -31134,7 +31134,7 @@ msgstr "標準ルールを初期化しています..."
 
 #: src/Toolbox.php:2297
 msgid "Generating security keys…"
-msgstr "秘密キーを生成しています..."
+msgstr "セキュリティーキーを生成しています..."
 
 #: src/Toolbox.php:2303
 msgid "Defining configuration defaults…"

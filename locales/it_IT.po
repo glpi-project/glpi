@@ -2732,7 +2732,7 @@ msgstr "TTO"
 #: src/Glpi/Dashboard/FakeProvider.php:541
 #: src/Glpi/ContentTemplates/Parameters/TicketParameters.php:80
 msgid "Time to own"
-msgstr "Tempo di assegnazione"
+msgstr "Tempo di presa in carico"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/SLATTRField.php:48
@@ -6262,8 +6262,8 @@ msgid ""
 "The system name field corresponds to what will be used when development is "
 "involved. Examples: API calls, webhooks, etc."
 msgstr ""
-"Il campo nome di sistema corrisponde a cosa verrà usato nello è coinvolto lo"
-" sviluppo. Esempi: API calls, webhooks, ecc."
+"Il campo del nome del sistema corrisponde a ciò che verrà utilizzato quando "
+"è coinvolto lo sviluppo. Esempi: API calls, webhooks, ecc."
 
 #: templates/pages/assets/customfield.html.twig
 msgid ""
@@ -15852,12 +15852,12 @@ msgstr "SLA"
 #: src/RuleTicket.php:372 src/OLA.php:57 src/Ticket.php:2852
 #: src/Ticket.php:2860 src/Ticket.php:2874 src/Ticket.php:2887
 msgid "OLA"
-msgstr "OLA - Operational Level Agreements"
+msgstr "OLA"
 
 #: src/NotificationTargetTicket.php:573 src/Ticket.php:2677
 #: src/Ticket.php:2860 src/Ticket.php:5512
 msgid "Internal time to own"
-msgstr "Intervallo di tempo interno per l'assegnazione"
+msgstr "Tempo di presa in carico interno"
 
 #: src/NotificationTargetTicket.php:578 src/RuleTicket.php:363
 #: src/Ticket.php:2646 src/Ticket.php:2874 src/Ticket.php:5528
@@ -18915,7 +18915,7 @@ msgstr "Numero di chiamate risolte"
 
 #: src/Stat.php:536
 msgid "Number of late tickets"
-msgstr "Numero di chiamate arretrate"
+msgstr "Numero di chiamate in ritardo"
 
 #: src/Stat.php:537
 msgid "Number of closed tickets"
@@ -22043,9 +22043,9 @@ msgstr[2] "Note"
 #: src/NotificationTemplateTranslation.php:54
 msgid "Template translation"
 msgid_plural "Template translations"
-msgstr[0] "Modello per le traduzioni"
-msgstr[1] "Modello per le traduzioni"
-msgstr[2] "Modello per le traduzioni"
+msgstr[0] "Traduzione del modello"
+msgstr[1] "Traduzioni del modello"
+msgstr[2] "Traduzioni del modello"
 
 #: src/NotificationTemplateTranslation.php:353
 msgid "List of values"
@@ -23890,7 +23890,7 @@ msgstr "Tempo passato dall'apertura"
 
 #: src/Ticket.php:2626
 msgid "Time to own + Progress"
-msgstr "Tempo di assegnazione + avanzamento"
+msgstr "Tempo di presa in carico + avanzamento"
 
 #: src/Ticket.php:2636
 msgid "Time to own exceeded"
@@ -23898,7 +23898,7 @@ msgstr "Tempo di presa in carico superato"
 
 #: src/Ticket.php:2657
 msgid "Internal time to resolve + Progress"
-msgstr "Intervallo di tempo interno per l'assegnazione + progresso"
+msgstr "Tempo di risoluzione interno + progresso"
 
 #: src/Ticket.php:2667
 msgid "Internal time to resolve exceeded"
@@ -23906,11 +23906,11 @@ msgstr "Intervallo di tempo interno per la risoluzione scaduto"
 
 #: src/Ticket.php:2688
 msgid "Internal time to own + Progress"
-msgstr "Intervallo di tempo interno per l'assegnazione + progresso"
+msgstr "Tempo di presa in carico interno + progresso"
 
 #: src/Ticket.php:2698
 msgid "Internal time to own exceeded"
-msgstr "Intervallo di tempo interno per l'assegnazione scaduto"
+msgstr "Tempo interno di presa in carico scaduto"
 
 #: src/Ticket.php:2709
 msgid "Next escalation level"
@@ -24827,7 +24827,7 @@ msgstr "Copia di %s"
 #: src/Glpi/Dashboard/Provider.php:304 src/Glpi/Dashboard/Grid.php:1306
 #: src/Glpi/Dashboard/FakeProvider.php:212
 msgid "Late tickets"
-msgstr "Chiamate arretrate"
+msgstr "Chiamate in ritardo"
 
 #: src/Glpi/Dashboard/Provider.php:346 src/Glpi/Dashboard/FakeProvider.php:213
 msgid "Tickets waiting for approval"

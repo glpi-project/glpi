@@ -47,12 +47,10 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use RuleImportAsset;
 use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
-#[Group('single-thread')]
 class InventoryTest extends InventoryTestCase
 {
     private function checkComputer1($computers_id)
@@ -172,6 +170,10 @@ class InventoryTest extends InventoryTestCase
         $this->assertIsArray($mmodel);
         $models_id = $mmodel['id'];
 
+        $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
+        $this->assertIsArray($autoupdatesystems);
+        $autoupdatesystems_id = $autoupdatesystems['id'];
+
         $expected = [
             'id' => $monitor_fields['id'],
             'entities_id' => 0,
@@ -203,7 +205,7 @@ class InventoryTest extends InventoryTestCase
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 1,
-            'autoupdatesystems_id' => 0,
+            'autoupdatesystems_id' => $autoupdatesystems_id,
             'uuid' => null,
             'is_recursive' => 0,
             'groups_id' => [],
@@ -8332,6 +8334,94 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($result['users_id'], $computer->fields['users_id']);
     }
 
+    public function testRuleAssetWithAutoAndInventoryUsers(): void
+    {
+        global $DB;
+
+        $target_user = $this->createItem(\User::class, [
+            'name' => 'johndoe@email.fr',
+        ]);
+
+        $rule     = new \Rule();
+        $crit     = new \RuleCriteria();
+        $action   = new \RuleAction();
+
+        $rule_id = $rule->add([
+            'is_active'    => 1,
+            'name'         => 'Test _auto lost with _inventory_users',
+            'match'        => 'AND',
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleAsset::ONADD | \RuleAsset::ONUPDATE,
+            'is_recursive' => 1,
+        ]);
+        $this->assertGreaterThan(0, $rule_id);
+
+        $this->assertGreaterThan(0, $crit->add([
+            'rules_id'  => $rule_id,
+            'criteria'  => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'Computer',
+        ]));
+
+        $this->assertGreaterThan(0, $crit->add([
+            'rules_id'  => $rule_id,
+            'criteria'  => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 1,
+        ]));
+
+        $this->assertGreaterThan(0, $crit->add([
+            'rules_id'  => $rule_id,
+            'criteria'  => 'contact',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.*?)@/',
+        ]));
+
+        $this->assertGreaterThan(0, $action->add([
+            'rules_id'    => $rule_id,
+            'action_type' => 'regex_result',
+            'field'       => '_affect_user_by_regex',
+            'value'       => '#0@email.fr',
+        ]));
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>glpixps-rule-auto-test</NAME>
+      <UUID>25C1BB60-RULE-AUTO-TEST-UNIT-000000000000</UUID>
+    </HARDWARE>
+    <BIOS>
+      <MSN>AUTOTEST01</MSN>
+    </BIOS>
+    <USERS>
+      <DOMAIN>test</DOMAIN>
+      <LOGIN>johndoe</LOGIN>
+    </USERS>
+    <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test_rule_asset_auto_with_users</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $agents = $DB->request([
+            'FROM'  => \Agent::getTable(),
+            'WHERE' => ['deviceid' => 'test_rule_asset_auto_with_users'],
+        ]);
+        $this->assertCount(1, $agents);
+        $agent = $agents->current();
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($agent['items_id']));
+
+        $this->assertSame(
+            $target_user->fields['id'],
+            $computer->fields['users_id'],
+        );
+    }
+
     public function testLocationHierarchy()
     {
         global $DB;
@@ -9725,6 +9815,110 @@ JSON;
         $this->assertNotEquals(0, $computer->fields['manufacturers_id']);
         $this->assertTrue($manufacturer->getFromDB($computer->fields['manufacturers_id']));
         $this->assertSame('AnotherManufacturer', $manufacturer->fields['name']);
+    }
 
+    public function testMetadata(): void
+    {
+        $json_source = <<<JSON
+{
+    "content": {
+        "bios": {
+            "assettag": "COMP1",
+            "bdate": "2016-01-03",
+            "bmanufacturer": "%manufacturer%",
+            "bversion": "1.3.3",
+            "mmanufacturer": "%manufacturer%",
+            "mmodel": "07TYC2",
+            "msn": "\/2FAGP34\/CN124536460043\/",
+            "skunumber": "0704",
+            "smanufacturer": "%manufacturer%",
+            "smodel": "XPS 13 9350",
+            "ssn": "2FAGP34"
+        },
+        "hardware": {
+            "name": "Test manufacturer PC",
+            "uuid": "4BDRGGFE-0046-4710-8047-B2C04F503732"
+        },
+        "versionclient": "GLPI-Agent_v1.10-dev"
+    },
+    "deviceid": "acomputer-2021-01-26-14-32-36",
+    "tag": "<img src=x onerror=\"alert('XSS Spotted!');\">",
+    "action": "inventory",
+    "itemtype": "Computer"
+}
+JSON;
+
+        $inv = $this->doInventory(json_decode($json_source));
+
+        //check created computer
+        $computer = $inv->getItem();
+
+        $agent = new \Agent();
+        $this->assertTrue(
+            $agent->getFromDBByCrit(
+                [
+                    'itemtype' => $computer::class,
+                    'items_id' => $computer->getID(),
+                ]
+            )
+        );
+
+        $this->assertSame('', $agent->fields['tag']);
+    }
+
+    public function testTagRemoval(): void
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>ToBeRemoved</KEYVALUE>
+    </ACCOUNTINFO>
+    <BIOS>
+      <MMANUFACTURER>ASUSTeK COMPUTER INC.</MMANUFACTURER>
+      <MSN>315251128227471XYZ</MSN>
+    </BIOS>
+    <HARDWARE>
+      <CHASSIS_TYPE>Desktop</CHASSIS_TYPE>
+      <NAME>tag-issue-demo-01</NAME>
+      <UUID>22a128a9-2fba-4dbb-b6de-f255cfec9b22</UUID>
+      <VMSYSTEM>Physical</VMSYSTEM>
+    </HARDWARE>
+    <VERSIONCLIENT>GLPI-Inventory_v1.17</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>tag-issue-demo-2026-03-31</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+        $agent = $inventory->getAgent();
+        //TAG do not change on network equipments inventory
+        $this->assertSame('ToBeRemoved', $agent->fields['tag']);
+
+        // remove tag
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <BIOS>
+      <MMANUFACTURER>ASUSTeK COMPUTER INC.</MMANUFACTURER>
+      <MSN>315251128227471XYZ</MSN>
+    </BIOS>
+    <HARDWARE>
+      <CHASSIS_TYPE>Desktop</CHASSIS_TYPE>
+      <NAME>tag-issue-demo-01</NAME>
+      <UUID>22a128a9-2fba-4dbb-b6de-f255cfec9b22</UUID>
+      <VMSYSTEM>Physical</VMSYSTEM>
+    </HARDWARE>
+    <VERSIONCLIENT>GLPI-Inventory_v1.17</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>tag-issue-demo-2026-03-31</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>';
+
+        $inventory = $this->doInventory($xml_source, true);
+        $agent = $inventory->getAgent();
+        $this->assertSame('', $agent->fields['tag']);
     }
 }

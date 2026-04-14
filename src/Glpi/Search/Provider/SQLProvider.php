@@ -62,6 +62,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Features\AssignableItemInterface;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
@@ -79,6 +81,7 @@ use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Link;
+use mysqli_result;
 use Notification;
 use OLA;
 use Override;
@@ -395,7 +398,7 @@ final class SQLProvider implements SearchProviderInterface
                             expression: QueryFunction::concat([
                                 "{$table}{$addtable}.completename",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                "glpi_profiles_users{$addtable2}.entities_id",
+                                "glpi_profiles_users{$addtable2}.profiles_id",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
                                 "glpi_profiles_users{$addtable2}.is_recursive",
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
@@ -734,49 +737,43 @@ final class SQLProvider implements SearchProviderInterface
                 if (!Session::haveRightsOr('project', [Project::READALL, Project::READMY])) {
                     // Can only see the tasks assigned to the user or one of his groups
                     $teamtable = 'glpi_projecttaskteams';
-                    $group_criteria = [];
+                    $user_criteria = [
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID(),
+                    ];
+                    $or_criteria = [$user_criteria];
                     if (count($_SESSION['glpigroups'])) {
                         $group_criteria = [
                             "$teamtable.itemtype" => Group::class,
                             "$teamtable.items_id" => $_SESSION['glpigroups'],
                         ];
+                        $or_criteria[] = $group_criteria;
                     }
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
                     $criteria = [
                         "glpi_projects.is_template" => 0,
-                        'OR' => [
-                            $user_criteria,
-                        ],
+                        'OR' => $or_criteria,
                     ];
-                    if ($group_criteria !== []) {
-                        $criteria['OR'][] = $group_criteria;
-                    }
                 } elseif (Session::haveRight('project', Project::READMY)) {
                     // User must be the manager, in the manager group or in the project team
                     $teamtable = 'glpi_projectteams';
-                    $group_criteria = [];
+                    $user_criteria = [
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID(),
+                    ];
+                    $or_criteria = [
+                        $user_criteria,
+                        'glpi_projects.users_id' => Session::getLoginUserID(),
+                    ];
                     if (count($_SESSION['glpigroups'])) {
                         $group_criteria = [
                             "$teamtable.itemtype" => Group::class,
                             "$teamtable.items_id" => $_SESSION['glpigroups'],
                         ];
+                        $or_criteria[] = $group_criteria;
                     }
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
                     $criteria = [
-                        'OR' => [
-                            $user_criteria,
-                            'glpi_projects.users_id' => Session::getLoginUserID(),
-                        ],
+                        'OR' => $or_criteria,
                     ];
-                    if ($group_criteria !== []) {
-                        $criteria['OR'][] = $group_criteria;
-                    }
                 }
                 break;
 
@@ -787,17 +784,20 @@ final class SQLProvider implements SearchProviderInterface
                         "$teamtable.itemtype" => User::class,
                         "$teamtable.items_id" => Session::getLoginUserID(),
                     ];
-                    $group_criteria = [
-                        "$teamtable.itemtype" => Group::class,
-                        "$teamtable.items_id" => $_SESSION['glpigroups'],
+                    $or_criteria = [
+                        "glpi_projects.users_id" => Session::getLoginUserID(),
+                        $user_criteria,
                     ];
+                    if (count($_SESSION['glpigroups'])) {
+                        $group_criteria = [
+                            "$teamtable.itemtype" => Group::class,
+                            "$teamtable.items_id" => $_SESSION['glpigroups'],
+                        ];
+                        $or_criteria[] = ["glpi_projects.groups_id" => $_SESSION['glpigroups']];
+                        $or_criteria[] = $group_criteria;
+                    }
                     $criteria = [
-                        "OR" => [
-                            "glpi_projects.users_id" => Session::getLoginUserID(),
-                            $user_criteria,
-                            "glpi_projects.groups_id" => $_SESSION['glpigroups'],
-                            $group_criteria,
-                        ],
+                        "OR" => $or_criteria,
                     ];
                 }
                 break;
@@ -1453,7 +1453,7 @@ final class SQLProvider implements SearchProviderInterface
                         'OR' => [],
                     ];
                     if (in_array($searchtype, ['equals', 'notequals'])) {
-                        $append_criterion_with_search($criteria['OR'], "$table.id");
+                        $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.id"));
 
                         if ($searchtype === 'notequals') {
                             $nott = !$nott;
@@ -1481,7 +1481,7 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 } elseif ($searchtype === 'empty') {
                     $criteria = [];
-                    $append_criterion_with_search($criteria, "$table.id");
+                    $append_criterion_with_search($criteria, $DB::quoteName("$table.id"));
                     return $criteria;
                 }
                 $toadd   = '';
@@ -1524,9 +1524,9 @@ final class SQLProvider implements SearchProviderInterface
                             $name2 => $SEARCH,
                             'RAW'  => [
                                 (string) QueryFunction::concat([
-                                    new QueryExpression("`$name1`"),
-                                    new QueryExpression(new QueryExpression($DB::quoteValue(' '))),
-                                    new QueryExpression("`$name2`"),
+                                    new QueryExpression($DB::quoteName($name1)),
+                                    new QueryExpression($DB::quoteValue(' ')),
+                                    new QueryExpression($DB::quoteName($name2)),
                                 ]) => $SEARCH,
                             ],
                         ],
@@ -1539,15 +1539,15 @@ final class SQLProvider implements SearchProviderInterface
                     $criteria = [
                         $tmplink => [],
                     ];
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
-                    $append_criterion_with_search($criteria[$tmplink], "$table.$field");
+                    $append_criterion_with_search($criteria[$tmplink], $DB::quoteName("$table.$name1"));
+                    $append_criterion_with_search($criteria[$tmplink], $DB::quoteName("$table.$name2"));
+                    $append_criterion_with_search($criteria[$tmplink], $DB::quoteName("$table.$field"));
                     $append_criterion_with_search(
                         $criteria[$tmplink],
                         QueryFunction::concat([
-                            "$table.$name1",
+                            $DB::quoteName("$table.$name1"),
                             new QueryExpression($DB::quoteValue(' ')),
-                            "$table.$name2",
+                            $DB::quoteName("$table.$name2"),
                         ])
                     );
 
@@ -1623,7 +1623,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         case 'empty':
                             $criteria = [];
-                            $append_criterion_with_search($criteria, "$table.id");
+                            $append_criterion_with_search($criteria, $DB::quoteName("$table.id"));
                             return $criteria;
                     }
                 }
@@ -1639,7 +1639,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
                     $regs[1] .= $regs[2];
-                    return [new QueryExpression("(INET_ATON(`$table`.`$field`) " . $regs[1] . " INET_ATON('" . $regs[3] . "'))")];
+                    return [new QueryExpression("(INET_ATON(" . $DB::quoteName("$table.$field") . ") " . $regs[1] . " INET_ATON(" . $DB::quoteValue($regs[3]) . "))")];
                 }
                 break;
 
@@ -1821,10 +1821,11 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        $tocompute      = "`$table`.`$field`";
-        $tocomputetrans = "`" . $table . "_trans_" . $field . "`.`value`";
+        $tocompute      = $DB::quoteName("$table.$field");
+        $tocomputetrans = $DB::quoteName($table . "_trans_" . $field . ".value");
         if (isset($opt["computation"])) {
             $is_query_exp = is_a($opt["computation"], QueryExpression::class);
+            /** @var string|QueryExpression $tocompute */
             $tocompute = $opt["computation"];
             $tocompute = str_replace($DB::quoteName('TABLE'), 'TABLE', $tocompute);
             $tocompute = str_replace("TABLE", $DB::quoteName("$table"), $tocompute);
@@ -1837,14 +1838,14 @@ final class SQLProvider implements SearchProviderInterface
         if (isset($opt["datatype"])) {
             if ($opt["datatype"] === "mio") {
                 // Parse value as it may contain a few different formats
-                $val = Toolbox::getMioSizeFromString($val);
+                $val = Toolbox::getMioSizeFromString((string) $val);
             }
 
             switch ($opt["datatype"]) {
                 case "itemtypename":
                     if (in_array($searchtype, ['equals', 'notequals'])) {
                         $criteria = [];
-                        $append_criterion_with_search($criteria, "$table.$field");
+                        $append_criterion_with_search($criteria, $DB::quoteName("$table.$field"));
                         return $criteria;
                     }
                     break;
@@ -1856,6 +1857,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
                         if ($searchtype === 'empty' && $opt["field"] === 'name') {
+                            /** @var string $tocompute */
                             $l = $nott ? 'AND' : 'OR';
                             $criteria = [
                                 $l => [
@@ -1867,7 +1869,7 @@ final class SQLProvider implements SearchProviderInterface
                             $append_criterion_with_search($criteria[$l], $tocompute);
                         } else {
                             $criteria = [];
-                            $append_criterion_with_search($criteria, "$table.id");
+                            $append_criterion_with_search($criteria, $DB::quoteName("$table.id"));
                         }
                         return $criteria;
                     }
@@ -1897,7 +1899,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype) {
                         $date_computation = $tocompute;
                     }
-                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"])) {
+                    if (!isset($opt["computation"]) && in_array($searchtype, ["contains", "notcontains"]) && $date_computation !== null) {
                         // FIXME Maybe address the existing fixme instead of bypassing it when the field is computed (uses a function)
                         // FIXME `CONVERT` operation should not be necessary if we only allow legitimate date/time chars
                         $default_charset = DBConnection::getDefaultCharset();
@@ -1957,7 +1959,13 @@ final class SQLProvider implements SearchProviderInterface
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                            $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
+                            $ret .= sprintf(
+                                "%s %s%s %s",
+                                $date_computation,
+                                $regs[1],
+                                $regs[2],
+                                $DB::quoteValue($regs[3])
+                            );
                             if ($nott) {
                                 $ret .= ")";
                             }
@@ -1981,6 +1989,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($searchtype == 'notequals') {
                         $nott = !$nott;
                     }
+                    /** @var string $tocompute */
                     $criteria = [$tocompute => ['&', $val]];
                     return $nott ? ['NOT' => $criteria] : $criteria;
 
@@ -2015,7 +2024,16 @@ final class SQLProvider implements SearchProviderInterface
                             }
                         }
                         $regs[1] .= $regs[2];
-                        return [new QueryExpression("$tocompute {$regs[1]} {$regs[3]}{$regs[4]}")];
+                        return [
+                            new QueryExpression(
+                                sprintf(
+                                    "%s %s %s",
+                                    $tocompute,
+                                    $regs[1],
+                                    $DB::quoteValue($regs[3] . $regs[4])
+                                )
+                            ),
+                        ];
                     }
 
                     if (is_numeric($val) && !$decimal_contains) {
@@ -2033,8 +2051,8 @@ final class SQLProvider implements SearchProviderInterface
                             ) {
                                 $ADD = [new QueryExpression("$tocompute IS NULL")];
                             }
-                            $val1 = $numeric_val - $searchopt[$ID]["width"];
-                            $val2 = $numeric_val + $searchopt[$ID]["width"];
+                            $val1 = floatval($numeric_val - $searchopt[$ID]["width"]);
+                            $val2 = floatval($numeric_val + $searchopt[$ID]["width"]);
                             if ($nott) {
                                 return [
                                     'OR' => array_merge(
@@ -2077,6 +2095,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'text':
                     if ($searchtype === 'empty') {
+                        /** @var string $tocompute */
                         $l = $nott ? 'AND' : 'OR';
                         $criteria = [
                             $l => [
@@ -2192,7 +2211,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $append_criterion_with_search(
                         $sub_query_criteria['WHERE'],
-                        "$linked_fk"
+                        $DB::quoteName($linked_fk)
                     );
 
                     $criteria = [
@@ -2224,7 +2243,7 @@ final class SQLProvider implements SearchProviderInterface
                     ];
                     $append_criterion_with_search(
                         $inner_subquery_criteria['WHERE']['OR'],
-                        "$field"
+                        $DB::quoteName($field)
                     );
                     $subquery_criteria_where = [
                         'OR' => [
@@ -2257,7 +2276,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     $append_criterion_with_search(
                         $inner_subquery_criteria['WHERE'],
-                        "$field"
+                        $DB::quoteName($field)
                     );
                     $subquery_criteria_where = [
                         "$linked_fk" => new QuerySubQuery($inner_subquery_criteria),
@@ -2289,9 +2308,9 @@ final class SQLProvider implements SearchProviderInterface
                 && ($itemtype == AllAssets::getType()
                     || $table != $itemtype::getTable())
             ) {
-                $append_criterion_with_search($criteria['OR'], "$table.id");
+                $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.id"));
             } else {
-                $append_criterion_with_search($criteria['OR'], "$table.$field");
+                $append_criterion_with_search($criteria['OR'], $DB::quoteName("$table.$field"));
             }
             if ($searchtype == 'notequals') {
                 $nott = !$nott;
@@ -2326,7 +2345,7 @@ final class SQLProvider implements SearchProviderInterface
      * Generic Function to add Default left join to a request
      *
      * @param class-string<CommonDBTM> $itemtype   Reference item type
-     * @param class-string<CommonDBTM> $ref_table  Reference table
+     * @param string $ref_table  Reference table
      * @param array &$already_link_tables  Array of tables already joined
      *
      * @return array Left join criteria array
@@ -2690,6 +2709,8 @@ final class SQLProvider implements SearchProviderInterface
      */
     private static function parseJoinString(string $raw_joins): array
     {
+        global $DB;
+
         $joins = [];
         $raw_joins = trim($raw_joins);
         if (empty($raw_joins)) {
@@ -2769,6 +2790,11 @@ final class SQLProvider implements SearchProviderInterface
         // Auto link
         if ($ref_table === $new_table && empty($complexjoin) && !$is_fkey_composite_on_self) {
             $transitemtype = getItemTypeForTable($new_table);
+            if ($new_table === \Glpi\Dropdown\Dropdown::getTable() && is_a($itemtype, \Glpi\Dropdown\Dropdown::class, true)) {
+                // `getItemTypeForTable()` does not work for generic dropdowns, since the table refers to an abstract class.
+                // Force the translatable itemtype as a workaround.
+                $transitemtype = $itemtype;
+            }
             if (Session::haveTranslations($transitemtype, $field)) {
                 $transAS            = $nt . '_trans_' . $field;
                 return self::getDropdownTranslationJoinCriteria(
@@ -3154,7 +3180,7 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $nt => 'itemtype',
-                                        new QueryExpression("'$used_itemtype'"),
+                                        new QueryExpression($DB::quoteValue($used_itemtype)),
                                     ],
                                 ],
                             ],
@@ -3578,6 +3604,94 @@ final class SQLProvider implements SearchProviderInterface
             return $joins;
         }
 
+        if ($to_type === Form::class && $from_referencetype && is_a($from_referencetype, CommonITILObject::class, true)) {
+            // From CommonITILObject to Form
+            $dest_items_table = AnswersSet_FormDestinationItem::getTable();
+            $dest_items_alias = $dest_items_table . $alias_suffix;
+            if (!in_array($dest_items_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $dest_items_alias;
+                $joins['LEFT JOIN']["`$dest_items_table` AS `$dest_items_alias`"] = [
+                    'ON' => [
+                        $dest_items_alias => 'items_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$dest_items_alias.itemtype" => $from_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            $answerssets_table = AnswersSet::getTable();
+            $answerssets_alias = $answerssets_table . $alias_suffix;
+            if (!in_array($answerssets_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $answerssets_alias;
+                $joins['LEFT JOIN']["`$answerssets_table` AS `$answerssets_alias`"] = [
+                    'ON' => [
+                        $answerssets_alias => 'id',
+                        $dest_items_alias => 'forms_answerssets_id',
+                    ],
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $answerssets_alias => 'forms_forms_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
+        if ($from_referencetype === Form::class && $to_type && is_a($to_type, CommonITILObject::class, true)) {
+            // From Form to CommonITILObject
+            $answerssets_table = AnswersSet::getTable();
+            $answerssets_alias = $answerssets_table . $alias_suffix;
+            if (!in_array($answerssets_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $answerssets_alias;
+                $joins['LEFT JOIN']["`$answerssets_table` AS `$answerssets_alias`"] = [
+                    'ON' => [
+                        $answerssets_alias => 'forms_forms_id',
+                        $from_table => 'id',
+                    ],
+                ];
+            }
+            $dest_items_table = AnswersSet_FormDestinationItem::getTable();
+            $dest_items_alias = $dest_items_table . $alias_suffix;
+            if (!in_array($dest_items_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $dest_items_alias;
+                $joins['LEFT JOIN']["`$dest_items_table` AS `$dest_items_alias`"] = [
+                    'ON' => [
+                        $dest_items_alias => 'forms_answerssets_id',
+                        $answerssets_alias => 'id',
+                        [
+                            'AND' => [
+                                "$dest_items_alias.itemtype" => $to_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $dest_items_alias => 'items_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
         // Generic JOIN
         $from_obj      = getItemForItemtype($from_referencetype);
         $from_item_obj = null;
@@ -3824,6 +3938,8 @@ final class SQLProvider implements SearchProviderInterface
      **/
     public static function getHavingCriteria(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): array
     {
+        global $DB;
+
         $searchopt  = SearchOption::getOptionsForItemtype($itemtype);
         if (!isset($searchopt[$ID]['table'])) {
             return [];
@@ -3967,7 +4083,7 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        return [new QueryExpression(self::makeTextCriteria("`$NAME`", $val, $NOT, ''))];
+        return [new QueryExpression(self::makeTextCriteria($DB::quoteName($NAME), $val, $NOT, ''))];
     }
 
 
@@ -4141,7 +4257,11 @@ final class SQLProvider implements SearchProviderInterface
 
                         $add_minus = '';
                         if (isset($searchopt[$ID]["datafields"][3])) {
-                            $add_minus = "- `$table$addtable`.`" . $searchopt[$ID]["datafields"][3] . "`";
+                            $add_minus = sprintf(
+                                "- %s.%s",
+                                $DB::quoteName($table . $addtable),
+                                $DB::quoteName($searchopt[$ID]["datafields"][3]),
+                            );
                         }
                         $criterion = QueryFunction::dateAdd(
                             date: "{$table}{$addtable}.{$searchopt[$ID]['datafields'][1]}",
@@ -4615,7 +4735,7 @@ final class SQLProvider implements SearchProviderInterface
                         empty($ORDER) // No sort clause is defined
                         && $data['search']['start'] == 0 // First page of results
                     ) {
-                        $tmpquery .= " LIMIT " . $data['search']['list_limit'];
+                        $tmpquery .= " LIMIT " . (int) $data['search']['list_limit'];
                     }
 
                     // Wrap inner union queries to support potential limit clause
@@ -4777,7 +4897,7 @@ final class SQLProvider implements SearchProviderInterface
                 }
             } elseif (
                 isset($criterion['value'])
-                && strlen($criterion['value']) > 0
+                && (string) $criterion['value'] !== ''
             ) { // view and all search
                 $LINK       = " OR ";
                 $NOT        = false;
@@ -4824,6 +4944,10 @@ final class SQLProvider implements SearchProviderInterface
                     if (isset($val2['nosearch']) && $val2['nosearch']) {
                         continue;
                     }
+                    // Skip section headers (e.g. 'common') that have no 'table' key
+                    if (!isset($val2['table'])) {
+                        continue;
+                    }
                     if (!preg_match(QueryBuilder::getInputValidationPattern($val2['datatype'] ?? '')['pattern'], $criterion['value'])) {
                         // Do not add a clause on the current field if the searched term does not match the exepected pattern.
                         // For instance, do not filter on date fields if the searched value is a word.
@@ -4847,7 +4971,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $criterion['value'],
                                 $meta
                             );
-                            if ($new_where !== false) {
+                            if ($new_where !== false && $new_where !== '') {
                                 $first2  = false;
                                 $view_sql .=  $new_where;
                             }
@@ -4982,6 +5106,7 @@ final class SQLProvider implements SearchProviderInterface
                     $data['data']['totalcount'] = $DBread->numrows($result);
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
+                        /** @var mysqli_result $result_num */
                         $result_num = $DBread->doQuery($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }
@@ -5065,7 +5190,7 @@ final class SQLProvider implements SearchProviderInterface
                 foreach ($data['search']['metacriteria'] as $metacriteria) {
                     if (
                         isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
-                        && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)
+                        && isset($metacriteria['value']) && ((string) $metacriteria['value'] !== '')
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
                             $m_searchopt = SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
@@ -5603,7 +5728,7 @@ final class SQLProvider implements SearchProviderInterface
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
                             if (
                                 isset($data[$ID][$k]['name'])
-                                && strlen(trim($data[$ID][$k]['name'])) > 0
+                                && trim($data[$ID][$k]['name']) !== ''
                                 && !in_array(
                                     $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['entities_id'],
                                     $added
@@ -5648,7 +5773,7 @@ final class SQLProvider implements SearchProviderInterface
                         $added         = [];
                         $count_display = 0;
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                            $completename = isset($data[$ID][$k]['name']) && (strlen(trim($data[$ID][$k]['name'])) > 0)
+                            $completename = isset($data[$ID][$k]['name']) && (trim($data[$ID][$k]['name']) !== '')
                                 ? (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][$k]['name'])
                                 : null;
                             if (
@@ -6403,7 +6528,7 @@ final class SQLProvider implements SearchProviderInterface
                         $before = Entity::getUsedConfig('send_certificates_alert_before_delay', $_SESSION['glpiactive_entity']);
                         $color = ($date < $_SESSION['glpi_currenttime']) ? '#cf9b9b' : null;
                         if ($before) {
-                            $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . " + $before days"));
+                            $before = date('Y-m-d', strtotime($_SESSION['glpi_currenttime'] . "+$before days"));
                             $color = match (true) {
                                 $date < $_SESSION['glpi_currenttime'] => '#d63939',
                                 $date < $before => '#de5d06',
@@ -6501,7 +6626,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename(
                                     !empty($data[$ID][$k]['trans_completename'])
                                         ? $data[$ID][$k]['trans_completename']
-                                        : $data[$ID][$k]['name']
+                                        : $name
                                 );
                                 $chunks = \explode(' > ', $name);
                                 $completename = '';
@@ -6532,7 +6657,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = '';
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6666,7 +6791,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6688,7 +6813,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6710,7 +6835,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6747,24 +6872,28 @@ final class SQLProvider implements SearchProviderInterface
                     return __('Default value');
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
-                        $bar_color = 'green';
-                        $percent   = ltrim(($data[$ID][0]['name'] ?? ""), "0");
-                        $progressbar_data = [
-                            'percent'      => $percent,
-                            'percent_text' => $percent,
-                            'color'        => $bar_color,
+                        $progressbar_data = array_map(fn($entry) => [
+                            'percent'      => ltrim(($entry['name'] ?? ""), "0"),
+                            'percent_text' => ltrim(($entry['name'] ?? ""), "0"),
+                            'color'        => 'green',
                             'text'         => '',
-                        ];
+                        ], array_filter($data[$ID], static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY));
+                    } elseif (array_key_exists('percent', $progressbar_data)) {
+                        // progressbar data is only a single entry
+                        $progressbar_data = [$progressbar_data];
                     }
 
-                    $out = '<span class="text-nowrap">' . \htmlescape($progressbar_data['text']) . '</span>'
-                        . '<div class="progress" style="height: 16px">'
-                        . '<div class="progress-bar progress-bar-striped" role="progressbar"'
-                        . ' style="width:' . \htmlescape($progressbar_data['percent']) . '%; background-color:' . \htmlescape($progressbar_data['color']) . ';"'
-                        . ' aria-valuenow="' . \htmlescape($progressbar_data['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
-                        . \htmlescape($progressbar_data['percent_text']) . '%'
-                        . '</div>'
-                        . '</div>';
+                    $out = '';
+                    foreach ($progressbar_data as $k => $v) {
+                        $out .= '<div class="mb-1"><span class="text-nowrap">' . \htmlescape($v['text']) . '</span>'
+                            . '<div class="progress" style="height: 16px">'
+                            . '<div class="progress-bar progress-bar-striped" role="progressbar"'
+                            . ' style="width:' . \htmlescape($v['percent']) . '%; background-color:' . \htmlescape($v['color']) . ';"'
+                            . ' aria-valuenow="' . \htmlescape($v['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
+                            . \htmlescape($v['percent_text']) . '%'
+                            . '</div>'
+                            . '</div></div>';
+                    }
 
                     return $out;
                 case 'color':

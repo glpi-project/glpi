@@ -47,6 +47,9 @@ use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
@@ -59,11 +62,6 @@ use TaskCategory;
 use Ticket;
 use User;
 
-/* Test for inc/search.class.php */
-
-/**
- * @engine isolate
- */
 class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
@@ -759,6 +757,83 @@ class SearchTest extends DbTestCase
         $this->assertSame($expected, $data['data']['totalcount']);
     }
 
+    public function testAllCriterionWithEmptyValue()
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $data = $this->doSearch('Ticket', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 'all',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        $this->assertArrayHasKey('totalcount', $data['data']);
+    }
+
+    public static function allCriterionProvider(): array
+    {
+        $cases = [];
+        foreach (['AND', 'AND NOT', 'OR', 'OR NOT'] as $link) {
+            foreach (['contains', 'notcontains'] as $searchtype) {
+                $cases["$link $searchtype"] = [
+                    'link'       => $link,
+                    'searchtype' => $searchtype,
+                ];
+            }
+        }
+        return $cases;
+    }
+
+    #[DataProvider('allCriterionProvider')]
+    public function testAllCriterionNew(string $link, string $searchtype)
+    {
+        global $CFG_GLPI;
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['allow_search_all'] = 1;
+
+        $this->createItem('Project', [
+            'name'        => 'test_all_search_criterion',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $data = $this->doSearch('Project', [
+            'reset'      => 'reset',
+            'is_deleted' => 0,
+            'start'      => 0,
+            'search'     => 'Search',
+            'criteria'   => [
+                [
+                    'link'       => $link,
+                    'field'      => 'all',
+                    'searchtype' => $searchtype,
+                    'value'      => 'test_all_search_criterion',
+                ],
+            ],
+        ]);
+
+        $CFG_GLPI = $cfg_backup;
+
+        // Search must complete without error
+        $this->assertArrayHasKey('totalcount', $data['data']);
+
+        // For "AND/OR contains" (without NOT), the created project must be found
+        if ($searchtype === 'contains' && !str_contains($link, 'NOT')) {
+            $this->assertGreaterThan(0, $data['data']['totalcount']);
+        }
+    }
 
     public function testSearchOnRelationTable()
     {
@@ -2653,7 +2728,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '>100',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` > 100",
+                'expected' => "AND `glpi_items_disks`.`freesize` > '100'",
             ],
             [
                 'link' => ' AND ',
@@ -2663,7 +2738,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '<10000',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
+                'expected' => "AND `glpi_items_disks`.`freesize` < '10000'",
             ],
             [
                 'link' => ' AND ',
@@ -4224,13 +4299,13 @@ class SearchTest extends DbTestCase
             foreach ([15, 2.3, 1.125] as $value) {
                 $searched_values = [
                     // positive values, with or without spaces
-                    "{$operator}{$value}"       => "{$value}",
-                    " {$operator}  {$value} "   => "{$value}",
+                    "{$operator}{$value}"       => "'{$value}'",
+                    " {$operator}  {$value} "   => "'{$value}'",
 
                     // negative values, with or without spaces
-                    "{$operator}-{$value}"      => "-{$value}",
-                    " {$operator} -{$value} "   => "-{$value}",
-                    "{$operator} - {$value} "   => "-{$value}",
+                    "{$operator}-{$value}"      => "'-{$value}'",
+                    " {$operator} -{$value} "   => "'-{$value}'",
+                    "{$operator} - {$value} "   => "'-{$value}'",
                 ];
                 $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
 
@@ -4258,8 +4333,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_115` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_115` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=decimal
@@ -4276,8 +4351,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 11, // totalcost
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Contract_11` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Contract_11` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=count (usehaving=true)
@@ -4285,8 +4360,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_27` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_27` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=mio (usehaving=true)
@@ -4294,8 +4369,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_111` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_111` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=progressbar (with computation)
@@ -4321,8 +4396,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_49` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_49` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} {$signed_value}",
                     ];
                 }
             }
@@ -6588,6 +6663,165 @@ class SearchTest extends DbTestCase
 
         // we just check that the search did not failed with an exception
         $this->assertTrue(isset($result['data']['totalcount']));
+    }
+
+    public function testMetaTicketForm()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search tickets with meta-criteria on Form ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => '12',
+                    'searchtype' => 'equals',
+                    'value'      => 'all',
+                    'link'       => 'AND',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Form::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $form->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Ticket', $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_forms/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked ticket
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing form ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
+    }
+
+    public function testMetaFormTicket()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search_reverse',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search_reverse',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search_reverse',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search forms with meta-criteria on Ticket ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $ticket->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Form::class, $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked form
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing ticket ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch(Form::class, $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
     }
 }
 

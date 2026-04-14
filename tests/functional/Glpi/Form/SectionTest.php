@@ -34,10 +34,12 @@
 
 namespace tests\units\Glpi\Form;
 
+use Document_Item;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
@@ -144,6 +146,22 @@ class SectionTest extends DbTestCase
 
         // Assert: the conditions should be deleted
         $this->assertEmpty($section->getConfiguredConditionsData());
+    }
+
+    /**
+     * Regression test for a known issue with isEntityAssign + CommonDBChild.
+     */
+    public function testCanRenderDocumentsForSection(): void
+    {
+        $form = getItemByTypeName(Form::class, 'Request a service');
+        $sections = $form->getSections();
+        $section = current($sections);
+        $doc = $this->addDocumentToItem("my_doc.txt", "No content", $section);
+
+        $item = new Document_Item();
+        $name = $item->getTabNameForItem($doc);
+
+        $this->assertNotEmpty($name);
     }
 
     private function checkGetQuestions(

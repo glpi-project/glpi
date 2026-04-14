@@ -10262,7 +10262,7 @@ msgstr "Herhangi bir varsayılan değer yok"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Translation row for %s"
-msgstr ""
+msgstr "%s için çeviri satırı"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10285,7 +10285,7 @@ msgstr "Varsayılan değer"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation actions"
-msgstr ""
+msgstr "Çeviri işlemleri"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10311,7 +10311,7 @@ msgstr "Varsayılan (%s)"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Actions"
-msgstr "Eylem"
+msgstr "İşlemler"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10346,7 +10346,7 @@ msgstr "Çeviriyi yazın"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Copy default value to translation"
-msgstr ""
+msgstr "Varsayılan değeri çeviriye kopyala"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
@@ -11284,7 +11284,7 @@ msgstr "Özel gösterim ön izlemesi ve seçimi"
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 #, php-format
 msgid "Recommended size: %s"
-msgstr ""
+msgstr "Önerilen boyut: %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Inherited illustration preview"
@@ -15971,7 +15971,7 @@ msgstr "Alt birimleri bulunan bir birimi silemezsiniz."
 
 #: src/Entity.php:377
 msgid "You do not have rights for this entity."
-msgstr ""
+msgstr "Bu birimi erişme izniniz yok."
 
 #: src/Entity.php:396
 msgid "You can't add an entity without name"
@@ -20520,13 +20520,15 @@ msgstr "TLS anahtar dosyasının yolu hatalı"
 
 #: src/CommonGLPI.php:730
 msgid "Creating from template"
-msgstr ""
+msgstr "Kalıptan oluşturuluyor"
 
 #: src/CommonGLPI.php:731
 msgid ""
 "You are currently creating an object from a template. You need to save it, "
 "in the main tab, before editing data in other tabs."
 msgstr ""
+"Şu anda bir kalıptan bir nesne oluşturuyorsunuz. Diğer sekmelerdeki verileri"
+" düzenleyebilmek için önce ana sekmede kaydetmeniz gerekir."
 
 #: src/CommonGLPI.php:1160
 msgid "First"
@@ -23230,14 +23232,15 @@ msgstr "Güncelleme sırasında bir sorun çıktı. Sorun: %s"
 #: src/Update.php:292
 msgid "Creating default forms and helpdesk tiles if needed…"
 msgstr ""
+"Gerekiyorsa varsayılan formlar ve yardım masası döşemeleri oluşturuluyor…"
 
 #: src/Update.php:297
 msgid "Default forms and helpdesk tiles created."
-msgstr ""
+msgstr "Varsayılan formlar ve yardım masası döşemeleri oluşturuldu."
 
 #: src/Update.php:301
 msgid "Initializing default rules if needed…"
-msgstr ""
+msgstr "Gerekiyorsa varsayılan kurallar hazırlanıyor…"
 
 #: src/Update.php:305 src/Toolbox.php:2295
 msgid "Default rules initialized."
@@ -23253,7 +23256,7 @@ msgstr "Güncelleme tamamlanıyor…"
 
 #: src/Update.php:390
 msgid "Generating security keys if needed…"
-msgstr ""
+msgstr "Gerekiyorsa güvenlik anahtarları oluşturuluyor…"
 
 #: src/Update.php:398
 #, php-format

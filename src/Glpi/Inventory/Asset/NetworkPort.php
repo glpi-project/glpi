@@ -510,7 +510,6 @@ class NetworkPort extends InventoryAsset
                     'name' => $vlan_data->name ?? '',
                     'tag'  => $vlan_data->tag,
                 ];
-                $stmt_types = str_repeat('s', count($stmt_columns));
 
                 if (!isset($this->vlan_stmt)) {
                     $reference = array_fill_keys(
@@ -524,9 +523,7 @@ class NetworkPort extends InventoryAsset
                     $this->vlan_stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns);
-                $this->vlan_stmt->bind_param($stmt_types, ...$stmt_values);
-                $DB->executeStatement($this->vlan_stmt);
+                $DB->executeStatement($this->vlan_stmt, $stmt_columns);
                 $vlans_id = $DB->insertId();
 
                 $db_vlans[$vlan_key] = $vlans_id;
@@ -538,7 +535,6 @@ class NetworkPort extends InventoryAsset
                 'vlans_id'        => $vlans_id,
                 'tagged'          => $vlan_data->tagged ?? 0,
             ];
-            $pvlan_stmt_types = str_repeat('s', count($pvlan_stmt_columns));
 
             if (!isset($this->pvlan_stmt)) {
                 $reference = array_fill_keys(
@@ -552,9 +548,7 @@ class NetworkPort extends InventoryAsset
                 $this->pvlan_stmt = $DB->prepare($insert_query);
             }
 
-            $pvlan_stmt_values = array_values($pvlan_stmt_columns);
-            $this->pvlan_stmt->bind_param($pvlan_stmt_types, ...$pvlan_stmt_values);
-            $DB->executeStatement($this->pvlan_stmt);
+            $DB->executeStatement($this->pvlan_stmt, $pvlan_stmt_columns);
         }
     }
 

@@ -112,7 +112,13 @@ class DBConnection extends CommonGLPI
         bool $use_utf8mb4 = false,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
-        string $config_dir = GLPI_CONFIG_DIR
+        string $config_dir = GLPI_CONFIG_DIR,
+        bool $dbssl = false,
+        ?string $dbsslkey = null,
+        ?string $dbsslcert = null,
+        ?string $dbsslca = null,
+        ?string $dbsslcapath = null,
+        ?string $dbsslcacipher = null
     ): bool {
 
         $properties = [
@@ -135,6 +141,24 @@ class DBConnection extends CommonGLPI
         }
         if (!$allow_signed_keys) {
             $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
+        }
+        if ($dbssl) {
+            $properties['dbssl'] = true;
+            if ($dbsslkey !== null) {
+                $properties['dbsslkey'] = $dbsslkey;
+            }
+            if ($dbsslcert !== null) {
+                $properties['dbsslcert'] = $dbsslcert;
+            }
+            if ($dbsslca !== null) {
+                $properties['dbsslca'] = $dbsslca;
+            }
+            if ($dbsslcapath !== null) {
+                $properties['dbsslcapath'] = $dbsslcapath;
+            }
+            if ($dbsslcacipher !== null) {
+                $properties['dbsslcacipher'] = $dbsslcacipher;
+            }
         }
 
         $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
@@ -586,13 +610,24 @@ class DBConnection extends CommonGLPI
                 $data['source'][strtolower($var_name)] = $var_value;
             }
 
-            $result = $db_main->doQuery($db_main->getBinaryLogStatusQuery());
-            if ($result && $db_main->numrows($result)) {
-                foreach (['File', 'Position'] as $var_name) {
-                    $data['source'][strtolower($var_name)] = $db_main->result($result, 0, $var_name);
+            try {
+                /** @var mysqli_result $result */
+                $result = $db_main->doQuery($db_main->getBinaryLogStatusQuery());
+
+                if ($result && $db_main->numrows($result)) {
+                    foreach (['File', 'Position'] as $var_name) {
+                        $data['source'][strtolower($var_name)] = $db_main->result($result, 0, $var_name);
+                    }
+                } else {
+                    $data['source']['error'] = $db_main->error();
                 }
-            } else {
-                $data['source']['error'] = $db_main->error();
+            } catch (Exception $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    $e->getMessage(),
+                    ['exception' => $e]
+                );
+                $data['source']['error'] = 'Unable to get binary log status. Check if the binary log is enabled on the database server and the database user has the necessary permissions for your specific database to access it (REPLICATION CLIENT, BINLOG MONITOR, etc).';
             }
         } else {
             $data['source']['error'] = $db_main->error();
@@ -616,15 +651,25 @@ class DBConnection extends CommonGLPI
                     $data['replica'][$num][strtolower($var_name)] = $var_value;
                 }
 
-                $result = $db_replica->doQuery($db_replica->getReplicaStatusQuery());
-                if ($result && $db_replica->numrows($result)) {
-                    $replica_vars = $db_replica->getReplicaStatusVars();
+                try {
+                    /** @var mysqli_result $result */
+                    $result = $db_replica->doQuery($db_replica->getReplicaStatusQuery());
+                    if ($result && $db_replica->numrows($result)) {
+                        $replica_vars = $db_replica->getReplicaStatusVars();
 
-                    foreach ($replica_vars as $var_name => $var_key) {
-                        $data['replica'][$num][$var_name] = $db_replica->result($result, 0, $var_key);
+                        foreach ($replica_vars as $var_name => $var_key) {
+                            $data['replica'][$num][$var_name] = $db_replica->result($result, 0, $var_key);
+                        }
+                    } else {
+                        $data['replica'][$num]['error'] = $db_replica->error();
                     }
-                } else {
-                    $data['replica'][$num]['error'] = $db_replica->error();
+                } catch (Exception $e) {
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        $e->getMessage(),
+                        ['exception' => $e]
+                    );
+                    $data['replica'][$num]['error'] = 'Unable to get replica status. Check if the database user has the necessary permissions for your specific database to access it (REPLICATION CLIENT, REPLICA MONITOR, etc).';
                 }
             } else {
                 $data['replica'][$num]['error'] = $db_replica->error();
@@ -645,8 +690,8 @@ class DBConnection extends CommonGLPI
     {
 
         if ($DBconnection->connected) {
-            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date
-                                         FROM `glpi_logs`");
+            /** @var mysqli_result $result */
+            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date FROM `glpi_logs`");
             if ($DBconnection->numrows($result) > 0) {
                 return $DBconnection->result($result, 0, "max_date");
             }

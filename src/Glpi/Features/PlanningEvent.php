@@ -327,20 +327,6 @@ trait PlanningEvent
         }
     }
 
-
-    public function pre_updateInDB()
-    {
-        // Set new user if initial user have been deleted
-        if (
-            isset($this->fields['users_id'])
-            && $this->fields['users_id'] == 0
-            && $uid = Session::getLoginUserID()
-        ) {
-            $this->fields['users_id'] = $uid;
-            $this->updates[]          = "users_id";
-        }
-    }
-
     /**
      * Delete a specific instance of a serie
      * Add an exception into the serie
@@ -601,7 +587,8 @@ trait PlanningEvent
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
+                $event_obj->getFromResultSet($data);
+                if ($event_obj->canViewItem()) {
                     $key = $data["begin"]
                       . "$$" . $itemtype
                       . "$$" . $data["id"]
@@ -612,11 +599,11 @@ trait PlanningEvent
                     }
 
                     $url = (!$options['genical'])
-                    ? $event_obj->getFormURLWithID($data['id'])
+                    ? static::getFormURLWithID($data['id'])
                     : $CFG_GLPI["url_base"]
                     . static::getFormURLWithID($data['id'], false);
 
-                    $is_rrule = isset($data['rrule']) && strlen($data['rrule']) > 0;
+                    $is_rrule = isset($data['rrule']) && (string) $data['rrule'] !== '';
 
                     $events[$key] = [
                         'color'            => $options['color'],
@@ -799,10 +786,13 @@ trait PlanningEvent
         $rrule = array_merge($defaults, $rrule);
 
         $default_options = [
-            'rand' => mt_rand(),
+            'rand'  => mt_rand(),
+            'begin' => '',
         ];
         $options = array_merge($default_options, $options);
-        $rand    = (int) $options['rand'];
+
+        $rand  = (int) $options['rand'];
+        $begin = $options['begin'];
 
         $out = "<div class='card' style='padding: 5px; width: 100%;'>";
         $out .= Dropdown::showFromArray('rrule[freq]', [
@@ -858,9 +848,20 @@ trait PlanningEvent
         $out .= "<div>" . Html::showDateField('rrule[until]', [
             'value'   => $rrule['until'],
             'rand'    => $rand,
+            'min'     => $begin,
             'display' => false,
         ]) . "</div>";
         $out .= "</div>";
+
+        $out .= Html::scriptBlock("
+            \$(document).on('change', '[name=\"plan[begin]\"]', function() {
+                const val = \$(this).val();
+                const untilFp = document.getElementById(" . json_encode("showdate{$rand}") . ");
+                if (untilFp && untilFp._flatpickr) {
+                    untilFp._flatpickr.set('minDate', val ?? null);
+                }
+            });
+        ");
 
         $out .= "<div class='field'>";
         $out .= "<label for='dropdown_byday$rand'>" . __s("By day") . "</label>";

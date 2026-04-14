@@ -34,16 +34,24 @@
 
 namespace tests\units;
 
+use Change;
+use Change_Ticket;
 use CommonDBTM;
 use Contract;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_Item;
 use Location;
 use MassiveAction;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
+use Problem_Ticket;
 use Session;
+use Software;
 use Ticket;
+use TicketTask;
 use User;
 use UserEmail;
 
@@ -57,38 +65,38 @@ class MassiveActionTest extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 29,
-                'singlecount'  => 20,
+                'allcount'     => 31,
+                'singlecount'  => 22,
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 24,
-                'singlecount'  => 17,
+                'allcount'     => 26,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
-                'allcount'     => 15,
-                'singlecount'  => 9,
+                'allcount'     => 17,
+                'singlecount'  => 11,
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 24,
-                'singlecount'  => 17,
+                'allcount'     => 26,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 26,
-                'singlecount'  => 18,
+                'allcount'     => 28,
+                'singlecount'  => 20,
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 25,
-                'singlecount'  => 17,
+                'allcount'     => 27,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 25,
-                'singlecount'  => 17,
+                'allcount'     => 27,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
@@ -144,6 +152,15 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount($singlecount, $input['actions']);
     }
 
+    /**
+     * @param string $action_code   action choosen on form ('update', 'purge', ...)
+     * @param CommonDBTM $item
+     * @param array $ids            ids for items to update
+     * @param array<string, mixed>  $input submitted by user
+     * @param int $ok               number of expected success
+     * @param int $ko               number of expected failures
+     * @param string $action_class
+     */
     protected function processMassiveActionsForOneItemtype(
         string $action_code,
         CommonDBTM $item,
@@ -152,7 +169,7 @@ class MassiveActionTest extends DbTestCase
         int $ok,
         int $ko,
         string $action_class = MassiveAction::class
-    ) {
+    ): void {
         $ma_ok = 0;
         $ma_ko = 0;
 
@@ -177,8 +194,10 @@ class MassiveActionTest extends DbTestCase
 
                 if ($res == MassiveAction::ACTION_OK) {
                     $ma_ok += $increment;
-                } else {
+                } elseif ($res == MassiveAction::ACTION_KO || $res == MassiveAction::ACTION_NORIGHT) {
                     $ma_ko += $increment;
+                } else {
+                    throw new \RuntimeException("Unexpected result '$res' in itemDone callback");
                 }
             }
         );
@@ -187,8 +206,8 @@ class MassiveActionTest extends DbTestCase
         $action_class::processMassiveActionsForOneItemtype($ma, $item, $ids);
 
         // Check expected number of success and failures
-        $this->assertSame($ok, $ma_ok);
-        $this->assertSame($ko, $ma_ko);
+        $this->assertSame($ko, $ma_ko, "$ko failures expected but $ma_ko found");
+        $this->assertSame($ok, $ma_ok, "$ok success expected but $ma_ok found");
     }
 
     public static function amendCommentProvider()
@@ -276,6 +295,119 @@ class MassiveActionTest extends DbTestCase
         }
 
         $_SESSION['glpiactiveentities'] = $old_session;
+    }
+
+    /**
+     * Ids of search Option of State related to visibility
+     * @see State::rawSearchOptions()
+     * @return array<int,array<int>>
+     */
+    public static function stateVisibilitySearchOptionIdsProvider(): array
+    {
+        return array_map(fn($so_id) => [$so_id], range(21, 39));
+    }
+
+    /**
+     * Checks if a State can be (de)associated with an itemtype via massive action
+     */
+    #[DataProvider('stateVisibilitySearchOptionIdsProvider')]
+    public function testMassiveActionUpdateStateVisibility(int $search_option_id): void
+    {
+        // --- arrange
+        $this->login();
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        $_searchoption_definition = SearchOption::getOptionsForItemtype($state::class)[$search_option_id];
+        $visible_itemtype = $_searchoption_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] ?? throw new \RuntimeException('Unexpected searchOption definition : visible_itemtype not found');
+
+        // input submited in massive action form
+        $form_input = [
+            'visible_itemtype' => [$visible_itemtype],
+            'is_visible' => 1,
+            'search_options' => ['State' => $search_option_id],
+        ];
+
+        // --- act
+        $this->processMassiveActionsForOneItemtype(
+            'update_visibility',
+            $state,
+            [$state->fields['id']],
+            $form_input,
+            1,
+            0,
+            \State::class
+        );
+
+        // -- assert
+        $state->getFromDB($state->getID());
+        $state_visible_field = 'is_visible_' . strtolower($visible_itemtype);
+        $this->assertEquals(1, $state->fields[$state_visible_field]);
+    }
+
+    /**
+     * Checks if a State can be (de)associated with a custom asset itemtype via massive action
+     */
+    public function testMassiveActionUpdateStateVisibilityForCustomAsset(): void
+    {
+        // --- Arrange
+        $this->login();
+        $definition = $this->initAssetDefinition();
+        $custom_asset_classname = $definition->getAssetClassName();
+
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        // Find the search option for this custom asset in State using definition (not id, it may change)
+        $search_options = SearchOption::getOptionsForItemtype($state::class);
+        $custom_asset_search_option = null;
+        $custom_asset_search_option_id = null;
+
+        foreach ($search_options as $so_id => $so_definition) {
+            if (isset($so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'])
+                && $so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] === $custom_asset_classname) {
+                $custom_asset_search_option = $so_definition;
+                $custom_asset_search_option_id = $so_id;
+                $visibility_field = 'is_visible_' . strtolower($custom_asset_classname);
+                break;
+            }
+        }
+
+        assert($custom_asset_search_option !== null, "Search option not found for custom asset {$custom_asset_classname}");
+        assert(isset($state->fields[$visibility_field]), "field '$visibility_field' not found in State fields");
+        assert($state->fields[$visibility_field] == 0, "field '$visibility_field' should be 0 to start test");
+
+        // input submitted in massive action form
+        $test_input = [
+            'visible_itemtype' => [$custom_asset_classname],
+            'is_visible' => 1,
+            'search_options' => ['State' => $custom_asset_search_option_id],
+        ];
+
+        // --- Act
+        $this->processMassiveActionsForOneItemtype(
+            'update_visibility',
+            $state,
+            [$state->fields['id']],
+            $test_input,
+            1,
+            0,
+            \State::class,
+        );
+
+        // --- Assert
+        $state->getFromDB($state->getID());
+        $this->assertEquals(1, $state->fields[$visibility_field]);
+
+        // Verify in DropdownVisibility table
+        $visibility = countElementsInTable(
+            \DropdownVisibility::getTable(),
+            [
+                'itemtype' => \State::class,
+                'items_id' => $state->getID(),
+                'visible_itemtype' => $custom_asset_classname,
+                'is_visible' => 1,
+            ]
+        );
+        $this->assertEquals(1, $visibility, "DropdownVisibility entry should exist for custom asset");
     }
 
     public static function addNoteProvider()
@@ -1222,6 +1354,305 @@ class MassiveActionTest extends DbTestCase
             $events_before,
             $events_after,
             "No event log should be created when no items are successfully processed"
+        );
+    }
+
+
+    public function testMergeSonOf()
+    {
+        $this->login('glpi', 'glpi');
+
+        // Create 3 tickets
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => "Ticket A",
+            'content'     => "Ticket A",
+        ]);
+        $ticket_id1 = $ticket->getID();
+        $ticket_id2 = $this->createItem(Ticket::class, [
+            'name'        => "Ticket B",
+            'content'     => "Ticket B",
+        ])->getID();
+        $ticket_id3 = $this->createItem(Ticket::class, [
+            'name'        => "Ticket C",
+            'content'     => "Ticket C",
+        ])->getID();
+
+        // Add followups to the tickets to check that they are copied to the parent ticket after merge
+        $this->createItems(\ITILFollowup::class, [
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id1,
+                'content'  => 'Followup 1 for ticket A',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id1,
+                'content'  => 'Followup 2 for ticket A',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id2,
+                'content'  => 'Followup 1 for ticket B',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id2,
+                'content'  => 'Followup 2 for ticket B',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id3,
+                'content'  => 'Followup 1 for ticket C',
+            ],
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $ticket_id3,
+                'content'  => 'Followup 2 for ticket C',
+            ],
+        ]);
+
+        // Count followups in each ticket
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id1,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id2,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id3,
+        ]));
+
+        // Link ticket A as sons of ticket B
+        $this->createItem(\Ticket_Ticket::class, [
+            'tickets_id_1' => $ticket_id1,
+            'tickets_id_2' => $ticket_id2,
+            'link'         => \Ticket_Ticket::SON_OF,
+        ]);
+
+        // Merge ticket B and C as sons of ticket A
+        $status = [];
+        $mergeparams = [
+            'linktypes' => [
+                'ITILFollowup',
+                'TicketTask',
+                'Document',
+            ],
+            'link_type'  => \Ticket_Ticket::SON_OF,
+        ];
+        Ticket::merge($ticket_id1, [$ticket_id2, $ticket_id3], $status, $mergeparams);
+
+        // Count followups in each ticket
+        $this->assertEquals(8, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id1,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id2,
+        ]));
+
+        $this->assertEquals(2, countElementsInTable(\ITILFollowup::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket_id3,
+        ]));
+    }
+
+    public function testProcessMassiveActionsForOneItemtype_AssociateGroup()
+    {
+        $this->login();
+
+        // create 2 groups
+        $group1 = $this->createItem(Group::class, [
+            'name'        => "Group 1",
+            'entities_id' => 0,
+        ]);
+        $group1_id = $group1->getID();
+
+        $group2 = $this->createItem(Group::class, [
+            'name'        => "Group 2",
+            'entities_id' => 0,
+        ]);
+        $group2_id = $group2->getID();
+
+        // simulate permissions and context for software update
+        $_SESSION['glpiactiveprofile'][Software::$rightname] = UPDATE; // grant update right in software
+        $_SESSION['glpiactiveentities'] = [0]; // restrict access to  entity 0
+        $_SESSION['glpiactiveentities_string'] = "'0'"; // string representation for sql
+
+
+        // create 2 soft
+        $software = $this->createItem(Software::class, [
+            'name'        => "Software 1",
+            'entities_id' => 0,
+        ]);
+        $software_id = $software->getID();
+
+        $software2 = $this->createItem(Software::class, [
+            'name'        => "Software 2",
+            'entities_id' => 0,
+        ]);
+        $software2_id = $software2->getID();
+
+        $input = [
+            'fieldname'      => 'groups_id',
+            'selected_group' => [$group1_id, $group2_id],
+        ];
+
+        // test associate group
+        @$this->processMassiveActionsForOneItemtype(
+            'associate_group',
+            $software,
+            [$software_id, $software2_id],
+            $input,
+            2,
+            0
+        );
+
+        $group_item = new Group_Item();
+        foreach ([$software_id, $software2_id] as $sid) {
+            $this->assertTrue(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group1_id,
+                ]),
+                "Group 1 not associated for software $sid"
+            );
+            $this->assertTrue(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group2_id,
+                ]),
+                "Group 2 not associated for software $sid"
+            );
+        }
+
+        // test dissociate group for group 1
+        $input_dissociate = [
+            'fieldname' => 'groups_id',
+            'selected_group' => [$group1_id],
+        ];
+        @$this->processMassiveActionsForOneItemtype(
+            'dissociate_group',
+            $software,
+            [$software_id, $software2_id],
+            $input_dissociate,
+            2,
+            0
+        );
+
+        foreach ([$software_id, $software2_id] as $sid) {
+            $this->assertFalse(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group1_id,
+                ]),
+                "Group 1 still associated for software $sid"
+            );
+            $this->assertTrue(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group2_id,
+                ]),
+                "Group 2 should still be associated for software $sid"
+            );
+        }
+    }
+
+    public function testAddTaskMassiveActionOnProblemTicketCreatesTicketTask(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket for problem task',
+            'content' => 'content',
+        ]);
+
+        $problem = $this->createItem(Problem::class, [
+            'name'    => 'problem with linked ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItem(Problem_Ticket::class, [
+            'tickets_id'  => $ticket->getID(),
+            'problems_id' => $problem->getID(),
+        ]);
+
+        $ticket_item = new Ticket();
+
+        $this->processMassiveActionsForOneItemtype(
+            'add_task',
+            $ticket_item,
+            [$ticket->getID()],
+            [
+                'taskcategories_id' => 0,
+                'actiontime'        => 0,
+                'content'           => 'task from massive action',
+            ],
+            1,
+            0,
+            Problem_Ticket::class
+        );
+
+        $this->assertSame(
+            1,
+            countElementsInTable(TicketTask::getTable(), [
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'task from massive action',
+            ])
+        );
+    }
+
+    public function testAddTaskMassiveActionOnChangeTicketCreatesTicketTask(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket for change task',
+            'content' => 'content',
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name'    => 'change with linked ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItem(Change_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'changes_id' => $change->getID(),
+        ]);
+
+        $ticket_item = new Ticket();
+
+        $this->processMassiveActionsForOneItemtype(
+            'add_task',
+            $ticket_item,
+            [$ticket->getID()],
+            [
+                'taskcategories_id' => 0,
+                'actiontime'        => 0,
+                'content'           => 'task from change massive action',
+            ],
+            1,
+            0,
+            Change_Ticket::class
+        );
+
+        $this->assertSame(
+            1,
+            countElementsInTable(TicketTask::getTable(), [
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'task from change massive action',
+            ])
         );
     }
 }

@@ -43,16 +43,21 @@ use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\realpath;
 
 /**
  * Entity class
  */
-class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, ProvideTranslationsInterface
+class Entity extends CommonTreeDropdown implements
+    LinkableToTilesInterface,
+    ProvideTranslationsInterface,
+    DefaultSearchRequestInterface
 {
     /** @use Clonable<static> */
     use Clonable;
@@ -257,6 +262,18 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $GLPI_CACHE->delete($ckey);
 
         return true;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    #[Override]
+    public static function getDefaultSearchRequest(): array
+    {
+        return [
+            'sort'  => 1, //completename SO
+            'order' => 'ASC',
+        ];
     }
 
     public static function getTypeName($nb = 0)
@@ -3094,9 +3111,15 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      */
     public static function badgeCompletenameById(int $entity_id): ?string
     {
-        $entity = new self();
-        if ($entity->getFromDB($entity_id)) {
-            return self::badgeCompletename($entity->fields['completename']);
+        global $DB;
+        $it = $DB->request([
+            'SELECT' => 'completename',
+            'FROM'   => 'glpi_entities',
+            'WHERE'  => ['id' => $entity_id],
+            'LIMIT'  => 1,
+        ]);
+        if ($data = $it->current()) {
+            return self::badgeCompletename($data['completename']);
         }
         return null;
     }
@@ -3196,9 +3219,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         ];
     }
 
-    public static function getEntitySelectorTree(): array
+    /**
+     * @param int $rand
+     * @return array
+     */
+    public static function getEntitySelectorTree($rand = 0): array
     {
-        $token = Session::getNewCSRFToken();
         $twig = TemplateRenderer::getInstance();
 
         $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
@@ -3209,7 +3235,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $default_entity_id = $default_entity['id'];
             $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
-            $adapt_tree = static function (&$entities) use (&$adapt_tree, $token, $twig) {
+            $adapt_tree = static function (&$entities) use (&$adapt_tree, $twig, $rand) {
                 foreach ($entities as $entities_id => &$entity) {
                     $entity['key']   = $entities_id;
 
@@ -3223,15 +3249,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                         $is_recursive = false;
                     }
 
-                    $entity['title'] = $twig->render('layout/parts/profile_selector_form.html.twig', [
+                    $title = $twig->render('layout/parts/profile_selector_form.html.twig', [
                         'id' => $entities_id,
                         'name' => $entity['name'],
                         'is_recursive' => $is_recursive,
-                        // To avoid generating one token per entity (which may
-                        // make us reach our token limit too fast), we reuse a
-                        // common one.
-                        'csrf_token' => $token,
+                        'rand' => $rand,
                     ]);
+                    $title = preg_replace('/\s+/', ' ', $title); // compact spaces to reduce output size
+                    $entity['title'] = $title;
                 }
 
                 unset($entity);

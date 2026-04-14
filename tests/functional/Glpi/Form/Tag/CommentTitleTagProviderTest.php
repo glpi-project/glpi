@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Comment;
 use Glpi\Form\Form;
 use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\Tag;
@@ -92,6 +93,35 @@ final class CommentTitleTagProviderTest extends DbTestCase
             $this->getCommentId($form, 'Second comment title'),
             'Second comment title'
         );
+    }
+
+    public function testGetTagContentForValueUsingTranslation(): void
+    {
+        $form = $this->getFormWithComments();
+        $comment = Comment::getById($this->getCommentId($form, 'First comment title'));
+        $this->addTranslationToForm(
+            $comment,
+            'fr_FR',
+            Comment::TRANSLATION_KEY_NAME,
+            'Titre du premier commentaire'
+        );
+
+        $original_language = $_SESSION['glpilanguage'];
+        try {
+            $_SESSION['glpilanguage'] = 'fr_FR';
+            $this->checkGetTagContentForValue(
+                $this->getCommentId($form, 'First comment title'),
+                'Titre du premier commentaire'
+            );
+
+            $_SESSION['glpilanguage'] = 'de_DE'; // No translation, falls back to original
+            $this->checkGetTagContentForValue(
+                $this->getCommentId($form, 'First comment title'),
+                'First comment title'
+            );
+        } finally {
+            $_SESSION['glpilanguage'] = $original_language;
+        }
     }
 
     private function checkGetTagContentForValue(

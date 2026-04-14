@@ -80,7 +80,7 @@
 
    {{ fields.smallTitle(__('Telemetry data')) }}
    {% set telemetry_enabled = call('Telemetry::isEnabled') %}
-   {{ fields.htmlField('', telemetry_enabled ? __('Yes') : __('No'), __('Telemetry enabled'), {
+   {{ fields.htmlField('', (telemetry_enabled ? __('Yes') : __('No'))|e, __('Telemetry enabled'), {
       helper: __('To enable or disable sending telemetry, please change the "telemetry" automatic action.')
    }) }}
    {{ fields.htmlField('', call('Telemetry::getViewLink'), __('Telemetry data')) }}

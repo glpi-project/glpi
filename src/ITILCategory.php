@@ -74,7 +74,7 @@ class ITILCategory extends CommonTreeDropdown
             ],
             [
                 'name'      => 'knowbaseitemcategories_id',
-                'label'     => __('Knowledge base'),
+                'label'     => KnowbaseItemCategory::getTypeName(1),
                 'type'      => 'dropdownValue',
                 'list'      => true,
             ],

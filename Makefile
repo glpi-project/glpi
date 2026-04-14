@@ -25,7 +25,7 @@ PLAYWRIGHT = docker run \
 	-w /app \
 	-p 9323:9323 \
 	-e E2E_BASE_URL=$(E2E_BASE_URL) \
-	--add-host host.docker.internal:host-gateway \
+	--network host \
 	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
 	npx playwright
 
@@ -94,11 +94,11 @@ vendor: console
 .PHONY: vendor
 
 locales-extract: ## Extract locales
-	@$(PHP) vendor/bin/extract-locales
+	@$(CONSOLE) tools:locales:extract
 .PHONY: locales-extract
 
-locales-compile: c=locales:compile ## Compile locales
-locales-compile: console
+locales-compile:
+	@$(CONSOLE) tools:locales:compile
 .PHONY: locales-compile
 
 cc: c=cache:clear ## Clear the cache
@@ -106,12 +106,12 @@ cc: console
 .PHONY: cc
 
 license-headers-check: ## Verify that the license headers is present all files
-	@$(PHP) vendor/bin/licence-headers-check
+	@$(CONSOLE) tools:licence_headers_check
 .PHONY: license-headers-check
 
-license-headers-fix: ## Add the missing license headers in all files
-	@$(PHP) vendor/bin/licence-headers-check --fix
-.PHONY: license-headers-fix
+license-headers: ## Add the missing license headers in all files
+	@$(CONSOLE) tools:licence_headers_check --fix
+.PHONY: license-headers
 
 ## —— Database —————————————————————————————————————————————————————————————————
 db-install: ## Install local development's database
@@ -177,6 +177,18 @@ test-db-update: ## Update testing's database
 		--env=testing
 .PHONY: test-db-update
 
+test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-clone p=8
+	@$(eval p ?= 4)
+	@$(DB) bash -c ' \
+		for i in $$(seq 2 $(p)); do \
+			mariadb -u root -pglpi -e "DROP DATABASE IF EXISTS glpi_test_$$i"; \
+			mariadb -u root -pglpi -e "CREATE DATABASE glpi_test_$$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"; \
+			mariadb-dump -u root -pglpi --single-transaction glpi_test | mariadb -u root -pglpi glpi_test_$$i; \
+			echo "Database glpi_test_$$i created and populated"; \
+		done \
+	'
+.PHONY: test-db-clone
+
 e2e-db-install: ## Install e2e testing's database
 	@$(CONSOLE) database:install \
 		-r -f \
@@ -216,6 +228,12 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 	@$(PHP) php vendor/bin/phpunit $(c)
 .PHONY: phpunit
 
+paratest: ## Run paratest, example: make paratest p=8
+	@$(eval p ?= 4)
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/paratest -p $(p) --exclude-group "single-thread" $(c)
+.PHONY: paratest
+
 phpstan: ## Run phpstan
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/phpstan --memory-limit=1G $(c)
@@ -247,10 +265,10 @@ rector-check: ## Run rector with dry run
 	@$(PHP) php vendor/bin/rector --dry-run $(c)
 .PHONY: rector-check
 
-rector-apply: ## Run rector
+rector: ## Run rector
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/rector $(c)
-.PHONY: rector-apply
+.PHONY: rector
 
 cypress: ## Run cypress tests
 	@$(eval c ?=)
@@ -268,11 +286,13 @@ cypress-open: ## Open cypress UI
 
 playwright: ## Run playwright tests
 	@$(eval c ?=)
+	@$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
 	@$(PLAYWRIGHT) test $(c)
 .PHONY: playwright
 
 playwright-report: ## View playwright reports
 	@$(eval c ?=)
+	@$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
 	@$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
 .PHONY: playwright-report
 
@@ -286,9 +306,9 @@ phpcsfixer-check: ## Check for php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
 .PHONY: phpcsfixer-check
 
-phpcsfixer-fix: ## Fix php coding standards issues
+phpcsfixer: ## Fix php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer fix
-.PHONY: phpcsfixer-fix
+.PHONY: phpcsfixer
 
 ## —— Linters ——————————————————————————————————————————————————————————————————
 lint: lint-php lint-scss lint-twig lint-js lint-playwright ## Run all linters

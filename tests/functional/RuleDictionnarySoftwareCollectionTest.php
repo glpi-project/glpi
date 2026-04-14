@@ -125,8 +125,8 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
             )
         );
 
-        $this->assertFalse($collection->moveLicenses('100', $new_software->getID()));
-        $this->assertFalse($collection->moveLicenses($old_software->getID(), '100'));
+        $this->assertFalse($collection->moveLicenses(99999999, $new_software->getID()));
+        $this->assertFalse($collection->moveLicenses($old_software->getID(), 99999999));
     }
 
     public function testPutOldSoftsInTrash()

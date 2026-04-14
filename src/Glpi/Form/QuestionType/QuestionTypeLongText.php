@@ -55,7 +55,8 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
     FormQuestionDataConverterInterface,
     UsedAsCriteriaInterface,
     TranslationAwareQuestionType,
-    ConditionValueTransformerInterface
+    ConditionValueTransformerInterface,
+    RawAnswerIsHtmlInterface
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -162,6 +163,7 @@ TWIG;
                     'is_horizontal'  : false,
                     'full_width'     : true,
                     'no_label'       : true,
+                    'aria_label'     : question.fields.name,
                     'mb'             : '',
                 }
             ) }}

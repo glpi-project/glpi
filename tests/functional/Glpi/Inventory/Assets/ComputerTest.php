@@ -41,9 +41,7 @@ use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class ComputerTest extends AbstractInventoryAsset
 {
     public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
@@ -2112,13 +2110,13 @@ JSON;
         $this->assertTrue($item_fw->getFromDBByCrit(['itemtype' => \Computer::class, 'items_id' => $computers_id]));
         $fw = new \DeviceFirmware();
         $this->assertTrue($fw->getFromDB($item_fw->fields['devicefirmwares_id']));
-        $this->assertSame('Intel <Corp> BIOS', $fw->fields['designation']);
+        $this->assertSame('Intel  BIOS', $fw->fields['designation']);
 
         //get controller
         $item_ctrl = new \Item_DeviceControl();
         $this->assertTrue($item_ctrl->getFromDBByCrit(['itemtype' => \Computer::class, 'items_id' => $computers_id]));
         $ctrl = new \DeviceControl();
         $this->assertTrue($ctrl->getFromDB($item_ctrl->fields['devicecontrols_id']));
-        $this->assertSame('WD Black SN770 / <PC SN740 256GB> / PC SN560 & (DRAM-less) & NVMe SSD', $ctrl->fields['designation']);
+        $this->assertSame('WD Black SN770 /  / PC SN560 & (DRAM-less) & NVMe SSD', $ctrl->fields['designation']);
     }
 }

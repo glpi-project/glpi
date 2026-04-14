@@ -65,6 +65,12 @@ class ProjectCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
+        if (
+            empty($input['cost'])
+        ) {
+            $input['cost'] = 0;
+        }
+
         return parent::prepareInputForAdd($input);
     }
 
@@ -76,6 +82,12 @@ class ProjectCost extends CommonDBChild
             || ($input['end_date'] < $input['begin_date'])
         ) {
             $input['end_date'] = $input['begin_date'];
+        }
+
+        if (
+            empty($input['cost'])
+        ) {
+            $input['cost'] = 0;
         }
 
         return parent::prepareInputForUpdate($input);
@@ -97,7 +109,7 @@ class ProjectCost extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Project) {
-            return self::showForProject($item, $withtemplate);
+            return self::showForProject($item);
         }
         return false;
     }
@@ -251,8 +263,8 @@ class ProjectCost extends CommonDBChild
         echo "</td>";
         echo "<td>" . _sn('Cost', 'Costs', 1) . "</td>";
         echo "<td>";
-        echo "<input type='text' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
-             size='14'>";
+        echo "<input type='number' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
+             min='0' max='" . constant('PHP_INT_MAX') . "' step='0.0001' size='14'>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __s('Begin date') . "</td>";
@@ -311,7 +323,7 @@ class ProjectCost extends CommonDBChild
 
         $rand   = mt_rand();
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand(btn) {\n";
@@ -380,7 +392,7 @@ class ProjectCost extends CommonDBChild
                 printf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
-                    Html::showToolTip(htmlescape($data['comment']), ['display' => false])
+                    !empty($data['comment']) ? Html::showToolTip(htmlescape($data['comment']), ['display' => false]) : ''
                 );
                 if ($canedit) {
                     $js = "function viewEditCost" . $project_id . "_" . $cost_id . "_$rand() {";

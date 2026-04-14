@@ -816,8 +816,10 @@ final class DbUtils
             !$complete_request
             && ($value != '0')
             && empty($value)
-            && isset($_SESSION['glpishowallentities'])
-            && $_SESSION['glpishowallentities']
+            && (
+                (isset($_SESSION['glpishowallentities']) && $_SESSION['glpishowallentities'])
+                || Session::isRightChecksDisabled()
+            )
         ) {
             // Not ADD "AND 1" if not needed
             if (trim($separator) == "AND") {
@@ -938,6 +940,8 @@ final class DbUtils
         if (!is_array($value) && strlen($value) == 0) {
             if (isset($_SESSION['glpiactiveentities'])) {
                 $value = $_SESSION['glpiactiveentities'];
+            } elseif (Session::isRightChecksDisabled()) {
+                return [new QueryExpression('true')];
             } elseif (isCommandLine() || Session::isCron()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
             }
@@ -1701,10 +1705,10 @@ final class DbUtils
             $id_visible = $_SESSION["glpiis_ids_visible"];
         }
 
-        if (strlen($realname ?? '') > 0) {
-            $formatted = $realname;
+        if ((string) $realname !== '') {
+            $formatted = (string) $realname;
 
-            if (strlen($firstname ?? '') > 0) {
+            if ((string) ($firstname ?? '') !== '') {
                 if ($order == User::FIRSTNAME_BEFORE) {
                     $formatted = $firstname . " " . $formatted;
                 } else {
@@ -2072,7 +2076,7 @@ final class DbUtils
                 $a = explode("=>", $item);
 
                 if (
-                    (strlen($a[0]) > 0)
+                    ($a[0] !== '')
                     && isset($a[1])
                 ) {
                     $tab[urldecode($a[0])] = urldecode($a[1]);

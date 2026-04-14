@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
+use Glpi\Exception\Database\StatementException;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\Toolbox\SanitizedStringsDecoder;
 use Safe\DateTime;
@@ -394,7 +395,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|bool Query result handler
+     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      */
     public function doQuery($query)
     {
@@ -490,7 +491,7 @@ class DBmysql
      * @param string $query   Query to execute
      * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result Query result handler
+     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      *
      * @deprecated 11.0.0
      */
@@ -555,7 +556,7 @@ class DBmysql
      */
     public function numrows($result)
     {
-        return $result->num_rows;
+        return (int) $result->num_rows;
     }
 
     /**
@@ -633,7 +634,11 @@ class DBmysql
             // See https://www.php.net/manual/en/mysqli.insert-id.php
             // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
             // We have to retrieve it manually via `LAST_INSERT_ID()`.
-            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+            /** @var mysqli_result $request */
+            $request = $this->dbh->query('SELECT LAST_INSERT_ID()');
+            /** @var array<int,mixed> $row */
+            $row = $request->fetch_row();
+            $insert_id = $row[0];
         }
         return $insert_id;
     }
@@ -933,18 +938,16 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
+        /** @var mysqli_result $result */
         $result = $this->doQuery(sprintf("SHOW COLUMNS FROM %s", self::quoteName($table)));
-        if ($result) {
-            if ($this->numrows($result) > 0) {
-                $this->field_cache[$table] = [];
-                while ($data = $this->fetchAssoc($result)) {
-                    $this->field_cache[$table][$data["Field"]] = $data;
-                }
-                return $this->field_cache[$table];
+        if ($this->numrows($result) > 0) {
+            $this->field_cache[$table] = [];
+            while ($data = $this->fetchAssoc($result)) {
+                $this->field_cache[$table][$data["Field"]] = $data;
             }
-            return [];
+            return $this->field_cache[$table];
         }
-        return false;
+        return [];
     }
 
     /**
@@ -970,7 +973,7 @@ class DBmysql
      */
     public function affectedRows()
     {
-        return $this->dbh->affected_rows;
+        return (int) $this->dbh->affected_rows;
     }
 
     /**
@@ -1034,7 +1037,7 @@ class DBmysql
      *
      * @param string $path with file full path
      *
-     * @return bool true if all query are successfull
+     * @return true
      */
     public function runFile($path)
     {
@@ -1055,10 +1058,11 @@ class DBmysql
     public function getQueriesFromFile(string $path): array
     {
         $script = fopen($path, 'r');
-        if (!$script) {
+        $filesize = filesize($path);
+        if (!$script || $filesize === 0) {
             return [];
         }
-        $sql_query = @fread($script, @filesize($path)) . "\n";
+        $sql_query = fread($script, $filesize) . "\n";
 
         $sql_query = $this->removeSqlRemarks($sql_query);
 
@@ -1097,6 +1101,7 @@ class DBmysql
     {
         // No translation, used in sysinfo
         $ret = [];
+        /** @var mysqli_result $req */
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
         if (($data = $req->fetch_array())) {
@@ -1133,6 +1138,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1152,6 +1158,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1363,14 +1370,14 @@ class DBmysql
      * @param string $table  Table name
      * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function insert($table, $params)
     {
-        $result = $this->doQuery(
+        $this->doQuery(
             $this->buildInsert($table, $params)
         );
-        return $result;
+        return true;
     }
 
     /**
@@ -1481,13 +1488,13 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1523,12 +1530,13 @@ class DBmysql
      * @param array   $where   WHERE clause
      * @param bool $onlyone Do the update only one element, defaults to true
      *
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
-        return $this->doQuery($query);
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1590,13 +1598,13 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|bool Query result handler
+     * @return true
      */
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $this->doQuery($query);
+        return true;
     }
 
     /**
@@ -1666,18 +1674,18 @@ class DBmysql
      * @param string $name   Table name
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return bool|mysqli_result
+     * @return true
      */
     public function dropTable(string $name, bool $exists = false)
     {
-        $res = $this->doQuery(
+        $this->doQuery(
             $this->buildDrop(
                 $name,
                 'TABLE',
                 $exists
             )
         );
-        return $res;
+        return true;
     }
 
     /**
@@ -1686,18 +1694,18 @@ class DBmysql
      * @param string $name   View name
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return bool|mysqli_result
+     * @return true
      */
     public function dropView(string $name, bool $exists = false)
     {
-        $res = $this->doQuery(
+        $this->doQuery(
             $this->buildDrop(
                 $name,
                 'VIEW',
                 $exists
             )
         );
-        return $res;
+        return true;
     }
 
     /**
@@ -1741,7 +1749,9 @@ class DBmysql
      */
     public function getVersion()
     {
+        /** @var mysqli_result $res */
         $res = $this->doQuery('SELECT version()');
+        /** @var array<string,mixed> $req */
         $req = $res->fetch_array();
         $raw = $req['version()'];
         return $raw;
@@ -1898,36 +1908,46 @@ class DBmysql
      */
     public function getTimezones()
     {
+        global $GLPI_CACHE;
+
         $list = [];
 
-        $timezones = DateTimeZone::listIdentifiers();
-        $results_queries = [];
-        foreach ($timezones as $index => $timezone) {
-            $results_queries[] =  new QuerySubQuery([
-                'SELECT' => ['name', 'value'],
-                'FROM' => new QueryExpression(
-                    sprintf(
-                        '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
-                        self::quoteValue($timezone),
-                        self::quoteName('name'),
-                        self::quoteValue('2000-01-01 00:00:00'),
-                        self::quoteValue('GMT'),
-                        self::quoteValue($timezone),
-                        self::quoteName('value'),
-                        self::quoteName(sprintf('timezone_%d', $index)),
-                    )
-                ),
-                'WHERE' => [
-                    ['NOT' => ['value' => null]],
-                ],
-            ]);
-        }
+        if (!$GLPI_CACHE->has('timezones')) {
+            $timezones = DateTimeZone::listIdentifiers();
+            $results_queries = [];
+            foreach ($timezones as $index => $timezone) {
+                $results_queries[] =  new QuerySubQuery([
+                    'SELECT' => ['name', 'value'],
+                    'FROM' => new QueryExpression(
+                        sprintf(
+                            '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
+                            self::quoteValue($timezone),
+                            self::quoteName('name'),
+                            self::quoteValue('2000-01-01 00:00:00'),
+                            self::quoteValue('GMT'),
+                            self::quoteValue($timezone),
+                            self::quoteName('value'),
+                            self::quoteName(sprintf('timezone_%d', $index)),
+                        )
+                    ),
+                    'WHERE' => [
+                        ['NOT' => ['value' => null]],
+                    ],
+                ]);
+            }
 
-        $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
-        foreach ($iterator as $row) {
-            $now = new DateTime();
-            $now->setTimezone(new DateTimeZone($row['name']));
-            $list[$row['name']] = $row['name'] . $now->format(" (T P)");
+            $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
+            foreach ($iterator as $row) {
+                $now = new DateTime();
+                $now->setTimezone(new DateTimeZone($row['name']));
+                $list[$row['name']] = $row['name'] . $now->format(" (T P)");
+            }
+            if ($list !== []) {
+                // Only cache if there are some timezones. This method may be called before timezones are properly setup, and we don't want to cache an empty list.
+                $GLPI_CACHE->set('timezones', $list);
+            }
+        } else {
+            $list = $GLPI_CACHE->get('timezones');
         }
 
         return $list;
@@ -2041,7 +2061,7 @@ class DBmysql
         $output = "";
 
         for ($i = 0; $i < $linecount; $i++) {
-            if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
+            if (($i != ($linecount - 1)) || ($lines[$i] !== '')) {
                 if (isset($lines[$i][0])) {
                     if ($lines[$i][0] != "#" && !str_starts_with($lines[$i], "--")) {
                         $output .= $lines[$i] . "\n";
@@ -2081,6 +2101,7 @@ class DBmysql
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }
 
+            /** @var mysqli_result $warnings_result */
             while ($warning = $warnings_result->fetch_assoc()) {
                 if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                     continue;
@@ -2103,22 +2124,64 @@ class DBmysql
     }
 
     /**
-     * Executes a prepared statement
+     * Binds parameters to a prepared statement
      *
-     * @param mysqli_stmt $stmt Statement to execute
+     * @param mysqli_stmt $stmt   Statement to bind parameters to
+     * @param array<int|string, mixed> $params Parameters to bind
+     * @param list<'i'|'d'|'s'>|null $types  Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt): void
+    private function bindStatementParams(mysqli_stmt $stmt, array $params, string|array|null $types = null): void
     {
+        if (count($params) === 0) {
+            return;
+        }
+        $params = array_values($params); //no need for the keys
+
+        if ($types === null) {
+            //no types specified, assume all strings
+            $types = str_pad('', count($params), 's');
+        } elseif (is_array($types)) {
+            $types = implode('', $types);
+        }
+
+        if (false === $stmt->bind_param($types, ...$params)) {
+            throw new StatementException(
+                sprintf(
+                    'Error binding params in SQL query "%s": %s (%d).',
+                    $this->current_query,
+                    $stmt->error,
+                    $stmt->errno
+                ),
+                $stmt->errno
+            );
+        }
+    }
+
+    /**
+     * Executes a prepared statement
+     *
+     * @param mysqli_stmt $stmt Statement to execute
+     * @param ?array<int|string, mixed> $params Parameters to bind
+     * @param list<'i'|'d'|'s'>|null $types Types array (e.g. ['i', 's', 's', 'd']), or null for all types as string
+     *
+     * @return void
+     */
+    public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
+    {
+        if ($params !== null) {
+            $this->bindStatementParams($stmt, $params, $types);
+        }
         if (!$stmt->execute()) {
-            throw new RuntimeException(
+            throw new StatementException(
                 sprintf(
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,
                     $stmt->errno,
                     $this->current_query
-                )
+                ),
+                $stmt->errno
             );
         }
     }
@@ -2285,6 +2348,7 @@ class DBmysql
             static::quoteName('Variable_name'),
             implode(', ', array_map([$this, 'quote'], $variables))
         );
+        /** @var mysqli_result $result */
         $result = $this->doQuery($query);
         $values = [];
         while ($row = $result->fetch_assoc()) {

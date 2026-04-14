@@ -40,6 +40,7 @@ use Glpi\Exception\OAuth2KeyException;
 use Glpi\Http\Request;
 use GLPIKey;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\AuthorizationValidators\BearerTokenValidator;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ClientCredentialsGrant;
@@ -106,7 +107,16 @@ final class Server
         $this->access_token_repository = new AccessTokenRepository();
         $this->scope_repository = new ScopeRepository();
 
-        $this->resource_server = new ResourceServer($this->access_token_repository, "file://" . self::PUBLIC_KEY_PATH);
+        $bearer_token_validator = new BearerTokenValidator(
+            accessTokenRepository: $this->access_token_repository,
+            // The JWT lib use its own system clock, which may not always be exactly
+            // equals to GLPI's time reference stored in the session.
+            // This lead to flakiness in our tests where the token is falsely
+            // identified as being from the future.
+            // To prevent this, we add a 5 second leeway.
+            jwtValidAtDateLeeway: new DateInterval('PT5S')
+        );
+        $this->resource_server = new ResourceServer($this->access_token_repository, "file://" . self::PUBLIC_KEY_PATH, $bearer_token_validator);
 
         $encryption_key = (new GLPIKey())->get();
         $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://" . self::PRIVATE_KEY_PATH, $encryption_key);
@@ -217,25 +227,35 @@ final class Server
 
         return false;
     }
-    public static function generateKeys(): bool
+
+    /**
+     * Generate a new pair of public/private keys for OAuth.
+     *
+     * @param bool $force If true, will force the generation of new keys even if they already exist.
+     * @return bool Returns true if new keys were generated, false if keys already exist and force is not set to true.
+     * @throws RuntimeException
+     */
+    public static function generateKeys(bool $force = false): bool
     {
-        if (self::checkKeys()) {
+        if (!$force && self::checkKeys()) {
             // Keys are already generated
             return false;
         }
 
-        // Partial data: unsure how to proceed, let the user review the files.
-        if (
-            file_exists(self::PRIVATE_KEY_PATH)
-            && !file_exists(self::PUBLIC_KEY_PATH)
-        ) {
-            throw new RuntimeException("Mising file: " . self::PUBLIC_KEY_PATH);
-        }
-        if (
-            file_exists(self::PUBLIC_KEY_PATH)
-            && !file_exists(self::PRIVATE_KEY_PATH)
-        ) {
-            throw new RuntimeException("Mising file: " . self::PRIVATE_KEY_PATH);
+        if (!$force) {
+            // Partial data: unsure how to proceed, let the user review the files.
+            if (
+                file_exists(self::PRIVATE_KEY_PATH)
+                && !file_exists(self::PUBLIC_KEY_PATH)
+            ) {
+                throw new RuntimeException("Mising file: " . self::PUBLIC_KEY_PATH);
+            }
+            if (
+                file_exists(self::PUBLIC_KEY_PATH)
+                && !file_exists(self::PRIVATE_KEY_PATH)
+            ) {
+                throw new RuntimeException("Mising file: " . self::PRIVATE_KEY_PATH);
+            }
         }
 
         // If we reach this point, both file are missing and must be generated

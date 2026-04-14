@@ -59,45 +59,40 @@
                 <span id="user_available{{ params.rand_user }}"></span>
             {% endif %}
 
-            {% if default_delay <= 180000 %}
-                {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
-                    min: 0,
-                    max: 50 * constant('HOUR_TIMESTAMP'),
-                    value: default_delay,
-                    emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
-                    rand: rand,
-                }]) %}
-                <br>
-            {% else %}
-                {{ fields.hiddenField('plan[_duration]', default_delay) }}
-                {{ fields.htmlField(
-                    '',
-                    default_delay|formatted_duration,
-                    '',
-                    {no_label: true, full_width: true, mb: 0}
-                ) }}
-            {% endif %}
+            {% set duration_limit = 50 * constant('HOUR_TIMESTAMP') %}
+            {% set forced_end_date = (default_delay > duration_limit) %}
+            {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
+                min: 0,
+                max: duration_limit,
+                value: forced_end_date ? 0 : default_delay,
+                emptylabel: __('Specify an end date'),
+                rand: rand,
+            }]) %}
+            <br>
             <div id="date_end{{ rand }}"></div>
 
             {% if display_dates %}
-                {% if default_delay == 0 %}
-                    {% set params = params|merge({
-                        duration: 0,
-                    }) %}
-                    <script>
-                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', {{ params|json_encode|raw }});
-                    </script>
-                {% endif %}
                 <script>
-                    $('#dropdown_plan__duration_{{ rand }}').on('change', () => {
-                        const event_params = {
-                            duration: $('#dropdown_plan__duration_{{ rand }}').val(),
-                            end: '{{ end|e('js') }}',
-                            name: 'plan[end]',
-                            global_begin: '{{ config('planning_begin')|e('js') }}',
-                            global_end: '{{ config('planning_end')|e('js') }}',
+                    $(function() {
+                        const getEventParams = (duration) => {
+                            return {
+                                duration: duration,
+                                end: '{{ end|e('js') }}',
+                                name: 'plan[end]',
+                                global_begin: '{{ config('planning_begin')|e('js') }}',
+                                global_end: '{{ config('planning_end')|e('js') }}',
+                                itemtype: '{{ params.itemtype|e('js') }}',
+                                items_id: '{{ params.items_id|default(0)|e('js') }}'
+                            };
                         };
-                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', event_params);
+
+                        {% if default_delay == 0 or forced_end_date %}
+                            $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', getEventParams(0));
+                        {% endif %}
+
+                        $('#dropdown_plan__duration_{{ rand }}').on('change', function() {
+                            $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', getEventParams($(this).val()));
+                        });
                     });
                 </script>
             {% endif %}
@@ -107,7 +102,7 @@
         }) }}
 
         {% if (params.id is not defined or params.id == 0) and params.itemtype is defined and call('PlanningRecall::isAvailable') %}
-            {{ fields.dropdownField('PlanningRecall', 'planningrecalls_id', 0, _x('Planning', 'Reminder'), {
+            {{ fields.dropdownField('PlanningRecall', 'planningrecalls_id', params['before_time']|default(0), _x('Planning', 'Reminder'), {
                 itemtype: params.itemtype,
                 items_id: params.items_id,
                 rand: rand,

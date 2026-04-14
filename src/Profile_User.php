@@ -1045,7 +1045,23 @@ TWIG, $avatar_params) . $username;
                 case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = self::countForItem($item);
+                            $count = $DB->request([
+                                'COUNT'     => 'cpt',
+                                'FROM'      => self::getTable(),
+                                'LEFT JOIN' => [
+                                    User::getTable() => [
+                                        'FKEY' => [
+                                            self::getTable() => 'users_id',
+                                            User::getTable()  => 'id',
+                                        ],
+                                    ],
+                                ],
+                                'WHERE'     => [
+                                    User::getTable() . '.is_deleted'    => 0,
+                                    self::getTable() . '.profiles_id'  => $item->getID(),
+                                ],
+                            ])->current();
+                            $nb        = $count['cpt'];
                         }
                         return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
@@ -1097,6 +1113,7 @@ TWIG, $avatar_params) . $username;
 
         $specificities['dropdown_method_2']       = 'dropdownUnder';
         $specificities['can_remove_all_at_once']  = false;
+        $specificities['can_link_several_times']  = true;
 
         return $specificities;
     }
@@ -1213,6 +1230,15 @@ TWIG, $avatar_params) . $username;
 
     public function post_deleteFromDB()
     {
+        $selected_user = User::getById($this->fields['users_id']);
+
+        if ($selected_user instanceof User && $selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
+            $user = new User();
+            $user->update([
+                'id' => $this->fields['users_id'],
+                'profiles_id' => 0,
+            ]);
+        }
         $this->logOperation('delete');
     }
 

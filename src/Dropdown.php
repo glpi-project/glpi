@@ -42,6 +42,7 @@ use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\SocketModel;
 
 use function Safe\json_encode;
@@ -2997,7 +2998,7 @@ HTML;
                         // Prevent overriding criteria groups sharing the same key
                         $where[] = [$key => $value];
                     } else {
-                        // Keep the criteria key at the rrot level to be able to override defaults.
+                        // Keep the criteria key at the root level to be able to override defaults.
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
@@ -3031,8 +3032,10 @@ HTML;
                             "$table.completename" => ['LIKE', $search],
                         ],
                     ];
-                    if ($item->isField('code')) {
-                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    if (Session::getCurrentInterface() === 'central') {
+                        if ($item->isField('code')) {
+                            $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                        }
                     }
                     if ($item->isField('alias')) {
                         $swhere["OR"]["$table.alias"] = ['LIKE', $search];
@@ -3346,9 +3349,9 @@ HTML;
                             $outputval = $data['alias'];
                             $title     = $data['alias'];
                         }
-                        if (isset($data['code']) && !empty($data['code'])) {
+                        if ((Session::getCurrentInterface() === 'central') && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
-                            $title     .= ' - ' . $data['code'];
+                            $title .= ' - ' . $data['code'];
                         }
 
                         $selection_text = $title;
@@ -3575,6 +3578,8 @@ HTML;
                     break;
 
                 case Ticket::class:
+                case Change::class:
+                case Problem::class:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'FROM'   => $table,
@@ -3582,13 +3587,14 @@ HTML;
                     if (count($ljoin)) {
                         $criteria['LEFT JOIN'] = $ljoin;
                     }
-                    if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+                    $itemtype_class = $post['itemtype'];
+                    if (!Session::haveRight($itemtype_class::$rightname, $itemtype_class::READALL)) {
                         $unused_ref = [];
-                        $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
-                        if (!empty($joins_str)) {
-                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        $default_join = SQLProvider::getDefaultJoinCriteria($itemtype_class, $itemtype_class::getTable(), $unused_ref);
+                        if ($default_join !== []) {
+                            $criteria = array_merge_recursive($criteria, $ljoin, $default_join);
                         }
-                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
+                        $where[] = SQLProvider::getDefaultWhereCriteria($itemtype_class);
                     }
                     break;
 
@@ -3721,7 +3727,7 @@ HTML;
                                         $data[$key]
                                     );
                                 }
-                                if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
+                                if (((string) $withoutput !== '') && ($withoutput != '&nbsp;')) {
                                     $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
                                 }
                             }
@@ -3829,7 +3835,7 @@ HTML;
             $where["$table.is_template"] = 0;
         }
 
-        if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
+        if (isset($post['searchText']) && ((string) $post['searchText'] !== '')) {
             $search = Search::makeTextSearchValue($post['searchText']);
             $where['OR'] = [
                 "$table.name"        => ['LIKE', $search],
@@ -4026,7 +4032,7 @@ HTML;
             $where[] = State::getDisplayConditionForAssistance();
         }
 
-        if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
+        if (isset($_POST['searchText']) && ((string) $post['searchText'] !== '')) {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
             $orwhere = $item->isField('name') ? [
                 'name'   => $search,
@@ -4181,6 +4187,7 @@ HTML;
         }
 
         $all_devices = [];
+        $found_items = [];
 
         // My items
         foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
@@ -4249,12 +4256,14 @@ HTML;
 
                         if (!isset($all_devices[$itemtype])) {
                             $all_devices[$itemtype] = [
+                                //TRANS: Always a plural form: My computers, My monitors
                                 'text' => sprintf(__('My %s'), $item->getTypeName(Session::getPluralNumber())),
                                 'children' => [],
                                 'itemtype' => $itemtype,
                             ];
                         }
 
+                        $found_items[$itemtype][] = $data['id'];
                         $all_devices[$itemtype]['children'][] = [
                             'id' => $itemtype . "_" . $data["id"],
                             'text' => $output,
@@ -4324,6 +4333,10 @@ HTML;
                             'GROUPBY' => $itemtable . '.id',
                             'ORDER'  => $item->getNameField(),
                         ];
+
+                        if (!empty($found_items[$itemtype])) {
+                            $criteria['WHERE'][] = ['NOT' => ["$itemtable.id" => $found_items[$itemtype]]];
+                        }
 
                         if ($item->maybeDeleted()) {
                             $criteria['WHERE']['is_deleted'] = 0;
@@ -4997,7 +5010,7 @@ HTML;
                     'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
                     'itemtype'          => "User",
                     'items_id'          => $ID,
-                    'use_notification'  => strlen($user['default_email'] ?? "") > 0 ? 1 : 0,
+                    'use_notification'  => (string) ($user['default_email'] ?? "") !== '' ? 1 : 0,
                     'default_email'     => $user['default_email'],
                     'alternative_email' => '',
                 ];
@@ -5071,7 +5084,7 @@ HTML;
                         $children['items_id']          = $children['id'];
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
-                        $children['use_notification']  = strlen($supplier_obj->fields['email'] ?? '') > 0 ? 1 : 0;
+                        $children['use_notification']  = (string) ($supplier_obj->fields['email'] ?? '') !== '' ? 1 : 0;
                         $children['default_email']     = $supplier_obj->fields['email'];
                         $children['alternative_email'] = '';
                     }
@@ -5154,5 +5167,45 @@ HTML;
         }
 
         return $durationDropdown;
+    }
+
+    /**
+     * Compute the list of additional fields to display alongside item names in dropdowns.
+     *
+     * @param string|null $itemtype The itemtype to compute displaywith for.
+     * @return array<string>
+     */
+    public static function getDisplayWith(?string $itemtype): array
+    {
+        global $CFG_GLPI;
+
+        if ($itemtype === null || $itemtype === '0') {
+            return [];
+        }
+
+        $displaywith = [];
+        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+
+        if ($is_itil_type && !$id_already_visible) {
+            $displaywith[] = 'id';
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
+            $item = getItemForItemtype($itemtype);
+            if ($item) {
+                if ($item->isField('serial')) {
+                    $displaywith[] = 'serial';
+                }
+                if ($item->isField('otherserial')) {
+                    $displaywith[] = 'otherserial';
+                }
+                if ($item->isField('users_id')) {
+                    $displaywith[] = 'users_id';
+                }
+            }
+        }
+
+        return $displaywith;
     }
 }

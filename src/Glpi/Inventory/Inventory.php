@@ -73,6 +73,8 @@ use Glpi\Inventory\Asset\VirtualMachine;
 use Glpi\Inventory\Asset\Volume;
 use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
+use Glpi\Inventory\MainAsset\NetworkEquipment;
+use Glpi\Inventory\MainAsset\Unmanaged;
 use Lockedfield;
 use Log;
 use RecursiveDirectoryIterator;
@@ -228,7 +230,7 @@ class Inventory
             }
             return false;
         } finally {
-            $this->raw_data = $data;
+            $this->raw_data = $this->getCleanedObject($data);
         }
 
         if ($this->inventory_tmpfile !== false) {
@@ -848,6 +850,14 @@ class Inventory
             $this->mainasset->setExtraData($this->data);
             $this->mainasset->setAssets($this->assets);
             $item_start = microtime(true);
+            //cleanup tag
+            if (
+                ($agent = $this->mainasset?->getAgent()) instanceof Agent
+                && !($this->mainasset instanceof NetworkEquipment || $this->mainasset instanceof Unmanaged)
+                && !isset($this->metadata['tag'])
+            ) {
+                $agent->update(['tag' => '', 'id' => $agent->getID()]);
+            }
             $this->mainasset->handle();
             $this->item = $this->mainasset->getItem();
             $this->addBench($this->item->getType(), 'handle', $item_start);
@@ -1157,5 +1167,29 @@ class Inventory
             }
         }
         return $itemtypes;
+    }
+
+    private function getCleanedObject(stdClass $data): stdClass
+    {
+        $cleaned = new stdClass();
+        // @phpstan-ignore foreach.nonIterable
+        foreach ($data as $key => $value) {
+            $cleaned->$key = $this->getCleanedValue($value);
+        }
+        return $cleaned;
+    }
+
+    private function getCleanedValue(mixed $value): mixed
+    {
+        if ($value instanceof stdClass) {
+            return $this->getCleanedObject($value);
+        }
+        if (is_array($value)) {
+            return \array_map($this->getCleanedValue(...), $value);
+        }
+        if (\is_string($value)) {
+            return strip_tags($value);
+        }
+        return $value;
     }
 }

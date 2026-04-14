@@ -387,7 +387,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again change to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
@@ -459,19 +460,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->handleNewItemNotifications();
-
-        if (
-            isset($this->input['_from_items_id'])
-            && isset($this->input['_from_itemtype'])
-        ) {
-            $change_item = new Change_Item();
-            $change_item->add([
-                'items_id'      => (int) $this->input['_from_items_id'],
-                'itemtype'      => $this->input['_from_itemtype'],
-                'changes_id'    => $this->fields['id'],
-                '_disablenotif' => true,
-            ]);
-        }
     }
 
     #[Override]

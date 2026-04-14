@@ -129,7 +129,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
             PrinterModel::dropdown(['used' => $used]);
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
+            echo "<button type='submit' name='add' class='btn btn-primary'><i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span></button>";
             echo "</td></tr>";
             echo "</table>";
             Html::closeForm();

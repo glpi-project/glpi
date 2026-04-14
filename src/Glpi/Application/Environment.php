@@ -139,11 +139,13 @@ enum Environment: string
      */
     public function getConstantsOverride(string $root_dir): array
     {
+        $test_token = getenv('TEST_TOKEN');
+
         return match ($this) {
             default => [],
             self::TESTING     => [
                 'GLPI_CONFIG_DIR'               => $root_dir . '/tests/config',
-                'GLPI_VAR_DIR'                  => $root_dir . '/tests/files',
+                'GLPI_VAR_DIR'                  => $root_dir . '/tests/files' . (($test_token !== false && $test_token !== '' && $test_token > 1) ? "-$test_token" : ''),
                 'GLPI_LOG_LVL'                  => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'               => true,
                 'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
@@ -190,6 +192,7 @@ enum Environment: string
                 'GLPI_LOG_LVL'             => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'          => true,
                 'GLPI_PLUGINS_DIRECTORIES' => [
+                    $root_dir . '/plugins',
                     $root_dir . '/tests/fixtures/plugins',
                 ],
             ],
@@ -241,6 +244,7 @@ enum Environment: string
         return match ($this) {
             default           => false,
             self::TESTING     => true,
+            self::E2E         => true,
         };
     }
 

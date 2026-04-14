@@ -79,7 +79,7 @@
             <i class="ti ti-stack"></i>
             {{ current_entity_short|u.truncate(35, '...') }}
         </a>
-        <div class="dropdown-menu p-3 overflow-y-auto" style="max-height: calc(100vh - 8rem)">
+        <div class="dropdown-menu p-3 overflow-y-auto" style="max-height: calc(100vh - 8rem)" data-testid="entity-menu-dropdown">
             <h3>{{ __('Select the desired entity') }}</h3>
 
             <div class="alert alert-info d-block" role="alert">
@@ -97,6 +97,24 @@
                 action="{{ path('/Session/ChangeEntity') }}"
             >
                 <input type="hidden" name="full_structure" value="true">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
+
+            <form
+                id="ch_ent_o_{{ rand }}"
+                method="POST"
+                action="{{ path('/Session/ChangeEntity') }}"
+            >
+                <input type="hidden" name="is_recursive" value="0">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
+
+            <form
+                id="ch_ent_r_{{ rand }}"
+                method="POST"
+                action="{{ path('/Session/ChangeEntity') }}"
+            >
+                <input type="hidden" name="is_recursive" value="1">
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             </form>
 
@@ -189,7 +207,7 @@
 
                 // load data by ajax
                 source: {
-                    url:  '{{ path("/ajax/entitytreesons.php") }}',
+                    url:  '{{ path("/ajax/entitytreesons.php?rand=" ~ rand) }}',
                     cache: false
                 },
 

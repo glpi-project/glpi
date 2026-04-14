@@ -1098,7 +1098,7 @@ class Rule extends CommonDBTM
                 <div id="viewaction{{ rules_id }}{{ rand }}"></div>
                 {% if can_add_new_action %}
                     <div class="center mt-1 mb-3">
-                        <button type="button" name="add_action" class="btn btn-primary">{{ btn_label }}</button>
+                        <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                         <script>
                             $('button[name="add_action"]').on('click', () => {
                                 $('#viewaction{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1218,7 +1218,7 @@ TWIG, $twig_params);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="viewcriteria{{ rules_id }}{{ rand }}"></div>
                 <div class="center mt-1 mb-3">
-                    <button type="button" name="add_criterion" class="btn btn-primary">{{ btn_label }}</button>
+                    <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                     <script>
                         $('button[name="add_criterion"]').on('click', () => {
                             $('#viewcriteria{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1938,7 +1938,7 @@ TWIG, $twig_params);
             $link = sprintf(
                 __('%1$s %2$s'),
                 $link,
-                Html::showToolTip($this->fields["comment"], ['display' => false])
+                Html::showToolTip(htmlescape($this->fields["comment"]), ['display' => false])
             );
         }
         $data['name'] = $link;
@@ -2070,6 +2070,13 @@ TWIG, $twig_params);
      */
     private function handleRankChange($new_rule = false)
     {
+        // Some classes like SlaLevels and OlaLevels extends this class but do
+        // not share the same glpi_rules tables which is used by the `moveRule`
+        // method.
+        if (static::getTable() !== "glpi_rules") {
+            return;
+        }
+
         if (isset($this->input['_ranking'])) {
             if (isset($this->fields['ranking']) && (int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
                 // No change in ranking, nothing to do.

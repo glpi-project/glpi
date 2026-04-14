@@ -34,6 +34,7 @@
 
 namespace Glpi\Tools\Command;
 
+use AuthLDAP;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

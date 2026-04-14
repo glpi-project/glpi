@@ -130,6 +130,30 @@ final class FuzzyMatcher
 
         $max_cost = $this->strategy->maxCostForSuccess(strlen($word));
 
-        return $cost <= $max_cost;
+        // If the cost is above the maximum cost allowed by the strategy, it's not a match
+        if ($cost > $max_cost) {
+            return false;
+        }
+
+        // Additional check: Ensure that the word contains at least one substring
+        // of consecutive characters from the filter to avoid false positives.
+        // For example, "laptop" should not match "calculation" because none of
+        // the 3-character substrings from "laptop" (lap, apt, pto, top) are
+        // present in "calculation", even though the Levenshtein distance might
+        // be acceptable.
+        if (strlen($filter) >= $this->strategy->minimumFilterLenghtForFuzzySearch()) {
+            $min_substring_length = $this->strategy->minimumFilterLenghtForFuzzySearch();
+
+            for ($offset = 0; $offset <= strlen($filter) - $min_substring_length; $offset++) {
+                $substring = substr($filter, $offset, $min_substring_length);
+                if (str_contains($word, $substring)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }

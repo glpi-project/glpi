@@ -42,12 +42,15 @@ namespace Glpi\Api;
 use AllAssets;
 use CommonDBTM;
 use Document;
+use GLPIKey;
 use GLPIUploadHandler;
 use ReflectionClass;
 use Safe\Exceptions\JsonException;
+use Safe\Exceptions\UrlException;
 use stdClass;
 use Toolbox;
 
+use function Safe\base64_decode;
 use function Safe\file_get_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -501,7 +504,7 @@ class APIRest extends API
 
         // now how about PUT/POST bodies? These override what we got from GET
         $body = trim($this->getHttpBody());
-        if (strlen($body) > 0 && $this->verb == "GET") {
+        if ($body !== '' && $this->verb == "GET") {
             // GET method requires an empty body
             $this->returnError(
                 "GET Request should not have json payload (http body)",
@@ -616,7 +619,12 @@ class APIRest extends API
 
         // try to retrieve session_token in header
         if (isset($headers['Session-Token'])) {
-            $parameters['session_token'] = $headers['Session-Token'];
+            try {
+                $parameters['session_token'] = (new GLPIKey())->decrypt(base64_decode(trim($headers['Session-Token'])));
+            } catch (UrlException) {
+                // malformed session token, keep its raw value and let authentication code fail due to mismatch token
+                $parameters['session_token'] = $headers['Session-Token'];
+            }
         }
 
         // try to retrieve app_token in header

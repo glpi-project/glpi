@@ -49,7 +49,7 @@ final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
 
     public function minimumFilterLenghtForFuzzySearch(): int
     {
-        return 5;
+        return 3;
     }
 
     public function insertionCost(): int

@@ -63,7 +63,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
-        $obj = getItemForTable(static::$itemtype_1);
+        /** @var CommonITILObject $obj */
+        $obj = getItemForItemtype(static::$itemtype_1);
 
         if ($obj->canUpdateItem()) {
             return true;
@@ -91,7 +92,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public function post_addItem()
     {
         $this->updateItemTCO();
-        $obj = getItemForTable(static::$itemtype_1);
+        /** @var CommonITILObject $obj */
+        $obj = getItemForItemtype(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
@@ -237,6 +239,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $count = 0;
         $twig_params = [
             'rand'               => $rand,
+            'itil_class'         => static::$itemtype_1,
             'item_class'         => static::class,
             'can_edit'           => $canedit,
             'my_items_dropdown'  => '',
@@ -458,19 +461,29 @@ TWIG, $twig_params);
                 continue;
             }
 
+            $model_class = $item->getModelClass();
+            $model_fkey = $model_class != null ? $model_class::getForeignKeyField() : null;
+
             $iterator = static::getTypeItems($instID, $itemtype);
             foreach ($iterator as $data) {
                 $item->getFromDB($data["id"]);
+
+                $model = '-';
+                if ($model_fkey !== null && isset($data[$model_fkey]) && $data[$model_fkey] > 0) {
+                    $model = Dropdown::getDropdownName($model_class::getTable(), $data[$model_fkey]);
+                }
+
                 $entry = [
                     'itemtype' => static::class,
                     'id'   => $data["linkid"],
                     'row_class' => $data['is_deleted'] ? 'table-deleted' : '',
                     'linked_itemtype' => $item::getTypeName(1),
+                    'model'  => $model,
                     'serial'  => $data["serial"] ?? "-",
                     'otherserial' => $data["otherserial"] ?? "-",
                     'entity' => Dropdown::getDropdownName("glpi_entities", $data['entity']),
-                    'state' => Dropdown::getDropdownName("glpi_states", $data['states_id']),
-                    'location' => Dropdown::getDropdownName("glpi_locations", $data['locations_id']),
+                    'state' => isset($data['states_id']) ? Dropdown::getDropdownName("glpi_states", $data['states_id']) : "",
+                    'location' => isset($data['locations_id']) ? Dropdown::getDropdownName("glpi_locations", $data['locations_id']) : "",
                     'kb' => $item->getKBLinks(),
                     'showmassiveactions' => $canedit && !$is_closed,
                 ];
@@ -500,6 +513,7 @@ TWIG, $twig_params);
                 'linked_itemtype' => _n('Type', 'Types', 1),
                 'entity'          => Entity::getTypeName(1),
                 'name'            => __('Name'),
+                'model'           => _n('Model', 'Models', 1),
                 'serial'          => __('Serial number'),
                 'otherserial'     => __('Inventory number'),
                 'kb'              => __('Knowledge base entries'),
@@ -679,25 +693,39 @@ TWIG, $twig_params);
         }
 
         $criteria = static::$itemtype_1::getCommonCriteria();
-        $params  = [
-            'criteria' => [],
-            'metacriteria' => $options['metacriteria'] ?? [
+
+        $params = [
+            'reset'    => 'reset',
+            'criteria' => [
                 [
-                    'itemtype' => $item::class,
-                    'field'    => Search::getOptionNumber($item::class, 'id'),
+                    'field'      => 12, // status
                     'searchtype' => 'equals',
-                    'value'    => $item->getID(),
-                    'link'     => 'AND',
+                    'value'      => 'all',
+                    'link'       => 'AND',
                 ],
             ],
-            'reset'    => 'reset',
         ];
-        $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
-        $params['criteria'][0]['field']      = 12;
-        $params['criteria'][0]['searchtype'] = 'equals';
-        $params['criteria'][0]['value']      = 'all';
-        $params['criteria'][0]['link']       = 'AND';
+        if ($item instanceof Supplier && is_a(static::$itemtype_1 ?? '', CommonITILObject::class, true)) {
+            $params['criteria'][] = [
+                'field'      => 6, // supplier
+                'searchtype' => 'equals',
+                'value'      => $item->getID(),
+                'link'       => 'AND',
+            ];
+        } else {
+            $params['metacriteria'] = $options['metacriteria'] ?? [
+                [
+                    'itemtype'   => $item::class,
+                    'field'      => Search::getOptionNumber($item::class, 'id'),
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID(),
+                    'link'       => 'AND',
+                ],
+            ];
+        }
+
+        $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
         switch ($item->getType()) {
             case User::class:
@@ -739,7 +767,7 @@ TWIG, $twig_params);
         if (
             $item->getID()
             && !$item->isDeleted()
-            && CommonITILObject::isPossibleToAssignType($item->getType())
+            && (CommonITILObject::isPossibleToAssignType($item->getType()) || $item->getType() == User::class)
             && static::canCreate()
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))

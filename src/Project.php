@@ -122,7 +122,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      **/
     public function canCreateItem(): bool
     {
-        if (!Session::haveAccessToEntity($this->getEntityID())) {
+        if (!Session::haveAccessToEntity($this->getEntityID(), $this->isTemplate() && $this->isRecursive())) {
             return false;
         }
         return Session::haveRight(self::$rightname, CREATE);
@@ -632,6 +632,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -640,6 +641,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -991,6 +993,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1005,6 +1008,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1407,15 +1411,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Show team for a project
      * @param Project $project
-     * @param int $withtemplate
      * @return true
      **/
-    public function showTeam(Project $project, $withtemplate = 0)
+    public function showTeam(Project $project)
     {
         $ID      = $project->fields['id'];
         $canedit = $project->can($ID, UPDATE);
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             $twig_params = [
                 'id' => $ID,
                 'label' => __('Add a team member'),
@@ -1442,7 +1445,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>

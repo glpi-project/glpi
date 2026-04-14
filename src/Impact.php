@@ -252,7 +252,7 @@ JS);
     {
         self::loadLibs();
 
-        echo '<div id="impact_graph_view">';
+        echo '<div id="impact_graph_view" data-testid="impact-graph-view">';
         self::prepareImpactNetwork($item);
         echo '</div>';
     }
@@ -279,7 +279,7 @@ JS);
             $max_depth = $impact_context->fields['max_depth'];
         }
 
-        echo '<div id="impact_list_view">';
+        echo '<div id="impact_list_view" data-testid="impact-list-view">';
         echo '<div class="impact-list-container">';
 
         // One table will be printed for each direction
@@ -535,7 +535,6 @@ TWIG, $twig_params);
         $user->computePreferences();
 
         $count = count($itil_objects) ?: "";
-        $extra = "";
         $node_details = explode(self::NODE_ID_DELIMITER, $node_id);
 
         if ($count) {
@@ -576,16 +575,26 @@ TWIG, $twig_params);
                     $priority = $itil_object['priority'];
                 }
             }
-            $extra = 'id="' . $id . '" style="background-color:' . htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
+            $color = htmlescape($user->fields["priority_$priority"]);
 
             echo Html::scriptBlock('
-                $(document).on("click", "#$id", () => {
+                $(document).on("click", "#' . $id . '", () => {
                     window.open("' . jsescape($link) . '");
                 });
             ');
-        }
 
-        echo '<td class="text-center" ' . $extra . '><div>' . $count . '</div></td>';
+            echo <<<HTML
+                <td class="text-center">
+                    <div class="badge_block" style="border-color: $color">
+                        <span class="me-1" style="background: $color"></span>
+                        $count
+                    </div>
+                </td>
+HTML;
+
+        } else {
+            echo '<td class="text-center"><div>' . $count . '</div></td>';
+        }
     }
 
     /**
@@ -1860,7 +1869,7 @@ TWIG, $twig_params);
 
         // Submit button
         echo '<div style="text-align:center">';
-        echo Html::submit(__('Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
+        echo Html::submit(__('Save'), ['name' => 'update', 'class' => 'btn btn-primary', 'icon' => 'ti ti-device-floppy']);
         echo '</div>';
 
         Html::closeForm();

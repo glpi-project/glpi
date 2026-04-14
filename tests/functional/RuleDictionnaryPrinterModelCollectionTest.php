@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\RuleBuilder;
 
 class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
 {
@@ -56,47 +57,22 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
     {
         $collection = new \RuleDictionnaryPrinterModelCollection();
 
-        $rule = $this->createItem(
-            \Rule::class,
-            [
-                'name'        => 'Ignore import',
-                'is_active'   => 1,
-                'entities_id' => 0,
-                'sub_type'    => \RuleDictionnaryPrinterModel::class,
-                'match'       => \Rule::AND_MATCHING,
-                'condition'   => 0,
-                'description' => '',
-            ]
-        );
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleDictionnaryPrinterModel::class);
+        $rule_builder->setEntity(0)
+            ->addCriteria('name', \Rule::PATTERN_IS, 'Model to ignore')
+            ->addAction('assign', '_ignore_import', '1');
+        $rule = $this->createRule($rule_builder);
 
-        $this->createItem(
-            \RuleCriteria::class,
-            [
-                'rules_id'  => $rule->getID(),
-                'criteria'  => 'name',
-                'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'Model to ignore',
-            ]
-        );
-
-        $this->createItem(
-            \RuleAction::class,
-            [
-                'rules_id'    => $rule->getID(),
-                'action_type' => 'assign',
-                'field'       => '_ignore_import',
-                'value'       => '1',
-            ]
-        );
-
+        // --- act + assert ---
+        // Test matching rule
         $input = [
             'name' => 'Model to ignore',
-
         ];
         $result = $collection->processAllRules($input);
         $expected = ['_ignore_import' => '1', '_ruleid' => $rule->getID()];
         $this->assertSame($expected, $result);
 
+        // Test non-matching rule
         $input = [
             'name' => 'Any other model',
         ];
@@ -109,38 +85,11 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
     {
         $collection = new \RuleDictionnaryPrinterModelCollection();
 
-        $rule = $this->createItem(
-            \Rule::class,
-            [
-                'name'        => 'Adapt Model',
-                'is_active'   => 1,
-                'entities_id' => 0,
-                'sub_type'    => \RuleDictionnaryPrinterModel::class,
-                'match'       => \Rule::AND_MATCHING,
-                'condition'   => 0,
-                'description' => '',
-            ]
-        );
-
-        $this->createItem(
-            \RuleCriteria::class,
-            [
-                'rules_id'  => $rule->getID(),
-                'criteria'  => 'name',
-                'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'WrongOne',
-            ]
-        );
-
-        $this->createItem(
-            \RuleAction::class,
-            [
-                'rules_id'    => $rule->getID(),
-                'action_type' => 'assign',
-                'field'       => 'name',
-                'value'       => 'GoodOne',
-            ]
-        );
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleDictionnaryPrinterModel::class);
+        $rule_builder->setEntity(0)
+            ->addCriteria('name', \Rule::PATTERN_IS, 'WrongOne')
+            ->addAction('assign', 'name', 'GoodOne');
+        $rule = $this->createRule($rule_builder);
 
         $input = [
             'name' => 'WrongOne',
@@ -155,38 +104,11 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
     {
         $collection = new \RuleDictionnaryPrinterModelCollection();
 
-        $rule = $this->createItem(
-            \Rule::class,
-            [
-                'name'        => 'Adapt Model',
-                'is_active'   => 1,
-                'entities_id' => 0,
-                'sub_type'    => \RuleDictionnaryPrinterModel::class,
-                'match'       => \Rule::AND_MATCHING,
-                'condition'   => 0,
-                'description' => '',
-            ]
-        );
-
-        $this->createItem(
-            \RuleCriteria::class,
-            [
-                'rules_id'  => $rule->getID(),
-                'criteria'  => 'name',
-                'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'WrongOne',
-            ]
-        );
-
-        $this->createItem(
-            \RuleAction::class,
-            [
-                'rules_id'    => $rule->getID(),
-                'action_type' => 'assign',
-                'field'       => 'name',
-                'value'       => 'GoodOne',
-            ]
-        );
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleDictionnaryPrinterModel::class);
+        $rule_builder->setEntity(0)
+            ->addCriteria('name', \Rule::PATTERN_IS, 'WrongOne')
+            ->addAction('assign', 'name', 'GoodOne');
+        $rule = $this->createRule($rule_builder);
 
         $printermodel = $this->createItem(
             \PrinterModel::class,

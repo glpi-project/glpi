@@ -288,7 +288,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 Planning::checkAlreadyPlanned(
                     $user,
                     $this->fields['plan_start_date'],
-                    $this->fields['plan_end_date']
+                    $this->fields['plan_end_date'],
+                    [self::class => [$this->fields['id']]],
                 );
             }
         }
@@ -1202,7 +1203,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void|false
      **/
-    public static function showFor($item, int $withtemplate = 0)
+    public static function showFor($item)
     {
         global $DB;
 
@@ -1266,7 +1267,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
 
-        $canedit = $item::class === Project::class && $item->canEdit($ID) && $withtemplate != 2;
+        $canedit = $item::class === Project::class && $item->canEdit($ID);
 
         switch ($item::class) {
             case Project::class:
@@ -1279,7 +1280,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 return;
         }
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             TemplateRenderer::getInstance()->display(
                 'components/tab/addlink_block.html.twig',
                 [
@@ -1289,7 +1290,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             );
         }
 
-        if ($item::class === self::class && $item->can($ID, UPDATE) && $withtemplate != 2) {
+        if ($item::class === self::class && $item->can($ID, UPDATE)) {
             $twig_params = [
                 'projects_id' => $item->fields['projects_id'],
                 'projecttasks_id' => $ID,
@@ -1298,7 +1299,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&amp;projects_id={{ projects_id }}">{{ btn_label }}</a>
+                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&amp;projects_id={{ projects_id }}"><i class="ti ti-link"></i><span>{{ btn_label }}</span></a>
                 </div>
 TWIG, $twig_params);
         }
@@ -1439,7 +1440,7 @@ TWIG, $twig_params);
         switch ($item::class) {
             case Project::class:
             case self::class:
-                self::showFor($item, $withtemplate);
+                self::showFor($item);
                 break;
         }
         return true;
@@ -1867,7 +1868,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if ($options['state_done']) {
+        if (!$options['state_done']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = [
                 'OR' => [
@@ -1937,54 +1938,53 @@ TWIG, $twig_params);
 
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                if ($task->getFromDB($data["id"])) {
-                    if (isset($data['notp_date'])) {
-                        $data['plan_start_date'] = $data['notp_date'];
-                        $data['plan_end_date'] = $data['notp_edate'];
-                    }
-                    $key = $data["plan_start_date"]
-                      . "$$$" . "ProjectTask"
-                      . "$$$" . $data["id"]
-                      . "$$$" . $who . "$$$" . $whogroup;
-                    $interv[$key]['color']            = $options['color'];
-                    $interv[$key]['event_type_color'] = $options['event_type_color'];
-                    $interv[$key]['itemtype']         = 'ProjectTask';
-                    if (!$options['genical']) {
-                        $interv[$key]["url"] = Project::getFormURLWithID($task->fields['projects_id']);
-                    } else {
-                        $interv[$key]["url"] = $CFG_GLPI["url_base"]
-                                        . Project::getFormURLWithID($task->fields['projects_id'], false);
-                    }
-                    $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
-                                          . "?action=edit_event_form"
-                                          . "&itemtype=ProjectTask"
-                                          . "&id=" . $data['id'];
-
-                    $interv[$key][$task::getForeignKeyField()] = $data["id"];
-                    $interv[$key]["id"]                        = $data["id"];
-                    $interv[$key]["users_id"]                  = $data["users_id"];
-
-                    if (strcmp($begin, $data["plan_start_date"]) > 0) {
-                        $interv[$key]["begin"] = $begin;
-                    } else {
-                        $interv[$key]["begin"] = $data["plan_start_date"];
-                    }
-
-                    if (strcmp($end, $data["plan_end_date"]) < 0) {
-                        $interv[$key]["end"]   = $end;
-                    } else {
-                        $interv[$key]["end"]   = $data["plan_end_date"];
-                    }
-
-                    $interv[$key]["name"]     = $task->fields["name"];
-                    $interv[$key]["content"]  = $task->fields["content"] !== null
-                    ? RichText::getSafeHtml($task->fields["content"])
-                    : '';
-                    $interv[$key]["status"]   = $task->fields["percent_done"];
-
-                    $ttask->getFromDB($data["id"]);
-                    $interv[$key]["editable"] = $ttask->canUpdateItem();
+                $task->getFromResultSet($data);
+                if (isset($data['notp_date'])) {
+                    $data['plan_start_date'] = $data['notp_date'];
+                    $data['plan_end_date'] = $data['notp_edate'];
                 }
+                $key = $data["plan_start_date"]
+                  . "$$$" . "ProjectTask"
+                  . "$$$" . $data["id"]
+                  . "$$$" . $who . "$$$" . $whogroup;
+                $interv[$key]['color']            = $options['color'];
+                $interv[$key]['event_type_color'] = $options['event_type_color'];
+                $interv[$key]['itemtype']         = 'ProjectTask';
+                if (!$options['genical']) {
+                    $interv[$key]["url"] = Project::getFormURLWithID($task->fields['projects_id']);
+                } else {
+                    $interv[$key]["url"] = $CFG_GLPI["url_base"]
+                                    . Project::getFormURLWithID($task->fields['projects_id'], false);
+                }
+                $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                                      . "?action=edit_event_form"
+                                      . "&itemtype=ProjectTask"
+                                      . "&id=" . $data['id'];
+
+                $interv[$key][$task::getForeignKeyField()] = $data["id"];
+                $interv[$key]["id"]                        = $data["id"];
+                $interv[$key]["users_id"]                  = $data["users_id"];
+
+                if (strcmp($begin, $data["plan_start_date"]) > 0) {
+                    $interv[$key]["begin"] = $begin;
+                } else {
+                    $interv[$key]["begin"] = $data["plan_start_date"];
+                }
+
+                if (strcmp($end, $data["plan_end_date"]) < 0) {
+                    $interv[$key]["end"]   = $end;
+                } else {
+                    $interv[$key]["end"]   = $data["plan_end_date"];
+                }
+
+                $interv[$key]["name"]     = $task->fields["name"];
+                $interv[$key]["content"]  = $task->fields["content"] !== null
+                ? RichText::getSafeHtml($task->fields["content"])
+                : '';
+                $interv[$key]["status"]   = $task->fields["percent_done"];
+
+                $ttask->getFromDB($data["id"]);
+                $interv[$key]["editable"] = $ttask->canUpdateItem();
             }
         }
 

@@ -43,9 +43,7 @@ use Glpi\Asset\Capacity\HasVolumesCapacity;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Request;
 use Glpi\Tests\InventoryTestCase;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('single-thread')]
 class GenericAssetInventoryTest extends InventoryTestCase
 {
     /**
@@ -1104,6 +1102,10 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $this->assertIsArray($mmodel);
         $models_id = $mmodel['id'];
 
+        $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
+        $this->assertIsArray($autoupdatesystems);
+        $autoupdatesystems_id = $autoupdatesystems['id'];
+
         $expected = [
             'id' => $monitor_fields['id'],
             'entities_id' => 0,
@@ -1135,7 +1137,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 1,
-            'autoupdatesystems_id' => 0,
+            'autoupdatesystems_id' => $autoupdatesystems_id,
             'uuid' => null,
             'is_recursive' => 0,
             'groups_id' => [],

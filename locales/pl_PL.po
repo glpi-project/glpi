@@ -7500,7 +7500,7 @@ msgstr "Link do standardowego środowiska pomocy"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default decimals limit"
-msgstr "Przekroczony limit znaków cyfr"
+msgstr "Domyślny limit miejsc dziesiętnych"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Allow FAQ anonymous access"

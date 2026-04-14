@@ -135,6 +135,11 @@ class IPAddress extends CommonDBChild
         return _n('IP address', 'IP addresses', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-network';
+    }
+
     /**
      * @param array $input
      *
@@ -1217,7 +1222,7 @@ class IPAddress extends CommonDBChild
                     ],
                 ],
             ];
-            $criteria['WHERE'] = $itemtype::getSystemSQLCriteria('ITEM');
+            $criteria['WHERE'] += $itemtype::getSystemSQLCriteria('ITEM');
             $queries[] = $criteria;
         }
 

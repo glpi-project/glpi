@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\RuleBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/RuleRight.class.php */
 
@@ -74,41 +76,16 @@ class RuleRightTest extends DbTestCase
         $test_root_entity = $this->getTestRootEntity(true);
 
         //prepare rules
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LOGIN', \Rule::PATTERN_IS, TU_USER)
+            ->addCriteria('MAIL_EMAIL', \Rule::PATTERN_IS, TU_USER . '@glpi.com')
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', $test_root_entity);
+        $rule = $this->createRule($rule_builder);
+        $rules_id = $rule->getID();
         $rules = new \RuleRight();
-        $rules_id = $this->createItem(\RuleRight::class, [
-            'sub_type'     => 'RuleRight',
-            'name'         => 'test local account ruleright',
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-        ])->getID();
-
-        $this->createItem(\RuleCriteria::class, [
-            'rules_id'  => $rules_id,
-            'criteria'  => 'LOGIN',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => TU_USER,
-        ]);
-        $this->createItem(\RuleCriteria::class, [
-            'rules_id'  => $rules_id,
-            'criteria'  => 'MAIL_EMAIL',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern'   => TU_USER . '@glpi.com',
-        ]);
-
-        $this->createItem(\RuleAction::class, [
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'profiles_id',
-            'value'       => 5, // 'normal' profile
-        ]);
-        $this->createItem(\RuleAction::class, [
-            'rules_id'    => $rules_id,
-            'action_type' => 'assign',
-            'field'       => 'entities_id',
-            'value'       => $test_root_entity,
-        ]);
 
         // login the user to force a real synchronisation and get it's glpi id
         $this->realLogin(TU_USER, TU_PASS, false);
@@ -179,6 +156,314 @@ class RuleRightTest extends DbTestCase
         $this->assertFalse($found);
     }
 
+    public static function ruleAccountAssignAndDefaultProfileAndEntityProvider()
+    {
+        yield 'Assign an existing profile without specifying a default' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                ['profiles_id' => 'Profile1',],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+        ];
+
+        yield 'Set an already associated profile as the default' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                ['_profiles_id_default' => 'Profile1',],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 0,
+                '_entities_id_default' => 0,
+            ],
+        ];
+
+        yield 'Assign an existing entity without specifying a default' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                ['entities_id' => 'Entity2'],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity2',
+                '_entities_id_default' => 0,
+            ],
+        ];
+
+        yield 'Set an already associated entity as the default' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                ['_entities_id_default' => 'Entity1'],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 0,
+                '_entities_id_default' => 'Entity1',
+            ],
+        ];
+
+        yield 'Assign profile and entity and set both as defaults' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                [
+                    'profiles_id' => 'Profile1',
+                    '_profiles_id_default' => 'Profile1',
+                    'entities_id' => 'Entity1',
+                    '_entities_id_default' => 'Entity1',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+        ];
+
+        yield 'Attempt to set unassigned profiles and entities as default' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                [
+                    'profiles_id' => 'Profile1',
+                    '_profiles_id_default' => 'Profile2',
+                    'entities_id' => 'Entity1',
+                    '_entities_id_default' => 'Entity2',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+        ];
+
+        yield 'Re-assign existing default profile and entity' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+            'actions' => [
+                [
+                    'profiles_id' => 'Profile1',
+                    '_profiles_id_default' => 'Profile1',
+                    'entities_id' => 'Entity1',
+                    '_entities_id_default' => 'Entity1',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+        ];
+
+        yield 'Update defaults by assigning a new profile and a new entity' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 'Profile1',
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 'Entity1',
+            ],
+            'actions' => [
+                [
+                    'profiles_id' => 'Profile2',
+                    '_profiles_id_default' => 'Profile2',
+                    'entities_id' => 'Entity2',
+                    '_entities_id_default' => 'Entity2',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile2',
+                '_profiles_id_default' => 'Profile2',
+                'entities_id' => 'Entity2',
+                '_entities_id_default' => 'Entity2',
+            ],
+        ];
+
+        yield 'Assign default profile without giving the profile right' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                [
+                    '_profiles_id_default' => 'Profile2',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 0,
+                '_entities_id_default' => 0,
+            ],
+        ];
+
+        yield 'Assign global profile and entity with two rules' => [
+            'user_data' => [
+                'profiles_id' => 'Profile1',
+                '_profiles_id_default' => 0,
+                'entities_id' => 'Entity1',
+                '_entities_id_default' => 0,
+            ],
+            'actions' => [
+                [
+                    // Rule 1: Assigns profile dynamically, populating rules_rights
+                    // Also attempts to set it as default profile
+                    'profiles_id' => 'Profile2',
+                    '_profiles_id_default' => 'Profile2',
+                ],
+                [
+                    // Rule 2: Assigns entity dynamically, populating rules_entities
+                    // Also attempts to set it as default entity
+                    'entities_id' => 'Entity2',
+                    '_entities_id_default' => 'Entity2',
+                ],
+            ],
+            'expected' => [
+                'profiles_id' => 'Profile2',
+                '_profiles_id_default' => 'Profile2',
+                'entities_id' => 'Entity2',
+                '_entities_id_default' => 'Entity2',
+            ],
+        ];
+    }
+
+    #[DataProvider('ruleAccountAssignAndDefaultProfileAndEntityProvider')]
+    public function testRuleAccountAssignAndDefaultProfileAndEntity(array $user_data, array $actions, array $expected)
+    {
+        $this->login();
+
+        $profile_user = new \Profile_User();
+        $rules = new \RuleRight();
+
+        // Create an entity and a profile to be assigned by the rule.
+        [$entity1, $entity2] = $this->createItems(\Entity::class, [
+            [
+                'name'        => 'Entity1',
+                'entities_id' => 0,
+            ],
+            [
+                'name'        => 'Entity2',
+                'entities_id' => 0,
+            ],
+        ]);
+        [$profile1, $profile2] = $this->createItems(\Profile::class, [
+            ['name' => 'Profile1'],
+            ['name' => 'Profile2'],
+        ]);
+
+        // Replace search keys by created items ids in actions, expected and user data.
+        $search_keys = ['Profile1', 'Profile2', 'Entity1', 'Entity2'];
+        $replace_ids = [$profile1->getID(), $profile2->getID(), $entity1->getID(), $entity2->getID()];
+
+        $parsed_actions = [];
+        foreach ($actions as $index => $rule_actions) {
+            foreach ($rule_actions as $key => $value) {
+                $parsed_actions[$index][$key] = intval(str_replace($search_keys, $replace_ids, $value));
+            }
+        }
+        foreach ($expected as $key => $value) {
+            $expected[$key] = intval(str_replace($search_keys, $replace_ids, $value));
+        }
+        foreach ($user_data as $key => $value) {
+            $user_data[$key] = intval(str_replace($search_keys, $replace_ids, $value));
+        }
+
+        $user = $this->createItem(\User::class, [
+            'name'      => __FUNCTION__ . '_user',
+            'password'  => 'test',
+            'password2' => 'test',
+            'profiles_id' => $user_data['_profiles_id_default'],
+            'entities_id' => $user_data['_entities_id_default'],
+        ], ['password', 'password2']);
+
+        $this->createItem(\Profile_User::class, [
+            'users_id' => $user->getID(),
+            'profiles_id' => $user_data['profiles_id'],
+            'entities_id' => $user_data['entities_id'],
+        ]);
+
+        // Prepare rules to assign the default profile and default entity.
+        $created_rules = [];
+        foreach ($parsed_actions as $index => $rule_actions) {
+            $rule_builder = new RuleBuilder(__FUNCTION__ . "_$index", \RuleRight::class);
+            $rule_builder->setEntity(0)
+                ->addCriteria('LOGIN', \Rule::PATTERN_IS, $user->fields['name'])
+                ->setIsRecursive(1);
+            foreach ($rule_actions as $key => $value) {
+                $rule_builder->addAction('assign', $key, $value);
+            }
+            $created_rules[] = $this->createRule($rule_builder);
+        }
+
+        // Login to trigger RuleRight processing.
+        $this->realLogin($user->fields['name'], 'test', false);
+
+        // Check the user got the entity/profiles assigned.
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertEquals($expected['_profiles_id_default'], $user->fields['profiles_id']);
+        $this->assertEquals($expected['_entities_id_default'], $user->fields['entities_id']);
+
+        // Check the profile is in the user profiles collection.
+        $profiles = $profile_user->getUserProfiles($user->getID());
+        $this->assertContains($expected['profiles_id'], $profiles);
+
+        // Cleanup
+        foreach ($created_rules as $rule) {
+            $rules->delete([
+                'id' => $rule->getID(),
+            ], true);
+        }
+
+        // Clean singleton to avoid polluting next tests.
+        \SingletonRuleList::getInstance(\RuleRight::class, 0)->load = 0;
+        \SingletonRuleList::getInstance(\RuleRight::class, 0)->list = [];
+    }
+
     public function testLocalAccountNoRules()
     {
         $testuser = [
@@ -236,39 +521,12 @@ class RuleRightTest extends DbTestCase
 
     public function testDenyLogin()
     {
-        $rule = new \RuleRight();
-        $this->assertGreaterThan(
-            0,
-            $rules_id = $rule->add([
-                'sub_type'     => 'RuleRight',
-                'name'         => 'deny login',
-                'match'        => 'AND',
-                'is_active'    => 1,
-                'entities_id'  => 0,
-                'is_recursive' => 1,
-            ])
-        );
-        $criteria = new \RuleCriteria();
-        $this->assertGreaterThan(
-            0,
-            $criteria->add([
-                'rules_id'  => $rules_id,
-                'criteria'  => 'LOGIN',
-                'condition' => \Rule::PATTERN_IS,
-                'pattern'   => TU_USER,
-            ])
-        );
-
-        $actions = new \RuleAction();
-        $this->assertGreaterThan(
-            0,
-            $actions->add([
-                'rules_id'    => $rules_id,
-                'action_type' => 'assign',
-                'field'       => '_deny_login',
-                'value'       => 1,
-            ])
-        );
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LOGIN', \Rule::PATTERN_IS, TU_USER)
+            ->addAction('assign', '_deny_login', 1);
+        $this->createRule($rule_builder);
 
         $this->realLogin(TU_USER, TU_PASS, true, false);
         $events = getAllDataFromTable('glpi_events', [
@@ -290,26 +548,12 @@ class RuleRightTest extends DbTestCase
 
     public function testLanguage()
     {
-        $rule = $this->createItem('RuleRight', [
-            'sub_type' => 'RuleRight',
-            'name' => __METHOD__,
-            'match' => 'AND',
-            'is_active' => 1,
-            'entities_id' => 0,
-            'is_recursive' => 1,
-        ]);
-        $this->createItem('RuleCriteria', [
-            'rules_id' => $rule->getID(),
-            'criteria' => 'LOGIN',
-            'condition' => \Rule::PATTERN_IS,
-            'pattern' => TU_USER,
-        ]);
-        $this->createItem('RuleAction', [
-            'rules_id' => $rule->getID(),
-            'action_type' => 'assign',
-            'field' => 'language',
-            'value' => 'fr_FR',
-        ]);
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('LOGIN', \Rule::PATTERN_IS, TU_USER)
+            ->addAction('assign', 'language', 'fr_FR');
+        $this->createRule($rule_builder);
 
         $user = new \User();
 
@@ -323,5 +567,232 @@ class RuleRightTest extends DbTestCase
         // language from rule
         $user->getFromDBByName(TU_USER);
         $this->assertEquals('fr_FR', $user->getField('language'));
+    }
+
+    public function testAssignGroupByRegexResult()
+    {
+        $group = $this->createItem(\Group::class, [
+            'name' => '_test_user_group_rule',
+            'entities_id' => 0,
+        ]);
+
+        $rule = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/(.*)/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => '#0_group_rule',
+        ]);
+
+        $user = new \User();
+        $user->getFromDBByName(TU_USER);
+        $users_id = $user->getID();
+
+        $group_user = new \Group_User();
+        $this->assertFalse(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group->getID(),
+            ])
+        );
+
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        $this->assertTrue(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group->getID(),
+                'is_dynamic' => 1,
+            ])
+        );
+    }
+
+    public function testAssignMultipleGroupsByRegexResult()
+    {
+        $group1 = $this->createItem(\Group::class, [
+            'name' => '_test_user_group_rule_alpha',
+            'entities_id' => 0,
+        ]);
+        $group2 = $this->createItem(\Group::class, [
+            'name' => '_test_user_group_rule_beta',
+            'entities_id' => 0,
+        ]);
+
+        $rule1 = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__ . '_alpha',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule1->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.+)$/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule1->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => '#0_group_rule_alpha',
+        ]);
+
+        $rule2 = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__ . '_beta',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule2->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.+)$/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule2->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => '#0_group_rule_beta',
+        ]);
+
+        $user = new \User();
+        $user->getFromDBByName(TU_USER);
+        $users_id = $user->getID();
+
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        $group_user = new \Group_User();
+        $this->assertTrue(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group1->getID(),
+                'is_dynamic' => 1,
+            ])
+        );
+        $this->assertTrue(
+            $group_user->getFromDBByCrit([
+                'users_id'  => $users_id,
+                'groups_id' => $group2->getID(),
+                'is_dynamic' => 1,
+            ])
+        );
+    }
+
+    public function testAssignGroupByRegexResultNoMatch()
+    {
+        $rule = $this->createItem(\RuleRight::class, [
+            'sub_type'     => 'RuleRight',
+            'name'         => __METHOD__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => '/^(.+)$/',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'regex_result',
+            'field'       => 'specific_groups_id',
+            'value'       => 'nonexistent_group_#0',
+        ]);
+
+        $user = new \User();
+        $user->getFromDBByName(TU_USER);
+        $users_id = $user->getID();
+
+        $groups_before = countElementsInTable(\Group_User::getTable(), [
+            'users_id'   => $users_id,
+            'is_dynamic' => 1,
+        ]);
+
+        \SingletonRuleList::getInstance("RuleRight", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleRight", 0)->list = [];
+
+        $this->realLogin(TU_USER, TU_PASS, false);
+
+        $groups_after = countElementsInTable(\Group_User::getTable(), [
+            'users_id'   => $users_id,
+            'is_dynamic' => 1,
+        ]);
+
+        $this->assertEquals($groups_before, $groups_after);
+    }
+
+    public function testBypassRightsRulesOnUserUpdate()
+    {
+        $this->login();
+
+        $profile_user = new \Profile_User();
+
+        // Create an user and profile and entity to be used in the test
+        $user = $this->createItem(\User::class, [
+            'name'      => __FUNCTION__ . '_user',
+            'password'  => 'test',
+            'password2' => 'test',
+        ], ['password', 'password2']);
+
+        $profile = $this->createItem(\Profile::class, [
+            'name' => 'ProfileBypass',
+        ]);
+
+        $entity = $this->createItem(\Entity::class, [
+            'name' => 'EntityBypass',
+        ]);
+
+        $input = [
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $entity->getID(),
+            '_ldap_rules' => [
+                'rules_entities_rights' => [
+                    [
+                        $entity->getID(),
+                        $profile->getID(),
+                        1,
+                    ],
+                ],
+            ],
+        ];
+
+        // Update the user with the LDAP rules bypass input
+        $user = $this->updateItem(\User::class, $user->getID(), $input, ['profiles_id', 'entities_id']);
+
+        $user->getFromDB($user->getID());
+        $profiles = $profile_user->getUserProfiles($user->getID());
+
+        // Verif if the profile and entity have not been updated by the input because of the LDAP rules bypass in prepareInputForUpdate
+        $this->assertNotEquals($profile->getID(), $user->fields['profiles_id']);
+        $this->assertNotEquals($entity->getID(), $user->fields['entities_id']);
+        $this->assertNotContains($profile->getID(), $profiles);
     }
 }

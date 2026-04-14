@@ -317,7 +317,8 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again problem to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
     }
 
@@ -409,19 +410,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->handleNewItemNotifications();
-
-        if (
-            isset($this->input['_from_items_id'])
-            && isset($this->input['_from_itemtype'])
-        ) {
-            $item_problem = new Item_Problem();
-            $item_problem->add([
-                'items_id'      => (int) $this->input['_from_items_id'],
-                'itemtype'      => $this->input['_from_itemtype'],
-                'problems_id'   => $this->fields['id'],
-                '_disablenotif' => true,
-            ]);
-        }
     }
 
     #[Override]
