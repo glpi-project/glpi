@@ -37,10 +37,10 @@ namespace Twig\Components\Alert;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 /**
- * Default Alert compononent so users can <twig:Alert>...</twig:Alert>
+ * Default Alert component so users can <twig:Alert>...</twig:Alert>
  */
 #[AsTwigComponent(name: 'Alert', template: 'twig_components/Alert/Info.html.twig')]
-class Alert extends AbstractAlert
+final class Alert extends AbstractAlert
 {
     public string $type = 'info';
 }
