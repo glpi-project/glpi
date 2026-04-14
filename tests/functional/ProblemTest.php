@@ -589,4 +589,16 @@ class ProblemTest extends DbTestCase
         $this->assertCount(1, $found);
     }
 
+    public function testTitleIsTruncatedTo255Characters(): void
+    {
+        $this->login();
+
+        $problem = $this->createItem(Problem::class, [
+            'name'        => str_repeat('a', 300),
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['name']);
+
+        $this->assertSame(255, mb_strlen($problem->fields['name']));
+    }
 }

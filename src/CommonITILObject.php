@@ -2967,7 +2967,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // No name set name
-        $input["name"]    = ltrim($input["name"] ?? '');
+        $input["name"]    = Toolbox::substr(ltrim($input["name"] ?? ''), 0, 255);
         $input['content'] = ltrim($input['content'] ?? '');
         if (empty($input["name"])) {
             // Build name based on content
