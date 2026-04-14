@@ -236,6 +236,8 @@ final class RichText
                     '/' . $leading_spaces . '<head[^>]*>.*?<\/head[^>]*>' . $following_spaces . '/si',
                     '/' . $leading_spaces . '<script[^>]*>.*?<\/script[^>]*>' . $following_spaces . '/si',
                     '/' . $leading_spaces . '<style[^>]*>.*?<\/style[^>]*>' . $following_spaces . '/si',
+                    // Remove TinyMCE (Ephox) editor artifacts (e.g. drag-and-drop overlay blockers)
+                    '/<div[^>]+class=["\'][^"\']*\bephox-[^"\']*["\'][^>]*>\s*<\/div>/si',
                 ],
                 '',
                 $content

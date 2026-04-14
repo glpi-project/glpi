@@ -793,6 +793,13 @@ function loadDataset()
                 'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
                 'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0", "multiple" => "1"],
             ],
+            [
+                'system_name' => 'testboolean',
+                'assets_assetdefinitions_id' => 'Test01',
+                'label' => 'Test Boolean',
+                'type' => 'Glpi\\Asset\\CustomFieldType\\BooleanType',
+                'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0"],
+            ],
         ],
         'Glpi\\CustomAsset\\Test01Asset' => [
             [

@@ -4331,6 +4331,107 @@ class TicketTest extends DbTestCase
         ]));
     }
 
+    /**
+     * When two tickets have a SON_OF link but the child is NOT deleted (not actually merged),
+     * responses added to the child must NOT be propagated to the parent.
+     */
+    public function testResponsesNotPropagatedWhenChildNotDeleted(): void
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $parent_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Parent ticket',
+                'content'     => 'Parent ticket',
+                'entities_id' => 0,
+                'status'      => CommonITILObject::INCOMING,
+            ]
+        )->getID();
+
+        $child_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Child ticket',
+                'content'     => 'Child ticket',
+                'entities_id' => 0,
+                'status'      => CommonITILObject::INCOMING,
+            ]
+        )->getID();
+
+        // Create a SON_OF link WITHOUT merging (child is not deleted)
+        $this->createItem(
+            \Ticket_Ticket::class,
+            [
+                'link'         => \Ticket_Ticket::SON_OF,
+                'tickets_id_1' => $child_id,
+                'tickets_id_2' => $parent_id,
+            ]
+        );
+
+        // Add a followup to the child ticket
+        $followup = $this->createItem(
+            ITILFollowup::class,
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $child_id,
+                'content'  => 'Followup on non-deleted child',
+            ]
+        );
+
+        // The followup must NOT have been copied to the parent
+        $this->assertEmpty($followup->find([
+            'itemtype'       => 'Ticket',
+            'items_id'       => $parent_id,
+            'sourceitems_id' => $child_id,
+        ]));
+
+        // Add a task to the child ticket
+        $task = $this->createItem(
+            TicketTask::class,
+            [
+                'tickets_id' => $child_id,
+                'content'    => 'Task on non-deleted child',
+            ]
+        );
+
+        // The task must NOT have been copied to the parent
+        $this->assertEmpty($task->find([
+            'tickets_id'     => $parent_id,
+            'sourceitems_id' => $child_id,
+        ]));
+
+        // Add a document to the child ticket
+        $documents_id = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'Child ticket document',
+                'filename' => 'doc.xls',
+                'users_id' => Session::getLoginUserID(),
+            ]
+        )->getID();
+
+        $document_item = $this->createItem(
+            \Document_Item::class,
+            [
+                'itemtype'     => 'Ticket',
+                'items_id'     => $child_id,
+                'documents_id' => $documents_id,
+                'entities_id'  => '0',
+                'is_recursive' => 0,
+            ]
+        );
+
+        // The document must NOT have been copied to the parent
+        $this->assertEmpty($document_item->find([
+            'itemtype'     => 'Ticket',
+            'items_id'     => $parent_id,
+            'documents_id' => $documents_id,
+        ]));
+    }
+
     public function testKeepScreenshotsOnFormReload()
     {
         //login to get session
@@ -10327,5 +10428,46 @@ HTML,
         $this->assertEquals(0, $task->fields['sourceof_items_id']);
         $this->assertEquals(0, $followup->fields['sourceitems_id']);
         $this->assertEquals(0, $task->fields['sourceitems_id']);
+    }
+
+    // test with param _users_id_requester e.g in user profile
+    // The user must be the requester
+    public function testCreateTicketFromUser()
+    {
+        $this->login();
+
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+
+        $ticket_id = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket created from the user profile',
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ])->getID();
+
+        $ticket = new Ticket();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        $ticket_user = new Ticket_User();
+        $found = $ticket_user->find([
+            'tickets_id' => $ticket_id,
+            'users_id'   => $user_id,
+            'type'       => CommonITILActor::REQUESTER, // user is _users_id_requester
+        ]);
+
+        $this->assertCount(1, $found);
+    }
+
+    public function testTitleIsTruncatedTo255Characters(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => str_repeat('a', 300),
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['name']);
+
+        $this->assertSame(255, mb_strlen($ticket->fields['name']));
     }
 }

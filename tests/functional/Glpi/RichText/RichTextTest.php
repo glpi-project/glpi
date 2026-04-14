@@ -347,6 +347,17 @@ HTML,
 HTML,
         ];
 
+        // TinyMCE (Ephox) editor artifacts should be stripped
+        // e.g. drag-and-drop overlay blocker that gets saved into content and renders as a full-screen overlay
+        yield 'TinyMCE ephox editor artifacts should be removed' => [
+            'content'                => <<<HTML
+<p>Some content</p>
+<div class="ephox-dragster-blocker" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%;" role="presentation"> </div>
+HTML,
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Some content</p>',
+        ];
+
         // Deprecated html attributes should not be transformed into styles
         // see #11580
         yield [

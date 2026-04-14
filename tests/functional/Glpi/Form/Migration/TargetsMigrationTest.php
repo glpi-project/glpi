@@ -293,6 +293,9 @@ final class TargetsMigrationTest extends DbTestCase
                         DeploymentPlanField::getKey() => new SimpleValueConfig(""),
                         BackupPlanField::getKey()     => new SimpleValueConfig(""),
                         CheckListField::getKey()      => new SimpleValueConfig(""),
+                        SLATTRField::getKey()         => new SLATTRFieldConfig(
+                            strategy: SLMFieldStrategy::FROM_TEMPLATE
+                        ),
                     ],
                 ],
                 [
@@ -351,6 +354,9 @@ final class TargetsMigrationTest extends DbTestCase
                         ImpactsField::getKey()  => new SimpleValueConfig(""),
                         CausesField::getKey()   => new SimpleValueConfig(""),
                         SymptomsField::getKey() => new SimpleValueConfig(""),
+                        SLATTRField::getKey()   => new SLATTRFieldConfig(
+                            strategy: SLMFieldStrategy::FROM_TEMPLATE
+                        ),
                     ],
                 ],
             ],

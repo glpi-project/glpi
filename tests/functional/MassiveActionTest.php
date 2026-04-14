@@ -34,16 +34,24 @@
 
 namespace tests\units;
 
+use Change;
+use Change_Ticket;
 use CommonDBTM;
 use Contract;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_Item;
 use Location;
 use MassiveAction;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
+use Problem_Ticket;
 use Session;
+use Software;
 use Ticket;
+use TicketTask;
 use User;
 use UserEmail;
 
@@ -57,38 +65,38 @@ class MassiveActionTest extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 29,
-                'singlecount'  => 20,
+                'allcount'     => 31,
+                'singlecount'  => 22,
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 24,
-                'singlecount'  => 17,
+                'allcount'     => 26,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
-                'allcount'     => 15,
-                'singlecount'  => 9,
+                'allcount'     => 17,
+                'singlecount'  => 11,
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 24,
-                'singlecount'  => 17,
+                'allcount'     => 26,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
-                'allcount'     => 26,
-                'singlecount'  => 18,
+                'allcount'     => 28,
+                'singlecount'  => 20,
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 25,
-                'singlecount'  => 17,
+                'allcount'     => 27,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 25,
-                'singlecount'  => 17,
+                'allcount'     => 27,
+                'singlecount'  => 19,
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
@@ -1366,5 +1374,198 @@ class MassiveActionTest extends DbTestCase
             'itemtype' => Ticket::class,
             'items_id' => $ticket_id3,
         ]));
+    }
+
+    public function testProcessMassiveActionsForOneItemtype_AssociateGroup()
+    {
+        $this->login();
+
+        // create 2 groups
+        $group1 = $this->createItem(Group::class, [
+            'name'        => "Group 1",
+            'entities_id' => 0,
+        ]);
+        $group1_id = $group1->getID();
+
+        $group2 = $this->createItem(Group::class, [
+            'name'        => "Group 2",
+            'entities_id' => 0,
+        ]);
+        $group2_id = $group2->getID();
+
+        // simulate permissions and context for software update
+        $_SESSION['glpiactiveprofile'][Software::$rightname] = UPDATE; // grant update right in software
+        $_SESSION['glpiactiveentities'] = [0]; // restrict access to  entity 0
+        $_SESSION['glpiactiveentities_string'] = "'0'"; // string representation for sql
+
+
+        // create 2 soft
+        $software = $this->createItem(Software::class, [
+            'name'        => "Software 1",
+            'entities_id' => 0,
+        ]);
+        $software_id = $software->getID();
+
+        $software2 = $this->createItem(Software::class, [
+            'name'        => "Software 2",
+            'entities_id' => 0,
+        ]);
+        $software2_id = $software2->getID();
+
+        $input = [
+            'fieldname'      => 'groups_id',
+            'selected_group' => [$group1_id, $group2_id],
+        ];
+
+        // test associate group
+        @$this->processMassiveActionsForOneItemtype(
+            'associate_group',
+            $software,
+            [$software_id, $software2_id],
+            $input,
+            2,
+            0
+        );
+
+        $group_item = new Group_Item();
+        foreach ([$software_id, $software2_id] as $sid) {
+            $this->assertTrue(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group1_id,
+                ]),
+                "Group 1 not associated for software $sid"
+            );
+            $this->assertTrue(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group2_id,
+                ]),
+                "Group 2 not associated for software $sid"
+            );
+        }
+
+        // test dissociate group for group 1
+        $input_dissociate = [
+            'fieldname' => 'groups_id',
+            'selected_group' => [$group1_id],
+        ];
+        @$this->processMassiveActionsForOneItemtype(
+            'dissociate_group',
+            $software,
+            [$software_id, $software2_id],
+            $input_dissociate,
+            2,
+            0
+        );
+
+        foreach ([$software_id, $software2_id] as $sid) {
+            $this->assertFalse(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group1_id,
+                ]),
+                "Group 1 still associated for software $sid"
+            );
+            $this->assertTrue(
+                $group_item->getFromDBByCrit([
+                    'itemtype' => Software::class,
+                    'items_id' => $sid,
+                    'groups_id' => $group2_id,
+                ]),
+                "Group 2 should still be associated for software $sid"
+            );
+        }
+    }
+
+    public function testAddTaskMassiveActionOnProblemTicketCreatesTicketTask(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket for problem task',
+            'content' => 'content',
+        ]);
+
+        $problem = $this->createItem(Problem::class, [
+            'name'    => 'problem with linked ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItem(Problem_Ticket::class, [
+            'tickets_id'  => $ticket->getID(),
+            'problems_id' => $problem->getID(),
+        ]);
+
+        $ticket_item = new Ticket();
+
+        $this->processMassiveActionsForOneItemtype(
+            'add_task',
+            $ticket_item,
+            [$ticket->getID()],
+            [
+                'taskcategories_id' => 0,
+                'actiontime'        => 0,
+                'content'           => 'task from massive action',
+            ],
+            1,
+            0,
+            Problem_Ticket::class
+        );
+
+        $this->assertSame(
+            1,
+            countElementsInTable(TicketTask::getTable(), [
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'task from massive action',
+            ])
+        );
+    }
+
+    public function testAddTaskMassiveActionOnChangeTicketCreatesTicketTask(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => 'ticket for change task',
+            'content' => 'content',
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name'    => 'change with linked ticket',
+            'content' => 'content',
+        ]);
+
+        $this->createItem(Change_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'changes_id' => $change->getID(),
+        ]);
+
+        $ticket_item = new Ticket();
+
+        $this->processMassiveActionsForOneItemtype(
+            'add_task',
+            $ticket_item,
+            [$ticket->getID()],
+            [
+                'taskcategories_id' => 0,
+                'actiontime'        => 0,
+                'content'           => 'task from change massive action',
+            ],
+            1,
+            0,
+            Change_Ticket::class
+        );
+
+        $this->assertSame(
+            1,
+            countElementsInTable(TicketTask::getTable(), [
+                'tickets_id' => $ticket->getID(),
+                'content'    => 'task from change massive action',
+            ])
+        );
     }
 }

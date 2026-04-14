@@ -77,6 +77,11 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
 
+test-e2e-setup: ## Setup the plugin for end-to-end tests
+	@$(CONSOLE) plugin:install --env=e2e_testing $(PLUGIN_DIR) -u glpi --force
+	@$(CONSOLE) plugin:enable --env=e2e_testing $(PLUGIN_DIR)
+.PHONY: test-e2e-setup
+
 locales-extract: ## Extract locales
 	@$(CONSOLE) tools:locales:extract --plugin=$(PLUGIN_DIR)
 .PHONY: locales-extract

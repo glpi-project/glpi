@@ -690,6 +690,19 @@ export class FormPage extends GlpiPage
         await this.page.goto(href);
     }
 
+    public async doAssertDropdownValueIsNotAvailable(
+        dropdown: Locator,
+        value: string,
+    ): Promise<void> {
+        await dropdown.click();
+        await this.page.keyboard.type(value);
+        await expect(
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.page.locator('.select2-results__options').getByText(value, { exact: true })
+        ).toHaveCount(0);
+        await this.page.keyboard.press('Escape');
+    }
+
     public getValidationErrorMessage(textbox: Locator): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators

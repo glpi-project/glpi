@@ -32,6 +32,7 @@
 
 import { defineConfig, devices } from '@playwright/test';
 import { config } from 'dotenv' ;
+import { globSync } from 'glob';
 import { Config } from './tests/e2e/utils/Config';
 
 // Load .env file so it is available everywhere.
@@ -115,5 +116,20 @@ export default defineConfig({
                 },
             },
         },
+        // Dynamically create a project for each plugin that contains Playwright specs.
+        ...globSync('plugins/*/tests/e2e/**/*.spec.ts')
+            .map((spec_path) => spec_path.split('/')[1])
+            .filter((plugin, index, plugins) => plugins.indexOf(plugin) === index)
+            .map((plugin) => ({
+                name: `plugin:${plugin}`,
+                testDir: `./plugins/${plugin}/tests/e2e/specs`,
+                use: {
+                    ...devices['Desktop Chrome'],
+                    viewport: {
+                        width: 1920,
+                        height: 1080,
+                    },
+                },
+            })),
     ],
 });

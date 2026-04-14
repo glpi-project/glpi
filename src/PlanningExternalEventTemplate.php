@@ -111,6 +111,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
                     'itemtype'       => static::class,
                     'items_id'       => $this->fields['id'],
                     '_display_dates' => false,
+                    'before_time'    => $this->fields['before_time'] ?? 0,
                 ]);
                 break;
 

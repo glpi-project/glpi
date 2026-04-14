@@ -692,25 +692,39 @@ TWIG, $twig_params);
         }
 
         $criteria = static::$itemtype_1::getCommonCriteria();
-        $params  = [
-            'criteria' => [],
-            'metacriteria' => $options['metacriteria'] ?? [
+
+        $params = [
+            'reset'    => 'reset',
+            'criteria' => [
                 [
-                    'itemtype' => $item::class,
-                    'field'    => Search::getOptionNumber($item::class, 'id'),
+                    'field'      => 12, // status
                     'searchtype' => 'equals',
-                    'value'    => $item->getID(),
-                    'link'     => 'AND',
+                    'value'      => 'all',
+                    'link'       => 'AND',
                 ],
             ],
-            'reset'    => 'reset',
         ];
-        $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
-        $params['criteria'][0]['field']      = 12;
-        $params['criteria'][0]['searchtype'] = 'equals';
-        $params['criteria'][0]['value']      = 'all';
-        $params['criteria'][0]['link']       = 'AND';
+        if ($item instanceof Supplier && is_a(static::$itemtype_1 ?? '', CommonITILObject::class, true)) {
+            $params['criteria'][] = [
+                'field'      => 6, // supplier
+                'searchtype' => 'equals',
+                'value'      => $item->getID(),
+                'link'       => 'AND',
+            ];
+        } else {
+            $params['metacriteria'] = $options['metacriteria'] ?? [
+                [
+                    'itemtype'   => $item::class,
+                    'field'      => Search::getOptionNumber($item::class, 'id'),
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID(),
+                    'link'       => 'AND',
+                ],
+            ];
+        }
+
+        $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
         switch ($item::class) {
             case User::class:
@@ -752,7 +766,7 @@ TWIG, $twig_params);
         if (
             $item->getID()
             && !$item->isDeleted()
-            && CommonITILObject::isPossibleToAssignType($item::class)
+            && (CommonITILObject::isPossibleToAssignType($item::class) || $item instanceof User)
             && static::canCreate()
             && !(!empty($withtemplate) && ($withtemplate == 2))
             && (!isset($item->fields['is_template']) || ($item->fields['is_template'] == 0))

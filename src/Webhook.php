@@ -1225,7 +1225,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $api_data = $webhook->getAPIResponse($path);
                 $body = $webhook->getWebhookBody($event, $api_data, $item::class, $item->getID());
                 // Check if the item matches the webhook filters
-                if (!$webhook->itemMatchFilter($item)) {
+                if (!Session::callAsSystem(fn() => $webhook->itemMatchFilter($item))) {
                     continue;
                 }
                 $timestamp = time();

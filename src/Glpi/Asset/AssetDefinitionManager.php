@@ -120,6 +120,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
                     && class_exists($classname)
                     && is_subclass_of($classname, TypeInterface::class)
                     && (new ReflectionClass($classname))->isAbstract() === false
+                    && $classname::isAllowedForCustomFields()
                 ) {
                     $this->custom_field_types[] = $classname;
                 }

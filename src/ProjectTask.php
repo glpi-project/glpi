@@ -287,7 +287,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 Planning::checkAlreadyPlanned(
                     $user,
                     $this->fields['plan_start_date'],
-                    $this->fields['plan_end_date']
+                    $this->fields['plan_end_date'],
+                    [self::class => [$this->fields['id']]],
                 );
             }
         }
@@ -1297,7 +1298,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&amp;projects_id={{ projects_id }}">{{ btn_label }}</a>
+                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&amp;projects_id={{ projects_id }}"><i class="ti ti-link"></i><span>{{ btn_label }}</span></a>
                 </div>
 TWIG, $twig_params);
         }
@@ -1864,7 +1865,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if ($options['state_done']) {
+        if (!$options['state_done']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = [
                 'OR' => [

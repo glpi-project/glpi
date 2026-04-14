@@ -192,6 +192,7 @@ enum Environment: string
                 'GLPI_LOG_LVL'             => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'          => true,
                 'GLPI_PLUGINS_DIRECTORIES' => [
+                    $root_dir . '/plugins',
                     $root_dir . '/tests/fixtures/plugins',
                 ],
             ],

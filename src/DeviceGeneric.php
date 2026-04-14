@@ -127,7 +127,7 @@ class DeviceGeneric extends CommonDevice
         return [
             'designation'       => 'equal',
             'manufacturers_id'  => 'equal',
-            'devicecasetypes_id' => 'equal',
+            'devicegenerictypes_id' => 'equal',
             'locations_id'      => 'equal',
         ];
     }

@@ -103,7 +103,13 @@ class DBConnection extends CommonGLPI
         bool $use_utf8mb4 = false,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
-        string $config_dir = GLPI_CONFIG_DIR
+        string $config_dir = GLPI_CONFIG_DIR,
+        bool $dbssl = false,
+        ?string $dbsslkey = null,
+        ?string $dbsslcert = null,
+        ?string $dbsslca = null,
+        ?string $dbsslcapath = null,
+        ?string $dbsslcacipher = null
     ): bool {
         // Explode host into array (multiple values separated by a space char)
         $host = trim($host);
@@ -134,6 +140,24 @@ class DBConnection extends CommonGLPI
         }
         if (!$allow_signed_keys) {
             $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
+        }
+        if ($dbssl) {
+            $properties['dbssl'] = true;
+            if ($dbsslkey !== null) {
+                $properties['dbsslkey'] = $dbsslkey;
+            }
+            if ($dbsslcert !== null) {
+                $properties['dbsslcert'] = $dbsslcert;
+            }
+            if ($dbsslca !== null) {
+                $properties['dbsslca'] = $dbsslca;
+            }
+            if ($dbsslcapath !== null) {
+                $properties['dbsslcapath'] = $dbsslcapath;
+            }
+            if ($dbsslcacipher !== null) {
+                $properties['dbsslcacipher'] = $dbsslcacipher;
+            }
         }
 
         $config_str = '<?php' . "\n" . 'class ' . $classname . ' extends DBmysql {' . "\n";
@@ -180,7 +204,13 @@ class DBConnection extends CommonGLPI
         bool $use_utf8mb4 = false,
         bool $allow_datetime = true,
         bool $allow_signed_keys = true,
-        string $config_dir = GLPI_CONFIG_DIR
+        string $config_dir = GLPI_CONFIG_DIR,
+        bool $dbssl = false,
+        ?string $dbsslkey = null,
+        ?string $dbsslcert = null,
+        ?string $dbsslca = null,
+        ?string $dbsslcapath = null,
+        ?string $dbsslcacipher = null
     ): bool {
         return self::createConfigFile(
             classname: 'DB',
@@ -194,7 +224,13 @@ class DBConnection extends CommonGLPI
             use_utf8mb4: $use_utf8mb4,
             allow_datetime: $allow_datetime,
             allow_signed_keys: $allow_signed_keys,
-            config_dir: $config_dir
+            config_dir: $config_dir,
+            dbssl: $dbssl,
+            dbsslkey: $dbsslkey,
+            dbsslcert: $dbsslcert,
+            dbsslca: $dbsslca,
+            dbsslcapath: $dbsslcapath,
+            dbsslcacipher: $dbsslcacipher,
         );
     }
 

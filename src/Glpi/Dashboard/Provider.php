@@ -356,9 +356,20 @@ class Provider
                 if ($params['validation_check_user']) {
                     $search_criteria[] = [
                         'link'       => 'AND',
-                        'field'      => 59,
-                        'searchtype' => 'equals',
-                        'value'      => Session::getLoginUserID(),
+                        'criteria'   => [
+                            [
+                                'link'       => 'OR',
+                                'field'      => 59,
+                                'searchtype' => 'equals',
+                                'value'      => 'myself',
+                            ],
+                            [
+                                'link'       => 'OR',
+                                'field'      => 196,
+                                'searchtype' => 'equals',
+                                'value'      => 'mygroups',
+                            ],
+                        ],
                     ];
                 }
 

@@ -772,8 +772,10 @@ final class DbUtils
             !$complete_request
             && ($value != '0')
             && empty($value)
-            && isset($_SESSION['glpishowallentities'])
-            && $_SESSION['glpishowallentities']
+            && (
+                (isset($_SESSION['glpishowallentities']) && $_SESSION['glpishowallentities'])
+                || Session::isRightChecksDisabled()
+            )
         ) {
             // Not ADD "AND 1" if not needed
             if (trim($separator) == "AND") {
@@ -894,6 +896,8 @@ final class DbUtils
         if ($value === '') {
             if (isset($_SESSION['glpiactiveentities'])) {
                 $value = $_SESSION['glpiactiveentities'];
+            } elseif (Session::isRightChecksDisabled()) {
+                return [new QueryExpression('true')];
             } elseif (isCommandLine() || Session::isCron()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
             }

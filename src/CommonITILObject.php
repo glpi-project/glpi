@@ -1871,6 +1871,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
                     $allowed_fields[] = 'takeintoaccountdate';
                 }
+                if (isset($input['_do_update_date_mod'])) {
+                    $allowed_fields[] = 'date_mod';
+                }
             }
 
             $ret = [];
@@ -2962,7 +2965,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // No name set name
-        $input["name"]    = ltrim($input["name"] ?? '');
+        $input["name"]    = Toolbox::substr(ltrim($input["name"] ?? ''), 0, 255);
         $input['content'] = ltrim($input['content'] ?? '');
         if (empty($input["name"])) {
             // Build name based on content

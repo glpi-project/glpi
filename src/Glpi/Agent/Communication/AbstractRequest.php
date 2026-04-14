@@ -257,25 +257,30 @@ abstract class AbstractRequest
                 } else {
                     $allowed = false;
                     // if Authorization start with 'Basic'
+                    $matches = [];
                     if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
-                        $inventory_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
-                        $inventory_password = (new GLPIKey())
-                            ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
                         try {
-                            $agent_credential = base64_decode($matches[1], true);
-                            if (str_contains($agent_credential, ':')) {
-                                [$agent_login, $agent_password] = explode(':', $agent_credential, 2);
-                                if (
-                                    $inventory_login == $agent_login
-                                    && $inventory_password == $agent_password
-                                ) {
-                                    $allowed = true;
-                                }
+                            $agent_credentials = explode(':', base64_decode($matches[1]), 2);
+                            if (
+                                count($agent_credentials) !== 2
+                                || $agent_credentials[0] === ''
+                                || $agent_credentials[1] === ''
+                            ) {
+                                // Login and/or password is missing or empty
+                                $allowed = false;
+                            } else {
+                                $expected_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
+                                $expected_password = (new GLPIKey())
+                                    ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
+
+                                $allowed = $agent_credentials[0] === $expected_login
+                                    && $agent_credentials[1] === $expected_password;
                             }
                         } catch (UrlException) {
                             // malformed base64 — leave $allowed as false
                         }
                     }
+
                     if (!$allowed) {
                         $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
                         $this->addError('Access denied. Wrong login or password for basic authentication.', 401);

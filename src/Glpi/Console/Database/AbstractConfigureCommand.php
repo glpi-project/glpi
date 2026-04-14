@@ -48,6 +48,7 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 use function Safe\ob_get_clean;
@@ -150,10 +151,69 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             InputOption::VALUE_NONE,
             __('Use strict configuration, to enforce warnings triggering on deprecated or discouraged usages')
         );
+
+        $this->addOption(
+            'db-ssl',
+            null,
+            InputOption::VALUE_NONE,
+            __('Enable SSL for database connection')
+        );
+
+        $this->addOption(
+            'db-ssl-ca',
+            null,
+            InputOption::VALUE_REQUIRED,
+            __('Path to the database SSL CA certificate file')
+        );
+
+        $this->addOption(
+            'db-ssl-cert',
+            null,
+            InputOption::VALUE_REQUIRED,
+            __('Path to the database SSL client certificate file')
+        );
+
+        $this->addOption(
+            'db-ssl-key',
+            null,
+            InputOption::VALUE_REQUIRED,
+            __('Path to the database SSL client key file')
+        );
+
+        $this->addOption(
+            'db-ssl-capath',
+            null,
+            InputOption::VALUE_REQUIRED,
+            __('Path to a directory containing trusted SSL CA certificates')
+        );
+
+        $this->addOption(
+            'db-ssl-cipher',
+            null,
+            InputOption::VALUE_REQUIRED,
+            __('List of allowable ciphers for SSL database connection')
+        );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
+
+        $question_helper = new QuestionHelper();
+
+        // Ask for optional connection options
+        $optional_options = [
+            'db-host' => ['-H', __('Database host:')],
+            'db-port' => ['-P', __('Database port (optional):')],
+        ];
+        foreach ($optional_options as $name => [$short, $label]) {
+            if (!$input->hasParameterOption(['--' . $name, $short])) {
+                $default = $this->getDefinition()->getOption($name)->getDefault();
+                $default = is_string($default) || is_numeric($default) ? $default : null;
+                $hint    = $default !== null ? ' [' . $default . ']' : '';
+                $value   = $question_helper->ask($input, $output, new Question($label . $hint . ' ', $default));
+                $input->setOption($name, $value ?: $default);
+            }
+        }
 
         $questions = [
             'db-name'     => new Question(__('Database name:'), ''), // Required
@@ -164,9 +224,36 @@ abstract class AbstractConfigureCommand extends AbstractCommand
 
         foreach ($questions as $name => $question) {
             if (null === $input->getOption($name)) {
-                $question_helper = new QuestionHelper();
                 $value = $question_helper->ask($input, $output, $question);
                 $input->setOption($name, $value);
+            }
+        }
+
+        // Ask whether to enable SSL if not explicitly provided via CLI
+        if (!$input->hasParameterOption('--db-ssl')) {
+            $db_ssl = $question_helper->ask(
+                $input,
+                $output,
+                new ConfirmationQuestion(__('Enable SSL for database connection?') . ' [yes/No] ', false)
+            );
+            $input->setOption('db-ssl', $db_ssl);
+        }
+
+        // Ask for SSL details if SSL is enabled
+        if ($input->getOption('db-ssl')) {
+            $ssl_options = [
+                'db-ssl-ca'     => __('Path to SSL CA certificate file (optional):') . ' ',
+                'db-ssl-cert'   => __('Path to SSL client certificate file (optional):') . ' ',
+                'db-ssl-key'    => __('Path to SSL client key file (optional):') . ' ',
+                'db-ssl-capath' => __('Path to directory containing trusted SSL CA certificates (optional):') . ' ',
+                'db-ssl-cipher' => __('List of allowable ciphers for SSL connection (optional):') . ' ',
+            ];
+
+            foreach ($ssl_options as $name => $label) {
+                if (null === $input->getOption($name)) {
+                    $value = $question_helper->ask($input, $output, new Question($label, null));
+                    $input->setOption($name, $value ?: null);
+                }
             }
         }
     }
@@ -204,6 +291,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         $reconfigure = $input->getOption('reconfigure');
         $strict_configuration = $input->getOption('strict-configuration');
 
+        $db_ssl         = $input->getOption('db-ssl');
+        $db_ssl_ca      = $input->getOption('db-ssl-ca');
+        $db_ssl_cert    = $input->getOption('db-ssl-cert');
+        $db_ssl_key     = $input->getOption('db-ssl-key');
+        $db_ssl_capath  = $input->getOption('db-ssl-capath');
+        $db_ssl_cipher  = $input->getOption('db-ssl-cipher');
+
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !$reconfigure) {
             // Prevent overriding of existing DB
             throw new EarlyExitException(
@@ -219,17 +313,26 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $output,
             $db_hostport,
             $db_name,
-            $db_user
+            $db_user,
+            $db_ssl,
+            $db_ssl_ca,
+            $db_ssl_cert,
+            $db_ssl_key,
+            $db_ssl_capath,
+            $db_ssl_cipher
         );
 
         mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new mysqli();
+        if ($db_ssl) {
+            $mysqli->ssl_set($db_ssl_key, $db_ssl_cert, $db_ssl_ca, $db_ssl_capath, $db_ssl_cipher);
+        }
         if (intval($db_port) > 0) {
             // Network port
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port);
         } else {
             // Unix Domain Socket
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port);
         }
 
         if (0 !== $mysqli->connect_errno) {
@@ -264,19 +367,31 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $allow_signed_keys = false;
         } else {
             // Instanciate DB to be able to compute boolean properties flags.
-            $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
+            $db = new class ($db_hostport, $db_user, $db_pass, $db_name, $db_ssl, $db_ssl_key, $db_ssl_cert, $db_ssl_ca, $db_ssl_capath, $db_ssl_cipher) extends DBmysql {
                 /**
                  * @param string|string[] $dbhost
                  * @param string $dbuser
                  * @param string $dbpassword
                  * @param string $dbdefault
+                 * @param bool $dbssl
+                 * @param string|null $dbsslkey
+                 * @param string|null $dbsslcert
+                 * @param string|null $dbsslca
+                 * @param string|null $dbsslcapath
+                 * @param string|null $dbsslcacipher
                  */
-                public function __construct(array|string $dbhost, string $dbuser, string $dbpassword, string $dbdefault)
+                public function __construct(array|string $dbhost, string $dbuser, string $dbpassword, string $dbdefault, bool $dbssl, ?string $dbsslkey, ?string $dbsslcert, ?string $dbsslca, ?string $dbsslcapath, ?string $dbsslcacipher)
                 {
                     $this->dbhost     = $dbhost;
                     $this->dbuser     = $dbuser;
                     $this->dbpassword = $dbpassword;
                     $this->dbdefault  = $dbdefault;
+                    $this->dbssl      = $dbssl;
+                    $this->dbsslkey   = $dbsslkey;
+                    $this->dbsslcert  = $dbsslcert;
+                    $this->dbsslca    = $dbsslca;
+                    $this->dbsslcapath    = $dbsslcapath;
+                    $this->dbsslcacipher  = $dbsslcacipher;
                     parent::__construct();
                 }
             };
@@ -307,7 +422,14 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_datetime,
-            $allow_signed_keys
+            $allow_signed_keys,
+            GLPI_CONFIG_DIR,
+            $db_ssl,
+            $db_ssl_key,
+            $db_ssl_cert,
+            $db_ssl_ca,
+            $db_ssl_capath,
+            $db_ssl_cipher
         );
         if (!$result) {
             $message = sprintf(
@@ -330,7 +452,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $log_deprecation_warnings,
             $use_utf8mb4,
             $allow_datetime,
-            $allow_signed_keys
+            $allow_signed_keys,
+            $db_ssl,
+            $db_ssl_key,
+            $db_ssl_cert,
+            $db_ssl_ca,
+            $db_ssl_capath,
+            $db_ssl_cipher
         ) extends DBmysql {
             /**
              * @param string|string[] $dbhost
@@ -342,6 +470,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param bool $use_utf8mb4
              * @param bool $allow_datetime
              * @param bool $allow_signed_keys
+             * @param bool $dbssl
+             * @param string|null $dbsslkey
+             * @param string|null $dbsslcert
+             * @param string|null $dbsslca
+             * @param string|null $dbsslcapath
+             * @param string|null $dbsslcacipher
              */
             public function __construct(
                 string|array $dbhost,
@@ -352,7 +486,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 bool $log_deprecation_warnings,
                 bool $use_utf8mb4,
                 bool $allow_datetime,
-                bool $allow_signed_keys
+                bool $allow_signed_keys,
+                bool $dbssl,
+                ?string $dbsslkey,
+                ?string $dbsslcert,
+                ?string $dbsslca,
+                ?string $dbsslcapath,
+                ?string $dbsslcacipher
             ) {
                 $this->dbhost     = $dbhost;
                 $this->dbuser     = $dbuser;
@@ -365,6 +505,13 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                 $this->allow_signed_keys = $allow_signed_keys;
 
                 $this->log_deprecation_warnings = $log_deprecation_warnings;
+
+                $this->dbssl         = $dbssl;
+                $this->dbsslkey      = $dbsslkey;
+                $this->dbsslcert     = $dbsslcert;
+                $this->dbsslca       = $dbsslca;
+                $this->dbsslcapath   = $dbsslcapath;
+                $this->dbsslcacipher = $dbsslcacipher;
 
                 $this->clearSchemaCache();
             }
@@ -425,6 +572,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      * @param string $db_hostport DB host and port
      * @param string $db_name DB name
      * @param string $db_user DB username
+     * @param bool $db_ssl Whether SSL is enabled
+     * @param string|null $db_ssl_ca Path to SSL CA certificate file
+     * @param string|null $db_ssl_cert Path to SSL client certificate file
+     * @param string|null $db_ssl_key Path to SSL client key file
+     * @param string|null $db_ssl_capath Path to directory containing trusted SSL CA certificates
+     * @param string|null $db_ssl_cipher List of allowable ciphers for SSL connection
      *
      * @return void
      */
@@ -433,13 +586,27 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         OutputInterface $output,
         $db_hostport,
         $db_name,
-        $db_user
+        $db_user,
+        bool $db_ssl = false,
+        ?string $db_ssl_ca = null,
+        ?string $db_ssl_cert = null,
+        ?string $db_ssl_key = null,
+        ?string $db_ssl_capath = null,
+        ?string $db_ssl_cipher = null
     ) {
 
         $informations = new Table($output);
         $informations->addRow([__('Database host'), $db_hostport]);
         $informations->addRow([__('Database name'), $db_name]);
         $informations->addRow([__('Database user'), $db_user]);
+        $informations->addRow([__('SSL'), $db_ssl ? __('Enabled') : __('Disabled')]);
+        if ($db_ssl) {
+            $informations->addRow([__('SSL CA certificate'), $db_ssl_ca ?? __('None')]);
+            $informations->addRow([__('SSL client certificate'), $db_ssl_cert ?? __('None')]);
+            $informations->addRow([__('SSL client key'), $db_ssl_key ?? __('None')]);
+            $informations->addRow([__('SSL CA path'), $db_ssl_capath ?? __('None')]);
+            $informations->addRow([__('SSL cipher'), $db_ssl_cipher ?? __('None')]);
+        }
         $informations->render();
 
         $this->askForConfirmation();

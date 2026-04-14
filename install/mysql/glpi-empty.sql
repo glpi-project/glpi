@@ -5199,7 +5199,7 @@ CREATE TABLE `glpi_notimportedemails` (
   `mailcollectors_id` int unsigned NOT NULL DEFAULT '0',
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `subject` text,
-  `messageid` varchar(255) NOT NULL,
+  `messageid` varchar(1000) NOT NULL,
   `reason` int NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),

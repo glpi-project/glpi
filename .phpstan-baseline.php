@@ -9080,12 +9080,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLMField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method find\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/TemplateField.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getTemplateID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\TemplateFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -9564,12 +9558,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/ServiceCatalogManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Tag\\\\AnswerTagProvider\\:\\:getTagContentForValue\\(\\) should return string but returns string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Tag/AnswerTagProvider.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset 1 might not exist on array\\{0\\: string, 1\\?\\: non\\-empty\\-string\\}\\.$#',
@@ -12651,12 +12639,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of method Glpi\\\\Migration\\\\GenericobjectPluginMigration\\:\\:isACustomField\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$source_itemtype of method Glpi\\\\Migration\\\\AbstractPluginMigration\\:\\:updateItemtypeReferences\\(\\) expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',

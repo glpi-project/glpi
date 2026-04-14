@@ -1869,7 +1869,7 @@ TWIG, $twig_params);
 
         // Submit button
         echo '<div style="text-align:center">';
-        echo Html::submit(__('Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
+        echo Html::submit(__('Save'), ['name' => 'update', 'class' => 'btn btn-primary', 'icon' => 'ti ti-device-floppy']);
         echo '</div>';
 
         Html::closeForm();

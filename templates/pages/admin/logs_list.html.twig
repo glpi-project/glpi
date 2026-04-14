@@ -113,13 +113,20 @@
                                     <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
                                         <input type="hidden" name="filepath" value="{{ log['filepath'] }}">
                                         {{ fields.csrfField() }}
-                                        <span>
+                                        <div>
                                             <button class="btn btn-sm ms-1 btn-ghost-secondary"
                                             data-bs-toggle="dropdown"
                                             title="{{ __("File actions") }}" aria-label="{{ __("File actions") }}">
                                                 <i class="fas ti ti-dots-vertical" aria-hidden="true"></i>
                                             </button>
                                             <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="{{ path('/front/logviewer.php') }}?action=download_log_file&amp;filepath={{ log['filepath']|url_encode }}"
+                                                       class="dropdown-item">
+                                                        <i class="ti ti-file-download" aria-hidden="true"></i>
+                                                        <span>{{ __("Download file") }}</span>
+                                                    </a>
+                                                </li>
                                                 {% if can_clear %}
                                                     <li>
                                                         <button type="submit" name="action" value="empty"
@@ -145,7 +152,7 @@
                                                     </li>
                                                 {% endif %}
                                             </ul>
-                                        </span>
+                                        </div>
                                     </form>
                                 {% endif %}
                             </span>

@@ -41,7 +41,7 @@
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
-/* global uploaded_images */
+/* global uploaded_images, removeFailedUploadImage */
 
 var timeoutglobalvar;
 
@@ -1950,6 +1950,7 @@ function setupFileUpload(config) {
                 $.blueimp.fileupload.prototype.options.add.call(this, e, data);
             },
             done: function (event, data) {
+                const form = $(this).closest('form');
                 const uploader_name = $('#' + field_id).fileupload('option', 'formData').name;
                 // eslint-disable-next-line no-undef
                 handleUploadedFile(
@@ -1958,11 +1959,12 @@ function setupFileUpload(config) {
                     config.name,
                     $('#' + CSS.escape(config.filecontainer)),
                     config.editor_id
-                );
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-                // remove required
-                $('#' + field_id).removeAttr('required');
+                ).then(() => {
+                    // enable submit button after upload
+                    form.find(':submit').prop('disabled', false);
+                    // remove required
+                    $(`#${field_id}`).removeAttr('required');
+                });
             },
             fail: function (e, data) {
                 // enable submit button after upload
@@ -1971,6 +1973,9 @@ function setupFileUpload(config) {
                     ? data.jqXHR.responseText
                     : data.jqXHR.statusText;
                 alert(err);
+                $.each(data.files, function(index, file) {
+                    removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
+                });
             },
             processfail: function (e, data) {
                 // enable submit button after upload
@@ -1983,23 +1988,7 @@ function setupFileUpload(config) {
                             .css('width', '100%')
                             .show();
 
-                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
-                        if (config.editor_id && typeof tinyMCE !== 'undefined') {
-                            const editor = tinyMCE.get(config.editor_id);
-                            if (editor) {
-                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                                if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
-                                    if (img.length > 0) {
-                                        editor.dom.remove(img);
-                                    }
-                                    const index = uploaded_images.findIndex((entry) => entry.upload_id === uploaded_image.upload_id);
-                                    if (index !== -1) {
-                                        uploaded_images.splice(index, 1);
-                                    }
-                                }
-                            }
-                        }
+                        removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
                         return;
                     }
                 });

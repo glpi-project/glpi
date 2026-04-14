@@ -1110,6 +1110,7 @@ TWIG, $avatar_params) . $username;
 
         $specificities['dropdown_method_2']       = 'dropdownUnder';
         $specificities['can_remove_all_at_once']  = false;
+        $specificities['can_link_several_times']  = true;
 
         return $specificities;
     }
@@ -1226,6 +1227,15 @@ TWIG, $avatar_params) . $username;
 
     public function post_deleteFromDB()
     {
+        $selected_user = User::getById($this->fields['users_id']);
+
+        if ($selected_user instanceof User && $selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
+            $user = new User();
+            $user->update([
+                'id' => $this->fields['users_id'],
+                'profiles_id' => 0,
+            ]);
+        }
         $this->logOperation('delete');
     }
 

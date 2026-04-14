@@ -103,7 +103,7 @@ class DBmysql
     /**
      * The path name to the key file (used in case of SSL connection).
      *
-     * @var string
+     * @var ?string
      * @see mysqli::ssl_set()
      */
     public $dbsslkey           = null;
@@ -111,7 +111,7 @@ class DBmysql
     /**
      * The path name to the certificate file (used in case of SSL connection).
      *
-     * @var string
+     * @var ?string
      * @see mysqli::ssl_set()
      */
     public $dbsslcert          = null;
@@ -119,7 +119,7 @@ class DBmysql
     /**
      * The path name to the certificate authority file (used in case of SSL connection).
      *
-     * @var string
+     * @var ?string
      * @see mysqli::ssl_set()
      */
     public $dbsslca            = null;
@@ -128,7 +128,7 @@ class DBmysql
      * The pathname to a directory that contains trusted SSL CA certificates in PEM format
      * (used in case of SSL connection).
      *
-     * @var string
+     * @var ?string
      * @see mysqli::ssl_set()
      */
     public $dbsslcapath        = null;
@@ -136,7 +136,7 @@ class DBmysql
     /**
      * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
      *
-     * @var string
+     * @var ?string
      * @see mysqli::ssl_set()
      */
     public $dbsslcacipher      = null;
@@ -1766,36 +1766,46 @@ class DBmysql
      */
     public function getTimezones()
     {
+        global $GLPI_CACHE;
+
         $list = [];
 
-        $timezones = DateTimeZone::listIdentifiers();
-        $results_queries = [];
-        foreach ($timezones as $index => $timezone) {
-            $results_queries[] =  new QuerySubQuery([
-                'SELECT' => ['name', 'value'],
-                'FROM' => new QueryExpression(
-                    sprintf(
-                        '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
-                        self::quoteValue($timezone),
-                        self::quoteName('name'),
-                        self::quoteValue('2000-01-01 00:00:00'),
-                        self::quoteValue('GMT'),
-                        self::quoteValue($timezone),
-                        self::quoteName('value'),
-                        self::quoteName(sprintf('timezone_%d', $index)),
-                    )
-                ),
-                'WHERE' => [
-                    ['NOT' => ['value' => null]],
-                ],
-            ]);
-        }
+        if (!$GLPI_CACHE->has('timezones')) {
+            $timezones = DateTimeZone::listIdentifiers();
+            $results_queries = [];
+            foreach ($timezones as $index => $timezone) {
+                $results_queries[] =  new QuerySubQuery([
+                    'SELECT' => ['name', 'value'],
+                    'FROM' => new QueryExpression(
+                        sprintf(
+                            '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
+                            self::quoteValue($timezone),
+                            self::quoteName('name'),
+                            self::quoteValue('2000-01-01 00:00:00'),
+                            self::quoteValue('GMT'),
+                            self::quoteValue($timezone),
+                            self::quoteName('value'),
+                            self::quoteName(sprintf('timezone_%d', $index)),
+                        )
+                    ),
+                    'WHERE' => [
+                        ['NOT' => ['value' => null]],
+                    ],
+                ]);
+            }
 
-        $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
-        foreach ($iterator as $row) {
-            $now = new DateTime();
-            $now->setTimezone(new DateTimeZone($row['name']));
-            $list[$row['name']] = $row['name'] . $now->format(" (T P)");
+            $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
+            foreach ($iterator as $row) {
+                $now = new DateTime();
+                $now->setTimezone(new DateTimeZone($row['name']));
+                $list[$row['name']] = $row['name'] . $now->format(" (T P)");
+            }
+            if ($list !== []) {
+                // Only cache if there are some timezones. This method may be called before timezones are properly setup, and we don't want to cache an empty list.
+                $GLPI_CACHE->set('timezones', $list);
+            }
+        } else {
+            $list = $GLPI_CACHE->get('timezones');
         }
 
         return $list;
