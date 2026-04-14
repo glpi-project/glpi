@@ -73,9 +73,7 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
                     return false;
                 }
 
-                return new TwigFunction('component', static function (): string {
-                    return '';
-                });
+                return new TwigFunction('component', static fn(): string => '');
             }
         );
 
