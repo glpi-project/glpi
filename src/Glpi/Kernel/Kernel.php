@@ -121,12 +121,12 @@ final class Kernel extends BaseKernel
         $bundles = [];
 
         $bundles[] = new FrameworkBundle();
+        $bundles[] = new TwigBundle();
 
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
                 DebugBundle::class,
-                TwigBundle::class,
             ];
             foreach ($dev_bundles_classes as $bundle_class) {
                 if (\class_exists($bundle_class)) {
@@ -201,8 +201,9 @@ final class Kernel extends BaseKernel
     {
         $projectDir = $this->getProjectDir();
 
-        $container->import($projectDir . '/dependency_injection/services.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
+        $container->import($projectDir . '/dependency_injection/services.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
 
