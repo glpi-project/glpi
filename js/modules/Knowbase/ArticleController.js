@@ -215,6 +215,11 @@ export class GlpiKnowbaseArticleController
                 this.#unlinkItem(button);
             }
         });
+
+        // Handle documents uploaded without page reload
+        this.#container.addEventListener('documents:uploaded', (e) => {
+            this.#onDocumentsUploaded(e.detail.documents ?? []);
+        });
     }
 
     #initDiffListeners()
@@ -540,14 +545,35 @@ export class GlpiKnowbaseArticleController
         if (meta_link) {
             const current = parseInt(meta_link.textContent, 10) || 0;
             const updated = Math.max(0, current + delta);
+            const meta_container = meta_link.closest('[data-kb-documents-count-container]');
             if (updated === 0) {
-                // Hide the entire metadata entry when no documents remain
-                meta_link.closest('.d-flex')?.remove();
+                meta_container.classList.add('d-none');
             } else {
+                meta_container.classList.remove('d-none');
                 const label = _n('%s document', '%s documents', updated).replace('%s', updated);
                 meta_link.textContent = label;
             }
         }
+    }
+
+    /**
+     * @param {Array<html: string}>} documents
+     */
+    #onDocumentsUploaded(documents)
+    {
+        if (documents.length === 0) {
+            return;
+        }
+
+        // Insert new badges to show linked documents
+        const badges_container = this.#container.querySelector('[data-glpi-kb-documents-list]');
+        for (const doc of documents) {
+            badges_container.insertAdjacentHTML('beforeend', doc.html);
+        }
+        badges_container.classList.remove('d-none');
+
+        // Update counters
+        this.#updateDocumentCount(documents.length);
     }
 
     /**

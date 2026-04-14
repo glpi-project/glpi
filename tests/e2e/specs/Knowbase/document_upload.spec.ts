@@ -61,41 +61,6 @@ test('Can open document upload modal', async ({ page, profile, api }) => {
     await expect(modal.getByRole('tab', { name: 'Upload a file' })).toHaveAttribute('aria-selected', 'true');
 });
 
-test('Can select files and upload via modal', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const id = await api.createItem('KnowbaseItem', {
-        name: 'KB entry for document upload test',
-        entities_id: getWorkerEntityId(),
-        answer: "Article content",
-    });
-
-    await kb.goto(id);
-
-    // Open the document upload modal
-    await page.getByRole('button', { name: 'Add Document' }).click();
-    const modal = page.getByRole('dialog');
-    await expect(modal).toBeVisible();
-
-    // Select a file - verify it appears in preview
-    await kb.doSelectFilesForKbUpload(['uploads/foo.png'], modal);
-
-    // Verify file is shown in preview
-    await expect(modal.getByRole('listitem')).toHaveCount(1);
-    await expect(modal.getByRole('listitem')).toContainText('foo.png');
-
-    // Verify upload button is enabled
-    await expect(modal.getByRole('button', { name: 'Upload Documents' })).toBeEnabled();
-
-    // Click upload and verify modal closes
-    await modal.getByRole('button', { name: 'Upload Documents' }).click();
-    await expect(modal).toBeHidden();
-
-    // Wait for page reload
-    await page.waitForLoadState('load');
-});
-
 test('Can select multiple files for upload', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
@@ -124,7 +89,13 @@ test('Can select multiple files for upload', async ({ page, profile, api }) => {
     await expect(modal).toBeHidden();
 
     // Wait for page reload
-    await page.waitForLoadState('load');
+    await expect(kb.getAlert('2 documents uploaded successfully')).toBeVisible();
+    await expect(page.getByTestId('document-chip').filter({
+        hasText: "foo.png",
+    })).toBeVisible();
+    await expect(page.getByTestId('document-chip').filter({
+        hasText: "bar.png",
+    })).toBeVisible();
 });
 
 test('Can remove a file from selection', async ({ page, profile, api }) => {
@@ -190,7 +161,10 @@ test('Can add description before upload', async ({ page, profile, api }) => {
     await expect(modal).toBeHidden();
 
     // Wait for page reload
-    await page.waitForLoadState('load');
+    await expect(kb.getAlert('Document uploaded successfully')).toBeVisible();
+    await expect(page.getByTestId('document-chip').filter({
+        hasText: "foo.png",
+    })).toBeVisible();
 });
 
 test('Shows error for disallowed file type', async ({ page, profile, api }) => {

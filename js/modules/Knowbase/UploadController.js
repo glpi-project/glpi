@@ -32,6 +32,7 @@
 
 /* global getAjaxCsrfToken, bootstrap, glpi_toast_error, glpi_toast_info */
 
+import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 
 /**
@@ -130,11 +131,11 @@ export class DocumentUploadController
         this.#setLoading(true);
 
         try {
-            await this.#createDocuments(successEntries);
-            this.#onSuccess();
+            const documents = await this.#createDocuments(successEntries);
+            this.#onSuccess(documents);
         } catch (error) {
-            console.error('Document creation failed:', error);
-            glpi_toast_error(__('Upload failed: %s').replace('%s', error.message));
+            glpi_toast_error(__('Upload failed'));
+            throw error;
         } finally {
             this.#setLoading(false);
         }
@@ -163,55 +164,35 @@ export class DocumentUploadController
 
     /**
      * @param {{ file: File, status: string, result: Object|null }[]} successEntries
+     * @returns {Promise<Array>}
      */
     async #createDocuments(successEntries)
     {
         const description = this.#form.querySelector('#kb-document-description')?.value || '';
-        const itemtype = this.#form.querySelector('[name="itemtype"]')?.value;
         const items_id = this.#form.querySelector('[name="items_id"]')?.value;
 
-        for (const entry of successEntries) {
-            const uploadedFile = entry.result;
-            const formData = new FormData();
-            const fullTempName = uploadedFile.name || '';
-            const displayName = uploadedFile.display || '';
-            const filePrefix = uploadedFile.prefix || '';
-            const fileTag = uploadedFile.id || '';
+        const files = successEntries.map((entry) => {
+            const uploaded_file = entry.result;
+            return {
+                name:             (uploaded_file.display || '').replace(/\.[^.]+$/, ''),
+                comment:          description,
+                _filename:        uploaded_file.name    || '',
+                _prefix_filename: uploaded_file.prefix  || '',
+                _tag_filename:    uploaded_file.id      || '',
+            };
+        });
 
-            formData.append('_filename[0]', fullTempName);
-            formData.append('_prefix_filename[0]', filePrefix);
-            formData.append('_tag_filename[0]', fileTag);
-            formData.append('name', displayName.replace(/\.[^.]+$/, ''));
-            formData.append('comment', description);
-
-            if (itemtype && items_id) {
-                formData.append('itemtype', itemtype);
-                formData.append('items_id', items_id);
-            }
-
-            formData.append('add', '1');
-
-            const response = await fetch(
-                `${CFG_GLPI.root_doc}/front/document.form.php`,
-                {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(`Failed to create document for ${displayName}`);
-            }
-        }
+        const response = await post(`Knowbase/${items_id}/UploadDocuments`, { files });
+        const body = await response.json();
+        return body.documents ?? [];
     }
 
-    #onSuccess()
+    /**
+     * @param {Array} documents
+     */
+    #onSuccess(documents)
     {
-        const count = this.#uploader.getSuccessfulEntries().length;
+        const count = documents.length;
 
         if (this.#modal) {
             const modalInstance = bootstrap.Modal.getInstance(this.#modal);
@@ -228,9 +209,7 @@ export class DocumentUploadController
 
         this.#container.dispatchEvent(new CustomEvent('documents:uploaded', {
             bubbles: true,
-            detail: { count: count }
+            detail: { count, documents },
         }));
-
-        window.location.reload();
     }
 }

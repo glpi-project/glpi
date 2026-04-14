@@ -100,5 +100,5 @@ test('Document count updates after unlinking', async ({ page, profile, api }) =>
     const modal = kb.getDialog('Unlink document');
     await modal.getByRole('button', { name: 'Unlink' }).click();
 
-    await expect(page.getByTestId('documents-count')).not.toBeAttached();
+    await expect(page.getByTestId('documents-count')).toBeHidden();
 });
