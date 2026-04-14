@@ -337,6 +337,17 @@ HTML,
 HTML,
         ];
 
+        // TinyMCE (Ephox) editor artifacts should be stripped
+        // e.g. drag-and-drop overlay blocker that gets saved into content and renders as a full-screen overlay
+        yield 'TinyMCE ephox editor artifacts should be removed' => [
+            'content'                => <<<HTML
+<p>Some content</p>
+<div class="ephox-dragster-blocker" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%;" role="presentation"> </div>
+HTML,
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Some content</p>',
+        ];
+
         // Deprecated html attributes should not be transformed into styles
         // see #11580
         yield [
@@ -412,6 +423,25 @@ HTML,
             'content'                => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
             'encode_output_entities' => false,
             'expected_result'        => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
+        ];
+
+        yield [
+            'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI%20#1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+        ];
+
+        yield [
+            'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<span contenteditable="false" data-user-mention="true" data-user-id="5">&#64;normal</span>',
+        ];
+
+        global $CFG_GLPI;
+        yield [
+            'content'                => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id&#61;5">&#64;normal</a>',
         ];
     }
 
@@ -719,6 +749,17 @@ HTML,
                 . '<img src="/path/to/image2.jpg" alt="an image" loading="lazy">'
                 . '<img src="/path/to/image3.jpg" alt="an image" loading="lazy">'
                 . '</p>', 1000),
+        ];
+
+        yield [
+            'content'                => '<a href="mailto:?subject=[GLPI #1234]&amp;cc=glpi@test.fr">[GLPI #1234]</a>',
+            'expected_result'        => '<a href="mailto:?subject&#61;[GLPI%20#1234]&amp;cc&#61;glpi&#64;test.fr">[GLPI #1234]</a>',
+        ];
+
+        global $CFG_GLPI;
+        yield [
+            'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
+            'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
     }
 

@@ -3785,10 +3785,7 @@ JS;
                         // Close TinyMCE toolbar dropdowns and blur active buttons when clicking outside editor UI elements
                         $(document).on('click', function(e) {
                             const target = $(e.target);
-                            const isEditorElementClicked =
-                                target.closest('.tox-editor-header').length > 0 ||
-                                target.closest('.tox-toolbar__primary').length > 0 ||
-                                target.closest('.tox-menu').length > 0;
+                            const isEditorElementClicked = target.closest('[class*="tox-"]').length > 0;
 
                             if (!isEditorElementClicked) {
                                 $('.tox-tbtn.tox-tbtn--enabled[data-mce-name="overflow-button"]').trigger('click').trigger('blur');
@@ -5389,6 +5386,7 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
+                      data-testid='file-upload-" . htmlescape($p['name']) . "'
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"

@@ -111,6 +111,26 @@ export class FormPage extends GlpiPage
         );
     }
 
+    public async setSubQuestionType(question: Locator, type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Question sub type', question)
+                .filter({visible : true}),
+            type,
+            false
+        );
+    }
+
+    public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>
+    {
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Select an itemtype', question)
+                .filter({visible : true}),
+            item_type,
+            false
+        );
+    }
+
     public async addComment(name: string): Promise<Locator>
     {
         await this.getButton("Add a comment").click();
@@ -668,6 +688,19 @@ export class FormPage extends GlpiPage
             throw new Error('Preview link has no href');
         }
         await this.page.goto(href);
+    }
+
+    public async doAssertDropdownValueIsNotAvailable(
+        dropdown: Locator,
+        value: string,
+    ): Promise<void> {
+        await dropdown.click();
+        await this.page.keyboard.type(value);
+        await expect(
+            // eslint-disable-next-line playwright/no-raw-locators
+            this.page.locator('.select2-results__options').getByText(value, { exact: true })
+        ).toHaveCount(0);
+        await this.page.keyboard.press('Escape');
     }
 
     public getValidationErrorMessage(textbox: Locator): Locator

@@ -38,6 +38,8 @@ use APIClient;
 use Auth;
 use Computer;
 use Config;
+use Glpi\Api\API;
+use Glpi\Api\APIRest;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
@@ -61,8 +63,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use QueuedNotification;
+use ReflectionClass;
+use Ticket;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
+use TicketValidation;
 use User;
 
 class APIRestTest extends TestCase
@@ -78,6 +83,26 @@ class APIRestTest extends TestCase
         global $GLPI_CACHE;
 
         $GLPI_CACHE->clear();
+
+        // To bypass various right checks
+        // This is mandatory to create/update/delete some items during tests.
+        $_SESSION['glpishowallentities'] = 1;
+        $_SESSION['glpiactive_entity']   = 0;
+        $_SESSION['glpiactiveentities']  = [0];
+        $_SESSION['glpiactiveentities_string'] = "'0'";
+
+        // Force "cron" mode to prevent user related behaviors
+        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
+
+        // enable api config
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api'                      => true,
+                'enable_api_login_credentials'    => true,
+                'enable_api_login_external_token' => true,
+            ]
+        );
 
         // Empty log file
         $file_updated = file_put_contents($this->getLogFilePath(), "");
@@ -100,28 +125,6 @@ class APIRestTest extends TestCase
     protected function getLogFilePath(): string
     {
         return GLPI_LOG_DIR . "/php-errors.log";
-    }
-
-    public static function setUpBeforeClass(): void
-    {
-        // To bypass various right checks
-        // This is mandatory to create/update/delete some items during tests.
-        $_SESSION['glpishowallentities'] = 1;
-        $_SESSION['glpiactive_entity']   = 0;
-        $_SESSION['glpiactiveentities']  = [0];
-        $_SESSION['glpiactiveentities_string'] = "'0'";
-
-        // Force "cron" mode to prevent user related behaviors
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-
-        // enable api config
-        $config = new Config();
-        $config->update([
-            'id'                              => 1,
-            'enable_api'                      => true,
-            'enable_api_login_credentials'    => true,
-            'enable_api_login_external_token' => true,
-        ]);
     }
 
     public function testAppToken()
@@ -1032,7 +1035,7 @@ class APIRestTest extends TestCase
         );
 
         // create a ticket for another user (glpi - super-admin)
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add([
             'name'                => 'test post-only',
             'content'             => 'test post-only',
@@ -1941,6 +1944,57 @@ class APIRestTest extends TestCase
         $this->assertEquals($uid, $data['session']['glpiID']);
     }
 
+    public function testInitSessionUserTokenFailIfNotEnabled()
+    {
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api_login_external_token' => false,
+            ]
+        );
+
+        $user = new User();
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $this->assertTrue($user->getFromDB($uid));
+        $token = $user->getAuthToken('api_token');
+
+        $this->query(
+            'initSession',
+            ['query' => ['user_token' => $token]],
+            400,
+            'ERROR_LOGIN_WITH_TOKEN_DISABLED'
+        );
+    }
+
+    public function testInitSessionCredentialsFailIfNotEnabled()
+    {
+        Config::setConfigurationValues(
+            'core',
+            [
+                'enable_api_login_credentials' => false,
+            ]
+        );
+
+        $this->query(
+            'initSession',
+            ['query' => ['login' => TU_USER, 'password' => TU_PASS]],
+            400,
+            'ERROR_LOGIN_WITH_CREDENTIALS_DISABLED'
+        );
+    }
+
+    public function testInitSessionFallbackToCredentials()
+    {
+        $data = $this->query(
+            'initSession',
+            ['query' => ['user_token' => 'notvalid', 'login' => TU_USER, 'password' => TU_PASS]],
+        );
+
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
+    }
+
+
     public function testBadEndpoint()
     {
         $this->query(
@@ -2591,6 +2645,8 @@ class APIRestTest extends TestCase
                     ["key" => "Item_Line:add",                   "label" => "Add a phone line"],
                     ["key" => "Item_Line:remove",                "label" => "Remove a phone line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
+                    ["key" => "MassiveAction:associate_group",   "label" => "Associate group"],
+                    ["key" => "MassiveAction:dissociate_group",  "label" => "Dissociate group"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
@@ -2637,6 +2693,8 @@ class APIRestTest extends TestCase
                     ["key" => "Item_Line:add",                   "label" => "Add a phone line"],
                     ["key" => "Item_Line:remove",                "label" => "Remove a phone line"],
                     ["key" => "Infocom:activate",                "label" => "Enable the financial and administrative information"],
+                    ["key" => "MassiveAction:associate_group",   "label" => "Associate group"],
+                    ["key" => "MassiveAction:dissociate_group",  "label" => "Dissociate group"],
                     ["key" => "MassiveAction:delete",            "label" => "Put in trashbin"],
                     ["key" => "ObjectLock:unlock",               "label" => "Unlock items"],
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
@@ -2737,6 +2795,22 @@ class APIRestTest extends TestCase
                 'url' => 'getMassiveActionParameters/Computer/Infocom:activate',
                 'status' => 200,
                 'response' => [],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/MassiveAction:associate_group',
+                'status' => 200,
+                'response' => [
+                    ["name" => "fieldname", "type" => "dropdown"],
+                    ["name" => "selected_group[]", "type" => "dropdown"],
+                ],
+            ],
+            [
+                'url' => 'getMassiveActionParameters/Computer/MassiveAction:dissociate_group',
+                'status' => 200,
+                'response' => [
+                    ["name" => "fieldname", "type" => "dropdown"],
+                    ["name" => "selected_group[]", "type" => "dropdown"],
+                ],
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:delete',
@@ -3555,5 +3629,28 @@ class APIRestTest extends TestCase
         foreach ($not_expected as $v) {
             $this->assertNotContains($v, $values);
         }
+    }
+
+    public function testGetFriendlyNames(): void
+    {
+        $rc = new ReflectionClass(API::class);
+        $method = $rc->getMethod('getFriendlyNames');
+        $keys_names = $method->invoke(new APIRest(), [
+            'users_id' => getItemByTypeName(User::class, TU_USER, true),
+            'tickets_id' => getItemByTypeName(Ticket::class, '_ticket01', true),
+            'itemtype_target' => User::class,
+            'items_id_target' => getItemByTypeName(User::class, 'glpi', true),
+        ], [
+            'add_keys_names' => ['users_id', 'tickets_id', 'items_id_target'],
+        ], TicketValidation::class);
+
+        $this->assertEquals(
+            [
+                'users_id' => TU_USER,
+                'tickets_id' => '_ticket01',
+                'items_id_target' => 'glpi',
+            ],
+            $keys_names
+        );
     }
 }

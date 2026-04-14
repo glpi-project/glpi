@@ -202,7 +202,13 @@ if (isset($_POST["add"])) {
     if (
         isset($_REQUEST['_add_fromitem'], $_REQUEST['itemtype'], $_REQUEST['items_id'])
     ) {
-        $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+        if ($_REQUEST['itemtype'] === User::class) {
+            $_REQUEST['_users_id_requester'] = $_REQUEST['items_id'];
+            unset($_REQUEST['itemtype']);
+            unset($_REQUEST['items_id']);
+        } else {
+            $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+        }
     }
 
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {

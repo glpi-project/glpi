@@ -34,14 +34,14 @@
 {% set candel       = params['candel'] ?? true %}
 {% set canedit      = params['canedit'] ?? true %}
 {% set id           = item.fields['id'] ?? -1 %}
+{% set in_modal     = params['in_modal']|default(_get._in_modal|default(false)) %}
 
 {% if item is defined %}
 
      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 
-
     {% if canedit or item.canEdit(item.fields['id']) %}
-      <div class="form-button-separator card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+      <div class="form-button-separator card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap  {{ in_modal ? 'p-2' : '' }}">
          {% if withtemplate > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button

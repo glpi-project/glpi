@@ -42,12 +42,15 @@ namespace Glpi\Api;
 use AllAssets;
 use CommonDBTM;
 use Document;
+use GLPIKey;
 use GLPIUploadHandler;
 use ReflectionClass;
 use Safe\Exceptions\JsonException;
+use Safe\Exceptions\UrlException;
 use stdClass;
 use Toolbox;
 
+use function Safe\base64_decode;
 use function Safe\file_get_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -616,7 +619,12 @@ class APIRest extends API
 
         // try to retrieve session_token in header
         if (isset($headers['Session-Token'])) {
-            $parameters['session_token'] = $headers['Session-Token'];
+            try {
+                $parameters['session_token'] = (new GLPIKey())->decrypt(base64_decode(trim($headers['Session-Token'])));
+            } catch (UrlException) {
+                // malformed session token, keep its raw value and let authentication code fail due to mismatch token
+                $parameters['session_token'] = $headers['Session-Token'];
+            }
         }
 
         // try to retrieve app_token in header

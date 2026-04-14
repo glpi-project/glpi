@@ -32,6 +32,7 @@
 
 import { defineConfig, devices } from '@playwright/test';
 import { config } from 'dotenv' ;
+import { globSync } from 'glob';
 import { Config } from './tests/e2e/utils/Config';
 
 // Load .env file so it is available everywhere.
@@ -67,16 +68,11 @@ export default defineConfig({
     // - https://playwright.dev/docs/test-reporters
     // - https://playwright.dev/docs/api/class-testconfig#test-config-reporter
     reporter: process.env.CI ? [
-        // Will generate a HTML report that can be downloaded and viewed locally
-        ['html'],
+        // Blob reporter for merging sharded reports
+        // See: https://playwright.dev/docs/test-sharding#merging-reports-from-multiple-shards
+        ['blob'],
         // Easier to read in the terminal output of the CI itself
         ['dot'],
-        // Special reporter that can be viewed from github action results summary
-        // See:
-        // - https://ctrf.io
-        // - https://github.com/ctrf-io/github-test-reporter
-        // - https://github.com/ctrf-io/playwright-ctrf-json-reporter
-        ['playwright-ctrf-json-reporter'],
     ] : [
         // Generate html report in given folder
         ['html', {
@@ -120,5 +116,20 @@ export default defineConfig({
                 },
             },
         },
+        // Dynamically create a project for each plugin that contains Playwright specs.
+        ...globSync('plugins/*/tests/e2e/**/*.spec.ts')
+            .map((spec_path) => spec_path.split('/')[1])
+            .filter((plugin, index, plugins) => plugins.indexOf(plugin) === index)
+            .map((plugin) => ({
+                name: `plugin:${plugin}`,
+                testDir: `./plugins/${plugin}/tests/e2e/specs`,
+                use: {
+                    ...devices['Desktop Chrome'],
+                    viewport: {
+                        width: 1920,
+                        height: 1080,
+                    },
+                },
+            })),
     ],
 });

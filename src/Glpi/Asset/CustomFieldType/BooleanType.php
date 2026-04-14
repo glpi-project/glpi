@@ -36,6 +36,8 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use InvalidArgumentException;
 
 class BooleanType extends AbstractType
@@ -78,8 +80,19 @@ TWIG, $twig_params);
 
     public function getSearchOption(): ?array
     {
+        global $DB;
+
         $opt = $this->getCommonSearchOptionData();
         $opt['datatype'] = 'bool';
+        $opt['computation'] = new QueryExpression(QueryFunction::coalesce([
+            QueryFunction::jsonUnquote(
+                expression: QueryFunction::jsonExtract([
+                    'glpi_assets_assets.custom_fields',
+                    new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
+                ])
+            ),
+            new QueryExpression($DB::quoteValue($this->custom_field->fields['default_value'])),
+        ]) . ' = ' . $DB::quoteValue('true'));
         return $opt;
     }
 

@@ -60,7 +60,7 @@
                     {% set start_zone_index = params.start_zone_index ?? 1 %}
                     {% for zone_number in start_zone_index..nb_zones %}
                         {% set zone_defined = (zones[zone_number] is defined) %}
-                        <button type="button" data-zone-index="{{ zone_number }}" class="btn btn-sm btn-icon {{ zone_defined ? " btn-success" : " btn-outline-secondary" }} px-1 set-zone-data" style="min-width: 4%;">
+                        <button type="button" data-zone-index="{{ zone_number }}" aria-label="{{ zones[zone_number]['label'] ?? zone_number }}" class="btn btn-sm btn-icon {{ zone_defined ? " btn-success" : " btn-outline-secondary" }} px-1 set-zone-data" style="min-width: 4%;">
                             <span class="overflow-hidden">{{ zones[zone_number]['label'] ?? zone_number }}</span>
                             <i class="ti {{ zone_defined ? " ti-check" : " ti-file-unknown" }} ms-1"></i>
                         </button>
@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ (params['save_zone_data_label']|default(__("Save zone data")) ~ ' (' ~ _x('keyboard', 'Enter') ~ ')') }}">
+                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ (params['save_zone_data_label']|default(__('Save zone data')) ~ ' (' ~ _x('keyboard', 'Enter') ~ ')') }}" aria-label="{{ params['save_zone_data_label']|default(__('Save zone data')) }}">
                         <i class="ti ti-device-floppy"></i>
                         {% if params.save_zone_data_label is defined %}
                             <span>{{ params['save_zone_data_label'] }}</span>
@@ -120,7 +120,7 @@
                             <span>{{ __("Save zone data") }}</span>
                         {% endif %}
                     </button>
-                    <button type="button" id="reset-zone-data-{{ rand }}" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ __("Reset") }}">
+                    <button type="button" id="reset-zone-data-{{ rand }}" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="{{ __("Reset") }}" aria-label="{{ __('Reset') }}">
                         <i class="ti ti-trash"></i>
                         <span>{{ __("Reset") }}</span>
                     </button>
@@ -134,12 +134,12 @@
 
         <div class="col-12 my-2" id="general-submit-{{ rand }}">
             {% if id > 0 %}
-                <button id="clear-data-{{ rand }}" type="submit" name="purge" class="btn btn-outline-danger" form="stencil-editor-form-{{ rand }}">
+                <button id="clear-data-{{ rand }}" type="submit" name="purge" class="btn btn-outline-danger" form="stencil-editor-form-{{ rand }}" aria-label="{{ __('Clear data') }}">
                     <i class="ti ti-trash-x"></i>
-                    <span>{{ __("Clear data") }}</span>
+                    <span>{{ __('Clear data') }}</span>
                 </button>
             {% else %}
-                <button type="submit" name="add" class="btn btn-primary" form="stencil-editor-form-{{ rand }}">
+                <button type="submit" name="add" class="btn btn-primary" form="stencil-editor-form-{{ rand }}" aria-label="{{ __('Add') }}">
                     <i class="ti ti-plus"></i>
                     <span>{{ __("Add") }}</span>
                 </button>

@@ -47,6 +47,9 @@ use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
@@ -6660,6 +6663,165 @@ class SearchTest extends DbTestCase
 
         // we just check that the search did not failed with an exception
         $this->assertTrue(isset($result['data']['totalcount']));
+    }
+
+    public function testMetaTicketForm()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search tickets with meta-criteria on Form ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => '12',
+                    'searchtype' => 'equals',
+                    'value'      => 'all',
+                    'link'       => 'AND',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Form::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $form->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Ticket', $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_forms/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked ticket
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing form ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
+    }
+
+    public function testMetaFormTicket()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search_reverse',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search_reverse',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search_reverse',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search forms with meta-criteria on Ticket ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $ticket->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Form::class, $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked form
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing ticket ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch(Form::class, $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
     }
 }
 

@@ -229,7 +229,12 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     #[Override]
     public function convertDefaultValue(array $rawData): mixed
     {
-        $users_ids = json_decode($rawData['default_values'] ?? "[]");
+        $users_ids = [];
+        $raw_default_values = $rawData['default_values'] ?? null;
+        if (!empty($raw_default_values)) {
+            $users_ids = json_decode($raw_default_values, true);
+        }
+
         return ['users_ids' => $users_ids];
     }
 
@@ -440,6 +445,23 @@ TWIG;
         if (is_string($value) && json_validate($value)) {
             $value = json_decode($value, true);
         } elseif (is_array($value)) {
+            // Handle "prepared end user answer" format: [['itemtype' => X, 'items_id' => Y], ...]
+            $first = reset($value);
+            if (is_array($first) && array_key_exists('itemtype', $first)) {
+                $normalized = ['users_ids' => [], 'groups_ids' => [], 'suppliers_ids' => []];
+                $fkey_map = [
+                    User::class     => 'users_ids',
+                    Group::class    => 'groups_ids',
+                    Supplier::class => 'suppliers_ids',
+                ];
+                foreach ($value as $actor) {
+                    $key = $fkey_map[$actor['itemtype']] ?? null;
+                    if ($key !== null) {
+                        $normalized[$key][] = (int) $actor['items_id'];
+                    }
+                }
+                $value = $normalized;
+            }
             $value = json_decode($this->formatDefaultValueForDB($value), true);
         }
 

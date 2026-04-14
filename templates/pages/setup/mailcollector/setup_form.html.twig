@@ -125,7 +125,8 @@
          connect_opts['mailbox'],
          __('Incoming mail folder (optional, often INBOX)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
       {{ fields.nullField() }}
@@ -134,7 +135,8 @@
          item.fields['accepted'],
          __('Accepted mail archive folder (optional)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
       {{ fields.textField(
@@ -142,7 +144,8 @@
          item.fields['refused'],
          __('Refused mail archive folder (optional)'), {
             add_field_html: get_imap_folder_btn,
-            input_class: 'col-xxl-7 d-flex'
+            input_class: 'btn-group btn-group-sm col-xxl-7 d-flex',
+            input_addclass: 'rounded-end-0'
          }
       ) }}
    {% endif %}

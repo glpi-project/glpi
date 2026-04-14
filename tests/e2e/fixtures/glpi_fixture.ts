@@ -43,6 +43,7 @@ import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
+import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -53,6 +54,8 @@ export const test = baseTest.extend<{
     csrf: CsrfFetcher,
     formImporter: FormImporter,
     api: Api,
+    debug: DebugModeSwitcher,
+    retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
     workerSessionCache: WorkerSessionCache,
@@ -161,6 +164,11 @@ export const test = baseTest.extend<{
         await use(new FormImporter(request, csrf));
     }, { scope: 'test' }],
 
+    // Service used to switch debug mode on/off.
+    debug: [async ({ request, csrf }, use) => {
+        await use(new DebugModeSwitcher(request, csrf));
+    }, { scope: 'test' }],
+
     // Store the state of the current session.
     // This avoid fetching CSRF token multiple times or trying to set a profile
     // that is already the one being used.
@@ -182,4 +190,16 @@ export const test = baseTest.extend<{
         await use(await context.newPage());
         await context.close();
     },
+
+    // Increase the timeout when retrying a test.
+    // This is needed because the first retry on the CI enable trace mode to
+    // debug the error, which slow the test down.
+    // This can cause the test to go over the 30 seconds timeout so this fixture
+    // add a bit a leeway to avoid this unfortunate side effect.
+    retryTimeout: [async ({}, use, testInfo) => {
+        if (testInfo.retry > 0) {
+            testInfo.setTimeout(testInfo.timeout * 2);
+        }
+        await use();
+    }, { auto: true, scope: 'test' }],
 });

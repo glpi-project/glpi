@@ -417,7 +417,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_login", [
-                "value" => $config["basic_auth_login"],
+                "value" => $config["basic_auth_login"] ?? '',
             ]);
             echo "</td>";
             echo "</tr>";
@@ -430,7 +430,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_password", [
-                "value" => (new GLPIKey())->decrypt($config['basic_auth_password']),
+                "value" => (new GLPIKey())->decrypt($config['basic_auth_password'] ?? ''),
                 "type" => "password",
             ]);
             echo "</td>";

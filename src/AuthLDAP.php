@@ -218,7 +218,7 @@ class AuthLDAP extends CommonDBTM
 
     public function post_getEmpty()
     {
-        $this->fields['port']                        = '389';
+        $this->fields['port']                        = 389;
         $this->fields['condition']                   = '';
         $this->fields['login_field']                 = 'uid';
         $this->fields['sync_field']                  = null;
@@ -261,7 +261,7 @@ class AuthLDAP extends CommonDBTM
     {
         switch ($type) {
             case 'AD':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']
                  = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
                 $this->fields['login_field']               = 'samaccountname';
@@ -286,14 +286,14 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = '';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['begin_date_field']          = 'whenCreated';
                 $this->fields['end_date_field']            = 'accountExpires';
                 break;
             case 'OpenLDAP':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']                 = '(objectClass=inetOrgPerson)';
                 $this->fields['login_field']               = 'uid';
                 $this->fields['sync_field']                = 'entryuuid';
@@ -316,7 +316,7 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = 'jpegphoto';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['category_field']            = 'businesscategory';
@@ -600,24 +600,25 @@ TWIG, $twig_params);
 TWIG, ['msg' => _x('button', 'Test')]);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <script>
-                    $(() => {
-                        $('button[name="test_ldap_replicate"]').on('click', (e) => {
-                            const replicate_id = $(e.target).closest('tr').data('id');
-                            $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
-                            $(e.target).prop('disabled', true);
-                            $.post(
-                                '{{ path('ajax/ldap.php')|e('js') }}',
-                                {
-                                    id: '{{ authldaps_id|e('js') }}',
-                                    ldap_replicate_id: replicate_id,
-                                    action: 'test_ldap_replicate'
-                                }
-                            ).then(() => {
-                                displaySessionMessages();
-                                $(e.target).find('.spinner-border').remove();
-                                $(e.target).prop('disabled', false);
-                            });
+                <script type="module">
+                    $('button[name="test_ldap_replicate"]').on('click', (e) => {
+                        const replicate_id = $(e.target).closest('tr').data('id');
+                        $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
+                        $(e.target).prop('disabled', true);
+                        const testUrl = '{{ path('/AuthLDAP/')|e('js') }}{{ authldaps_id }}/Replica/' + replicate_id + '/Test';
+                        $.post(
+                            testUrl,
+                            {
+                                authldaps_id: '{{ authldaps_id|e('js') }}',
+                                authldapreplicates_id: replicate_id,
+                            }
+                        ).then(() => {
+                            glpi_toast_success('{{ __("Test successful")|e('js') }}');
+                        }, () => {
+                            glpi_toast_error('{{ __("Test failed")|e('js') }}');
+                        }).always(() => {
+                            $(e.target).find('.spinner-border').remove();
+                            $(e.target).prop('disabled', false);
                         });
                     });
                 </script>
@@ -1706,6 +1707,8 @@ TWIG, $twig_params);
             'nosort' => true,
             'start' => $values['start'],
             'limit' => $_SESSION['glpilist_limit'],
+            // preserve all existing parameters in the URL except start and order which are managed by the datatable component
+            'additional_params' => http_build_query(array_filter($values, static fn($key) => !in_array($key, ['start', 'order']), ARRAY_FILTER_USE_KEY)),
             'columns' => $columns,
             'formatters' => [
                 'user' => 'raw_html',
@@ -3654,13 +3657,12 @@ TWIG, $twig_params);
                 $entity->getFromDB($_REQUEST['entities_id'])
                 && $entity->fields['authldaps_id'] > 0
             ) {
-                $authldap->getFromDB($_REQUEST['authldaps_id']);
-
                 if ($_REQUEST['authldaps_id'] === 0) {
                     // authldaps_id wasn't submitted by the user -> take entity config
                     $_REQUEST['authldaps_id'] = $entity->fields['authldaps_id'];
                 }
 
+                $authldap->getFromDB($_REQUEST['authldaps_id']);
                 $_REQUEST['basedn']       = $entity->fields['ldap_dn'];
 
                 // No dn specified in entity : use standard one

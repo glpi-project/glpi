@@ -1,0 +1,154 @@
+name: "Docker nightly and security rebuild"
+
+permissions:
+  contents: "read"
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # Daily: nightly builds every day, stable security rebuild on Sundays
+  workflow_dispatch:
+    inputs:
+      rebuild-nightly:
+        description: "Rebuild nightly images (branches)"
+        required: false
+        type: boolean
+        default: true
+      rebuild-stable:
+        description: "Rebuild stable living tags (no-cache, re-pulls base images)"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  SUPPORTED_VERSIONS: "11.0, 10.0"
+
+jobs:
+  resolve:
+    name: "Resolve build matrix"
+    runs-on: "ubuntu-latest"
+    outputs:
+      matrix: ${{ steps.resolve.outputs.matrix }}
+    steps:
+      - name: "Resolve versions and build matrix"
+        id: "resolve"
+        uses: "actions/github-script@v8"
+        with:
+          script: |
+            const isSchedule = context.eventName === 'schedule';
+            const isSunday = new Date().getUTCDay() === 0;
+
+            const mustRebuildNightly =
+              isSchedule
+              || context.payload.inputs?.['rebuild-nightly'] === 'true';
+            const mustRebuildStable =
+              (isSchedule && isSunday)
+              || context.payload.inputs?.['rebuild-stable'] === 'true';
+
+            // Parse supported active major/minor versions from env
+            const supportedVersions = process.env.SUPPORTED_VERSIONS
+              .split(',')
+              .map(v => v.trim())
+              .filter(Boolean);
+
+            if (supportedVersions.length === 0) {
+              core.setFailed('SUPPORTED_VERSIONS environment variable is empty. Matrix cannot be built.');
+              return;
+            }
+
+            core.info(`Supported versions: ${supportedVersions.join(', ')}`);
+
+            let matrix = [];
+
+            if (mustRebuildStable) {
+              // Fetch all non-draft, non-prerelease releases
+              const releases = await github.paginate(
+                github.rest.repos.listReleases,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                }
+              );
+
+              // Keep only stable releases and sort by semver descending
+              const stableTags = releases
+                .filter(r => !r.prerelease && !r.draft)
+                .map(r => r.tag_name)
+                .filter(name => /^\d+\.\d+\.\d+$/.test(name))
+                .sort((a, b) => {
+                  const [aMaj, aMin, aPatch] = a.split('.').map(Number);
+                  const [bMaj, bMin, bPatch] = b.split('.').map(Number);
+                  return bMaj - aMaj || bMin - aMin || bPatch - aPatch;
+                });
+
+              for (const supportedVersion of supportedVersions) {
+                // Find the latest stable release for this Major.Minor (e.g. 11.0)
+                const latestVersionTag = stableTags.find(t => t.startsWith(`${supportedVersion}.`));
+                if (latestVersionTag) {
+                  core.info(`Rebuild target: ${latestVersionTag}`);
+                  matrix.push({
+                    'glpi-version': latestVersionTag,
+                    'image-tag': '',
+                    'no-cache': true,
+                    'use-legacy-marketplace-path': Number(latestVersionTag.split('.')[0]) < 11,
+                  });
+                } else {
+                  core.warning(`No stable releases found for supported version: ${supportedVersion}`);
+                }
+              }
+            }
+
+            if (mustRebuildNightly) {
+              matrix.push(
+                {
+                  'glpi-version': 'main',
+                  'image-tag': 'dev-nightly',
+                  'no-cache': false,
+                  'use-legacy-marketplace-path': false,
+                },
+                ...supportedVersions.map(supportedVersion => {
+                  const major = supportedVersion.split('.')[0];
+                  return {
+                    'glpi-version': `${supportedVersion}/bugfixes`,
+                    'image-tag': `${supportedVersion}-nightly`,
+                    'no-cache': false,
+                    'use-legacy-marketplace-path': Number(major) < 11,
+                  };
+                })
+              );
+            }
+
+            if (matrix.length === 0) {
+              core.setFailed('Nothing to build: both rebuild-nightly and rebuild-stable are disabled.');
+              return;
+            }
+
+            core.setOutput('matrix', JSON.stringify({ include: matrix }));
+
+            // Job summary
+            const modes = [];
+            if (mustRebuildStable) modes.push('Security Rebuild');
+            if (mustRebuildNightly) modes.push('Nightly Build');
+            await core.summary
+              .addHeading(`${modes.join(' + ')} Matrix`)
+              .addCodeBlock(JSON.stringify(matrix, null, 2), 'json')
+              .write();
+
+  build:
+    name: "Build ${{ matrix.image-tag || matrix.glpi-version }}"
+    needs: [resolve]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.resolve.outputs.matrix) }}
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    # GitHub issue with matrix, secrets: inherit trigger error and must manually be defined
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+      GHCR_ACCESS_TOKEN: ${{ secrets.GHCR_ACCESS_TOKEN }}
+    with:
+      push: true
+      glpi-version: ${{ matrix.glpi-version }}
+      image-tag: ${{ matrix.image-tag }}
+      no-cache: ${{ matrix.no-cache }}
+      use-legacy-marketplace-path: ${{ matrix.use-legacy-marketplace-path }}

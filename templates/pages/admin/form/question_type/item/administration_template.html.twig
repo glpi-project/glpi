@@ -36,26 +36,33 @@
 
 <div class="input-group">
     {# Define empty choice manually to handle root entity #}
+    {% set dropdown_options = {
+        'init'               : init,
+        'no_label'           : true,
+        'right'              : 'all',
+        'width'              : '100%',
+        'mb'                 : '',
+        'comments'           : false,
+        'addicon'            : false,
+        'aria_label'         : aria_label,
+        'nochecklimit'       : true,
+        'display_emptychoice': false,
+        'toadd'              : {
+            '-1': constant('Dropdown::EMPTY_VALUE'),
+        },
+    } %}
+
+    {# Display additional fields in dropdown: IDs for ITIL objects, serial/user for assets #}
+    {% if displaywith is not empty %}
+        {% set dropdown_options = dropdown_options|merge({'displaywith': displaywith}) %}
+    {% endif %}
+
     {{ fields.dropdownField(
         default_itemtype|default(itemtypes|first|first),
         'default_value',
         default_items_id,
         '',
-        {
-            'init'               : init,
-            'no_label'           : true,
-            'right'              : 'all',
-            'width'              : '100%',
-            'mb'                 : '',
-            'comments'           : false,
-            'addicon'            : false,
-            'aria_label'         : aria_label,
-            'nochecklimit'       : true,
-            'display_emptychoice': false,
-            'toadd'              : {
-                '-1': constant('Dropdown::EMPTY_VALUE'),
-            },
-        }
+        dropdown_options
     ) }}
     {{ advanced_config|raw }}
 </div>

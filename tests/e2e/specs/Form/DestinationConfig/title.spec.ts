@@ -46,16 +46,14 @@ test.describe('Title configuration', () => {
 
     test('Can configure the title field', async () => {
         const title_region = form_page.getRegion('Title configuration');
-        // eslint-disable-next-line playwright/no-raw-locators
-        const title_body = title_region.frameLocator('.tox-edit-area__iframe').locator('body');
+        const title_body = form_page.getRichTextByLabel('Title', title_region);
         await title_body.click();
         await title_body.clear();
         await title_body.pressSequentially('My specific form name');
         await form_page.doSaveDestination();
 
         const title_region_after = form_page.getRegion('Title configuration');
-        // eslint-disable-next-line playwright/no-raw-locators
-        const title_body_after = title_region_after.frameLocator('.tox-edit-area__iframe').locator('body');
+        const title_body_after = form_page.getRichTextByLabel('Title', title_region_after);
         await expect(title_body_after).toContainText('My specific form name');
     });
 

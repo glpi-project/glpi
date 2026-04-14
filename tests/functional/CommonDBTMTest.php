@@ -39,6 +39,7 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
+use FieldUnicity;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -1327,7 +1328,7 @@ class CommonDBTMTest extends DbTestCase
     {
         $this->login();
 
-        $field_unicity = new \FieldUnicity();
+        $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
@@ -1382,7 +1383,7 @@ class CommonDBTMTest extends DbTestCase
 
         // create field unicity rule
         // for Computer itemtype and name field
-        $field_unicity = new \FieldUnicity();
+        $field_unicity = new FieldUnicity();
         $this->assertGreaterThan(
             0,
             $field_unicity->add([
@@ -1455,6 +1456,42 @@ class CommonDBTMTest extends DbTestCase
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ])
         );
+    }
+
+    public function testCheckUnicitySystemSQLCriteria()
+    {
+        $this->login();
+
+        $this->createItem(FieldUnicity::class, [
+            'entities_id' => $this->getTestRootEntity(true),
+            'itemtype' => 'Glpi\\CustomAsset\\Test01Asset',
+            'fields' => 'serial',
+            'is_active' => 1,
+            'action_refuse' => 1,
+        ]);
+        // No issues expected as these are different itemtypes
+        $original_asset_id = $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'name' => 'Test asset 1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'serial' => '123456',
+        ])->getID();
+        $this->createItem('Glpi\\CustomAsset\\Test02Asset', [
+            'name' => 'Test asset 1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'serial' => '123456',
+        ]);
+
+        // This should trigger the unicity error as it's the same itemtype and same serial
+        $asset_class = 'Glpi\\CustomAsset\\Test01Asset';
+        $asset = new $asset_class();
+        $this->assertFalse($asset->add([
+            'name' => 'Test asset 2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'serial' => '123456',
+        ]));
+
+        $err_msg = 'Impossible record for Serial number = 123456<br>Other item exist<br>[<a href="/front/asset/asset.form.php?class=Test01&amp;id=' . $original_asset_id . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Test asset 1">Test asset 1</a> - ID: ' . $original_asset_id . ' - Serial number: 123456 - Entity: Root entity &gt; _test_root_entity]';
+        $this->hasSessionMessages(ERROR, [$err_msg]);
     }
 
     public function testAddFilesWithNewFile()

@@ -166,9 +166,6 @@
                 "laminas/laminas-loader": "Used by `laminas/laminas-mail`",
                 "laminas/laminas-mail": "No replacement package found yet",
                 "laminas/laminas-mime": "Used by `laminas/laminas-mail`"
-            },
-            "ignore": {
-                "CVE-2025-45769": "Patch has been applied manually."
             }
         }
     },

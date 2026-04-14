@@ -46,7 +46,7 @@ class APIClient extends CommonDBTM
     public const DOLOG_HISTORICAL = 2;
 
     public static $rightname = 'config';
-    protected $displaylist = false;
+    protected $displaylist = true;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -92,20 +92,7 @@ class APIClient extends CommonDBTM
 
     public function rawSearchOptions()
     {
-        $tab = [];
-
-        $tab[] = [
-            'id'                 => 'common',
-            'name'               => self::GetTypeName(),
-        ];
-
-        $tab[] = [
-            'id'                 => '1',
-            'table'              => $this->getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'datatype'           => 'itemlink',
-        ];
+        $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '2',
@@ -168,6 +155,14 @@ class APIClient extends CommonDBTM
             'name'               => __('Application token'),
             'massiveaction'      => false,
             'datatype'           => 'text',
+        ];
+
+        $tab[] = [
+            'id'                 => '80',
+            'table'              => 'glpi_entities',
+            'field'              => 'completename',
+            'name'               => Entity::getTypeName(1),
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

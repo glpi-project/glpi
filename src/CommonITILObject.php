@@ -1871,6 +1871,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
                     $allowed_fields[] = 'takeintoaccountdate';
                 }
+                if (isset($input['_do_update_date_mod'])) {
+                    $allowed_fields[] = 'date_mod';
+                }
             }
 
             $ret = [];
@@ -2964,7 +2967,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // No name set name
-        $input["name"]    = ltrim($input["name"] ?? '');
+        $input["name"]    = Toolbox::substr(ltrim($input["name"] ?? ''), 0, 255);
         $input['content'] = ltrim($input['content'] ?? '');
         if (empty($input["name"])) {
             // Build name based on content
@@ -7703,6 +7706,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
+                    if (!isset($followup_row['sourceitems_id'])) {
+                        $followup_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($followup_row['sourceof_items_id'])) {
+                        $followup_row['sourceof_items_id'] = 0;
+                    }
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type'     => ITILFollowup::class,
                         'item'     => $followup_row,
@@ -7733,6 +7745,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
+                    if (!isset($task_row['sourceitems_id'])) {
+                        $task_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($task_row['sourceof_items_id'])) {
+                        $task_row['sourceof_items_id'] = 0;
+                    }
                     $timeline[$tltask::getType() . "_" . $tasks_id] = [
                         'type'     => $taskClass,
                         'item'     => $task_row,
@@ -7974,7 +7994,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
-                $autoreminder_obj->fields['content'] ?? '',
+                htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])
             );
 

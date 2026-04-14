@@ -150,14 +150,14 @@ class Contract_Supplier extends CommonDBRelation
                         <div class="d-flex">
                             <input type="hidden" name="suppliers_id" value="{{ supplier.getID() }}">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                            {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
+                            {{ fields.dropdownField('Contract', 'contracts_id', 0, __('Add a contract'), {
                                 used: used,
                                 entity: supplier.fields['entities_id'],
                                 entity_sons: supplier.fields['is_recursive'],
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -215,6 +215,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -272,13 +273,13 @@ TWIG, $twig_params);
                         <div class="d-flex">
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                            {{ fields.dropdownField('Supplier', 'suppliers_id', 0, null, {
+                            {{ fields.dropdownField('Supplier', 'suppliers_id', 0, __('Add a supplier'), {
                                 used: used,
                                 entity: contract.fields['entities_id'],
                                 entity_sons: contract.fields['is_recursive']
                             }) }}
                             {% set btn %}
-                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>

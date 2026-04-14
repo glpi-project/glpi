@@ -782,7 +782,7 @@ class CommonGLPI implements CommonGLPIInterface
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
-            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', htmlescape($badge_content));
+            $counter_html = sprintf(' <span class="badge glpi-badge" data-testid="tab-count-badge">%s</span>', htmlescape($badge_content));
         }
 
         return sprintf(

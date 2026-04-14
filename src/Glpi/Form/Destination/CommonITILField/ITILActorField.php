@@ -56,7 +56,9 @@ use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Group;
 use InvalidArgumentException;
 use Override;
+use Profile;
 use Supplier;
+use Ticket;
 use User;
 
 abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
@@ -118,6 +120,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 'values'          => $specific_actors,
                 'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS . "]",
                 'allowed_types'   => $this->getAllowedActorTypes(),
+                'dropdown_options' => $this->getActorDropdownOptions(),
             ],
 
             // Specific additional config for SPECIFIC_ANSWERS strategy
@@ -162,11 +165,101 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
             // Process each actor found by the strategy
             foreach ($itilactors as $itilactor) {
+                if (!$this->isActorAllowed($itilactor, $answers_set)) {
+                    continue;
+                }
                 $this->addActorToInput($input, $itilactor);
             }
         }
 
         return $input;
+    }
+
+    /**
+     * @return array{
+     *     right_for_users?: string,
+     *     group_conditions?: array<string, int>
+     * }
+     */
+    private function getActorDropdownOptions(): array
+    {
+        return match ($this->getActorType()) {
+            'requester' => [
+                'right_for_users' => 'all',
+                'group_conditions' => ['is_requester' => 1],
+            ],
+            'observer' => [
+                'right_for_users' => 'all',
+                'group_conditions' => ['is_watcher' => 1],
+            ],
+            'assign' => [
+                'right_for_users' => 'own_ticket',
+                'group_conditions' => ['is_assign' => 1],
+            ],
+            default => [],
+        };
+    }
+
+    /**
+     * @param array{
+     *     itemtype?: class-string<\CommonDBTM>|string,
+     *     items_id?: int|string,
+     *     use_notification?: int|string,
+     *     alternative_email?: string
+     * } $itilactor
+     */
+    private function isActorAllowed(array $itilactor, AnswersSet $answers_set): bool
+    {
+        if (!isset($itilactor['itemtype'], $itilactor['items_id'])) {
+            return false;
+        }
+
+        $actor_type = $this->getActorType();
+        $itemtype = $itilactor['itemtype'];
+        $items_id = (int) $itilactor['items_id'];
+
+        if ($items_id <= 0) {
+            return true;
+        }
+
+        if ($itemtype === User::class) {
+            if ($actor_type !== 'assign') {
+                return true;
+            }
+
+            $form = $answers_set->getItem();
+            $entities_id = $form instanceof Form ? $form->getEntityID() : 0;
+            if ($entities_id < 0) {
+                return false;
+            }
+
+            return Profile::haveUserRight(
+                $items_id,
+                Ticket::$rightname,
+                Ticket::OWN,
+                $entities_id
+            );
+        }
+
+        if ($itemtype === Group::class) {
+            $group = Group::getById($items_id);
+            if ($group === false) {
+                return false;
+            }
+
+            return match ($actor_type) {
+                'requester' => (int) $group->fields['is_requester'] === 1,
+                'observer'  => (int) $group->fields['is_watcher'] === 1,
+                'assign'    => (int) $group->fields['is_assign'] === 1,
+                default     => false,
+            };
+        }
+
+        if ($itemtype === Supplier::class) {
+            return $actor_type === 'assign';
+        }
+
+        return false;
     }
 
     /**

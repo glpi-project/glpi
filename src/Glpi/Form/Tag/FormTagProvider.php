@@ -37,6 +37,7 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Override;
 
 final class FormTagProvider implements TagProviderInterface, TagWithIdValueInterface
@@ -64,7 +65,7 @@ final class FormTagProvider implements TagProviderInterface, TagWithIdValueInter
         if ($form === false) {
             return '';
         }
-        return $form->fields['name'];
+        return FormTranslation::translate($form, Form::TRANSLATION_KEY_NAME) ?? $form->fields['name'];
     }
 
     #[Override]

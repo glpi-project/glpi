@@ -44,6 +44,7 @@ use Glpi\CustomObject\CustomObjectTrait;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Inventoriable;
 use Glpi\Features\StateInterface;
 use Group;
@@ -76,6 +77,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     use Clonable;
     use \Glpi\Features\State;
     use Inventoriable;
+    use DCBreadcrumb;
 
     /**
      * Asset definition system name.
