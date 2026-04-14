@@ -34,14 +34,9 @@
 
 namespace Glpi\Application\View;
 
-use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PublicService;
-use Plugin;
-use Session;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Twig\Environment as TwigEnvironment;
-use Twig\Loader\FilesystemLoader;
 
 /**
  * @since 10.0.0
@@ -50,71 +45,9 @@ class TemplateRenderer implements PublicService
 {
     private TwigEnvironment $environment;
 
-    public function __construct(
-        #[Autowire('%kernel.project_dir%')]
-        string $rootdir,
-        TwigEnvironment $twig
-    )
+    public function __construct(TwigEnvironment $twig)
     {
         $this->environment = $twig;
-        $this->configureTwigEnvironment();
-        $this->mountPluginPaths($rootdir);
-    }
-
-    private function configureTwigEnvironment(): void
-    {
-        $glpi_environment = GLPIEnvironment::get();
-
-        $is_debug = $glpi_environment->shouldEnableExtraDevAndDebugTools() || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE;
-        if ($is_debug) {
-            $this->environment->enableDebug();
-        }
-
-        $should_auto_reload = $glpi_environment->shouldExpectResourcesToChange();
-        if ($should_auto_reload) {
-            $this->environment->enableAutoReload();
-        }
-
-        if (GLPI_STRICT_ENV) {
-            $this->environment->enableStrictVariables();
-        }
-    }
-
-    /**
-     * Mount plugin template namespaces and test templates onto the DI twig env's loader.
-     *
-     * The TwigBundle filesystem loader already has the main templates/ path.
-     * We extend it at runtime with per-plugin namespaces and (in test mode) the test namespace.
-     *
-     * Otherwise, the Sf components won't be usable in plugins templates.
-     */
-    private function mountPluginPaths(string $rootdir): void
-    {
-        $loader = $this->environment->getLoader();
-        if (!$loader instanceof FilesystemLoader) {
-            return;
-        }
-
-        $active_plugins = Plugin::getPlugins();
-        foreach ($active_plugins as $plugin_key) {
-            $path = Plugin::getPhpDir($plugin_key) . '/templates';
-            if ($path !== false && is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
-                // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
-                // is the path of the template inside the `/templates` directory of the plugin.
-                $loader->addPath($path, $plugin_key);
-            }
-        }
-
-        $glpi_environment = GLPIEnvironment::get();
-        if (
-            $glpi_environment->shouldEnableTestResources()
-            && \file_exists("$rootdir/tests/templates")
-            && !\in_array("$rootdir/tests/templates", $loader->getPaths('test'), true)
-        ) {
-            // Add a dedicated namespace for specific test templates.
-            // For instance `@test/templates/path/to/template.html.twig`
-            $loader->addPath($rootdir . '/tests/templates', 'test');
-        }
     }
 
     /**
@@ -138,6 +71,7 @@ class TemplateRenderer implements PublicService
      * Return Twig environment used to handle templates.
      *
      * @return TwigEnvironment
+     * @internal
      */
     public function getEnvironment(): TwigEnvironment
     {
