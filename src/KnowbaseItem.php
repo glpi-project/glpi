@@ -49,16 +49,10 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
-use Safe\Exceptions\FilesystemException;
-use Safe\Exceptions\UrlException;
 
-use function Safe\base64_decode;
-use function Safe\file_put_contents;
 use function Safe\preg_match;
-use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
-use function Safe\unlink;
 
 /**
  * KnowbaseItem Class
@@ -306,11 +300,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'content_field' => 'answer',
             ]
         );
-
-        // Convert any base64 inline images to Documents.
-        // This covers new articles where the editor-side upload handler
-        // cannot function (no item_id available at paste time).
-        $this->convertBase64ImagesToDocuments();
 
         if (isset($this->input["_visibility"]['_type']) && !empty($this->input["_visibility"]["_type"])) {
             $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
@@ -736,6 +725,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["users_id"] = Session::getLoginUserID();
         }
 
+        $input = $this->stripInlineImagePlaceholders($input);
+
         return $input;
     }
 
@@ -746,33 +737,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["name"] = __('New item');
         }
 
-        // Safety net: strip base64 images and upload placeholders from answer.
-        // The editor-side extension normally converts these before save,
-        // so this should rarely trigger.
-        if (isset($input['answer']) && empty($input['_filename'])) {
-            $original = $input['answer'];
-
-            // Strip base64 images — any data:image/ src is illegitimate in stored content
-            $input['answer'] = preg_replace(
-                '/<img\b[^>]*\bsrc\s*=\s*"data:image\/[^"]+"[^>]*\/?>/i',
-                '',
-                $input['answer']
-            );
-
-            // Strip upload placeholders left by in-flight uploads
-            $input['answer'] = preg_replace(
-                '/<img\b[^>]*\bsrc\s*=\s*"about:uploading-[^"]*"[^>]*\/?>/i',
-                '',
-                $input['answer']
-            );
-
-            if ($input['answer'] !== $original) {
-                trigger_error(sprintf(
-                    'KnowbaseItem %d: stripped base64 or placeholder images from answer during update',
-                    $input['id'] ?? 0
-                ), E_USER_WARNING);
-            }
-        }
+        $input = $this->stripInlineImagePlaceholders($input);
 
         return $input;
     }
@@ -794,141 +759,45 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * Convert base64-encoded inline images in the answer field to Documents.
+     * Strip base64 images and upload placeholders from the answer field.
      *
-     * Finds all <img src="data:image/...;base64,..."> in the stored answer,
-     * saves each as a Document linked to this KnowbaseItem, and replaces
-     * the data: URI with the corresponding document.send.php URL.
+     * The editor-side Base64ImageHandler extension normally converts data: URIs
+     * to server-uploaded images before save. This method acts as a safety net
+     * to prevent base64 data or in-flight placeholders from being persisted.
      *
-     * Used as a safety net in post_addItem() for new articles where the
-     * editor-side upload handler cannot function (no item_id yet).
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
      */
-    private function convertBase64ImagesToDocuments(): void
+    private function stripInlineImagePlaceholders(array $input): array
     {
-        $answer = $this->fields['answer'] ?? '';
-
-        $pattern = '/<img\b([^>]*)\bsrc\s*=\s*"(data:image\/([a-zA-Z0-9.+-]+);base64,([^"]+))"([^>]*)>/i';
-
-        if (!preg_match_all($pattern, $answer, $matches, PREG_SET_ORDER)) {
-            return;
+        if (!isset($input['answer'])) {
+            return $input;
         }
 
-        $ext_map = ['jpeg' => 'jpg'];
-        $blocked_types = ['svg', 'svg+xml', 'xml'];
+        $original = $input['answer'];
 
-        foreach ($matches as $match) {
-            $full_data_uri = $match[2];
-            $mime_subtype  = $match[3];
-            $base64_data   = $match[4];
+        // Strip base64 images — any data:image/ src is illegitimate in stored content
+        $input['answer'] = preg_replace(
+            '/<img\b[^>]*\bsrc\s*=\s*"data:image\/[^"]+"[^>]*\/?>/i',
+            '',
+            $input['answer']
+        );
 
-            // SVG images can carry executable scripts — reject before writing to disk.
-            if (in_array($mime_subtype, $blocked_types, true)) {
-                $answer = str_replace($full_data_uri, '', $answer);
-                continue;
-            }
+        // Strip upload placeholders left by in-flight uploads
+        $input['answer'] = preg_replace(
+            '/<img\b[^>]*\bsrc\s*=\s*"about:uploading-[^"]*"[^>]*\/?>/i',
+            '',
+            $input['answer']
+        );
 
-            try {
-                $binary = base64_decode($base64_data, true);
-            } catch (UrlException $e) {
-                trigger_error(sprintf(
-                    'KnowbaseItem %d: invalid base64 data in inline image, stripping',
-                    $this->getID()
-                ), E_USER_WARNING);
-                $answer = str_replace($full_data_uri, '', $answer);
-                continue;
-            }
-
-            $ext = $ext_map[$mime_subtype] ?? $mime_subtype;
-            $temp_filename = uniqid('kb_inline_', true) . '.' . $ext;
-            $temp_path = GLPI_TMP_DIR . '/' . $temp_filename;
-
-            try {
-                file_put_contents($temp_path, $binary);
-            } catch (FilesystemException $e) {
-                trigger_error(sprintf(
-                    'KnowbaseItem %d: failed to write temp file for inline image (%s)',
-                    $this->getID(),
-                    $temp_path
-                ), E_USER_WARNING);
-                $answer = str_replace($full_data_uri, '', $answer);
-                continue;
-            }
-
-            // Validate the file is a real image (not SVG with scripts, etc.)
-            if (!Document::isImage($temp_path)) {
-                trigger_error(sprintf(
-                    'KnowbaseItem %d: inline image failed isImage() validation (%s), stripping',
-                    $this->getID(),
-                    $temp_filename
-                ), E_USER_WARNING);
-                unlink($temp_path);
-                $answer = str_replace($full_data_uri, '', $answer);
-                continue;
-            }
-
-            $doc = new Document();
-            // No _prefix_filename needed: the temp file is written directly
-            // under the uniqid name, so _filename alone is sufficient.
-            $doc_id = $doc->add([
-                '_filename'              => [$temp_filename],
-                '_only_if_upload_succeed' => 1,
-                '_no_message'            => 1,
-                'entities_id'            => $this->getEntityID(),
-                'is_recursive'           => $this->isRecursive(),
-                'name'                   => $temp_filename,
-            ]);
-
-            if (!$doc_id) {
-                trigger_error(sprintf(
-                    'KnowbaseItem %d: failed to create Document for inline image (%s), stripping',
-                    $this->getID(),
-                    $temp_filename
-                ), E_USER_WARNING);
-                unlink($temp_path);
-                $answer = str_replace($full_data_uri, '', $answer);
-                continue;
-            }
-
-            $doc_item = new Document_Item();
-            $link_id = $doc_item->add([
-                'documents_id'      => $doc_id,
-                'itemtype'          => KnowbaseItem::class,
-                'items_id'          => $this->getID(),
-                'timeline_position' => CommonITILObject::NO_TIMELINE,
-                'users_id'          => Session::getLoginUserID(),
-            ]);
-
-            if (!$link_id) {
-                trigger_error(sprintf(
-                    'KnowbaseItem %d: failed to link Document %d, cleaning up',
-                    $this->getID(),
-                    $doc_id
-                ), E_USER_WARNING);
-                $doc->delete(['id' => $doc_id], true);
-                $answer = str_replace($full_data_uri, '', $answer);
-                continue;
-            }
-
-            $url = Html::getPrefixedUrl(
-                '/front/document.send.php?'
-                . http_build_query([
-                    'docid'    => $doc_id,
-                    'itemtype' => KnowbaseItem::class,
-                    'items_id' => $this->getID(),
-                ])
+        if ($input['answer'] !== $original) {
+            trigger_error(
+                'KnowbaseItem: stripped base64 or placeholder images from answer',
+                E_USER_WARNING
             );
-
-            $answer = str_replace($full_data_uri, $url, $answer);
         }
 
-        // Discard flash messages produced by Document/Document_Item add() calls
-        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
-
-        // Write the updated answer directly, bypassing prepareInputForUpdate()
-        // and post_updateItem() hooks. This is consistent with how addFiles()
-        // handles the force_update path (CommonDBTM::addFiles lines 5676-5677).
-        $this->fields['answer'] = $answer;
-        $this->updateInDB(['answer']);
+        return $input;
     }
 
     public function post_purgeItem()
