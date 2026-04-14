@@ -30746,6 +30746,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ValidationStep.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method ValidationStep\\:\\:getForbiddenStandardMassiveAction\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ValidationStep.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method ValidatorSubstitute\\:\\:updateSubstitutes\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
