@@ -130,4 +130,15 @@ class GLPIUploadHandlerTest extends DbTestCase
         }
         $this->assertEquals($error === null, $success);
     }
+
+    public function testUpcountName(): void
+    {
+        $instance = $this->getMockBuilder(GLPIUploadHandler::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->assertEquals('file (1).png', $this->callPrivateMethod($instance, 'upcount_name', 'file.png'));
+        $this->assertEquals('file (2).png', $this->callPrivateMethod($instance, 'upcount_name', 'file (1).png'));
+        $this->assertEquals('file (3).png', $this->callPrivateMethod($instance, 'upcount_name', 'file (2).png'));
+    }
 }
