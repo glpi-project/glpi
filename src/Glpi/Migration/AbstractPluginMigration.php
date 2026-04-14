@@ -561,7 +561,7 @@ abstract class AbstractPluginMigration
     /**
      * Update references to the given source itemtype and attach them to the given target itemtype.
      *
-     * @param class-string<CommonDBTM> $source_itemtype
+     * @param string $source_itemtype
      * @param class-string<CommonDBTM> $target_itemtype
      * @param class-string<CommonDBTM>[] $excluded_relations
      */
