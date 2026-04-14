@@ -45,7 +45,6 @@ use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
-use Glpi\Search\Provider\SQLProvider;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
 use Sabre\VObject\Component\VCard;
@@ -4666,7 +4665,7 @@ HTML;
         $state_choices = [];
         $state_iterator = $DB->request([
             'SELECT' => ['id', 'completename'],
-            'FROM'   => 'glpi_states'
+            'FROM'   => 'glpi_states',
         ]);
         foreach ($state_iterator as $row) {
             $state_choices[$row['id']] = $row['completename'];
@@ -4680,7 +4679,7 @@ HTML;
             'serial'      => '',
             'otherserial' => '',
             'states'      => [],
-            'group'    => []
+            'group'    => [],
         ];
 
         if ($tech) {
@@ -4745,13 +4744,13 @@ HTML;
         foreach ($get_filters as $f => $value) {
             if (!empty($value)) {
                 if (isset($array_filters_choices[$f])) {
-                    foreach ((array)$value as $v) {
+                    foreach ((array) $value as $v) {
                         if (isset($array_filters_choices[$f][$v])) {
                             $filters[$f][] = $v;
                         }
                     }
                 } elseif (in_array($f, ['name', 'serial', 'otherserial'], true)) {
-                    $filters[$f] = is_array($value) ? (string)$value[0] : (string)$value;
+                    $filters[$f] = is_array($value) ? (string) $value[0] : (string) $value;
                 }
             }
         }
@@ -4768,7 +4767,7 @@ HTML;
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $relation_table = Group_Item::getTable();
-                
+
                 $item_criteria = [];
                 $item_criteria[$itemtable . '.' . $item->getNameField()] = ['LIKE', '%' . $filters['name'] . '%'];
                 if ($filters['serial'] !== '' && $DB->fieldExists($itemtable, 'serial')) {
@@ -4785,7 +4784,7 @@ HTML;
                     foreach ($filters['group'] as $lt) {
                         $group_criteria[] = [
                             $relation_table . '.groups_id' => $lt,
-                            $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL
+                            $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
                         ];
                     }
                     if (count($group_criteria) > 0) {
@@ -4801,9 +4800,9 @@ HTML;
                         );
                     }
                 }
-                
+
                 $target_entities = count($filters['entity']) > 0 ? $filters['entity'] : $this->getEntities();
-                
+
                 $where = ['entities_id' => $target_entities] + $criteria + $item::getSystemSQLCriteria();
                 if (count($item_criteria) > 0) {
                     $where[] = $item_criteria;
@@ -4906,7 +4905,7 @@ HTML;
                     'filter_formatter' => 'array',
                 ],
                 'group'      => [
-                    'label'            => __('Group'),
+                    'label'            => Group::getTypeName(1),
                     'filter_formatter' => 'array',
                 ],
             ],
@@ -4914,7 +4913,7 @@ HTML;
                 'type'     => $type_choices,
                 'entity'   => $entity_choices,
                 'states'   => $state_choices,
-                'group'    => $group_choices,
+                Group::getTypeName(1)    => $group_choices,
             ],
             'filters' => $filters,
             'additional_params'     => http_build_query(['filters' => $filters]),
