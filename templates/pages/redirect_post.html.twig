@@ -1,0 +1,62 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Recursive macro to render nested POST arrays as hidden inputs #}
+{% macro render_inputs(data, prefix) %}
+    {% for key, value in data %}
+        {% set field_name = prefix ? prefix ~ '[' ~ key ~ ']' : key %}
+        {% if value is iterable %}
+            {{ _self.render_inputs(value, field_name) }}
+        {% else %}
+            <input type="hidden" name="{{ field_name }}" value="{{ value }}">
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ __('Redirecting...') }}</title>
+</head>
+<body>
+    <form method="{{ http_method }}" action="{{ url }}" id="redirect-form" data-submit-once>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ _self.render_inputs(post_data, '') }}
+    </form>
+    <script>document.getElementById('redirect-form').submit();</script>
+    <noscript>
+        <button form="redirect-form" type="submit">{{ __('Continue') }}</button>
+    </noscript>
+</body>
+</html>
+
