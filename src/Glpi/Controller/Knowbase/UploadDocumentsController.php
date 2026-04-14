@@ -75,8 +75,8 @@ final class UploadDocumentsController extends AbstractDocumentUploadController
             files: $files,
             itemtype: KnowbaseItem::class,
             items_id: $id,
-            entities_id: Session::getActiveEntity(),
-            is_recursive: true,
+            entities_id: $kb->getEntityID(),
+            is_recursive: $kb->isRecursive(),
         ) as $doc) {
             // Compute dynamic styles based on file extension
             $styles = KnowbaseItem::getDocumentIconAndColor($doc['extension']);
