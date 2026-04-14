@@ -180,23 +180,6 @@ final class Kernel extends BaseKernel
     }
 
     #[Override()]
-    protected function build(ContainerBuilder $container): void
-    {
-        // TemplateRenderer retrieves the DI-managed Twig environment via the compiled
-        // container at runtime ($kernel->getContainer()->get('twig')).
-        // TwigBundle registers 'twig' as private; this compiler pass forces it public
-        // so it survives compilation and is accessible in Sf components.
-        $container->addCompilerPass(new class implements CompilerPassInterface {
-            public function process(ContainerBuilder $container): void
-            {
-                if ($container->hasDefinition('twig')) {
-                    $container->getDefinition('twig')->setPublic(true);
-                }
-            }
-        });
-    }
-
-    #[Override()]
     protected function buildContainer(): ContainerBuilder
     {
         // Exit with a clear message if there is a missing write access that would prevent the Symfony container
