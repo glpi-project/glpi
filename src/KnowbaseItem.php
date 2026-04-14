@@ -725,8 +725,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["users_id"] = Session::getLoginUserID();
         }
 
-        $input = $this->stripInlineImagePlaceholders($input);
-
         return $input;
     }
 
@@ -736,8 +734,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
         }
-
-        $input = $this->stripInlineImagePlaceholders($input);
 
         return $input;
     }
@@ -756,48 +752,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
         NotificationEvent::raiseEvent('update', $this);
-    }
-
-    /**
-     * Strip base64 images and upload placeholders from the answer field.
-     *
-     * The editor-side Base64ImageHandler extension normally converts data: URIs
-     * to server-uploaded images before save. This method acts as a safety net
-     * to prevent base64 data or in-flight placeholders from being persisted.
-     *
-     * @param array<string, mixed> $input
-     * @return array<string, mixed>
-     */
-    private function stripInlineImagePlaceholders(array $input): array
-    {
-        if (!isset($input['answer'])) {
-            return $input;
-        }
-
-        $original = $input['answer'];
-
-        // Strip base64 images — any data:image/ src is illegitimate in stored content
-        $input['answer'] = preg_replace(
-            '/<img\b[^>]*\bsrc\s*=\s*"data:image\/[^"]+"[^>]*\/?>/i',
-            '',
-            $input['answer']
-        );
-
-        // Strip upload placeholders left by in-flight uploads
-        $input['answer'] = preg_replace(
-            '/<img\b[^>]*\bsrc\s*=\s*"about:uploading-[^"]*"[^>]*\/?>/i',
-            '',
-            $input['answer']
-        );
-
-        if ($input['answer'] !== $original) {
-            trigger_error(
-                'KnowbaseItem: stripped base64 or placeholder images from answer',
-                E_USER_WARNING
-            );
-        }
-
-        return $input;
     }
 
     public function post_purgeItem()
