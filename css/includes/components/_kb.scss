@@ -107,47 +107,30 @@
 }
 
 // Document badge styling (matches mockup)
-.kb-document-badge {
+.kb-item-badge {
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
     font-weight: 400;
     border: 1px solid var(--tblr-border-color);
     transition: all 0.2s ease;
 
-    .kb-unlink-document {
-        opacity: 0;
-        transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
-        font-size: 0.5rem;
-        padding: 0.25rem;
-
+    .kb-unlink-item {
         &:hover {
             color: var(--tblr-danger) !important;
-            opacity: 1 !important;
         }
     }
 
     &:focus-within {
-        .kb-unlink-document {
+        .kb-unlink-item {
             opacity: 1;
         }
     }
 
     &:hover {
-        background-color: var(--tblr-primary) !important;
-        color: var(--tblr-bg-surface) !important;
-        border-color: var(--tblr-primary);
-        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+        border-color: var(--tblr-secondary);
 
         a {
-            color: inherit;
-        }
-
-        i {
-            color: var(--tblr-bg-surface) !important;
-        }
-
-        .kb-unlink-document {
-            opacity: 1;
+            color: var(--tblr-dark);
         }
     }
 }

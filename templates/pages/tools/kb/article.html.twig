@@ -255,7 +255,7 @@
                 {% if documents_count > 0 %}
                 <div class="d-flex align-items-center">
                     <i class="ti ti-paperclip me-1 fs-3"></i>
-                    <a href="#kb-documents" class="text-muted" data-testid="documents-count">
+                    <a href="#kb-documents" class="text-muted" data-kb-documents-count  data-testid="documents-count">
                         {{ _n("%s document", "%s documents", documents_count)|format(documents_count) }}
                     </a>
                 </div>
@@ -264,7 +264,7 @@
                 {% if related_items_count > 0 %}
                     <div class="d-flex align-items-center">
                         <i class="ti ti-link me-1 fs-3"></i>
-                        <a href="#kb-documents" class="text-muted" data-testid="related-items-count">
+                        <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-testid="related-items-count">
                             {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
                         </a>
                     </div>
@@ -395,7 +395,7 @@
                             <div class="d-flex flex-wrap gap-2 mb-2">
                                 {% for doc in documents %}
                                     <span
-                                        class="kb-document-badge badge bg-light text-dark d-flex align-items-center gap-2"
+                                        class="kb-item-badge badge bg-light text-dark d-flex align-items-center gap-2"
                                         data-glpi-document-assoc-id="{{ doc.assoc_id }}"
                                         data-testid="document-chip"
                                     >
@@ -411,7 +411,7 @@
                                         {% if can_edit %}
                                             <button
                                                 type="button"
-                                                class="kb-unlink-document btn-close btn-close-white"
+                                                class="kb-unlink-item btn-close btn-close-white"
                                                 data-glpi-kb-unlink-document="{{ doc.assoc_id }}"
                                                 title="{{ __('Unlink document') }}"
                                                 aria-label="{{ __('Unlink document') }}"
@@ -425,7 +425,7 @@
                         {% if can_add_documents %}
                             <button
                                 type="button"
-                                class="btn btn-sm btn-outline-primary mt-2"
+                                class="btn btn-sm btn-primary mt-2"
                                 data-bs-toggle="modal"
                                 data-bs-target="#kb-add-document-modal"
                             >
@@ -572,19 +572,35 @@
                     {% if related_items|length > 0 %}
                     <div class="d-flex flex-wrap gap-2 mb-2">
                         {% for item in related_items %}
-                        <a href="{{ item.link_url }}"
-                           class="kb-related-item-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
-                           title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
-                           data-testid="related-item-chip">
-                            <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
-                            <span>{{ item.name }}</span>
-                        </a>
+                        <span
+                            class="kb-item-badge badge bg-light text-dark d-flex align-items-center gap-2"
+                            data-glpi-item-assoc-id="{{ item.id }}"
+                            data-testid="related-item-chip"
+                        >
+                            <a href="{{ item.link_url }}"
+                               class="d-flex align-items-center gap-2 text-decoration-none"
+                               title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
+                            >
+                                <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
+                                <span>{{ item.name }}</span>
+                            </a>
+
+                            {% if can_edit %}
+                                <button
+                                    type="button"
+                                    class="kb-unlink-item btn-close btn-close-white"
+                                    data-glpi-kb-unlink-item="{{ item.id }}"
+                                    title="{{ __('Unlink item') }}"
+                                    aria-label="{{ __('Unlink item') }}"
+                                ></button>
+                            {% endif %}
+                        </span>
                         {% endfor %}
                     </div>
                     {% endif %}
 
                     {% if can_link_items %}
-                    <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                    <button type="button" class="btn btn-sm btn-primary mt-2"
                             data-glpi-kb-action="OPEN_MODAL"
                             data-glpi-kb-action-param-id="{{ item_id }}"
                             data-glpi-kb-action-param-key="LinkItemModal"
