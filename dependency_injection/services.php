@@ -79,12 +79,8 @@ return static function (ContainerConfigurator $container): void {
         $projectDir . '/src/Glpi/Application/View'
     );
     $services->load(
-        'Glpi\Twig\Components\\',
-        $projectDir . '/src/Glpi/Twig/Components'
-    );
-    $services->load(
-        'Glpi\Application\View\Extension\\',
-        $projectDir . '/src/Glpi/Application/View/Extension'
+        'Twig\Components\\',
+        $projectDir . '/src/Twig/Components'
     );
 
     // Prevent Symfony to register its own default logger.
