@@ -749,7 +749,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Safety net: strip base64 images and upload placeholders from answer.
         // The editor-side extension normally converts these before save,
         // so this should rarely trigger.
-        if (isset($input['answer'])) {
+        if (isset($input['answer']) && empty($input['_filename'])) {
             $original = $input['answer'];
 
             // Strip base64 images — any data:image/ src is illegitimate in stored content
