@@ -38,6 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractDocumentUploadController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
+use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -70,7 +71,13 @@ final class UploadDocumentsController extends AbstractDocumentUploadController
         $result = [];
         $twig = TemplateRenderer::getInstance();
 
-        foreach ($this->createDocuments($files, KnowbaseItem::class, $id) as $doc) {
+        foreach ($this->createDocuments(
+            files: $files,
+            itemtype: KnowbaseItem::class,
+            items_id: $id,
+            entities_id: Session::getActiveEntity(),
+            is_recursive: true,
+        ) as $doc) {
             // Compute dynamic styles based on file extension
             $styles = KnowbaseItem::getDocumentIconAndColor($doc['extension']);
             $doc['icon_class']  = $styles['icon_class'];
