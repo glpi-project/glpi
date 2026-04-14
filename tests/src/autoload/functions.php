@@ -943,7 +943,15 @@ function loadDataset()
                     $item->update([$item::getIndexName() => $item->getID()] + $input);
                 } else {
                     // Not found, create it
-                    $item->add($input);
+                    try {
+                        $item->add($input);
+                    } catch (\Glpi\Exception\Crud\CloneException $e) {
+                        //a clone exception will be thrown because we provide explicit id at creation
+                        //FIXME: we should not provide hardcoded ids. Used in IMAP tests, maybe is there an alternative solution.
+                        if (!isset($input['id'])) {
+                            throw $e;
+                        }
+                    }
                 }
                 if (isset($input[$name_field])) {
                     $ids[$type][$input[$name_field]] = $item->getID(); // cache ID
