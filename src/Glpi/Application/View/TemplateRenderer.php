@@ -54,7 +54,6 @@ class TemplateRenderer implements PublicService
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         string $rootdir,
-        #[Autowire(service: 'twig')]
         TwigEnvironment $twig
     )
     {
@@ -79,8 +78,10 @@ class TemplateRenderer implements PublicService
 
         $active_plugins = Plugin::getPlugins();
         foreach ($active_plugins as $plugin_key) {
-            $path = Plugin::getPhpDir($plugin_key . '/templates');
+            $path = Plugin::getPhpDir($plugin_key) . '/templates';
             if ($path !== false && is_dir($path) && !\in_array($path, $loader->getPaths($plugin_key), true)) {
+                // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
+                // is the path of the template inside the `/templates` directory of the plugin.
                 $loader->addPath($path, $plugin_key);
             }
         }
@@ -91,6 +92,8 @@ class TemplateRenderer implements PublicService
             && \file_exists("$rootdir/tests/templates")
             && !\in_array("$rootdir/tests/templates", $loader->getPaths('test'), true)
         ) {
+            // Add a dedicated namespace for specific test templates.
+            // For instance `@test/templates/path/to/template.html.twig`
             $loader->addPath($rootdir . '/tests/templates', 'test');
         }
     }

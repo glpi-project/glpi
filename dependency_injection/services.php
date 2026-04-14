@@ -79,7 +79,6 @@ return static function (ContainerConfigurator $container): void {
         $projectDir . '/src/Glpi/Application/View'
     );
 
-
     // Prevent Symfony to register its own default logger.
     // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
     $services->set('logger')->synthetic();
