@@ -34,10 +34,6 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Twig\Extra\Markdown\LeagueMarkdown;
-use Twig\Extra\Markdown\MarkdownExtension;
-use Twig\Extra\Markdown\MarkdownInterface;
-use Twig\Extra\Markdown\MarkdownRuntime;
 use Twig\Extra\String\StringExtension;
 
 return static function (ContainerConfigurator $container): void {
