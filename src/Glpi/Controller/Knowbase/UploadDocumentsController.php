@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractDocumentUploadController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
-use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
