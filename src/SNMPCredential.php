@@ -45,6 +45,11 @@ class SNMPCredential extends CommonDBTM
     public $dohistory                   = true;
     public static $rightname = 'snmpcredential';
 
+    public static $undisclosedFields = [
+        'auth_passphrase',
+        'priv_passphrase',
+    ];
+
     public static function getTypeName($nb = 0)
     {
         return _n('SNMP credential', 'SNMP credentials', $nb);
@@ -201,6 +206,18 @@ class SNMPCredential extends CommonDBTM
                 return 'CFB256-AES';
             default:
                 return '';
+        }
+    }
+
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+        $key = new GLPIKey();
+        if (isset($this->fields['auth_passphrase'])) {
+            $this->fields['auth_passphrase'] = $key->decrypt($this->fields['auth_passphrase']);
+        }
+        if (isset($this->fields['priv_passphrase'])) {
+            $this->fields['priv_passphrase'] = $key->decrypt($this->fields['priv_passphrase']);
         }
     }
 
