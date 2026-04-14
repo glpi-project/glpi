@@ -46,11 +46,6 @@ return static function (ContainerConfigurator $container): void {
     // when the filter uses a runtime, the runtime class (twig.runtime tag)
     // plus any interface binding it depends on.
     // Remember to update this block whenever a new twig/* extra package is added to composer.json.
-    // Switching to sf-flex would help a lot for reliability and ease of use
     $services = $container->services();
     $services->set(StringExtension::class)->tag('twig.extension');
-    $services->set(MarkdownExtension::class)->tag('twig.extension');
-    $services->set(LeagueMarkdown::class);
-    $services->alias(MarkdownInterface::class, LeagueMarkdown::class);
-    $services->set(MarkdownRuntime::class)->tag('twig.runtime');
 };
