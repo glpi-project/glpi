@@ -68,7 +68,7 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
     public function onPostBoot(): void
     {
         $this->configureTwigEnvironment();
-        $this->mountPluginPaths();
+        $this->registerSpecificPaths();
     }
 
     private function configureTwigEnvironment(): void
@@ -124,7 +124,7 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
             && \file_exists("$this->glpi_root/tests/templates")
         ) {
             // Add a dedicated namespace for specific test templates.
-            // For instance `@test/templates/path/to/template.html.twig`
+            // For instance `@test/path/to/template.html.twig`
             $loader->addPath($this->glpi_root . '/tests/templates', 'test');
         }
     }
