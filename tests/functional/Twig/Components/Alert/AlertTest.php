@@ -34,7 +34,6 @@
 
 namespace tests\units\Twig\Components\Alert;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Twig\Components\Alert\Alert;
 use Twig\Components\Alert\Danger;
