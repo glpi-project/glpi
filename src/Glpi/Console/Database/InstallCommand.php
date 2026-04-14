@@ -226,7 +226,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         // Create security key
         $glpikey = new GLPIKey();
-        if (!$glpikey->generate(update_db: false)) {
+        if (!$glpikey->keyExists() && !$glpikey->generate(update_db: false)) {
             $message = __('Security key cannot be generated!');
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             return self::ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE;
