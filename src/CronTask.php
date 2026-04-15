@@ -42,6 +42,7 @@ use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
 
+use Symfony\Component\ErrorHandler\Error\FatalError;
 use function Safe\filemtime;
 use function Safe\glob;
 use function Safe\ini_get;
@@ -679,7 +680,7 @@ class CronTask extends CommonDBTM
         if (empty($this->fields['lastrun'])) {
             $next_run_display = __('As soon as possible');
         } else {
-            $next = $this->fields['next_run'];
+            $next = strtotime($this->fields['next_run']);
             $h    = date('H', $next);
             $deb  = ($this->fields['hourmin'] < 10 ? "0" . $this->fields['hourmin']
                                                 : $this->fields['hourmin']);
@@ -2050,6 +2051,52 @@ TWIG, ['msg' => __('Last run list')]);
                 'components/search/status_area.html.twig',
                 $params
             );
+        }
+    }
+
+    /**
+     * A cron task that always throws an exception, used to test error handling of cron tasks
+     *
+     * @param self $task for log
+     *
+     * @return int
+     * @used-by self
+     * @todo REMOVE BEFORE MERGING PULL REQUEST, this is only for testing purpose
+     **/
+    public static function cronException(self $task): int
+    {
+        throw new RuntimeException("This is a test exception thrown by cronException task.");
+    }
+
+    /**
+     * A cron task that always throws a Symfony fatal error, used to test error handling of cron tasks
+     *
+     * @param self $task for log
+     *
+     * @return int
+     * @used-by self
+     * @todo REMOVE BEFORE MERGING PULL REQUEST, this is only for testing purpose
+     **/
+    public static function cronFatalError(self $task): int
+    {
+        throw new FatalError('This is a test fatal error thrown by cronFatalError task.', 1, [
+            'file' => __FILE__,
+            'line' => __LINE__,
+        ]);
+    }
+
+    /**
+     * A cron task that always exceeds the max execution time, used to test handling of long-running cron tasks
+     * @param CronTask $task
+     * @return int
+     * @todo REMOVE BEFORE MERGING PULL REQUEST, this is only for testing purpose
+     */
+    public static function cronMaxExecutionTime(self $task): int
+    {
+        set_time_limit(1); // Set max execution time to 1 second
+        // PHP probably needs actual work, rather than just sleeping, to reach the max execution time, so we do some busy work here
+        while (true) {
+            $x = sha1(random_bytes(100)); // Generate a random hash to keep the CPU busy
         }
     }
 }
