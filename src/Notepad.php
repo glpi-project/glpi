@@ -200,7 +200,7 @@ class Notepad extends CommonDBChild
                 }
 
                 $item = $document_obj->fields;
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_edit'] = $document_obj->can($document_obj->getID(), UPDATE);
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem();
 
                 $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];

@@ -462,7 +462,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         if (
             !$item->getFromDB($ID)
-            || !$item->canViewItem()
+            || !$item->can($item->getID(), READ)
             || !static::canView()
         ) {
             return false;
