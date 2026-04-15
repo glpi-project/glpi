@@ -1,6 +1,7 @@
+name: glpi_main
+
 services:
   app:
-    container_name: "glpi-app"
     build:
       context: ".docker/app"
       args:
@@ -22,7 +23,6 @@ services:
       - "host.docker.internal:host-gateway"
 
   db:
-    container_name: "glpi-db"
     image: "mariadb:11.8"
     restart: "unless-stopped"
     volumes:
