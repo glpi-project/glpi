@@ -23,7 +23,6 @@ PLAYWRIGHT = docker run \
 	--user=$(shell id -u):$(shell id -g) \
 	-v .:/app \
 	-w /app \
-	-p 9323:9323 \
 	-e E2E_BASE_URL=$(E2E_BASE_URL) \
 	--network host \
 	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
