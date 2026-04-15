@@ -2168,8 +2168,9 @@ class MailCollector extends CommonDBTM
         $mmail->AddAddress($to);
         // Normalized header, no translation
         $mmail->Subject  = 'Re: ' . $subject;
+        $signature = trim(Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]));
         $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-                         "\n-- \n" . Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]);
+                         (!empty($signature) ? "\n-- \n" . $signature : '');
         $mmail->Send();
     }
 

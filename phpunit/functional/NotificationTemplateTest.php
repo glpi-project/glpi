@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use NotificationTarget;
+use Ticket;
 
 /* Test for inc/notificationtemplate.class.php */
 
@@ -120,6 +122,64 @@ HTML,
 External link without protocol from GLPI: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
 HTML,
         ];
+    }
+
+    public static function signatureSeparatorProvider(): iterable
+    {
+        yield 'no separator when signature is empty' => [
+            'signature' => '',
+            'expect_separator' => false,
+        ];
+        yield 'no separator when signature is whitespace only' => [
+            'signature' => "  \n  ",
+            'expect_separator' => false,
+        ];
+        yield 'separator present when signature is set' => [
+            'signature' => 'GLPI Helpdesk',
+            'expect_separator' => true,
+        ];
+    }
+
+    /**
+     * @dataProvider signatureSeparatorProvider
+     */
+    public function testSignatureSeparatorOmittedWhenEmpty(
+        string $signature,
+        bool $expect_separator
+    ): void {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for notification signature',
+            'content'     => 'Test content',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $template = getItemByTypeName(\NotificationTemplate::class, 'Tickets');
+        $this->assertInstanceOf(\NotificationTemplate::class, $template);
+
+        $target = NotificationTarget::getInstance($ticket, 'new');
+        $this->assertInstanceOf(NotificationTarget::class, $target);
+
+        $infos = [
+            'language'          => 'en_GB',
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
+        ];
+
+        $template->resetComputedTemplates();
+        $template->setSignature($signature);
+        $tid = $template->getTemplateByLanguage($target, $infos, 'new');
+        $this->assertNotFalse($tid);
+
+        $data = $template->templates_by_languages[$tid];
+
+        if ($expect_separator) {
+            $this->assertStringContainsString("\n-- \n", $data['content_text']);
+            $this->assertStringContainsString("<br><br>-- ", $data['content_html']);
+        } else {
+            $this->assertStringNotContainsString("\n-- \n", $data['content_text']);
+            $this->assertStringNotContainsString("<br><br>-- ", $data['content_html']);
+        }
     }
 
     /**
