@@ -34,10 +34,65 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\SLMTrait;
+use SlaLevel;
+use SlaLevel_Ticket;
+use SLM;
+use Ticket;
 
 class SlaLevel_TicketTest extends DbTestCase
 {
+    use SLMTrait;
+
+    /**
+     * When a ticket is created
+     *  - in a 'reopenning status' (@see \CommonITILObject::getReopenableStatusArray())
+     *  - with an associated SLA having an escalation level delay matching (delay for sla = delay for level)
+     * The escalation level should not be triggered/active
+     *
+     * sla delay : 1 hour, escalation delay : 60 minutes before sla delay : so it's now
+     */
+    public function testSlaLevelNotActivatedWhenTicketInReopenableStatus()
+    {
+        $this->login();
+
+        // --- arrange ---
+        // create SLM with SLA and level
+        ['sla' => $sla] = $this->createSLA(['definition_time' => 'hour', 'number_time' => 1]);
+
+        //        dump('Current test time : '. \Session::getCurrentTime());
+
+        $sla_level = $this->createItem(
+            SlaLevel::class,
+            [
+                'execution_time' => -3601,
+                'slas_id'        => $sla->getID(),
+            ] + $this->getMinimalCreationInput(SlaLevel::class)
+        );
+
+        // create ticket in reopenable status (SOLVED)
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'status'         => CommonITILObject::SOLVED,
+                'slas_id_tto'    => $sla->getID(),
+            ]
+            + $this->getMinimalCreationInput(Ticket::class)
+        );
+
+        // --- assert ---
+        // verify that SlaLevel_Ticket was NOT created for this ticket in reopenable status
+        $sla_level_tickets = new SlaLevel_Ticket();
+        $result = $sla_level_tickets->find([
+            'tickets_id'   => $ticket->getID(),
+            'slalevels_id' => $sla_level->getID(),
+        ]);
+
+        $this->assertEmpty($result, 'no escalation level should be active : db data found :' . var_export($result, true));
+    }
+
     /**
      * Create a SLM SLA TTO
      * to update ticket itilcategories_id if ticket is linked to a specific project
@@ -62,7 +117,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ]);
         $this->assertFalse($category->isNewItem());
 
-        $slm    = new \SLM();
+        $slm    = new SLM();
         $slm_id = $slm->add($slm_in = [
             'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
@@ -75,7 +130,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'slms_id'         => $slm_id,
             'name'            => "SLA TTO",
             'comment'         => $this->getUniqueString(),
-            'type'            => \SLM::TTO,
+            'type'            => SLM::TTO,
             'number_time'     => 1,
             'definition_time' => 'hour',
         ];
@@ -95,7 +150,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ];
 
         // add levels
-        $slal = new \SlaLevel();
+        $slal = new SlaLevel();
         $slal1_id = $slal->add($slal1_in);
         $this->checkInput($slal, $slal1_id, $slal1_in);
 
@@ -126,7 +181,7 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->checkInput($saction, $saction_id, $saction_in);
 
         // test create ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         //$start_date = date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             //'date'    => $start_date,
@@ -137,7 +192,7 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto'));
         $this->assertEquals(0, (int) $ticket->getField('itilcategories_id'));
-        $this->assertEquals(\CommonITILObject::INCOMING, (int) $ticket->getField('status'));
+        $this->assertEquals(CommonITILObject::INCOMING, (int) $ticket->getField('status'));
 
         //add Project to ticket
         $itil_project = new \Itil_Project();
@@ -146,7 +201,7 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->checkInput($itil_project, $itil_project_id, $itil_project_input);
 
         //get SlaLevel_Ticket related to this ticket and SLM
-        $slalevels_tickets = new \SlaLevel_Ticket();
+        $slalevels_tickets = new SlaLevel_Ticket();
         $this->assertTrue($slalevels_tickets->getFromDBByCrit([
             'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id,
         ]));
@@ -159,7 +214,7 @@ class SlaLevel_TicketTest extends DbTestCase
         //run automatic action
         //run crontask
         $task = new \CronTask();
-        $this->assertSame(1, \SlaLevel_Ticket::cronSlaTicket($task));
+        $this->assertSame(1, SlaLevel_Ticket::cronSlaTicket($task));
 
         //check ticket category change
         //reload ticket
@@ -185,7 +240,7 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->checkInput($followuptemplate, $templateid, $templateinput);
 
         // create SLM
-        $slm    = new \SLM();
+        $slm    = new SLM();
         $slm_id = $slm->add($slm_in = [
             'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
@@ -198,7 +253,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'slms_id'         => $slm_id,
             'name'            => "SLA TTO",
             'comment'         => $this->getUniqueString(),
-            'type'            => \SLM::TTO,
+            'type'            => SLM::TTO,
             'number_time'     => 1,
             'definition_time' => 'hour',
         ];
@@ -218,7 +273,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ];
 
         // add levels
-        $slal = new \SlaLevel();
+        $slal = new SlaLevel();
         $slal1_id = $slal->add($slal1_in);
         $this->checkInput($slal, $slal1_id, $slal1_in);
 
@@ -257,7 +312,7 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->checkInput($saction, $saction_id_2, $saction2_in);
 
         // create ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => 'test ticket ' . __FUNCTION__,
             'content' => __METHOD__,
@@ -268,10 +323,10 @@ class SlaLevel_TicketTest extends DbTestCase
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto'));
         $this->assertEquals(0, (int) $ticket->getField('takeintoaccount_delay_stat'));
-        $this->assertEquals(\CommonITILObject::INCOMING, (int) $ticket->getField('status'));
+        $this->assertEquals(CommonITILObject::INCOMING, (int) $ticket->getField('status'));
 
         //get SlaLevel_Ticket related to this ticket and SLM
-        $slalevels_tickets = new \SlaLevel_Ticket();
+        $slalevels_tickets = new SlaLevel_Ticket();
         $this->assertTrue($slalevels_tickets->getFromDBByCrit([
             'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id,
         ]));
@@ -284,20 +339,20 @@ class SlaLevel_TicketTest extends DbTestCase
         //run automatic action
         //run crontask
         $task = new \CronTask();
-        $this->assertSame(1, \SlaLevel_Ticket::cronSlaTicket($task));
+        $this->assertSame(1, SlaLevel_Ticket::cronSlaTicket($task));
 
         //reload ticket
         $this->assertTrue($ticket->getFromDB($tickets_id)); // reload ticket
         $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto')); // check SLA
         $this->assertEquals(0, (int) $ticket->getField('takeintoaccount_delay_stat')); // check takeintoaccount_delay_stat always 0
-        $this->assertEquals(\CommonITILObject::INCOMING, (int) $ticket->getField('status')); // check status always incoming
+        $this->assertEquals(CommonITILObject::INCOMING, (int) $ticket->getField('status')); // check status always incoming
 
         // followup well added
         $this->assertEquals(
             1,
             countElementsInTable(
                 \ITILFollowup::getTable(),
-                ['itemtype' => \Ticket::getType(), 'items_id' => $tickets_id]
+                ['itemtype' => Ticket::getType(), 'items_id' => $tickets_id]
             )
         );
     }
