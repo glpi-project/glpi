@@ -36,6 +36,7 @@ namespace Glpi\Kernel;
 
 use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
+use Glpi\DependencyInjection\Compiler\RemoveUnwantedTwigExtensionsPass;
 use Override;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -44,6 +45,7 @@ use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -195,6 +197,21 @@ final class Kernel extends BaseKernel
         }
 
         return parent::buildContainer();
+    }
+
+    #[Override()]
+    protected function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        // Must run AFTER Symfony\Bundle\TwigBundle\DependencyInjection\Compiler\ExtensionPass,
+        // which is registered at TYPE_BEFORE_OPTIMIZATION with priority 10
+        // In Symfony\Bundle\TwigBundle\TwigBundle
+        $container->addCompilerPass(
+            new RemoveUnwantedTwigExtensionsPass(),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION,
+            0
+        );
     }
 
     protected function configureContainer(ContainerConfigurator $container): void
