@@ -149,6 +149,7 @@ jobs:
     with:
       push: true
       glpi-version: ${{ matrix.glpi-version }}
+      glpi-repo: ${{ vars.GLPI_REPO || 'glpi-project/glpi' }}
       image-tag: ${{ matrix.image-tag }}
       no-cache: ${{ matrix.no-cache }}
       use-legacy-marketplace-path: ${{ matrix.use-legacy-marketplace-path }}
