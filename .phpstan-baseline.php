@@ -8804,12 +8804,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$sort_strategy of class Glpi\\\\Form\\\\ServiceCatalog\\\\ItemRequest constructor expects Glpi\\\\Form\\\\ServiceCatalog\\\\SortStrategy\\\\SortStrategyEnum, Glpi\\\\Form\\\\ServiceCatalog\\\\SortStrategy\\\\SortStrategyEnum\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

@@ -100,6 +100,7 @@
 {% endfor %}
 
 {# Add pagination if there are more items than items_per_page #}
+{% set sort_strategy = sort_strategy|default('popularity') %}
 {% if total > items_per_page %}
     {% set total_pages = ((total + items_per_page - 1) / items_per_page)|round(0, 'floor') %}
     {% set adjacents = 2 %}
@@ -111,8 +112,8 @@
             <li class="page-item {{ current_page <= 1 ? 'disabled' : '' }}">
                 <a
                     class="page-link d-flex justify-content-center"
-                    href="?{{ {'category': category_id, 'filter': filter, 'page': 1}|url_encode }}"
-                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': 1}|url_encode }}"
+                    href="?{{ {'category': category_id, 'filter': filter, 'page': 1, 'sort_strategy': sort_strategy}|url_encode }}"
+                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': 1, 'sort_strategy': sort_strategy}|url_encode }}"
                     data-pagination-item
                     aria-label="{{ __('First page') }}"
                     {{ current_page <= 1 ? 'aria-disabled="true"' : '' }}
@@ -123,8 +124,8 @@
             <li class="page-item {{ current_page <= 1 ? 'disabled' : '' }}">
                 <a
                     class="page-link d-flex justify-content-center"
-                    href="?{{ {'category': category_id, 'filter': filter, 'page': current_page - 1}|url_encode }}"
-                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': current_page - 1}|url_encode }}"
+                    href="?{{ {'category': category_id, 'filter': filter, 'page': current_page - 1, 'sort_strategy': sort_strategy}|url_encode }}"
+                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': current_page - 1, 'sort_strategy': sort_strategy}|url_encode }}"
                     data-pagination-item
                     aria-label="{{ __('Previous page') }}"
                     {{ current_page <= 1 ? 'aria-disabled="true"' : '' }}
@@ -139,8 +140,8 @@
                     <li class="d-none d-sm-block page-item {{ page == current_page ? 'active selected' : '' }}">
                         <a
                             class="page-link d-flex justify-content-center"
-                            href="?{{ {'category': category_id, 'filter': filter, 'page': page}|url_encode }}"
-                            data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': page}|url_encode }}"
+                            href="?{{ {'category': category_id, 'filter': filter, 'page': page, 'sort_strategy': sort_strategy}|url_encode }}"
+                            data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': page, 'sort_strategy': sort_strategy}|url_encode }}"
                             data-pagination-item
                             {{ page == current_page ? 'aria-current="page"' : '' }}
                         >
@@ -162,8 +163,8 @@
             <li class="page-item {{ current_page >= total_pages ? 'disabled' : '' }}">
                 <a
                     class="page-link d-flex justify-content-center"
-                    href="?{{ {'category': category_id, 'filter': filter, 'page': current_page + 1}|url_encode }}"
-                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': current_page + 1}|url_encode }}"
+                    href="?{{ {'category': category_id, 'filter': filter, 'page': current_page + 1, 'sort_strategy': sort_strategy}|url_encode }}"
+                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': current_page + 1, 'sort_strategy': sort_strategy}|url_encode }}"
                     data-pagination-item
                     aria-label="{{ __('Next page') }}"
                     {{ current_page >= total_pages ? 'aria-disabled="true"' : '' }}
@@ -174,8 +175,8 @@
             <li class="page-item {{ current_page >= total_pages ? 'disabled' : '' }}">
                 <a
                     class="page-link d-flex justify-content-center"
-                    href="?{{ {'category': category_id, 'filter': filter, 'page': total_pages}|url_encode }}"
-                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': total_pages}|url_encode }}"
+                    href="?{{ {'category': category_id, 'filter': filter, 'page': total_pages, 'sort_strategy': sort_strategy}|url_encode }}"
+                    data-children-url-parameters="{{ {'category': category_id, 'filter': filter, 'page': total_pages, 'sort_strategy': sort_strategy}|url_encode }}"
                     data-pagination-item
                     aria-label="{{ __('Last page') }}"
                     {{ current_page >= total_pages ? 'aria-disabled="true"' : '' }}
