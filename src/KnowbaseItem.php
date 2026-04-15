@@ -734,6 +734,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
         }
+
         return $input;
     }
 
@@ -912,6 +913,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $order = 'ASC';
         $criteria = Document_Item::getDocumentForItemRequest($this, ["$sort $order"]);
         $criteria['WHERE'][] = ['is_deleted' => '0'];
+        // Exclude inline images (uploaded via editor drag/drop or paste)
+        $criteria['WHERE'][] = [
+            'OR' => [
+                ['glpi_documents_items.timeline_position' => ['>', CommonITILObject::NO_TIMELINE]],
+                ['glpi_documents_items.timeline_position' => null],
+            ],
+        ];
         $iterator = $DB->request($criteria);
 
         $documents = [];

@@ -777,6 +777,7 @@ export class GlpiKnowbaseArticleController
                 content: this.#original_content,
                 readonly: false,
                 placeholder: __("Start writing..."),
+                item_id: this.#item_id,
             });
         } else {
             this.#editor.setEditable(true);

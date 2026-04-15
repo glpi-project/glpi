@@ -32,8 +32,12 @@
 
 /* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
+/* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
+import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
+import { post } from '/js/modules/Ajax.js';
+import { FileUploader } from '/js/modules/FileUploader.js';
 
 /**
  * Knowbase article editor based on Tiptap
@@ -61,6 +65,7 @@ class KnowbaseEditor {
      * @param {boolean} options.readonly - Start in readonly mode
      * @param {string} options.placeholder - Placeholder text
      * @param {function} options.onUpdate - Callback when content changes
+     * @param {number|null} options.item_id - KB article ID (null for new articles)
      */
     constructor(element, options = {}) {
         this.#element = element;
@@ -69,6 +74,7 @@ class KnowbaseEditor {
             readonly: true,
             placeholder: __('Start writing...'),
             onUpdate: null,
+            item_id: null,
             ...options
         };
 
@@ -113,7 +119,7 @@ class KnowbaseEditor {
             }),
             TiptapImage.configure({
                 inline: false,
-                allowBase64: false,
+                allowBase64: true,
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
@@ -121,6 +127,7 @@ class KnowbaseEditor {
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
                 appendTo: () => document.body,
+                shouldShow: ({ editor, state }) => !state.selection.empty && !editor.isActive('image'),
                 options: {
                     placement: 'top',
                     offset: 8,
@@ -134,6 +141,38 @@ class KnowbaseEditor {
             TiptapTableHeader,
             TiptapTableCell,
         ];
+
+        // Add FileHandler for image drag & drop and paste (only for existing articles)
+        if (this.#options.item_id > 0) {
+            extensions.push(TiptapFileHandler.configure({
+                allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/bmp'],
+                onDrop: (editor, files, pos) => {
+                    for (const file of files) {
+                        this.#uploadAndInsertImage(editor, file, pos);
+                    }
+                },
+                onPaste: (editor, files) => {
+                    for (const file of files) {
+                        this.#uploadAndInsertImage(editor, file);
+                    }
+                },
+            }));
+
+            // Intercept base64 images that bypass the FileHandler (e.g. pasted
+            // HTML from external sources) and convert them to server uploads.
+            extensions.push(Base64ImageHandler.configure({
+                uploadHandler: async (dataUri) => {
+                    try {
+                        const file = this.#dataUriToFile(dataUri);
+                        return await this.#uploadImageFile(file);
+                    } catch (error) {
+                        glpi_toast_error(__('Image upload failed'));
+                        console.error('Base64 image upload error:', error);
+                        return null;
+                    }
+                },
+            }));
+        }
 
         // Add SlashCommands extension if available
         if (slashCommandsExt) {
@@ -342,6 +381,85 @@ class KnowbaseEditor {
      */
     focus() {
         this.#editor?.commands.focus();
+    }
+
+    /**
+     * Upload an image file to GLPI and create a Document linked to this KB item.
+     * @param {File} file - Image file to upload
+     * @returns {Promise<string>} The document.send.php URL for the uploaded image
+     */
+    async #uploadImageFile(file) {
+        // Step 1: Upload to GLPI temp dir
+        const file_info = await FileUploader.uploadFile(file);
+
+        // Step 2: Create Document via controller
+        const doc_response = await post(
+            `Knowbase/${this.#options.item_id}/UploadInlineImage`,
+            {
+                filename: file_info.name,
+                prefix: file_info.prefix || '',
+            }
+        );
+        const doc_data = await doc_response.json();
+        if (!doc_data.success) {
+            throw new Error(doc_data.message || __('Document creation failed'));
+        }
+
+        return doc_data.url;
+    }
+
+    /**
+     * Upload an image file and insert it into the editor
+     * @param {object} editor - TipTap editor instance
+     * @param {File} file - Image file
+     * @param {number|undefined} pos - Insert position (undefined = current cursor)
+     */
+    async #uploadAndInsertImage(editor, file, pos) {
+        try {
+            const image_url = await this.#uploadImageFile(file);
+
+            const attrs = { src: image_url };
+            if (pos !== undefined) {
+                editor.chain().focus().insertContentAt(pos, {
+                    type: 'image',
+                    attrs,
+                }).run();
+            } else {
+                editor.chain().focus().setImage(attrs).run();
+            }
+        } catch (error) {
+            glpi_toast_error(__('Image upload failed'));
+            console.error('Image upload error:', error);
+        }
+    }
+
+    /**
+     * Convert a data: URI to a File object
+     * @param {string} dataUri - The data: URI (e.g. "data:image/png;base64,...")
+     * @returns {File}
+     */
+    #dataUriToFile(dataUri) {
+        const commaIndex = dataUri.indexOf(',');
+        if (commaIndex === -1) {
+            throw new Error('Invalid data URI: missing comma separator');
+        }
+        const header = dataUri.slice(0, commaIndex);
+        const base64Data = dataUri.slice(commaIndex + 1);
+        const mimeMatch = header.match(/:(.*?);/);
+        if (!mimeMatch) {
+            throw new Error('Invalid data URI: could not extract MIME type');
+        }
+        const mime = mimeMatch[1];
+        if (mime === 'image/svg+xml') {
+            throw new Error('SVG images are not supported');
+        }
+        const binary = atob(base64Data);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+        const ext = mime.split('/')[1].replace('+xml', '');
+        return new File([bytes], `pasted-image.${ext}`, { type: mime });
     }
 
     /**

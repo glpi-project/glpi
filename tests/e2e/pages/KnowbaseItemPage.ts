@@ -72,6 +72,12 @@ export class KnowbaseItemPage extends GlpiPage
         return this._bubbleMenuHelper;
     }
 
+    public get imageDialog(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- custom TipTap dialog, no ARIA role available
+        return this.page.locator('.image-dialog');
+    }
+
     public get subject(): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by ArticleController.js, not a test ID
