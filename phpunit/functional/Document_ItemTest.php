@@ -208,7 +208,7 @@ class Document_ItemTest extends DbTestCase
 
         // Link the document to the ticket via Document_Item
         $this->createItem(
-            Document_Item::class,
+            \Document_Item::class,
             [
                 'users_id'      => $uid,
                 'items_id'      => $tickets_id,
