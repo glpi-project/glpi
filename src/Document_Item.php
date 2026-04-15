@@ -216,6 +216,7 @@ class Document_Item extends CommonDBRelation
             $input  = [
                 'id'              => $this->fields['items_id'],
                 'date_mod'        => $_SESSION["glpi_currenttime"],
+                '_do_update_date_mod' => true,
             ];
 
             if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
