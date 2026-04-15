@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: "Resolve versions and build matrix"
         id: "resolve"
-        uses: "actions/github-script@v8"
+        uses: "actions/github-script@v9"
         with:
           script: |
             const isSchedule = context.eventName === 'schedule';

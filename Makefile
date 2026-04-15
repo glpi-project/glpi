@@ -23,7 +23,6 @@ PLAYWRIGHT = docker run \
 	--user=$(shell id -u):$(shell id -g) \
 	-v .:/app \
 	-w /app \
-	-p 9323:9323 \
 	-e E2E_BASE_URL=$(E2E_BASE_URL) \
 	--network host \
 	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
@@ -41,7 +40,7 @@ _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
 ## —— General ——————————————————————————————————————————————————————————————————
 .DEFAULT_GOAL := help
 help: ## Show this help message
-	@grep -hE '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
+	@grep -hE '(^[0-9a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 .PHONY: help
 
 install: init-override build up vendor db-install test-db-install ## Install the project

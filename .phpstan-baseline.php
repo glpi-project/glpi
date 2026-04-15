@@ -1022,12 +1022,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_project.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'id\' might not exist on array\\{id\\: mixed\\}\\|array\\{racks_id\\: mixed, orientation\\: mixed, position\\: mixed, _onlypdu\\?\\: mixed\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_rack.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'racks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -4238,7 +4232,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.[0-9]+\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
+	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.3\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Config.php',
@@ -10538,6 +10532,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to an undefined method object\\:\\:getManagementPorts\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 4,
@@ -10606,7 +10606,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getManagementPorts\\(\\) on object\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -12276,12 +12276,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/ItemTranslation/ItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$strategy on Glpi\\\\Security\\\\Attribute\\\\SecurityStrategy\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/ControllerListener/FirewallStrategyListener.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$strategy of method Glpi\\\\Http\\\\Firewall\\:\\:applyStrategy\\(\\) expects \'admin_access\'\\|\'authenticated\'\\|\'central_access\'\\|\'faq_access\'\\|\'helpdesk_access\'\\|\'no_check\', string given\\.$#',
@@ -19562,7 +19556,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$params of method CommonITILObject\\:\\:getEntitiesForRequesters\\(\\) expects array, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$params of method CommonITILObject\\:\\:getEntitiesForRequesters\\(\\) expects array, array\\<string, mixed\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',

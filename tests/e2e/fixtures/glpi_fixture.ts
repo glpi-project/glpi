@@ -55,6 +55,7 @@ export const test = baseTest.extend<{
     formImporter: FormImporter,
     api: Api,
     debug: DebugModeSwitcher,
+    retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
     workerSessionCache: WorkerSessionCache,
@@ -189,4 +190,16 @@ export const test = baseTest.extend<{
         await use(await context.newPage());
         await context.close();
     },
+
+    // Increase the timeout when retrying a test.
+    // This is needed because the first retry on the CI enable trace mode to
+    // debug the error, which slow the test down.
+    // This can cause the test to go over the 30 seconds timeout so this fixture
+    // add a bit a leeway to avoid this unfortunate side effect.
+    retryTimeout: [async ({}, use, testInfo) => {
+        if (testInfo.retry > 0) {
+            testInfo.setTimeout(testInfo.timeout * 2);
+        }
+        await use();
+    }, { auto: true, scope: 'test' }],
 });
