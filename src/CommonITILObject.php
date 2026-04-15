@@ -1733,6 +1733,9 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
                     $allowed_fields[] = 'takeintoaccountdate';
                 }
+                if (isset($input['_do_update_date_mod'])) {
+                    $allowed_fields[] = 'date_mod';
+                }
             }
 
             $ret = [];

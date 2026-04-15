@@ -187,68 +187,41 @@ class Document_ItemTest extends DbTestCase
         $uid = getItemByTypeName('User', TU_USER, true);
 
         $ticket = new \Ticket();
-        $tickets_id = $ticket->add([
-            'name' => '',
-            'content' => 'Test modification date not updated from Document_Item',
-            'date_mod' => '2020-01-01',
-        ]);
-
-        $this->assertGreaterThan(0, $tickets_id);
+        $tickets_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test modification date not updated from Document_Item',
+                'content' => 'Test modification date not updated from Document_Item',
+                'date_mod' => '2020-01-01 00:00:00',
+            ],
+        )->getID();
 
         // Document and Document_Item
-        $doc = new \Document();
-        $this->assertGreaterThan(
-            0,
-            $doc->add([
+        $doc_id = $this->createItem(
+            \Document::class,
+            [
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
                 'name'         => 'A simple document object',
-            ])
-        );
+            ],
+        )->getID();
 
-        //do not change ticket modification date
-        $doc_item = new \Document_Item();
-        $this->assertGreaterThan(
-            0,
-            $doc_item->add([
+        // Link the document to the ticket via Document_Item
+        $this->createItem(
+            \Document_Item::class,
+            [
                 'users_id'      => $uid,
                 'items_id'      => $tickets_id,
-                'itemtype'      => 'Ticket',
-                'documents_id'  => $doc->getID(),
-                '_do_update_ticket' => false,
-            ])
+                'itemtype'      => \Ticket::class,
+                'documents_id'  => $doc_id,
+            ],
         );
 
         $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->assertSame('2020-01-01 00:00:00', $ticket->fields['date_mod']);
-
-        //do change ticket modification date
-        $_SESSION["glpi_currenttime"] = '2021-01-01 00:00:01';
-        $doc = new \Document();
-        $this->assertGreaterThan(
-            0,
-            $doc->add([
-                'users_id'     => $uid,
-                'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object',
-            ])
-        );
-
-        $doc_item = new \Document_Item();
-        $this->assertGreaterThan(
-            0,
-            $doc_item->add([
-                'users_id'      => $uid,
-                'items_id'      => $tickets_id,
-                'itemtype'      => 'Ticket',
-                'documents_id'  => $doc->getID(),
-            ])
-        );
-
-        $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->assertNotEquals(
-            '2021-01-01 00:00:01',
-            $ticket->fields['date_mod']
+        $this->assertGreaterThan('2020-01-01 00:00:00', $ticket->fields['date_mod']);
+        $this->assertEquals(
+            $_SESSION["glpi_currenttime"],
+            $ticket->fields['date_mod'],
         );
     }
 }
