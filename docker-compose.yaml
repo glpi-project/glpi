@@ -1,5 +1,3 @@
-name: glpi_main
-
 services:
   app:
     build:
