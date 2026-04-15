@@ -4673,8 +4673,47 @@ HTML;
         global $CFG_GLPI, $DB;
 
         $ID = $this->getField('id');
-
         $start       = intval($_GET["start"] ?? 0);
+        $get_filters   = $_GET["filters"] ?? [];
+
+        $type_choices = [];
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if ($item = getItemForItemtype($itemtype)) {
+                if (!$item::canView()) {
+                    continue;
+                }
+                $type_choices[$itemtype] = $item::getTypeName(1);
+            }
+        }
+        asort($type_choices);
+
+        $entity_choices = [];
+        foreach ($this->getEntities() as $entity_id) {
+            if (Session::haveAccessToEntity($entity_id)) {
+                $entity_choices[$entity_id] = Dropdown::getDropdownName("glpi_entities", $entity_id);
+            }
+        }
+        asort($entity_choices);
+
+        $state_choices = [];
+        $state_iterator = $DB->request([
+            'SELECT' => ['id', 'completename'],
+            'FROM'   => 'glpi_states',
+        ]);
+        foreach ($state_iterator as $row) {
+            $state_choices[$row['id']] = $row['completename'];
+        }
+        asort($state_choices);
+
+        $filters = [
+            'type'        => [],
+            'entity'      => [],
+            'name'        => '',
+            'serial'      => '',
+            'otherserial' => '',
+            'states'      => [],
+            'group'    => [],
+        ];
 
         if ($tech) {
             $field_user  = 'users_id_tech';
@@ -4722,17 +4761,92 @@ HTML;
             ];
         }
 
+        $group_choices = [];
+        foreach ($groups as $g_id => $g_name) {
+            $group_choices[$g_id] = $g_name;
+        }
+        asort($group_choices);
+
+        $array_filters_choices = [
+            'type'     => $type_choices,
+            'entity'   => $entity_choices,
+            'states'   => $state_choices,
+            'group'    => $group_choices,
+        ];
+
+        foreach ($get_filters as $f => $value) {
+            if (!empty($value)) {
+                if (isset($array_filters_choices[$f])) {
+                    foreach ((array) $value as $v) {
+                        if (isset($array_filters_choices[$f][$v])) {
+                            $filters[$f][] = $v;
+                        }
+                    }
+                } elseif (in_array($f, ['name', 'serial', 'otherserial'], true)) {
+                    $filters[$f] = is_array($value) ? (string) $value[0] : (string) $value;
+                }
+            }
+        }
+
         $entries = [];
 
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if (!empty($filters['type']) && !in_array($itemtype, $filters['type'])) {
+                continue;
+            }
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $relation_table = Group_Item::getTable();
+
+                $item_criteria = [];
+                $item_criteria[$itemtable . '.' . $item->getNameField()] = ['LIKE', '%' . $filters['name'] . '%'];
+                if ($filters['serial'] !== '' && $DB->fieldExists($itemtable, 'serial')) {
+                    $item_criteria[$itemtable . '.serial'] = ['LIKE', '%' . $filters['serial'] . '%'];
+                }
+                if ($filters['otherserial'] !== '' && $DB->fieldExists($itemtable, 'otherserial')) {
+                    $item_criteria[$itemtable . '.otherserial'] = ['LIKE', '%' . $filters['otherserial'] . '%'];
+                }
+                if (count($filters['states']) > 0 && $DB->fieldExists($itemtable, 'states_id')) {
+                    $item_criteria[$itemtable . '.states_id'] = $filters['states'];
+                }
+                if (count($filters['group']) > 0) {
+                    $group_criteria = [];
+                    foreach ($filters['group'] as $lt) {
+                        $group_criteria[] = [
+                            $relation_table . '.groups_id' => $lt,
+                            $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
+                        ];
+                    }
+                    if (count($group_criteria) > 0) {
+                        $item_criteria[] = ['OR' => $group_criteria];
+                    }
+                }
+
+                foreach ($filters['entity'] as $entity_id) {
+                    if (!Session::haveAccessToEntity($entity_id)) {
+                        $filters['entity'] = array_filter(
+                            $filters['entity'],
+                            fn($value) => $value != $entity_id
+                        );
+                    }
+                }
+
+                $target_entities = count($filters['entity']) > 0 ? $filters['entity'] : $this->getEntities();
+
+                $where = ['entities_id' => $target_entities] + $criteria + $item::getSystemSQLCriteria();
+                if (count($item_criteria) > 0) {
+                    $where[] = $item_criteria;
+                }
+
                 $iterator_params = [
-                    'SELECT'  => ["$itemtable.*", "$relation_table.groups_id"],
+                    'SELECT'  => [
+                        "$itemtable.*",
+                        new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName($relation_table . '.groups_id') . ') AS ' . $DB->quoteName('groups_ids')),
+                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                    ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
                         Group_Item::getTable() => [
@@ -4746,7 +4860,7 @@ HTML;
                             ],
                         ],
                     ],
-                    'WHERE'   => ['entities_id' => $this->getEntities()] + $criteria + $item::getSystemSQLCriteria(),
+                    'WHERE'   => $where,
                     'GROUPBY' => "$itemtable.id",
                 ];
 
@@ -4759,7 +4873,7 @@ HTML;
 
                 $item_iterator = $DB->request($iterator_params);
 
-                $type_name = $item->getTypeName();
+                $type_name = $item->getTypeName(1);
 
                 foreach ($item_iterator as $data) {
                     $cansee = $item->can($data["id"], READ);
@@ -4771,18 +4885,18 @@ HTML;
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
                     }
-                    $linktypes = [];
-                    if ($data[$field_user] == $ID) {
-                        $linktypes[] = self::getTypeName(1);
-                    }
-                    if (isset($groups[$data['groups_id'] ?? ''])) {
-                        $linktypes[] = sprintf(
-                            __('%1$s = %2$s'),
-                            Group::getTypeName(1),
-                            $groups[$data['groups_id']]
-                        );
-                    }
                     if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
+                        $group_names = [];
+                        foreach (explode(',', $data['groups_ids'] ?? '') as $g_id) {
+                            if (empty($g_id)) {
+                                continue;
+                            }
+                            if (!isset($groups[$g_id])) {
+                                $groups[$g_id] = Dropdown::getDropdownName("glpi_groups", intval($g_id));
+                            }
+                            $group_names[] = $groups[$g_id];
+                        }
+
                         $entries[] = [
                             'itemtype'      => $itemtype,
                             'id'            => $data["id"],
@@ -4794,7 +4908,7 @@ HTML;
                             'states'        => !empty($data['states_id'])
                                 ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
                                 : '',
-                            'linktype'      => implode(', ', $linktypes),
+                            'group'         => implode(', ', $group_names),
                         ];
                     }
                     $number++;
@@ -4805,17 +4919,37 @@ HTML;
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start'                 => $start,
             'is_tab'                => true,
+            'limit'                 => $_SESSION['glpilist_limit'],
             'items_id'              => $ID,
-            'nofilter'              => true,
             'columns'               => [
-                'type'          => _n('Type', 'Types', 1),
-                'entity'        => Entity::getTypeName(1),
+                'type'          => [
+                    'label'            => _n('Type', 'Types', 1),
+                    'filter_formatter' => 'array',
+                ],
+                'entity'        => [
+                    'label'            => Entity::getTypeName(1),
+                    'filter_formatter' => 'array',
+                ],
                 'name'          => __('Name'),
                 'serial'        => __('Serial number'),
                 'otherserial'   => __('Inventory number'),
-                'states'        => __('Status'),
-                'linktype'      => '',
+                'states'        => [
+                    'label'            => __('Status'),
+                    'filter_formatter' => 'array',
+                ],
+                'group'      => [
+                    'label'            => Group::getTypeName(1),
+                    'filter_formatter' => 'array',
+                ],
             ],
+            'columns_values'        => [
+                'type'     => $type_choices,
+                'entity'   => $entity_choices,
+                'states'   => $state_choices,
+                'group'    => $group_choices,
+            ],
+            'filters' => $filters,
+            'additional_params'     => http_build_query(['filters' => $filters]),
             'formatters' => [
                 'name'          => 'raw_html',
             ],
