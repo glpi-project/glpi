@@ -55,7 +55,7 @@
                             <h2 id="{{ unique_dom_id }}" class="mb-0 fs-2">
                                 {{ item.getServiceCatalogItemTitle() }}
                             </h2>
-                            <div class="card-subtitle ms-2 remove-last-tinymce-margin">
+                            <div class="card-subtitle mt-1 remove-last-tinymce-margin overflow-hidden" style="max-height: 300px">
                                 {{ item.getServiceCatalogItemDescription()|safe_html }}
                             </div>
                         </div>

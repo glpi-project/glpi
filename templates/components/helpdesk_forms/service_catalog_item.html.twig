@@ -66,7 +66,8 @@
                         {% endif %}
                     </div>
                     <div
-                        class="text-secondary remove-last-tinymce-margin"
+                        class="text-secondary remove-last-tinymce-margin overflow-hidden"
+                        style="max-height: 300px"
                         data-testid="service-catalog-description"
                     >
                         {{ item.getServiceCatalogItemDescription()|safe_html }}
