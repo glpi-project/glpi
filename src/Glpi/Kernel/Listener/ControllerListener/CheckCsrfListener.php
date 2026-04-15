@@ -86,8 +86,6 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
 
     private function validateRequestIsSafeFromCSRF(Request $request): bool
     {
-        global $CFG_GLPI;
-
         // The 'Sec-Fetch-Site' contains details about the request origin and is
         // a protected header so browsers will always send a legitimate value.
         // It is supported by all browsers since 2023.
@@ -99,8 +97,9 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
         // We fallback to the 'Origin' header for older browsers (which is also
         // a protected header).
         $origin = $request->headers->get('Origin');
-        if ($origin !== null) {
-            return $origin === $CFG_GLPI['url_base'];
+        $host = $request->headers->get('Host');
+        if ($origin !== null && $host !== null) {
+            return parse_url($origin, PHP_URL_HOST) === $host;
         }
 
         // If both 'Sec-Fetch-Site' and 'Origin' are missing then the request

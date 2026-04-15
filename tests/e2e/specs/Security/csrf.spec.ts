@@ -31,12 +31,11 @@
  */
 
 import { expect, test } from '../../fixtures/glpi_fixture';
-import { Config } from '../../utils/Config';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-const external_origin = "https://glpi.com";
-const same_origin = Config.getBaseUrl();
+const external_origin = "https://not-my-origin.com";
+const same_origin = "https://my-origin.com"
 
 const post_cases = [
     // Test all possible "Sec-Fetch-Site" values
@@ -112,7 +111,11 @@ function configHeaders(
     const headers: {
         'Sec-Fetch-Site'?: string,
         'Origin'?: string,
-    } = {};
+        'Host': string,
+    } = {
+        // Host is always set by the browser.
+        Host: "my-origin.com",
+    };
 
     if (sec_fetch_site !== null) {
         headers['Sec-Fetch-Site'] = sec_fetch_site;
