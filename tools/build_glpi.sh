@@ -109,6 +109,9 @@ do
     rm -rf $WORKING_DIR/$node
 done
 
+echo "Clearing Symfony cache compiled with dev dependencies..."
+rm -rf $WORKING_DIR/files/_cache/*
+
 echo "Generating file manifest..."
 $WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
 
