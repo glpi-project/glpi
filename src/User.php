@@ -4859,7 +4859,7 @@ HTML;
                                 continue;
                             }
                             if (!isset($groups[$g_id])) {
-                                $groups[$g_id] = Dropdown::getDropdownName("glpi_groups", $g_id);
+                                $groups[$g_id] = Dropdown::getDropdownName("glpi_groups", intval($g_id));
                             }
                             $group_names[] = $groups[$g_id];
                         }
@@ -4913,7 +4913,7 @@ HTML;
                 'type'     => $type_choices,
                 'entity'   => $entity_choices,
                 'states'   => $state_choices,
-                Group::getTypeName(1)    => $group_choices,
+                'group'    => $group_choices,
             ],
             'filters' => $filters,
             'additional_params'     => http_build_query(['filters' => $filters]),
