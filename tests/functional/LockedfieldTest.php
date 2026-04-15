@@ -348,8 +348,8 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($printer->getFromDB($printers_id));
         $this->assertEquals($locations_id, $printer->fields['locations_id']);
 
-        //ensure no new location has been added
-        $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
+        //the location dropdown entry is created (for known_links resolution) even if not assigned due to lock
+        $this->assertSame($existing_locations + 1, countElementsInTable(Location::getTable()));
 
         $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer->getType(), $printers_id));
     }
@@ -1328,6 +1328,100 @@ class LockedfieldTest extends DbTestCase
         $manufacturer = new Manufacturer();
         $this->assertTrue($manufacturer->getFromDB($computer->fields['manufacturers_id']));
         $this->assertEquals('Intel', $manufacturer->fields['name']);
+    }
+
+    public function testGlobalLockOnStackedNetworkEquipment(): void
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <INDEX>-1</INDEX>
+          <NAME>Dell S-series Stack</NAME>
+          <TYPE>stack</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>-1</CONTAINEDININDEX>
+          <DESCRIPTION>48-port E/FE/GE (SB)</DESCRIPTION>
+          <FIRMWARE>8.4.2.7</FIRMWARE>
+          <INDEX>1</INDEX>
+          <MODEL>S50-01-GE-48T-AC</MODEL>
+          <NAME>Unit 0</NAME>
+          <SERIAL>STACKTEST001</SERIAL>
+          <TYPE>chassis</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>-1</CONTAINEDININDEX>
+          <DESCRIPTION>48-port E/FE/GE (SB)</DESCRIPTION>
+          <FIRMWARE>8.4.2.7</FIRMWARE>
+          <INDEX>2</INDEX>
+          <MODEL>S50-01-GE-48T-AC</MODEL>
+          <NAME>Unit 1</NAME>
+          <SERIAL>STACKTEST002</SERIAL>
+          <TYPE>chassis</TYPE>
+        </COMPONENT>
+      </COMPONENTS>
+      <INFO>
+        <MAC>00:01:e8:d7:c9:1d</MAC>
+        <NAME>sw-stack-lock</NAME>
+        <SERIAL>STACKTEST001</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>stacklock-test</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $converter = new Converter();
+        $json_data = $converter->convert($xml_source);
+        $decoded_json = json_decode($json_data);
+
+        $inventory = new Inventory($decoded_json);
+
+        if ($inventory->inError()) {
+            dump($inventory->getErrors());
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertEmpty($inventory->getErrors());
+
+        $network_equipment = new \NetworkEquipment();
+
+        $this->assertTrue($network_equipment->getFromDBByCrit(['serial' => 'STACKTEST001']));
+        $first_id = $network_equipment->fields['id'];
+        $original_type_id = $network_equipment->fields['networkequipmenttypes_id'];
+
+        $this->assertTrue($network_equipment->getFromDBByCrit(['serial' => 'STACKTEST002']));
+        $second_id = $network_equipment->fields['id'];
+        $this->assertSame($original_type_id, $network_equipment->fields['networkequipmenttypes_id']);
+
+        $lockedfield = new \Lockedfield();
+        $this->assertGreaterThan(
+            0,
+            $lockedfield->add([
+                'item' => 'NetworkEquipment - networkequipmenttypes_id',
+            ])
+        );
+
+        $decoded_json = json_decode($converter->convert($xml_source));
+        $inventory = new Inventory($decoded_json);
+
+        if ($inventory->inError()) {
+            dump($inventory->getErrors());
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertEmpty($inventory->getErrors());
+
+        $this->assertTrue($network_equipment->getFromDB($first_id));
+        $this->assertSame($original_type_id, $network_equipment->fields['networkequipmenttypes_id']);
+
+        $this->assertTrue($network_equipment->getFromDB($second_id));
+        $this->assertSame($original_type_id, $network_equipment->fields['networkequipmenttypes_id']);
     }
 
 }
