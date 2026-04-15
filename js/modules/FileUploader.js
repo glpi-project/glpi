@@ -162,7 +162,6 @@ export class FileUploader
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 },
                 body: formData,
             }

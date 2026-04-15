@@ -1304,7 +1304,7 @@ function initTooltips(container) {
  * @returns {string}
  */
 function getAjaxCsrfToken() {
-    console.warn('Csrf protection is now handled without tokens.')
+    console.warn('Csrf protection is now handled without tokens.');
     return "";
 }
 
