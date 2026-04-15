@@ -1701,6 +1701,71 @@ class Session
     }
 
     /**
+     * Get new CSRF token
+     *
+     * @param bool $standalone
+     *    Generates a standalone token that will not be shared with other component of current request.
+     *
+     * @since 0.83.3
+     * @deprecated Csrf protection is now handled without tokens.
+     *
+     * @return string
+     **/
+    public static function getNewCSRFToken(bool $standalone = false)
+    {
+        Toolbox::deprecated("Csrf protection is now handled without tokens.");
+        return "";
+    }
+
+    /**
+     * Clean expired CSRF tokens
+     *
+     * @since 0.83.3
+     * @deprecated Csrf protection is now handled without tokens.
+     *
+     * @return void
+     **/
+    public static function cleanCSRFTokens()
+    {
+        Toolbox::deprecated("Csrf protection is now handled without tokens.");
+    }
+
+    /**
+     * Validate that the page has a CSRF token in the POST data
+     * and that the token is legit/not expired.  If the token is valid
+     * it will be removed from the list of valid tokens.
+     *
+     * @since 0.83.3
+     * @deprecated Csrf protection is now handled without tokens.
+     *
+     * @param array<string, mixed> $data           $_POST data
+     * @param bool  $preserve_token Whether to preserve token after it has been validated.
+     *
+     * @return bool
+     **/
+    public static function validateCSRF($data, bool $preserve_token = false)
+    {
+        Toolbox::deprecated("Csrf protection is now handled without tokens.");
+        return true;
+    }
+
+    /**
+     * Check CSRF data
+     *
+     * @since 0.84.2
+     * @deprecated Csrf protection is now handled without tokens.
+     *
+     * @param array<string, mixed> $data           $_POST data
+     * @param bool  $preserve_token Whether to preserve token after it has been validated.
+     *
+     * @return void
+     **/
+    public static function checkCSRF($data, bool $preserve_token = false)
+    {
+        Toolbox::deprecated("Csrf protection is now handled without tokens.");
+    }
+
+    /**
      * Get new IDOR token
      * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
      * So, we avoid IDOR request where an attacker asks for another itemtype

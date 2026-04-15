@@ -58,6 +58,13 @@ The present file will list all changes made to the project; according to the
 - `contructListFromTree()` / `DbUtils::constructListFromTree()`
 - `get_hour_from_sql()` / `DbUtils::getHourFromSql()`
 - `$withcomment` and `$translate` parameters of `getTreeLeafValueName()` and `DbUtils::getTreeLeafValueName()`
+- `Session::getNewCSRFToken()`: CSRF protection is now handled via `Sec-Fetch-Site`/`Origin` header validation; token-based CSRF is no longer used.
+- `Session::validateCSRF()`: replaced by header-based CSRF validation in `CheckCsrfListener`.
+- `Session::checkCSRF()`: replaced by header-based CSRF validation in `CheckCsrfListener`.
+- `Session::cleanCSRFTokens()`: no longer needed as CSRF tokens are no longer stored in session.
+- `csrf_token()` Twig function: remove all `_glpi_csrf_token` hidden fields from forms; they are no longer required.
+- `getAjaxCsrfToken()` JavaScript function: remove all `X-Glpi-Csrf-Token` request headers from AJAX calls; they are no longer required.
+- `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
 
 #### Removed
 
@@ -103,13 +110,6 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
 - `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
 - `Glpi\Plugin\HookManager::enableCSRF()`
-- `Session::getNewCSRFToken()`: CSRF protection is now handled via `Sec-Fetch-Site`/`Origin` header validation; token-based CSRF is no longer used.
-- `Session::validateCSRF()`: replaced by header-based CSRF validation in `CheckCsrfListener`.
-- `Session::checkCSRF()`: replaced by header-based CSRF validation in `CheckCsrfListener`.
-- `Session::cleanCSRFTokens()`: no longer needed as CSRF tokens are no longer stored in session.
-- `csrf_token()` Twig function: remove all `_glpi_csrf_token` hidden fields from forms; they are no longer required.
-- `getAjaxCsrfToken()` JavaScript function: remove all `X-Glpi-Csrf-Token` request headers from AJAX calls; they are no longer required.
-- `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
 - `Glpi\Toolbox\Sanitizer` class
 - `Html::ajaxFooter()`
 - `Html::changeProgressBarMessage()`
