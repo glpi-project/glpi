@@ -210,7 +210,7 @@ final class Kernel extends BaseKernel
         $container->addCompilerPass(
             new RemoveUnwantedTwigExtensionsPass(),
             PassConfig::TYPE_BEFORE_OPTIMIZATION,
-            0
+            9
         );
     }
 
