@@ -34,6 +34,7 @@
 
 namespace Glpi\DependencyInjection\Compiler;
 
+use Glpi\Application\Environment;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -73,6 +74,13 @@ final class RemoveUnwantedTwigExtensionsPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         foreach (self::UNWANTED_EXTENSION_IDS as $id) {
+            // We allow debug extensions in dev env
+            if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
+                if (in_array($id, ['twig.extension.debug', 'twig.extension.debug.stopwatch', 'twig.extension.profiler'])) {
+                    continue;
+                }
+            }
+
             if ($container->hasDefinition($id)) {
                 $container->getDefinition($id)->clearTag('twig.extension');
             }
