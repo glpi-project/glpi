@@ -185,8 +185,12 @@ CREATE TABLE `glpi_autoupdatesystems` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -243,6 +247,8 @@ CREATE TABLE `glpi_savedsearches` (
   `do_count` tinyint NOT NULL DEFAULT '2',
   `last_execution_date` timestamp NULL DEFAULT NULL,
   `counter` int NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `type` (`type`),
@@ -253,7 +259,9 @@ CREATE TABLE `glpi_savedsearches` (
   KEY `is_recursive` (`is_recursive`),
   KEY `last_execution_time` (`last_execution_time`),
   KEY `last_execution_date` (`last_execution_date`),
-  KEY `do_count` (`do_count`)
+  KEY `do_count` (`do_count`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -857,6 +865,8 @@ CREATE TABLE `glpi_changevalidations` (
   `validation_date` timestamp NULL DEFAULT NULL,
   `timeline_position` tinyint NOT NULL DEFAULT '0',
   `last_reminder_date` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
@@ -868,7 +878,9 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
   KEY `status` (`status`),
-  KEY `itils_validationsteps_id` (`itils_validationsteps_id`)
+  KEY `itils_validationsteps_id` (`itils_validationsteps_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1645,10 +1657,14 @@ CREATE TABLE `glpi_dashboards_dashboards` (
   `name` varchar(100) NOT NULL,
   `context` varchar(100) NOT NULL DEFAULT 'core',
   `users_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`),
   KEY `name` (`name`),
-  KEY `users_id` (`users_id`)
+  KEY `users_id` (`users_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_dashboards_filters
@@ -1659,9 +1675,13 @@ CREATE TABLE `glpi_dashboards_filters` (
   `dashboards_dashboards_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `filter` longtext,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
-  KEY `users_id` (`users_id`)
+  KEY `users_id` (`users_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_dashboards_items
@@ -1677,8 +1697,12 @@ CREATE TABLE `glpi_dashboards_items` (
   `width` int DEFAULT NULL,
   `height` int DEFAULT NULL,
   `card_options` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`)
+  KEY `dashboards_dashboards_id` (`dashboards_dashboards_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_dashboards_rights
@@ -1705,9 +1729,13 @@ CREATE TABLE `glpi_devicecasemodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicecases
@@ -1760,9 +1788,13 @@ CREATE TABLE `glpi_devicecontrolmodels` (
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicecontrols
@@ -1803,9 +1835,13 @@ CREATE TABLE `glpi_devicedrivemodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicedrives
@@ -1847,9 +1883,13 @@ CREATE TABLE `glpi_devicegenericmodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1888,8 +1928,12 @@ CREATE TABLE `glpi_devicegenerictypes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -1904,9 +1948,13 @@ CREATE TABLE `glpi_devicegraphiccardmodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicegraphiccards
@@ -1949,9 +1997,13 @@ CREATE TABLE `glpi_deviceharddrivemodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_deviceharddrivetypes
@@ -1961,8 +2013,12 @@ CREATE TABLE `glpi_deviceharddrivetypes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_deviceharddrives
@@ -2063,9 +2119,13 @@ CREATE TABLE `glpi_devicecameramodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2151,9 +2211,13 @@ CREATE TABLE `glpi_devicememorymodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2212,9 +2276,13 @@ CREATE TABLE `glpi_devicemotherboardmodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicemotherboards
@@ -2253,9 +2321,13 @@ CREATE TABLE `glpi_devicenetworkcardmodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicenetworkcards
@@ -2295,9 +2367,13 @@ CREATE TABLE `glpi_devicepcimodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicepcis
@@ -2337,9 +2413,13 @@ CREATE TABLE `glpi_devicepowersupplymodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2380,9 +2460,13 @@ CREATE TABLE `glpi_deviceprocessormodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_deviceprocessors
@@ -2452,9 +2536,13 @@ CREATE TABLE `glpi_devicesensormodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2465,8 +2553,12 @@ CREATE TABLE `glpi_devicesensortypes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -2565,9 +2657,13 @@ CREATE TABLE `glpi_devicesoundcardmodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4683,11 +4779,15 @@ CREATE TABLE `glpi_networkaliases` (
   `name` varchar(255) DEFAULT NULL,
   `fqdns_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `entities_id` (`entities_id`),
   KEY `name` (`name`),
   KEY `networknames_id` (`networknames_id`),
-  KEY `fqdns_id` (`fqdns_id`)
+  KEY `fqdns_id` (`fqdns_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4802,8 +4902,12 @@ CREATE TABLE `glpi_networkinterfaces` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6479,12 +6583,16 @@ CREATE TABLE `glpi_reservationitems` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '1',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `is_active` (`is_active`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6499,11 +6607,15 @@ CREATE TABLE `glpi_reservations` (
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
   `group` int NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `users_id` (`users_id`),
-  KEY `resagroup` (`reservationitems_id`,`group`)
+  KEY `resagroup` (`reservationitems_id`,`group`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6840,10 +6952,14 @@ CREATE TABLE `glpi_softwarecategories` (
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
   `sons_cache` longtext,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `softwarecategories_id` (`softwarecategories_id`),
-  KEY `level` (`level`)
+  KEY `level` (`level`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7337,6 +7453,8 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
   `ticket_per_item` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7344,7 +7462,9 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`),
   KEY `calendars_id` (`calendars_id`),
-  KEY `ticket_per_item` (`ticket_per_item`)
+  KEY `ticket_per_item` (`ticket_per_item`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7365,6 +7485,8 @@ CREATE TABLE `glpi_recurrentchanges` (
   `next_creation_date` timestamp NULL DEFAULT NULL,
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7372,7 +7494,9 @@ CREATE TABLE `glpi_recurrentchanges` (
   KEY `is_active` (`is_active`),
   KEY `changetemplates_id` (`changetemplates_id`),
   KEY `next_creation_date` (`next_creation_date`),
-  KEY `calendars_id` (`calendars_id`)
+  KEY `calendars_id` (`calendars_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_tickets
@@ -7700,10 +7824,14 @@ CREATE TABLE `glpi_tickettemplates` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,10,2,3,4,5,6]',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7717,10 +7845,14 @@ CREATE TABLE `glpi_changetemplates` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,9,10,7,4,11,12,5,8,6,14,13]',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_problemtemplates
@@ -7733,10 +7865,14 @@ CREATE TABLE `glpi_problemtemplates` (
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
   `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,7,2,3,4,5,8,6]',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_ticketvalidations
@@ -8204,9 +8340,13 @@ CREATE TABLE `glpi_devicebatterymodels` (
   `picture_front` text,
   `picture_rear` text,
   `pictures` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicebatteries
@@ -8288,9 +8428,13 @@ CREATE TABLE `glpi_devicefirmwaremodels` (
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `product_number` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `product_number` (`product_number`)
+  KEY `product_number` (`product_number`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_devicefirmwares
@@ -8946,10 +9090,14 @@ CREATE TABLE `glpi_domaintypes` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_domainrelations`;
@@ -8959,10 +9107,14 @@ CREATE TABLE `glpi_domainrelations` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_domains_items`;
@@ -8990,10 +9142,14 @@ CREATE TABLE `glpi_domainrecordtypes` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_domainrecords`;
@@ -9089,11 +9245,15 @@ CREATE TABLE `glpi_appliancetypes` (
   `name` varchar(255) NOT NULL DEFAULT '',
   `comment` text,
   `externalidentifier` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `externalidentifier` (`externalidentifier`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_applianceenvironments`;
@@ -9101,8 +9261,12 @@ CREATE TABLE `glpi_applianceenvironments` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_appliances_items_relations`;
@@ -9120,8 +9284,12 @@ DROP TABLE IF EXISTS `glpi_agenttypes`;
 CREATE TABLE `glpi_agenttypes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_agents`;
@@ -9426,13 +9594,17 @@ CREATE TABLE `glpi_pendingreasons` (
   `solutiontemplates_id` int unsigned NOT NULL DEFAULT '0',
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `itilfollowuptemplates_id` (`itilfollowuptemplates_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `solutiontemplates_id` (`solutiontemplates_id`),
-  KEY `calendars_id` (`calendars_id`)
+  KEY `calendars_id` (`calendars_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_pendingreasons_items`;
@@ -9446,10 +9618,14 @@ CREATE TABLE `glpi_pendingreasons_items` (
   `bump_count` int NOT NULL DEFAULT '0',
   `last_bump_date` timestamp NULL DEFAULT NULL,
   `previous_status` int DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`items_id`,`itemtype`),
   KEY `pendingreasons_id` (`pendingreasons_id`),
-  KEY `item` (`itemtype`,`items_id`)
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_manuallinks`;
@@ -9600,10 +9776,14 @@ CREATE TABLE `glpi_snmpcredentials` (
    `encryption` varchar(255) DEFAULT NULL,
    `priv_passphrase` varchar(255) DEFAULT NULL,
    `is_deleted` tinyint NOT NULL DEFAULT '0',
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `date_mod` timestamp NULL DEFAULT NULL,
    PRIMARY KEY (`id`),
    KEY `name` (`name`),
    KEY `snmpversion` (`snmpversion`),
-   KEY `is_deleted` (`is_deleted`)
+   KEY `is_deleted` (`is_deleted`),
+   KEY `date_creation` (`date_creation`),
+   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_categories`;
@@ -9618,10 +9798,14 @@ CREATE TABLE `glpi_forms_categories` (
     `ancestors_cache` longtext,
     `sons_cache` longtext,
     `comment` text,
+    `date_creation` timestamp NULL DEFAULT NULL,
+    `date_mod` timestamp NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
     KEY `level` (`level`),
-    KEY `forms_categories_id` (`forms_categories_id`)
+    KEY `forms_categories_id` (`forms_categories_id`),
+    KEY `date_creation` (`date_creation`),
+    KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_forms`;
@@ -9879,10 +10063,14 @@ CREATE TABLE `glpi_oauthclients` (
    `is_active` tinyint NOT NULL DEFAULT '1',
    `is_confidential` tinyint NOT NULL DEFAULT '1',
    `allowed_ips` text DEFAULT NULL,
+   `date_creation` timestamp NULL DEFAULT NULL,
+   `date_mod` timestamp NULL DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `id` (`id`),
    KEY `name` (`name`),
-   KEY `is_active` (`is_active`)
+   KEY `is_active` (`is_active`),
+   KEY `date_creation` (`date_creation`),
+   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;
@@ -9965,10 +10153,14 @@ CREATE TABLE `glpi_defaultfilters` (
   `is_active` tinyint NOT NULL DEFAULT '1',
   `comment` text DEFAULT NULL,
   `itemtype` varchar(255) DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `itemtype` (`itemtype`),
   KEY `name` (`name`),
-  KEY `is_active` (`is_active`)
+  KEY `is_active` (`is_active`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_webhooks`;
