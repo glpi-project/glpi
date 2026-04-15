@@ -1476,7 +1476,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $item->getFromResultSet($data);
-                if ($item->canViewItem()) {
+                if ($item->can($item->getID(), READ)) {
                     if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()])) {
                         //not planned
                         if (isset($data['notp_date'])) {
@@ -2065,7 +2065,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         global $CFG_GLPI;
 
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 

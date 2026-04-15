@@ -6629,7 +6629,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             // Second column TITLE
             $second_column = "<span class='b'>" . htmlescape($item->getName()) . "</span>&nbsp;";
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $second_column  = sprintf(
                     __s('%1$s (%2$s)'),
                     "<a id='" . htmlescape($item::class . $item->getID() . $rand) . "' href=\"" . htmlescape($item->getLinkURL()) . "\">$second_column</a>",
@@ -7070,7 +7070,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             $name = '<span class="fw-bold">' . htmlescape($item->getName()) . '</span>';
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $name  = sprintf(
                     __s('%1$s (%2$s)'),
                     '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
@@ -7569,7 +7569,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return [];
         }
 
-        if ($params['check_view_rights'] && !$this->canViewItem()) {
+        if ($params['check_view_rights'] && !$this->can($this->getID(), READ)) {
             return [];
         }
 
@@ -7656,7 +7656,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $followup->fields = $followup_row;
                 $followup->post_getFromDB();
 
-                if (!$params['check_view_rights'] || $followup->canViewItem()) {
+                if (!$params['check_view_rights'] || $followup->can($followup->getID(), READ)) {
                     $followup_row['can_edit'] = $followup->can($followup->getID(), UPDATE);
                     $followup_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
@@ -7695,7 +7695,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $tltask->fields = $task_row;
                 $tltask->post_getFromDB();
 
-                if (!$params['check_view_rights'] || $tltask->canViewItem()) {
+                if (!$params['check_view_rights'] || $tltask->can($tltask->getID(), READ)) {
                     $task_row['can_edit'] = $tltask->can($tltask->getID(), UPDATE);
                     $task_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
@@ -7879,7 +7879,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item['is_private'] = $document_item['is_private'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_edit'] = $document_obj->can($document_obj->getID(), UPDATE);
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];

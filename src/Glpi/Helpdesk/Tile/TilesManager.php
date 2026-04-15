@@ -333,7 +333,7 @@ final class TilesManager
             'tiles'         => $this->getTilesForItem($item),
             'itemtype_item' => $item::class,
             'items_id_item' => $item->getID(),
-            'editable'      => $item::canUpdate() && $item->canUpdateItem(),
+            'editable'      => $item->can($item->getID(), UPDATE),
             'info_text'     => $item->getTilesConfigInformationText(),
         ]);
     }

@@ -3295,8 +3295,7 @@ class Entity extends CommonTreeDropdown implements
             // Is not root entity
             $this->getId() !== 0
             // Editable
-            && static::canUpdate()
-            && $this->canUpdateItem()
+            && $this->can($this->getID(), UPDATE)
             // Has no tiles
             && count($tiles_manager->getTilesForItem($this)) === 0
         ) {

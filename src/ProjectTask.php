@@ -1208,7 +1208,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $ID = $item->getID();
 
-        if (!$item->canViewItem()) {
+        if (!$item->can($item->getID(), READ)) {
             return false;
         }
 
@@ -2235,7 +2235,7 @@ TWIG, $twig_params);
     {
         global $CFG_GLPI;
 
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 

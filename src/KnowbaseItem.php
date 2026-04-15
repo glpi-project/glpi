@@ -185,7 +185,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public function canComment()
     {
-        return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
+        return $this->can($this->getID(), READ) && Session::haveRight(self::$rightname, self::COMMENTS);
     }
 
     public static function getSearchURL($full = true)
@@ -2434,7 +2434,7 @@ TWIG, $twig_params);
         // Filter on canViewItem
         $ids = array_filter($ids, static function ($id) use ($kbi) {
             $kbi->getFromDB($id);
-            return $kbi->canViewItem();
+            return $kbi->can($kbi->getID(), READ);
         });
 
         // Avoid empty IN

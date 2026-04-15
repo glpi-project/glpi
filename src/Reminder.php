@@ -870,7 +870,7 @@ class Reminder extends CommonDBVisible implements
 
     public function getAsVCalendar()
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 

@@ -53,7 +53,7 @@ final class ShowEditTileFormController extends AbstractTileController
             $request->query->getString('tile_itemtype'),
             $request->query->getInt('tile_id'),
         );
-        if (!$tile::canUpdate() || !$tile->canUpdateItem()) {
+        if (!$tile->can($tile->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

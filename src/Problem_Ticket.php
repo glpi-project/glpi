@@ -349,7 +349,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         foreach ($iterator as $data) {
             $problem = new Problem();
             $problem->getFromDB($data['id']);
-            if ($problem->canViewItem()) {
+            if ($problem->can($problem->getID(), READ)) {
                 $problems[$data['id']] = $data;
             }
         }
@@ -375,7 +375,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         foreach ($iterator as $data) {
             $ticket = new Ticket();
             $ticket->getFromDB($data['id']);
-            if ($ticket->canViewItem()) {
+            if ($ticket->can($ticket->getID(), READ)) {
                 $tickets[$data['id']] = $data;
             }
         }
