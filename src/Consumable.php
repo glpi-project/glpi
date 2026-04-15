@@ -565,7 +565,7 @@ class Consumable extends CommonDBChild
             'item'            => new self(),
             'parent'          => $parent,
             'itemtype'        => self::class,
-            'can_edit'        => $parent->canUpdate() && $parent->canUpdateItem(),
+            'can_edit'        => $parent->canUpdate() && $parent->can($parent->getID(), UPDATE),
             'criteria_unused' => $criteria_unused,
             'criteria_used'   => $criteria_used,
             'count_unused'    => $count_unused,

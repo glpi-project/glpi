@@ -1980,7 +1980,7 @@ TWIG, $twig_params);
                 $interv[$key]["status"]   = $task->fields["percent_done"];
 
                 $ttask->getFromDB($data["id"]);
-                $interv[$key]["editable"] = $ttask->canUpdateItem();
+                $interv[$key]["editable"] = $ttask->can($ttask->getID(), UPDATE);
             }
         }
 

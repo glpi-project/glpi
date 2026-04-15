@@ -97,7 +97,7 @@ final class CriteriaFilter extends CommonDBChild
         $filter = self::getForItem($item);
         $itemtype = $item->getItemtypeToFilter();
         $criteria = $filter ? $filter->fields['search_criteria'] : self::getDefaultSearch($itemtype);
-        $can_edit = $item->canUpdateItem();
+        $can_edit = $item->can($item->getID(), UPDATE);
 
         // Force criteria into session
         // Even when specifying the criteria in $params, they are not taken into

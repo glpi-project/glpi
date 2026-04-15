@@ -624,7 +624,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $this->restoreInputAndDefaults($ID, $options);
 
-        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
+        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->can($this->getID(), UPDATE));
 
         if ($ID && in_array($this->fields['status'], static::getClosedStatusArray())) {
             $canupdate = false;
@@ -1855,7 +1855,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 // Can only update initial fields if no followup or task already added
-                if ($this->canUpdateItem()) {
+                if ($this->can($this->getID(), UPDATE)) {
                     $allowed_fields[] = 'content';
                     $allowed_fields[] = 'urgency';
                     $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
@@ -7578,7 +7578,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
-        $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], static::getClosedStatusArray());
+        $canupdate_parent = $this->can($this->getID(), UPDATE) && !in_array($this->fields['status'], static::getClosedStatusArray());
 
         //checks rights
         $restrict_fup = $restrict_task = [];
@@ -7657,7 +7657,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $followup->post_getFromDB();
 
                 if (!$params['check_view_rights'] || $followup->canViewItem()) {
-                    $followup_row['can_edit'] = $followup->canUpdateItem();
+                    $followup_row['can_edit'] = $followup->can($followup->getID(), UPDATE);
                     $followup_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -7696,7 +7696,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $tltask->post_getFromDB();
 
                 if (!$params['check_view_rights'] || $tltask->canViewItem()) {
-                    $task_row['can_edit'] = $tltask->canUpdateItem();
+                    $task_row['can_edit'] = $tltask->can($tltask->getID(), UPDATE);
                     $task_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -8034,7 +8034,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $can_requester = $item->canRequesterUpdateItem();
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
             'item'          => $item,
-            'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
+            'canupdate'     => (Session::getCurrentInterface() == "central" && $item->can($item->getID(), UPDATE)),
             'can_requester' => $can_requester,
         ]);
     }
@@ -11147,7 +11147,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
                     continue;
                 }
-                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
+                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->can($this->getID(), UPDATE)) {
                     continue;
                 }
 

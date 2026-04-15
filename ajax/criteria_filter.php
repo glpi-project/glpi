@@ -73,7 +73,7 @@ switch ($action) {
         }
 
         // Check rights, must be able to update parent item
-        if (!$item->canUpdateItem()) {
+        if (!$item->can($item->getID(), UPDATE)) {
             throw new AccessDeniedHttpException('You are not allowed to update this item');
         }
 
@@ -106,7 +106,7 @@ switch ($action) {
         }
 
         // Check rights, must be able to update parent item
-        if (!$item->canUpdateItem()) {
+        if (!$item->can($item->getID(), UPDATE)) {
             throw new AccessDeniedHttpException('You are not allowed to update this item');
         }
 

@@ -1030,7 +1030,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         TemplateRenderer::getInstance()->display('pages/setup/webhook/payload_editor.html.twig', [
             'item' => $this,
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
                 'candel' => false,
             ],
             'response_schema' => $response_schema,

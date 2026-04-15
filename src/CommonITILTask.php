@@ -1537,7 +1537,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $interv[$key]["status"]   = $parentitem->fields["status"];
                         $interv[$key]["priority"] = $parentitem->fields["priority"];
 
-                        $interv[$key]["editable"] = $item->canUpdateItem();
+                        $interv[$key]["editable"] = $item->can($item->getID(), UPDATE);
 
                         /// Specific for tickets
                         $interv[$key]["device"] = [];

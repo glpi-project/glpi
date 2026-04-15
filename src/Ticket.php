@@ -3693,7 +3693,7 @@ JAVASCRIPT;
         // check right used for this ticket
         $canupdate     = !$ID
                         || (Session::getCurrentInterface() == "central"
-                            && $this->canUpdateItem());
+                            && $this->can($this->getID(), UPDATE));
         $can_requester = $this->canRequesterUpdateItem();
         $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
@@ -5733,7 +5733,7 @@ JAVASCRIPT;
                 if (!$p['full_transaction']) {
                     $DB->beginTransaction();
                 }
-                if ($merge_target->canUpdateItem() && $ticket->can($id, DELETE)) {
+                if ($merge_target->can($merge_target->getID(), UPDATE) && $ticket->can($id, DELETE)) {
                     if (!$ticket->getFromDB($id)) {
                         //Cannot retrieve ticket. Abort/fail the merge
                         throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
