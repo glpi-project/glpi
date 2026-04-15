@@ -68,6 +68,8 @@ return RectorConfig::configure()
     ->withParallel(timeoutSeconds: 300)
     // handled by PHP-CS-Fixer with `fully_qualified_strict_types` rule ->withImportNames()
     ->withRules([
+        Utils\Rector\Rector\CanUpdateItemStandaloneRector::class,
+        Utils\Rector\Rector\CanViewItemStandaloneRector::class,
         CodeQuality\Assign\CombinedAssignRector::class,
         CodeQuality\BooleanAnd\RemoveUselessIsObjectCheckRector::class,
         CodeQuality\BooleanAnd\SimplifyEmptyArrayCheckRector::class,
