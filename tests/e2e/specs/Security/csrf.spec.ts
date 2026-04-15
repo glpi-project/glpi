@@ -35,7 +35,7 @@ import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 const external_origin = "https://not-my-origin.com";
-const same_origin = "https://my-origin.com"
+const same_origin = "https://my-origin.com";
 
 const post_cases = [
     // Test all possible "Sec-Fetch-Site" values
