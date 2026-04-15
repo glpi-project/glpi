@@ -209,18 +209,6 @@ class SNMPCredential extends CommonDBTM
         }
     }
 
-    public function post_getFromDB()
-    {
-        parent::post_getFromDB();
-        $key = new GLPIKey();
-        if (isset($this->fields['auth_passphrase'])) {
-            $this->fields['auth_passphrase'] = $key->decrypt($this->fields['auth_passphrase']);
-        }
-        if (isset($this->fields['priv_passphrase'])) {
-            $this->fields['priv_passphrase'] = $key->decrypt($this->fields['priv_passphrase']);
-        }
-    }
-
     protected function prepareInputs(array $input): array
     {
         $key = new GLPIKey();
