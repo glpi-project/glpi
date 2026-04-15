@@ -258,13 +258,6 @@ abstract class InventoryAsset
                 //keep raw values...
                 $this->raw_links[$known_key] = $val;
 
-                //do not process field if it's locked and from update process
-                foreach ($locks as $lock) {
-                    if ($key == $lock && !$this->item->isNewItem()) {
-                        continue 2;
-                    }
-                }
-
                 if ($key == "manufacturers_id" || $key == 'bios_manufacturers_id') {
                     $manufacturer = new Manufacturer();
                     unset($this->raw_links[$known_key]);
