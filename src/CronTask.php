@@ -2054,6 +2054,14 @@ TWIG, ['msg' => __('Last run list')]);
         }
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        if (isset($input['state']) && (int) $this->fields['state'] !== self::STATE_WAITING && (int) $input['state'] === self::STATE_WAITING) {
+            $input['error_count'] = 0;
+        }
+        return parent::prepareInputForUpdate($input);
+    }
+
     /**
      * A cron task that always throws an exception, used to test error handling of cron tasks
      *
