@@ -356,7 +356,7 @@ final class ResourceAccessor
     {
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         $item = self::getItemFromSchema($schema);
-        $force = $request_params['force'] ?? false;
+        $force = filter_var($request_params['force'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $input = ['id' => (int) $items_id];
         $purge = !$item->maybeDeleted() || $force;
         if (!$item->can($items_id, $purge ? PURGE : DELETE, $input)) {
