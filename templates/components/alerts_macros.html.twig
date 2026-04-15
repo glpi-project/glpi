@@ -31,7 +31,7 @@
  #}
 
 {% macro alert(alert_type = "", title = "", messages = [], icon = "", important = false) %}
-   {% do call('Toolbox::deprecated', ['Twig alert macros are deprecated. Use the Alert Twig component instead.']) %}
+   {#{% do call('Toolbox::deprecated', ['Twig alert macros are deprecated. Use the Alert Twig component instead.']) %}#}
    {{ component('Alert', {
       type: alert_type,
       title: title,
