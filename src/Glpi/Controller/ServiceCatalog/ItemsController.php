@@ -89,8 +89,7 @@ final class ItemsController extends AbstractController
         $sort_strategy = $request->query->getEnum(
             'sort_strategy',
             SortStrategyEnum::class,
-            SortStrategyEnum::getDefault()
-        );
+        ) ?? SortStrategyEnum::getDefault();
 
         // Build session + url params
         $session = Session::getCurrentSessionInfo();
@@ -129,6 +128,7 @@ final class ItemsController extends AbstractController
             [
                 'category_id'       => $category_id,
                 'filter'            => $filter,
+                'sort_strategy'     => $sort_strategy->value,
                 'ancestors'         => $ancestors,
                 'items'             => $result['items'],
                 'total'             => $result['total'],

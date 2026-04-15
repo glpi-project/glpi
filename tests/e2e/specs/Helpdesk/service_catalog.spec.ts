@@ -573,4 +573,91 @@ test.describe('Service Catalog Page - Isolated', () => {
         }
         await expect(service_catalog.getItemRegion(`Form ${String.fromCharCode(65 + forms_per_page)} ${uuid}`)).toBeHidden();
     });
+
+    test(`Sort order is preserved when navigating into a category`, async ({page, profile, api, entity}) => {
+        const uuid = randomUUID();
+
+        // Disable expanded service catalog to ensure we are testing the sort order persistence when navigating, not the sort order of the category tree
+        await api.updateItem('Entity', entity_id, {'expand_service_catalog': false});
+
+        // Create a category with forms A, B, C
+        const category_id = await createCategory(api, `Sort test category ${uuid}`);
+        await createActiveForm(api, `A form ${uuid}`, entity_id, {
+            'forms_categories_id': category_id,
+        });
+        await createActiveForm(api, `B form ${uuid}`, entity_id, {
+            'forms_categories_id': category_id,
+        });
+        await createActiveForm(api, `C form ${uuid}`, entity_id, {
+            'forms_categories_id': category_id,
+        });
+
+        // Go to service catalog
+        await profile.set(Profiles.SelfService);
+        await entity.switchToWithoutRecursion(entity_id);
+        const service_catalog = new ServiceCatalogPage(page);
+        await service_catalog.goto();
+
+        // Change sort order to reverse alphabetical
+        await service_catalog.doChangeSortOrder('Reverse alphabetical');
+        await expect(page.getByRole('textbox', {name: 'Reverse alphabetical'})).toBeVisible();
+
+        // Navigate into the category
+        const items_response = service_catalog.waitForItemsResponse();
+        await service_catalog.doGoToItem(`Sort test category ${uuid}`);
+        await items_response;
+
+        // Verify sort order is still reverse alphabetical after navigation
+        await expect(page.getByRole('textbox', {name: 'Reverse alphabetical'})).toBeVisible();
+        const links = service_catalog.getFormsRegion().getByRole('link');
+        await expect(links.nth(0).getByRole('heading')).toContainText(`C form ${uuid}`);
+        await expect(links.nth(1).getByRole('heading')).toContainText(`B form ${uuid}`);
+        await expect(links.nth(2).getByRole('heading')).toContainText(`A form ${uuid}`);
+    });
+
+    test(`Changing sort order stays in the current subcategory`, async ({page, profile, api, entity}) => {
+        const uuid = randomUUID();
+
+        // Disable expanded service catalog to ensure we are testing the sort order persistence when navigating, not the sort order of the category tree
+        await api.updateItem('Entity', entity_id, {'expand_service_catalog': false});
+
+        // Create a category with forms A, B, C
+        const category_id = await createCategory(api, `Sort stay category ${uuid}`);
+        await createActiveForm(api, `A form ${uuid}`, entity_id, {
+            'forms_categories_id': category_id,
+        });
+        await createActiveForm(api, `B form ${uuid}`, entity_id, {
+            'forms_categories_id': category_id,
+        });
+        await createActiveForm(api, `C form ${uuid}`, entity_id, {
+            'forms_categories_id': category_id,
+        });
+
+        // Go to service catalog
+        await profile.set(Profiles.SelfService);
+        await entity.switchToWithoutRecursion(entity_id);
+        const service_catalog = new ServiceCatalogPage(page);
+        await service_catalog.goto();
+
+        // Navigate into the category first
+        const items_response = service_catalog.waitForItemsResponse();
+        await service_catalog.doGoToItem(`Sort stay category ${uuid}`);
+        await items_response;
+
+        // Verify we are inside the category (breadcrumb shows it)
+        const breadcrumb_nav = service_catalog.getCategoryBreadcrumbNav();
+        await expect(breadcrumb_nav.getByRole('link', {name: 'Service catalog'})).toBeVisible();
+
+        // Change sort order while inside the category
+        await service_catalog.doChangeSortOrder('Alphabetical');
+
+        // Verify we are still inside the category (breadcrumb must still show "Service catalog" link)
+        await expect(breadcrumb_nav.getByRole('link', {name: 'Service catalog'})).toBeVisible();
+
+        // Verify items are sorted alphabetically inside the category
+        const links = service_catalog.getFormsRegion().getByRole('link');
+        await expect(links.nth(0).getByRole('heading')).toContainText(`A form ${uuid}`);
+        await expect(links.nth(1).getByRole('heading')).toContainText(`B form ${uuid}`);
+        await expect(links.nth(2).getByRole('heading')).toContainText(`C form ${uuid}`);
+    });
 });

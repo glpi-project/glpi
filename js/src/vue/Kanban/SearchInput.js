@@ -407,7 +407,7 @@ export default class SearchInput {
             if (tag_color_override.indexOf('#') === 0) {
                 tag_color_override = tag_color_override.replace(/[^#]*#([0-9a-f]{6})([0-9a-f]{2})?/i, '#$1');
             }
-            style_overrides = tag_color_override ? `border-color: ${tag_color_override} !important; background-color: unset !important;` : '';
+            style_overrides = tag_color_override ? `border-color: ${tag_color_override} !important; background-color: unset !important; color: inherit !important` : '';
         } else {
             style_overrides = tag_color_override ? `background-color: ${tag_color_override} !important` : '';
         }

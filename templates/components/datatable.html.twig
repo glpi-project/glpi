@@ -30,6 +30,60 @@
  # ---------------------------------------------------------------------
  #}
 
+{#
+/**
+ * This component renders a dynamic datatable with support for sorting,
+ * filtering, pagination, bulk actions, and various data formatters.
+ *
+ * Available variables:
+ *
+ * - entries: Associative rows to display; each row uses column keys as field names.
+ * - columns: Column definitions as 'colkey' => 'label pairs. May be extended with
+ *   'raw_header' (boolean), 'nosort' (boolean), 'no_filter' (boolean) and
+ *   'filter_formatter' (string) options.
+ * - total_number: Total count of all rows before any filtering.
+ * - filtered_number: Count of rows after active filters are applied.
+ * - formatters: Column rendering types to control cell output. Supported types are:
+ *   'maintext', 'longtext', 'progress', 'date', 'datetime', 'duration', 'bytesize',
+ *   'number', 'integer', 'raw_html', 'avatar', 'badge', 'yesno'.
+ * - footers: Summary rows displayed in table footer; keys correspond to column keys.
+ *
+ * - datatable_id: HTML id attribute for the table element. Generated automatically
+ *   if not provided.
+ * - datatable_aria_label: Accessible label for the table element.
+ * - table_class_style: Additional CSS classes applied to the table. Defaults to
+ *   'table-hover'.
+ * - container_class: Additional CSS classes applied to the table container wrapper.
+ * - row_class: Additional CSS classes applied to all table body rows.
+ * - footer_class: Additional CSS classes applied to the table footer element.
+ * - no_header: Hide all column headers when set to true. Defaults to false.
+ * - super_header: Optional header row spanning all columns. Can be a string or an
+ *   array with 'label' (string) and optional 'is_raw' (boolean) keys.
+ *
+ * - nosort: Disable sorting on all columns. Defaults to false.
+ * - sort: The currently sorted column key.
+ * - order: Sort direction: 'ASC' or 'DESC'. Defaults to 'ASC'.
+ *
+ * - nofilter: Hide the filter row and filter controls. Defaults to false.
+ * - filters: Active filter values as 'colkey' => 'value' pairs.
+ * - columns_values: Dropdown options for filter row..
+ * - items_id: Context ID sent with filter form submissions.
+ * - additional_params: Query string parameters preserved in sort, filter, and
+ *   pagination links for context.
+ *
+ * - use_pager: Enable pagination bar. Auto-detected if 'start', 'limit', and
+ *   'filtered_number' are provided. Defaults to false.
+ * - start: Pagination offset; the row number to start from.
+ * - limit: Maximum rows per page; also shown in "Entries to show" dropdown.
+ *
+ * - csv_url: URL endpoint for CSV export. When provided, an Export button is displayed.
+ *
+ * - showmassiveactions: Enable row checkboxes and bulk action toolbar. Defaults to false.
+ * - massiveactionparams: Required when 'showmassiveactions' is true. Must include
+ *   'container' key and optional 'action_button_classes' key.
+ */
+#}
+
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
