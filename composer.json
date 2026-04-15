@@ -31,7 +31,7 @@
         "ext-simplexml": "*",
         "ext-tokenizer": "*",
         "ext-zlib": "*",
-        "altcha-org/altcha": "^1.3",
+        "altcha-org/altcha": "^2.0",
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^3.0",
         "donatj/phpuseragentparser": "^1.11",

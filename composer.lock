@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6bb108deeb19673d434907a4e79e083",
+    "content-hash": "a5684be8987feaf561c3423aeae70f79",
     "packages": [
         {
             "name": "altcha-org/altcha",
-            "version": "v1.3.3",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/altcha-org/altcha-lib-php.git",
-                "reference": "9a9b98c48dea0b2e8c353ea991d5f5627cbdab36"
+                "reference": "8fc4a698b159824d7c1d729dc08e5c0687b494a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/9a9b98c48dea0b2e8c353ea991d5f5627cbdab36",
-                "reference": "9a9b98c48dea0b2e8c353ea991d5f5627cbdab36",
+                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/8fc4a698b159824d7c1d729dc08e5c0687b494a9",
+                "reference": "8fc4a698b159824d7c1d729dc08e5c0687b494a9",
                 "shasum": ""
             },
             "require": {
@@ -46,11 +46,12 @@
                     "email": "536331+ovx@users.noreply.github.com"
                 }
             ],
+            "description": "A lightweight PHP library for creating and verifying ALTCHA challenges.",
             "support": {
                 "issues": "https://github.com/altcha-org/altcha-lib-php/issues",
-                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.3.3"
+                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v2.0.0"
             },
-            "time": "2026-04-02T12:13:35+00:00"
+            "time": "2026-04-07T11:35:25+00:00"
         },
         {
             "name": "apereo/phpcas",
