@@ -1687,7 +1687,7 @@ class MassiveAction
                     $item->getFromDB($id);
 
                     // Check rights
-                    if (!$item->canUpdateItem()) {
+                    if (!$item->can($item->getID(), UPDATE)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;

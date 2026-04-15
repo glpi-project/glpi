@@ -378,7 +378,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'uploader' => $this->fields['users_id'] > 0 ? getUserLink($this->fields["users_id"]) : '',
             'uploaded_files' => self::getUploadedFiles(),
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 

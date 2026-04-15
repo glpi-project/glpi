@@ -623,7 +623,7 @@ trait PlanningEvent
                                         . "?action=edit_event_form"
                                         . "&itemtype=$itemtype"
                                         . "&id=" . $data['id'],
-                        'editable'         => $event_obj->canUpdateItem(),
+                        'editable'         => $event_obj->can($event_obj->getID(), UPDATE),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
                                           ? $begin
