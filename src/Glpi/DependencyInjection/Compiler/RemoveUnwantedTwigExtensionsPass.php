@@ -55,8 +55,6 @@ final class RemoveUnwantedTwigExtensionsPass implements CompilerPassInterface
      */
     private const UNWANTED_EXTENSION_IDS = [
         'twig.extension.routing',       // conflicts with Glpi\Application\View\Extension\RoutingExtension (path/url)
-        'twig.extension.httpfoundation',
-        'twig.extension.httpkernel',
         'twig.extension.assets',
         'twig.extension.form',
         'twig.extension.weblink',
