@@ -267,7 +267,7 @@ class Session
     private static function reset(): void
     {
         // Restart GLPI session : complete destroy to prevent lost datas
-        $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+        $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS',
             'glpiskipMaintenance',
             'glpi_remote_user',
         ];

@@ -270,12 +270,7 @@ TWIG, $twig_params);
                     <form method="post" action="{{ 'Contract_Supplier'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
-<<<<<<< HEAD
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                            {{ fields.dropdownField('Supplier', 'suppliers_id', 0, __('Add a supplier'), {
-=======
                             {{ fields.dropdownField('Supplier', 'suppliers_id', 0, null, {
->>>>>>> c08324bf46 (Remove CSRF tokens)
                                 used: used,
                                 entity: contract.fields['entities_id'],
                                 entity_sons: contract.fields['is_recursive']
