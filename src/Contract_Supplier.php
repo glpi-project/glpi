@@ -271,6 +271,7 @@ TWIG, $twig_params);
                         <div class="d-flex">
                             <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
                             {{ fields.dropdownField('Supplier', 'suppliers_id', 0, __('Add a supplier'), {
+                            {{ fields.dropdownField('Supplier', 'suppliers_id', 0, null, {
                                 used: used,
                                 entity: contract.fields['entities_id'],
                                 entity_sons: contract.fields['is_recursive']
