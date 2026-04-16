@@ -42,9 +42,10 @@ use function Safe\preg_match;
  *
  * @return bool
  */
-function isCommandLine()
+function isCommandLine(): bool
 {
-    return (PHP_SAPI == 'cli');
+    global $GLPI_IS_COMMAND_LINE;
+    return $GLPI_IS_COMMAND_LINE ?? (PHP_SAPI === 'cli');
 }
 
 /**
