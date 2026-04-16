@@ -289,7 +289,7 @@ class APIRest extends API
                         $response = $this->getItems($itemtype, $this->parameters, $totalcount);
 
                         //add pagination headers
-                        $range = [0, $_SESSION['glpilist_limit']];
+                        $range = [0, $_SESSION['glpilist_limit'] - 1];
                         if (isset($this->parameters['range'])) {
                             $range = explode("-", $this->parameters['range']);
                         }
