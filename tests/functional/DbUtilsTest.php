@@ -906,7 +906,7 @@ class DbUtilsTest extends DbTestCase
     {
         // Use a subclass that overrides isPrivilegedContext() to simulate a
         // non-CLI, non-cron context (unreachable in PHPUnit because PHP_SAPI === 'cli').
-        $instance = new class () extends \DbUtils {
+        $instance = new class extends \DbUtils {
             protected function isPrivilegedContext(): bool
             {
                 return false;
