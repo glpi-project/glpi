@@ -924,7 +924,7 @@ class Agent extends CommonDBTM
             $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
             /**
              * @var string $plugin
-             * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+             * @phpstan-var array{label: string, item_action: bool, render_callback: callable, action_callback: callable}[] $actions
              */
             foreach ($plugin_actions as $plugin => $actions) {
                 if (is_array($actions) && Plugin::isPluginActive($plugin)) {
