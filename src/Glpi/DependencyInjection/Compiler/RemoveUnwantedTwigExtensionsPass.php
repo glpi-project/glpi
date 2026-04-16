@@ -53,8 +53,10 @@ final class RemoveUnwantedTwigExtensionsPass implements CompilerPassInterface
      * Twig extension tag to unload.
      * Can be listed by doing `bin/console symfony:debug:container --tag=twig.extension`
      */
-    private const UNWANTED_EXTENSION_IDS = [
+    private const array UNWANTED_EXTENSION_IDS = [
         'twig.extension.routing',       // conflicts with Glpi\Application\View\Extension\RoutingExtension (path/url)
+        'twig.extension.httpfoundation',
+        'twig.extension.httpkernel',
         'twig.extension.assets',
         'twig.extension.form',
         'twig.extension.weblink',
@@ -69,12 +71,19 @@ final class RemoveUnwantedTwigExtensionsPass implements CompilerPassInterface
         'workflow.twig_extension',
     ];
 
+    private const array ALLOWED_IN_DEV = [
+        'twig.extension.debug',
+        'twig.extension.debug.stopwatch',
+        'twig.extension.profiler',
+        'twig.extension.httpkernel', // Required by the SF Profiler
+    ];
+
     public function process(ContainerBuilder $container): void
     {
         foreach (self::UNWANTED_EXTENSION_IDS as $id) {
             // We allow debug extensions in dev env
             if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
-                if (in_array($id, ['twig.extension.debug', 'twig.extension.debug.stopwatch', 'twig.extension.profiler'])) {
+                if (in_array($id, self::ALLOWED_IN_DEV)) {
                     continue;
                 }
             }
