@@ -1237,7 +1237,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 }
                 $timestamp = time();
                 $headers = [
-                    'X-GLPI-signature' => self::getSignature($body . $timestamp, (new GLPIKey())->decrypt($webhook->fields['secret'])),
+                    'X-GLPI-signature' => self::getSignature($body . $timestamp, (string) (new GLPIKey())->decrypt($webhook->fields['secret'])),
                     'X-GLPI-timestamp' => $timestamp,
                 ];
 

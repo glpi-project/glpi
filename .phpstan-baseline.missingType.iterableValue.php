@@ -30932,12 +30932,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Webhook\\:\\:validateCRAChallenge\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method WifiNetwork\\:\\:displaySpecificTypeField\\(\\) has parameter \\$field with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
