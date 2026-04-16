@@ -74,13 +74,13 @@
                                 (constant('CronTask::STATE_DISABLE')): __('Disabled'),
                                 (constant('CronTask::STATE_WAITING')): __('Scheduled')
                             } %}
-                            {% if item.fields['state'] === constant('CronTask::STATE_ERROR') %}
+                            {% if item.fields['state'] == constant('CronTask::STATE_ERROR') %}
                                 {% set state_options = state_options + {
-                                    (constant('CronTask::STATE_ERROR')): __('Error')
+                                    (constant('CronTask::STATE_ERROR')): _n('Error', 'Errors', 1)
                                 } %}
                             {% endif %}
                             {{ fields.dropdownArrayField('state', item.fields['state'], state_options, __('Status'), {
-                                add_field_html: item.fields['state'] === constant('CronTask::STATE_ERROR') ? '<span class="text-danger ms-2">' ~ __('This action has repeatedly failed and needs manual intervention') ~ '</span>' : ''
+                                add_field_html: item.fields['state'] == constant('CronTask::STATE_ERROR') ? '<span class="text-danger ms-2">' ~ __('This action has repeatedly failed and needs manual intervention') ~ '</span>' : ''
                             }) }}
 
                             {# Run mode #}

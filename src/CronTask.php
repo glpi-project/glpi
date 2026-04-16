@@ -41,8 +41,8 @@ use Glpi\Event;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
-
 use Symfony\Component\ErrorHandler\Error\FatalError;
+
 use function Safe\filemtime;
 use function Safe\glob;
 use function Safe\ini_get;
@@ -355,7 +355,7 @@ class CronTask extends CommonDBTM
 
         if ($consecutive_errors === 0) {
             // No error, normal scheduling
-            $next_run = new DateTime($this->fields['lastrun']);
+            $next_run = new DateTime($this->fields['lastrun'] ?? 'now');
             $next_run->modify('+' . $this->fields['frequency'] . ' seconds');
             return $next_run;
         }
