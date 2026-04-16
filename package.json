@@ -37,7 +37,7 @@
         "@tiptap/pm": "^3.22.3",
         "@tiptap/starter-kit": "^3.22.3",
         "@tiptap/suggestion": "^3.22.3",
-        "altcha": "^2.3.0",
+        "altcha": "^3.0.2",
         "animate.css": "^4.1.1",
         "cropperjs": "^2.1.1",
         "cytoscape": "^3.33.2",
