@@ -37,7 +37,6 @@
     <div>
         <form method="post" action="{{ 'KnowbaseItem'|itemtype_form_path }}">
             <input type="hidden" name="knowbaseitems_id" value="{{ id }}">
-            {{ fields.csrfField() }}
             <div class="d-flex flex-column gap-2">
                 {{ fields.dropdownItemTypes('_type', '', __('Add a target'), {
                     types: ['Entity', 'Group', 'Profile', 'User'],
@@ -182,7 +181,6 @@
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Requested-With': 'XMLHttpRequest',
-                            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                         },
                     }
                 );

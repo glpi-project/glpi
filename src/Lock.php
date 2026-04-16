@@ -1076,11 +1076,7 @@ TWIG, $twig_params);
         }
 
         // Close the custom form used for the unlock item checkboxes (not using massive actions)
-        // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-            </form>
-TWIG);
+        echo "</form>";
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

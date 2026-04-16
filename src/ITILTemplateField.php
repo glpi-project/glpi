@@ -259,7 +259,6 @@ abstract class ITILTemplateField extends CommonDBChild
                         <div class="alert alert-info">{{ task_order_label }}</div>
                     {% endif %}
                     <form name="itiltemplatehidden_form{{ rand }}" method="post" action="{{ form_url }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden(items_id_field, id) }}
                         <div class="d-flex justify-content-center flex-wrap">
                             {{ fields.dropdownArrayField('num', 0, fields, null, {

@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, getAjaxCsrfToken, glpi_toast_error, uniqid */
+/* global _, glpi_toast_error, uniqid */
 
 /**
  * Generic file uploader with drag & drop support.
@@ -162,7 +162,6 @@ export class FileUploader
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 },
                 body: formData,
             }
@@ -378,7 +377,6 @@ export class FileUploader
 
         xhr.open('POST', `${CFG_GLPI.root_doc}/ajax/fileupload.php`);
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
         xhr.send(formData);
     }
 

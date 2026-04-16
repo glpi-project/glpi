@@ -122,7 +122,6 @@ class Ticket_Contract extends CommonDBRelation
                     <form method="post" action="{{ 'Ticket_Contract'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="{{ item_a_fkey }}" value="{{ id }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField(linked_itemtype, linked_itemtype|itemtype_foreign_key, 0, null, {
                                 used: used,
                                 displaywith: ['id'],

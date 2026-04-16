@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_confirm_danger, getAjaxCsrfToken */
+/* global glpi_toast_error, glpi_confirm_danger */
 
 import { post } from "/js/modules/Ajax.js";
 

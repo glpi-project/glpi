@@ -65,7 +65,6 @@
                         {% if item.getType() == 'Ticket' %}
                             {{ inputs.hidden('tickets_id', item.getID()) }}
                         {% endif %}
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                     </div>
                 </form>
             </div>
@@ -101,7 +100,6 @@
                             {{ inputs.hidden('tickets_id', item.getID()) }}
                             {{ inputs.hidden('documentcategories_id', config('documentcategories_id_forticket')) }}
                         {% endif %}
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                     </form>
                 </div>
             </div>

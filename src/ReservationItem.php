@@ -351,7 +351,6 @@ class ReservationItem extends CommonDBChild
                     <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2"></i>
                     {{ toggle_reservable_label }}
                 </button>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             </form>
             </div>
 TWIG, $twig_params);
@@ -689,7 +688,7 @@ TWIG, $twig_params);
         }
 
         echo "<input type='hidden' name='id' value=''>";
-        echo "</form>";// No CSRF token needed
+        echo "</form>";
         echo "</div>";
     }
 

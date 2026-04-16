@@ -153,7 +153,6 @@
         </div>
 
         <input type="hidden" name="json" value="{{ json }}" />
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
         {% for skipped_form_id in preview.getSkippedForms()|keys %}
             <input type="hidden" name="skipped_forms[]" value="{{ skipped_form_id }}" />

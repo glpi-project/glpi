@@ -66,7 +66,6 @@
             {% do call([item, 'showSpecificCriteriasForPreview'], [_post]) %}
         </div>
         <div class="card-footer d-flex flex-row-reverse">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
             <input type="hidden" name="{{ rules_id_field }}" value="{{ rules_id }}"/>
             <input type="hidden" name="sub_type" value="{{ item.getType() }}"/>
             <button type="submit" name="test_rule" class="btn btn-primary">

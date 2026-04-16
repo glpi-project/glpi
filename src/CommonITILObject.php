@@ -4303,7 +4303,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     if ($item->getFromDB($id)) {
                         $input = $ma->getInput();
                         unset($input['itemtype']);
-                        unset($input['_glpi_csrf_token']);
                         $input[$item->getForeignKeyField()] = $id;
                         if (count($ids) > 1) {
                             // Avoid the "The user xxx is busy at the selected timeframe"

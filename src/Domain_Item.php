@@ -245,7 +245,6 @@ class Domain_Item extends CommonDBRelation
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domain.getID()) }}
 
                         <div class="d-flex">
@@ -550,7 +549,6 @@ TWIG, $twig_params);
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('entities_id', entity) }}
                         {{ inputs.hidden('is_recursive', is_recursive ? '1' : '0') }}
                         {{ inputs.hidden('itemtype', item.getType()) }}

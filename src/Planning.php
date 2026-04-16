@@ -892,7 +892,6 @@ JAVASCRIPT;
                     display_emptychoice: true,
                     rand: rand
                 }) }}
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                 <script>
                     $(() => {
                         $('#dropdown_planning_type{{ rand }}').on('change', function() {

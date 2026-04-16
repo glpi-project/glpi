@@ -3874,8 +3874,6 @@ JAVASCRIPT
         $btoption = '',
         $confirm = ''
     ) {
-
-        $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
         $fields['_glpi_simple_form'] = 1;
         $button                      = $btname;
         if (!is_array($btname)) {
@@ -3955,7 +3953,7 @@ JAVASCRIPT
 
 
     /**
-     * Create a close form part including CSRF token
+     * Create a close form part.
      *
      * @param bool $display Display or return string (default true)
      *
@@ -3966,9 +3964,7 @@ JAVASCRIPT
      **/
     public static function closeForm($display = true)
     {
-        $out = Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-
-        $out .= "</form>";
+        $out = "</form>";
         if ($display) {
             echo $out;
             return true;

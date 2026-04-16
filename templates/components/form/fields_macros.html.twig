@@ -454,7 +454,7 @@
 {% endmacro %}
 
 {% macro csrfField() %}
-    {{ _self.hiddenField('_glpi_csrf_token', csrf_token()) }}
+   {% do call('Toolbox::deprecated', ['Csrf protection is now handled without tokens.']) %}
 {% endmacro %}
 
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}

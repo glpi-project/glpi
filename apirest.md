@@ -118,7 +118,6 @@ $ curl -X GET \
    "session": {
       'glpi_plugins': ...,
       'glpicookietest': ...,
-      'glpicsrftokens': ...,
       ...
    }
 }
@@ -420,7 +419,6 @@ $ curl -X GET \
       'session': {
          'glpi_plugins': ...,
          'glpicookietest': ...,
-         'glpicsrftokens': ...,
          ...
       }
    }

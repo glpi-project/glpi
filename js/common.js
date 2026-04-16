@@ -1297,27 +1297,15 @@ function initTooltips(container) {
     );
 }
 
-/*
- * Sends the CSRF token in ajax POST requests headers.
- */
-$(document).ajaxSend(
-    function(event, xhr, settings) {
-        if (settings.type !== 'POST') {
-            return;
-        }
-
-        xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
-    }
-);
-
 /**
  * Returns CSRF token that can be used for AJAX requests.
  *
- * @returns {string|null}
+ * @deprecated
+ * @returns {string}
  */
 function getAjaxCsrfToken() {
-    const meta  = document.querySelector('meta[property="glpi:csrf_token"]');
-    return meta !== null ? meta.getAttribute('content') : null;
+    console.warn('Csrf protection is now handled without tokens.');
+    return "";
 }
 
 // init tooltips

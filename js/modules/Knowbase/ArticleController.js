@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, getAjaxCsrfToken, bootstrap */
+/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, bootstrap */
 
 import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
@@ -911,7 +911,6 @@ export class GlpiKnowbaseArticleController
             add: '1',
             name: title,
             answer: answer,
-            _glpi_csrf_token: getAjaxCsrfToken(),
         };
 
         for (const [key, value] of Object.entries(fields)) {

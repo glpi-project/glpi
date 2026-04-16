@@ -175,9 +175,6 @@ describe('Object Lock', () => {
             };
         });
         const fetch_spy = jest.spyOn(window, 'fetch');
-        window.getAjaxCsrfToken = jest.fn(() => {
-            return 'token';
-        });
 
         initObjectLock({
             id: 3450,
@@ -196,7 +193,6 @@ describe('Object Lock', () => {
             headers: expect.objectContaining({
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded;',
-                'X-Glpi-Csrf-Token': 'token'
             })
         }));
     });

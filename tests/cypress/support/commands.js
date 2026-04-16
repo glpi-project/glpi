@@ -47,7 +47,6 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
         const $html = Cypress.$(body);
 
         // Parse page
-        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
         const username_input = $html.find('#login_name').prop('name');
         const password_input = $html.find('#login_password').prop('name');
 
@@ -59,7 +58,6 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             body: {
                 [username_input]: username,
                 [password_input]: password,
-                _glpi_csrf_token: csrf,
             }
         });
     });
@@ -73,16 +71,6 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
  */
 Cypress.Commands.add('logout', () => {
     cy.request('/front/logout.php');
-});
-
-Cypress.Commands.add('getCsrfToken', () => {
-    // Load any light page that have a form
-    return cy.request('/front/preference.php').its('body').then((body) => {
-        // Parse page
-        const $html = Cypress.$(body);
-        const csrf = $html.find('input[name=_glpi_csrf_token]').val();
-        return csrf;
-    });
 });
 
 /**
@@ -104,40 +92,33 @@ Cypress.Commands.add('changeProfile', (profile) => {
     ]);
     const profile_id = profiles.get(profile);
 
-    cy.getCsrfToken().then((token) => {
-        // Send change profile request
-        cy.request({
-            method: 'POST',
-            url: '/Session/ChangeProfile',
-            form: true,
-            body: {
-                id: profile_id,
-                _glpi_csrf_token: token,
-            }
-        });
+    // Send change profile request
+    cy.request({
+        method: 'POST',
+        url: '/Session/ChangeProfile',
+        form: true,
+        body: {
+            id: profile_id,
+        }
     });
 });
 
 Cypress.Commands.add('changeEntity', (entity, is_recursive = false) => {
-    cy.getCsrfToken().then((token) => {
-        const params = {
-            _glpi_csrf_token: token,
-        };
+    const params = {};
 
-        if (entity == 'all') {
-            params['full_structure'] = true;
-        } else {
-            params['id'] = entity;
-            params['is_recursive'] = is_recursive;
-        }
+    if (entity == 'all') {
+        params['full_structure'] = true;
+    } else {
+        params['id'] = entity;
+        params['is_recursive'] = is_recursive;
+    }
 
-        // Send change profile request
-        cy.request({
-            method: 'POST',
-            url: '/Session/ChangeEntity',
-            form: true,
-            body: params
-        });
+    // Send change profile request
+    cy.request({
+        method: 'POST',
+        url: '/Session/ChangeEntity',
+        form: true,
+        body: params
     });
 });
 
@@ -461,21 +442,18 @@ Cypress.Commands.add('enableDebugMode', () => {
         return;
     }
 
-    cy.getCsrfToken().then((csrf) => {
-        cy.request({
-            method: 'POST',
-            url: '/ajax/switchdebug.php',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': csrf,
-            },
-            body: {
-                'debug': 'on',
-            },
-        }).then(() => {
-            cy.reload();
-        });
+    cy.request({
+        method: 'POST',
+        url: '/ajax/switchdebug.php',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: {
+            'debug': 'on',
+        },
+    }).then(() => {
+        cy.reload();
     });
 });
 
@@ -489,21 +467,18 @@ Cypress.Commands.add('disableDebugMode', () => {
         return;
     }
 
-    cy.getCsrfToken().then((csrf) => {
-        cy.request({
-            method: 'POST',
-            url: '/ajax/switchdebug.php',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': csrf,
-            },
-            body: {
-                'debug': 'off',
-            },
-        }).then(() => {
-            cy.reload();
-        });
+    cy.request({
+        method: 'POST',
+        url: '/ajax/switchdebug.php',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: {
+            'debug': 'off',
+        },
+    }).then(() => {
+        cy.reload();
     });
 });
 

@@ -697,7 +697,6 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                         <div class="d-flex">
                             <input type="hidden" name="items_id" value="{{ item.getID() }}">
                             <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('NetworkName', 'addressID', 0, null, {
                                 no_label: true,
                                 condition: {

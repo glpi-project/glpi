@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
+/* global glpi_toast_error, glpi_toast_info */
 
 import { post } from "/js/modules/Ajax.js";
 

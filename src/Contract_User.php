@@ -138,7 +138,6 @@ class Contract_User extends CommonDBRelation
                     <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(user) }}">
                         <input type="hidden" name="items_id" value="{{ user.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
                                 used: used,

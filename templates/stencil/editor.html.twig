@@ -34,7 +34,6 @@
 
 <div id="#stencil-editor-{{ rand }}">
     <form id="stencil-editor-form-{{ rand }}" method='post' class="mb-2" action="{{ path('front/stencil.form.php') }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
 
         {% if id > 0 %}
             <input type="hidden" name="id" value="{{ id }}">

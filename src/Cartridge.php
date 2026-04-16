@@ -964,7 +964,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                             {% set btn %}
                                 <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ add_label }}</span></button>
                                 <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% endset %}
                             {{ fields.htmlField('', btn, null, {
                                 no_label: true,
@@ -1071,7 +1070,6 @@ TWIG, $twig_params);
                                 {% set btn_install %}
                                     <input type="hidden" name="printers_id" value="{{ printer.getID() }}">
                                     <input type="submit" name="install" value="{{ install_label }}" class="btn btn-primary">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                 {% endset %}
                                 {{ fields.htmlField('', btn_install, null, {
                                     no_label: true,

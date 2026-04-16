@@ -49,7 +49,6 @@
                 <input type="hidden" name="is_recursive" value="{{ item.isRecursive() ? 1 : 0 }}" />
                 <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                 <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                 {% set can_screenshot = call('Document::isValidDoc', ['.png']) is not empty %}

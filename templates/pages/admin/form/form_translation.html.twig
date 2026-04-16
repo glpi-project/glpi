@@ -190,7 +190,6 @@
             data-ajax-submit
             data-ajax-submit-url="{{ path('Form/Translation/' ~ form.getID() ~ '/' ~ form_translation.fields['language']) }}"
         >
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             <input type="hidden" name="form_translation_id" value="{{ form_translation.getID() }}" />
 
             <div class="modal-header border-bottom-0">
@@ -259,7 +258,6 @@
                 action="{{ path('Form/Translation/' ~ form.getID() ~ '/' ~ form_translation.fields['language'] ~ '/Delete') }}"
                 hidden
             >
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="form_translation_id" value="{{ form_translation.getID() }}" />
             </form>
         {% endif %}

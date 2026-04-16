@@ -184,7 +184,6 @@ class SoftwareLicense_User extends CommonDBRelation
                     <form method="post" action="{{ 'Item_SoftwareLicense'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('SoftwareLicense', 'softwarelicenses_id', 0, __('Add a licence'), {
                                 used: used,

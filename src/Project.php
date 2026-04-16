@@ -1439,7 +1439,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 <div class="mb-3">
                     <form method="post" action="{{ 'ProjectTeam'|itemtype_form_path }}">
                         <div class="d-flex">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="projects_id" value="{{ id }}">
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>

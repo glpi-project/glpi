@@ -384,7 +384,6 @@ class Document_Item extends CommonDBRelation
                 {% set rand = random() %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}">
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('documents_id', doc.fields['id']) }}
                         {{ fields.dropdownItemsFromItemtypes('', add_item_msg, {
                             'itemtypes': doc.getItemtypesThatCanHave(),

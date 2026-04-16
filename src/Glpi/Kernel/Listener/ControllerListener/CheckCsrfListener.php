@@ -34,12 +34,14 @@
 
 namespace Glpi\Kernel\Listener\ControllerListener;
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\SessionManager;
-use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+
+use function Safe\parse_url;
 
 final readonly class CheckCsrfListener implements EventSubscriberInterface
 {
@@ -77,16 +79,53 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
             return;
         }
 
-        if ($request->isXmlHttpRequest()) {
-            // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
-            Session::checkCSRF(
-                ['_glpi_csrf_token' => $request->server->get('HTTP_X_GLPI_CSRF_TOKEN') ?? ''],
-                // Keep CSRF token as many AJAX requests may be made at the same time.
-                // This is due to the fact that read operations are often made using POST method (see #277).
-                preserve_token: true
-            );
-        } else {
-            Session::checkCSRF($request->request->all());
+        if (!$this->validateRequestIsSafeFromCSRF($request)) {
+            $exception = new AccessDeniedHttpException();
+            $exception->setMessageToDisplay(__('The action you have requested is not allowed.'));
+            throw $exception;
         }
+    }
+
+    private function validateRequestIsSafeFromCSRF(Request $request): bool
+    {
+        // The 'Sec-Fetch-Site' contains details about the request origin and is
+        // a protected header so browsers will always send a legitimate value.
+        // It is supported by all browsers since 2023.
+        $sec_fetch_site = $request->headers->get('Sec-Fetch-Site');
+        if ($sec_fetch_site !== null) {
+            return $this->validateSecFetchSiteHeader($sec_fetch_site);
+        }
+
+        // We fallback to the 'Origin' header for older browsers (which is also
+        // a protected header).
+        $origin = $request->headers->get('Origin');
+        $host = $request->headers->get('Host');
+        if ($origin !== null && $host !== null) {
+            return parse_url($origin, PHP_URL_HOST) === $host;
+        }
+
+        // If both 'Sec-Fetch-Site' and 'Origin' are missing then the request
+        // did not come from a browser and thus is not subject to CSRF.
+        return true;
+    }
+
+    private function validateSecFetchSiteHeader(string $sec_fetch_site): bool
+    {
+        return match ($sec_fetch_site) {
+            // Request comes from GLPI itself.
+            'same-origin' => true,
+
+            // Request comes from an user action (e.g clicking on a bookmark).
+            'none' => true,
+
+            // Request comes form an external site.
+            'cross-site' => false,
+
+            // Request comes the same site but with a different subdomain.
+            'same-site' => false,
+
+            // Should not be possible. False to be safe.
+            default => false,
+        };
     }
 }
