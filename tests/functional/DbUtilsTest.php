@@ -904,11 +904,9 @@ class DbUtilsTest extends DbTestCase
 
     public function testGetEntitiesRestrictCriteriaWithNoSession(): void
     {
-        global $GLPI_IS_COMMAND_LINE;
-
         // PHP_SAPI is always 'cli' in PHPUnit and cannot be changed at runtime.
         // Override via the global read by isCommandLine() to simulate a web context.
-        $GLPI_IS_COMMAND_LINE = false;
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
 
         // Ensure no active session entities and no right-check bypass.
         unset($_SESSION['glpiactiveentities']);
@@ -926,7 +924,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertInstanceOf(QueryExpression::class, $first[0]);
         $this->assertSame('false', (string) $first[0]);
 
-        unset($GLPI_IS_COMMAND_LINE);
+        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
     }
 
     /**

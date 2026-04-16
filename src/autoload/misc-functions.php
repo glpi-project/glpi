@@ -44,6 +44,7 @@ use function Safe\preg_match;
  */
 function isCommandLine(): bool
 {
+    /** @var bool|null $GLPI_IS_COMMAND_LINE */
     global $GLPI_IS_COMMAND_LINE;
     return $GLPI_IS_COMMAND_LINE ?? (PHP_SAPI === 'cli');
 }
