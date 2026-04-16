@@ -136,6 +136,12 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_Comment::getCommentForm()`
 - `KnowbaseItem_Comment::showForItem()`
 - `KnowbaseItem_Revision::showForItem()`
+- `KnowbaseItemTranslation::defineTabs()`
+- `KnowbaseItemTranslation::displayTabContentForItem()`
+- `KnowbaseItemTranslation::getTabNameForItem()`
+- `KnowbaseItemTranslation::showForm()`
+- `KnowbaseItemTranslation::showFull()`
+- `KnowbaseItemTranslation::showTranslations()`
 - `Migration::addNewMessageArea()`
 - `Migration::setOutputHandler()`
 - `Migration::displayError()`
