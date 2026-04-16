@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener\PostBootListener;
 
 use Glpi\Application\Environment as GLPIEnvironment;
+use Glpi\Kernel\Kernel;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Plugin;
@@ -88,6 +89,17 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
         if (GLPI_STRICT_ENV) {
             $this->twig_environment->enableStrictVariables();
         }
+
+        $cachedir = Kernel::getCacheRootDir();
+        $tpl_cachedir = $cachedir . '/templates';
+        if (
+            (file_exists($tpl_cachedir) && !is_writable($tpl_cachedir))
+            || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
+        ) {
+            trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
+        }
+
+         $this->twig_environment->setCache($tpl_cachedir);
     }
 
     /**
