@@ -370,7 +370,7 @@ jobs:
         if: ${{ !cancelled() }}
         run:  |
           docker compose exec -T app bin/console config:set url_base http://localhost:8090 --env=e2e_testing
-          docker compose exec -T app npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+          docker compose exec -T app PWTEST_SHARD_WEIGHTS=40:60 npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
