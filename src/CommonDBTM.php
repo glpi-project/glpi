@@ -3074,7 +3074,7 @@ class CommonDBTM extends CommonGLPI
                 return false;
 
         // final auth, depending on reauth.
-        [$allowed, $reauth_needed] = $allowed_against_reauth($allowed, $_reauth_needed);
+        [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
 
         return $allowed;
     }
