@@ -97,6 +97,7 @@ final readonly class InitializeTwigEnvironment implements EventSubscriberInterfa
             || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
         ) {
             trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
+            $this->twig_environment->setCache(false);
         } else {
             $this->twig_environment->setCache($tpl_cachedir);
         }
