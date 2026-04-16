@@ -1,6 +1,5 @@
 services:
   app:
-    container_name: "glpi-app"
     build:
       context: ".docker/app"
       args:
@@ -22,7 +21,6 @@ services:
       - "host.docker.internal:host-gateway"
 
   db:
-    container_name: "glpi-db"
     image: "mariadb:11.8"
     restart: "unless-stopped"
     volumes:
@@ -37,7 +35,6 @@ services:
       - "3306"
 
   mailpit:
-    container_name: "glpi-mailpit"
     image: "axllent/mailpit"
     restart: "unless-stopped"
     expose:
@@ -46,7 +43,6 @@ services:
       - "8025:8025"
 
   dbgate:
-    container_name: "glpi-dbgate"
     image: "dbgate/dbgate:latest"
     restart: "unless-stopped"
     ports:
@@ -63,7 +59,6 @@ services:
 
   # To create a preconfigured LDAP object in GLPI, run `make console c='tools:generate_dev_ldap'`
   openldap:
-    container_name: "glpi-openldap"
     image: "osixia/openldap:latest"
     restart: "unless-stopped"
     environment:
