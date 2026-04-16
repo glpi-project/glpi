@@ -45,6 +45,11 @@ class SNMPCredential extends CommonDBTM
     public bool $dohistory                   = true;
     public static string $rightname = 'snmpcredential';
 
+    public static array $undisclosedFields = [
+        'auth_passphrase',
+        'priv_passphrase',
+    ];
+
     public static function getTypeName($nb = 0)
     {
         return _n('SNMP credential', 'SNMP credentials', $nb);
