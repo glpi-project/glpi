@@ -45,7 +45,7 @@
                 }) }}
                 <div id="visibility-submit{{ rand }}" class="d-none d-flex gap-2 align-items-center">
                     <div class="flex-grow-1">
-                        <div id="visibility{{ rand }}" class="kb-permission-visibility"></div>
+                        <div id="visibility{{ rand }}" class="kb-permission-visibility" data-glpi-permission-add-visibility></div>
                     </div>
                     <input type="submit"
                            name="addvisibility"
@@ -105,7 +105,8 @@
                         {% if entry.is_recursive %}
                             <span class="badge bg-secondary-lt"
                                   title="{{ __('Recursive') }}"
-                                  data-bs-toggle="tooltip">
+                                  data-bs-toggle="tooltip"
+                                  data-glpi-permission-recursive>
                                 <i class="ti ti-arrow-iteration me-1"></i>R
                             </span>
                         {% endif %}
@@ -131,7 +132,7 @@
 </div>
 
 {# Owner footer (full-width, differentiated background) #}
-<div class="kb-permission-owner d-flex align-items-center gap-2">
+<div class="kb-permission-owner d-flex align-items-center gap-2" data-glpi-permission-owner>
     {{ include('components/user/picture.html.twig', {
         users_id: owner.users_id,
         avatar_size: 'avatar-sm',
