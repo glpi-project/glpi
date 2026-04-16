@@ -110,7 +110,7 @@
     "require-dev": {
         "ext-xml": "*",
         "brianium/paratest": "^7.8",
-        "friendsofphp/php-cs-fixer": "^3.94",
+        "friendsofphp/php-cs-fixer": "^3.95",
         "friendsoftwig/twigcs": "^6.6",
         "glpi-project/phpstan-glpi": "^1.1",
         "glpi-project/rector-glpi": "^1.0",
@@ -119,7 +119,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.5",
-        "rector/rector": "^2.3",
+        "rector/rector": "^2.4",
         "sebastian/comparator": "^6.3",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "^7.4",
