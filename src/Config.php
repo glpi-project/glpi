@@ -1942,7 +1942,7 @@ class Config extends CommonDBTM
             if ($sender['email'] !== null) {
                 return $sender;
             } else {
-                trigger_error('No-Reply address is not defined in configuration.', E_USER_WARNING);
+                trigger_error('No-Reply address is not defined in configuration.', E_USER_NOTICE);
             }
         }
 
