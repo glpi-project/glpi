@@ -1062,6 +1062,60 @@ abstract class APIBaseClass extends TestCase
     }
 
     /**
+     * Test that the Content-Range header uses a correct zero-based inclusive end index
+     * when no range parameter is provided.
+     *
+     * @tags    api
+     * @covers  API::getItems
+     */
+    public function testGetItemsDefaultRangeContentRangeHeader()
+    {
+        // Config always has more rows than the default list limit, ensuring a 206 response
+        $data = $this->query(
+            'getItems',
+            [
+                'itemtype' => 'Config',
+                'headers'  => ['Session-Token' => $this->session_token],
+            ],
+            206
+        );
+
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+
+        $headers = $data['headers'];
+        $this->assertArrayHasKey('Content-Range', $headers);
+
+        // Count only the item entries (exclude the 'headers' meta key)
+        $itemCount = count($data) - 1;
+        $this->assertGreaterThan(0, $itemCount);
+
+        // Parse Content-Range header: "start-end/total"
+        $contentRange = $headers['Content-Range'][0];
+        $this->assertMatchesRegularExpression('/^\d+-\d+\/\d+$/', $contentRange);
+
+        [$rangePart, $total] = explode('/', $contentRange);
+        [$start, $end] = explode('-', $rangePart);
+
+        $start = (int) $start;
+        $end   = (int) $end;
+        $total = (int) $total;
+
+        // Range is zero-based and inclusive: end must equal itemCount - 1, not itemCount
+        $this->assertSame(0, $start, 'Content-Range start should be 0');
+        $this->assertSame(
+            $itemCount - 1,
+            $end,
+            sprintf(
+                'Content-Range end should be %d (zero-based, inclusive) but got %d',
+                $itemCount - 1,
+                $end
+            )
+        );
+        $this->assertGreaterThan($itemCount, $total, 'Total should exceed returned item count for partial content');
+    }
+
+    /**
      * try to retrieve invalid range of users
      * We expect a http code 400
      *
