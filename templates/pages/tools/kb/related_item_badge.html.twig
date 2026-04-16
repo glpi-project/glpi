@@ -30,34 +30,26 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
-
-<form
-    class="kb-link-item-form"
-    data-glpi-kb-link-item-form
-    data-glpi-kb-id="{{ item.getID() }}"
+<span
+    class="kb-item-badge badge bg-light text-dark d-flex align-items-center gap-2"
+    data-glpi-item-assoc-id="{{ item.id }}"
+    data-testid="related-item-chip"
 >
-    {% if get_class(item) == 'KnowbaseItem' %}
-        {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
-    {% else %}
-        {{ inputs.hidden('items_id', item.getID()) }}
-        {{ inputs.hidden('itemtype', get_class(item)) }}
-    {% endif %}
+    <a href="{{ item.link_url }}"
+       class="d-flex align-items-center gap-2 text-decoration-none"
+       title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
+    >
+        <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
+        <span>{{ item.name }}</span>
+    </a>
 
-    {% if get_class(item) == 'KnowbaseItem' %}
-        <label class="form-label">{{ __('Add a linked item') }}</label>
-        <div class="kb-link-item-dropdowns">
-            {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_items]) %}
-        </div>
-    {% else %}
-        {{ 'KnowbaseItem'|itemtype_dropdown({
-            'entity': item.getEntityID(),
-            'used': used_knowbase_items,
-            'condition': visibility_condition
-        }) }}
+    {% if can_edit %}
+        <button
+            type="button"
+            class="kb-unlink-item btn-close btn-close-white"
+            data-glpi-kb-unlink-item="{{ item.id }}"
+            title="{{ __('Unlink item') }}"
+            aria-label="{{ __('Unlink item') }}"
+        ></button>
     {% endif %}
-
-    <div class="kb-link-item-footer">
-        {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
-    </div>
-</form>
+</span>

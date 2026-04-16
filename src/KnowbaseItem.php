@@ -1179,7 +1179,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * @param class-string<CommonDBTM> $itemtype The itemtype class name
      * @return array{icon_class: string, color_class: string, sector: string}
      */
-    private static function getRelatedItemIconAndColor(string $itemtype): array
+    public static function getRelatedItemIconAndColor(string $itemtype): array
     {
         $sector = Html::getMenuSectorForItemtype($itemtype);
 
