@@ -52,7 +52,7 @@ use function Safe\realpath;
  *
  * @since 9.2
  */
-final class DbUtils
+class DbUtils
 {
     /**
      * Return foreign key field name for a table
@@ -891,6 +891,16 @@ final class DbUtils
     }
 
     /**
+     * Check whether the current execution context is privileged (CLI or cron).
+     *
+     * @return bool
+     */
+    protected function isPrivilegedContext(): bool
+    {
+        return isCommandLine() || Session::isCron();
+    }
+
+    /**
      * Get criteria to restrict to current entities of the user
      *
      * @since 9.2
@@ -942,7 +952,7 @@ final class DbUtils
                 $value = $_SESSION['glpiactiveentities'];
             } elseif (Session::isRightChecksDisabled()) {
                 return [new QueryExpression('true')];
-            } elseif (isCommandLine() || Session::isCron()) {
+            } elseif ($this->isPrivilegedContext()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
             } else {
                 // No active session and no privileged context: deny all access to prevent

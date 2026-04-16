@@ -902,6 +902,29 @@ class DbUtilsTest extends DbTestCase
         );
     }
 
+    public function testGetEntitiesRestrictCriteriaWithNoSession()
+    {
+        // Use a subclass that overrides isPrivilegedContext() to simulate a
+        // non-CLI, non-cron context (unreachable in PHPUnit because PHP_SAPI === 'cli').
+        $instance = new class () extends \DbUtils {
+            protected function isPrivilegedContext(): bool
+            {
+                return false;
+            }
+        };
+
+        // Ensure no active session entities and no right-check bypass.
+        unset($_SESSION['glpiactiveentities']);
+        unset($_SESSION['glpishowallentities']);
+
+        $criteria = $instance->getEntitiesRestrictCriteria('glpi_computers');
+
+        $this->assertCount(1, $criteria);
+        $this->assertArrayHasKey(0, $criteria);
+        $this->assertInstanceOf(QueryExpression::class, $criteria[0]);
+        $this->assertSame('false', (string) $criteria[0]);
+    }
+
     /**
      * Run getAncestorsOf tests
      *
