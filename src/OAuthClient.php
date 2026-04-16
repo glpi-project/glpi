@@ -195,10 +195,6 @@ final class OAuthClient extends CommonDBTM
 
     public function post_getFromDB()
     {
-        $key = new GLPIKey();
-        if (isset($this->fields['secret'])) {
-            $this->fields['secret'] = $key->decrypt($this->fields['secret']);
-        }
         if (isset($this->fields['grants'])) {
             $this->fields['grants'] = json_decode($this->fields['grants'], true);
         }

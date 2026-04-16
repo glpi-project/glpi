@@ -5990,12 +5990,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of method GLPIKey\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/GLPIKey.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getBodyAsString\\(\\) on Symfony\\\\Component\\\\Mime\\\\Header\\\\HeaderInterface\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
@@ -6030,12 +6024,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/GLPIMailer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method GLPINetwork\\:\\:getRegistrationKey\\(\\) should return string but returns string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/GLPINetwork.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$display\\.$#',
@@ -6132,12 +6120,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Altcha/AltchaManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Anonymous function should return string but returns string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\.\\=" between array\\|string and non\\-falsy\\-string results in an error\\.$#',
@@ -7332,12 +7314,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/SearchExtension.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Application\\\\View\\\\Extension\\\\SecurityExtension\\:\\:decrypt\\(\\) should return string but returns string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/SecurityExtension.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:getById\\(\\) expects int\\|null, int\\|string\\|false given\\.$#',
@@ -21491,12 +21467,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call static method getTableField\\(\\) on CommonDBTM\\|null\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 5,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:getAuthToken\\(\\) should return string\\|false but returns string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [

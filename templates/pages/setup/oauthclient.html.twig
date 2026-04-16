@@ -69,7 +69,7 @@
                                 {{ fields.nullField() }}
                             {% endif %}
                             {% if not item.isNewItem() %}
-                                {{ fields.passwordField('secret', item.fields['secret'], __('Client Secret'), {
+                                {{ fields.passwordField('secret', item.fields['secret']|decrypt, __('Client Secret'), {
                                     is_disclosable: true,
                                     readonly: true,
                                 }) }}

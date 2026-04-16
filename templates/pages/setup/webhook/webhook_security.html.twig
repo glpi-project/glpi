@@ -41,7 +41,7 @@
 
         {{ fields.passwordField(
             'secret',
-            item.fields['secret'],
+            item.fields['secret']|decrypt,
             __('Secret'),
             field_options|merge({
                 is_disclosable: true,
@@ -129,7 +129,7 @@
         {{ fields.textField('oauth_url', item.fields['oauth_url'], __('URL')) }}
         {{ fields.textField('clientid', item.fields['clientid'], __('Client ID')) }}
         {# The autocomplete, readonly, and onfocus stuff for the password field is an attempt to keep browsers from filling or asking to save the content automatically #}
-        {{ fields.passwordField('clientsecret', item.fields['clientsecret'], __('Client Secret'), {
+        {{ fields.passwordField('clientsecret', item.fields['clientsecret']|decrypt, __('Client Secret'), {
             is_disclosable: true,
             readonly: true,
             additional_attributes: {
