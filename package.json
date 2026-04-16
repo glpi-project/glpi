@@ -93,7 +93,7 @@
         "@babel/preset-env": "^7.28.6",
         "@eslint/eslintrc": "^3.3.5",
         "@eslint/js": "^9.31.0",
-        "@playwright/test": "^1.56.1",
+        "@playwright/test": "^1.59.1",
         "@testing-library/cypress": "^10.0.3",
         "@testing-library/jest-dom": "^6.6.4",
         "@types/node": "^24.10.15",
