@@ -1071,8 +1071,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-     * @param string $data
-     * @param string $secret
+     * @param string $data The data to generate the signature for (usually the body of the request)
+     * @param string $secret The decrypted secret
      *
      * @return string
      */
@@ -1083,6 +1083,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * Validate Challenge Response Answer
+     * @param string $url The URL to send the challenge to
+     * @param string $body The body to use for the challenge (used to generate the signature)
+     * @param string $secret The encrypted secret to use for the challenge (used to generate the signature)
+     * @return array{status: bool, message: string, status_code?: int}
      */
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
@@ -1094,6 +1098,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 'message' => sprintf(__('URL "%s" is not allowed by your administrator.'), $url),
             ];
         }
+
+        $decrypted_secret = (new GLPIKey())->decrypt($secret);
+        $secret_signature = self::getSignature($body, $decrypted_secret);
 
         $challenge_response = [];
         $options = [
@@ -1109,13 +1116,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
         try {
             //prepare query / body
             $response = $httpClient->request('GET', '', [
-                'query' => ['crc_token' => self::getSignature($body, $secret)],
+                'query' => ['crc_token' => $secret_signature],
             ]);
 
             if ($response->getStatusCode() == 200) {
                 $response_challenge = $response->getBody()->getContents();
                 //check response
-                if ($response_challenge == hash_hmac('sha256', self::getSignature($body, $secret), $secret)) {
+                if ($response_challenge == hash_hmac('sha256', $secret_signature, $decrypted_secret)) {
                     $challenge_response = [
                         'status' => true,
                         'message' => __('Challenge–response authentication validated'),
@@ -1230,7 +1237,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 }
                 $timestamp = time();
                 $headers = [
-                    'X-GLPI-signature' => self::getSignature($body . $timestamp, $webhook->fields['secret']),
+                    'X-GLPI-signature' => self::getSignature($body . $timestamp, (new GLPIKey)->decrypt($webhook->fields['secret'])),
                     'X-GLPI-timestamp' => $timestamp,
                 ];
 
@@ -1311,12 +1318,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function post_getFromDB()
     {
-        if (!empty($this->fields['secret'])) {
-            $this->fields['secret'] = (new GLPIKey())->decrypt($this->fields['secret']);
-        }
-        if (!empty($this->fields['clientsecret'])) {
-            $this->fields['clientsecret'] = (new GLPIKey())->decrypt($this->fields['clientsecret']);
-        }
         $this->fields['custom_headers'] = importArrayFromDB($this->fields['custom_headers']);
     }
 

@@ -215,7 +215,7 @@ class QueuedWebhook extends CommonDBChild
                         RequestOptions::FORM_PARAMS => [
                             'grant_type' => 'client_credentials',
                             'client_id' => $webhook->fields['clientid'],
-                            'client_secret' => $webhook->fields['clientsecret'],
+                            'client_secret' => (new GLPIKey())->decrypt($webhook->fields['clientsecret']),
                             'scope' => '',
                         ],
                     ]);

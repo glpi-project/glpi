@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use GLPIKey;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
@@ -86,7 +87,7 @@ class ClientRepository implements ClientRepositoryInterface
             'identifier' => $clientIdentifier,
         ]);
 
-        if ($client->fields['secret'] !== $clientSecret) {
+        if ((new GLPIKey())->decrypt($client->fields['secret']) !== $clientSecret) {
             return false;
         }
 
