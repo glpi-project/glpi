@@ -606,6 +606,11 @@ PHP;
         // This command will clear the Symfony cache gracefully.
         $app = new Application($localKernel);
         $app->setAutoExit(false);
-        $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
+        // Skip optional cache warmers (e.g. Twig templates, more than 400 to cache so cause memory exception - default 128M).
+        // Templates are compiled lazily on first render.
+        $app->run(
+            new ArrayInput(['command' => 'cache:clear', '--no-optional-warmers' => true]),
+            new NullOutput()
+        );
     }
 }
