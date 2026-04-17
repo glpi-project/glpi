@@ -3981,4 +3981,35 @@ final class FormMigrationTest extends DbTestCase
         // Assert: migration should be done without error
         $this->assertTrue($result->isFullyProcessed());
     }
+
+    public function testFormMigrationDropdownQuestionWithSLAItemtype(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with a dropdown question with SLA itemtype
+        $this->createSimpleFormcreatorForm('Dropdown with SLA itemtype', [
+            [
+                'name'      => 'SLA dropdown',
+                'fieldtype' => 'dropdown',
+                'itemtype'  => 'SLA',
+                'values'    => json_encode([
+                    'show_service_level_types' => '0',
+                    'entity_restrict'          => '2'
+                ]),
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error and the question should be migrated with the correct itemtype
+        $this->assertTrue($result->isFullyProcessed());
+        $question = getItemByTypeName(Question::class, 'SLA dropdown');
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemDropdownExtraDataConfig) {
+            throw new LogicException();
+        }
+        $this->assertEquals('SLA', $config->getItemtype());
+    }
 }
