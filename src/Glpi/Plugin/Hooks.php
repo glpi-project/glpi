@@ -123,6 +123,11 @@ class Hooks
     public const DISPLAY_CENTRAL             = 'display_central';
 
     /**
+     * Register a function to output some content on the service catalog page.
+     */
+    public const DISPLAY_SERVICE_CATALOG     = 'display_service_catalog';
+
+    /**
      * Register a function to output some content before the network port list.
      */
     public const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
@@ -1359,6 +1364,7 @@ class Hooks
             self::DISPLAY_LOCKED_FIELDS,
             self::DISPLAY_LOGIN,
             self::DISPLAY_CENTRAL,
+            self::DISPLAY_SERVICE_CATALOG,
             self::INIT_SESSION,
             self::POST_KANBAN_CONTENT,
             self::PRE_KANBAN_CONTENT,
