@@ -30,36 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-import test from "@playwright/test";
-import { Constants } from "./Constants";
+import { randomUUID } from "crypto";
 
-export function getWorkerEntityId(): number
+export function getUniqueName(name: string): string
 {
-    // First worker index is 0 and the first entity start at 2.
-    // We could make an API request to make this more resilent but IDs aren't
-    // likely to change very often so this is probably enough (and it saves
-    // some performances).
-    return test.info().parallelIndex + 2;
-}
-
-export function getWorkerEntityName(): string
-{
-    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
-    return `E2E worker entity ${worker_index}`;
-}
-
-export function getWorkerUserId(): number
-{
-    return test.info().parallelIndex + 8;
-}
-
-export function getWorkerIndex(): number
-{
-    return test.info().parallelIndex + 1;
-}
-
-export function getWorkerLogin(): string
-{
-    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
-    return `${Constants.E2E_WORKER_PREFIX}${worker_index}`;
+    return `${name} ${randomUUID()}`;
 }

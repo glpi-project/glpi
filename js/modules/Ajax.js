@@ -36,23 +36,36 @@
  * Perform a POST request to a GLPI endpoint.
  *
  * @param {string} url - The relative URL path (without root_doc prefix).
- * @param {Object | null} values - The data to send as JSON in the request body or null if the request doens't send any data.
+ * @param {Object | FormData | URLSearchParams | null} values - The data to send
+ *   in the request body, or null if no data.
+ *   Plain objects are serialized as JSON. FormData and URLSearchParams are sent
+ *   as-is (form data).
  * @returns {Promise<Response>} The fetch Response object.
  * @throws {Error} If the request fails or returns a non-ok status.
  */
 export async function post(url, values = null)
 {
     try {
+        const is_plain_object = values !== null
+            && !(values instanceof FormData)
+            && !(values instanceof URLSearchParams)
+        ;
+
+        const headers = {
+            'X-Requested-With': 'XMLHttpRequest',
+        };
+
+        if (is_plain_object) {
+            headers['Content-Type'] = 'application/json';
+        }
+
         const params = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
+            headers,
         };
 
         if (values !== null) {
-            params.body = JSON.stringify(values);
+            params.body = is_plain_object ? JSON.stringify(values) : values;
         }
 
         const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);

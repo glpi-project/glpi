@@ -234,6 +234,17 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getLink("Scheduled");
     }
 
+    public async doOpenVisibilityModal(): Promise<void>
+    {
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('Permissions').click();
+    }
+
+    public getVisibilityModal(): Locator
+    {
+        return this.page.getByRole('dialog');
+    }
+
     public getScheduledStartDateInput(): Locator
     {
         return this.page.getByPlaceholder('No start date').filter({visible: true});

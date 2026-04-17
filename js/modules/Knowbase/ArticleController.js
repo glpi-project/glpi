@@ -182,8 +182,8 @@ export class GlpiKnowbaseArticleController
                 try {
                     this.#executeAction(e);
                 } catch (e) {
-                    console.error(e);
                     glpi_toast_error(__("An unexpected error occurred."));
+                    throw e;
                 }
             });
         }
@@ -473,7 +473,7 @@ export class GlpiKnowbaseArticleController
                 this.#deleteItem(params.id);
                 break;
             case EditorActionType.OPEN_MODAL:
-                this.#openModal(params.id, params.key, params.title, params.icon);
+                this.#openModal(params.id, params.key, params.title, params.icon ?? null);
                 break;
         }
     }
@@ -584,6 +584,7 @@ export class GlpiKnowbaseArticleController
      * @param {number} id
      * @param {string} key
      * @param {string} title
+     * @param {string | null} icon
      */
     #openModal(id, key, title, icon = null)
     {

@@ -65,7 +65,7 @@ final class PermissionsRenderer implements RendererInterface
         $rand = mt_rand();
         $owner_id = (int) $item->fields['users_id'];
 
-        $entries = $this->buildEntries($item, $owner_id);
+        $entries = $this->buildEntries($item);
 
         $visiblity_dropdown_params = [
             'type'  => '__VALUE__',
@@ -84,10 +84,6 @@ final class PermissionsRenderer implements RendererInterface
             'rand' => $rand,
             'can_edit' => $can_edit,
             'is_owner' => ($owner_id === Session::getLoginUserID()),
-            'owner' => [
-                'name' => getUserName($owner_id),
-                'users_id' => $owner_id,
-            ],
             'entries' => $entries,
             'visiblity_dropdown_params' => $visiblity_dropdown_params,
         ];
@@ -97,10 +93,9 @@ final class PermissionsRenderer implements RendererInterface
      * Build entries array for the permissions list
      *
      * @param KnowbaseItem $item
-     * @param int $owner_id
      * @return array<int, array{itemtype: string, id: int, type: string, name: string, icon: string, badge_class: string, entity_name: ?string, is_recursive: bool, users_id: ?int}>
      */
-    private function buildEntries(KnowbaseItem $item, int $owner_id): array
+    private function buildEntries(KnowbaseItem $item): array
     {
         $id = $item->getID();
         $entries = [];
@@ -108,9 +103,6 @@ final class PermissionsRenderer implements RendererInterface
         $users = KnowbaseItem_User::getUsers($id);
         foreach ($users as $val) {
             foreach ($val as $data) {
-                if ((int) $data['users_id'] === $owner_id) {
-                    continue; // Owner displayed separately in footer
-                }
                 $entries[] = [
                     'itemtype'     => KnowbaseItem_User::class,
                     'id'           => $data['id'],
@@ -141,6 +133,7 @@ final class PermissionsRenderer implements RendererInterface
                     'icon'         => 'ti-users-group',
                     'badge_class'  => 'bg-green-lt',
                     'entity_name'  => $entity_name,
+                    'entities_id'  => $data['entities_id'],
                     'is_recursive' => (bool) $data['is_recursive'],
                 ];
             }
@@ -179,6 +172,7 @@ final class PermissionsRenderer implements RendererInterface
                     'icon'         => 'ti-id-badge-2',
                     'badge_class'  => 'bg-purple-lt',
                     'entity_name'  => $entity_name,
+                    'entities_id'  => $data['entities_id'],
                     'is_recursive' => (bool) $data['is_recursive'],
                 ];
             }
