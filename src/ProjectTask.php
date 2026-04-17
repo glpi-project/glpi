@@ -612,17 +612,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $real_start_date = $input['real_start_date'] ?? $this->fields['real_start_date'] ?? null;
         $real_end_date = $input['real_end_date'] ?? $this->fields['real_end_date'] ?? null;
 
-        if ($percent_done < 100 && $real_end_date) {
+        if ($percent_done < 100 && $real_end_date && !array_key_exists('real_end_date', $input)) {
             $input['real_end_date'] = null;
         } elseif (
             isset($this->fields['percent_done'])
             && (int) $this->fields['percent_done'] === 100 && $percent_done < 100
+            && !array_key_exists('real_end_date', $input)
         ) {
             $input['real_end_date'] = null;
-        } elseif (($real_start_date && $real_end_date) || $percent_done === 0) {
-            // If both real start and end dates are set, or if the task is not started,
+        } elseif ($percent_done === 0 && !array_key_exists('real_start_date', $input) && !array_key_exists('real_end_date', $input)) {
             return $input;
-        } else {
+        }
+
+        if (!array_key_exists('real_start_date', $input) && !array_key_exists('real_end_date', $input)) {
             // Set automatically the real start date if not set
             if (empty($real_start_date) && $percent_done > 0) {
                 $input['real_start_date'] = Session::getCurrentTime();
@@ -631,13 +633,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             if (empty($real_end_date) && $percent_done === 100) {
                 $input['real_end_date'] = Session::getCurrentTime();
             }
-            // Set automatically the effective duration if not set
-            if (!empty($input['real_start_date']) && !empty($input['real_end_date'])) {
-                $input['effective_duration'] = $this->autoSetEffectiveDuration(
-                    $input['real_start_date'],
-                    $input['real_end_date']
-                );
-            }
+        }
+
+        // Calculate effective duration when both dates are present
+        if (!empty($real_start_date) && !empty($real_end_date)) {
+            $input['effective_duration'] = $this->autoSetEffectiveDuration(
+                $real_start_date,
+                $real_end_date
+            );
         }
 
         return $input;
