@@ -867,7 +867,7 @@ class Toolbox
             }
         }
         //TRANS: %1$s is a number maybe float or string and %2$s the unit
-        return sprintf(__('%1$s %2$s'), round((float)$size, 2), $val);
+        return sprintf(__('%1$s %2$s'), round((float) $size, 2), $val);
     }
 
 
