@@ -93,6 +93,8 @@
 {% endblock content_title %}
 
 {% block content_body %}
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_SERVICE_CATALOG')) }}
+
     <section
         aria-label="{{ __("Forms") }}"
         class="row mb-5"
