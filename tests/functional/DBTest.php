@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -885,6 +886,7 @@ SQL,
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('fetchResultProvider')]
     public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
     {

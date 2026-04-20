@@ -39,6 +39,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
@@ -194,6 +195,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('fileProvider')]
     public function testRunLegacyRouterResponse(
         array $structure,
@@ -464,6 +466,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('pathProvider')]
     public function testRunLegacyRouterFirewall(string $url_path, string $file_path, bool $is_served): void
     {
@@ -500,6 +503,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRunLegacyRouterFromMarketplaceDirWithPluginPath(): void
     {
         $structure = [
@@ -527,6 +531,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         $this->assertEquals(vfsStream::url('glpi/marketplace/tester/front/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRunLegacyRouterFromDeprecatedMarketplacePath(): void
     {
         $structure = [
@@ -554,6 +559,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         $this->assertEquals(vfsStream::url('glpi/marketplace/tester/front/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRunLegacyRouterFromDeprecatedPublicPath(): void
     {
         $structure = [
@@ -586,6 +592,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         $this->assertEquals(vfsStream::url('glpi/plugins/tester/public/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRunLegacyRouterFromPluginInMultipleDirectories(): void
     {
         $structure = [
@@ -632,6 +639,7 @@ class LegacyRouterListenerTest extends GLPITestCase
         $this->assertEquals(vfsStream::url('glpi/plugins/tester/front/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testRunLegacyRouterFromUnloadedPlugin(): void
     {
         $structure = [

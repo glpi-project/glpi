@@ -39,6 +39,7 @@ use Generator;
 use Glpi\Tests\DbTestCase;
 use Notification;
 use NotificationTarget;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Session;
@@ -388,6 +389,7 @@ class NotificationTargetTest extends DbTestCase
      *
      * @return void
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testGetSender(): void
     {
         $provider = $this->getSenderProvider();

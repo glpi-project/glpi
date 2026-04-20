@@ -36,6 +36,7 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DbEngine;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class DbEngineTest extends GLPITestCase
@@ -96,6 +97,7 @@ class DbEngineTest extends GLPITestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('versionProvider')]
     public function testCheck(string $version, bool $validated, array $messages)
     {

@@ -43,6 +43,7 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -125,6 +126,7 @@ class DocumentTest extends DbTestCase
         $this->assertSame($expected, $tabs);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testPrepareInputForAdd()
     {
         $input = [
@@ -227,6 +229,7 @@ class DocumentTest extends DbTestCase
      * Note: The ticket status does not change to ASSIGNED in the first scenario
      * because there is no user assigned to the ticket.
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testPost_addItem()
     {
         // Login with the user.

@@ -97,6 +97,7 @@ use ITILCategory;
 use Location;
 use LogicException;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Ticket;
@@ -894,6 +895,7 @@ final class FormMigrationTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('provideFormMigrationTranslations')]
     public function testFormMigrationTranslations($form_name, $raw_translations, $expected_translations): void
     {

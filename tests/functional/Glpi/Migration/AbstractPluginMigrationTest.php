@@ -53,11 +53,13 @@ use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\DbTestCase;
 use Infocom;
 use Monitor;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionClass;
 use TaskCategory;
 
 class AbstractPluginMigrationTest extends DbTestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testExecuteWithUnvalidatedPrerequisites(): void
     {
         // Arrange
@@ -106,6 +108,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals($expected_messages, $result->getMessages());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testExecuteWithValidatePrerequisitesException(): void
     {
         // Arrange
@@ -344,6 +347,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals($expected_messages, $result->getMessages());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckDbFieldsExists(): void
     {
         // Arrange
@@ -423,6 +427,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([], $messages_2);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testImportItem(): void
     {
         // Arrange
@@ -559,6 +564,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([Computer::class => [$computer_id_1, $computer_id_2, $computer_id_3]], $result->getReusedItemsIds());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testImportItemWithErrorAndSessionMessage(): void
     {
         // Arrange
@@ -629,6 +635,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([], $result->getReusedItemsIds());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCopyItems(): void
     {
         // Arrange
@@ -1249,8 +1256,13 @@ class AbstractPluginMigrationTest extends DbTestCase
             \getAllDataFromTable(Contract_Item::getTable())
         );
 
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             [
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_3_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
                 [
                     'itemtype'     => $my_asset_1::class,
                     'items_id'     => $my_asset_1->getID(),
@@ -1266,16 +1278,12 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'items_id'     => $my_asset_2->getID(),
                     'contracts_id' => $contract_3->getID(),
                 ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_3_id,
-                    'contracts_id' => $contract_1->getID(),
-                ],
             ],
             \array_values($contract_relations)
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testMapItem(): void
     {
         // Arrange
@@ -1308,6 +1316,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCountRecords(): void
     {
         // Arrange
