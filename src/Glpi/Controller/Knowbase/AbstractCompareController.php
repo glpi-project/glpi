@@ -32,45 +32,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\History;
+namespace Glpi\Controller\Knowbase;
 
-use Override;
+use Glpi\Controller\AbstractController;
+use Glpi\RichText\RichText;
+use Ssddanbrown\HtmlDiff\Diff;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-class RevisionEvent implements HistoryEventInterface
+abstract class AbstractCompareController extends AbstractController
 {
-    public function __construct(
-        private int $id,
-        protected int $index,
-        private string $date,
-        private int $author_id,
-    ) {}
+    protected function compare(
+        string $old_answer,
+        string $new_answer,
+    ): JsonResponse {
+        // Load full rich text content
+        $rich_text_options = ['text_maxsize' => 0];
+        $old_answer = RichText::getEnhancedHtml($old_answer, $rich_text_options);
+        $new_answer = RichText::getEnhancedHtml($new_answer, $rich_text_options);
 
-    #[Override]
-    public function getLabel(): string
-    {
-        return \sprintf(__('Version %s'), $this->index);
+        // Normalize content
+        $old_answer = $this->normalizeHtml($old_answer);
+        $new_answer = $this->normalizeHtml($new_answer);
+
+        $content_diff = (new Diff($old_answer, $new_answer))->build();
+        return new JsonResponse([
+            'content_diff' => $content_diff,
+        ]);
     }
 
-    #[Override]
-    public function getDescription(): string
+    private function normalizeHtml(string $html): string
     {
-        return $this->index === 1 ? __("Created by") : __("Updated by");
-    }
-
-    #[Override]
-    public function getDate(): string
-    {
-        return $this->date;
-    }
-
-    #[Override]
-    public function getAuthor(): int
-    {
-        return $this->author_id;
-    }
-
-    public function getRevisionId(): int
-    {
-        return $this->id;
+        // Replace UTF-8 non-breaking space (0xC2 0xA0) and HTML entity
+        return str_replace(["\xC2\xA0", '&nbsp;'], ' ', $html);
     }
 }

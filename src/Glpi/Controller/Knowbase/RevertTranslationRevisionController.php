@@ -34,19 +34,22 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
+use KnowbaseItemTranslation;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class CompareRevisionController extends AbstractCompareController
+final class RevertTranslationRevisionController extends AbstractController
 {
     #[Route(
-        "/Knowbase/{id}/CompareRevision/{revision_id}",
-        name: "knowbase_article_compare_revision",
-        methods: ["GET"],
+        "/Knowbase/{id}/RevertTranslationRevision/{revision_id}",
+        name: "knowbase_article_revert_translation_revision",
+        methods: ["POST"],
         requirements: [
             'id' => '\d+',
             'revision_id' => '\d+',
@@ -61,7 +64,7 @@ final class CompareRevisionController extends AbstractCompareController
         }
 
         // Make sure the user is able to update the current KB
-        if (!$kb->can($id, READ)) {
+        if (!$kb->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -71,9 +74,37 @@ final class CompareRevisionController extends AbstractCompareController
             throw new BadRequestHttpException();
         }
 
-        return $this->compare(
-            old_answer: $revision->fields['answer'],
-            new_answer: $kb->fields['answer']
-        );
+        // Validate that this revision is targeting a translation
+        $language = $revision->fields['language'];
+        if ($language === '') {
+            throw new BadRequestHttpException();
+        }
+
+        // Load the target translation
+        $translation = new KnowbaseItemTranslation();
+        if (!$translation->getFromDBByCrit([
+            'knowbaseitems_id' => $id,
+            'language' => $language,
+        ])) {
+            throw new BadRequestHttpException();
+        }
+
+        // Make sure the user is able to translate KB items
+        if (!$translation->can(-1, CREATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        // Revert to the target translation
+        if (!$translation->revertTo($revision_id)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __("Failed to restore the translation revision."),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse([
+            'success' => true,
+            'language' => $language,
+        ]);
     }
 }

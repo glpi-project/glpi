@@ -239,21 +239,18 @@ test('Can compare a revision with the current version', async ({ page, profile, 
     await expect(article).toHaveClass(/kb-article--diff-mode/);
 
     // The revision item should be highlighted
-    await expect(initialRevision).toHaveClass(/kb-revision--comparing/);
+    await expect(initialRevision).toHaveClass(/kb-revision--selected/);
 
     // Diff markers should be visible (ins/del elements from htmldiff)
     await expect(article.getByRole('insertion').first()).toBeAttached();
     await expect(article.getByRole('deletion').first()).toBeAttached();
 
-    // Click the same revision again to deactivate comparison
+    // Click the same revision again — should remain active (no toggle-off)
     await initialRevision.click();
 
-    // Article should exit diff mode
-    await expect(article).not.toHaveClass(/kb-article--diff-mode/);
-    await expect(initialRevision).not.toHaveClass(/kb-revision--comparing/);
-
-    // Original content should be restored
-    await expect(page.getByText('Updated paragraph')).toBeVisible();
+    // Article should still be in diff mode
+    await expect(article).toHaveClass(/kb-article--diff-mode/);
+    await expect(initialRevision).toHaveClass(/kb-revision--selected/);
 });
 
 test('Switching between revisions does not corrupt the diff', async ({ page, profile, api }) => {
@@ -293,8 +290,8 @@ test('Switching between revisions does not corrupt the diff', async ({ page, pro
     // Click on Initial version — diff should be recomputed, not accumulated
     await revisions.nth(2).click();
     await expect(article).toHaveClass(/kb-article--diff-mode/);
-    await expect(revisions.nth(2)).toHaveClass(/kb-revision--comparing/);
-    await expect(revisions.nth(1)).not.toHaveClass(/kb-revision--comparing/);
+    await expect(revisions.nth(2)).toHaveClass(/kb-revision--selected/);
+    await expect(revisions.nth(1)).not.toHaveClass(/kb-revision--selected/);
 
     // The number of <del> elements should not grow with each click
     const delCountAfterSecond = await content.getByRole('deletion').count();
@@ -333,13 +330,13 @@ test('Clicking current version deactivates comparison', async ({ page, profile, 
     // Activate comparison on the initial revision
     await initialRevision.click();
     await expect(article).toHaveClass(/kb-article--diff-mode/);
-    await expect(initialRevision).toHaveClass(/kb-revision--comparing/);
+    await expect(initialRevision).toHaveClass(/kb-revision--selected/);
 
     // Click on "Current version" to deactivate comparison
     await currentVersion.click();
 
     // Article should exit diff mode and show original content
     await expect(article).not.toHaveClass(/kb-article--diff-mode/);
-    await expect(initialRevision).not.toHaveClass(/kb-revision--comparing/);
+    await expect(initialRevision).not.toHaveClass(/kb-revision--selected/);
     await expect(page.getByText('Updated content')).toBeVisible();
 });

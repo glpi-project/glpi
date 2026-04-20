@@ -34,43 +34,30 @@
 
 namespace Glpi\Knowbase\History;
 
+use Dropdown;
 use Override;
 
-class RevisionEvent implements HistoryEventInterface
+final class TranslationRevisionEvent extends RevisionEvent
 {
     public function __construct(
-        private int $id,
-        protected int $index,
-        private string $date,
-        private int $author_id,
-    ) {}
+        int $id,
+        int $index,
+        string $date,
+        int $author_id,
+        private string $language,
+    ) {
+        parent::__construct($id, $index, $date, $author_id);
+    }
 
     #[Override]
     public function getLabel(): string
     {
-        return \sprintf(__('Version %s'), $this->index);
+        $language_name = Dropdown::getLanguageName($this->language);
+        return \sprintf(__('%s — Version %s'), $language_name, $this->index);
     }
 
-    #[Override]
-    public function getDescription(): string
+    public function getLanguage(): string
     {
-        return $this->index === 1 ? __("Created by") : __("Updated by");
-    }
-
-    #[Override]
-    public function getDate(): string
-    {
-        return $this->date;
-    }
-
-    #[Override]
-    public function getAuthor(): int
-    {
-        return $this->author_id;
-    }
-
-    public function getRevisionId(): int
-    {
-        return $this->id;
+        return $this->language;
     }
 }

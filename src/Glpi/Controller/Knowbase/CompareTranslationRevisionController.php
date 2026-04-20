@@ -38,14 +38,15 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
+use KnowbaseItemTranslation;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class CompareRevisionController extends AbstractCompareController
+final class CompareTranslationRevisionController extends AbstractCompareController
 {
     #[Route(
-        "/Knowbase/{id}/CompareRevision/{revision_id}",
-        name: "knowbase_article_compare_revision",
+        "/Knowbase/{id}/CompareTranslationRevision/{revision_id}",
+        name: "knowbase_article_compare_translation_revision",
         methods: ["GET"],
         requirements: [
             'id' => '\d+',
@@ -61,7 +62,7 @@ final class CompareRevisionController extends AbstractCompareController
         }
 
         // Make sure the user is able to update the current KB
-        if (!$kb->can($id, READ)) {
+        if (!$kb->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -71,9 +72,25 @@ final class CompareRevisionController extends AbstractCompareController
             throw new BadRequestHttpException();
         }
 
+        // Validate that this revision is targeting a translation
+        $language = $revision->fields['language'];
+        if ($language === '') {
+            throw new BadRequestHttpException();
+        }
+
+        // Load the target translation
+        $translation = new KnowbaseItemTranslation();
+        $exists = $translation->getFromDBByCrit([
+            'knowbaseitems_id' => $id,
+            'language' => $language,
+        ]);
+
         return $this->compare(
             old_answer: $revision->fields['answer'],
-            new_answer: $kb->fields['answer']
+
+            // Current answer will be empty in case the translation was
+            // deleted.
+            new_answer: $exists ? $translation->fields['answer'] : '',
         );
     }
 }

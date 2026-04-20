@@ -38,7 +38,7 @@ use Override;
 
 use function Safe\preg_match;
 
-final class LogEvent implements HistoryEventInterface
+class LogEvent implements HistoryEventInterface
 {
     public function __construct(
         private string $label,
