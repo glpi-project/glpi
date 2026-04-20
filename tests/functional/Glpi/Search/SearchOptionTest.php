@@ -239,7 +239,5 @@ class SearchOptionTest extends DbTestCase
         $this->assertArrayHasKey('data', $result2);
         $this->assertArrayHasKey('rows', $result2['data']);
         $this->assertGreaterThan(0, $result2['data']['totalcount']);
-
-        $this->assertTrue(true, 'ok');
     }
 }
