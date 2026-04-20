@@ -443,7 +443,6 @@ export class GlpiKnowbaseRevisionsPanelController
                 method: "POST",
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                 }
             });
 
