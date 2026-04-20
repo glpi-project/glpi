@@ -944,6 +944,10 @@ final class DbUtils
                 return [new QueryExpression('true')];
             } elseif (isCommandLine() || Session::isCron()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
+            } else {
+                // No active session and no privileged context: deny all access to prevent
+                // invalid SQL criterion (entities_id = '' on integer column → MySQL warning 1292).
+                return [new QueryExpression('false')];
             }
         }
 
