@@ -39,6 +39,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class DBmysqlIteratorTest extends DbTestCase
@@ -1748,7 +1749,7 @@ class DBmysqlIteratorTest extends DbTestCase
         ];
     }
 
-
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('resultProvider')]
     public function testAutoUnsanitize(array $db_data, array $result): void
     {

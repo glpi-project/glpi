@@ -39,6 +39,7 @@ use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
 use KnowbaseItem_User;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
@@ -333,6 +334,7 @@ HTML,
         $this->assertEquals(2, $count);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testGetForCategory()
     {
         global $DB;

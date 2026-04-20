@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use SoftwareVersion;
 
@@ -1808,6 +1809,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertCount(1, $softs);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testSoftLockedOSChange()
     {
         $json = <<<JSON

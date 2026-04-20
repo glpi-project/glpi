@@ -38,6 +38,7 @@ use Glpi\Tests\DbTestCase;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class ThemeTest extends DbTestCase
 {
@@ -51,6 +52,7 @@ class ThemeTest extends DbTestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testGetCustomThemes(): void
     {
         vfsStream::setup('custom_themes', null, [

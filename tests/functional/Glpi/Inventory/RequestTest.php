@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Inventory;
 
 use Glpi\Inventory\Request;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class RequestTest extends GLPITestCase
@@ -99,6 +100,7 @@ class RequestTest extends GLPITestCase
     /**
      * Test known queries
      */
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('queriesProvider')]
     public function testSnmpQuery($query)
     {

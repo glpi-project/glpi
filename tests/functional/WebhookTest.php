@@ -38,6 +38,7 @@ use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
 use Ticket;
@@ -319,6 +320,7 @@ JSON;
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testWebhookNotBlocker(): void
     {
         global $DB;

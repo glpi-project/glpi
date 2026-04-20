@@ -47,6 +47,7 @@ use Glpi\Socket;
 use Glpi\SocketModel;
 use GlpiPlugin\Tester\MyPsr4Class;
 use GlpiPlugin\Tester\MyPsr4Dropdown;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
@@ -58,6 +59,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 final class LegacyItemtypeRouteListenerTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('provideItemtypes')]
     public function testFindGlpiClass(string $path_info, string $expected_class_name): void
     {
@@ -416,6 +418,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[RunInSeparateProcess]
     #[DataProvider('provideClassesForPlugin')]
     public function testFindClassForPlugin(string $path_info, string $class): void

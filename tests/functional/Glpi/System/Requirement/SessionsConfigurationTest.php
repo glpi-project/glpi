@@ -36,6 +36,7 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class SessionsConfigurationTest extends GLPITestCase
 {
@@ -49,6 +50,7 @@ class SessionsConfigurationTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithMissingExtension()
     {
         $instance = $this->getMockBuilder(SessionsConfiguration::class)
@@ -62,6 +64,7 @@ class SessionsConfigurationTest extends GLPITestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckWithAutostart()
     {
         $instance = $this->getMockBuilder(SessionsConfiguration::class)

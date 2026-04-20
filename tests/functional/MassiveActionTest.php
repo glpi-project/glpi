@@ -45,6 +45,7 @@ use Group_Item;
 use Location;
 use MassiveAction;
 use Notepad;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Problem_Ticket;
@@ -231,6 +232,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('amendCommentProvider')]
     public function testProcessMassiveActionsForOneItemtype_AmendComment(
         CommonDBTM $item,
@@ -310,6 +312,7 @@ class MassiveActionTest extends DbTestCase
     /**
      * Checks if a State can be (de)associated with an itemtype via massive action
      */
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('stateVisibilitySearchOptionIdsProvider')]
     public function testMassiveActionUpdateStateVisibility(int $search_option_id): void
     {
@@ -347,6 +350,7 @@ class MassiveActionTest extends DbTestCase
     /**
      * Checks if a State can be (de)associated with a custom asset itemtype via massive action
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testMassiveActionUpdateStateVisibilityForCustomAsset(): void
     {
         // --- Arrange
@@ -424,6 +428,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('addNoteProvider')]
     public function testProcessMassiveActionsForOneItemtype_AddNote(
         CommonDBTM $item,
@@ -525,6 +530,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testProcessMassiveActionsForOneItemtype_resolveTickets()
     {
         $this->login(); // must be logged as ITILSolution uses Session::getLoginUserID()
@@ -627,6 +633,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testProcessMassiveActionsForOneItemtype_addContract()
     {
         $this->login();
@@ -736,6 +743,7 @@ class MassiveActionTest extends DbTestCase
     /**
      * Test the "delete_email" massive action for User
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testProcessMassiveActionsForOneItemtype_deleteEmail()
     {
         $provider = $this->deleteEmailsProvider();
@@ -758,7 +766,7 @@ class MassiveActionTest extends DbTestCase
     }
 
 
-
+    #[AllowMockObjectsWithoutExpectations]
     public function testProcessMassiveActionsForOneItemtype_AddDomain()
     {
         $this->login('glpi', 'glpi');
@@ -947,6 +955,7 @@ class MassiveActionTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testaveSearchSpecificmassiveAction()
     {
         $provider = $this->testSaveSearchSpecificMassiveActionProvider();
@@ -963,6 +972,7 @@ class MassiveActionTest extends DbTestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testProcessMassiveActionsForOneItemtype_updateDropdownOrCommonDBConnexity()
     {
         $this->login();
@@ -1131,6 +1141,7 @@ class MassiveActionTest extends DbTestCase
     /**
      * Test that massive actions create appropriate event logs
      */
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('massiveActionEventLoggingProvider')]
     public function testMassiveActionEventLogging(
         string $itemtype,
@@ -1228,6 +1239,7 @@ class MassiveActionTest extends DbTestCase
     /**
      * Test that no event logs are created when no items are successfully processed
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testNoEventLoggingWhenNoItemsProcessed()
     {
         $this->login();
@@ -1376,6 +1388,7 @@ class MassiveActionTest extends DbTestCase
         ]));
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testProcessMassiveActionsForOneItemtype_AssociateGroup()
     {
         $this->login();
@@ -1481,6 +1494,7 @@ class MassiveActionTest extends DbTestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testAddTaskMassiveActionOnProblemTicketCreatesTicketTask(): void
     {
         $this->login('glpi', 'glpi');
@@ -1525,6 +1539,7 @@ class MassiveActionTest extends DbTestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testAddTaskMassiveActionOnChangeTicketCreatesTicketTask(): void
     {
         $this->login('glpi', 'glpi');

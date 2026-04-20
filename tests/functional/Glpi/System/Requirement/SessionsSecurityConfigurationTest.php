@@ -36,6 +36,7 @@ namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class SessionsSecurityConfigurationTest extends GLPITestCase
@@ -146,6 +147,7 @@ class SessionsSecurityConfigurationTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('configProvider')]
     public function testCheckWithLowercaseLaxSameSiteConfig(
         $cookie_secure,

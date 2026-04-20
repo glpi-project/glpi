@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/software.class.php */
@@ -142,6 +143,7 @@ class DomainTest extends DbTestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testTransfer()
     {
         $this->login();

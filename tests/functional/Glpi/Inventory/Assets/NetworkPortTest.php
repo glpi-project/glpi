@@ -40,6 +40,7 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
 use Glpi\Tests\AbstractInventoryAsset;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class NetworkPortTest extends AbstractInventoryAsset
@@ -1488,6 +1489,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertCount(0, $unmanaged->find());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testNetworkEquipmentsConnectionsConverted(): void
     {
         global $CFG_GLPI;

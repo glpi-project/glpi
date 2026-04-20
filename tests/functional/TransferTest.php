@@ -39,6 +39,7 @@ use Certificate_Item;
 use Computer;
 use Glpi\Tests\DbTestCase;
 use Item_SoftwareVersion;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Software;
 use SoftwareVersion;
 
@@ -46,6 +47,7 @@ use SoftwareVersion;
 
 class TransferTest extends DbTestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testTransfer()
     {
         $this->login();
@@ -159,6 +161,7 @@ class TransferTest extends DbTestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testDomainTransfer()
     {
         $this->login();
@@ -860,6 +863,7 @@ class TransferTest extends DbTestCase
         $this->assertEquals($destination_entity, $item->fields['entities_id']);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testTicketWithDocumentTransfer()
     {
         $this->login();
@@ -1322,6 +1326,7 @@ class TransferTest extends DbTestCase
      * The Document_Item:add_transfer_list action key ensures the Document_Item processor
      * handles the dispatch and can redirect to the entity-owning peer (the Document).
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testAddTransferListResolvesRelationToEntityOwner(): void
     {
         $this->login();

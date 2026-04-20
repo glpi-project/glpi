@@ -38,9 +38,11 @@ use Computer;
 use Glpi\Csv\CsvResponse as Core_CsvResponse;
 use Glpi\Csv\LogCsvExport as CsvLogCsvExport;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class CsvResponseTest extends DbTestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testCsvResponse()
     {
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
