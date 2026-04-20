@@ -229,6 +229,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             unset($input['filename']);
         }
 
+        // current_filename is not necessary (item is new, current_filename should not exist
+        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        $input['current_filename'] = '';
+
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
         }
@@ -342,6 +346,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         if (isset($input['current_filepath'])) {
+            // Always use the values stored in DB to prevent arbitrary file deletion
+            $input['current_filepath'] = $this->fields['filepath'];
+            $input['current_filename'] = $this->fields['filename'];
+
             if (!empty($input["_filename"])) {
                 self::moveDocument($input, array_shift($input["_filename"]));
             } elseif (!empty($input["upload_file"])) {
