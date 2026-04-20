@@ -259,14 +259,12 @@
                     </a>
                 </div>
 
-                {% if related_items_count > 0 %}
-                    <div class="d-flex align-items-center">
-                        <i class="ti ti-link me-1 fs-3"></i>
-                        <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-testid="related-items-count">
-                            {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
-                        </a>
-                    </div>
-                {% endif %}
+                <div class="d-flex align-items-center {{ related_items_count == 0 ? 'd-none' : '' }}" data-kb-related-items-count-container>
+                    <i class="ti ti-link me-1 fs-3"></i>
+                    <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-testid="related-items-count">
+                        {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
+                    </a>
+                </div>
 
                 {# Visibility dates indicator #}
                 {% if (begin_date is defined or end_date is defined) and mode == 'edit' and can_edit %}
@@ -544,35 +542,14 @@
 
                 {# Related Items Tab Pane #}
                 <div class="tab-pane fade" id="kb-items-tab" role="tabpanel">
-                    {% if related_items|length > 0 %}
-                    <div class="d-flex flex-wrap gap-2 mb-2">
+                    <div class="d-flex flex-wrap gap-2 mb-2 {{ related_items|length == 0 ? 'd-none' : '' }}" data-glpi-kb-related-items-list>
                         {% for item in related_items %}
-                        <span
-                            class="kb-item-badge badge bg-light text-dark d-flex align-items-center gap-2"
-                            data-glpi-item-assoc-id="{{ item.id }}"
-                            data-testid="related-item-chip"
-                        >
-                            <a href="{{ item.link_url }}"
-                               class="d-flex align-items-center gap-2 text-decoration-none"
-                               title="{{ __('%1$s: %2$s')|format(item.type_name, item.name) }}"
-                            >
-                                <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
-                                <span>{{ item.name }}</span>
-                            </a>
-
-                            {% if can_edit %}
-                                <button
-                                    type="button"
-                                    class="kb-unlink-item btn-close btn-close-white"
-                                    data-glpi-kb-unlink-item="{{ item.id }}"
-                                    title="{{ __('Unlink item') }}"
-                                    aria-label="{{ __('Unlink item') }}"
-                                ></button>
-                            {% endif %}
-                        </span>
+                            {{ include('pages/tools/kb/related_item_badge.html.twig', {
+                                item: item,
+                                can_edit: can_edit,
+                            }, with_context = false) }}
                         {% endfor %}
                     </div>
-                    {% endif %}
 
                     {% if can_link_items %}
                     <button type="button" class="btn btn-sm btn-primary mt-2"

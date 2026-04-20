@@ -113,12 +113,15 @@ test('Can link an item to a knowledge base article', async ({ page, profile, api
     // Submit the form
     await modal.getByRole('button', { name: 'Add' }).click();
 
+    // Modal should close and a success toast should appear
+    await expect(modal).toBeHidden();
+    await expect(kb.getAlert('Item linked successfully')).toBeVisible();
+
     // Counter should be updated to 1
     const updated_tab = page.getByRole('tab', { name: /Related items/ });
     await expect(updated_tab).toContainText('1');
 
-    // Switch to the Related items tab and check the chip is visible
-    await updated_tab.click();
+    // The chip should be visible in the list
     await expect(page.getByTestId('related-item-chip').filter({ hasText: computer_name })).toBeVisible();
 });
 
@@ -155,5 +158,5 @@ test('Can unlink an item', async ({ page, profile, api }) => {
     await kb.getButton('Unlink item').click();
     await kb.getButton('Unlink').click();
     await expect(page.getByText(computer_name)).not.toBeAttached();
-    await expect(page.getByTestId('related-items-count')).not.toBeAttached();
+    await expect(page.getByTestId('related-items-count')).toBeHidden();
 });

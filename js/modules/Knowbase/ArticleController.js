@@ -34,6 +34,7 @@
 
 import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
+import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 
 const EditorActionType = Object.freeze({
@@ -219,6 +220,11 @@ export class GlpiKnowbaseArticleController
         // Handle documents uploaded without page reload
         this.#container.addEventListener('documents:uploaded', (e) => {
             this.#onDocumentsUploaded(e.detail.documents ?? []);
+        });
+
+        // Handle items linked without page reload
+        this.#container.addEventListener('item:linked', (e) => {
+            this.#onItemLinked(e.detail.item ?? null);
         });
     }
 
@@ -425,6 +431,9 @@ export class GlpiKnowbaseArticleController
             url: `${CFG_GLPI.root_doc}/Knowbase/${id}/${key}`,
             title: title || '',
             dialogclass: 'modal-lg',
+            show: key === 'LinkItemModal' ? (e) => {
+                new LinkItemFormController(e.target.closest('.modal'));
+            } : () => {},
         });
     }
 
@@ -513,9 +522,11 @@ export class GlpiKnowbaseArticleController
         if (meta_link) {
             const current = parseInt(meta_link.textContent, 10) || 0;
             const updated = Math.max(0, current + delta);
+            const meta_container = meta_link.closest('[data-kb-related-items-count-container]');
             if (updated === 0) {
-                meta_link.closest('.d-flex')?.remove();
+                meta_container.classList.add('d-none');
             } else {
+                meta_container.classList.remove('d-none');
                 const label = _n('%s related item', '%s related items', updated).replace('%s', updated);
                 meta_link.textContent = label;
             }
@@ -574,6 +585,24 @@ export class GlpiKnowbaseArticleController
 
         // Update counters
         this.#updateDocumentCount(documents.length);
+    }
+
+    /**
+     * @param {{html: string}|null} item
+     */
+    #onItemLinked(item)
+    {
+        if (!item) {
+            return;
+        }
+
+        // Insert new badge
+        const badges_container = this.#container.querySelector('[data-glpi-kb-related-items-list]');
+        badges_container.insertAdjacentHTML('beforeend', item.html);
+        badges_container.classList.remove('d-none');
+
+        // Update counters
+        this.#updateRelatedItemCount(1);
     }
 
     /**
