@@ -109,8 +109,9 @@ test('Displays all permission types with correct badges', async ({ page, profile
         entities_id: entity_id,
         is_recursive: 1,
     });
+    const group_name = `Test group ${crypto.randomUUID()}`;
     const group_id = await api.createItem('Group', {
-        name: `Test group ${crypto.randomUUID()}`,
+        name: group_name,
         entities_id: entity_id,
     });
     await api.createItem('Group_KnowbaseItem', {
@@ -133,42 +134,38 @@ test('Displays all permission types with correct badges', async ({ page, profile
     await kb.goto(id);
     const modal = await kb.doOpenPermissionsModal();
 
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const list = modal.locator('[data-glpi-permissions-list]');
+    const list = modal.getByRole('list');
 
-    // Entity permission - recursive
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const entity_row = list.locator('[data-glpi-permission-itemtype="Entity_KnowbaseItem"]');
+    // Entity row — PermissionsRenderer::buildEntries() renders the entity breadcrumb
+    // as entity_name context on Group/Profile rows too, so we exclude them explicitly.
+    const entity_row = list.getByRole('listitem')
+        .filter({ hasText: 'E2E worker entity' })
+        .filter({ hasNotText: group_name })
+        .filter({ hasNotText: 'Technician' });
     await expect(entity_row).toBeVisible();
     await expect(entity_row.getByText('Can view')).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    await expect(entity_row.locator('[data-glpi-permission-recursive]')).toBeVisible();
+    await expect(entity_row.getByLabel('Recursive')).toBeVisible();
 
     // Group permission - not recursive
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const group_row = list.locator('[data-glpi-permission-itemtype="Group_KnowbaseItem"]');
+    const group_row = list.getByRole('listitem').filter({ hasText: group_name });
     await expect(group_row).toBeVisible();
     await expect(group_row.getByText('Can view')).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    await expect(group_row.locator('[data-glpi-permission-recursive]')).not.toBeAttached();
+    await expect(group_row.getByLabel('Recursive')).not.toBeAttached();
 
     // Profile permission - recursive
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const profile_row = list.locator('[data-glpi-permission-itemtype="KnowbaseItem_Profile"]');
+    const profile_row = list.getByRole('listitem').filter({ hasText: 'Technician' });
     await expect(profile_row).toBeVisible();
     await expect(profile_row.getByText('Can view')).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    await expect(profile_row.locator('[data-glpi-permission-recursive]')).toBeVisible();
+    await expect(profile_row.getByLabel('Recursive')).toBeVisible();
 
     // User permission (rendered with user picture, not typed icon)
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const user_row = list.locator('[data-glpi-permission-itemtype="KnowbaseItem_User"]');
+    const user_row = list.getByRole('listitem').filter({ hasText: 'glpi' });
     await expect(user_row).toBeVisible();
     await expect(user_row.getByText('Can view')).toBeVisible();
 
     // Owner is displayed in the footer
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const owner_section = modal.locator('[data-glpi-permission-owner]');
+    // eslint-disable-next-line playwright/no-raw-locators -- Non-interactive footer section, no ARIA landmark applies
+    const owner_section = modal.locator('.kb-permission-owner');
     await expect(owner_section).toBeVisible();
     await expect(owner_section.getByText('Owner')).toBeVisible();
 });
@@ -192,15 +189,15 @@ test('Can add an Entity permission via the modal', async ({ page, profile, api }
     const type_dropdown = kb.getDropdownByLabel('Add a target', modal);
     await kb.doSetDropdownValue(type_dropdown, 'Entity');
 
-    // Wait for the AJAX-loaded entity dropdown to appear (pre-filled with active entity)
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const visibility_container = modal.locator('[data-glpi-permission-add-visibility]');
-    await expect(visibility_container.getByRole('combobox').first()).toBeVisible();
+    // Wait for the AJAX-loaded entity dropdown to appear (pre-filled with active entity).
+    // The Target region may also render an "is_recursive" Yes/No combobox (see ajax/visibility.php),
+    // so we scope to first() — the target dropdown is always rendered before is_recursive.
+    const target_combobox = modal.getByLabel('Target').getByRole('combobox').first();
+    await expect(target_combobox).toBeVisible();
 
     // Submit the form — entity dropdown is already pre-filled with the active entity
     const load_promise = page.waitForEvent('load');
-    // eslint-disable-next-line playwright/no-raw-locators -- Must target native submit input by name for form submission
-    await modal.locator('input[name="addvisibility"]').click();
+    await modal.getByRole('button', { name: 'Add' }).click();
     await load_promise;
 
     // Reopen modal to verify
@@ -208,8 +205,7 @@ test('Can add an Entity permission via the modal', async ({ page, profile, api }
     const reopened_modal = await kb.doOpenPermissionsModal();
 
     // Verify the new entity permission appears in the list
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const entity_row = reopened_modal.locator('[data-glpi-permission-itemtype="Entity_KnowbaseItem"]');
+    const entity_row = reopened_modal.getByRole('list').getByRole('listitem').filter({ hasText: 'E2E worker entity' });
     await expect(entity_row).toBeVisible();
     await expect(entity_row.getByText('Can view')).toBeVisible();
 });
@@ -233,27 +229,25 @@ test('Can add a User permission via the modal', async ({ page, profile, api }) =
     const type_dropdown = kb.getDropdownByLabel('Add a target', modal);
     await kb.doSetDropdownValue(type_dropdown, 'User');
 
-    // Wait for the AJAX-loaded user dropdown to appear
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const visibility_container = modal.locator('[data-glpi-permission-add-visibility]');
-    await expect(visibility_container.getByRole('combobox').first()).toBeVisible();
+    // Wait for the AJAX-loaded user dropdown to appear.
+    // The Target region only renders one combobox for User (no is_recursive), but we keep
+    // first() for consistency with the Entity case where two comboboxes are rendered.
+    const user_combobox = modal.getByLabel('Target').getByRole('combobox').first();
+    await expect(user_combobox).toBeVisible();
 
     // Select "glpi" user from the user dropdown (name may include extra info)
-    const user_combobox = visibility_container.getByRole('combobox').first();
     await kb.doSearchAndClickDropdownValue(user_combobox, 'glpi', false);
 
     // Submit
     const load_promise = page.waitForEvent('load');
-    // eslint-disable-next-line playwright/no-raw-locators -- Must target native submit input by name for form submission
-    await modal.locator('input[name="addvisibility"]').click();
+    await modal.getByRole('button', { name: 'Add' }).click();
     await load_promise;
 
     // Reopen modal to verify
     await kb.goto(id);
     const reopened_modal = await kb.doOpenPermissionsModal();
 
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const user_row = reopened_modal.locator('[data-glpi-permission-itemtype="KnowbaseItem_User"]');
+    const user_row = reopened_modal.getByRole('list').getByRole('listitem').filter({ hasText: 'glpi' });
     await expect(user_row).toBeVisible();
     await expect(user_row.getByText('Can view')).toBeVisible();
 });
@@ -270,8 +264,9 @@ test('Can delete permissions for all target types', async ({ page, profile, api 
         answer: "Test content",
     });
 
+    const group_name = `Delete test group ${crypto.randomUUID()}`;
     const group_id = await api.createItem('Group', {
-        name: `Delete test group ${crypto.randomUUID()}`,
+        name: group_name,
         entities_id: entity_id,
     });
     await api.createItem('Group_KnowbaseItem', {
@@ -290,25 +285,21 @@ test('Can delete permissions for all target types', async ({ page, profile, api 
     await kb.goto(id);
     const modal = await kb.doOpenPermissionsModal();
 
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const list = modal.locator('[data-glpi-permissions-list]');
+    const list = modal.getByRole('list');
 
     // Delete the group permission
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const group_row = list.locator('[data-glpi-permission-itemtype="Group_KnowbaseItem"]');
+    const group_row = list.getByRole('listitem').filter({ hasText: group_name });
     await group_row.getByRole('button', { name: 'Delete' }).click();
     await expect(group_row).not.toBeAttached();
 
     // Delete the profile permission (wait for row to be stable after previous deletion)
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const profile_row = list.locator('[data-glpi-permission-itemtype="KnowbaseItem_Profile"]');
+    const profile_row = list.getByRole('listitem').filter({ hasText: 'Technician' });
     await expect(profile_row).toBeVisible();
     await profile_row.getByRole('button', { name: 'Delete' }).click();
     await expect(profile_row).not.toBeAttached();
 
     // Verify the list is now empty
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    await expect(list.locator('[data-glpi-permission-id]')).toHaveCount(0);
+    await expect(list.getByRole('listitem')).toHaveCount(0);
 });
 
 test('Non-owner sees danger confirmation when deleting permission', async ({ page, profile, api }) => {
@@ -345,8 +336,7 @@ test('Non-owner sees danger confirmation when deleting permission', async ({ pag
     await confirm_dialog.getByRole('button', { name: 'Delete' }).click();
 
     // The permission row should be removed
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    await expect(modal.locator('[data-glpi-permission-itemtype="Entity_KnowbaseItem"]')).not.toBeAttached();
+    await expect(modal.getByRole('list').getByRole('listitem')).toHaveCount(0);
 });
 
 test('User without UPDATE right cannot access permissions modal', async ({ page, profile, api }) => {
@@ -390,14 +380,12 @@ test('Owner is displayed in footer and not duplicated in list', async ({ page, p
     const modal = await kb.doOpenPermissionsModal();
 
     // Owner is shown in footer
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const owner_section = modal.locator('[data-glpi-permission-owner]');
+    // eslint-disable-next-line playwright/no-raw-locators -- Non-interactive footer section, no ARIA landmark applies
+    const owner_section = modal.locator('.kb-permission-owner');
     await expect(owner_section).toBeVisible();
     await expect(owner_section.getByText('Owner')).toBeVisible();
 
     // No permissions in the list (owner is excluded, no other targets)
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    const list = modal.locator('[data-glpi-permissions-list]');
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute rendered by permissions.html.twig
-    await expect(list.locator('[data-glpi-permission-id]')).toHaveCount(0);
+    const list = modal.getByRole('list');
+    await expect(list.getByRole('listitem')).toHaveCount(0);
 });
