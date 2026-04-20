@@ -126,12 +126,11 @@ class KnowbaseEditor {
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
-                appendTo: () => document.body,
+                appendTo: () => this.#element.closest('.kb-article') ?? document.body,
                 shouldShow: ({ editor, state }) => !state.selection.empty && !editor.isActive('image'),
                 options: {
                     placement: 'top',
                     offset: 8,
-                    shift: {boundary: this.#element},
                 },
             }),
             TiptapTable.configure({
