@@ -279,6 +279,10 @@ TWIG;
         );
 
         $options = $this->getOptions($question);
+        if (count($options) > 50) {
+            return $this->renderEndUserTemplateAjax($question, $options, $checked_values);
+        }
+
         $translated_options = [];
         foreach ($options as $uuid => $option) {
             $key = sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid);
@@ -290,6 +294,86 @@ TWIG;
             'label'          => $question->fields['name'],
             'values'         => $translated_options,
             'checked_values' => $checked_values,
+            'is_multiple'    => $this->isMultipleDropdown($question),
+        ]);
+    }
+
+    /**
+     * Render end-user template for large option lists (> 50) using AJAX-backed Select2.
+     *
+     * @param array<string, string> $options        All available options (uuid → label)
+     * @param list<string>          $checked_values UUIDs of pre-selected options
+     */
+    private function renderEndUserTemplateAjax(
+        Question $question,
+        array $options,
+        array $checked_values,
+    ): string {
+        global $CFG_GLPI;
+
+        $template = <<<TWIG
+            {% set rand = random() %}
+
+            <div class="col-12 mb-0">
+                <select
+                    id="dropdown_{{ rand }}"
+                    name="{{ input_name }}"
+                    class="form-select select2"
+                    aria-label="{{ label|e }}"
+                    {{ is_multiple ? 'multiple' : '' }}
+                >
+                    {% for uuid, text in initial_values %}
+                        <option value="{{ uuid }}" selected>{{ text|e }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <script>
+            (function() {
+                var el = $('#dropdown_{{ rand }}');
+                el.select2({
+                    ajax: {
+                        url:      '{{ ajax_url }}',
+                        type:     'POST',
+                        dataType: 'json',
+                        delay:    250,
+                        data: function(params) {
+                            return {
+                                searchText:  params.term || '',
+                                page:        params.page || 1,
+                                page_limit:  50,
+                                form_id:     {{ form_id }},
+                                question_id: {{ question_id }},
+                            };
+                        },
+                        processResults: function(data) {
+                            return { results: data.results, pagination: data.pagination };
+                        },
+                    },
+                    allowClear:  true,
+                    placeholder: '',
+                    width:       '100%',
+                    multiple:    {{ is_multiple ? 'true' : 'false' }},
+                });
+            })();
+            </script>
+TWIG;
+
+        $initial_values = [];
+        foreach ($checked_values as $uuid) {
+            if (isset($options[$uuid])) {
+                $key = sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid);
+                $initial_values[$uuid] = FormTranslation::translate($question, $key) ?? $options[$uuid];
+            }
+        }
+
+        return TemplateRenderer::getInstance()->renderFromStringTemplate($template, [
+            'label'          => $question->fields['name'],
+            'input_name'     => $question->getEndUserInputName(),
+            'form_id'        => $question->getForm()->getID(),
+            'question_id'    => $question->fields['id'],
+            'ajax_url'       => $CFG_GLPI['root_doc'] . '/Form/Question/DropdownValues',
+            'initial_values' => $initial_values,
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);
     }
