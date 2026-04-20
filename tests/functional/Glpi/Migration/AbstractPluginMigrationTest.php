@@ -1256,8 +1256,13 @@ class AbstractPluginMigrationTest extends DbTestCase
             \getAllDataFromTable(Contract_Item::getTable())
         );
 
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             [
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_3_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
                 [
                     'itemtype'     => $my_asset_1::class,
                     'items_id'     => $my_asset_1->getID(),
@@ -1272,11 +1277,6 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'itemtype'     => $my_asset_2::class,
                     'items_id'     => $my_asset_2->getID(),
                     'contracts_id' => $contract_3->getID(),
-                ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_3_id,
-                    'contracts_id' => $contract_1->getID(),
                 ],
             ],
             \array_values($contract_relations)
