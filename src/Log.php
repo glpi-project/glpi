@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchOption;
 
+use function Safe\json_decode;
 use function Safe\preg_match;
 
 /**
@@ -221,10 +222,11 @@ class Log extends CommonDBTM
      * @param int $items_id
      * @param class-string<CommonDBTM> $itemtype
      * @param array $changes
-     * @param int|string $itemtype_link   (default '')
-     * @param int $linked_action   (default 0)
+     * @param int|string $itemtype_link (default '')
+     * @param int $linked_action (default 0)
      *
      * @return bool success
+     * @throws \Safe\Exceptions\JsonException
      */
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = 0)
     {
