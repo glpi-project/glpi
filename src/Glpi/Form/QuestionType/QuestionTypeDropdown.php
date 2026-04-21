@@ -342,7 +342,6 @@ TWIG;
                                 searchText:  params.term || '',
                                 page:        params.page || 1,
                                 page_limit:  50,
-                                form_id:     {{ form_id }},
                                 question_id: {{ question_id }},
                             };
                         },
@@ -370,7 +369,6 @@ TWIG;
         return TemplateRenderer::getInstance()->renderFromStringTemplate($template, [
             'label'          => $question->fields['name'],
             'input_name'     => $question->getEndUserInputName(),
-            'form_id'        => $question->getForm()->getID(),
             'question_id'    => $question->fields['id'],
             'ajax_url'       => $CFG_GLPI['root_doc'] . '/Form/Question/DropdownValues',
             'initial_values' => $initial_values,

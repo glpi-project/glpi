@@ -35,19 +35,15 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,6 +51,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class QuestionDropdownValuesController extends AbstractController
 {
+    use CanCheckAccessPolicies;
     private const DEFAULT_PAGE_SIZE = 50;
 
     #[Route(
@@ -65,9 +62,9 @@ final class QuestionDropdownValuesController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
-        $this->checkFormAccessPolicies($request);
-
         $question = $this->loadQuestion($request);
+
+        $this->checkFormAccessPolicies($question->getForm(), $request);
 
         if (!$question->getQuestionType() instanceof QuestionTypeDropdown) {
             throw new BadRequestHttpException();
@@ -118,29 +115,5 @@ final class QuestionDropdownValuesController extends AbstractController
         return $question;
     }
 
-    private function checkFormAccessPolicies(Request $request): void
-    {
-        if (Session::haveRight(Form::$rightname, READ)) {
-            return;
-        }
 
-        $forms_id = $request->request->getInt('form_id');
-        if (!$forms_id) {
-            throw new BadRequestHttpException();
-        }
-
-        $form = Form::getById($forms_id);
-        if (!$form instanceof Form) {
-            throw new NotFoundHttpException();
-        }
-
-        $parameters = new FormAccessParameters(
-            session_info: Session::getCurrentSessionInfo(),
-            url_parameters: $request->query->all(),
-        );
-
-        if (!FormAccessControlManager::getInstance()->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
-    }
 }
