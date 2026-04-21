@@ -48,10 +48,10 @@ test('Can delete a permission from the modal', async ({ page, profile, api }) =>
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await expect(page.getByTestId('permission-entry')).toHaveCount(1);
-    await kb.getVisibilityModal().getByTestId('delete-permission').click();
+    await kb.getVisibilityModal().getByRole('button', { name: "Delete" }).click();
 
     // Assert: the entry should be removed from the DOM.
-    await expect(kb.getVisibilityModal().getByTestId('delete-permission')).not.toBeAttached();
+    await expect(kb.getVisibilityModal().getByRole('button', { name: "Delete" })).not.toBeAttached();
     await expect(page.getByTestId('permission-entry')).toHaveCount(0);
 });
 
