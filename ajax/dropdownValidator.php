@@ -96,7 +96,7 @@ if (isset($_POST["validatortype"])) {
                 $where = ['users_id' => $requester->fields['users_id_supervisor']] + getEntitiesRestrictCriteria(
                     getTableForItemType(Profile_User::class),
                     "",
-                    isset($itilObject) ? $itilObject->getEntityID() : '',
+                    $_POST['entity'] ?? '',
                     true
                 );
                 $supervisor_can_access_itilobject = iterator_count(Profile_User::getSeveralFromDBByCrit($where)) > 0;
