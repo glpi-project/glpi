@@ -38,7 +38,7 @@
 </h3>
 
 {# Permissions list #}
-<div class="list-group list-group-flush" data-testid="permissions-list" data-glpi-permissions-list>
+<ul class="list-group list-group-flush" data-testid="permissions-list" data-glpi-permissions-list>
     {% if not has_entries %}
         <div class="text-secondary py-1" data-testid="empty-permissions">
             {{ __('This article is not yet visible to anyone.') }}
@@ -46,7 +46,7 @@
     {% endif %}
 
     {% for entry in entries %}
-        <div class="list-group-item d-flex align-items-center gap-2 py-2 px-0 border-0"
+        <li class="list-group-item d-flex align-items-center gap-2 py-2 px-0 border-0"
             data-testid="permission-entry"
             data-glpi-permission-id="{{ entry.id }}"
             data-glpi-permission-itemtype="{{ entry.itemtype }}"
@@ -100,9 +100,9 @@
                     <i class="ti ti-trash"></i>
                 </button>
             {% endif %}
-        </div>
+        </li>
     {% endfor %}
-</div>
+</ul>
 
 {# Add target form #}
 {% if can_edit %}
