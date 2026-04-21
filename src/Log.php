@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchOption;
+use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
 use function Safe\preg_match;
@@ -226,7 +227,7 @@ class Log extends CommonDBTM
      * @param int $linked_action (default 0)
      *
      * @return bool success
-     * @throws \Safe\Exceptions\JsonException
+     * @throws JsonException
      */
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = 0)
     {
