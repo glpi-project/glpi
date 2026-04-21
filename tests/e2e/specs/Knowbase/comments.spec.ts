@@ -64,14 +64,17 @@ test('Can view and add comments', async ({ page, profile, api }) => {
     await expect(page.getByText('E2E API account · Just now')).toBeVisible();
     await expect(kb.getCommentByContent('My first comment')).toBeVisible();
 
-    // Add a new comment
-    await expect(kb.getButton("Add comment")).toBeHidden();
+    // Add a new comment without text (should fail due to required attribute)
+    await expect(kb.getNewCommentTextarea()).toHaveJSProperty('validity.valueMissing', true);
+    await kb.getButton("Add comment").click();
+    await expect(kb.getCommentsCounter()).toHaveText("1");
+
+    // Add a new comment with text
     await kb.getNewCommentTextarea().fill("My second comment");
-    await expect(kb.getButton("Add comment")).toBeVisible();
+    await expect(kb.getNewCommentTextarea()).toHaveJSProperty('validity.valueMissing', false);
     await kb.getButton("Add comment").click();
 
     // New comment should be added
-    await expect(kb.getButton("Add comment")).toBeHidden();
     await expect(kb.getNewCommentTextarea()).toBeEmpty();
     await expect(page.getByText(/E2E worker account \d+\s+·\s+Now/)).toBeVisible();
     await expect(kb.getCommentByContent('My second comment')).toBeVisible();

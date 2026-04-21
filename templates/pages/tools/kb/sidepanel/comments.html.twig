@@ -70,6 +70,7 @@
             rows="1"
             placeholder="{{ __('Add a comment...') }}"
             name="new_comment"
+            required
             data-glpi-add-comments-content
         ></textarea>
     </div>
@@ -77,7 +78,7 @@
     <div class="d-flex mt-3">
         <button
             type="button"
-            class="btn btn-sm btn-primary ms-auto d-none"
+            class="btn btn-sm btn-primary ms-auto"
             data-glpi-add-comments-submit
             aria-label="{{ __('Add comment') }}"
         >
