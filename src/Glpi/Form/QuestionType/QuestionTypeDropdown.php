@@ -301,8 +301,8 @@ TWIG;
     /**
      * Render end-user template for large option lists (> 50) using AJAX-backed Select2.
      *
-     * @param array<string, string> $options        All available options (uuid → label)
-     * @param list<string>          $checked_values UUIDs of pre-selected options
+     * @param array<string, string> $options        All available options (uuid -> label)
+     * @param array<string>         $checked_values UUIDs of pre-selected options
      */
     private function renderEndUserTemplateAjax(
         Question $question,
