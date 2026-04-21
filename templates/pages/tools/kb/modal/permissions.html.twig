@@ -110,7 +110,7 @@
     <div class="mt-4">
         <form method="post" action="{{ 'KnowbaseItem'|itemtype_form_path }}">
             <input type="hidden" name="knowbaseitems_id" value="{{ id }}">
-            {% set add_label = __('Add access for...') %}
+            {% set add_label = __('Add access for') %}
             <div class="row g-3" id="kb-permissions-form-{{ rand }}" data-testid="publish-form">
                 {# Row 1: type + item dropdowns + Entity child entities inline #}
                 <div class="col-12">

@@ -66,7 +66,7 @@ test('Can add user permission', async ({ page, profile, api }) => {
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "User",
     );
     await kb.doSetDropdownValue(
@@ -93,7 +93,7 @@ test('Can add entity permission', async ({ page, profile, api }) => {
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Entity",
     );
     await kb.doSetDropdownValue(
@@ -122,7 +122,7 @@ test('Can add entity permission (recursive)', async ({ page, profile, api }) => 
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Entity",
     );
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
@@ -152,7 +152,7 @@ test('Can add group permission', async ({ page, profile, api }) => {
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Group",
     );
     await kb.doSearchAndClickDropdownValue(
@@ -190,7 +190,7 @@ test('Can add group permission with recursive context', async ({
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Group",
     );
     await kb.doSearchAndClickDropdownValue(
@@ -233,7 +233,7 @@ test('Can add group permission with context', async ({ page, profile, api }) => 
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Group",
     );
     await kb.doSearchAndClickDropdownValue(
@@ -271,7 +271,7 @@ test('Can add profile permission', async ({ page, profile, api }) => {
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Profile",
     );
     await kb.doSearchAndClickDropdownValue(
@@ -304,7 +304,7 @@ test('Can add profile permission with recursive context', async ({
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Profile",
     );
     await kb.doSearchAndClickDropdownValue(
@@ -342,7 +342,7 @@ test('Can add profile permission with context', async ({ page, profile, api }) =
     await kb.goto(id);
     await kb.doOpenVisibilityModal();
     await kb.doSetDropdownValue(
-        kb.getDropdownByLabel("Add access for..."),
+        kb.getDropdownByLabel("Add access for"),
         "Profile",
     );
     await kb.doSetDropdownValue(
