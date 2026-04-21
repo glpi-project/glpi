@@ -718,14 +718,14 @@
 
 .visibility-type-col .select2-selection  {
     // Merge borders with dropdown to its right
-    border-top-right-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
+    border-start-end-radius: 0 !important;
+    border-end-end-radius: 0 !important;
 }
 
 .visibility-item-col .select2-selection  {
     // Merge borders with dropdown to its left
-    border-top-left-radius: 0 !important;
-    border-bottom-left-radius: 0 !important;
+    border-start-start-radius: 0 !important;
+    border-end-start-radius: 0 !important;
 }
 
 [data-main-page-aside="knowbaseitem"] {
