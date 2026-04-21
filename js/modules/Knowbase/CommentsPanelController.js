@@ -69,14 +69,6 @@ export class GlpiKnowbaseCommentsPanelController
 
     #initEventListeners()
     {
-        this.#container.addEventListener('input', (e) => {
-            // Show submit button when typing a new comment
-            const textarea = e.target.closest(content_selector);
-            if (textarea) {
-                this.#toggleSubmitButtonVisibility(textarea);
-            }
-        });
-
         this.#container.addEventListener('click', (e) => {
             // Submit new comment
             const submit = e.target.closest(submit_selector);
@@ -237,17 +229,12 @@ export class GlpiKnowbaseCommentsPanelController
         this.#showEmptyStateIfNoComments();
     }
 
-    #toggleSubmitButtonVisibility(textarea)
-    {
-        if (textarea.value !== '') {
-            this.#getSubmitButton().classList.remove('d-none');
-        } else {
-            this.#getSubmitButton().classList.add('d-none');
-        }
-    }
-
     async #submitComment()
     {
+        if (!this.#getContentTextarea().reportValidity()) {
+            return;
+        }
+
         // Show loading state
         this.#getSubmitButton().classList.add('pointer-events-none');
         this.#getSubmitButton()
@@ -268,7 +255,6 @@ export class GlpiKnowbaseCommentsPanelController
         // Clear input/UI
         this.#getContentTextarea().value = "";
         this.#getSubmitButton().classList.remove('pointer-events-none');
-        this.#getSubmitButton().classList.add('d-none');
         this.#getSubmitButton()
             .querySelector('[data-glpi-icon]')
             .classList
