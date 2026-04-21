@@ -74,7 +74,7 @@
                 {% set user = users.getUser(event.getAuthor()) %}
                 {% if user %}
                     <a rel="author" href="{{ user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
-                        @{{ user.getFriendlyName() }}
+                        {{ user.getFriendlyName() }}
                     </a>
                 {% else %}
                     <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>

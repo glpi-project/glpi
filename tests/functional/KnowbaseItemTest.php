@@ -1789,7 +1789,7 @@ HTML,
         $author_link = $html->filter('[data-testid=author_link]');
 
         // Assert: last update should be contain relative date + the author name
-        $this->assertEquals("Updated: 2 days ago by @_test_user", $last_update);
+        $this->assertEquals("Updated: 2 days ago by _test_user", $last_update);
         $this->assertCount(1, $author_link);
     }
 
@@ -1811,7 +1811,7 @@ HTML,
         $author_link = $html->filter('[data-testid=author_link]');
 
         // Assert: last update should be contain relative date + the author name
-        $this->assertEquals("Updated: 2 days ago by @Deleted user", $last_update);
+        $this->assertEquals("Updated: 2 days ago by Deleted user", $last_update);
         $this->assertCount(0, $author_link);
     }
 
