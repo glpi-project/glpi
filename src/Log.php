@@ -243,8 +243,8 @@ class Log extends CommonDBTM
         $new_id           = $changes[4] ?? null;
 
         // Remove json values
-        if (!is_array($old_value) && !is_object($old_value)) {
-            $decoded_old_value = json_decode($old_value); //@phpstan-ignore theCodingMachineSafe.function
+        if (is_string($old_value)) {
+            $decoded_old_value = json_decode($old_value);
             if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
                 $old_value = '';
             }
@@ -252,8 +252,8 @@ class Log extends CommonDBTM
             $old_value = '';
         }
 
-        if (!is_array($new_value) && !is_object($new_value)) {
-            $decoded_new_value = json_decode($new_value); //@phpstan-ignore theCodingMachineSafe.function
+        if (is_string($new_value)) {
+            $decoded_new_value = json_decode($new_value);
             if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
                 $new_value = '';
             }
