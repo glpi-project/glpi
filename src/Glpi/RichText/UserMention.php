@@ -166,6 +166,13 @@ final class UserMention
                     $current_actors_ids[] = $actor['users_id'];
                 }
             }
+            // Get notification setting 
+            $defaults = $main_item::getDefaultValues($main_item->getEntityID());
+            $default_use_notif = $defaults['_users_id_observer_notif']['use_notification'];
+            if (is_array($default_use_notif)) {
+                #Ticket return an array but change and problem return value directly
+                $default_use_notif = $default_use_notif[0];
+            }
 
             // Add newly mentioned actors as observers
             foreach ($mentionned_actors_ids as $user_id) {
@@ -179,6 +186,7 @@ final class UserMention
                     $main_item->getForeignKeyField()  => $main_item->fields['id'],
                     '_do_not_compute_takeintoaccount' => true,
                     '_from_object'                    => true,
+                    'use_notification'                => $default_use_notif,
                 ];
                 $userlink->add($input);
             }
