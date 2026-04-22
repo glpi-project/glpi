@@ -424,6 +424,38 @@ var GLPIPlanning  = {
 
                     // hide control buttons
                     $('#planning .fc-left .fc-button-group').hide();
+
+                    // Reverse event order inlist to show most recent first
+                    setTimeout(function() {
+                        var $table = $(`#${CSS.escape(GLPIPlanning.dom_id)} .fc-list-table tbody`);
+                        if ($table.length) {
+                            var rows = [];
+                            var currentGroup = [];
+
+                            $table.children('tr').each(function() {
+                                var $row = $(this);
+                                if ($row.hasClass('fc-list-heading')) {
+                                    if (currentGroup.length > 0) {
+                                        rows.push(currentGroup);
+                                    }
+                                    currentGroup = [$row];
+                                } else {
+                                    currentGroup.push($row);
+                                }
+                            });
+
+                            if (currentGroup.length > 0) {
+                                rows.push(currentGroup);
+                            }
+
+                            $table.empty();
+                            for (var i = rows.length - 1; i >= 0; i--) {
+                                for (var j = 0; j < rows[i].length; j++) {
+                                    $table.append(rows[i][j]);
+                                }
+                            }
+                        }
+                    }, 0);
                 } else {
                     // reinit datepicker
                     $('#planning_datepicker').show();
@@ -658,6 +690,41 @@ var GLPIPlanning  = {
             success: function (data) {
                 if (!options.full_view && data.length === 0) {
                     GLPIPlanning.calendar.setOption('height', 0);
+                }
+                // Reverse order for listFull view after events load
+                if (GLPIPlanning.calendar && GLPIPlanning.calendar.state.viewType === 'listFull') {
+                    setTimeout(function() {
+                        var $table = $(`#${CSS.escape(GLPIPlanning.dom_id)} .fc-list-table tbody`);
+                        if ($table.length) {
+                            var rows = [];
+                            var currentGroup = [];
+
+                            $table.children('tr').each(function() {
+                                var $row = $(this);
+                                if ($row.hasClass('fc-list-heading')) {
+                                    if (currentGroup.length > 0) {
+                                        rows.push(currentGroup);
+                                    }
+                                    currentGroup = [$row];
+                                } else {
+                                    currentGroup.push($row);
+                                }
+                            });
+
+                            if (currentGroup.length > 0) {
+                                rows.push(currentGroup);
+                            }
+
+                            if (rows.length > 0) {
+                                $table.empty();
+                                for (var i = rows.length - 1; i >= 0; i--) {
+                                    for (var j = 0; j < rows[i].length; j++) {
+                                        $table.append(rows[i][j]);
+                                    }
+                                }
+                            }
+                        }
+                    }, 0);
                 }
             },
             failure: function (error) {
