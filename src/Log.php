@@ -37,7 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchOption;
+use Safe\Exceptions\JsonException;
 
+use function Safe\json_decode;
 use function Safe\preg_match;
 
 /**
@@ -246,7 +248,11 @@ class Log extends CommonDBTM
         if (is_array($old_value) || is_object($old_value)) {
             $old_value = '';
         } elseif (is_string($old_value)) {
-            $decoded_old_value = \json_decode($old_value); //@phpstan-ignore theCodingMachineSafe.function
+            try {
+                $decoded_old_value = json_decode($old_value);
+            } catch (JsonException $e) {
+                $decoded_old_value = null;
+            }
             if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
                 $old_value = '';
             }
@@ -255,7 +261,11 @@ class Log extends CommonDBTM
         if (is_array($new_value) || is_object($new_value)) {
             $new_value = '';
         } elseif (is_string($new_value)) {
-            $decoded_new_value = \json_decode($new_value); //@phpstan-ignore theCodingMachineSafe.function
+            try {
+                $decoded_new_value = json_decode($new_value);
+            } catch (JsonException $e) {
+                $decoded_new_value = null;
+            }
             if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
                 $new_value = '';
             }
