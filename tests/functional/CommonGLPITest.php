@@ -38,7 +38,9 @@ use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\DomCrawler\Crawler;
 
 class CommonGLPITest extends DbTestCase
 {
@@ -106,5 +108,41 @@ class CommonGLPITest extends DbTestCase
 
         $item = new $itemtype();
         $item->display(['id' => $items_id]);
+    }
+
+    public function testShowFriendlyNameBadgeInFormIsDisplayedByDefault(): void
+    {
+        $this->login();
+
+        $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $_SERVER['REQUEST_URI'] = Computer::getFormURLWithID($computer_id);
+        $_GET['id'] = $computer_id;
+
+        $computer = new Computer();
+        ob_start();
+        $computer->display(['id' => $computer_id]);
+        $html = ob_get_clean();
+
+        $crawler = new Crawler($html);
+        $this->assertCount(1, $crawler->filter('#header-friendlyname'));
+    }
+
+    public function testShowFriendlyNameBadgeInFormIsHiddenForKnowbaseItem(): void
+    {
+        $this->login();
+
+        $kb_item = $this->createItem(KnowbaseItem::class, [
+            'name'   => "Test article",
+            'answer' => 'Test answer',
+        ]);
+        $_SERVER['REQUEST_URI'] = KnowbaseItem::getFormURLWithID($kb_item->getID());
+        $_GET['id'] = $kb_item->getID();
+
+        ob_start();
+        $kb_item->display(['id' => $kb_item->getID()]);
+        $html = ob_get_clean();
+
+        $crawler = new Crawler($html);
+        $this->assertCount(0, $crawler->filter('#header-friendlyname'));
     }
 }

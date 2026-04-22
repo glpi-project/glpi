@@ -1228,6 +1228,17 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
+     * Whether to display the type icon and name title in the form header.
+     *
+     * Override this method and return false to hide the icon ribbon and type/name title
+     * from the form header (e.g. for items that render their own title inside the form body).
+     */
+    public function showFriendlyNameBadgeInForm(): bool
+    {
+        return true;
+    }
+
+    /**
      * Compute the name to be used in the main header of this item.
      *
      * @return string
