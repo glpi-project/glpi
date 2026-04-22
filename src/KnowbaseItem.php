@@ -2430,6 +2430,12 @@ TWIG, $twig_params);
         return "ti ti-lifebuoy";
     }
 
+    #[Override]
+    public function showFriendlyNameBadgeInForm(): bool
+    {
+        return false;
+    }
+
     /**
      * @param array $params
      *
