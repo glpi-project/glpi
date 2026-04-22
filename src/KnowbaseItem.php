@@ -46,6 +46,8 @@ use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
 
 use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\parse_url;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
 
@@ -409,7 +411,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $matches = [];
         preg_match_all('/(?:https?:\/\/[^"\'\s<>]+)?\/front\/document\.send\.php\?[^"\'\s<>]+/i', $answer, $matches);
-        if (!isset($matches[0]) || count($matches[0]) === 0) {
+        if (count($matches[0]) === 0) {
             return $answer;
         }
 
@@ -421,7 +423,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
             $decoded_url = html_entity_decode($document_url, ENT_QUOTES | ENT_HTML5);
             $query = parse_url($decoded_url, PHP_URL_QUERY);
-            if (!is_string($query) || $query === '') {
+            if ($query === '') {
                 continue;
             }
 
@@ -451,7 +453,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['itemtype'] = self::class;
             $params['items_id'] = $this->getID();
             $base_url = strtok($decoded_url, '?');
-            if (!is_string($base_url) || $base_url === '') {
+            if ($base_url === false) {
                 continue;
             }
             $updated_url = htmlescape($base_url . '?' . http_build_query($params, '', '&amp;', PHP_QUERY_RFC3986));
