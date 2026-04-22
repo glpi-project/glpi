@@ -423,7 +423,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
             $decoded_url = html_entity_decode($document_url, ENT_QUOTES | ENT_HTML5);
             $query = parse_url($decoded_url, PHP_URL_QUERY);
-            if ($query === '') {
+            if (!is_string($query)) {
                 continue;
             }
 
