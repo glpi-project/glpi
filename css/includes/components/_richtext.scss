@@ -50,8 +50,8 @@ body.mce-content-body {
     }
 }
 
-#page .tox .tox-statusbar {
-    border-top: transparent;
+.tox-statusbar {
+    border-top: transparent !important;
     justify-content: flex-end;
 }
 

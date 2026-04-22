@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_toast_info */
+/* global bootstrap, glpi_toast_error, glpi_toast_info */
 
 import { post } from "/js/modules/Ajax.js";
 
@@ -99,6 +99,7 @@ export class GlpiKnowbaseServiceCatalogPanelController
         try {
             await post(`Knowbase/${kb_id}/UpdateServiceCatalog`, data);
             glpi_toast_info(__("Service catalog settings saved."));
+            bootstrap.Modal.getInstance(this.#container)?.hide();
         } finally {
             // Remove loading state
             submit_btn.classList.remove('pointer-events-none');

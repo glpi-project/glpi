@@ -1042,10 +1042,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $actions[] = new EditorAction(
                 label: "Service catalog",
                 icon: "ti ti-library",
-                type: EditorActionType::LOAD_SIDE_PANEL,
+                type: EditorActionType::OPEN_MODAL,
                 params: [
-                    'id' => $this->fields['id'],
-                    'key' => 'service-catalog',
+                    'id'    => $this->fields['id'],
+                    'key'   => 'SidePanel/service-catalog',
+                    'title' => __("Service catalog"),
+                    'icon'  => 'ti ti-library',
                 ],
             );
 

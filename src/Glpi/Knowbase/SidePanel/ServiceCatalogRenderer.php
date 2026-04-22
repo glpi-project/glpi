@@ -48,7 +48,7 @@ final class ServiceCatalogRenderer implements RendererInterface
     #[Override]
     public function getTemplate(): string
     {
-        return "pages/tools/kb/sidepanel/service_catalog.html.twig";
+        return "pages/tools/kb/modal/service_catalog.html.twig";
     }
 
     #[Override]
