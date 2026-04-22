@@ -101,7 +101,12 @@ class DeviceBattery extends CommonDevice
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd(string $itemtype, array $main_joinparams)
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 
@@ -109,7 +114,7 @@ class DeviceBattery extends CommonDevice
             'id'            => '1340',
             'table'         => 'glpi_devicebatteries',
             'field'         => 'capacity',
-            'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Nominal capacity')),
+            'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Design capacity')),
             'forcegroupby'  => true,
             'usehaving'     => true,
             'massiveaction' => false,
