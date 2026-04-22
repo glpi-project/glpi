@@ -218,3 +218,42 @@ test('Can reply to a comment thread', async ({ page, profile, api }) => {
     // Reply form should be hidden after submission
     await expect(reply_textarea).toBeHidden();
 });
+
+test('Comments counter in article header opens comments panel', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item without comments
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'My kb entry for header counter test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+
+    // Go to article — link to comments should not be visible
+    await kb.goto(id);
+    await expect(kb.getCommentsCountButton()).toBeHidden();
+
+    // Add a comment via the API
+    await api.createItem('KnowbaseItem_Comment', {
+        knowbaseitems_id: id,
+        comment: "A comment",
+    });
+
+    // Reload and verify the button is now enabled with the correct count
+    await kb.goto(id);
+    await expect(kb.getCommentsCountButton()).toBeVisible();
+    await expect(kb.getCommentsCountButton()).toHaveText("1 comment");
+
+    // Clicking the button should open the comments panel
+    await expect(kb.getHeading('Comments')).not.toBeAttached();
+    await kb.doOpenCommentsPanelFromHeader();
+    await expect(kb.getHeading('Comments')).toBeVisible();
+    await expect(kb.getCommentByContent('A comment')).toBeVisible();
+
+    // Adding a comment via the panel should update the header counter
+    await kb.getNewCommentTextarea().fill("A second comment");
+    await kb.getButton("Add comment").click();
+    await expect(kb.getCommentsCountButton()).toHaveText("2 comments");
+    await expect(kb.getCommentsCountButton()).toBeEnabled();
+});

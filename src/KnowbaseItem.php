@@ -870,6 +870,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['begin_date'] = $this->fields['begin_date'];
             $params['end_date']   = $this->fields['end_date'];
 
+            // Comments
+            $params['can_comment']    = $this->canComment();
+            $params['comments_count'] = $this->canComment() ? countElementsInTable(KnowbaseItem_Comment::getTable(), [
+                'knowbaseitems_id' => $this->fields['id'],
+            ]) : 0;
+
             // Add actions
             $params['actions'] = $this->getEditorActions();
         } elseif ($mode === "add") {

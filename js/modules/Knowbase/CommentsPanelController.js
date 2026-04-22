@@ -310,11 +310,21 @@ export class GlpiKnowbaseCommentsPanelController
 
     #updateCounter(delta)
     {
+        // Dropdown badge
         const counter = document.querySelector('[data-glpi-kb-action-counter="comments"]');
         if (counter) {
             const current = parseInt(counter.textContent, 10) || 0;
             counter.textContent = Math.max(0, current + delta);
         }
+
+        // Header count button
+        const header_btn = document.querySelector('[data-glpi-comments-counter]');
+        const current = parseInt(header_btn.textContent, 10) || 0;
+        const updated = Math.max(0, current + delta);
+        if (updated > 0) {
+            header_btn.closest('[data-glpi-comments-counter-container]').classList.remove('d-none');
+        }
+        header_btn.textContent = _n('%s comment', '%s comments', updated).replace('%s', updated);
     }
 
     #getEmptyState()
