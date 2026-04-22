@@ -266,6 +266,27 @@
                     </a>
                 </div>
 
+                {# Comments count #}
+                {% if can_comment is defined and can_comment %}
+                    <div
+                        class="d-flex align-items-center {{ comments_count == 0 ? 'd-none' : '' }}"
+                        data-glpi-comments-counter-container
+                    >
+                        <i class="ti ti-message-circle me-1 fs-3"></i>
+                        <button
+                            type="button"
+                            class="btn btn-link p-0 text-muted text-decoration-none border-0"
+                            data-glpi-kb-action="LOAD_SIDE_PANEL"
+                            data-glpi-kb-action-param-id="{{ item_id }}"
+                            data-glpi-kb-action-param-key="comments"
+                            data-testid="comments-count"
+                            data-glpi-comments-counter
+                        >
+                            {{ _n("%s comment", "%s comments", comments_count)|format(comments_count) }}
+                        </button>
+                    </div>
+                {% endif %}
+
                 {# Visibility dates indicator #}
                 {% if (begin_date is defined or end_date is defined) and mode == 'edit' and can_edit %}
                     {% set has_dates = (begin_date is defined and begin_date is not null) or (end_date is defined and end_date is not null) %}

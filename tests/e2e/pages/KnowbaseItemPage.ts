@@ -160,6 +160,16 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByPlaceholder("Add a comment...");
     }
 
+    public getCommentsCountButton(): Locator
+    {
+        return this.page.getByTestId('comments-count');
+    }
+
+    public async doOpenCommentsPanelFromHeader(): Promise<void>
+    {
+        await this.getCommentsCountButton().click();
+    }
+
     public async doSelectFilesForKbUpload(files: string[], modal: Locator): Promise<void>
     {
         const filePaths = files.map(file => path.join(__dirname, `../../fixtures/${file}`));
