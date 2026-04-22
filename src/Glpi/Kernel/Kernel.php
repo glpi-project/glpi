@@ -46,7 +46,6 @@ use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
