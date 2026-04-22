@@ -49,30 +49,33 @@
                 name="show_in_service_catalog"
                 value="1"
                 data-glpi-service-catalog-toggle
+                aria-controls="service-catalog-config-{{ id }}"
                 {{ show_in_service_catalog ? "checked" : "" }}
             >
             <span class="form-check-label">{{ __("Show in service catalog") }}</span>
         </label>
     </div>
 
-    <div class="mb-3">
-        <label class="form-check form-switch mb-0">
-            <input type="hidden" name="is_pinned" value="0">
-            <input
-                class="form-check-input"
-                type="checkbox"
-                name="is_pinned"
-                value="1"
-                {{ is_pinned ? 'checked' : '' }}
-            >
-            <span class="form-check-label">{{ __("Pin to top of the service catalog") }}</span>
-        </label>
-    </div>
-
-    <div
+    <fieldset
+        id="service-catalog-config-{{ id }}"
+        class="border-0 p-0 m-0"
         data-glpi-service-catalog-config
-        style="{{ show_in_service_catalog ? '' : 'opacity: 0.5; pointer-events: none;' }}"
+        {{ show_in_service_catalog ? '' : 'disabled' }}
     >
+        <div class="mb-3">
+            <label class="form-check form-switch mb-0">
+                <input type="hidden" name="is_pinned" value="0">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="is_pinned"
+                    value="1"
+                    {{ is_pinned ? 'checked' : '' }}
+                >
+                <span class="form-check-label">{{ __("Pin to top of the service catalog") }}</span>
+            </label>
+        </div>
+
         {{ fields.textareaField(
             'description',
             description,
@@ -95,7 +98,7 @@
                 'full_width' : true,
             }
         ) }}
-    </div>
+    </fieldset>
 
     <div class="d-flex mt-3">
         <button

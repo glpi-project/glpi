@@ -58,13 +58,28 @@ final class UpdateServiceCatalogController extends AbstractController
     public function __invoke(int $id, Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
-        $this->validateInputHasExactKeys($data, [
-            'id',
-            'show_in_service_catalog',
-            'description',
-            'forms_categories_id',
-            'is_pinned',
-        ]);
+
+        // When the service catalog is disabled, the fieldset is disabled in the
+        // browser, so textarea/select are not submitted so only the hidden inputs
+        // (id, is_pinned) and the toggle (show_in_service_catalog) are sent.
+        $show_in_catalog = isset($data['show_in_service_catalog'])
+            && $data['show_in_service_catalog'] != 0
+        ;
+
+        if ($show_in_catalog) {
+            $this->validateInputHasExactKeys($data, [
+                'description',
+                'forms_categories_id',
+                'id',
+                'is_pinned',
+                'show_in_service_catalog',
+            ]);
+        } else {
+            $this->validateInputHasExactKeys($data, [
+                'id',
+                'show_in_service_catalog',
+            ]);
+        }
 
         $this->update(KnowbaseItem::class, $id, $data);
         return new Response(); // OK
