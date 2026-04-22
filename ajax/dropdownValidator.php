@@ -92,16 +92,8 @@ if (isset($_POST["validatortype"])) {
                     continue;
                 }
 
-                //checking if the supervisor has access to the itil object
-                $where = ['users_id' => $requester->fields['users_id_supervisor']] + getEntitiesRestrictCriteria(
-                    getTableForItemType(Profile_User::class),
-                    "",
-                    $_POST['entity'] ?? '',
-                    true
-                );
-                $supervisor_can_access_itilobject = iterator_count(Profile_User::getSeveralFromDBByCrit($where)) > 0;
-                if (!$supervisor_can_access_itilobject) {
-                    // the supervisor does not have access to the itil object
+                $supervisor_entities = Profile_User::getUserEntities($requester->fields['users_id_supervisor']);
+                if (!in_array($_POST['entity'] ?? '', $supervisor_entities)) {
                     continue;
                 }
 
