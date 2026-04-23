@@ -150,6 +150,27 @@ var glpi_html_dialog = function({
             $('div.modal-backdrop').remove();
         }
 
+        // Destroy TinyMCE instances within the modal to prevent memory leaks
+        if (window.tinymce !== undefined) {
+            window.tinymce.get().forEach((editor) => {
+                if (myModalEl.contains(editor.getElement())) {
+                    editor.remove();
+                }
+            });
+        }
+
+        // Destroy Select2 instances within the modal to prevent memory leaks
+        $(myModalEl).find('.select2-hidden-accessible').each(function() {
+            $(this).select2('destroy');
+        });
+
+        // Destroy Flatpickr instances within the modal to prevent memory leaks
+        $(myModalEl).find('input').each(function() {
+            if (this._flatpickr) {
+                this._flatpickr.destroy();
+            }
+        });
+
         // remove html on modal close
         $(`#${CSS.escape(id)}`).remove();
     });
