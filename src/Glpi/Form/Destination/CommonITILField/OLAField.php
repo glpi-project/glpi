@@ -53,6 +53,9 @@ abstract class OLAField extends SLMField
 
         // Only one strategy is allowed
         $strategy = current($config->getStrategies());
+        if ($strategy === false) {
+            return $input;
+        }
 
         // Compute value according to strategy
         $slm_id = $strategy->getSLMID($config);

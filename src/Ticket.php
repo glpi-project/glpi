@@ -421,10 +421,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Get Datas to be added for SLA add
      *
-     * @param int    $slas_id      SLA id
-     * @param int    $entities_id  entity ID of the ticket
-     * @param string $date         begin date of the ticket
-     * @param int    $type         type of SLA
+     * @param int                 $slas_id      SLA id
+     * @param int                 $entities_id  entity ID of the ticket
+     * @param string              $date         begin date of the ticket
+     * @param SLM::TTO|SLM::TTR   $type         type of SLA
      *
      * @since 9.1 (before getDatasToAddSla without type parameter)
      *
@@ -457,6 +457,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $data[$slaField]              = 0;
             $data['sla_waiting_duration'] = 0;
         }
+
         return $data;
     }
 
@@ -1053,7 +1054,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      *  @since 9.1
      *
-     * @param int $type
+     * @param SLM::TTO|SLM::TTR $type
      * @param array $input
      * @param array $manual_slas_id
      *
@@ -5312,15 +5313,14 @@ JAVASCRIPT;
     /**
      * Get correct Calendar: Entity or Sla
      *
-     * @since 0.90.4
      * @since 10.0.4 $slm_type parameter added
      *
-     * @param int $slm_type Type of SLA, can be SLM::TTO or SLM::TTR
+     * @param SLM::TTO|SLM::TTR $slm_type Type of SLA, can be SLM::TTO or SLM::TTR
      *
      **/
     public function getCalendar(int $slm_type = SLM::TTR)
     {
-        [$date_field, $sla_field] = SLA::getFieldNames($slm_type);
+        [, $sla_field] = SLA::getFieldNames($slm_type);
 
         if (isset($this->fields[$sla_field]) && $this->fields[$sla_field] > 0) {
             $sla = new SLA();
@@ -5378,7 +5378,7 @@ JAVASCRIPT;
                 return null;
             }
         };
-        $now                      = strtotime(Session::getCurrentTime());
+        $now                      = Session::getCurrentTime() ? strtotime(Session::getCurrentTime()) : time();
         $date_creation            = $safe_get_strtime($this->fields['date']);
         // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
         $date_takeintoaccount     = $safe_get_strtime($this->fields['takeintoaccountdate']);
@@ -6316,7 +6316,7 @@ JAVASCRIPT;
      *
      * used in template templates/components/itilobject/service_levels.html.twig
      *
-     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel}>
+     * @return array<array{id: int, name: string, entities_id: int, is_recursive: int, type: int, comment: string, number_time: int, use_ticket_calendar: int, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: int, date_creation: string, slms_id: int, due_time: string, class: class-string<SLA>, item: self, nextaction: mixed, level: mixed}>
      */
     public function getSlasData(): array
     {
@@ -6341,7 +6341,7 @@ JAVASCRIPT;
             $sla['due_time'] = $this->fields['time_to_own'];
             $sla['class'] = $tto::class;
             $sla['item'] = $this; // object, not just fields, functions used in template
-            $sla['nextaction'] = $ttr->getNextActionForTicket($this, $sla['type']);
+            $sla['nextaction'] = $tto->getNextActionForTicket($this, $sla['type']);
             $sla['level'] = $tto->getLevelFromAction($sla['nextaction']);
 
             $slas[] = $sla;
@@ -6428,7 +6428,9 @@ JAVASCRIPT;
         OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
         $olas = $this->getOlasData();
         foreach ($olas as $ola) {
-            Item_Ola::compute($this, (int) $ola['olas_id'], (int) $ola['items_olas_id']);
+            if (isset($ola['items_olas_id'])) {
+                Item_Ola::compute($this, (int) $ola['olas_id'], (int) $ola['items_olas_id']);
+            }
         }
     }
 

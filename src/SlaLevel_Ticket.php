@@ -43,6 +43,7 @@
  */
 class SlaLevel_Ticket extends CommonDBTM
 {
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return __('SLA level for Ticket');
@@ -51,10 +52,10 @@ class SlaLevel_Ticket extends CommonDBTM
     /**
      * Retrieve an item from the database
      *
-     * @param int $ID of the item to get
-     * @param SLM::TTR|SLM::TTO $slaType
      *
      * @since 9.1 2 mandatory parameters
+     * @param int               $ID      of the item to get
+     * @param SLM::TTR|SLM::TTO $slaType
      *
      * @return bool
      * @used-by LevelAgreement::getNextActionForTicket()
@@ -96,10 +97,10 @@ class SlaLevel_Ticket extends CommonDBTM
     /**
      * Delete entries for a ticket
      *
-     * @param int $tickets_id    Ticket ID
-     * @param SLM::TTR|SLM::TTO $slaType Type of SLA
      *
      * @since 9.1 2 parameters mandatory
+     * @param int               $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $slaType    Type of SLA
      *
      * @return void
      **/
@@ -204,10 +205,10 @@ class SlaLevel_Ticket extends CommonDBTM
     /**
      * Do a specific SLAlevel for a ticket
      *
-     * @param array $data data of an entry of slalevels_tickets
-     * @param SLM::TTR|SLM::TTO $slaType Type of SLA
      *
      * @since 9.1   2 parameters mandatory
+     * @param array             $data    data of an entry of slalevels_tickets
+     * @param SLM::TTR|SLM::TTO $slaType Type of SLA
      *
      * @return void
      **/
@@ -319,10 +320,10 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      * Replay level stored in slalevels_tickets | olalevels_tickets
      *
-     * @param int $tickets_id
-     * @param SLM::TTR|SLM::TTO $slaType
      *
      * @since 9.1    2 parameters mandatory
+     * @param int               $tickets_id
+     * @param SLM::TTR|SLM::TTO $slaType
      *
      * @return void
      */

@@ -38,13 +38,15 @@ use Glpi\DBAL\QueryExpression;
 /**
  * OLA Class
  * @since 9.2
+ * @phpstan-type OLAFields array{id: int, name: string, entities_id: int, is_recursive: int, type: SLM::TTR|SLM::TTO, comment: string, number_time: int, use_ticket_calendar: int, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: int, date_creation: string, slms_id: int, groups_id: int}
+ * @property OLAFields $fields
  **/
 class OLA extends LevelAgreement
 {
-    protected static string $prefix            = 'ola';
-    protected static $levelclass        = 'OlaLevel';
-    protected static $levelticketclass  = 'OlaLevel_Ticket';
-    protected static array $forward_entity_to = ['OlaLevel'];
+    protected static string $prefix = 'ola';
+    protected static $levelclass = OlaLevel::class;
+    protected static $levelticketclass = OlaLevel_Ticket::class;
+    protected static array $forward_entity_to = [OlaLevel::class];
 
     /**
      * @param array<int> $_olas_id
@@ -65,6 +67,7 @@ class OLA extends LevelAgreement
         return $input;
     }
 
+    #[Override]
     public function prepareInputForAdd($input)
     {
         $groups_id = (int) ($input['groups_id'] ?? 0);
@@ -72,6 +75,7 @@ class OLA extends LevelAgreement
         return $this->validateGroupInput($groups_id) ? parent::prepareInputForAdd($input) : false;
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
         $groups_id = (int) ($input['groups_id'] ?? 0);
@@ -94,6 +98,7 @@ class OLA extends LevelAgreement
     {
         // Clean levels
         $ola_fk = getForeignKeyFieldForItemType(static::class);
+        /** @var OlaLevel $level */
         $level = getItemForItemtype(static::$levelclass);
         $level->deleteByCriteria([$ola_fk => $this->getID()]);
 
@@ -116,7 +121,6 @@ class OLA extends LevelAgreement
      * Add an entry in slalevels_tickets | olalevels_tickets table
      * The level is set by $levels_id parameter
      *
-     * @param Ticket $ticket
      * @param int $levels_id
      * @param int $olas_id
      *
@@ -152,20 +156,16 @@ class OLA extends LevelAgreement
             $toadd['date'] = $date;
             $toadd['olalevels_id'] = $levels_id;
             $toadd['tickets_id'] = $ticket->fields["id"];
+            /** @var OlaLevel_Ticket $levelticket */
             $levelticket = getItemForItemtype(static::$levelticketclass);
             $levelticket->add($toadd);
         }
     }
 
-    /**
-     * remove all levels to do for a ticket
-     *
-     * @param Ticket $ticket object
-     *
-     * @return void
-     **/
+    #[Override]
     public static function deleteLevelsToDo(Ticket $ticket)
     {
+        /** @var OlaLevel_Ticket $levelticket */
         $levelticket = getItemForItemtype(static::$levelticketclass);
         $levelticket->deleteByCriteria(['tickets_id' => $ticket->fields['id']]);
     }
@@ -175,26 +175,31 @@ class OLA extends LevelAgreement
      **/
     public static function deleteAllLevelsToDo(): void
     {
+        /** @var OlaLevel_Ticket $levelticket */
         $levelticket = getItemForItemtype(static::$levelticketclass);
         $levelticket->deleteByCriteria([new QueryExpression('true')]);
     }
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         // Acronym, no plural
         return __('OLA');
     }
 
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['config', SLM::class, self::class];
     }
 
+    #[Override]
     public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }
 
+    #[Override]
     public static function getIcon()
     {
         return SLM::getIcon();

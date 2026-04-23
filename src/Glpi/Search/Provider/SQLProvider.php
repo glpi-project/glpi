@@ -6315,9 +6315,9 @@ final class SQLProvider implements SearchProviderInterface
                         }
 
                         $progressbar_data = [
-                            'text'         => Html::convDateTime($data[$ID][0]['name']),
+                            'text'         => Html::convDateTime($data[$ID][0]['name']) ?? '',
                             'percent'      => (int) $percentage,
-                            'percent_text' => $percentage_text,
+                            'percent_text' => (string) $percentage_text,
                             'color'        => $color,
                         ];
                     } else {
@@ -6488,7 +6488,7 @@ final class SQLProvider implements SearchProviderInterface
                             'color' => $color,
                         ];
 
-                        $out .= self::getProgressBar($progressbar_data);
+                        $out .= self::getProgressBar([$progressbar_data]);
                     }
 
                     return $out;
@@ -7317,7 +7317,6 @@ final class SQLProvider implements SearchProviderInterface
 
     /**
      * @param array<array{percent:int, percent_text:string, color:string, text:string}> $progressbar_data
-     * @return string
      */
     public static function getProgressBar(array $progressbar_data): string
     {

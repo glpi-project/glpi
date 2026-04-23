@@ -151,7 +151,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
     #[Override]
-    public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
+    public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
     {
         // Common ITIL data
         $data = parent::getDataForObject($item, $options, $simple);

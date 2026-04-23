@@ -91,12 +91,17 @@ for (const sl_type of service_level_types) {
                 entities_id: getWorkerEntityId(),
                 is_recursive: 1,
             });
+            const group_id = await api.createItem('Group', {
+                name: `Group - ${unique}`,
+                is_assign: 1,
+            });
             await api.createItem(sl_type.item_class, {
                 name: sl_name,
                 type: sl_type.type_int,
                 number_time: 1,
                 definition_time: 'hour',
                 slms_id: slm_id,
+                groups_id: group_id,
             });
 
             await form_page.gotoDestinationTab(info.getId());
