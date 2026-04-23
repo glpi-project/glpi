@@ -3248,12 +3248,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILCost.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access constant class on CommonITILTask\\|false\\.$#',
-	'identifier' => 'classConstant.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonITILValidation\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 1,
@@ -3266,12 +3260,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on CommonITILTask\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ITILCategory\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -3279,18 +3267,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on ITIL_ValidationStep\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method canUpdateItem\\(\\) on CommonITILTask\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method canViewItem\\(\\) on CommonITILTask\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
@@ -3327,12 +3303,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getRawCompleteName\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method post_getFromDB\\(\\) on CommonITILTask\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
