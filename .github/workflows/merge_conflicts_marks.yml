@@ -7,6 +7,11 @@ on:
   # Runs test suite when a new commit is pushed on "main" and "*/bugfixes" branches
   # and when a new tag is created
   push:
+    branches:
+      - main
+      - 'bugfixes/*'
+    tags:
+      - '*'
 
 jobs:
   check-conflicts:
