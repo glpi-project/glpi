@@ -1,0 +1,68 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+<div data-testid="schedule-panel">
+    <div class="mb-3">
+        <label class="form-label" for="kb_begin_date_input">{{ __('Visible from') }}</label>
+        {{ inputs.date('begin_date', begin_date ?? '', {
+            id: "kb_begin_date",
+            enableTime: true,
+            addCalendarButton: false,
+            additional_attributes: {
+                placeholder: __('No start date'),
+                'data-glpi-kb-begin-date': "",
+            }
+        }) }}
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="kb_end_date_input">{{ __('Until') }}</label>
+        {{ inputs.date('end_date', end_date ?? '', {
+            id: "kb_end_date",
+            enableTime: true,
+            addCalendarButton: false,
+            additional_attributes: {
+                placeholder: __('No end date'),
+                'data-glpi-kb-end-date': "",
+            }
+        }) }}
+    </div>
+    <div class="d-flex">
+        <button
+            type="button"
+            class="btn btn-primary ms-auto"
+            data-glpi-kb-schedule-apply
+            data-testid="schedule-apply-btn"
+        >{{ __('Apply') }}</button>
+    </div>
+</div>
