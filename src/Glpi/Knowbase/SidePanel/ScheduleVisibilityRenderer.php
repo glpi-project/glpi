@@ -32,13 +32,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase;
+namespace Glpi\Knowbase\SidePanel;
 
-enum EditorActionType: string
+use KnowbaseItem;
+use Override;
+
+final class ScheduleVisibilityRenderer implements RendererInterface
 {
-    case LOAD_SIDE_PANEL = 'LOAD_SIDE_PANEL';
-    case TOGGLE_VALUE = 'TOGGLE_VALUE';
-    case TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
-    case DELETE_ARTICLE = 'DELETE_ARTICLE';
-    case OPEN_MODAL = 'OPEN_MODAL';
+    #[Override]
+    public function canView(KnowbaseItem $item): bool
+    {
+        return $item->can($item->getID(), UPDATE);
+    }
+
+    #[Override]
+    public function getTemplate(): string
+    {
+        return 'pages/tools/kb/modal/schedule_visibility.html.twig';
+    }
+
+    #[Override]
+    public function getParams(KnowbaseItem $item): array
+    {
+        return [
+            'begin_date' => $item->fields['begin_date'] ?? null,
+            'end_date'   => $item->fields['end_date'] ?? null,
+        ];
+    }
 }

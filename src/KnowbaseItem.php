@@ -1082,8 +1082,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $actions[] = new EditorAction(
                 label: __('Schedule visibility'),
                 icon: 'ti ti-calendar-clock',
-                type: EditorActionType::SCHEDULE_VISIBILITY,
-                params: [],
+                type: EditorActionType::OPEN_MODAL,
+                params: [
+                    'id'    => $this->fields['id'],
+                    'key'   => 'SidePanel/schedule-visibility',
+                    'title' => __('Schedule visibility'),
+                ],
             );
         }
 
