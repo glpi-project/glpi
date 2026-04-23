@@ -91,6 +91,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         ];
     }
 
+    /**
+     * @return string[]
+     */
+    #[Override]
+    public function getForbiddenSingleMassiveActions(): array
+    {
+        $excluded = parent::getForbiddenSingleMassiveActions();
+        $excluded[] = 'Document_Item:add';
+        $excluded[] = 'Document_Item:remove';
+        return $excluded;
+    }
+
     public static function getTypeName($nb = 0)
     {
         return __('Knowledge base');
