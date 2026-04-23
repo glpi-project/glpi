@@ -37,6 +37,7 @@
 use function Safe\strtotime;
 
 /**
+ * @phpstan-import-type OLAFields from OLA
  * @phpstan-type ItemOlaData array{
  *     items_olas_id?: int,
  *     name: string,
@@ -75,9 +76,8 @@ class Item_Ola extends CommonDBRelation
     public static ?string $items_id_2 = 'olas_id';
 
     /**
-     * @param string $itemtype class-string<Ticket>
-     * @param int $items_id
-     * @param int[] $request_olas_ids
+     * @param string $itemtype         class-string<Ticket>
+     * @param int[]  $request_olas_ids
      * @return int[]
      */
     public static function filterInputOlas(string $itemtype, int $items_id, array $request_olas_ids): array
@@ -151,8 +151,7 @@ class Item_Ola extends CommonDBRelation
     /**
      * Compute the OLA data for a ticket
      *
-     * @param Ticket $ticket
-     * @param int $olas_id must exist in the database
+     * @param int $olas_id       must exist in the database
      * @param int $items_olas_id id of Item_Ola to compute
      */
     public static function compute(Ticket $ticket, int $olas_id, int $items_olas_id): void
@@ -320,7 +319,6 @@ class Item_Ola extends CommonDBRelation
 
     /**
      * Get data from Item_Ola + linked OLA for a Ticket
-     * @param Ticket $ticket
      *
      * @return array<ItemOlaData>
      */
@@ -340,7 +338,6 @@ class Item_Ola extends CommonDBRelation
     }
 
     /**
-     * @param Ticket $ticket
      * @param array<int> $olas_ids
      * @return array<ItemOlaData>
      */
@@ -370,7 +367,7 @@ class Item_Ola extends CommonDBRelation
 
     private function isLate(Ticket $ticket): bool
     {
-        $now_timestamp = strtotime(Session::getCurrentTime());
+        $now_timestamp = Session::getCurrentTime() ? strtotime(Session::getCurrentTime()) : time();
         $due_time_timestamp = strtotime($this->fields['due_time']);
         $end_time_timestamp = is_null($this->fields['end_time']) ? null : strtotime($this->fields['end_time']);
 
@@ -393,8 +390,8 @@ class Item_Ola extends CommonDBRelation
     }
 
     /**
-     * @param array<string, mixed> $ola_data fields from ola + possibly 'linkid' field representing items_olas_id
-     * @param Ticket $ticket
+     * @param OLAFields $ola_data fields from ola + possibly 'linkid' field representing items_olas_id
+     * @param Ticket    $ticket
      *
      * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
      *

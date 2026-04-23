@@ -1204,7 +1204,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $objettype = strtolower($this->obj::class);
 
         // Get data from ITIL objects
-        if ($event != 'alertnotclosed') {
+        if ($event != 'alertnotclosed' && !is_null($this->obj)) {
             $this->data = $this->getDataForObject($this->obj, $options);
         } else {
             if (
@@ -1218,6 +1218,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 }
                 $item = getItemForItemtype($objettype);
                 if ($item instanceof CommonITILObject) {
+                    /** @var T $item */
                     $objettypes = Toolbox::strtolower(getPlural($objettype));
                     $items      = [];
                     foreach ($options['items'] as $object) {
@@ -1906,7 +1907,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data['timelineitems'][] = $tmptimelineitem;
             }
 
-            /** @var CommonITILObject $item */
             $inquest = $item::getSatisfactionClassInstance();
             if ($inquest !== null) {
                 $data['##satisfaction.type##'] = '';

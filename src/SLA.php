@@ -40,6 +40,8 @@
 
 /**
  * SLA Class
+ *
+ * @property array{id: int, name: string, entities_id: int, is_recursive: int, type: SLM::TTR|SLM::TTO, comment: string, number_time: int, use_ticket_calendar: int, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: int, date_creation: string, slms_id: int} $fields
  **/
 class SLA extends LevelAgreement
 {
@@ -49,7 +51,6 @@ class SLA extends LevelAgreement
     protected static array $forward_entity_to = [SlaLevel::class];
 
     /**
-     * @param Ticket $ticket
      * @param int $levels_id
      * @return void
      */
@@ -74,6 +75,7 @@ class SLA extends LevelAgreement
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
+                /** @var SlaLevel_Ticket $levelticket */
                 $levelticket             = getItemForItemtype(static::$levelticketclass);
                 $levelticket->add($toadd);
             }
@@ -87,6 +89,7 @@ class SLA extends LevelAgreement
      *
      * @return void
      **/
+    #[Override]
     public static function deleteLevelsToDo(Ticket $ticket)
     {
         /** @var DBmysql $DB */
@@ -95,6 +98,7 @@ class SLA extends LevelAgreement
         $ticketfield = static::$prefix . "levels_id_ttr";
 
         if ($ticket->fields[$ticketfield] > 0) {
+            /** @var SlaLevel_Ticket $levelticket */
             $levelticket = getItemForItemtype(static::$levelticketclass);
             $iterator = $DB->request([
                 'SELECT' => 'id',
@@ -108,22 +112,26 @@ class SLA extends LevelAgreement
         }
     }
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         // Acronym, no plural
         return __('SLA');
     }
 
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['config', SLM::class, self::class];
     }
 
+    #[Override]
     public static function getLogDefaultServiceName(): string
     {
         return 'setup';
     }
 
+    #[Override]
     public static function getIcon()
     {
         return SLM::getIcon();
@@ -136,6 +144,7 @@ class SLA extends LevelAgreement
 
         // Clean levels
         $fk        = getForeignKeyFieldForItemType(static::class);
+        /** @var SlaLevel_Ticket $level */
         $level     = getItemForItemtype(static::$levelclass);
         $level->deleteByCriteria([$fk => $this->getID()]);
 
