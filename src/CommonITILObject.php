@@ -7692,7 +7692,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
                 $tltask = getItemForItemtype($taskClass);
-                if(($tltask === false)) {
+                if (($tltask === false)) {
                     continue;
                 }
                 $tltask->fields = $task_row;
