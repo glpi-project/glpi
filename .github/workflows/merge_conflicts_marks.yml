@@ -1,0 +1,18 @@
+name: "Merge conflicts marks"
+
+permissions:
+  contents: "read"
+
+on:
+  # Runs test suite when a new commit is pushed on "main" and "*/bugfixes" branches
+  # and when a new tag is created
+  push:
+
+jobs:
+  check-conflicts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: sv-tools/block-merge-conflicts@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
