@@ -5942,6 +5942,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DeviceBattery.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DeviceBattery\\:\\:rawSearchOptionsToAdd\\(\\) has parameter \\$main_joinparams with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DeviceBattery.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DeviceBattery\\:\\:rawSearchOptionsToAdd\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DeviceBattery.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method DeviceCamera\\:\\:getAdditionalFields\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
