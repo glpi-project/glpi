@@ -50,6 +50,7 @@
         "league/oauth2-client": "^2.9",
         "league/oauth2-google": "^5.0",
         "league/oauth2-server": "^9.3",
+        "matomo/device-detector": "^6.5",
         "mexitek/phpcolors": "^1.0",
         "monolog/monolog": "^3.10",
         "paragonie/sodium_compat": "^2.5",

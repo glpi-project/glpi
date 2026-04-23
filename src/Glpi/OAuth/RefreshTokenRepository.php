@@ -81,6 +81,17 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     }
 
     /**
+     * Revoke all refresh tokens.
+     *
+     * @return void
+     */
+    public function revokeAll(): void
+    {
+        global $DB;
+        $DB->doQuery('TRUNCATE TABLE ' . $DB::quoteName('glpi_oauth_refresh_tokens'));
+    }
+
+    /**
      * @param string $tokenId
      *
      * @return bool
