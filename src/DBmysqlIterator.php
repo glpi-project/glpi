@@ -95,6 +95,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         '|',
         'IN',
         'NOT IN',
+        'BETWEEN',
     ];
 
     /**

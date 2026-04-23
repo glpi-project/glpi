@@ -46,6 +46,7 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\SessionTracker;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
 use LDAP\Result;
@@ -378,6 +379,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::class, AuthLDAP::getIcon());
                 }
                 $ong[4] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                $ong[5] = self::createTabEntry(_n('Session', 'Sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-user-shield');
                 return $ong;
 
             case Preference::class:
@@ -402,6 +404,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     break;
                 case 4:
                     $item->showSecurityForm($item->getID());
+                    break;
+                case 5:
+                    (new SessionTracker())->showSessionList($item->getID());
                     break;
             }
 

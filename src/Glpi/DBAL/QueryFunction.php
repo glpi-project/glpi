@@ -55,6 +55,7 @@ use function Safe\preg_replace;
  * @method static QueryExpression concat(array<int|string, mixed> $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
  * @method static QueryExpression greatest(array<int|string, mixed> $params, ?string $alias = null) Build a 'GREATEST' function call
+ * @method static QueryExpression inet6Aton(string|QueryExpression $expression, ?string $alias = null) Build an 'INET_ATON' function call
  * @method static QueryExpression jsonExtract(array<int|string, mixed> $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
  * @method static QueryExpression jsonUnquote(string|QueryExpression $expression, ?string $alias = null) Build a 'JSON_UNQUOTE' function call
  * @method static QueryExpression jsonRemove(array<int|string, mixed> $params, ?string $alias = null) Build a 'JSON_REMOVE' function call

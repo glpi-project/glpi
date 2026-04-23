@@ -95,10 +95,21 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $DB->delete('glpi_oauth_refresh_tokens', [
             'access_token' => new QuerySubQuery([
                 'SELECT' => 'identifier',
-                'FROM'   => 'glpi_oauth_access_tokens',
-                'WHERE'  => ['client' => $clientIdentifier],
+                'FROM' => 'glpi_oauth_access_tokens',
+                'WHERE' => ['client' => $clientIdentifier],
             ]),
         ]);
+    }
+
+    /**
+     * Revoke all refresh tokens.
+     *
+     * @return void
+     */
+    public function revokeAll(): void
+    {
+        global $DB;
+        $DB->doQuery('TRUNCATE TABLE ' . $DB::quoteName('glpi_oauth_refresh_tokens'));
     }
 
     /**

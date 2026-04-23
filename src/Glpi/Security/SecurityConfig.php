@@ -88,6 +88,7 @@ final class SecurityConfig extends Config
             $tabs = [];
             $tabs[0] = self::createTabEntry(__('Password Policy'), 0, $item::class, 'ti ti-shield-lock');
             $tabs[1] = self::createTabEntry(__('Two-factor authentication (2FA)'), 0, $item::class, 'ti ti-shield-lock');
+            $tabs[2] = self::createTabEntry(_n('Session', 'Sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-user-shield');
             return $tabs;
         }
         return '';
@@ -103,6 +104,9 @@ final class SecurityConfig extends Config
                     break;
                 case 1:
                     $item->showFormMFA();
+                    break;
+                case 2:
+                    (new SessionTracker())->showSessionList();
                     break;
             }
         }

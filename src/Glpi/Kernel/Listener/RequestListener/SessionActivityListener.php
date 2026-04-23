@@ -32,32 +32,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\OAuth;
+namespace Glpi\Kernel\Listener\RequestListener;
 
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\OAuth\AccessTokenRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Glpi\Kernel\KernelListenerTrait;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Security\SessionTracker;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-final class AccessTokenController extends AbstractController
+class SessionActivityListener implements EventSubscriberInterface
 {
-    #[Route(
-        "/OAuth/AccessToken/Revoke/{access_token}",
-        name: "oauth_revoke_access_token",
-        requirements: [
-            'access_token' => '\w+',
-        ],
-        methods: ['POST']
-    )]
-    public function revokeAccessToken(Request $request): Response
+    use KernelListenerTrait;
+
+    public static function getSubscribedEvents(): array
     {
-        if (!\OAuthClient::canUpdate()) {
-            throw new AccessDeniedHttpException();
-        }
-        $repo = new AccessTokenRepository();
-        $repo->revokeAccessToken($request->attributes->getString('access_token'));
-        return new Response('', Response::HTTP_NO_CONTENT);
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        SessionTracker::updateLastSessionActivity();
     }
 }

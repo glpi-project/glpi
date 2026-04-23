@@ -88,10 +88,10 @@ class Session
      **/
     public static function destroy()
     {
-
         self::start();
         // Unset all of the session variables.
         session_unset();
+
         /**
          * Regenerate session ID for tests where multiple sessions are created and destroyed in the same process.
          * Keeping the session ID breaks {@link SessionTracker::recordNewSession} logic as the ID is already in a record in the DB.
@@ -1118,9 +1118,10 @@ class Session
         global $CFG_GLPI, $DB;
 
         if (
-            !isset($_SESSION['valid_id'], $_SESSION['login_session_uid'])
+            !isset($_SESSION['valid_id'])
+            || self::getLoginSessionUID() === null
             || ($_SESSION['valid_id'] !== session_id())
-            || !SessionTracker::isSessionValid($_SESSION['login_session_uid'])
+            || !SessionTracker::isSessionValid(self::getLoginSessionUID())
         ) {
             throw new SessionExpiredException();
         }
@@ -2321,8 +2322,8 @@ class Session
     {
         global $DB;
 
-        if (isset($_SESSION['login_session_uid'])) {
-            SessionTracker::revokeSession($_SESSION['login_session_uid'], SessionTracker::REVOKE_REASON_USER);
+        if (self::getLoginSessionUID()) {
+            SessionTracker::revokeSession(self::getLoginSessionUID(), SessionTracker::REVOKE_REASON_USER);
         }
 
         $users_id = self::getLoginUserID();
@@ -2494,5 +2495,10 @@ class Session
         }
 
         return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $locale);
+    }
+
+    public static function getLoginSessionUID(): ?string
+    {
+        return $_SESSION['login_session_uid'] ?? null;
     }
 }

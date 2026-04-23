@@ -111,11 +111,11 @@ class SessionTrackerTest extends DbTestCase
         ])->current()['login_session_uid'];
         $this->assertNotNull($login_session_uid);
 
-        SessionTracker::revokeSession($login_session_uid, 'admin');
+        SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
         $this->assertEquals(0, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $login_session_uid]));
         $this->assertEquals(1, countElementsInTable('glpi_users_sessionhistories', [
             'login_session_uid' => $login_session_uid,
-            'logout_reason' => 'admin',
+            'logout_reason' => SessionTracker::REVOKE_REASON_ADMIN,
         ]));
         $this->assertCount(1, $DB->request([
             'SELECT' => ['id'],
@@ -207,5 +207,140 @@ class SessionTrackerTest extends DbTestCase
             'login_session_uid' => ['login_session_uid_old', 'login_session_uid_recent'],
         ]));
         $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => 'login_session_uid_current']));
+    }
+
+    public function testGetSessions(): void
+    {
+        $this->login();
+        $sessions = (new SessionTracker())->getSessions($_SESSION['glpiID']);
+        $this->assertCount(1, $sessions);
+        $session = $sessions[0];
+        $this->assertEquals($_SESSION['glpiID'], $session['users_id']);
+        $this->assertEquals('web', $session['type_raw']);
+        $this->assertTrue($session['current_session']);
+        $this->assertStringContainsString('_test_user', $session['user']);
+        $this->assertEquals('::1', $session['ip_address']);
+        $this->assertStringContainsString('Browser', $session['type']);
+        $this->assertStringContainsString('Active', $session['status']);
+        $this->assertEmpty($session['actions']);
+        $this->assertEquals($session['login'], $session['last_activity']);
+        $this->assertNull($session['logout_reason']);
+    }
+
+    public function testGetSessionsFilters(): void
+    {
+        global $DB;
+
+        //test user, status, type and IP filters
+
+        $DB->insert('glpi_users_sessions', [
+            'users_id' => 2,
+            'login_session_uid' => 'login_session_uid1',
+            'session_file' => 'sess_session_token_hash1',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'created_at' => QueryFunction::now(),
+            'last_activity_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessions', [
+            'users_id' => 2,
+            'login_session_uid' => 'login_session_uid2',
+            'session_file' => 'sess_session_token_hash2',
+            'ip_address' => '10.1.1.3',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'created_at' => QueryFunction::now(),
+            'last_activity_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessions', [
+            'users_id' => 3,
+            'login_session_uid' => 'login_session_uid3',
+            'session_file' => 'session_token_hash3',
+            'ip_address' => '10.1.1.3',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'created_at' => QueryFunction::now(),
+            'last_activity_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessions', [
+            'users_id' => 3,
+            'login_session_uid' => 'login_session_uid4',
+            'session_file' => 'session_token_hash4',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::API,
+            'created_at' => QueryFunction::now(),
+            'last_activity_at' => QueryFunction::now(),
+        ]);
+
+        // create the history for all of the sessions + an extra one for the revoked session test
+        $DB->insert('glpi_users_sessionhistories', [
+            'users_id' => 2,
+            'login_session_uid' => 'login_session_uid1',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'logged_in_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessionhistories', [
+            'users_id' => 2,
+            'login_session_uid' => 'login_session_uid2',
+            'ip_address' => '10.1.1.3',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'logged_in_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessionhistories', [
+            'users_id' => 3,
+            'login_session_uid' => 'login_session_uid3',
+            'ip_address' => '10.1.1.3',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'logged_in_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessionhistories', [
+            'users_id' => 3,
+            'login_session_uid' => 'login_session_uid4',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::API,
+            'logged_in_at' => QueryFunction::now(),
+        ]);
+        $DB->insert('glpi_users_sessionhistories', [
+            'users_id' => 4,
+            'login_session_uid' => 'login_session_uid5',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'logged_in_at' => QueryFunction::now(),
+            'logged_out_at' => QueryFunction::now(),
+            'logout_reason' => SessionTracker::REVOKE_REASON_ADMIN,
+            'users_id_revoked_by' => 15,
+        ]);
+
+        $session_tracker = new SessionTracker();
+        $this->assertCount(2, $session_tracker->getSessions(users_id: 2));
+        $this->assertCount(2, $session_tracker->getSessions(users_id: 0, filters: [
+            'ip' => '10.1.1.3',
+        ]));
+        $this->assertCount(1, $session_tracker->getSessions(users_id: 0, filters: [
+            'type' => 'api',
+        ]));
+        $this->assertCount(0, $session_tracker->getSessions(users_id: 2, filters: [
+            'user' => 'post-only',
+        ]));
+        $this->assertCount(2, $session_tracker->getSessions(users_id: 0, filters: [
+            'user' => 'post-only',
+        ]));
+        $this->assertCount(4, $session_tracker->getSessions(users_id: 0, filters: [
+            'status' => 'active',
+        ]));
+        $this->assertCount(0, $session_tracker->getSessions(users_id: 4, filters: [
+            'status' => 'active',
+        ]));
+        $this->assertCount(5, $session_tracker->getSessions(users_id: 0, filters: [
+            'status' => 'all',
+        ]));
     }
 }

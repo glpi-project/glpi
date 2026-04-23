@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Security\SessionTracker;
 use Glpi\Security\TOTPManager;
 
 // class Preference for the current connected User
@@ -63,16 +64,23 @@ class Preference extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        return self::createTabEntry(text: __('Two-factor authentication (2FA)'), icon: 'ti ti-shield-lock');
+        return [
+            self::createTabEntry(text: __('Two-factor authentication (2FA)'), icon: 'ti ti-shield-lock'),
+            self::createTabEntry(_n('Session', 'Sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-user-shield'),
+        ];
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        $totp = new TOTPManager();
-        $regenerate_backup_codes = isset($_REQUEST['regenerate_backup_codes']) ? filter_var($_REQUEST['regenerate_backup_codes'], FILTER_VALIDATE_BOOLEAN) : false;
-        // Don't allow regenerating the codes from the URL if the user already has some to prevent malicious or accidental regenerations
-        $regenerate_backup_codes = $regenerate_backup_codes && $totp->is2FAEnabled($_SESSION['glpiID']) && !$totp->isBackupCodesAvailable($_SESSION['glpiID']);
-        $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']), $regenerate_backup_codes);
+        if ($tabnum == 0) {
+            $totp = new TOTPManager();
+            $regenerate_backup_codes = isset($_REQUEST['regenerate_backup_codes']) ? filter_var($_REQUEST['regenerate_backup_codes'], FILTER_VALIDATE_BOOLEAN) : false;
+            // Don't allow regenerating the codes from the URL if the user already has some to prevent malicious or accidental regenerations
+            $regenerate_backup_codes = $regenerate_backup_codes && $totp->is2FAEnabled($_SESSION['glpiID']) && !$totp->isBackupCodesAvailable($_SESSION['glpiID']);
+            $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']), $regenerate_backup_codes);
+        } elseif ($tabnum == 1) {
+            (new SessionTracker())->showSessionList((int) Session::getLoginUserID());
+        }
         return true;
     }
 

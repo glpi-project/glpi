@@ -10025,12 +10025,14 @@ CREATE TABLE `glpi_changesatisfactions` (
 DROP TABLE IF EXISTS `glpi_oauth_access_tokens`;
 CREATE TABLE `glpi_oauth_access_tokens` (
    `identifier` varchar(255) NOT NULL,
+   `uuid` varchar(255) NOT NULL,
    `client` varchar(255) NOT NULL,
    `date_expiration` timestamp NOT NULL,
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
    `ip_address` varchar(45) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
+   UNIQUE KEY `uuid` (`uuid`),
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -10502,8 +10504,6 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
   UNIQUE KEY `unique_item_key` (`items_id`, `itemtype`, `key`, `language`),
   KEY `item` (`itemtype`, `items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-### Dump table glpi_sharetokens
 
 DROP TABLE IF EXISTS `glpi_sharetokens`;
 CREATE TABLE `glpi_sharetokens` (
