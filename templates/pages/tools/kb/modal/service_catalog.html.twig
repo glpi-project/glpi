@@ -62,6 +62,9 @@
         data-glpi-service-catalog-config
         {{ show_in_service_catalog ? '' : 'disabled' }}
     >
+        <legend class="visually-hidden">
+            {{ __("Details to display in service catalog") }}
+        </legend>
         <div class="mb-3">
             <label class="form-check form-switch mb-0">
                 <input type="hidden" name="is_pinned" value="0">
