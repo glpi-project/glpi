@@ -181,7 +181,7 @@ class NotificationTargetUser extends NotificationTarget
                 $this->data[$routes[$event]['key']] = $this->getUrlBase()
                     . $routes[$event]['path']
                     . '?password_forget_token='
-                    . rawurlencode($token);
+                    . rawurlencode((string) $token);
                 break;
         }
 
