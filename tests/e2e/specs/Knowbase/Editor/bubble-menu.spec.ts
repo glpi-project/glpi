@@ -273,4 +273,66 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await kb.editor.cancel();
         });
     });
+
+    test.describe('Visibility', () => {
+
+        test('Visible when selecting text in edit mode', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu visible in edit mode',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Selectable content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+
+            await kb.bubbleMenu.selectAllContent();
+            await kb.bubbleMenu.assertVisible();
+
+            await kb.editor.cancel();
+        });
+
+        test('Hidden when selecting text without entering edit mode', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu hidden in readonly',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Selectable content</p>',
+            });
+
+            await kb.goto(id);
+
+            await kb.editor.contentContainer
+                .getByText('Selectable content')
+                .click({ clickCount: 3 });
+
+            await kb.bubbleMenu.assertHidden();
+        });
+
+        test('Hidden when selecting text after exiting edit mode', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test bubble menu hidden after exit',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Selectable content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.cancel();
+
+            await kb.editor.contentContainer
+                .getByText('Selectable content')
+                .click({ clickCount: 3 });
+
+            await kb.bubbleMenu.assertHidden();
+        });
+    });
 });
