@@ -608,36 +608,50 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      */
     public function autoSetDate(array $input): array
     {
+        if (isset($input['real_start_date']) && $input['real_start_date'] === '') {
+            $input['real_start_date'] = null;
+        }
+        if (isset($input['real_end_date']) && $input['real_end_date'] === '') {
+            $input['real_end_date'] = null;
+        }
+
         $percent_done = (int) ($input['percent_done'] ?? $this->fields['percent_done'] ?? 0);
         $real_start_date = $input['real_start_date'] ?? $this->fields['real_start_date'] ?? null;
         $real_end_date = $input['real_end_date'] ?? $this->fields['real_end_date'] ?? null;
 
-        if ($percent_done < 100 && $real_end_date) {
+        if ($percent_done < 100 && $real_end_date && !array_key_exists('real_end_date', $input)) {
             $input['real_end_date'] = null;
         } elseif (
             isset($this->fields['percent_done'])
             && (int) $this->fields['percent_done'] === 100 && $percent_done < 100
+            && !array_key_exists('real_end_date', $input)
         ) {
             $input['real_end_date'] = null;
-        } elseif (($real_start_date && $real_end_date) || $percent_done === 0) {
-            // If both real start and end dates are set, or if the task is not started,
-            return $input;
-        } else {
-            // Set automatically the real start date if not set
-            if (empty($real_start_date) && $percent_done > 0) {
-                $input['real_start_date'] = Session::getCurrentTime();
+        }
+
+        if ($percent_done === 0) {
+            if (empty($input['real_start_date']) && empty($input['real_end_date'])) {
+                return $input;
             }
-            // Set automatically the real end date if not set
-            if (empty($real_end_date) && $percent_done === 100) {
-                $input['real_end_date'] = Session::getCurrentTime();
-            }
-            // Set automatically the effective duration if not set
-            if (!empty($input['real_start_date']) && !empty($input['real_end_date'])) {
-                $input['effective_duration'] = $this->autoSetEffectiveDuration(
-                    $input['real_start_date'],
-                    $input['real_end_date']
-                );
-            }
+        }
+
+        // Set automatically the real start date if not set
+        if (empty($real_start_date) && $percent_done > 0) {
+            $input['real_start_date'] = Session::getCurrentTime();
+        }
+        // Set automatically the real end date if not set
+        if (empty($real_end_date) && $percent_done === 100) {
+            $input['real_end_date'] = Session::getCurrentTime();
+        }
+
+        // Calculate effective duration when both dates are present
+        $final_start_date = $input['real_start_date'] ?? $this->fields['real_start_date'] ?? null;
+        $final_end_date = $input['real_end_date'] ?? $this->fields['real_end_date'] ?? null;
+        if (!empty($final_start_date) && !empty($final_end_date)) {
+            $input['effective_duration'] = $this->autoSetEffectiveDuration(
+                $final_start_date,
+                $final_end_date
+            );
         }
 
         return $input;
