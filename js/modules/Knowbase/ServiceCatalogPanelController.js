@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_toast_info */
+/* global bootstrap, glpi_toast_error, glpi_toast_info, tinymce */
 
 import { post } from "/js/modules/Ajax.js";
 
@@ -51,6 +51,21 @@ export class GlpiKnowbaseServiceCatalogPanelController
     {
         this.#container = container;
         this.#initEventListeners();
+
+        // Sync custom widgets to the initial server-rendered disabled state.
+        // TinyMCE may not be initialized yet; also hook into AddEditor so that
+        // editors initialized after the constructor also get the correct mode.
+        const config = container.querySelector(config_selector);
+        if (config?.disabled) {
+            this.#syncCustomWidgets(config, false);
+            if (window.tinymce !== undefined) {
+                window.tinymce.on('AddEditor', ({ editor }) => {
+                    if (config.disabled && config.contains(editor.getElement())) {
+                        editor.on('init', () => editor.mode.set('readonly'));
+                    }
+                });
+            }
+        }
     }
 
     #initEventListeners()
@@ -71,12 +86,37 @@ export class GlpiKnowbaseServiceCatalogPanelController
         });
     }
 
+    #syncCustomWidgets(config, enabled)
+    {
+        // Select2 replaces <select> with custom DOM and watches the `disabled`
+        // content attribute via MutationObserver — fieldset[disabled] only
+        // propagates the IDL property, not the attribute. Set/remove the
+        // attribute explicitly so Select2 updates its aria-disabled state.
+        config.querySelectorAll('select').forEach(select => {
+            if (enabled) {
+                select.removeAttribute('disabled');
+            } else {
+                select.setAttribute('disabled', '');
+            }
+        });
+
+        // TinyMCE replaces <textarea> with an iframe editor; set mode explicitly.
+        if (window.tinymce !== undefined) {
+            const mode = enabled ? 'design' : 'readonly';
+            window.tinymce.get().forEach(editor => {
+                if (config.contains(editor.getElement())) {
+                    editor.mode.set(mode);
+                }
+            });
+        }
+    }
+
     #updateConfigVisibility(enabled)
     {
         const config = this.#container.querySelector(config_selector);
         if (config) {
-            config.style.opacity = enabled ? '1' : '0.5';
-            config.style.pointerEvents = enabled ? 'auto' : 'none';
+            config.disabled = !enabled;
+            this.#syncCustomWidgets(config, enabled);
         }
     }
 
@@ -99,6 +139,7 @@ export class GlpiKnowbaseServiceCatalogPanelController
         try {
             await post(`Knowbase/${kb_id}/UpdateServiceCatalog`, data);
             glpi_toast_info(__("Service catalog settings saved."));
+            bootstrap.Modal.getInstance(this.#container)?.hide();
         } finally {
             // Remove loading state
             submit_btn.classList.remove('pointer-events-none');

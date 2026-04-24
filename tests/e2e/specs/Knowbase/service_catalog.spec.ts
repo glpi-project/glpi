@@ -61,11 +61,13 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     // Confirm default state
     await expect(kb.getHeading('Service catalog')).toBeVisible();
     await expect(kb.getCheckbox('Show in service catalog')).not.toBeChecked();
-    await expect(kb.getCheckbox('Pin to top of the service catalog')).not.toBeChecked();
-    await expect(kb.getRichTextByLabel('Description')).toHaveText("");
-    await expect(kb.getDropdownByLabel('Category')).toHaveText("-----");
 
-    // Set values
+    // Dependent fields are disabled by default
+    await expect(kb.getCheckbox('Pin to top of the service catalog')).toBeDisabled();
+    await expect(kb.getDropdownByLabel('Category')).toBeDisabled();
+    await expect(kb.getRichTextByLabel('Description')).toHaveClass(/mce-content-readonly/);
+
+    // Enable the toggle and set values
     await page.getByText('Show in service catalog').click();
     await page.getByText('Pin to top of the service catalog').click();
     await kb.getRichTextByLabel('Description').fill("My description");
@@ -84,4 +86,51 @@ test('Can configure service catalog settings', async ({ page, profile, api }) =>
     await expect(kb.getCheckbox('Pin to top of the service catalog')).toBeChecked();
     await expect(kb.getRichTextByLabel('Description')).toHaveText("My description");
     await expect(kb.getDropdownByLabel('Category')).toHaveText(category_name);
+});
+
+test('Can disable service catalog settings', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: 'KB for service catalog disable test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+        show_in_service_catalog: 1,
+        is_pinned: 1,
+    });
+    await kb.goto(kb_id);
+
+    // Open service catalog panel
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Service catalog').click();
+    await expect(kb.getHeading('Service catalog')).toBeVisible();
+
+    // Catalog is enabled — dependent fields should be interactive
+    await expect(kb.getCheckbox('Show in service catalog')).toBeChecked();
+    await expect(kb.getCheckbox('Pin to top of the service catalog')).toBeEnabled();
+    await expect(kb.getDropdownByLabel('Category')).toBeEnabled();
+    await expect(kb.getRichTextByLabel('Description')).not.toHaveClass(/mce-content-readonly/);
+
+    // Disable the toggle
+    await page.getByText('Show in service catalog').click();
+
+    // Dependent fields are now disabled
+    await expect(kb.getCheckbox('Pin to top of the service catalog')).toBeDisabled();
+    await expect(kb.getDropdownByLabel('Category')).toBeDisabled();
+    await expect(kb.getRichTextByLabel('Description')).toHaveClass(/mce-content-readonly/);
+
+    // Save and reload
+    await kb.getButton('Save').click();
+    await expect(page.getByText('Service catalog settings saved')).toBeVisible();
+    await page.reload();
+
+    // Service catalog is now disabled
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Service catalog').click();
+
+    await expect(kb.getCheckbox('Show in service catalog')).not.toBeChecked();
+    await expect(kb.getCheckbox('Pin to top of the service catalog')).toBeDisabled();
+    await expect(kb.getDropdownByLabel('Category')).toBeDisabled();
+    await expect(kb.getRichTextByLabel('Description')).toHaveClass(/mce-content-readonly/);
 });

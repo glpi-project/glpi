@@ -36,6 +36,7 @@ import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
+import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
 
 const EditorActionType = Object.freeze({
     LOAD_SIDE_PANEL: 'LOAD_SIDE_PANEL',
@@ -467,7 +468,7 @@ export class GlpiKnowbaseArticleController
                 this.#deleteItem(params.id);
                 break;
             case EditorActionType.OPEN_MODAL:
-                this.#openModal(params.id, params.key, params.title);
+                this.#openModal(params.id, params.key, params.title, params.icon);
                 break;
             case 'SCHEDULE_VISIBILITY': {
                 // Show indicator
@@ -561,14 +562,17 @@ export class GlpiKnowbaseArticleController
      * @param {string} key
      * @param {string} title
      */
-    #openModal(id, key, title)
+    #openModal(id, key, title, icon = null)
     {
+        const modal_title = icon ? `<i class="${icon} me-2" aria-hidden="true"></i>${title}` : title;
         glpi_ajax_dialog({
             url: `${CFG_GLPI.root_doc}/Knowbase/${id}/${key}`,
-            title: title || '',
+            title: modal_title,
             dialogclass: 'modal-lg',
             show: key === 'LinkItemModal' ? (e) => {
                 new LinkItemFormController(e.target.closest('.modal'));
+            } : key === 'SidePanel/service-catalog' ? (e) => {
+                new GlpiKnowbaseServiceCatalogPanelController(e.target.closest('.modal'));
             } : () => {},
         });
     }
