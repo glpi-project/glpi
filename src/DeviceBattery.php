@@ -103,8 +103,8 @@ class DeviceBattery extends CommonDevice
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $main_joinparams
-     * @return array
+     * @param mixed[] $main_joinparams
+     * @return mixed[]
      */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
