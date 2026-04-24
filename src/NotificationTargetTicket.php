@@ -228,14 +228,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         // backward compatibility ola_tto/ttr
         // ticket.ola_tto & ticket.ola_ttr field are replaced by an array of OLA data, see below
         $data['##ticket.ola_tto##'] = '';
-        if ($item->fields['olas_id_tto']) {
+        if (isset($item->fields['olas_id_tto']) && is_numeric($item->fields['olas_id_tto'])) {
             $data['##ticket.ola_tto##'] = Dropdown::getDropdownName(
                 'glpi_olas',
                 $item->fields['olas_id_tto']
             );
         }
         $data['##ticket.ola_ttr##'] = '';
-        if ($item->fields['olas_id_ttr']) {
+        if (isset($item->fields['olas_id_ttr']) && is_numeric($item->fields['olas_id_ttr'])) {
             $data['##ticket.ola_ttr##'] = Dropdown::getDropdownName(
                 'glpi_olas',
                 $item->fields['olas_id_ttr']
