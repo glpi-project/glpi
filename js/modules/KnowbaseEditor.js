@@ -208,6 +208,8 @@ class KnowbaseEditor {
     #createBubbleMenu() {
         const menu = document.createElement('div');
         menu.classList.add('bubble-menu');
+        menu.style.position = 'absolute';
+        menu.style.width = 'max-content';
 
         const buttons = [
             { command: 'toggleBold', icon: 'ti ti-bold', title: __('Bold') },
