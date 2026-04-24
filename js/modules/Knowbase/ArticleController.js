@@ -1244,6 +1244,7 @@ export class GlpiKnowbaseArticleController
         this.#translation_language = language;
         this.#updateDeleteButtonVisibility();
         await this.#loadTranslationContent(language);
+        setHasUnsavedChanges(false);
     }
 
     async #loadTranslationContent(language)
