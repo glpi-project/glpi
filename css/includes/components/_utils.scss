@@ -57,6 +57,10 @@
     border-style: dashed !important;
 }
 
+.border-radius-0 {
+    border-radius: 0 !important;
+}
+
 // Alternative to d-flex, does not includes "!important".
 // This is needed when dealing with libraries that will attempt to hide an item
 // by changing its style to "display: none" (like html5sortable), which will fail

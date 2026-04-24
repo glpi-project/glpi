@@ -1307,11 +1307,24 @@ class CommonGLPI implements CommonGLPIInterface
                 'itemtype' => static::class,
             ]);
         }
+
         echo "<div class='col'>";
         if (($options['show_nav_header'] ?? true)) {
             $this->showNavigationHeader($options);
         }
+        echo "<div class=\"row\">";
+        $left_side_content = $this->getLeftSideContent();
+        if ($left_side_content !== null) {
+            // The data-main-page-aside attribute allow custom styles to be applied per itemtype.
+            $slug = Toolbox::slugify(static::class);
+            echo "<aside class=\"col card border-radius-0 p-0\" data-main-page-aside=\"$slug\">";
+            echo $left_side_content;
+            echo "</aside>";
+        }
+        echo "<div class=\"col\">";
         $this->showTabsContent($options);
+        echo "</div>";
+        echo "</div>";
         echo "</div>";
         echo "</div>";
     }
@@ -1445,5 +1458,10 @@ class CommonGLPI implements CommonGLPIInterface
     protected function getFormHeaderToolbar(): array
     {
         return [];
+    }
+
+    protected function getLeftSideContent(): ?string
+    {
+        return null;
     }
 }

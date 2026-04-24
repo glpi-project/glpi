@@ -710,3 +710,58 @@
     padding: 1rem 1.25rem;
     border-top: 1px solid var(--tblr-border-color);
 }
+
+[data-main-page-aside="knowbaseitem"] {
+    max-width: 300px;
+    background-color: #fff;
+
+    .node, .article {
+        list-style: none;
+    }
+
+    // KB aside tree hierarchy connector lines
+    .kb-tree {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        ul {
+            list-style: none;
+            padding: 0 0 0 1.5rem;
+            margin: 0;
+
+            > li {
+                position: relative;
+
+                // Use padding (not margin) so the ::after connector covers the gap
+                padding-bottom: 0.5rem;
+                margin-bottom: 0;
+
+                // L-shaped connector: starts $gap below the top edge so the
+                // vertical segment never "touches" the line above it.
+                &::before {
+                    $gap: 0.25rem;
+
+                    content: '';
+                    position: absolute;
+                    left: -1rem;
+                    top: 0;
+                    width: calc(1rem - #{$gap}); // leave a small gap before the content
+                    height: 0.625rem; // half of the 20px illustration = 10px
+                    border-left: 1px solid var(--tblr-border-color);
+                    border-bottom: 1px solid var(--tblr-border-color);
+                }
+
+                &:not(:last-child)::after {
+                    content: '';
+                    position: absolute;
+                    left: -1rem;
+                    top: 0.625rem;
+                    bottom: 0;
+                    width: 1px;
+                    background-color: var(--tblr-border-color);
+                }
+            }
+        }
+    }
+}

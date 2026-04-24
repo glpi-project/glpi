@@ -42,6 +42,7 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionSeparator;
 use Glpi\Knowbase\EditorActionType;
@@ -2556,7 +2557,7 @@ TWIG, $twig_params);
     {
         // Fallback to a specific icon when using the home page search results
         // as the service catalog data may not be specified in this case.
-        return $this->fields['illustration'] ?: "browse-kb";
+        return $this->fields['illustration'] ?: "kb-faq";
     }
 
     #[Override]
@@ -2579,5 +2580,16 @@ TWIG, $twig_params);
         } else {
             return [];
         }
+    }
+
+    #[Override]
+    protected function getLeftSideContent(): ?string
+    {
+        return TemplateRenderer::getInstance()->render(
+            'pages/tools/kb/aside.html.twig',
+            [
+                'tree' => (new Builder())->buildTree(),
+            ]
+        );
     }
 }
