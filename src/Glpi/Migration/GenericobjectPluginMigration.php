@@ -1266,7 +1266,19 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 break;
         }
 
-        if (\isForeignKeyField($field_name)) {
+        // FIX issue #22456: consult plugin field definition BEFORE relying on the name-based FK heuristic.
+        // The `*_id` suffix is misleading for text/integer fields like `*_id` that the plugin
+        // explicitly declares with a non-dropdown `input_type` in `field.constant.php`.
+        $genericobject_definitions_early = $this->getGenericObjectFieldsDefinition($itemtype);
+        $plugin_field_def = $genericobject_definitions_early[$field_name] ?? null;
+        $plugin_says_non_dropdown = $plugin_field_def !== null
+            && ($plugin_field_def['input_type'] ?? null) !== 'dropdown';
+
+        // Also skip FK detection if the underlying column is a string type, because GLPI foreign key
+        // columns are always integers.
+        $column_is_string = (bool) preg_match('/^(varchar|char|text|tinytext|mediumtext|longtext)/i', $field_type);
+
+        if (!$plugin_says_non_dropdown && !$column_is_string && \isForeignKeyField($field_name)) {
             // Foreign key field
             if ($this->isAGenericObjectFkeyField($field_name)) {
                 $source_type = $this->getExpectedClassNameForPluginTable(\getTableNameForForeignKeyField($field_name));
@@ -1274,16 +1286,30 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             } else {
                 $target_type = \getItemtypeForForeignKeyField($field_name);
                 if ($target_type === null) {
-                    throw new MigrationException(
-                        sprintf(__('Unable to import the "%s" field.'), $field_name),
-                        sprintf('Unable to import the `%s` field.', $field_name)
-                    );
+                    // FIX issue #22456 (case 2): GLPI core couldn't infer the target itemtype from the
+                    // field name (e.g. `users_id_owners_id` has a non-standard double suffix). Try to
+                    // recover by stripping known core prefixes and re-asking. If that also fails, fall
+                    // back to a plain string column instead of aborting the whole migration.
+                    foreach (['users_id_', 'groups_id_', 'locations_id_'] as $prefix) {
+                        if (\str_starts_with($field_name, $prefix)) {
+                            $target_type = \getItemtypeForForeignKeyField(\rtrim($prefix, '_') . '_id');
+                            if ($target_type !== null) {
+                                break;
+                            }
+                        }
+                    }
+                    if ($target_type === null) {
+                        // Plugin doesn't help us either - give up on FK and treat as string.
+                        $specs['type'] = StringType::class;
+                    }
                 }
             }
-            $specs['system_name'] = $this->getTargetField($itemtype, $field_name, with_prefix: false);
-            $specs['label']       = $target_type::getTypeName();
-            $specs['type']        = DropdownType::class;
-            $specs['itemtype']    = $target_type;
+            if ($target_type !== null) {
+                $specs['system_name'] = $this->getTargetField($itemtype, $field_name, with_prefix: false);
+                $specs['label']       = $target_type::getTypeName();
+                $specs['type']        = DropdownType::class;
+                $specs['itemtype']    = $target_type;
+            }
         } else {
             // Keep only the main column type by removing anything that is preceded by a space (e.g. " unsigned")
             // or a parenthesis (e.g. "(255)").
