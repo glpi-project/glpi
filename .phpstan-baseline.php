@@ -18206,6 +18206,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method delete\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -18231,6 +18237,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getName\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method maybeDeleted\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Planning.php',
