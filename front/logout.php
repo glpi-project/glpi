@@ -44,9 +44,14 @@ global $CFG_GLPI;
 if (
     $CFG_GLPI["ssovariables_id"] > 0
     && ((string) $CFG_GLPI['ssologout_url']) !== ''
+    && Session::isAuthenticated()
 ) {
-    Session::cleanOnLogout();
-    Html::redirect($CFG_GLPI["ssologout_url"]);
+    if (!$CFG_GLPI["sso_use_front_channel_logout"]) {
+        Session::cleanOnLogout();
+    }
+    if (!$CFG_GLPI["sso_use_front_channel_logout"] || !isset($_GET['frontChannelLogout'])) {
+        Html::redirect($CFG_GLPI["ssologout_url"]);
+    }
 }
 
 if (
