@@ -348,6 +348,9 @@ final class LocalesExtractCommand extends AbstractCommand
 
     private function runCommand(array $command, ?string $cwd = null, array $env = []): Process
     {
+        $env = array_replace([
+            'COLUMNS' => 1000,
+        ], $env);
         $process = new Process($command, $cwd, $env);
         $process->setTimeout(null);
 

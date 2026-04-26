@@ -10305,4 +10305,40 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
   KEY `item` (`itemtype`, `items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_user_sessions`;
+CREATE TABLE `glpi_user_sessions` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `session_token_hash` varchar(64) NOT NULL,
+    `session_file` varchar(261) NOT NULL COMMENT 'Session filename. PHP allows up to 256 characters for session IDs + the "sess_" prefix used by default.',
+    `ip_address` varchar(45) NOT NULL,
+    `user_agent` varchar(512) NOT NULL,
+    `auth_type` tinyint NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `last_activity_at` timestamp NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `session_token_hash` (`session_token_hash`),
+    KEY `users_id` (`users_id`),
+    KEY `last_activity_at` (`last_activity_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_user_session_history`;
+CREATE TABLE `glpi_user_session_history` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `session_token_hash` varchar(64) NOT NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `user_agent` varchar(512) NOT NULL,
+    `auth_type` tinyint NOT NULL,
+    `logged_in_at` timestamp NOT NULL,
+    `logged_out_at` timestamp NULL DEFAULT NULL,
+    `logout_reason` enum('user', 'admin', 'expired') DEFAULT NULL,
+    `users_id_revoked_by` int unsigned DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `session_token_hash` (`session_token_hash`),
+    KEY `users_id` (`users_id`, `logged_in_at` DESC),
+    KEY `users_id_revoked_by` (`users_id_revoked_by`),
+    KEY `logged_out_at` (`logged_out_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;
