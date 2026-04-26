@@ -72,13 +72,43 @@ final class SessionTrackerController extends AbstractController
     public function getSessions(Request $request): Response
     {
         $users_id = $request->query->getInt('users_id', 0);
+        $filters = [
+            'user' => $request->query->get('user', ''),
+            'status' => $request->query->get('status', ''),
+            'type' => $request->query->get('type', ''),
+            'ip' => $request->query->get('ip', ''),
+        ];
 
         if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
         return new JsonResponse(
-            (new SessionTracker())->getSessions($users_id)
+            (new SessionTracker())->getSessions($users_id, $filters)
         );
+    }
+
+    #[Route(
+        path: "/Security/Sessions/{session_token_hash}/Revoke",
+        name: "security_sessions_revoke",
+        methods: ["POST"],
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function revokeSession(Request $request): Response
+    {
+        //TODO
+        return new Response();
+    }
+
+    #[Route(
+        path: "/Security/Sessions/All/Revoke",
+        name: "security_sessions_revokeall",
+        methods: ["POST"],
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function revokeAllSessions(Request $request): Response
+    {
+        //TODO
+        return new Response();
     }
 }

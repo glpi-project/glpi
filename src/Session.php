@@ -88,7 +88,7 @@ class Session
     public static function destroy()
     {
         self::start();
-        self::revokeSession(self::getSessionTokenHash(), 'user');
+        self::revokeSession(self::getSessionTokenHash(), 'expired');
         // Unset all of the session variables.
         session_unset();
         // destroy may cause problems (no login / back to login page)
@@ -168,13 +168,11 @@ class Session
      * @param string $session_token_hash
      * @param 'user'|'admin'|'expired' $reason
      * @return void
+     * @throws AccessDeniedHttpException
      */
     public static function revokeSession(string $session_token_hash, string $reason): void
     {
         global $DB;
-
-        //FIXME This gets triggered unintentionally. Probably during the normal session gc (24 minutes) even though it would be renewed.
-        return;
 
         $it = $DB->request([
             'SELECT' => ['users_id'],
@@ -182,6 +180,11 @@ class Session
             'WHERE' => ['session_token_hash' => $session_token_hash],
         ]);
         $users_id = $it->current()['users_id'] ?? null;
+
+        if ($reason === 'admin' && $users_id !== self::getLoginUserID() && !self::haveRight('config', UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $DB->delete('glpi_user_sessions', ['session_token_hash' => $session_token_hash]);
         $DB->update('glpi_user_session_history', [
             'logged_out_at' => QueryFunction::now(),
@@ -191,7 +194,7 @@ class Session
             'session_token_hash' => $session_token_hash,
             'logged_out_at' => null, // Possibility of reused session IDs since this history is kept indefinitely.
         ]);
-        if ($users_id) {
+        if ($reason !== 'expired' && $users_id) {
             $DB->update('glpi_users', [
                 'cookie_token' => null,
             ], ['id' => $users_id]);
@@ -2382,6 +2385,7 @@ class Session
     */
     public static function cleanOnLogout()
     {
+        self::revokeSession(self::getSessionTokenHash(), 'user');
         Session::destroy();
         //Remove cookie to allow new login
         Auth::setRememberMeCookie('');

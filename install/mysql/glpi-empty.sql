@@ -10336,7 +10336,9 @@ CREATE TABLE `glpi_user_session_history` (
     `users_id_revoked_by` int unsigned DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `session_token_hash` (`session_token_hash`),
-    KEY `users_id` (`users_id`, `logged_in_at` DESC)
+    KEY `users_id` (`users_id`, `logged_in_at` DESC),
+    KEY `users_id_revoked_by` (`users_id_revoked_by`),
+    KEY `logged_out_at` (`logged_out_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
