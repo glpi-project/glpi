@@ -57,6 +57,7 @@ use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
+use Glpi\Kernel\Listener\RequestListener\SessionActivityListener;
 use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
 use Glpi\Kernel\Listener\RequestListener\SessionVariables;
 
@@ -82,6 +83,9 @@ final class ListenersPriority
         // Registers the current request to the error handler.
         // Keep it in top priority as is required during handling of errors that may be triggered by any other listener.
         ErrorHandlerRequestListener::class => 1000,
+
+        // Update session activity date
+        SessionActivityListener::class       => 550,
 
         // Static assets must be served without executing anything else.
         // Keep the listener on top priority.

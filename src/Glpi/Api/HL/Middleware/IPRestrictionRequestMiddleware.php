@@ -40,8 +40,6 @@ use Glpi\Http\JSONResponse;
 use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
-use function Safe\inet_pton;
-
 class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void

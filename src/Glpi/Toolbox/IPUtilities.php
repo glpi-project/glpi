@@ -34,6 +34,8 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\inet_pton;
+
 final class IPUtilities
 {
     /**

@@ -111,8 +111,8 @@ final class SessionTracker extends CommonGLPI
                             new QueryExpression($DB::quoteName("glpi_users.$name1")),
                             new QueryExpression($DB::quoteValue(' ')),
                             new QueryExpression($DB::quoteName("glpi_users.$name2")),
-                        ]) => ['LIKE', $user_filter]
-                    ]
+                        ]) => ['LIKE', $user_filter],
+                    ],
                 ],
             ];
         }
@@ -170,7 +170,7 @@ final class SessionTracker extends CommonGLPI
             'WHERE' => $where,
             'ORDER' => [
                 'logged_out_at ASC',
-                'logged_in_at DESC'
+                'logged_in_at DESC',
             ],
             'HAVING' => $having,
             'LIMIT' => 100,

@@ -126,6 +126,11 @@ class Session
     {
         global $DB;
 
+        if (isCommandLine()) {
+            // Do not record sessions for command line requests.
+            return true;
+        }
+
         try {
             $DB->insert('glpi_user_sessions', [
                 'users_id' => $_SESSION['glpiID'],
