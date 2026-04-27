@@ -139,7 +139,7 @@
                     <a :href="`${user_form_url}${session.users_id}`">{{ session.user_name }}</a>
                 </td>
                 <td>
-                    <span class="d-flex gap-1">
+                    <span>
                         <i :class="getAgentIcon(session.user_agent_info)" aria-hidden="true"></i>
                         {{ getAgentDescription(session.user_agent_info) }}
                         <span v-if="session.current_session" class="badge badge-outline bg-transparent text-info">{{ __('Current session') }}</span>

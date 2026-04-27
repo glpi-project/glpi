@@ -100,7 +100,7 @@
                 <Toolbar @filter="refreshSessions"/>
             </div>
         </div>
-        <div>
+        <div class="overflow-x-auto">
             <SessionDatatable v-if="error === null && sessions.length > 0" :loading="loading" :sessions="sessions" @revoke="revokeSession"/>
             <div v-else-if="!loading && sessions.length === 0" class="alert alert-info" role="alert">
                 <div class="d-flex">
@@ -130,6 +130,7 @@
 
 <style scoped>
     section {
+        grid-template-columns: minmax(400px, 1fr);
         grid-template-rows: auto auto 1fr;
     }
 </style>
