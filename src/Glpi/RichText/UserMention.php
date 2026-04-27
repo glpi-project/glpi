@@ -166,7 +166,7 @@ final class UserMention
                     $current_actors_ids[] = $actor['users_id'];
                 }
             }
-            // Get notification setting 
+            // Get notification setting
             $defaults = $main_item::getDefaultValues($main_item->getEntityID());
             $default_use_notif = $defaults['_users_id_observer_notif']['use_notification'];
             if (is_array($default_use_notif)) {
