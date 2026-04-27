@@ -74,11 +74,11 @@
         <span style="grid-column: 4" :id="`${ip_filter_id}helper`" class="form-hint">{{ __('CIDR notation and comma separated values are supported.') }}</span>
         <div style="grid-column: 5; grid-row: 2" class="d-flex align-self-center gap-2">
             <button class="btn btn-primary align-self-end gap-1" @click="applyFilters">
-                <i class="ti ti-filter"></i>
+                <i class="ti ti-filter" aria-hidden="true"></i>
                 {{ __('Filter') }}
             </button>
             <button class="btn btn-outline-secondary align-self-end gap-1" @click="resetFilters">
-                <i class="ti ti-reload"></i>
+                <i class="ti ti-reload" aria-hidden="true"></i>
                 {{ __('Reset') }}
             </button>
         </div>

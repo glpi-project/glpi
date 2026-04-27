@@ -131,7 +131,7 @@
             <tr v-if="!loading" v-for="session in sessions" :key="session.id">
                 <td>
                     <span class="d-flex gap-1">
-                        <i class="ti ti-world"></i>
+                        <i class="ti ti-world" aria-hidden="true"></i>
                         {{ __('Browser') }}
                     </span>
                 </td>
@@ -140,7 +140,7 @@
                 </td>
                 <td>
                     <span class="d-flex gap-1">
-                        <i :class="getAgentIcon(session.user_agent_info)"></i>
+                        <i :class="getAgentIcon(session.user_agent_info)" aria-hidden="true"></i>
                         {{ getAgentDescription(session.user_agent_info) }}
                         <span v-if="session.current_session" class="badge badge-outline bg-transparent text-info">{{ __('Current session') }}</span>
                     </span>
@@ -160,7 +160,7 @@
                     <button v-if="!session.logged_out_at && !session.current_session"
                             class="btn btn-outline-danger btn-sm gap-1"
                             @click="$emit('revoke', session.session_token_hash)">
-                        <i class="ti ti-logout"></i>
+                        <i class="ti ti-logout" aria-hidden="true"></i>
                         {{ __('Revoke') }}
                     </button>
                 </td>
@@ -180,26 +180,26 @@
     <div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap align-items-center justify-content-between mb-2 search-pager">
         <ul class="pagination m-0 mt-sm-2 mt-md-0 align-items-center">
             <li class="page-item">
-                <button class="page-link">
-                    <i class="ti ti-chevrons-left"></i>
+                <button class="page-link" :title="__('Start')" :aria-label="__('Start')">
+                    <i class="ti ti-chevrons-left" aria-hidden="true"></i>
                 </button>
             </li>
             <li class="page-item">
-                <button class="page-link">
-                    <i class="ti ti-chevron-left"></i>
+                <button class="page-link" :title="__('Previous')" :aria-label="__('Previous')">
+                    <i class="ti ti-chevron-left" aria-hidden="true"></i>
                 </button>
             </li>
             <li class="page-item active selected">
                 <span class="page-link page-link-num" v-text="current_page"></span>
             </li>
             <li class="page-item">
-                <button class="page-link">
-                    <i class="ti ti-chevron-right"></i>
+                <button class="page-link" :title="__('Next')" :aria-label="__('Next')">
+                    <i class="ti ti-chevron-right" aria-hidden="true"></i>
                 </button>
             </li>
             <li class="page-item">
-                <button class="page-link">
-                    <i class="ti ti-chevrons-right"></i>
+                <button class="page-link" :title="__('End')" :aria-label="__('End')">
+                    <i class="ti ti-chevrons-right" aria-hidden="true"></i>
                 </button>
             </li>
         </ul>

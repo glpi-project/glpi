@@ -84,13 +84,13 @@
         <header class="d-flex justify-content-between">
             <div>
                 <h1>
-                    <i class="ti ti-shield-lock"></i>
+                    <i class="ti ti-shield-lock" aria-hidden="true"></i>
                     {{ __('Session list') }}
                 </h1>
             </div>
             <div>
                 <button class="btn btn-outline-danger gap-1" @click="revokeAllSessions">
-                    <i class="ti ti-logout"></i>
+                    <i class="ti ti-logout" aria-hidden="true"></i>
                     {{ __('Revoke all active sessions') }}
                 </button>
             </div>
@@ -105,7 +105,7 @@
             <div v-else-if="!loading && sessions.length === 0" class="alert alert-info" role="alert">
                 <div class="d-flex">
                     <div class="me-2">
-                        <i class="ti ti-info-circle fs-2x alert-icon"></i>
+                        <i class="ti ti-info-circle fs-2x alert-icon" aria-hidden="true"></i>
                     </div>
                     <span class="alert-heading">
                         {{ __('No sessions found') }}
@@ -115,7 +115,7 @@
             <div v-else-if="error" class="alert alert-danger" role="alert">
                 <div class="d-flex">
                     <div class="me-2">
-                        <i class="ti ti-exclamation-circle fs-2x alert-icon"></i>
+                        <i class="ti ti-exclamation-circle fs-2x alert-icon" aria-hidden="true"></i>
                     </div>
                     <span class="alert-heading">
                         {{ __('Failed to load the session list') }}
