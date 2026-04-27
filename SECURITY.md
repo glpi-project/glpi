@@ -1,31 +1,50 @@
 # Security Policy
 
-**⚠️ Please never use standard issues to report security problems; vulnerabilities are never published before a fix release is available. ⚠️**
+**⚠️ Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.**
 
-Critical and high advisories are published one month after the release. All other advisories are published one week after the fix release.
+## Reporting
 
-## Reporting a Vulnerability
+Email **security@glpi-project.org**.
 
-If you found a security issue, please send an email to \[security AT glpi-project.org\].
+We do not accept GitHub Security Advisory direct submissions. Email only.
 
-You should provide us all details about the issue and the way to reproduce it.
-You may also provide a script that can be used to check the issue exists.
-Please also ensure the issue can really be exploited.
+## Required information
 
-Once the report will be handled, and if the issue is not yet fixed (or in progress)
-we'll add it to the GitHub security tab, and add you as observer. Meanwhile,
-you will reserve a CVE for the issue.
+Incomplete reports are returned once and closed if not completed within seven days.
 
-Thank you for improving the security of glpi.
+1. Affected GLPI version (must be supported — see below).
+2. What the attacker can do and what privilege level they need.
+3. Step-by-step reproduction from a clean install.
+4. Working proof of concept.
+5. Impact and preconditions.
+6. AI disclosure: which tools, if any, you used to find or draft the report.
 
-## Supported Versions
+Group related findings into a single report. Multiple instances of the same vulnerability class — for example XSS across different fields, or missing capability checks on related endpoints — belong in one submission, not several.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 11.0.x  | :heavy_check_mark: |
-| 10.0.x  | :heavy_check_mark: |
-| 9.5.x   | :x:                |
-| 9.4.x   | :x:                |
-| 9.3.x   | :x:                |
-| 9.2.x   | :x:                |
-| < 9.2   | :x:                |
+## Scope
+
+**In scope:** GLPI core, official releases.
+
+**Out of scope:** third-party plugins (report to plugin maintainers), the GLPI Inventory Agent, Teclib'-operated websites, self-modified installs, hosting providers, social engineering, hardening suggestions without a working exploit, scanner output without verification, unsupported versions.
+
+## Supported versions
+
+| Version | Supported |
+| ------- | --------- |
+| 11.0.x  | ✔️        |
+| 10.0.x  | ✔️        |
+| < 10.0  | ❌        |
+
+## Disclosure
+
+Severity is assessed using CVSS v4.
+
+Critical and High advisories are published one month after the fix release. All other advisories are published one week after the fix release.
+
+CVE is reserved on report acceptance. You will be credited in the published advisory unless you request anonymity. Unilateral disclosure before a fix ships ends our engagement.
+
+We do not offer monetary rewards.
+
+## AI-assisted reports
+
+AI tools are welcome as part of disciplined research — verify findings against a running install before submitting. Reports that reference functions, hooks, or behaviors that do not exist in the codebase will be closed as hallucinations, and repeat offenders will be deprioritized.
