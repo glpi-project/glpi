@@ -97,6 +97,7 @@
         "symfony/routing": "^7.4",
         "symfony/serializer": "^7.4",
         "symfony/twig-bundle": "^7.4",
+        "symfony/ux-twig-component": "^2.35",
         "tecnickcom/tc-lib-barcode": "^2.4",
         "tecnickcom/tcpdf": "^6.11",
         "thecodingmachine/safe": "^3.4",
@@ -182,6 +183,7 @@
         ],
         "psr-4": {
             "Glpi\\": "src/Glpi/",
+            "Twig\\": "src/Twig/",
             "": "src/"
         }
     },

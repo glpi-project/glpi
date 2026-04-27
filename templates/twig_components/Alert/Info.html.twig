@@ -1,0 +1,67 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set _classes = 'alert alert-' ~ this.type %}
+{% if important|default(false) %}
+    {% set _classes = _classes ~ ' alert-important' %}
+{% endif %}
+
+<div class="{{ _classes }}" role="alert">
+    <div class="d-flex">
+        <div class="me-2">
+            <i class="{{ this.resolvedIcon }} fs-2x alert-icon"></i>
+        </div>
+        <div>
+            {% block title %}
+                {% if title|length %}
+                    <h4 class="alert-title">
+                        {{ title }}
+                    </h4>
+                {% endif %}
+            {% endblock %}
+            {% block content %}
+                {% if messages|length > 0 %}
+                    <div class="text-muted">
+                        {% if messages is iterable %}
+                            {% for message in messages %}
+                                {{ message }}
+                                {% if loop.last %}<br/>{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {{ messages }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
