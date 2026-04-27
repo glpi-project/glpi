@@ -127,7 +127,7 @@
                 <th scope="col">{{ __('Actions') }}</th>
             </tr>
         </thead>
-        <tbody aria-live="polite" aria-atomic="true" :aria-busy="loading">
+        <TransitionGroup tag="tbody" name="list" aria-live="polite" aria-atomic="true" :aria-busy="loading">
             <tr v-if="!loading" v-for="session in sessions" :key="session.id">
                 <td>
                     <span class="d-flex gap-1">
@@ -175,7 +175,7 @@
                 <td><Skeleton width="10ch" /></td>
                 <td><Skeleton width="10ch" /></td>
             </tr>
-        </tbody>
+        </TransitionGroup>
     </table>
     <div class="flex-grow-1 d-flex flex-wrap flex-md-nowrap align-items-center justify-content-between mb-2 search-pager">
         <ul class="pagination m-0 mt-sm-2 mt-md-0 align-items-center">
@@ -207,5 +207,29 @@
 </template>
 
 <style scoped>
+    @media (prefers-reduced-motion: reduce) {
+        .list-enter-active,
+        .list-leave-active,
+        .list-move {
+            transition-duration: 0.001s !important;
+        }
+    }
 
+    .list-move, /* apply transition to moving elements */
+    .list-enter-active,
+    .list-leave-active {
+        transition: all 0.5s ease;
+    }
+
+    .list-enter-from,
+    .list-leave-to {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    /* ensure leaving items are taken out of layout flow so that moving
+       animations can be calculated correctly. */
+    .list-leave-active {
+        position: absolute;
+    }
 </style>
