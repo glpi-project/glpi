@@ -4013,31 +4013,6 @@ TWIG, $twig_params);
         Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
     }
 
-    /**
-     * Count the number of replicates associated with an LDAP server
-     *
-     * @param CommonGLPI $item The LDAP server item to count replicates for
-     * @return int The total number of replicates associated with the LDAP server
-     */
-    public static function countReplicatesForLDAP(CommonGLPI $item): int
-    {
-        /** @var DBmysql $DB */
-        global $DB;
-
-        if (!$item instanceof AuthLDAP) {
-            return 0;
-        }
-
-        if (!$item->can($item->getID(), READ)) {
-            return 0;
-        }
-
-        return countElementsInTable(
-            'glpi_authldapreplicates',
-            ['authldaps_id' => $item->getID()]
-        );
-    }
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
@@ -4052,7 +4027,7 @@ TWIG, $twig_params);
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
             $count = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $count = self::countReplicatesForLDAP($item);
+                $count = countElementsInTable('glpi_authldapreplicates', ['authldaps_id' => $item->getID()]);
             }
             $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()), $count);
 
