@@ -80,7 +80,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc0',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
@@ -91,7 +91,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc02',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
@@ -104,7 +104,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc0',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
@@ -115,7 +115,7 @@ final class ItemAsTextConditionHandlerTest extends AbstractConditionHandlerTest
             'condition_value'     => '_test_pc02',
             'submitted_answer'    => [
                 'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
             ],
             'expected_result'     => true,
             'question_extra_data' => $extra_data,

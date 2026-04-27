@@ -274,22 +274,33 @@ enum ITILActorFieldStrategy: string
                 !in_array(
                     $value['itemtype'],
                     $itil_actor_field->getAllowedActorTypes()
-                ) || !is_numeric($value['items_id'])
+                ) || !isset($value['items_ids'])
             ) {
                 return null;
             }
 
-            $item = getItemForItemtype($value['itemtype']);
-            if (!$item->getFromDB($value['items_id'])) {
-                return null;
+            if (!is_array($value['items_ids'])) {
+                $value['items_ids'] = [$value['items_ids']];
             }
 
-            return [
-                [
+            $actors = [];
+            foreach ($value['items_ids'] as $items_id) {
+                if (!is_numeric($items_id)) {
+                    continue;
+                }
+
+                $item = getItemForItemtype($value['itemtype']);
+                if (!$item || !$item->getFromDB((int) $items_id)) {
+                    continue;
+                }
+
+                $actors[] = [
                     'itemtype' => $value['itemtype'],
-                    'items_id' => (int) $value['items_id'],
-                ],
-            ];
+                    'items_id' => (int) $items_id,
+                ];
+            }
+
+            return $actors === [] ? null : $actors;
         }
 
         return null;
@@ -305,6 +316,17 @@ enum ITILActorFieldStrategy: string
             $answers = $answers_set->getAnswersByType($question_type::class);
             $valid_answers = array_merge($valid_answers, $answers);
         }
+
+        // Only keep answers that actually resolve to at least one actor, so an
+        // empty trailing answer does not shadow a previous valid one.
+        $valid_answers = array_filter(
+            $valid_answers,
+            fn($answer) => !empty($this->getActorsForSpecificAnswer(
+                $answer->getQuestionId(),
+                $itil_actor_field,
+                $answers_set
+            ))
+        );
 
         if (count($valid_answers) == 0) {
             return null;
@@ -359,29 +381,45 @@ enum ITILActorFieldStrategy: string
         $value = $answer->getRawAnswer();
         if (
             getItemForItemtype($value['itemtype']) === false
-            || !is_numeric($value['items_id'])
+            || !isset($value['items_ids'])
         ) {
             return null;
         }
 
-        $item = getItemForItemtype($value['itemtype']);
-        if (!$item->getFromDB($value['items_id'])) {
-            return null;
-        }
-
-        if (!isset($item->fields[$fk_field])) {
-            return null;
-        }
-
-        $actors_ids = $item->fields[$fk_field];
-        if (!is_array($actors_ids)) {
-            $actors_ids = [$actors_ids];
+        if (!is_array($value['items_ids'])) {
+            $value['items_ids'] = [$value['items_ids']];
         }
 
         $itemtype = getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field));
-        return array_map(fn($actor_id) => [
-            'itemtype' => $itemtype,
-            'items_id' => (int) $actor_id,
-        ], $actors_ids);
+        $actors = [];
+
+        foreach ($value['items_ids'] as $items_id) {
+            if (!is_numeric($items_id)) {
+                continue;
+            }
+
+            $item = getItemForItemtype($value['itemtype']);
+            if (!$item || !$item->getFromDB((int) $items_id)) {
+                continue;
+            }
+
+            if (!isset($item->fields[$fk_field])) {
+                continue;
+            }
+
+            $actors_ids = $item->fields[$fk_field];
+            if (!is_array($actors_ids)) {
+                $actors_ids = [$actors_ids];
+            }
+
+            foreach ($actors_ids as $actor_id) {
+                $actors[] = [
+                    'itemtype' => $itemtype,
+                    'items_id' => (int) $actor_id,
+                ];
+            }
+        }
+
+        return $actors === [] ? null : $actors;
     }
 }

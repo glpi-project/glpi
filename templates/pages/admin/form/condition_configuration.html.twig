@@ -131,24 +131,23 @@
                             value="{{ condition.getValueOperator().value }}"
                             data-glpi-conditions-editor-value-operator
                         />
-                        {% if condition.getValue() is iterable %}
-                            {% set original_loop_index = loop.index0 %}
-                            {% for key, value in condition.getValue() %}
+                        {% macro render_condition_value(original_loop_index, value, path = []) %}
+                            {% if value is iterable %}
+                                {% for key, child_value in value %}
+                                    {{ _self.render_condition_value(original_loop_index, child_value, path|merge([key])) }}
+                                {% endfor %}
+                            {% else %}
                                 <input
                                     type="hidden"
-                                    name="_conditions[{{ original_loop_index }}][value][{{ key }}]"
-                                    value="{{ value }}"
+                                    name="_conditions[{{ original_loop_index }}][value]{% for path_key in path %}[{{ path_key|e('html_attr') }}]{% endfor %}"
+                                    value="{{ value|e('html_attr') }}"
                                     data-glpi-conditions-editor-value
                                 />
-                            {% endfor %}
-                        {% else %}
-                            <input
-                                type="hidden"
-                                name="_conditions[{{ loop.index0 }}][value]"
-                                value="{{ condition.getValue() }}"
-                                data-glpi-conditions-editor-value
-                            />
-                        {% endif %}
+                            {% endif %}
+                        {% endmacro %}
+                        {% import _self as condition_editor %}
+                        {% set original_loop_index = loop.index0 %}
+                        {{ condition_editor.render_condition_value(original_loop_index, condition.getValue()) }}
                     </div>
                 {% endif %}
             {% endfor %}

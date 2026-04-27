@@ -48,19 +48,21 @@ final class ItemConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {
-        return new ItemConditionHandler('Computer');
+        return new ItemConditionHandler('Computer', true);
     }
 
-    private static function getDefaultExtraDataConfig(string $question_type): QuestionTypeItemExtraDataConfig
+    private static function getDefaultExtraDataConfig(string $question_type, bool $is_multiple_items): QuestionTypeItemExtraDataConfig
     {
         switch ($question_type) {
             case QuestionTypeItem::class:
                 return new QuestionTypeItemExtraDataConfig(
                     itemtype: Computer::class,
+                    is_multiple_items: $is_multiple_items,
                 );
             case QuestionTypeItemDropdown::class:
                 return new QuestionTypeItemDropdownExtraDataConfig(
                     itemtype: SoftwareCategory::class,
+                    is_multiple_items: $is_multiple_items,
                 );
             default:
                 throw new \InvalidArgumentException("Unsupported question type: $question_type");
@@ -76,43 +78,85 @@ final class ItemConditionHandlerTest extends AbstractConditionHandlerTest
         ];
 
         foreach ($types as $type => $itemtype) {
-            $extra_data = self::getDefaultExtraDataConfig($type);
+            foreach ([true, false] as $is_multiple_items) {
+                $extra_data = self::getDefaultExtraDataConfig($type, $is_multiple_items);
+                $multiple_label = $is_multiple_items ? 'multiple' : 'single';
 
-            // Test item answers with the EQUALS operator
-            yield "Equals check - case 1 for $type (same items)" => [
-                'question_type'       => $type,
-                'condition_operator'  => ValueOperator::EQUALS,
-                'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
-                'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 1],
-                'expected_result'     => true,
-                'question_extra_data' => $extra_data,
-            ];
-            yield "Equals check - case 2 for $type (different items_id)" => [
-                'question_type'       => $type,
-                'condition_operator'  => ValueOperator::EQUALS,
-                'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
-                'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 2],
-                'expected_result'     => false,
-                'question_extra_data' => $extra_data,
-            ];
+                // Test item answers with the EQUALS operator
+                yield "Equals check - case 1 for $type ($multiple_label, same items)" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::EQUALS,
+                    'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1]],
+                    'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [1]],
+                    'expected_result'     => true,
+                    'question_extra_data' => $extra_data,
+                ];
+                yield "Equals check - case 2 for $type ($multiple_label, different items_ids)" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::EQUALS,
+                    'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1]],
+                    'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [2]],
+                    'expected_result'     => false,
+                    'question_extra_data' => $extra_data,
+                ];
 
-            // Test item answers with the NOT_EQUALS operator
-            yield "Not equals check - case 1 for $type (same items)" => [
-                'question_type'       => $type,
-                'condition_operator'  => ValueOperator::NOT_EQUALS,
-                'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
-                'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 1],
-                'expected_result'     => false,
-                'question_extra_data' => $extra_data,
-            ];
-            yield "Not equals check - case 2 for $type (different items_id)" => [
-                'question_type'       => $type,
-                'condition_operator'  => ValueOperator::NOT_EQUALS,
-                'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
-                'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 2],
-                'expected_result'     => true,
-                'question_extra_data' => $extra_data,
-            ];
+                // Test item answers with the NOT_EQUALS operator
+                yield "Not equals check - case 1 for $type ($multiple_label, same items)" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::NOT_EQUALS,
+                    'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1]],
+                    'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [1]],
+                    'expected_result'     => false,
+                    'question_extra_data' => $extra_data,
+                ];
+                yield "Not equals check - case 2 for $type ($multiple_label, different items_ids)" => [
+                    'question_type'       => $type,
+                    'condition_operator'  => ValueOperator::NOT_EQUALS,
+                    'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1]],
+                    'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [2]],
+                    'expected_result'     => true,
+                    'question_extra_data' => $extra_data,
+                ];
+
+                // The CONTAINS and NOT_CONTAINS operators are only relevant for questions with multiple items selection, so we only test them in this case.
+                if ($is_multiple_items) {
+                    // Test item answers with the CONTAINS operator
+                    yield "Contains check - case 1 for $type (multiple, condition items_ids is subset of submitted items_ids)" => [
+                        'question_type'       => $type,
+                        'condition_operator'  => ValueOperator::CONTAINS,
+                        'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1, 2]],
+                        'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [1, 2, 3]],
+                        'expected_result'     => true,
+                        'question_extra_data' => $extra_data,
+                    ];
+                    yield "Contains check - case 2 for $type (multiple, condition items_ids is not subset of submitted items_ids)" => [
+                        'question_type'       => $type,
+                        'condition_operator'  => ValueOperator::CONTAINS,
+                        'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1, 2]],
+                        'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [2, 3]],
+                        'expected_result'     => false,
+                        'question_extra_data' => $extra_data,
+                    ];
+
+                    // Test item answers with the NOT_CONTAINS operator
+                    yield "Not contains check - case 1 for $type (multiple, condition items_ids is subset of submitted items_ids)" => [
+                        'question_type'       => $type,
+                        'condition_operator'  => ValueOperator::NOT_CONTAINS,
+                        'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1, 2]],
+                        'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [1, 2, 3]],
+                        'expected_result'     => false,
+                        'question_extra_data' => $extra_data,
+                    ];
+                    yield "Not contains check - case 2 for $type (multiple, condition items_ids is not subset of submitted items_ids)" => [
+                        'question_type'       => $type,
+                        'condition_operator'  => ValueOperator::NOT_CONTAINS,
+                        'condition_value'     => ['itemtype' => $itemtype, 'items_ids' => [1, 2]],
+                        'submitted_answer'    => ['itemtype' => $itemtype, 'items_ids' => [2, 3]],
+                        'expected_result'     => true,
+                        'question_extra_data' => $extra_data,
+                    ];
+                }
+            }
         }
     }
 }

@@ -77,15 +77,22 @@ final class ItemAsTextConditionHandler implements ConditionHandlerInterface
         ?JsonFieldInterface $config,
     ): bool {
         // $a is the submitted answer
-        if (!is_array($a) || !isset($a['items_id'])) {
+        if (!is_array($a) || !isset($a['items_ids'])) {
             return false;
         }
 
-        $item = $this->itemtype::getById($a['items_id']);
-        if (!$item) {
+        $names = [];
+        foreach ((array) $a['items_ids'] as $items_id) {
+            $item = $this->itemtype::getById((int) $items_id);
+            if ($item) {
+                $names[] = $item->getName();
+            }
+        }
+
+        if ($names === []) {
             return false;
         }
-        $a = $item->getName();
+        $a = implode(', ', $names);
 
         // Normalize values
         $a = strtolower(strval($a));

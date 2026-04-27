@@ -188,11 +188,11 @@ final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
                     'regex' => '/^_test_pc01+$/',
                     'valid_answer' => fn() => [
                         'itemtype' => Computer::class,
-                        'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
+                        'items_ids' => [getItemByTypeName(Computer::class, "_test_pc01", true)],
                     ],
                     'invalid_answer' => fn() => [
                         'itemtype' => Computer::class,
-                        'items_id' => getItemByTypeName(Computer::class, "_test_pc02", true),
+                        'items_ids' => [getItemByTypeName(Computer::class, "_test_pc02", true)],
                     ],
                     'question_extra_data' => new QuestionTypeItemExtraDataConfig(Computer::class),
                 ],
@@ -202,11 +202,11 @@ final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
                     'regex'        => '/^_location01$/',
                     'valid_answer' => fn() => [
                         'itemtype' => Location::class,
-                        'items_id' => getItemByTypeName(Location::class, "_location01", true),
+                        'items_ids' => [getItemByTypeName(Location::class, "_location01", true)],
                     ],
                     'invalid_answer' => fn() => [
                         'itemtype' => Location::class,
-                        'items_id' => getItemByTypeName(Location::class, "_location02", true),
+                        'items_ids' => [getItemByTypeName(Location::class, "_location02", true)],
                     ],
                     'question_extra_data' => new QuestionTypeItemDropdownExtraDataConfig(Location::class),
                 ],

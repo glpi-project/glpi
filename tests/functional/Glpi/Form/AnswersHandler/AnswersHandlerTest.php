@@ -285,7 +285,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Entity Question' => [
                     'itemtype' => Entity::class,
-                    'items_id' => -1, // Empty choice
+                    'items_ids' => [-1], // Empty choice
                 ],
             ],
             'expectedIsValid' => false,
@@ -299,7 +299,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Entity Question' => [
                     'itemtype' => Entity::class,
-                    'items_id' => 0, // Root entity
+                    'items_ids' => [0], // Root entity
                 ],
             ],
             'expectedIsValid' => true,
@@ -321,7 +321,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Location Question' => [
                     'itemtype' => Location::class,
-                    'items_id' => -1, // Empty choice
+                    'items_ids' => [-1], // Empty choice
                 ],
             ],
             'expectedIsValid' => false,
@@ -335,7 +335,7 @@ class AnswersHandlerTest extends DbTestCase
             'answers' => [
                 'Mandatory Location Question' => [
                     'itemtype' => Location::class,
-                    'items_id' => 1,
+                    'items_ids' => [1],
                 ],
             ],
             'expectedIsValid' => true,

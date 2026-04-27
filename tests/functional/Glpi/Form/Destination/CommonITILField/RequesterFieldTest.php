@@ -347,11 +347,11 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             "Requester email 2" => 'test2@test.test',
             "User question 1" => [
                 'itemtype' => User::class,
-                'items_id' => $user1->getID(),
+                'items_ids' => [$user1->getID()],
             ],
             "User question 2" => [
                 'itemtype' => User::class,
-                'items_id' => $user2->getID(),
+                'items_ids' => [$user2->getID()],
             ],
         ];
 
@@ -547,6 +547,33 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 "Requester email 2" => 'test2@test.test',
             ],
             expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
+        );
+
+        // First actor question is filled, but the last one is left empty. The
+        // empty answer must be ignored so the last *valid* answer (the first
+        // question) is used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Requester 1" => [
+                    User::getForeignKeyField() . '-' . $user1->getID(),
+                ],
+                "Requester 2" => [], // empty answer
+            ],
+            expected_actors: [['items_id' => $user1->getID()]]
+        );
+
+        // Same scenario with email questions: the last email answer is empty,
+        // so the previous valid email answer must be used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Requester email 1" => 'test1@test.test',
+                "Requester email 2" => '', // empty answer
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
         );
 
         // No answers, fallback to default value

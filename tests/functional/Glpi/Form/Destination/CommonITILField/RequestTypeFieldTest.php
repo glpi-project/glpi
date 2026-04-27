@@ -178,6 +178,19 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
             expected_request_type: Ticket::DEMAND_TYPE
         );
 
+        // First question is filled with a valid request type, but the last
+        // question is left empty. The empty answer must be ignored so the last
+        // *valid* answer (the first question) is used.
+        $this->sendFormAndAssertTicketType(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Request type 1" => Ticket::DEMAND_TYPE,
+                "Request type 2" => 0,
+            ],
+            expected_request_type: Ticket::DEMAND_TYPE
+        );
+
         // No answers, fallback to default value
         $this->sendFormAndAssertTicketType(
             form: $form,
