@@ -915,6 +915,7 @@ class MailCollectorTest extends DbTestCase
                     '44 - Hebrew encoding issue',
                     '47 - Missing charset parameter',
                     '49 - Message with invalid CC email address',
+                    '53 - Large HTML Email Test',
                     $long_subject_expected,
                 ],
             ],
