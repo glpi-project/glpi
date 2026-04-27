@@ -354,6 +354,32 @@
             </div>
         </div>
 
+        <div class="row mb-3">
+            <div class="col-6">
+                {% if is_root_entity %}
+                    {% set sort_strategy_dropdown_options = sort_strategy_options %}
+                {% else %}
+                    {% set resolved_sort_label = entity.getServiceCatalogDefaultSortStrategy().getStrategy().getLabel() %}
+                    {% set sort_strategy_dropdown_options = sort_strategy_options|merge({
+                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(resolved_sort_label),
+                    }) %}
+                {% endif %}
+
+                <h3 class="mb-2 mt-1">{{ __("Default sort order in the service catalog") }}</h3>
+                <div class="mb-2">
+                    {% do call('Dropdown::showFromArray', [
+                        'service_catalog_default_sort_strategy',
+                        sort_strategy_dropdown_options,
+                        {
+                            value: entity.fields.service_catalog_default_sort_strategy,
+                            width: "100%",
+                            aria_label: __('Default sort order in the service catalog'),
+                        }
+                    ]) %}
+                </div>
+            </div>
+        </div>
+
         {# Form actions #}
         <div class="d-flex mb-1">
             <button

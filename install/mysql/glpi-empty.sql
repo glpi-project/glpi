@@ -2852,6 +2852,7 @@ CREATE TABLE `glpi_entities` (
   `enable_helpdesk_home_search_bar` tinyint NOT NULL DEFAULT '-2',
   `enable_helpdesk_service_catalog` tinyint NOT NULL DEFAULT '-2',
   `expand_service_catalog` tinyint NOT NULL DEFAULT '-2',
+  `service_catalog_default_sort_strategy` varchar(255) NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),

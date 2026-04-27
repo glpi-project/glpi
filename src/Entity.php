@@ -38,6 +38,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\FormTranslation;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
@@ -186,7 +187,7 @@ class Entity extends CommonTreeDropdown implements
             'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
             'custom_helpdesk_home_title', 'enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog',
-            'expand_service_catalog',
+            'expand_service_catalog', 'service_catalog_default_sort_strategy',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code'],
@@ -3319,9 +3320,16 @@ class Entity extends CommonTreeDropdown implements
             $tiles_manager->showConfigFormForItem($this);
         }
 
+        $sort_strategy_options = array_map(
+            fn($strategy) => $strategy->getLabel(),
+            SortStrategyEnum::getAvailableStrategies()
+        );
         $twig->display(
             'pages/admin/helpdesk_home_config_for_entity.html.twig',
-            ['entity' => $this],
+            [
+                'entity'                  => $this,
+                'sort_strategy_options'   => $sort_strategy_options,
+            ],
         );
 
         return true;
@@ -3441,6 +3449,21 @@ class Entity extends CommonTreeDropdown implements
         }
 
         return $value === 1;
+    }
+
+    public function getServiceCatalogDefaultSortStrategy(): SortStrategyEnum
+    {
+        $value = $this->fields['service_catalog_default_sort_strategy'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'service_catalog_default_sort_strategy',
+                $this->fields['entities_id']
+            );
+        }
+
+        return SortStrategyEnum::tryFrom((string) $value) ?? SortStrategyEnum::getDefault();
     }
 
     public function getDefaultHelpdeskHomeTitle(): string
