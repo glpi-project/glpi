@@ -1638,8 +1638,6 @@ class RuleTicketTest extends RuleCommonITILObjectTest
      */
     #[TestWith(['field' => 'time_to_resolve'])] // $field is both the rule action field and the ticket field.
     #[TestWith(['field' => 'time_to_own'])]
-    #[TestWith(['field' => 'internal_time_to_resolve'])] // to remove when PR is merged - https://github.com/glpi-project/glpi/pull/19593
-    #[TestWith(['field' => 'internal_time_to_own'])] // to remove when PR is merged - https://github.com/glpi-project/glpi/pull/19593
     public function testDeleteLevelAgreementValuesAction(string $field): void
     {
         $this->login();

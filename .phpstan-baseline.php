@@ -16742,6 +16742,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$id of static method Dropdown\\:\\:getDropdownName\\(\\) expects int, float\\|int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type array\\<array\\|string\\>\\|string supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
