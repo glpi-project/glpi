@@ -1,6 +1,7 @@
 # Security Policy
 
-**⚠️ Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.**
+> [!CAUTION]
+> Never use public issues, pull requests, or discussions to report security problems. Vulnerabilities are not disclosed before a fix is released.
 
 ## Reporting
 
