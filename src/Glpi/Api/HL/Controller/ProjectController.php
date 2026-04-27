@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\Controller;
 
 use Budget;
 use Change;
+use Contact;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -45,6 +46,7 @@ use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Group;
 use Item_Project;
 use Itil_Project;
 use Problem;
@@ -52,9 +54,14 @@ use Project;
 use ProjectCost;
 use ProjectState;
 use ProjectTask;
+use ProjectTaskTeam;
+use ProjectTaskType;
+use ProjectTeam;
 use ProjectType;
 use Session;
+use Supplier;
 use Ticket;
+use User;
 
 #[Route(path: '/Project', requirements: [
     'project_id' => '\d+',
@@ -295,6 +302,37 @@ final class ProjectController extends AbstractController
                             ],
                         ],
                     ],
+                    'team' => [
+                        'x-version-introduced' => '2.3',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'ProjectTeamMember',
+                            'x-join' => [
+                                'table' => ProjectTeam::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'projects_id',
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                                'itemtype' => [
+                                    'type' => Doc\Schema::TYPE_STRING,
+                                    'enum' => [User::class, Group::class, Supplier::class, Contact::class],
+                                    'readOnly' => true,
+                                ],
+                                'items_id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'ProjectTask' => [
@@ -378,6 +416,77 @@ final class ProjectController extends AbstractController
                     'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
+                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState') + ['x-version-introduced' => '2.3'],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + ['x-version-introduced' => '2.3'],
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3'],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'plan_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'plan_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'real_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'real_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
+                    'planned_duration' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-version-introduced' => '2.3',
+                        'description' => 'Planned duration in seconds',
+                    ],
+                    'real_duration' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-version-introduced' => '2.3',
+                        'x-field' => 'effective_duration',
+                        'description' => 'Real duration in seconds',
+                    ],
+                    'auto_status' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'default' => false,
+                        'x-version-introduced' => '2.3',
+                        'x-field' => 'auto_projectstates',
+                        'description' => 'If true, the status of the task will be automatically updated based on the percent done and the global configuration for project task states',
+                    ],
+                    'type' => self::getDropdownTypeSchema(class: ProjectTaskType::class, full_schema: 'ProjectTaskType') + ['x-version-introduced' => '2.3'],
+                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
+                    'percent_done' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-version-introduced' => '2.3',
+                        'minimum' => 0,
+                        'maximum' => 100,
+                    ],
+                    'auto_percent_done' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3'],
+                    'is_milestone' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3'],
+                    'team' => [
+                        'x-version-introduced' => '2.3',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'ProjectTaskTeamMember',
+                            'x-join' => [
+                                'table' => ProjectTaskTeam::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'projecttasks_id',
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                                'itemtype' => [
+                                    'type' => Doc\Schema::TYPE_STRING,
+                                    'enum' => [User::class, Group::class, Supplier::class, Contact::class],
+                                    'readOnly' => true,
+                                ],
+                                'items_id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'ProjectCost' => [
@@ -444,6 +553,52 @@ final class ProjectController extends AbstractController
                         ],
                     ],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                ],
+            ],
+            'ProjectTeamMember' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => ProjectTeam::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project') + ['required' => true],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [User::class, Group::class, Supplier::class, Contact::class],
+                        'required' => true,
+                    ],
+                    'items_id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'required' => true,
+                    ],
+                ],
+            ],
+            'ProjectTaskTeamMember' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => ProjectTaskTeam::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask') + ['required' => true],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [User::class, Group::class, Supplier::class, Contact::class],
+                        'required' => true,
+                    ],
+                    'items_id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'required' => true,
+                    ],
                 ],
             ],
         ];
@@ -980,6 +1135,104 @@ final class ProjectController extends AbstractController
             $this->getKnownSchema('ITIL_Project', $this->getAPIVersion($request)),
             ['id' => $it->current()['id']],
             $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{project_id}/TeamMember', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'ProjectTeamMember',
+        description: 'List or search team members linked to the project'
+    )]
+    public function getProjectTeamMembers(Request $request): Response
+    {
+        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filter .= ';project.id==' . $request->getAttributes()['project_id'];
+        $request->setParameter('filter', $filter);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('ProjectTeamMember', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{project_id}/TeamMember/{teammember_id}', methods: ['DELETE'], requirements: ['teammember_id' => '\d+'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'ProjectTeamMember',
+        description: 'Remove a team member from the project'
+    )]
+    public function deleteProjectTeamMember(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            $this->getKnownSchema('ProjectTeamMember', $this->getAPIVersion($request)),
+            ['id' => $request->getAttribute('teammember_id')],
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{project_id}/TeamMember', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'ProjectTeamMember',
+        description: 'Add a team member to the project'
+    )]
+    public function addProjectTeamMember(Request $request): Response
+    {
+        $params = $request->getParameters();
+        $params['project'] = $request->getAttributes()['project_id'];
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('ProjectTeamMember', $this->getAPIVersion($request)),
+            $params,
+            [self::class, 'getProjectTeamMembers']
+        );
+    }
+
+    #[Route(path: '/Task/{task_id}/TeamMember', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'ProjectTaskTeamMember',
+        description: 'List or search team members linked to a task'
+    )]
+    public function getProjectTaskTeamMembers(Request $request): Response
+    {
+        $filter = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filter .= ';task.id==' . $request->getAttributes()['task_id'];
+        $request->setParameter('filter', $filter);
+        return ResourceAccessor::searchBySchema(
+            $this->getKnownSchema('ProjectTaskTeamMember', $this->getAPIVersion($request)),
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/Task/{task_id}/TeamMember/{teammember_id}', methods: ['DELETE'], requirements: [
+        'task_id' => '\d+',
+        'teammember_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'ProjectTaskTeamMember',
+        description: 'Remove a team member from a task'
+    )]
+    public function deleteProjectTaskTeamMember(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            $this->getKnownSchema('ProjectTaskTeamMember', $this->getAPIVersion($request)),
+            ['id' => $request->getAttribute('teammember_id')],
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/Task/{task_id}/TeamMember', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'ProjectTaskTeamMember',
+        description: 'Add a team member to a task'
+    )]
+    public function addProjectTaskTeamMember(Request $request): Response
+    {
+        $params = $request->getParameters();
+        $params['task'] = $request->getAttributes()['task_id'];
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('ProjectTaskTeamMember', $this->getAPIVersion($request)),
+            $params,
+            [self::class, 'getProjectTaskTeamMembers']
         );
     }
 }
