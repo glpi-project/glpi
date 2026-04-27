@@ -4025,7 +4025,11 @@ TWIG, $twig_params);
             $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
             $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
-            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()));
+            $count = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $count = countElementsInTable('glpi_authldapreplicates', ['authldaps_id' => $item->getID()]);
+            }
+            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()), $count);
 
             return $ong;
         }
