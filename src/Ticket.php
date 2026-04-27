@@ -1277,7 +1277,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         $sla = new SLA();
         $in_db = $sla->getFromDB($slas_id);
-        if(!$in_db) {
+        if (!$in_db) {
             return;
         }
 
@@ -1312,7 +1312,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         $ola = new OLA();
         $in_db = $ola->getFromDB($slas_id);
-        if(!$in_db) {
+        if (!$in_db) {
             return;
         }
 
