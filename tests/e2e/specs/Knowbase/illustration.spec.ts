@@ -46,9 +46,10 @@ test('Can pick a native illustration', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
+    await kb.editor.enterEditMode();
 
     // Open the illustration picker modal
-    const picker_button = page.getByTestId('illustration-picker');
+    const picker_button = page.getByRole('button', { name: 'Select an illustration' });
     await picker_button.click();
 
     const modal = page.getByTestId('illustration-picker-modal');
@@ -82,9 +83,10 @@ test('Can pick a custom illustration', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
+    await kb.editor.enterEditMode();
 
     // Open the illustration picker modal
-    const picker_button = page.getByTestId('illustration-picker');
+    const picker_button = page.getByRole('button', { name: 'Select an illustration' });
     await picker_button.click();
 
     const modal = page.getByTestId('illustration-picker-modal');
@@ -111,4 +113,36 @@ test('Can pick a custom illustration', async ({ page, profile, api }) => {
     await page.reload();
     const custom_preview = page.getByTestId('illustration-custom-preview');
     await expect(custom_preview).toBeVisible();
+});
+
+test('Illustration is not editable until edit mode is entered (regression #248)', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB illustration read-only test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+
+    await kb.goto(id);
+
+    const picker = page.getByTestId('illustration-picker');
+    const modal = page.getByTestId('illustration-picker-modal');
+
+    await expect(page.getByRole('button', { name: 'Select an illustration' })).toHaveCount(0);
+    await expect(picker).toHaveAttribute('aria-disabled', 'true');
+
+    await picker.click();
+    await expect(modal).toBeHidden();
+
+    await kb.editor.enterEditMode();
+
+    await expect(page.getByRole('button', { name: 'Select an illustration' })).toBeVisible();
+    await expect(picker).not.toHaveAttribute('aria-disabled', 'true');
+
+    await kb.editor.cancel();
+
+    await expect(page.getByRole('button', { name: 'Select an illustration' })).toHaveCount(0);
+    await expect(picker).toHaveAttribute('aria-disabled', 'true');
 });
