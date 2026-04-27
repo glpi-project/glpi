@@ -54,6 +54,16 @@
             transform: translateY(-4px);
         }
     }
+
+    // Visual focus ring when the visually-hidden file input receives keyboard focus
+    &:has(input:focus-visible) {
+        border-color: var(--tblr-primary);
+        box-shadow: 0 0 0 0.25rem rgb(var(--tblr-primary-rgb) / 25%);
+    }
+
+    &.is-invalid {
+        border-color: var(--tblr-danger);
+    }
 }
 
 .file-uploader-dropzone-content {

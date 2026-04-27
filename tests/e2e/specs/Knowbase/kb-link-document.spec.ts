@@ -122,14 +122,19 @@ test('Can remove a document from selection before linking', async ({ page, profi
     await expect(modal.getByRole('listitem')).toHaveCount(1);
 });
 
-test('Link button is disabled without selection', async ({ page, profile, api }) => {
+test('Submitting link without selection shows a validation error', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const kb_id = await api.createItem('KnowbaseItem', {
-        name: 'KB article for button state test',
+        name: 'KB article for link validation test',
         entities_id: getWorkerEntityId(),
         answer: 'Test content',
+    });
+    const doc_name = `Link validation doc - ${crypto.randomUUID()}`;
+    await api.createItem('Document', {
+        name: doc_name,
+        entities_id: getWorkerEntityId(),
     });
 
     await kb.goto(kb_id);
@@ -140,7 +145,20 @@ test('Link button is disabled without selection', async ({ page, profile, api })
 
     await modal.getByRole('tab', { name: 'Link a document' }).click();
 
-    await expect(modal.getByRole('button', { name: 'Link Documents' })).toBeDisabled();
+    const linkButton = modal.getByRole('button', { name: 'Link Documents' });
+    await expect(linkButton).toBeEnabled();
+    await linkButton.click();
+
+    // Inline validation message is rendered in an aria-live="polite" region
+    const linkError = modal.getByText('Please select at least one document before linking.');
+    await expect(linkError).toBeVisible();
+    await expect(modal).toBeVisible();
+
+    // Selecting a document clears the error
+    const dropdown = modal.getByRole('combobox');
+    await dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: doc_name, exact: false }).click();
+    await expect(linkError).toBeHidden();
 });
 
 test('Already linked documents are excluded from dropdown', async ({ page, profile, api }) => {

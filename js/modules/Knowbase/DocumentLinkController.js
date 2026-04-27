@@ -58,6 +58,12 @@ export class DocumentLinkController
     /** @type {HTMLElement} */
     #listContainer;
 
+    /** @type {HTMLSelectElement|null} */
+    #selectEl;
+
+    /** @type {HTMLElement|null} */
+    #errorContainer;
+
     /** @type {Map<number, {id: number, text: string}>} */
     #selectedDocuments = new Map();
 
@@ -78,6 +84,8 @@ export class DocumentLinkController
         this.#submitBtn = container.querySelector('[data-glpi-kb-link-submit]');
         this.#previewContainer = container.querySelector('[data-glpi-kb-link-preview]');
         this.#listContainer = container.querySelector('[data-glpi-kb-link-list]');
+        this.#selectEl = container.querySelector('#kb-link-document-select');
+        this.#errorContainer = container.querySelector('[data-glpi-kb-link-error]');
         this.#itemId = parseInt(container.dataset.glpiKbLinkItemId, 10);
         this.#usedIds = JSON.parse(container.dataset.glpiKbLinkUsedIds || '[]');
 
@@ -164,7 +172,7 @@ export class DocumentLinkController
         $('#kb-link-document-select').val(null).trigger('change');
 
         this.#renderList();
-        this.#updateSubmitButton();
+        this.#clearError();
     }
 
     /**
@@ -181,7 +189,6 @@ export class DocumentLinkController
         }
 
         this.#renderList();
-        this.#updateSubmitButton();
     }
 
     #renderList()
@@ -214,19 +221,50 @@ export class DocumentLinkController
             `).join('');
     }
 
-    #updateSubmitButton()
+    #showError(message)
     {
-        if (this.#submitBtn) {
-            this.#submitBtn.disabled = this.#selectedDocuments.size === 0;
+        if (this.#errorContainer) {
+            this.#errorContainer.textContent = message;
+        }
+
+        if (this.#selectEl) {
+            this.#selectEl.classList.add('is-invalid');
+            this.#selectEl.setAttribute('aria-invalid', 'true');
+            if (this.#errorContainer?.id) {
+                this.#selectEl.setAttribute('aria-describedby', this.#errorContainer.id);
+            }
+        }
+
+        // Focus the Select2 search field if available, otherwise the native select
+        const select2Search = this.#container.querySelector('.select2-selection');
+        if (select2Search instanceof HTMLElement) {
+            select2Search.focus();
+        } else if (this.#selectEl) {
+            this.#selectEl.focus();
+        }
+    }
+
+    #clearError()
+    {
+        if (this.#errorContainer) {
+            this.#errorContainer.textContent = '';
+        }
+
+        if (this.#selectEl) {
+            this.#selectEl.classList.remove('is-invalid');
+            this.#selectEl.removeAttribute('aria-invalid');
+            this.#selectEl.removeAttribute('aria-describedby');
         }
     }
 
     async #onSubmit()
     {
         if (this.#selectedDocuments.size === 0) {
+            this.#showError(__('Please select at least one document before linking.'));
             return;
         }
 
+        this.#clearError();
         this.#setLoading(true);
 
         try {
@@ -238,7 +276,8 @@ export class DocumentLinkController
 
             this.#onSuccess(result.linked_count);
         } catch (error) {
-            console.error('Document linking failed:', error);
+            glpi_toast_error(__('Linking failed'));
+            throw error;
         } finally {
             this.#setLoading(false);
         }
@@ -279,7 +318,7 @@ export class DocumentLinkController
             this.#submitBtn.dataset.originalHtml = this.#submitBtn.innerHTML;
             this.#submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${__('Linking...')}`;
         } else {
-            this.#updateSubmitButton();
+            this.#submitBtn.disabled = false;
             if (this.#submitBtn.dataset.originalHtml) {
                 this.#submitBtn.innerHTML = this.#submitBtn.dataset.originalHtml;
             }
@@ -296,6 +335,6 @@ export class DocumentLinkController
 
         $('#kb-link-document-select').val(null).trigger('change');
         this.#renderList();
-        this.#updateSubmitButton();
+        this.#clearError();
     }
 }
