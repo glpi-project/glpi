@@ -20,7 +20,7 @@ Another point: licensing around IA agents commit is currently quite uncertain. W
 
 ## Bugs
 
-Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
+Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](https://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
 
 If you found a bug, the first steps to do are:
 - check if you're using the latest version, and if not, upgrade to see if the problem remains unsolved,
@@ -34,7 +34,7 @@ If developers are not able to reproduce the issue, it may not be fixed.
 
 If you want to work on a new feature, open a ticket using the feature template, so we can discuss on it.
 
-If you're just asking for something to be added without doing it yourself, please consider adding (or upvoting) an enhancement on the [suggestion website](https//suggest.glpi-project.org).
+If you're just asking for something to be added without doing it yourself, please consider adding (or upvoting) an enhancement on the [suggestion website](https://suggest.glpi-project.org).
 
 ## Support request
 
