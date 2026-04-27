@@ -140,6 +140,78 @@ class Toolbox
         return (int) $max;
     }
 
+    /**
+     * Extract a substring before a regex
+     * @since 11.0.7
+     * @param string $input the string to extract from
+     * @param string $start the regex to find the start of the substring (not included in result)
+     * @return string|false the extracted substring, or false if start regex is not found
+     */
+    public static function extract_before($input, $start)
+    {
+        return self::extract_between($input, null, $start);
+    }
+
+    /**
+     * Extract a substring after a regex
+     * @since 11.0.7
+     * @param string $input the string to extract from
+     * @param string $end the regex to find the end of the substring (not included in result)
+     * @return string|false the extracted substring, or false if end regex is not found
+     **/
+    public static function extract_after($input, $end)
+    {
+        return self::extract_between($input, $end, null);
+    }
+
+    /**
+     * Extract a substring between two regexes
+     * @since 11.0.7
+     * @param string $input the string to extract from
+     * @param string|null $start the regex to find the start of the substring (not included in result), if null start from beginning of string
+     * @param string|null $end the regex to find the end of the substring (not included in result), if null end at end of string
+     * @param bool $greedy if true, the end regex will match the last occurrence instead of the first one after start
+     * @return string|false the extracted substring, or false if start or end regexes are not found
+     **/
+    public static function extract_between($input, $start, $end, $greedy = false)
+    {
+        // find position where first regex matches
+        if (!$start) {
+            $startByte = 0;
+        } else {
+            if (!preg_match($start, $input, $matchA, PREG_OFFSET_CAPTURE)) {
+                return false;
+            }
+            $startByte = $matchA[0][1] + strlen($matchA[0][0]);
+        }
+
+        if (!$end) {
+            $endByte = strlen($input);
+        } else {
+            if ($greedy) {
+                $current_start = $startByte;
+                $has_match = false;
+                while (preg_match($end, $input, $matchB, PREG_OFFSET_CAPTURE, $current_start)) {
+                    $has_match = true;
+                    $endByte = $matchB[0][1];
+                    $current_start = $endByte + strlen($matchB[0][0]);
+                }
+                if (!$has_match) {
+                    return false;
+                }
+            } else {
+                if (!preg_match($end, $input, $matchB, PREG_OFFSET_CAPTURE, $startByte)) {
+                    return false;
+                }
+                $endByte = $matchB[0][1];
+            }
+        }
+        // Convert byte offsets to character offsets, then extract
+        $startChar  = mb_strlen(substr($input, 0, $startByte));
+        $endChar    = mb_strlen(substr($input, 0, $endByte));
+
+        return mb_substr($input, $startChar, $endChar - $startChar);
+    }
 
     /**
      * Convert first caracter in upper
