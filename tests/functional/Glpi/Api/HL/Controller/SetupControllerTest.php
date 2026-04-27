@@ -191,6 +191,8 @@ class SetupControllerTest extends HLAPITestCase
                             $create_params['fields'] = 'serial';
                         } elseif ($type['itemtype'] === 'MailCollector') {
                             $create_params['host'] = '{imap.example.com:993/imap/ssl/novalidate-cert}';
+                        } elseif ($type['itemtype'] === 'AuthLdapReplicate') {
+                            $create_params['host'] = 'ldap.example.com';
                         }
                         $this->api->autoTestCRUD($type['href'], $create_params);
                     }
@@ -248,6 +250,7 @@ class SetupControllerTest extends HLAPITestCase
             } elseif ($type === 'LDAPDirectoryReplicate') {
                 $itemtype = AuthLdapReplicate::class;
                 $create_request->setParameter('ldap_directory', getItemByTypeName('AuthLDAP', '_local_ldap', true));
+                $create_request->setParameter('host', 'ldap.example.com');
             } elseif ($type === 'ManualLink') {
                 $create_request->setParameter('itemtype', Computer::class);
                 $create_request->setParameter('url', 'https://example.com');
