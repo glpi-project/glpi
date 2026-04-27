@@ -40,6 +40,11 @@
  #   - preview_css_classes: CSS classes for the clickable preview container
  #   - preview_inner_css_classes: CSS classes for the inner preview wrapper
  #   - backdrop: whether the modal should have a backdrop (defaults to true)
+ #   - editable: whether clicking the preview opens the modal (defaults to true).
+ #     When false, the preview renders without role/aria-label/data-bs-toggle, so
+ #     it is neither clickable nor exposed as a button to assistive tech.
+ #     Consumers can flip this state at runtime via
+ #     GlpiIllustrationPickerController.setEditable().
  #}
 
 {% set custom_icon_prefix = constant(
@@ -49,10 +54,11 @@
 {% set modal_id = "illustration-modal-" ~ random() %}
 {% set size = size ?? 100 %}
 {% set backdrop = backdrop ?? true %}
+{% set editable = editable ?? true %}
 {% set preview_css_classes = preview_css_classes ?? "illustration-selector d-flex align-items-center card border-1" %}
 {% set preview_inner_css_classes = preview_inner_css_classes ?? "card-body aspect-ratio-1" %}
 
-<div id="{{ container_id }}">
+<div id="{{ container_id }}" data-glpi-illustration-picker>
     <input
         {% if name is defined and name is not empty %}
             name="{{ name }}"
@@ -65,10 +71,14 @@
 
     <div
         class="{{ preview_css_classes }}"
-        role="button"
-        aria-label="{{ __("Select an illustration") }}"
-        data-bs-toggle="modal"
-        data-bs-target="#{{ modal_id }}"
+        {% if editable %}
+            role="button"
+            aria-label="{{ __("Select an illustration") }}"
+            data-bs-toggle="modal"
+            data-bs-target="#{{ modal_id }}"
+        {% else %}
+            aria-disabled="true"
+        {% endif %}
         data-glpi-icon-picker-value-preview
         data-testid="illustration-picker"
     >

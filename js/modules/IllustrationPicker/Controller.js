@@ -61,6 +61,42 @@ export class GlpiIllustrationPickerController
         this.#modal_node = modal_node;
         this.#custom_icon_prefix = custom_icon_prefix;
         this.#initEventListeners();
+
+        container.glpiIllustrationPicker = this;
+        container.dispatchEvent(new CustomEvent('glpi:illustration-picker:ready', {
+            detail: { controller: this },
+            bubbles: true,
+        }));
+    }
+
+    /**
+     * @param {boolean} editable
+     */
+    setEditable(editable)
+    {
+        const preview = this.#getPreviewElement();
+        if (preview === null) {
+            return;
+        }
+
+        if (editable) {
+            preview.setAttribute('role', 'button');
+            preview.setAttribute('aria-label', __('Select an illustration'));
+            preview.setAttribute('data-bs-toggle', 'modal');
+            preview.setAttribute('data-bs-target', `#${this.#modal_node.id}`);
+            preview.removeAttribute('aria-disabled');
+        } else {
+            preview.removeAttribute('role');
+            preview.removeAttribute('aria-label');
+            preview.removeAttribute('data-bs-toggle');
+            preview.removeAttribute('data-bs-target');
+            preview.setAttribute('aria-disabled', 'true');
+        }
+    }
+
+    #getPreviewElement()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview]');
     }
 
     #initEventListeners()
