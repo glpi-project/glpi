@@ -35,16 +35,22 @@
 export class GlpiFormServiceCatalogController
 {
     /** @type {string} */
-    #sort_strategy = 'popularity';
+    #sort_strategy;
+
+    /** @type {string} */
+    #default_sort_strategy;
 
     /**
      * @constructor
      * @param {Object} sort_icons - Icons for sorting
+     * @param {string} default_sort_strategy - Server-configured default sort strategy
      */
-    constructor(sort_icons)
+    constructor(sort_icons, default_sort_strategy = 'popularity')
     {
         this.breadcrumb = [];
         this.sort_icons = sort_icons;
+        this.#default_sort_strategy = default_sort_strategy;
+        this.#sort_strategy = default_sort_strategy;
 
         const input = this.#getFilterInput();
         const filterFormsDebounced = _.debounce(
@@ -70,7 +76,7 @@ export class GlpiFormServiceCatalogController
                     this.breadcrumb = event.state.breadcrumb;
                 }
                 const params = new URLSearchParams(event.state.url_params);
-                this.#sort_strategy = params.get('sort_strategy') || 'popularity';
+                this.#sort_strategy = params.get('sort_strategy') || this.#default_sort_strategy;
                 this.#syncSortDropdown(this.#sort_strategy);
             }
         });
@@ -116,8 +122,8 @@ export class GlpiFormServiceCatalogController
                     this.#applySortStrategy(sort_strategy);
                 });
 
-            // Sync dropdown to URL-provided sort strategy
-            if (this.#sort_strategy !== 'popularity') {
+            // Sync dropdown to current sort strategy when it differs from the select2 initial value
+            if (this.#sort_strategy !== this.#default_sort_strategy) {
                 $select.val(this.#sort_strategy).trigger('change');
             }
         }, 0);

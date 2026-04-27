@@ -90,12 +90,6 @@ final class ItemsController extends AbstractController
         $page = max(1, $request->query->getInt('page', 1));
         $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE;
 
-        // Read sort strategy
-        $sort_strategy = $request->query->getEnum(
-            'sort_strategy',
-            SortStrategyEnum::class,
-        ) ?? SortStrategyEnum::getDefault();
-
         // Build session + url params
         $session = Session::getCurrentSessionInfo();
         $parameters = new FormAccessParameters(
@@ -108,6 +102,12 @@ final class ItemsController extends AbstractController
         if (!$entity) {
             throw new LogicException();
         }
+
+        // Read sort strategy — explicit URL param wins, otherwise use the entity-configured default
+        $sort_strategy = $request->query->getEnum(
+            'sort_strategy',
+            SortStrategyEnum::class,
+        ) ?? $entity->getServiceCatalogDefaultSortStrategy();
 
         // If we have a filter, we search in all categories
         if (!empty($filter)) {
@@ -131,16 +131,17 @@ final class ItemsController extends AbstractController
         return $this->render(
             'components/helpdesk_forms/service_catalog_items.html.twig',
             [
-                'category_id'       => $category_id,
-                'filter'            => $filter,
-                'sort_strategy'     => $sort_strategy->value,
-                'ancestors'         => $ancestors,
-                'items'             => $result['items'],
-                'total'             => $result['total'],
-                'current_page'      => $page,
-                'items_per_page'    => $items_per_page,
-                'is_default_search' => false,
-                'expand_categories' => $entity->shouldExpandCategoriesInServiceCatalog(),
+                'category_id'            => $category_id,
+                'filter'                 => $filter,
+                'sort_strategy'          => $sort_strategy->value,
+                'default_sort_strategy'  => $entity->getServiceCatalogDefaultSortStrategy()->value,
+                'ancestors'              => $ancestors,
+                'items'                  => $result['items'],
+                'total'                  => $result['total'],
+                'current_page'           => $page,
+                'items_per_page'         => $items_per_page,
+                'is_default_search'      => false,
+                'expand_categories'      => $entity->shouldExpandCategoriesInServiceCatalog(),
             ]
         );
     }
