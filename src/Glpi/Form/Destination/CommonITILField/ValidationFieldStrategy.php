@@ -36,6 +36,8 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use ITILValidationTemplate;
 
 enum ValidationFieldStrategy: string
@@ -153,6 +155,29 @@ enum ValidationFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
+
+        $question = new Question();
+        $question->getFromDB($question_id);
+        if ($question->getQuestionType() instanceof QuestionTypeItem) {
+            if (is_array($value) && isset($value['itemtype']) && isset($value['items_ids'])) {
+                $itemtype = $value['itemtype'];
+                $items_ids = $value['items_ids'];
+                if (!is_array($items_ids)) {
+                    $items_ids = [$items_ids];
+                }
+
+                $value = [];
+                foreach ($items_ids as $items_id) {
+                    if (is_numeric($items_id)) {
+                        $value[] = [
+                            'itemtype' => $itemtype,
+                            'items_id' => $items_id,
+                        ];
+                    }
+                }
+            }
+        }
+
         if (!$this->isValidAnswer($value)) {
             return null;
         }

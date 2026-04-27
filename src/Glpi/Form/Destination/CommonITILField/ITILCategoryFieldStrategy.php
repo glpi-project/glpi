@@ -35,7 +35,6 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use ITILCategory;
@@ -83,32 +82,33 @@ enum ITILCategoryFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== ITILCategory::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== ITILCategory::getType()) {
             return null;
         }
 
-        return (int) $value['items_id'];
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
+        }
+
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id)) {
+                return (int) $items_id;
+            }
+        }
+
+        return null;
     }
 
     private function getITILCategoryForLastValidAnswer(
         AnswersSet $answers_set,
     ): ?int {
-        $valid_answers = $answers_set->getAnswersByType(
-            QuestionTypeItemDropdown::class
+        $valid_answers = array_filter(
+            $answers_set->getAnswersByType(
+                QuestionTypeItemDropdown::class
+            ),
+            fn($answer) => $answer->getRawAnswer()['itemtype'] === ITILCategory::getType()
         );
-
-        // Filter by itemtype
-        $valid_answers = array_filter($valid_answers, function (Answer $answer) {
-            $value = $answer->getRawAnswer();
-            if (
-                $value['itemtype'] !== ITILCategory::getType()
-                || !is_numeric($value['items_id'])
-            ) {
-                return false;
-            }
-
-            return true;
-        });
 
         if (count($valid_answers) == 0) {
             return null;
@@ -117,6 +117,17 @@ enum ITILCategoryFieldStrategy: string
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
 
-        return (int) $value['items_id'];
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
+        }
+
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id)) {
+                return (int) $items_id;
+            }
+        }
+
+        return null;
     }
 }

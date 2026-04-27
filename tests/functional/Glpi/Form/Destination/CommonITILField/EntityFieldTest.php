@@ -80,11 +80,11 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
             'answers' => [
                 "Entity 1"    => [
                     'itemtype' => Entity::getType(),
-                    'items_id' => $entities[0]->getId(),
+                    'items_ids' => $entities[0]->getId(),
                 ],
                 "Entity 2"    => [
                     'itemtype' => Entity::getType(),
-                    'items_id' => $entities[1]->getId(),
+                    'items_ids' => $entities[1]->getId(),
                 ],
             ],
             'entities' => $entities,
@@ -268,7 +268,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
             answers: [
                 'Entity 1' => [
                     'itemtype' => Entity::class,
-                    'items_id' => -1,
+                    'items_ids' => -1,
                 ],
             ],
             expected_entity_id: $this->getTestRootEntity(only_id: true)
@@ -540,12 +540,14 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,
+            'is_multiple_items'    => false,
         ]));
         $builder->addQuestion("Entity 2", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,
+            'is_multiple_items'    => false,
         ]));
         return $this->createForm($builder);
     }

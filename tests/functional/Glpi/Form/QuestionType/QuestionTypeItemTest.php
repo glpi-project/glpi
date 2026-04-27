@@ -55,7 +55,7 @@ final class QuestionTypeItemTest extends DbTestCase
      *
      *   [
      *     'itemtype'   => class-string,
-     *     'items_id'   => int,
+     *     'items_ids'   => int,
      *     'extra_data' => string (JSON),
      *     'question'   => string,
      *     'content'    => string, // expected content in the ticket description (after stripping HTML tags)
@@ -67,7 +67,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'basic asset — only name' => [
                 fn(self $t) => [
                     'itemtype'   => Computer::class,
-                    'items_id'   => $t->createItem(Computer::class, [
+                    'items_ids'   => $t->createItem(Computer::class, [
                         'name'        => 'My Computer',
                         'entities_id' => $t->getTestRootEntity(true),
                     ])->getID(),
@@ -82,7 +82,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'user — friendly name (realname firstname)' => [
                 fn(self $t) => [
                     'itemtype'  => User::class,
-                    'items_id'  => $t->createItem(User::class, [
+                    'items_ids'  => $t->createItem(User::class, [
                         'name'      => 'jdoe',
                         'firstname' => 'John',
                         'realname'  => 'Doe',
@@ -98,7 +98,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with serial only' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => $t->createItem(Computer::class, [
                         'name'        => 'My Laptop',
                         'serial'      => 'SN-1234',
                         'entities_id' => $t->getTestRootEntity(true),
@@ -114,7 +114,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with serial and otherserial' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => $t->createItem(Computer::class, [
                         'name'        => 'My Laptop',
                         'serial'      => 'SN-1234',
                         'otherserial' => 'INV-5678',
@@ -131,7 +131,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with linked user' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => $t->createItem(Computer::class, [
                         'name'        => 'My Desktop',
                         'users_id'    => $t->createItem(User::class, [
                             'name'      => 'jdoe',
@@ -151,7 +151,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with all extra fields' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => $t->createItem(Computer::class, [
                         'name'        => 'My Workstation',
                         'serial'      => 'SN-AAAA',
                         'otherserial' => 'INV-BBBB',
@@ -173,7 +173,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with empty serial — no parentheses' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => $t->createItem(Computer::class, [
                         'name'        => 'My Server',
                         'serial'      => '',
                         'otherserial' => '',
@@ -197,7 +197,7 @@ final class QuestionTypeItemTest extends DbTestCase
                     ]);
                     return [
                         'itemtype'  => Ticket::class,
-                        'items_id'  => $linked->getID(),
+                        'items_ids'  => $linked->getID(),
                         'extra_data' => json_encode(
                             (new QuestionTypeItemExtraDataConfig(itemtype: Ticket::class))->jsonSerialize()
                         ),
@@ -217,7 +217,7 @@ final class QuestionTypeItemTest extends DbTestCase
                     ]);
                     return [
                         'itemtype'     => Ticket::class,
-                        'items_id'     => $linked->getID(),
+                        'items_ids'     => $linked->getID(),
                         'extra_data'   => json_encode(
                             (new QuestionTypeItemExtraDataConfig(itemtype: Ticket::class))->jsonSerialize()
                         ),
@@ -247,7 +247,7 @@ final class QuestionTypeItemTest extends DbTestCase
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
             $case['question'] => [
                 'itemtype' => $case['itemtype'],
-                'items_id' => $case['items_id'],
+                'items_ids' => $case['items_ids'],
             ],
         ]);
 

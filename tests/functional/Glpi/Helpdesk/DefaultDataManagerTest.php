@@ -179,11 +179,11 @@ final class DefaultDataManagerTest extends DbTestCase
             'Description' => 'My ticket content',
             'Category' => [
                 'itemtype' => ITILCategory::class,
-                'items_id' => $category->getID(),
+                'items_ids' => [$category->getID()],
             ],
             'Location' => [
                 'itemtype' => Location::class,
-                'items_id' => $location->getID(),
+                'items_ids' => [$location->getID()],
             ],
             'Urgency' => 5, // Very high
             'Observers' => [
@@ -325,11 +325,11 @@ final class DefaultDataManagerTest extends DbTestCase
             'Description' => 'My ticket content',
             'Category' => [
                 'itemtype' => ITILCategory::class,
-                'items_id' => $category->getID(),
+                'items_ids' => [$category->getID()],
             ],
             'Location' => [
                 'itemtype' => Location::class,
-                'items_id' => $location->getID(),
+                'items_ids' => [$location->getID()],
             ],
             'Urgency' => 5, // Very high
             'Observers' => [

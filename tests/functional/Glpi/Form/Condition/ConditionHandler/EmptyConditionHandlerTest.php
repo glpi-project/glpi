@@ -84,7 +84,7 @@ final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
                     itemtype: Software::class,
                 ),
                 'empty_answer'     => (new QuestionTypeItemDefaultValueConfig())->jsonSerialize(),
-                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig(1))->jsonSerialize(),
+                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig([1]))->jsonSerialize(),
             ],
             "QuestionTypeLongText" => [
                 'type'             => QuestionTypeLongText::class,
@@ -252,7 +252,7 @@ final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
                     itemtype: Location::class,
                 ),
                 'empty_answer'     => (new QuestionTypeItemDefaultValueConfig())->jsonSerialize(),
-                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig(1))->jsonSerialize(),
+                'not_empty_answer' => (new QuestionTypeItemDefaultValueConfig([1]))->jsonSerialize(),
             ],
         ];
 

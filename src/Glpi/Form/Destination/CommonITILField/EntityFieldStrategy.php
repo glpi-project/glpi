@@ -107,11 +107,22 @@ enum EntityFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== Entity::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== Entity::getType()) {
             return $this->getFormFillerEntityID();
         }
 
-        return (int) $value['items_id'];
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
+        }
+
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id) && $items_id > -1) {
+                return (int) $items_id;
+            }
+        }
+
+        return $this->getFormFillerEntityID();
     }
 
     public function getEntityIDForLastValidAnswer(
@@ -121,9 +132,7 @@ enum EntityFieldStrategy: string
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
             ),
-            fn($answer)
-                => $answer->getRawAnswer()['itemtype'] === Entity::getType()
-                && $answer->getRawAnswer()['items_id'] > -1
+            fn($answer) => $answer->getRawAnswer()['itemtype'] === Entity::getType()
         );
 
         if (count($valid_answers) == 0) {
@@ -132,11 +141,19 @@ enum EntityFieldStrategy: string
 
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
-        if (!is_numeric($value['items_id'])) {
-            return $this->getFormFillerEntityID();
+
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
         }
 
-        return (int) $value['items_id'];
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id) && $items_id > -1) {
+                return (int) $items_id;
+            }
+        }
+
+        return $this->getFormFillerEntityID();
     }
 
     /**

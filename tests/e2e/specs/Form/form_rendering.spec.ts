@@ -319,6 +319,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "0",
                 selectable_tree_root: "0",
                 itemtype: "Location",
+                is_multiple_items: false,
             }),
         });
 

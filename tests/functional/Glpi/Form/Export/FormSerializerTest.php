@@ -434,7 +434,7 @@ final class FormSerializerTest extends DbTestCase
             '123456789' => 'Option 1',
             '987654321' => 'Option 2',
         ], true);
-        $item_default_value_config = new QuestionTypeItemDefaultValueConfig($location->getID());
+        $item_default_value_config = new QuestionTypeItemDefaultValueConfig([$location->getID()]);
         $item_dropdown_extra_data_config = new QuestionTypeItemDropdownExtraDataConfig(Location::class);
         $actors_default_value_config = new QuestionTypeActorsDefaultValueConfig(
             users_ids: [$user->getID()],
@@ -463,7 +463,7 @@ final class FormSerializerTest extends DbTestCase
             ->addQuestion(
                 "My item dropdown question",
                 QuestionTypeItemDropdown::class,
-                $location->getID(),
+                [$location->getID()],
                 json_encode($item_dropdown_extra_data_config),
                 'My item dropdown question description',
                 true
@@ -1037,7 +1037,7 @@ final class FormSerializerTest extends DbTestCase
         $form = $this->createForm((new FormBuilder())->addQuestion(
             "My ITIL Category question",
             QuestionTypeItemDropdown::class,
-            json_encode((new QuestionTypeItemDefaultValueConfig($itil_category->getID()))),
+            json_encode((new QuestionTypeItemDefaultValueConfig([$itil_category->getID()]))),
             json_encode((new QuestionTypeItemDropdownExtraDataConfig(ITILCategory::class))),
         )->addDestination(FormDestinationTicket::class, 'My ticket destination'));
 
@@ -1560,7 +1560,7 @@ final class FormSerializerTest extends DbTestCase
         $question = current($questions);
         $this->assertInstanceOf(Question::class, $question);
         $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
-        $this->assertEquals(-1, (new QuestionTypeItem())->getDefaultValueItemId($question));
+        $this->assertEquals([-1], (new QuestionTypeItem())->getDefaultValuesItemIds($question));
 
         // Act: export and import the form
         $form_copy = $this->exportAndImportForm($form);
@@ -1571,7 +1571,7 @@ final class FormSerializerTest extends DbTestCase
         $question = current($questions);
         $this->assertInstanceOf(Question::class, $question);
         $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
-        $this->assertEquals(0, (new QuestionTypeItem())->getDefaultValueItemId($question));
+        $this->assertEquals([0], (new QuestionTypeItem())->getDefaultValuesItemIds($question));
     }
 
     public function testExportAndImportWithCustomIcon(): void
@@ -2777,6 +2777,53 @@ final class FormSerializerTest extends DbTestCase
         // Assert: the import should succeed
         $this->assertEmpty($results->getFailedFormImports());
         $this->assertCount(1, $results->getImportedForms());
+    }
+
+    public function testExportAndImportItemQuestionTypeWithMultipleItemsAsDefaultValue(): void
+    {
+        // Arrange: create a form with an item question type that has multiple items as default value
+        $computer1 = $this->createItem(Computer::class, [
+            'name' => 'Computer 1',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $computer2 = $this->createItem(Computer::class, [
+            'name' => 'Computer 2',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        $extra_data = new QuestionTypeItemExtraDataConfig(
+            itemtype: Computer::class,
+            is_multiple_items: true,
+        );
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Select computers",
+            type: QuestionTypeItem::class,
+            default_value: [
+                'items_ids' => [$computer1->getID(), $computer2->getID()],
+            ],
+            extra_data: json_encode($extra_data)
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $imported_form = $this->exportAndImportForm($form);
+
+        // Assert: the default value should be correctly imported
+        $questions = $imported_form->getQuestions();
+        $question = current($questions);
+
+        $defaultValueData = json_decode($question->fields['default_value'], true);
+        $questionTypeItem = new QuestionTypeItem();
+        /** @var QuestionTypeItemDefaultValueConfig $imported_default_value */
+        $imported_default_value = $questionTypeItem->getDefaultValueConfig($defaultValueData);
+
+        $expectedItemIds = [$computer1->getID(), $computer2->getID()];
+        $this->assertEquals(
+            $expectedItemIds,
+            $imported_default_value->getItemsIds()
+        );
     }
 
     private function compareValuesForRelations(

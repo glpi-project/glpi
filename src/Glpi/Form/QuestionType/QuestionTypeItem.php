@@ -56,6 +56,7 @@ use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
+use JsonException;
 use Line;
 use LogicException;
 use Override;
@@ -89,21 +90,29 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
-        if (is_array($value) && isset($value['items_id'])) {
-            $value = $value['items_id'];
+        if (is_array($value) && isset($value['items_ids'])) {
+            $value = $value['items_ids'];
         }
 
-        if (!is_numeric($value)) {
-            return null;
+        if (!is_array($value)) {
+            if (!is_numeric($value)) {
+                return null;
+            }
+
+            $value = [(int) $value];
         }
 
-        return json_encode(new QuestionTypeItemDefaultValueConfig((int) $value));
+        return json_encode(new QuestionTypeItemDefaultValueConfig($value));
     }
 
     #[Override]
     public function convertDefaultValue(array $rawData): mixed
     {
-        return $rawData['default_values'] ?? null;
+        if (!isset($rawData['default_values']) || !is_numeric($rawData['default_values'])) {
+            return null;
+        }
+
+        return [(int) $rawData['default_values']];
     }
 
     #[Override]
@@ -214,24 +223,24 @@ class QuestionTypeItem extends AbstractQuestionType implements
     }
 
     /**
-     * Retrieve the default value for the item question type
+     * Retrieve the default values for the item question type
      *
      * @param Question|null $question The question to retrieve the default value from
-     * @return int
+     * @return array<int> An array of item IDs
      */
-    public function getDefaultValueItemId(?Question $question): int
+    public function getDefaultValuesItemIds(?Question $question): array
     {
         if ($question === null) {
-            return 0;
+            return [0];
         }
 
         /** @var ?QuestionTypeItemDefaultValueConfig $config */
         $config = $this->getDefaultValueConfig(json_decode($question->fields['default_value'] ?? '[]', true));
         if ($config === null) {
-            return 0;
+            return [0];
         }
 
-        $default_value = (int) $config->getItemsId();
+        $default_values = $config->getItemsIds();
 
         // Fallback to 0 instead of -1 for the empty value as it is already used
         // as the "Current logged-in user" special value.
@@ -240,11 +249,38 @@ class QuestionTypeItem extends AbstractQuestionType implements
             throw new LogicException();
         }
 
-        if ($extra_config->getItemtype() === User::class) {
-            $default_value = $default_value == -1 ? 0 : $default_value;
+        if ($extra_config->getItemtype() === User::class && !empty($default_values)) {
+            $default_values = array_map(fn($id) => $id == -1 ? 0 : $id, $default_values);
         }
 
-        return $default_value;
+        // Ensure default values are integers
+        $default_values = array_map('intval', array_filter($default_values ?? [], 'is_numeric'));
+
+        return $default_values;
+    }
+
+    /**
+     * Check if the question allows multiple items
+     *
+     * @param ?Question $question
+     * @return bool
+     */
+    public function isMultipleItems(?Question $question): bool
+    {
+        if ($question === null) {
+            return false;
+        }
+
+        try {
+            /** @var ?QuestionTypeItemExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+            if ($config === null) {
+                return false;
+            }
+            return $config->isMultipleItems();
+        } catch (JsonException $e) {
+            return false;
+        }
     }
 
     #[Override]
@@ -287,6 +323,13 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return false;
         }
 
+        // Check if is_multiple_items is set and is boolean (optional field)
+        if (
+            !isset($input['is_multiple_items'])
+            || !(is_numeric($input['is_multiple_items']) || is_bool($input['is_multiple_items']))
+        ) {
+            return false;
+        }
 
         return true;
     }
@@ -323,17 +366,61 @@ class QuestionTypeItem extends AbstractQuestionType implements
         return $twig->render(
             'pages/admin/form/question_type/item/administration_template.html.twig',
             [
-                'init'             => $question != null,
-                'question'         => $question,
-                'question_type'    => $this::class,
-                'default_itemtype' => $default_itemtype,
-                'default_items_id' => $this->getDefaultValueItemId($question),
-                'itemtypes'        => $this->getAllowedItemtypes(),
-                'aria_label'       => $this->items_id_aria_label,
-                'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question),
-                'displaywith'      => Dropdown::getDisplayWith($default_itemtype),
+                'init'              => $question != null,
+                'question'          => $question,
+                'question_type'     => $this::class,
+                'default_itemtype'  => $default_itemtype,
+                'default_items_ids' => $this->getDefaultValuesItemIds($question),
+                'itemtypes'         => $this->getAllowedItemtypes(),
+                'aria_label'        => $this->items_id_aria_label,
+                'advanced_config'   => $this->renderAdvancedConfigurationTemplate($question),
+                'displaywith'       => Dropdown::getDisplayWith($default_itemtype),
+                'is_multiple_items' => $this->isMultipleItems($question),
             ]
         );
+    }
+
+    #[Override]
+    public function renderAdministrationOptionsTemplate(?Question $question): string
+    {
+        $template = <<<TWIG
+            {% set rand = random() %}
+
+            <div id="is_multiple_items_{{ rand }}" class="d-flex gap-2">
+                <label class="form-check form-switch mb-0">
+                    <input type="hidden" name="is_multiple_items" value="0"
+                    data-glpi-form-editor-specific-question-extra-data>
+                    <input class="form-check-input" type="checkbox" name="is_multiple_items"
+                        value="1" {{ is_multiple_items ? 'checked' : '' }}
+                        onchange="handleMultipleDevicesCheckbox_{{ rand }}(this)"
+                        data-glpi-form-editor-specific-question-extra-data>
+                    <span class="form-check-label">{{ is_multiple_items_label }}</span>
+                </label>
+            </div>
+
+            <script>
+                function handleMultipleDevicesCheckbox_{{ rand }}(input) {
+                    const is_checked = $(input).is(':checked');
+                    const selects = $(input).closest('section[data-glpi-form-editor-question]')
+                        .find('div .items-dropdown');
+
+                    {# Toggle all selects visibility #}
+                    selects.toggleClass('d-none');
+
+                    {# Disable hidden select #}
+                    selects.find('select').prop('disabled', (i, v) => !v);
+
+                    {# Handle hidden input for multiple items #}
+                    selects.find('input[type="hidden"]').prop('disabled', !is_checked);
+                }
+            </script>
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'is_multiple_items' => $this->isMultipleitems($question),
+            'is_multiple_items_label' => __('Allow multiple items'),
+        ]);
     }
 
     public function renderAdvancedConfigurationTemplate(?Question $question): string
@@ -378,11 +465,12 @@ class QuestionTypeItem extends AbstractQuestionType implements
             [
                 'question'                    => $question,
                 'itemtype'                    => $itemtype,
-                'default_items_id'            => $this->getDefaultValueItemId($question),
+                'default_items_ids'           => $this->getDefaultValuesItemIds($question),
                 'aria_label'                  => $question->fields['name'],
                 'sub_types'                   => $this->getSubTypes(),
                 'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
                 'displaywith'                 => Dropdown::getDisplayWith($itemtype),
+                'is_multiple_items'           => $this->isMultipleItems($question),
             ]
         );
     }
@@ -392,50 +480,81 @@ class QuestionTypeItem extends AbstractQuestionType implements
     {
         global $CFG_GLPI;
 
-        $item = $answer['itemtype']::getById($answer['items_id']);
-        if (!$item) {
+        if (!is_array($answer)) {
             return '';
         }
 
-        // If the object is a user, use getFriendlyName()
-        if ($item instanceof User) {
-            return $item->getFriendlyName();
-        }
-
-        $name = $item->fields['name'];
-
-        // Append additional fields to match what is displayed in renderEndUserTemplate.
-        $itemtype = $answer['itemtype'];
-        $extra_parts = [];
-
-        // For ITIL types, append the numeric ID when it is not already embedded in the name.
-        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
-        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
-        if ($is_itil_type && !$id_already_visible) {
-            $extra_parts[] = $item->fields['id'];
-        }
-
-        // For asset types, append serial, otherserial and the linked user when present.
-        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
-            if ($item->isField('serial') && !empty($item->fields['serial'])) {
-                $extra_parts[] = $item->fields['serial'];
-            }
-            if ($item->isField('otherserial') && !empty($item->fields['otherserial'])) {
-                $extra_parts[] = $item->fields['otherserial'];
-            }
-            if ($item->isField('users_id') && $item->fields['users_id'] > 0) {
-                $user = User::getById($item->fields['users_id']);
-                if ($user) {
-                    $extra_parts[] = $user->getFriendlyName();
+        if (array_is_list($answer)) {
+            $formatted_answers = [];
+            foreach ($answer as $raw_answer) {
+                $formatted_answer = $this->formatRawAnswer($raw_answer, $question);
+                if ($formatted_answer !== '') {
+                    $formatted_answers[] = $formatted_answer;
                 }
             }
+
+            return implode(', ', $formatted_answers);
         }
 
-        if (!empty($extra_parts)) {
-            $name .= ' - ' . implode(' - ', $extra_parts);
+        $itemtype = $answer['itemtype'] ?? null;
+        if (!is_string($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
+            return '';
         }
 
-        return $name;
+        $items_ids = $answer['items_ids'] ?? null;
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
+        }
+
+        $formatted_items = [];
+        foreach ($items_ids as $items_id) {
+            $item = $itemtype::getById((int) $items_id);
+            if (!$item) {
+                continue;
+            }
+
+            // If the object is a user, use getFriendlyName().
+            if ($item instanceof User) {
+                $formatted_items[] = $item->getFriendlyName();
+                continue;
+            }
+
+            $name = $item->fields['name'] ?? $item->getName();
+
+            // Append additional fields to match what is displayed in renderEndUserTemplate.
+            $extra_parts = [];
+
+            // For ITIL types, append the numeric ID when it is not already embedded in the name.
+            $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types'], true);
+            $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+            if ($is_itil_type && !$id_already_visible) {
+                $extra_parts[] = $item->fields['id'];
+            }
+
+            // For asset types, append serial, otherserial and the linked user when present.
+            if (in_array($itemtype, $CFG_GLPI['asset_types'], true)) {
+                if ($item->isField('serial') && !empty($item->fields['serial'])) {
+                    $extra_parts[] = $item->fields['serial'];
+                }
+                if ($item->isField('otherserial') && !empty($item->fields['otherserial'])) {
+                    $extra_parts[] = $item->fields['otherserial'];
+                }
+                if ($item->isField('users_id') && $item->fields['users_id'] > 0) {
+                    $user = User::getById($item->fields['users_id']);
+                    if ($user) {
+                        $extra_parts[] = $user->getFriendlyName();
+                    }
+                }
+            }
+
+            if (!empty($extra_parts)) {
+                $name .= ' - ' . implode(' - ', $extra_parts);
+            }
+
+            $formatted_items[] = $name;
+        }
+
+        return implode(', ', $formatted_items);
     }
 
     #[Override]
@@ -482,17 +601,26 @@ class QuestionTypeItem extends AbstractQuestionType implements
             throw new InvalidArgumentException();
         }
 
-        if (!$question_config->getItemtype()) {
+        if (!$question_config->getItemtype() || !is_a($question_config->getItemtype(), CommonDBTM::class, true)) {
             return parent::getConditionHandlers($question_config);
         }
 
-        return array_merge(
-            parent::getConditionHandlers($question_config),
-            [
-                new ItemConditionHandler($question_config->getItemtype()),
-                new ItemAsTextConditionHandler($question_config->getItemtype()),
-            ],
-        );
+        if ($question_config->isMultipleItems()) {
+            return array_merge(
+                parent::getConditionHandlers($question_config),
+                [
+                    new ItemConditionHandler($question_config->getItemtype(), true),
+                ],
+            );
+        } else {
+            return array_merge(
+                parent::getConditionHandlers($question_config),
+                [
+                    new ItemConditionHandler($question_config->getItemtype(), false),
+                    new ItemAsTextConditionHandler($question_config->getItemtype()),
+                ],
+            );
+        }
     }
 
     #[Override]
@@ -524,17 +652,28 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         // Check if items_id is set and valid
-        if ($config->getItemsId() < 0) {
-            // If items_id is not >= 0, consider it empty
+        if (empty($config->getItemsIds())) {
+            // If items_ids is not set or empty, consider it empty
             return '';
         }
 
-        $item = getItemForItemtype($question_config->getItemtype());
-        if ($item && $item->getfromDB($config->getItemsId())) {
-            return $item->getName();
-        }
+        return array_reduce(
+            $config->getItemsIds(),
+            function ($carry, $items_id) use ($question_config) {
+                if (!is_numeric($items_id) || (int) $items_id < 0) {
+                    return $carry;
+                }
 
-        return '';
+                $item = getItemForItemtype($question_config->getItemtype());
+                if ($item && $item->getfromDB((int) $items_id)) {
+                    $name = $item->getName();
+                    return $carry === '' ? $name : ($carry . ', ' . $name);
+                }
+
+                return $carry;
+            },
+            ''
+        );
     }
 
     public function exportDynamicDefaultValue(
@@ -559,7 +698,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
             || !$extra_data_config instanceof QuestionTypeItemExtraDataConfig
             || $extra_data_config->getItemtype() === null
             || !is_a($extra_data_config->getItemtype(), CommonDBTM::class, true)
-            || empty($default_value_config->getItemsId())
+            || empty($default_value_config->getItemsIds())
         ) {
             return $fallback;
         }
@@ -569,21 +708,25 @@ class QuestionTypeItem extends AbstractQuestionType implements
         // Load linked item
         /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $extra_data_config->getItemtype();
-        $item = $itemtype::getById(
-            $default_value_config->getItemsId()
-        );
-        if (!$item) {
-            // Invalid item, return empty data with no requirements
-            return new DynamicExportDataField(null, []);
-        }
+        $items_ids = $default_value_config->getItemsIds();
 
-        // Replace id and register requirement
-        $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;
-        $requirement = DataRequirementSpecification::fromItem($item);
-        $requirements[] = $requirement;
-        $default_value_data[$key] = $requirement->name;
+        return array_reduce($items_ids, function ($carry, $items_id) use ($itemtype, &$requirements, &$default_value_data) {
+            if (!is_numeric($items_id) || (int) $items_id <= 0 || ($item = $itemtype::getById((int) $items_id)) === null) {
+                if ($carry instanceof DynamicExportDataField) {
+                    return $carry;
+                }
 
-        return new DynamicExportDataField($default_value_data, $requirements);
+                return new DynamicExportDataField(null, []);
+            }
+
+            // Replace id and register requirement
+            $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_IDS;
+            $requirement = DataRequirementSpecification::fromItem($item);
+            $requirements[] = $requirement;
+            $default_value_data[$key][array_search($items_id, $default_value_data[$key])] = $requirement->name;
+
+            return new DynamicExportDataField($default_value_data, $requirements);
+        }, null) ?? $fallback;
     }
 
     #[Override]
@@ -605,17 +748,24 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         // Validate config values
         $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
-        $name = $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] ?? "";
+        $names = $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_IDS] ?? "";
         if (
             !(getItemForItemtype($itemtype) instanceof CommonDBTM)
-            || empty($name)
+            || empty($names)
         ) {
             return $fallback;
         }
 
-        // Find item id
-        $id = $mapper->getItemId($itemtype, $name);
-        $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] = $id;
+        // Find item ids
+        foreach ($names as $name) {
+            $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_IDS;
+            if (!isset($default_value_data[$key]) || !is_array($default_value_data[$key])) {
+                return $fallback;
+            }
+
+            $id = $mapper->getItemId($itemtype, $name);
+            $default_value_data[$key][array_search($name, $default_value_data[$key])] = $id;
+        }
 
         return $default_value_data;
     }
@@ -758,6 +908,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         // Load item
         $item = $itemtype::getById($root_id);
+        if (!$item) {
+            return $fallback;
+        }
 
         // Replace id and register requirement
         $requirement = DataRequirementSpecification::fromItem($item);
