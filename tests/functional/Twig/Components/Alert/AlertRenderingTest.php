@@ -101,7 +101,7 @@ class AlertRenderingTest extends GLPITestCase
         $this->assertStringContainsString('alert-info', $html);
         $this->assertStringContainsString('My info alert', $html);
 
-        $html = $this->render('<twig:Alert:Warning type="warning"');
+        $html = $this->render('<twig:Alert:Warning type="warning" />');
         $this->assertStringContainsString('alert-warning', $html);
     }
 
