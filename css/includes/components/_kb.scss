@@ -77,6 +77,17 @@
     }
 }
 
+.kb-illustration-preview {
+    padding: 0.25rem;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &[role="button"]:hover {
+        border-color: var(--tblr-border-color);
+        box-shadow: var(--tblr-box-shadow-input);
+    }
+}
+
 .kb-article {
     position: relative;
     max-height: calc(100vh - 150px);

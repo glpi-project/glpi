@@ -816,6 +816,7 @@ export class GlpiKnowbaseArticleController
                 this.#editor.setEditable(false);
                 this.#is_editing = false;
                 this.#disableTitleEditing(true);
+                this.#setIllustrationEditable(false);
 
                 edit_button.classList.remove('d-none');
                 save_button.classList.add('d-none');
@@ -868,6 +869,29 @@ export class GlpiKnowbaseArticleController
                 }
             },
         });
+
+        this.#setIllustrationEditable(this.#is_editing);
+    }
+
+    #setIllustrationEditable(editable)
+    {
+        const picker = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-illustration-picker]'
+        );
+        if (!picker) {
+            return;
+        }
+
+        if (picker.glpiIllustrationPicker) {
+            picker.glpiIllustrationPicker.setEditable(editable);
+            return;
+        }
+
+        picker.addEventListener(
+            'glpi:illustration-picker:ready',
+            (e) => e.detail.controller.setEditable(editable),
+            { once: true }
+        );
     }
 
     async #saveIllustration(illustration)
@@ -971,6 +995,7 @@ export class GlpiKnowbaseArticleController
         }
 
         this.#enableTitleEditing();
+        this.#setIllustrationEditable(true);
         this.#is_editing = true;
 
         this.#editor.focus();
@@ -1059,6 +1084,7 @@ export class GlpiKnowbaseArticleController
             }
             this.#editor.setEditable(false);
             this.#disableTitleEditing();
+            this.#setIllustrationEditable(false);
             this.#is_editing = false;
 
             this.#base_content = this.#original_content;
@@ -1363,6 +1389,7 @@ export class GlpiKnowbaseArticleController
             this.#title_element.textContent = this.#base_title;
         }
         this.#disableTitleEditing();
+        this.#setIllustrationEditable(false);
         this.#is_editing = false;
 
         // Restore main editor actions visibility
