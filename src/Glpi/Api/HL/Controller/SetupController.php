@@ -36,23 +36,41 @@
 namespace Glpi\Api\HL\Controller;
 
 use AuthLDAP;
+use AuthLdapReplicate;
+use AuthMail;
 use Calendar;
 use CommonDBTM;
 use Config;
+use CronTask;
+use CronTaskLog;
 use Entity;
+use FieldUnicity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Link;
+use Link_Itemtype;
+use MailCollector;
+use ManualLink;
+use NotImportedEmail;
+use OAuthClient;
 use OLA;
 use OlaLevel;
+use Plugin;
+use QueuedWebhook;
 use SLA;
 use SlaLevel;
 use SLM;
+use Throwable;
+use User;
+use Webhook;
+use WebhookCategory;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -117,7 +135,6 @@ EOT,
             'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'execution_time' => [
                 'type' => Doc\Schema::TYPE_INTEGER,
-                'readOnly' => true,
             ],
             'operator' => [
                 'type' => Doc\Schema::TYPE_STRING,
@@ -266,12 +283,696 @@ EOT,
                     'ola' => self::getDropdownTypeSchema(class: OLA::class, full_schema: 'OLA'),
                 ],
             ],
+            'EmailAuthServer' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => AuthMail::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'connection_string' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'IMAP connection string in the PHP format',
+                        'example' => '{imap.example.com:993/imap/ssl}',
+                        'x-field' => 'connect_string',
+                        'maxLength' => 255,
+                    ],
+                    'domain' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'host',
+                        'description' => 'Email domain associated to this authentication server. Used to set user email addresses.',
+                        'example' => 'example.com',
+                        'maxLength' => 255,
+                    ],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'is_default' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'FieldUnicity' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => FieldUnicity::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'fields' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'Comma-separated list of field names that must be unique together for the given itemtype',
+                        'example' => 'serial,locations_id',
+                    ],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'action_refuse' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to refuse the creation/modification of items that would violate the unicity constraint.',
+                        'default' => false,
+                    ],
+                    'action_notify' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to send a notification when a unicity constraint is violated.',
+                        'default' => false,
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'AutomaticAction' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => CronTask::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 100,
+                        'readOnly' => true,
+                    ],
+                    'name' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'readOnly' => true,
+                    ],
+                    'frequency' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'Frequency in seconds',
+                        'minimum' => MINUTE_TIMESTAMP,
+                        'maximum' => MONTH_TIMESTAMP,
+                        'multipleOf' => MINUTE_TIMESTAMP,
+                    ],
+                    'param' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'A numeric parameter used by some automatic actions. The meaning of this parameter depends on the action.',
+                    ],
+                    'state' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [CronTask::STATE_DISABLE . CronTask::STATE_WAITING, CronTask::STATE_RUNNING],
+                        'description' => <<<EOT
+                        - 0: Disabled
+                        - 1: Scheduled
+                        - 2: Running
+EOT,
+                    ],
+                    'mode' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [CronTask::MODE_INTERNAL, CronTask::MODE_EXTERNAL],
+                        'description' => <<<EOT
+                        - 1: Internal (Triggered occasionally by page visits)
+                        - 2: External (External scheduler like cron or Windows Task Scheduler)
+EOT,
+                    ],
+                    'allow_mode' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [CronTask::MODE_INTERNAL, CronTask::MODE_EXTERNAL, CronTask::MODE_INTERNAL | CronTask::MODE_EXTERNAL],
+                        'x-field' => 'allowmode',
+                        'description' => <<<EOT
+                        Some tasks can only be run in certain modes, usually for performance reasons. This field indicates which modes are allowed for this task.
+                        - 1: Internal (Triggered occasionally by page visits)
+                        - 2: External (External scheduler like cron or Windows Task Scheduler)
+                        - 3: Both internal and external
+EOT,
+                        'readOnly' => true,
+                    ],
+                    'min_hour' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-field' => 'hourmin',
+                        'description' => 'Minimum hour of the day when the task can run',
+                        'minimum' => 0,
+                        'maximum' => 24,
+                    ],
+                    'max_hour' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-field' => 'hourmax',
+                        'description' => 'Maximum hour of the day when the task can run',
+                        'minimum' => 0,
+                        'maximum' => 24,
+                    ],
+                    'logs_lifetime' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'Number of days to keep logs for this task. 0 means keep logs forever.',
+                        'minimum' => 0,
+                        'maximum' => 360,
+                    ],
+                    'last_run' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'lastrun',
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'AutomaticActionLog' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => CronTaskLog::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'automatic_action' => self::getDropdownTypeSchema(class: CronTask::class, full_schema: 'AutomaticAction') + [
+                        'readOnly' => true,
+                    ],
+                    'previous' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'description' => 'The previous log entry for the same automatic action execution, if any. Typically points to the start log entry.',
+                        'readOnly' => true,
+                        'x-field' => CronTaskLog::getForeignKeyField(),
+                        'x-itemtype' => CronTaskLog::class,
+                        'x-join' => [
+                            'table' => CronTaskLog::getTable(),
+                            'fkey' => CronTaskLog::getForeignKeyField(),
+                            'field' => 'id',
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
+                        ],
+                    ],
+                    'date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'state' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [CronTaskLog::STATE_START, CronTaskLog::STATE_RUN, CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
+                        'description' => <<<EOT
+                        - 0: Start
+                        - 1: Running
+                        - 2: Stop
+                        - 3: Error
+EOT,
+                        'readOnly' => true,
+                    ],
+                    'elapsed_time' => [
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                        'x-field' => 'elapsed',
+                        'description' => 'Elapsed time in seconds.',
+                        'readOnly' => true,
+                    ],
+                    'volume' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'A numeric value representing the volume of processed items.',
+                        'readOnly' => true,
+                    ],
+                    'message' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'content',
+                        'maxLength' => 255,
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
+            'LDAPDirectoryReplicate' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => AuthLdapReplicate::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'ldap_directory' => self::getDropdownTypeSchema(class: AuthLDAP::class, full_schema: 'LDAPDirectory'),
+                    'host' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'port' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'min' => 1,
+                        'max' => 65535,
+                        'default' => 389,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'timeout' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'Connection timeout in seconds',
+                        'minimum' => 1,
+                        'maximum' => 30,
+                        'default' => 10,
+                    ],
+                ],
+            ],
+            'EmailCollector' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => MailCollector::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'host' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'login' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'password' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'passwd',
+                        'writeOnly' => true,
+                        'maxLength' => 255,
+                    ],
+                    'max_filesize' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'x-field' => 'filesize_max',
+                        'description' => 'Maximum size of email attachments to process, in bytes',
+                        'minimum' => 0,
+                        'default' => 2097152,
+                    ],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'accepted_folder' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'accepted',
+                        'description' => 'Name of the folder where emails are moved if processing was successful',
+                        'maxLength' => 255,
+                    ],
+                    'rejected_folder' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'refused',
+                        'description' => 'Name of the folder where emails are moved if processing failed',
+                        'maxLength' => 255,
+                    ],
+                    'errors' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'Number of connection errors',
+                        'readOnly' => true,
+                    ],
+                    'use_mail_date' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to use the email date as the item creation date',
+                        'default' => false,
+                    ],
+                    'requester_field' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Use Reply-To header value instead of FROM header value as requester (when available)',
+                        'default' => false,
+                    ],
+                    'add_to_to_observer' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Add all TO header email addresses as ticket observers',
+                        'default' => true,
+                    ],
+                    'add_cc_to_observer' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Add all CC header email addresses as ticket observers',
+                        'default' => false,
+                    ],
+                    'collect_only_unread' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Collect only unread emails',
+                        'default' => false,
+                    ],
+                    'create_user_from_email' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Create a new user if the email address of the requester does not exist in GLPI',
+                        'default' => false,
+                    ],
+                    'date_last_collect' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-field' => 'last_collect_date',
+                        'description' => 'Date and time of the last collection',
+                        'readOnly' => true,
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'Plugin' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => Plugin::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'internal_name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true, 'x-field' => 'directory'],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'version' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'state' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [-1, 0, 1, 2, 3, 4, 5, 6, 7],
+                        'description' => <<<EOT
+                        - -1: Unknown
+                        - 0: New (This status may not actually be used)
+                        - 1: Enabled
+                        - 2: Not installed
+                        - 3: Needs configured (Installed, but required configuration before it can be enabled)
+                        - 4: Disabled
+                        - 5: To clean (Uninstalled and the files are no longer present, but the metadata is still present in the database)
+                        - 6: Needs updated (A new version of the plugin is present and it needs have the update started)
+                        - 7: Replaced (The plugin has been replaced by another one)
+EOT,
+
+                        'readOnly' => true,
+                    ],
+                    'author' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'homepage' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'license' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                ],
+            ],
+            'ExternalLink' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Link::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-field' => 'itemtype',
+                            'x-join' => [
+                                'table' => Link_Itemtype::getTable(),
+                                'fkey' => 'id',
+                                'field' => Link::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                        ],
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'link' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'data' => ['type' => Doc\Schema::TYPE_STRING],
+                    'open_window' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'ManualLink' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => ManualLink::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'url' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 8096],
+                    'open_window' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'icon' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'Webhook' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Webhook::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'category' => self::getDropdownTypeSchema(class: WebhookCategory::class, full_schema: 'WebhookCategory'),
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'event' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'payload' => ['type' => Doc\Schema::TYPE_STRING],
+                    'use_default_payload' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'If true, the entire JSON output from the API for the item will be used',
+                    ],
+                    'custom_headers' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object containing custom headers to add to the webhook request. The header names and values are Twig templates that can use any property of the item as a variable.',
+                    ],
+                    'url' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The URL to send the webhook request to. This is a Twig template that can use any property of the item as a variable.',
+                    ],
+                    'secret' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'A secret value that can be shared with a target server to allow it to validate requests are actually coming from the GLPI server and that the content was not modified between GLPI and the target.',
+                    ],
+                    'use_cra_challenge' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to use a Challenge-Response Authentication mechanism to validate the target server.',
+                        'default' => false,
+                    ],
+                    'http_method' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => ['POST', 'GET', 'PUT', 'PATCH'],
+                        'default' => 'POST',
+                    ],
+                    'sent_try' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'default' => 0,
+                        'description' => 'The number of times this webhook will try to be sent.',
+                    ],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'save_response_body' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'If true and if response saving is globally allowed (disabled by default), the response body of the webhook request will be saved in the queued webhook data. This is only intended for debugging purposes.',
+                        'default' => false,
+                    ],
+                    'log_in_item_history' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => "Whether to log webhook calls in the related item's history.",
+                        'default' => false,
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'use_oauth' => [
+                        'type' => Doc\Schema::TYPE_BOOLEAN,
+                        'description' => 'Whether to use OAuth 2.0 authentication when sending the webhook request.',
+                        'default' => false,
+                    ],
+                    'oauth_url' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The URL to obtain the OAuth 2.0 access token.',
+                        'maxLength' => 255,
+                    ],
+                    'clientid' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The OAuth 2.0 client ID.',
+                        'maxLength' => 255,
+                    ],
+                    'clientsecret' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The OAuth 2.0 client secret.',
+                        'maxLength' => 255,
+                        'writeOnly' => true,
+                    ],
+                ],
+            ],
+            'WebhookCategory' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => WebhookCategory::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'completename' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 1024, 'readOnly' => true],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'parent' => self::getDropdownTypeSchema(class: WebhookCategory::class, full_schema: 'WebhookCategory'),
+                    'level' => ['type' => Doc\Schema::TYPE_INTEGER, 'readOnly' => true],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'QueuedWebhook' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => QueuedWebhook::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64, 'readOnly' => true],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'sent_try' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The number of times this webhook has been tried to be sent.',
+                        'readOnly' => true,
+                    ],
+                    'webhook' => self::getDropdownTypeSchema(class: Webhook::class, full_schema: 'Webhook') + [
+                        'readOnly' => true,
+                    ],
+                    'url' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The resolved URL the webhook will be sent to.',
+                        'maxLength' => 255,
+                        'readOnly' => true,
+                    ],
+                    'create_time' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'The date and time when the webhook was queued.',
+                        'readOnly' => true,
+                    ],
+                    'send_time' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'The date and time when the webhook is expected to be sent.',
+                        'readOnly' => true,
+                    ],
+                    'sent_time' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'The last date and time when the webhook was tried to be sent.',
+                        'readOnly' => true,
+                    ],
+                    'headers' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object containing the resolved headers that will be sent with the webhook request.',
+                        'readOnly' => true,
+                    ],
+                    'body' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The resolved body that will be sent with the webhook request.',
+                        'readOnly' => true,
+                    ],
+                    'event' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The event that triggered the webhook.',
+                        'readOnly' => true,
+                    ],
+                    'last_status_code' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'description' => 'The last HTTP status code received when trying to send the webhook.',
+                        'readOnly' => true,
+                    ],
+                    'http_method' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The HTTP method used to send the webhook request.',
+                        'enum' => ['POST', 'GET', 'PUT', 'PATCH'],
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
+            'NotImportedEmail' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => NotImportedEmail::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'from' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'to' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'mail_collector' => self::getDropdownTypeSchema(class: MailCollector::class, full_schema: 'EmailCollector') + ['readOnly' => true],
+                    'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
+                    'subject' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    'messageid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
+                    'reason' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [
+                            NotImportedEmail::MATCH_NO_RULE,
+                            NotImportedEmail::USER_UNKNOWN,
+                            NotImportedEmail::FAILED_OPERATION,
+                            NotImportedEmail::NOT_ENOUGH_RIGHTS,
+                        ],
+                        'description' => <<<EOT
+                        -  0: No matching rule to assign the ticket to an entity.
+                        -  1: User unknown. The email address of the requester does not correspond to any user in GLPI.
+                        -  2: Failed operation/insert. An error occurred while trying to create the ticket or followup.
+                        -  3: Not enough rights. The user does not have permission to create the ticket or followup.
+EOT,
+                        'readOnly' => true,
+                    ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['readOnly' => true],
+                ],
+            ],
+            'OAuthClient' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => OAuthClient::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'identifier' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The client identifier.',
+                        'readOnly' => true,
+                    ],
+                    'secret' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The client secret.',
+                        'readOnly' => true,
+                    ],
+                    'redirect_uri' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of allowed redirect URIs for this client',
+                    ],
+                    'grants' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of allowed grant types for this client. Allowed values are "authorization_code", "password", and "client_credentials".',
+                    ],
+                    'scopes' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of allowed scopes for this client. Allowed values are "email", "user", "api", "inventory", "status" and "graphql".',
+                    ],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'is_confidential' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'allowed_ips' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'Comma-separated list of allowed IPs or CIDR blocks. If empty, there is no restriction.',
+                    ],
+                ],
+            ],
         ];
     }
 
     /**
      * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
-     * @return array<class-string<CommonDBTM>, string>
+     * @return array<string, array{itemtype: class-string<CommonDBTM>, label: string}>
      */
     public static function getSetupTypes(bool $types_only = true): array
     {
@@ -279,11 +980,98 @@ EOT,
 
         if ($types === null) {
             $types = [
-                'LDAPDirectory' => AuthLDAP::getTypeName(1),
+                'LDAPDirectory' => [
+                    'itemtype' => AuthLDAP::class,
+                    'label' => AuthLDAP::getTypeName(1),
+                ],
                 // Do not add Config here as it is handled specially
+                'SLM' => [
+                    'itemtype' => SLM::class,
+                    'label' => SLM::getTypeName(1),
+                ],
+                'SLA' => [
+                    'itemtype' => SLA::class,
+                    'label' => SLA::getTypeName(1),
+                ],
+                'OLA' => [
+                    'itemtype' => OLA::class,
+                    'label' => OLA::getTypeName(1),
+                ],
+                'SLALevel' => [
+                    'itemtype' => SlaLevel::class,
+                    'label' => SlaLevel::getTypeName(1),
+                ],
+                'OLALevel' => [
+                    'itemtype' => OlaLevel::class,
+                    'label' => OlaLevel::getTypeName(1),
+                ],
+                'ExternalLink' => [
+                    'itemtype' => Link::class,
+                    'label' => Link::getTypeName(1),
+                ],
+                'ManualLink' => [
+                    'itemtype' => ManualLink::class,
+                    'label' => ManualLink::getTypeName(1),
+                ],
+                'EmailAuthServer' => [
+                    'itemtype' => AuthMail::class,
+                    'label' => AuthMail::getTypeName(1),
+                ],
+                'FieldUnicity' => [
+                    'itemtype' => FieldUnicity::class,
+                    'label' => FieldUnicity::getTypeName(1),
+                ],
+                'AutomaticAction' => [
+                    'itemtype' => CronTask::class,
+                    'label' => CronTask::getTypeName(1),
+                ],
+                'LDAPDirectoryReplicate' => [
+                    'itemtype' => AuthLdapReplicate::class,
+                    'label' => AuthLdapReplicate::getTypeName(1),
+                ],
+                'EmailCollector' => [
+                    'itemtype' => MailCollector::class,
+                    'label' => MailCollector::getTypeName(1),
+                ],
+                'Webhook' => [
+                    'itemtype' => Webhook::class,
+                    'label' => Webhook::getTypeName(1),
+                ],
+                'WebhookCategory' => [
+                    'itemtype' => WebhookCategory::class,
+                    'label' => WebhookCategory::getTypeName(1),
+                ],
+                'QueuedWebhook' => [
+                    'itemtype' => QueuedWebhook::class,
+                    'label' => QueuedWebhook::getTypeName(1),
+                ],
+                'OAuthClient' => [
+                    'itemtype' => OAuthClient::class,
+                    'label' => OAuthClient::getTypeName(1),
+                ],
             ];
         }
         return $types_only ? array_keys($types) : $types;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getSetupEndpointTypes20(): array
+    {
+        return ['LDAPDirectory'];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getSetupEndpointTypes23(): array
+    {
+        return [
+            'SLM', 'SLA', 'SLALevel', 'OLA', 'OLALevel', 'EmailAuthServer', 'FieldUnicity',
+            'LDAPDirectoryReplicate', 'EmailCollector', 'ExternalLink', 'ManualLink',
+            'Webhook', 'WebhookCategory', 'QueuedWebhook', 'OAuthClient',
+        ];
     }
 
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -307,70 +1095,139 @@ EOT,
     public function index(Request $request): Response
     {
         $setup_types = self::getSetupTypes(false);
+        $v20_types = self::getSetupEndpointTypes20();
         $setup_paths = [];
-        foreach ($setup_types as $setup_type => $setup_name) {
+        foreach ($setup_types as $setup_type => $setup_data) {
             $setup_paths[] = [
-                'itemtype'  => $setup_type,
-                'name'      => $setup_name,
-                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $setup_type]),
+                'itemtype'  => $setup_data['itemtype'],
+                'name'      => $setup_data['label'],
+                'href'      => self::getAPIPathForRouteFunction(self::class, in_array($setup_type, $v20_types, true) ? 'search20' : 'search23', ['itemtype' => $setup_type]),
             ];
         }
         return new JSONResponse($setup_paths);
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\SearchRoute(schema_name: '{itemtype}')]
-    public function search(Request $request): Response
+    public function search20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\GetRoute(schema_name: '{itemtype}')]
-    public function getItem(Request $request): Response
+    public function getItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\CreateRoute(schema_name: '{itemtype}')]
-    public function createItem(Request $request): Response
+    public function createItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            request_params: $request->getParameters() + ['itemtype' => $itemtype],
+            get_route: [self::class, 'getItem20'],
+            extra_get_route_params: ['mapped' => ['itemtype' => $itemtype]]
+        );
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\UpdateRoute(schema_name: '{itemtype}')]
-    public function updateItem(Request $request): Response
+    public function updateItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\DeleteRoute(schema_name: '{itemtype}')]
-    public function deleteItem(Request $request): Response
+    public function deleteItem20(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: '{itemtype}')]
+    public function search23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: '{itemtype}')]
+    public function getItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: '{itemtype}')]
+    public function createItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            request_params: $request->getParameters() + ['itemtype' => $itemtype],
+            get_route: [self::class, 'getItem23'],
+            extra_get_route_params: ['mapped' => ['itemtype' => $itemtype]]
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: '{itemtype}')]
+    public function updateItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: '{itemtype}')]
+    public function deleteItem23(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -477,5 +1334,178 @@ EOT,
         }
         Config::deleteConfigurationValues($context, [$name]);
         return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/AutomaticAction/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'AutomaticAction')]
+    public function getAutomaticAction(Request $request): Response
+    {
+        $automatic_action_id = $request->getAttribute('id');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('AutomaticAction', $this->getAPIVersion($request)), ['id' => $automatic_action_id], $request->getParameters());
+    }
+
+    #[Route(path: '/AutomaticAction/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: 'AutomaticAction')]
+    public function updateAutomaticAction(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('AutomaticAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/AutomaticAction/{id}/Log', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'AutomaticActionLog')]
+    public function searchAutomaticActionLogs(Request $request): Response
+    {
+        $automatic_action_id = $request->getAttribute('id');
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';automatic_action.id==' . $automatic_action_id;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('AutomaticActionLog', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Plugin', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\SearchRoute(schema_name: 'Plugin')]
+    public function listPlugins(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Plugin', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Plugin/{id}/Enable', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Enable a plugin')]
+    public function enablePlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        $success = $plugin->activate($request->getAttribute('id'));
+        if (!$success) {
+            return AbstractController::getCRUDErrorResponse('enable');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Disable', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Disable a plugin')]
+    public function disablePlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        $success = $plugin->unactivate($request->getAttribute('id'));
+        if (!$success) {
+            return AbstractController::getCRUDErrorResponse('disable');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Install', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Install a plugin')]
+    public function installPlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $plugin->install($request->getAttribute('id'));
+        } catch (Throwable) {
+            return AbstractController::getCRUDErrorResponse('install');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Uninstall', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Uninstall a plugin')]
+    public function uninstallPlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $plugin->uninstall($request->getAttribute('id'));
+        } catch (Throwable) {
+            return AbstractController::getCRUDErrorResponse('uninstall');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/Plugin/{id}/Clean', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3.0')]
+    #[Doc\Route(description: 'Clean a plugin (delete its metadata from the database)')]
+    public function cleanPlugin(Request $request): Response
+    {
+        $plugin = new Plugin();
+        if (!Plugin::canUpdate()) {
+            return AbstractController::getAccessDeniedErrorResponse();
+        }
+        try {
+            $plugin->clean($request->getAttribute('id'));
+        } catch (Throwable) {
+            return AbstractController::getCRUDErrorResponse('clean');
+        }
+        return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/NotImportedEmail', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute('NotImportedEmail')]
+    public function searchNotImportedEmails(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/NotImportedEmail/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute('NotImportedEmail')]
+    public function getNotImportedEmail(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/NotImportedEmail/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute('NotImportedEmail')]
+    public function deleteNotImportedEmail(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
     }
 }

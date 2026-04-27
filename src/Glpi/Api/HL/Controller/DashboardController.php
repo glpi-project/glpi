@@ -107,6 +107,46 @@ final class DashboardController extends AbstractController
                         'enum' => $known_contexts,
                     ],
                     'user' => self::getDropdownTypeSchema(class: \User::class, full_schema: 'User'),
+                    'filters' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'DashboardFilter',
+                            'x-join' => [
+                                'table' => Dashboard\Filter::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'dashboards_dashboards_id',
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
+                    'items' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'DashboardItem',
+                            'x-join' => [
+                                'table' => Dashboard\Item::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'dashboards_dashboards_id',
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'readOnly' => true,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'DashboardFilter' => [
