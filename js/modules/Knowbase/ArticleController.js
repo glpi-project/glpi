@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, bootstrap */
+/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, bootstrap, setHasUnsavedChanges */
 
 import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
@@ -114,6 +114,10 @@ export class GlpiKnowbaseArticleController
             .replace(/[\r\n]+/g, ' ')
             .trim();
         document.execCommand('insertText', false, text);
+    };
+
+    #handleTitleInput = () => {
+        setHasUnsavedChanges(true);
     };
 
     /**
@@ -781,6 +785,8 @@ export class GlpiKnowbaseArticleController
                 edit_button.classList.remove('d-none');
                 save_button.classList.add('d-none');
                 cancel_button.classList.add('d-none');
+
+                setHasUnsavedChanges(false);
             });
         }
 
@@ -921,6 +927,9 @@ export class GlpiKnowbaseArticleController
                 readonly: false,
                 placeholder: __("Start writing..."),
                 item_id: this.#item_id,
+                onUpdate: () => {
+                    setHasUnsavedChanges(true);
+                },
             });
         } else {
             this.#editor.setEditable(true);
@@ -950,6 +959,7 @@ export class GlpiKnowbaseArticleController
             this.#title_element.classList.add('is-editing');
             this.#title_element.addEventListener('keydown', this.#handleTitleKeydown);
             this.#title_element.addEventListener('paste', this.#handleTitlePaste);
+            this.#title_element.addEventListener('input', this.#handleTitleInput);
         }
     }
 
@@ -966,6 +976,7 @@ export class GlpiKnowbaseArticleController
             this.#title_element.classList.remove('is-editing');
             this.#title_element.removeEventListener('keydown', this.#handleTitleKeydown);
             this.#title_element.removeEventListener('paste', this.#handleTitlePaste);
+            this.#title_element.removeEventListener('input', this.#handleTitleInput);
         }
     }
 
@@ -1021,6 +1032,8 @@ export class GlpiKnowbaseArticleController
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');
             cancel_button.classList.add('d-none');
+
+            setHasUnsavedChanges(false);
 
             // Show success notification
             glpi_toast_info(__("Article saved successfully"));
@@ -1205,6 +1218,7 @@ export class GlpiKnowbaseArticleController
         this.#translation_language = language;
         this.#updateDeleteButtonVisibility();
         await this.#loadTranslationContent(language);
+        setHasUnsavedChanges(false);
     }
 
     async #loadTranslationContent(language)
@@ -1307,6 +1321,8 @@ export class GlpiKnowbaseArticleController
         if (cancel_button) {
             cancel_button.classList.add('d-none');
         }
+
+        setHasUnsavedChanges(false);
     }
 
     async #saveTranslation(save_btn)
@@ -1375,6 +1391,8 @@ export class GlpiKnowbaseArticleController
             glpi_toast_info(__("Article saved successfully"));
         }
 
+        setHasUnsavedChanges(false);
+
         save_btn.disabled = false;
         save_btn.innerHTML = original_button_html;
     }
@@ -1408,6 +1426,8 @@ export class GlpiKnowbaseArticleController
         this.#moveOptionToNewGroup(this.#translation_language);
         await this.#loadTranslationContent(this.#translation_language);
         this.#updateDeleteButtonVisibility();
+
+        setHasUnsavedChanges(false);
 
         glpi_toast_info(__("Translation deleted successfully"));
     }
