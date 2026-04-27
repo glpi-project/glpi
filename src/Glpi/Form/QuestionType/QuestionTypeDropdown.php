@@ -319,11 +319,11 @@ TWIG;
                     id="dropdown_{{ rand }}"
                     name="{{ input_name }}"
                     class="form-select select2"
-                    aria-label="{{ label|e }}"
+                    aria-label="{{ label }}"
                     {{ is_multiple ? 'multiple' : '' }}
                 >
                     {% for uuid, text in initial_values %}
-                        <option value="{{ uuid }}" selected>{{ text|e }}</option>
+                        <option value="{{ uuid }}" selected>{{ text }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -333,7 +333,7 @@ TWIG;
                 var el = $('#dropdown_{{ rand }}');
                 el.select2({
                     ajax: {
-                        url:      '{{ ajax_url }}',
+                        url:      '{{ ajax_url|e('js') }}',
                         type:     'POST',
                         dataType: 'json',
                         delay:    250,
@@ -342,7 +342,7 @@ TWIG;
                                 searchText:  params.term || '',
                                 page:        params.page || 1,
                                 page_limit:  50,
-                                question_id: {{ question_id }},
+                                question_id: '{{ question_id|e('js') }}',
                             };
                         },
                         processResults: function(data) {
