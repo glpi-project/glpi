@@ -11074,7 +11074,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$name\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
