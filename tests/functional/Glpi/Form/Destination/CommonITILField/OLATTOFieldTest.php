@@ -239,7 +239,11 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
+        if ($expected_olas_tto_id !== 0 && countElementsInTable(OLA::getTable(), ['id' => $expected_olas_tto_id]) !== 1) {
+            throw new \Exception("Expected OLA TTO with ID $expected_olas_tto_id not found in database. Wrong data preparation.");
+        }
         $destination = current($destinations);
+
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
@@ -262,8 +266,11 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
         $ticket = current($created_items);
 
         // Check ola_id_tto field
-        $ticket_tto_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('Ola TTO not found');
-        $this->assertEquals($expected_olas_tto_id, $ticket_tto_data['olas_id']);
+        $ticket_tto_id = $expected_olas_tto_id
+            ? ($ticket->getOlasTTOData()[0])['olas_id'] ?? throw new \Exception('Ola TTO not found')
+            : 0
+        ;
+        $this->assertEquals($expected_olas_tto_id, $ticket_tto_id, "The created ticket should have the expected OLA TTO ID");
 
         // Return the created ticket to be able to check other fields
         return $ticket;
