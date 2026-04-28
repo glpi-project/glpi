@@ -40,5 +40,6 @@ final class Article
         public readonly string $title,
         public readonly string $illustration,
         public readonly string $link,
+        public readonly bool $is_current = false,
     ) {}
 }

@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+import { randomUUID } from "crypto";
 import { expect, test } from "../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
@@ -39,8 +40,9 @@ test('Can toggle favorites from false to true', async ({ page, profile, api }) =
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
+    const name = `My kb entry for favorites test - ${randomUUID()}`;
     const id = await api.createItem('KnowbaseItem', {
-        name: 'My kb entry for favorites test',
+        name: name,
         entities_id: getWorkerEntityId(),
         answer: "My answer",
     });
@@ -50,21 +52,26 @@ test('Can toggle favorites from false to true', async ({ page, profile, api }) =
 
     const favorite_toggle = kb.getButton('Add to favorites');
     await expect(favorite_toggle.getByRole('checkbox')).not.toBeChecked();
+    await expect(kb.getFavoriteArticle(name)).toBeHidden();
+
     await kb.doToggleFavoriteStatus();
     await expect(favorite_toggle.getByRole('checkbox')).toBeChecked();
+    await expect(kb.getFavoriteArticle(name)).toBeVisible();
 
     await page.reload();
     await page.getByTitle('More actions').click();
     const favorite_toggle_after_reload = kb.getButton('Add to favorites');
     await expect(favorite_toggle_after_reload.getByRole('checkbox')).toBeChecked();
+    await expect(kb.getFavoriteArticle(name)).toBeVisible();
 });
 
 test('Can toggle favorites from true to false', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
+    const name = `My kb entry for favorites removal test - ${randomUUID()}`;
     const id = await api.createItem('KnowbaseItem', {
-        name: 'My kb entry for favorites removal test',
+        name: name,
         entities_id: getWorkerEntityId(),
         answer: "My answer",
     });
@@ -78,11 +85,15 @@ test('Can toggle favorites from true to false', async ({ page, profile, api }) =
 
     const favorite_toggle = kb.getButton('Add to favorites');
     await expect(favorite_toggle.getByRole('checkbox')).toBeChecked();
+    await expect(kb.getFavoriteArticle(name)).toBeVisible();
+
     await kb.doToggleFavoriteStatus();
     await expect(favorite_toggle.getByRole('checkbox')).not.toBeChecked();
+    await expect(kb.getFavoriteArticle(name)).toBeHidden();
 
     await page.reload();
     await page.getByTitle('More actions').click();
     const favorite_toggle_after_reload = kb.getButton('Add to favorites');
     await expect(favorite_toggle_after_reload.getByRole('checkbox')).not.toBeChecked();
+    await expect(kb.getFavoriteArticle(name)).toBeHidden();
 });

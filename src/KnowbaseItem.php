@@ -36,12 +36,14 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Knowbase\Aside\Article;
 use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionSeparator;
@@ -2593,13 +2595,72 @@ TWIG, $twig_params);
         return $links;
     }
 
+    /** @return Article[] */
+    private function getCurrentArticleAndFavorites(int $current_id = 0): array
+    {
+        global $DB;
+
+        $user_id = Session::getLoginUserID();
+        if ($user_id === false) {
+            return [];
+        }
+
+        $criteria = self::getListRequest([], 'browse');
+
+        $is_favorite_condition = [
+            self::getTable() . '.id' => new QuerySubQuery([
+                'SELECT' => 'knowbaseitems_id',
+                'FROM'   => KnowbaseItem_Favorite::getTable(),
+                'WHERE'  => [
+                    KnowbaseItem_Favorite::getTable() . '.users_id' => $user_id,
+                ],
+            ]),
+        ];
+
+        if ($current_id > 0) {
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    $is_favorite_condition,
+                    [self::getTable() . '.id' => $current_id],
+                ],
+            ];
+        } else {
+            $criteria['WHERE'][] = $is_favorite_condition;
+        }
+
+        $articles = [];
+        foreach ($DB->request($criteria) as $data) {
+            $articles[] = new Article(
+                title: $data['name'] ?? '',
+                illustration: $data['illustration'] ?: 'kb-faq',
+                link: self::getFormURLWithID($data['id']),
+                // Take note of the current article as we will render it in
+                // the favorite list even if it is not yet a favorite.
+                // This allow us to simply toggle its visibility if the user
+                // add it as a favorite (= no client side DOM rendering).
+                is_current: (int) $data['id'] === $current_id,
+            );
+        }
+
+        return $articles;
+    }
+
     #[Override]
     protected function getLeftSideContent(): ?string
     {
+        $current_id = (int) ($this->fields['id'] ?? 0);
+        $favorites = $this->getCurrentArticleAndFavorites($current_id);
+
+        $current_is_favorite = KnowbaseItem_Favorite::isFavoriteForCurrentUser($current_id);
+        $has_other_favorites = array_filter($favorites, fn(Article $a) => !$a->is_current) !== [];
+
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
-                'tree' => (new Builder())->buildTree(),
+                'tree'                => (new Builder())->buildTree(),
+                'favorites'           => $favorites,
+                'current_is_favorite' => $current_is_favorite,
+                'has_other_favorites' => $has_other_favorites,
             ]
         );
     }
