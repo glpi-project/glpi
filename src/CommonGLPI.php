@@ -1460,6 +1460,11 @@ class CommonGLPI implements CommonGLPIInterface
         return [];
     }
 
+
+    /**
+     * @psalm-taint-source html
+     * @psalm-taint-source has_quotes
+     */
     protected function getLeftSideContent(): ?string
     {
         return null;
