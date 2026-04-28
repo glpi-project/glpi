@@ -1,47 +1,48 @@
 # Contributing to GLPI
 
-:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
+Thank you for considering a contribution. Please read this document before opening an issue or pull request.
 
-Please note that current repository is about GLPI core only. All related plugins are the responsibility of their respective owners and all requests must be done on their own systems.
+## Scope
 
-**Please write only in English!**
+This repository covers **GLPI core only**. Third-party plugins are owned by their authors — report plugin issues and requests to the relevant plugin repository.
 
-## Security
+Issues, pull requests, commit messages, and code comments must be in **English**.
 
-**⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/glpi-project/glpi/security/policy) for more details. ⚠️**
+Issues are handled on a best-effort basis. For guaranteed support, see [GLPI Network](https://glpi-network.com) or our [official partners](https://glpi-project.org/partners/).
 
-## IA Agents
+> [!CAUTION]
+> ⚠️ For security vulnerabilities, see [SECURITY.md](SECURITY.md). Do not open public issues, pull requests, or discussions for security problems.
 
-Many people have the idea to propose code modifications from IA Agents, verbatim (or almost). We recently get lots of this kind of contributions. **That kind of IA only contribution will be refused.**
+## Where things go
 
-You can of course take help from any way you want (including IA agents), but a **human must** review and test the proposal; we do not want to debate with an AI bot.
+- **Bug report** — open an issue using the bug template. Reproducibility is the minimum bar; reports we cannot reproduce will be closed.
+- **Feature proposal** — open an issue using the "contribution request" template *before* writing code. We will tell you whether the change belongs in core, in a plugin, or not at all.
+- **Idea without implementation** — use [suggest.glpi-project.org](https://suggest.glpi-project.org) and upvote existing entries. Issues opened as "please add X" without a discussion or PR will be redirected there.
+- **Usage questions** — use the [forum](https://forum.glpi-project.org). Questions opened as issues will be closed.
 
-Another point: licensing around IA agents commit is currently quite uncertain. We prefer keeping things simple, so **we won't accept any code explicitely authored from any IA agent**.
+## Plugin-first
 
-## Bugs
+If a feature can live as a plugin, it should. Core accepts changes that touch shared infrastructure (data model, framework, security, accessibility) or that the majority of users need. Niche features become plugins — we will help you scope the API surface you need.
 
-Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](https://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).
+## Pull requests
 
-If you found a bug, the first steps to do are:
-- check if you're using the latest version, and if not, upgrade to see if the problem remains unsolved,
-- search in already existing tickets to see if someone else already reported the issue.
+Trivial fixes (typos, broken links, small documentation corrections) may be submitted as PRs directly.
 
-If the last release does not solve the issue and there are no existing tickets, create one using the bug report template. Be sure you provide all requested details, log entries, and whatever may be useful to understand and reproduce the issue.
+For all other changes, a pull request is reviewed only after these conditions are met:
 
-If developers are not able to reproduce the issue, it may not be fixed.
+1. A linked issue exists and the change has been agreed.
+2. Tests cover the new behavior or the bug being fixed. PRs without tests are closed.
+3. CI passes — static analysis, code style, and the test suites.
+4. The PR description discloses whether AI tools were used and how.
 
-## Features
+Keep your branch up to date with the target branch. We rebase and squash on merge.
 
-If you want to work on a new feature, open a ticket using the feature template, so we can discuss on it.
+Coding standards and the local CI workflow are documented in the [GLPI developer documentation](https://glpi-developer-documentation.readthedocs.io).
 
-If you're just asking for something to be added without doing it yourself, please consider adding (or upvoting) an enhancement on the [suggestion website](https://suggest.glpi-project.org).
+## AI-assisted contributions
 
-## Support request
+AI tools are welcome when used by someone who understands the change. Disclose tool use in the PR description.
 
-You have a question on GLPI usage, or want to know what are the capabilities.
+Commits must be authored under your own name and email — not by an AI agent or LLM provider account. PRs containing commits owned by an AI service will be returned for re-authoring.
 
-Current repository is not the right place for that. You may try to ask your question on [the forums](https://forum.glpi-project.org), on the mailing lists, on telegram channels, ...
-
-## Coding
-
-If you want to contribute to the project code, please take a time to read the [project coding guidelines](https://glpi-developer-documentation.readthedocs.io).
+Contributions that reference functions, hooks, or APIs that do not exist in the codebase will be closed as hallucinations. Repeat offenders will be banned.

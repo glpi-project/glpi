@@ -29,5 +29,15 @@ labels:
         body: |
             This issue has been closed because it appears your contribution comes (almost) verbatim from an IA agent.
             
-            We do not want to debate with IA bots; this is too much time consuming. Please read our contributions guidelines,
+            We do not want to debate with IA bots; this is too much time consuming. See CONTRIBUTING.md
         action: "close"
+  - name: needs-discussion
+    labeled:
+      pr:
+        body: |
+          This PR has been closed because no prior issue was opened to discuss the change.
+
+          Per [CONTRIBUTING.md](https://github.com/glpi-project/glpi/blob/main/CONTRIBUTING.md), changes other than trivial fixes (typos, broken links) must start with a bug report or feature proposal so we can confirm the change is wanted, belongs in core rather than a plugin, and isn't a duplicate effort.
+
+          To proceed: open an issue, wait for confirmation, then submit the PR with the issue linked.
+        action: close
