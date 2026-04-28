@@ -30,27 +30,15 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import "components/form/fields_macros.html.twig" as fields %}
-<div class="mb-3">
-    <form method="post" action="{{ type|itemtype_form_path }}">
-        <input type="hidden" name="{{ type|itemtype_foreign_key }}" value="{{ id }}">
-        <div class="d-flex flex-wrap">
-            {{ fields.dropdownItemTypes('_type', '', add_target_msg, {
-                types: ['Entity', 'Group', 'Profile', 'User'],
-                rand: rand,
-                inline_add_field_html: true,
-                add_field_html: "<span id='visibility" ~ rand ~ "'></span>",
-            }) }}
-        </div>
-        <script type="module">
-            const { VisibilityTargetController } = await import(
-                "{{ js_path('js/modules/VisibilityTargetController.js') }}"
-            );
-            new VisibilityTargetController({
-                trigger: 'dropdown__type{{ rand }}',
-                output:  'visibility{{ rand }}',
-                params:  {{ visiblity_dropdown_params|json_encode|raw }},
-            });
-        </script>
-    </form>
-</div>
+<table class="tab_format">
+    <tr>
+        <td>{{ 'Entity'|itemtype_name }}</td>
+        <td>
+            {% do call('Entity::dropdown', [entity_dropdown_params]) %}
+        </td>
+        <td>{{ __('Child entities') }}</td>
+        <td>
+            {% do call('Dropdown::showYesNo', [prefix ~ 'is_recursive' ~ suffix]) %}
+        </td>
+    </tr>
+</table>

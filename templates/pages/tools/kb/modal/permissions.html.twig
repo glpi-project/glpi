@@ -53,23 +53,18 @@
                            class="btn btn-primary">
                 </div>
             </div>
-            <script>
-                $('#dropdown__type{{ rand }}').on('change', (e) => {
-                    const $submit = $('#visibility-submit{{ rand }}');
-                    if (e.target.value === '') {
-                        $('#visibility{{ rand }}').empty();
-                        $submit.addClass('d-none').removeClass('d-flex');
-                        return;
-                    }
-                    $('#visibility{{ rand }}').load(
-                        `${CFG_GLPI.root_doc}/ajax/visibility.php`,
-                        {
-                            ...{{ visiblity_dropdown_params|json_encode|raw }},
-                            type: e.target.value,
-                            nobutton: 1,
-                        },
-                        () => $submit.removeClass('d-none').addClass('d-flex')
-                    );
+            <script type="module">
+                const { VisibilityTargetController } = await import(
+                    "{{ js_path('js/modules/VisibilityTargetController.js') }}"
+                );
+                new VisibilityTargetController({
+                    trigger:       'dropdown__type{{ rand }}',
+                    output:        'visibility{{ rand }}',
+                    submitWrapper: 'visibility-submit{{ rand }}',
+                    params: {
+                        ...{{ visiblity_dropdown_params|json_encode|raw }},
+                        nobutton: 1,
+                    },
                 });
             </script>
         </form>
@@ -145,13 +140,9 @@
 </div>
 
 {% if can_edit %}
-<script>
-    (() => {
-        const list = document.querySelector('[data-glpi-permissions-list]');
-        if (!list) {
-            return;
-        }
-
+<script type="module">
+    const list = document.querySelector('[data-glpi-permissions-list]');
+    if (list) {
         list.addEventListener('click', async (e) => {
             const btn = e.target.closest('[data-glpi-permission-delete]');
             if (!btn) {
@@ -159,6 +150,9 @@
             }
 
             const row = btn.closest('[data-glpi-permission-id]');
+            if (!row) {
+                return;
+            }
             const permission_id = row.dataset.glpiPermissionId;
             const itemtype = row.dataset.glpiPermissionItemtype;
 
@@ -194,6 +188,6 @@
                 glpi_toast_error('{{ __("An error occurred while deleting the permission.")|e("js") }}');
             }
         });
-    })();
+    }
 </script>
 {% endif %}
