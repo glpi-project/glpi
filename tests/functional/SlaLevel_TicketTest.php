@@ -62,8 +62,6 @@ class SlaLevel_TicketTest extends DbTestCase
         // create SLM with SLA and level
         ['sla' => $sla] = $this->createSLA(['definition_time' => 'hour', 'number_time' => 1]);
 
-        //        dump('Current test time : '. \Session::getCurrentTime());
-
         $sla_level = $this->createItem(
             SlaLevel::class,
             [
