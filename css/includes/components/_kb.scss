@@ -719,6 +719,21 @@
         list-style: none;
     }
 
+    // Current article entry when it is not yet a favorite: hidden until the user favorites it.
+    [data-glpi-kb-favorite-current="pending"] {
+        display: none;
+    }
+
+    // Favorites section hidden when there are no favorites to display (set server-side or by JS).
+    [data-glpi-kb-aside-favorites][data-glpi-kb-aside-favorites-hidden] {
+        display: none;
+    }
+
+    // Header border hidden when the favorites section is empty (set server-side or by JS).
+    [data-glpi-kb-aside-header][data-glpi-kb-aside-header-no-border] {
+        border-bottom: 0;
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;

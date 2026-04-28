@@ -464,6 +464,7 @@ export class GlpiKnowbaseArticleController
                     if (!clicked_on_toggle) {
                         toggle.checked = !toggle.checked;
                     }
+                    this.#updateFavoritesAside(toggle.checked);
                     this.#toggleFavorite(params.id, toggle);
                 }
                 break;
@@ -491,6 +492,39 @@ export class GlpiKnowbaseArticleController
         }
 
         return params;
+    }
+
+    /**
+     * @param {boolean} is_favorited
+     */
+    #updateFavoritesAside(is_favorited)
+    {
+        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+        if (!aside) {
+            return;
+        }
+
+        const favorites_section = aside.querySelector('[data-glpi-kb-aside-favorites]');
+        const header = aside.querySelector('[data-glpi-kb-aside-header]');
+        const current_entry = aside.querySelector('[data-glpi-kb-favorite-current]');
+
+        if (!favorites_section || !header || !current_entry) {
+            return;
+        }
+
+        const has_other_favorites = favorites_section.querySelector('li:not([data-glpi-kb-favorite-current])') !== null;
+
+        if (is_favorited) {
+            current_entry.setAttribute('data-glpi-kb-favorite-current', 'active');
+            favorites_section.removeAttribute('data-glpi-kb-aside-favorites-hidden');
+            header.removeAttribute('data-glpi-kb-aside-header-no-border');
+        } else {
+            current_entry.setAttribute('data-glpi-kb-favorite-current', 'pending');
+            if (!has_other_favorites) {
+                favorites_section.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
+                header.setAttribute('data-glpi-kb-aside-header-no-border', '');
+            }
+        }
     }
 
     /**

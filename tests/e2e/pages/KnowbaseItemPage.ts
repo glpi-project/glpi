@@ -112,6 +112,16 @@ export class KnowbaseItemPage extends GlpiPage
         await response_promise;
     }
 
+    public get favoritesSection(): Locator
+    {
+        return this.page.getByTestId('kb-aside-favorites');
+    }
+
+    public getFavoriteArticle(title: string): Locator
+    {
+        return this.favoritesSection.getByRole('link', { name: title });
+    }
+
     public get childEntitiesCheckbox(): Locator
     {
         return this.page.getByRole('checkbox', { name: 'Child entities' });

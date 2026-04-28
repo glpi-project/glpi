@@ -44,8 +44,13 @@
     </li>
 {% endmacro %}
 
-{% macro render_article(article) %}
-    <li class="article">
+{% macro render_article(article, add_margin = false, favorite_state = null) %}
+    <li
+        {% if favorite_state is not null %}
+            data-glpi-kb-favorite-current="{{ favorite_state }}"
+        {% endif %}
+        class="article {{ add_margin ? 'mb-2' : '' }}"
+    >
         <a class="text-dark text-truncate d-block" href="{{ article.link }}">
             {{ render_illustration(article.illustration, 20) }}
             {{ article.title }}
@@ -65,9 +70,37 @@
 
 {% import _self as macros %}
 
-<div class="card-header">
+{% set hide_favorites = not has_other_favorites and not current_is_favorite %}
+
+<div class="card-header" data-glpi-kb-aside-header {{ hide_favorites ? 'data-glpi-kb-aside-header-no-border' : '' }}>
     <h3 class="card-title fw-bold">{{ __("Articles") }}</h3>
 </div>
+
+<div
+    class="card-body flex-grow-0"
+    data-glpi-kb-aside-favorites
+    data-testid="kb-aside-favorites"
+    {{ hide_favorites ? 'data-glpi-kb-aside-favorites-hidden' : '' }}
+>
+    <h4 class="card-title fw-bold fs-4">
+        <i class="ti ti-star-filled me-1 fs-5 text-yellow"></i>
+        {{ __("Favorites") }}
+    </h4>
+        <ul class="kb-tree ps-0">
+            {% for article in favorites %}
+                {% if article.is_current %}
+                    {{ macros.render_article(
+                        article,
+                        true,
+                        current_is_favorite ? 'active' : 'pending',
+                    ) }}
+                {% else %}
+                    {{ macros.render_article(article, true) }}
+                {% endif %}
+            {% endfor %}
+        </ul>
+</div>
+
 <div class="card-body">
     <ul class="kb-tree ps-0">
         {# Render root articles in a special "uncategorized" category #}
