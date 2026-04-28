@@ -1080,6 +1080,7 @@ export class GlpiKnowbaseArticleController
         }
 
         document.body.appendChild(form);
+        setHasUnsavedChanges(false);
         form.submit();
     }
 

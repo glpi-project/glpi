@@ -84,7 +84,44 @@ test('Does not warn after saving edits', async ({ page, profile, api }) => {
     expect(await captureBeforeUnload(page)).toBe(false);
 });
 
-test('Regression #203: does not warn after switching translation language without editing', async ({ page, profile, api }) => {
+test('Does not warn when submitting a new article via "Add"', async ({ page, profile }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    await page.goto('/front/knowbaseitem.form.php', { waitUntil: 'domcontentloaded' });
+    await expect(kb.editor.getEditor()).toHaveAttribute('contenteditable', 'true');
+
+    await kb.subject.click();
+    await page.keyboard.type('New article title');
+
+    let beforeUnloadFired = false;
+    page.on('dialog', async (dialog) => {
+        if (dialog.type() === 'beforeunload') {
+            beforeUnloadFired = true;
+        }
+        await dialog.accept();
+    });
+
+    await page.getByRole('button', { name: 'Add article' }).click();
+    await page.waitForURL(/id=\d+/);
+
+    expect(beforeUnloadFired).toBe(false);
+});
+
+test('Warns before leaving page with an unsaved new article draft', async ({ page, profile }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    await page.goto('/front/knowbaseitem.form.php', { waitUntil: 'domcontentloaded' });
+    await expect(kb.editor.getEditor()).toHaveAttribute('contenteditable', 'true');
+
+    await kb.subject.click();
+    await page.keyboard.type('Draft never saved');
+
+    expect(await captureBeforeUnload(page)).toBe(true);
+});
+
+test('Regression : does not warn after switching translation language without editing', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
