@@ -70,7 +70,7 @@ final class Builder
         foreach ($categories as $cat_data) {
             $category = new Category(
                 title: $cat_data['name'] ?? '',
-                illustration: 'kb-faq',
+                illustration: $cat_data['illustration'] ?: 'kb-faq',
             );
             $this->populateNode($category, (int) $cat_data['id']);
             $node->addCategory($category);

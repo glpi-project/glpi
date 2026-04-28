@@ -35,7 +35,6 @@
 namespace tests\unit\Glpi\Knowbase\Aside;
 
 use Glpi\Knowbase\Aside\Builder;
-use Glpi\Knowbase\Aside\Category;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItemCategory;
@@ -105,6 +104,30 @@ final class BuilderTest extends DbTestCase
             array_column($plants_node->getArticles(), 'title'),
         );
         $this->assertEmpty($plants_node->getCategories());
+    }
+
+    public function testCategoryIllustrationIsPropagatedFromDb(): void
+    {
+        $this->login();
+
+        $this->createItem(KnowbaseItemCategory::class, [
+            'name'                      => 'Custom illustrated',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+            'illustration'              => 'kb-graduation',
+        ]);
+        $this->makeCategory('Default illustrated');
+
+        $tree = (new Builder())->buildTree();
+
+        $by_title = [];
+        foreach ($tree->getCategories() as $node) {
+            $by_title[$node->title] = $node;
+        }
+
+        $this->assertSame('kb-graduation', $by_title['Custom illustrated']->illustration);
+        $this->assertSame('kb-faq', $by_title['Default illustrated']->illustration);
     }
 
     private function makeCategory(string $name, int $parent_id = 0): KnowbaseItemCategory
