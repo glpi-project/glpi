@@ -165,6 +165,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
 ];
 $ignoreErrors[] = [
+    'message' => '#^Possibly invalid array key type string\\|null\\.$#',
+    'identifier' => 'offsetAccess.invalidOffset',
+    'count' => 2,
+    'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 2,
