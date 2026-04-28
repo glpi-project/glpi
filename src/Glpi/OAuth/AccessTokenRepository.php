@@ -77,6 +77,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'date_expiration' => $accessTokenEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
             'user_identifier' => $accessTokenEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($accessTokenEntity->getScopes()),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
         ]);
     }
 

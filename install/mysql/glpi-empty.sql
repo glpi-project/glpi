@@ -10028,6 +10028,7 @@ CREATE TABLE `glpi_oauth_access_tokens` (
    `date_expiration` timestamp NOT NULL,
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
+   `ip_address` varchar(45) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -10037,6 +10038,7 @@ CREATE TABLE `glpi_oauth_refresh_tokens` (
    `identifier` varchar(255) NOT NULL,
    `access_token` varchar(255) NOT NULL,
    `date_expiration` timestamp NOT NULL,
+   `ip_address` varchar(45) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `access_token` (`access_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -10048,6 +10050,7 @@ CREATE TABLE `glpi_oauth_auth_codes` (
    `date_expiration` timestamp NOT NULL,
    `user_identifier` varchar(255) DEFAULT NULL,
    `scopes` text DEFAULT NULL,
+   `ip_address` varchar(45) DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
