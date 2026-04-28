@@ -1372,4 +1372,198 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals(27, $count_with_condition2);
         $this->assertEquals(0, $count_empty_table);
     }
+
+    public function testUpdatePolymorphicReferencesHandlesDuplicateTarget(): void
+    {
+        global $DB;
+
+        // Arrange: simulate a state where the target row already exists in glpi_infocoms,
+        // e.g. from a previous migration run that partially committed.
+        $definition = $this->initAssetDefinition(
+            'MyCustomAsset',
+            capacities: [
+                new Capacity(name: HasInfocomCapacity::class),
+            ]
+        );
+        $asset_class = $definition->getAssetClassName();
+
+        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
+
+        // Source infocom (original plugin data).
+        $this->createItem(Infocom::class, [
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer_1_id,
+            'warranty_date'     => '2024-12-04',
+            'warranty_duration' => 3,
+        ]);
+
+        // Create the asset without auto-creating its infocom.
+        $asset_1 = new $asset_class();
+        $asset_1_id = $asset_1->add(['name' => 'Test asset 1', 'entities_id' => 0], ['disable_infocom_creation' => true]);
+        $this->assertGreaterThan(0, $asset_1_id);
+        $asset_1->getFromDB($asset_1_id);
+
+        // Target infocom already exists (simulates a previous migration run).
+        $this->createItem(Infocom::class, [
+            'itemtype'          => $asset_class,
+            'items_id'          => $asset_1_id,
+            'warranty_date'     => '2024-12-04',
+            'warranty_duration' => 3,
+        ]);
+
+        $instance = new class ($DB) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition    = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+                $asset_1       = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
+                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+                $this->updatePolymorphicReferences(
+                    Computer::class,
+                    $computer_1_id,
+                    $asset_1::class,
+                    $asset_1->getID()
+                );
+
+                return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
+        };
+
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute();
+
+        // Assert: no errors, source row removed, target row intact.
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        $source_rows = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => Computer::class, 'items_id' => $computer_1_id]
+        );
+        $this->assertCount(0, $source_rows, 'Source infocom should have been removed.');
+
+        $target_rows = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class, 'items_id' => $asset_1_id]
+        );
+        $this->assertCount(1, $target_rows, 'Target infocom should still exist.');
+    }
+
+    public function testUpdatePolymorphicReferencesIdempotenceWithPartiallyMigratedItemtype(): void
+    {
+        global $DB;
+
+        // Arrange: simulate a state where itemtype was already updated by an external SQL command
+        // but items_id still holds the old plugin value (source_id != target_id).
+        $definition = $this->initAssetDefinition(
+            'MyCustomAsset',
+            capacities: [
+                new Capacity(name: HasInfocomCapacity::class),
+            ]
+        );
+        $asset_class = $definition->getAssetClassName();
+
+        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
+
+        // Create the new asset (no infocom yet).
+        $asset_1 = new $asset_class();
+        $asset_1_id = $asset_1->add(['name' => 'Test asset 1', 'entities_id' => 0], ['disable_infocom_creation' => true]);
+        $this->assertGreaterThan(0, $asset_1_id);
+
+        // Require source_id != target_id for the secondary UPDATE path to be exercised.
+        $this->assertNotEquals(
+            $computer_1_id,
+            $asset_1_id,
+            'Test requires computer_1_id != asset_1_id to validate the secondary items_id update.'
+        );
+
+        // Create a valid infocom for the computer then overwrite its itemtype directly in DB,
+        // mimicking a manual "UPDATE glpi_infocoms SET itemtype = REPLACE(...)" workaround.
+        $this->createItem(Infocom::class, [
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer_1_id,
+            'warranty_date'     => '2024-12-04',
+            'warranty_duration' => 3,
+        ]);
+        $DB->update(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class],
+            ['itemtype' => Computer::class, 'items_id' => $computer_1_id]
+        );
+
+        $instance = new class ($DB) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition    = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+                $asset_1       = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
+                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+                $this->updatePolymorphicReferences(
+                    Computer::class,
+                    $computer_1_id,
+                    $asset_1::class,
+                    $asset_1->getID()
+                );
+
+                return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
+        };
+
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute();
+
+        // Assert: items_id corrected to the new asset id, financial data preserved.
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        $partial_rows = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class, 'items_id' => $computer_1_id]
+        );
+        $this->assertCount(0, $partial_rows, 'Partially migrated row should have been fixed.');
+
+        $fixed_rows = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class, 'items_id' => $asset_1_id]
+        );
+        $this->assertCount(1, $fixed_rows, 'Row with correct items_id should exist.');
+        $this->assertEquals('2024-12-04', reset($fixed_rows)['warranty_date']);
+        $this->assertEquals(3, reset($fixed_rows)['warranty_duration']);
+    }
 }

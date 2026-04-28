@@ -679,17 +679,60 @@ abstract class AbstractPluginMigration
             // and it is impossible to handle them here automatically, especially
             // because it can be related to code located in plugins.
             // Therefore, doing updates directly in DB is the best option here.
-            $this->db->update(
-                table: $table,
-                params: [
-                    $itemtype_field => $target_itemtype,
-                    $items_id_field => $target_items_id,
-                ],
-                where: [
-                    $itemtype_field => $source_itemtype,
-                    $items_id_field => $source_items_id,
-                ]
-            );
+            try {
+                $this->db->update(
+                    table: $table,
+                    params: [
+                        $itemtype_field => $target_itemtype,
+                        $items_id_field => $target_items_id,
+                    ],
+                    where: [
+                        $itemtype_field => $source_itemtype,
+                        $items_id_field => $source_items_id,
+                    ]
+                );
+            } catch (RuntimeException $e) {
+                if (!str_contains($e->getMessage(), '(1062)')) {
+                    throw $e;
+                }
+                // A row with (target_itemtype, target_items_id) already exists (e.g. from a previous
+                // migration run). The source row is now a stale duplicate — remove it.
+                $this->db->delete(
+                    $table,
+                    [
+                        $itemtype_field => $source_itemtype,
+                        $items_id_field => $source_items_id,
+                    ]
+                );
+            }
+
+            // Idempotence: handle rows where the itemtype was already updated to the target value
+            // (e.g. via a manual SQL fix) but items_id still holds the source value.
+            if ($source_items_id !== $target_items_id) {
+                try {
+                    $this->db->update(
+                        table: $table,
+                        params: [$items_id_field => $target_items_id],
+                        where: [
+                            $itemtype_field => $target_itemtype,
+                            $items_id_field => $source_items_id,
+                        ]
+                    );
+                } catch (RuntimeException $e) {
+                    if (!str_contains($e->getMessage(), '(1062)')) {
+                        throw $e;
+                    }
+                    // Both (target_itemtype, source_items_id) and (target_itemtype, target_items_id)
+                    // exist simultaneously. The target row is the correct one — remove the partial row.
+                    $this->db->delete(
+                        $table,
+                        [
+                            $itemtype_field => $target_itemtype,
+                            $items_id_field => $source_items_id,
+                        ]
+                    );
+                }
+            }
         }
     }
 
