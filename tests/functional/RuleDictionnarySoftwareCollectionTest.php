@@ -523,4 +523,134 @@ class RuleDictionnarySoftwareCollectionTest extends DbTestCase
         $expected = ['version_append' => 'else', 'version' => 'else', '_ruleid' => $rules_id];
         $this->assertSame($expected, $result);
     }
+
+    public function testReplayDictionnaryMergesMultipleDuplicatesWithSameName(): void
+    {
+        $this->login();
+
+        $collection = new \RuleDictionnarySoftwareCollection();
+        $manufacturer = new \Manufacturer();
+
+        $manufacturers_id = $manufacturer->importExternal('Microsoft');
+
+        $rule = $this->createItem(\Rule::class, [
+            'name'        => 'Test duplicate merge - replayDictionnary',
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => '',
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'Microsoft .NET Host',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'name',
+            'value'       => 'Microsoft .NET Host',
+        ]);
+
+        $ids = [];
+        for ($i = 0; $i < 3; $i++) {
+            $soft = $this->createItem(\Software::class, [
+                'name'             => 'Microsoft .NET Host',
+                'manufacturers_id' => $manufacturers_id,
+                'entities_id'      => 0,
+                'is_deleted'       => 0,
+                'is_template'      => 0,
+            ]);
+            $ids[] = $soft->getID();
+        }
+
+        $this->assertSame(
+            3,
+            countElementsInTable('glpi_softwares', [
+                'name'             => 'Microsoft .NET Host',
+                'manufacturers_id' => $manufacturers_id,
+                'is_deleted'       => 0,
+            ])
+        );
+
+        $collection->replayDictionnaryOnSoftwaresByID($ids);
+
+        $this->assertSame(
+            1,
+            countElementsInTable('glpi_softwares', [
+                'name'             => 'Microsoft .NET Host',
+                'manufacturers_id' => $manufacturers_id,
+                'is_deleted'       => 0,
+            ])
+        );
+    }
+
+    public function testReplayRulesOnExistingDBMergesDuplicatesAlreadyWithFinalName(): void
+    {
+        $this->login();
+
+        $collection = new \RuleDictionnarySoftwareCollection();
+        $manufacturer = new \Manufacturer();
+
+        $manufacturers_id = $manufacturer->importExternal('Microsoft');
+
+        $rule = $this->createItem(\Rule::class, [
+            'name'        => 'Test duplicate merge - replayRulesOnExistingDB',
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleDictionnarySoftware',
+            'match'       => \Rule::AND_MATCHING,
+            'condition'   => 0,
+            'description' => '',
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'Microsoft .NET Host',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'name',
+            'value'       => 'Microsoft .NET Host',
+        ]);
+
+        for ($i = 0; $i < 3; $i++) {
+            $this->createItem(\Software::class, [
+                'name'             => 'Microsoft .NET Host',
+                'manufacturers_id' => $manufacturers_id,
+                'entities_id'      => 0,
+                'is_deleted'       => 0,
+                'is_template'      => 0,
+            ]);
+        }
+
+        $this->assertSame(
+            3,
+            countElementsInTable('glpi_softwares', [
+                'name'             => 'Microsoft .NET Host',
+                'manufacturers_id' => $manufacturers_id,
+                'is_deleted'       => 0,
+            ])
+        );
+
+        $collection->replayRulesOnExistingDB();
+
+        $this->assertSame(
+            1,
+            countElementsInTable('glpi_softwares', [
+                'name'             => 'Microsoft .NET Host',
+                'manufacturers_id' => $manufacturers_id,
+                'is_deleted'       => 0,
+            ])
+        );
+    }
 }

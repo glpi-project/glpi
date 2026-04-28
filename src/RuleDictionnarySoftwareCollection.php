@@ -133,8 +133,24 @@ TWIG, $twig_params);
                 //Replay software dictionary rules
                 $res_rule = $this->processAllRules($input, [], []);
 
+                $IDs = [];
+                //Find all the software in the database with the same name and manufacturer
+                $same_iterator = $DB->request([
+                    'SELECT' => 'id',
+                    'FROM'   => 'glpi_softwares',
+                    'WHERE'  => [
+                        'name'               => $input['name'],
+                        'manufacturers_id'   => $input['manufacturers_id'],
+                    ],
+                ]);
+
+                foreach ($same_iterator as $result) {
+                    $IDs[] = $result["id"];
+                }
+
                 if (
-                    (isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($input["name"])))
+                    count($IDs) > 1
+                    || (isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($input["name"])))
                     || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
                     || (isset($res_rule['new_entities_id'])
                     && ($res_rule['new_entities_id'] != $input['entities_id']))
@@ -145,22 +161,7 @@ TWIG, $twig_params);
                     || (isset($res_rule['softwarecategories_id'])
                     && ($res_rule['softwarecategories_id'] != $input['softwarecategories_id']))
                 ) {
-                    $IDs = [];
-                    //Find all the software in the database with the same name and manufacturer
-                    $same_iterator = $DB->request([
-                        'SELECT' => 'id',
-                        'FROM'   => 'glpi_softwares',
-                        'WHERE'  => [
-                            'name'               => $input['name'],
-                            'manufacturers_id'   => $input['manufacturers_id'],
-                        ],
-                    ]);
-
-                    if (count($same_iterator)) {
-                        //Store all the software's IDs in an array
-                        foreach ($same_iterator as $result) {
-                            $IDs[] = $result["id"];
-                        }
+                    if (count($IDs)) {
                         //Replay dictionary on all the software
                         $this->replayDictionnaryOnSoftwaresByID($IDs, $res_rule);
                     }
@@ -346,16 +347,24 @@ TWIG, $twig_params);
             // Move licenses to new software
             $this->moveLicenses($ID, $new_software_id);
         } else {
-            $new_software_id = $ID;
-            $res_rule["id"]  = $ID;
-            if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
-                $res_rule["manufacturers_id"] = Dropdown::importExternal(
-                    'Manufacturer',
-                    $res_rule["manufacturer"]
-                );
-                unset($res_rule["manufacturer"]);
+            if (!isset($new_softs[$entity][$name])) {
+                // This is the canonical software entry for this name/entity
+                $new_softs[$entity][$name] = $ID;
+                $new_software_id = $ID;
+                $res_rule["id"]  = $ID;
+                if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
+                    $res_rule["manufacturers_id"] = Dropdown::importExternal(
+                        'Manufacturer',
+                        $res_rule["manufacturer"]
+                    );
+                    unset($res_rule["manufacturer"]);
+                }
+                $soft->update($res_rule);
+            } else {
+                // A canonical software for this name/entity already exists — merge this duplicate into it
+                $new_software_id = $new_softs[$entity][$name];
+                $this->moveLicenses($ID, $new_software_id);
             }
-            $soft->update($res_rule);
         }
 
         // Add to software to deleted list
