@@ -58,6 +58,11 @@
     {% endif %}
 
     <div class="kb-link-item-footer">
+        <button
+            class="btn btn-ghost-secondary me-2"
+            type="button"
+            data-bs-dismiss="modal"
+        >{{ __('Cancel') }}</button>
         {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
     </div>
 </form>

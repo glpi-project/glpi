@@ -59,8 +59,13 @@
     </div>
     <div class="d-flex">
         <button
+            class="btn btn-ghost-secondary ms-auto me-2"
             type="button"
-            class="btn btn-primary ms-auto"
+            data-bs-dismiss="modal"
+        >{{ __('Cancel') }}</button>
+        <button
+            type="button"
+            class="btn btn-primary"
             data-glpi-kb-schedule-apply
             data-testid="schedule-apply-btn"
         >{{ __('Apply') }}</button>
