@@ -264,7 +264,8 @@
                 }
 
                 // Don't offset to create a tag if it's not an email
-                if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/).test(term)) {
+                // Support UTF-8 characters and special chars in email addresses (RFC 6531)
+                if (!new RegExp(/^[\p{L}\p{N}\p{M}._%+'-]+@([\p{L}\p{N}\p{M}._-]+\.)+[\p{L}\p{N}]{2,63}$/u).test(term)) {
                     // Return null to disable tag creation
                     return null;
                 }
