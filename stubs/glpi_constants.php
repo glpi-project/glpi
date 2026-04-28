@@ -92,6 +92,8 @@
     define('GLPI_SYSTEM_CRON', $random_val([false, true]));
     define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
     define('GLPI_TEXT_MAXSIZE', $random_val([1000, 2000, 3000, 4000]));
+    define('GLPI_TRUSTED_REVERSE_PROXIES', $random_val([[], ['10.10.3.4']]));
+    define('GLPI_REVERSE_PROXY_HEADERS', $random_val([['X-Forwarded-For'], ['Forwarded']]));
     define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));
     define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', $random_val([false, true]));
     define('GLPI_WEBHOOK_CRA_MANDATORY', $random_val([false, true]));
