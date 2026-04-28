@@ -121,17 +121,6 @@ abstract class ItemTranslation extends CommonDBChild
     {
         if (isset($input['translations'])) {
             if (!is_string($input['translations'])) {
-                if (isset($input['language'], $input['translations']['one'])) {
-                    try {
-                        $actual_key = (new CldrLanguage($input['language']))->getPluralKey(1);
-                        if ($actual_key !== 'one') {
-                            $input['translations'][$actual_key] = $input['translations']['one'];
-                            unset($input['translations']['one']);
-                        }
-                    } catch (LogicException) {
-                        // Unknown language, keep 'one' as the default key
-                    }
-                }
                 $input['translations'] = json_encode($input['translations']);
             } elseif ($input['translations'] == "") {
                 $input['translations'] = "{}";
