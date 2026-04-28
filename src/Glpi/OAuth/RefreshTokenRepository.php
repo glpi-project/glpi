@@ -61,6 +61,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             'identifier' => $refreshTokenEntity->getIdentifier(),
             'access_token' => $refreshTokenEntity->getAccessToken()->getIdentifier(),
             'date_expiration' => $refreshTokenEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? null,
         ]);
     }
 
