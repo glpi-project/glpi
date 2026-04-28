@@ -63,6 +63,22 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         return KnowbaseItem::getIcon();
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAdditionalFields()
+    {
+        $fields = parent::getAdditionalFields();
+
+        $fields[] = [
+            'name'  => 'illustration',
+            'type'  => 'illustration',
+            'label' => __('Illustration'),
+        ];
+
+        return $fields;
+    }
+
     public function cleanDBonPurge()
     {
         $this->deleteChildrenAndRelationsFromDb(

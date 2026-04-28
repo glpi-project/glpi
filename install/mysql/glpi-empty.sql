@@ -4085,6 +4085,7 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   `name` varchar(255) DEFAULT NULL,
   `completename` text,
   `comment` text,
+  `illustration` varchar(255) DEFAULT NULL,
   `level` int NOT NULL DEFAULT '0',
   `sons_cache` longtext,
   `ancestors_cache` longtext,

@@ -2582,6 +2582,17 @@ TWIG, $twig_params);
         }
     }
 
+    public static function getAdditionalMenuLinks(): array
+    {
+        $links = [];
+
+        if (KnowbaseItemCategory::canView()) {
+            $links['view_kb_categories'] = KnowbaseItemCategory::getSearchURL(false);
+        }
+
+        return $links;
+    }
+
     #[Override]
     protected function getLeftSideContent(): ?string
     {

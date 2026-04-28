@@ -103,6 +103,13 @@
             <span class="d-none d-xxl-block">{{ 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()) }}</span>
          </a>
       </li>
+   {% elseif type == 'view_kb_categories' %}
+      <li class="nav-item">
+         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'KnowbaseItemCategory'|itemtype_name(get_plural_number()) }}">
+            <i class="ti ti-folder"></i>
+            <span class="d-none d-xxl-block">{{ 'KnowbaseItemCategory'|itemtype_name(get_plural_number()) }}</span>
+         </a>
+      </li>
    {% elseif type == 'import_forms' %}
       <li class="nav-item">
          <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Import forms') }}">
