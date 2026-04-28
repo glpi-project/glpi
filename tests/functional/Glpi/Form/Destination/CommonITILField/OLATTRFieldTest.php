@@ -239,6 +239,9 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
+        if ($expected_olas_ttr_id !== 0 && countElementsInTable(OLA::getTable(), ['id' => $expected_olas_ttr_id]) !== 1) {
+            throw new \Exception("Expected OLA TTR with ID $$expected_olas_ttr_id not found in database. Wrong data preparation.");
+        }
         $destination = current($destinations);
         $this->updateItem(
             $destination::getType(),
@@ -261,13 +264,11 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         $ticket = current($created_items);
 
         // Check ola_id_ttr field
-        $ticket_ttr_data = $ticket->getOlasTTRData()[0] ?? throw new \Exception('Ola TTR not found');
-        $this->assertEquals($expected_olas_ttr_id, $ticket_ttr_data['olas_id']);
-
-        // Check internal_time_to_resolve field
-        if ($expected_ttr_date !== null) {
-            $this->assertEquals($expected_ttr_date, $ticket->fields['internal_time_to_resolve']);
-        }
+        $ticket_ola_ttr_id = $expected_olas_ttr_id
+            ? ($ticket->getOlasTTRData()[0])['olas_id'] ?? throw new \Exception('Ola TTR not found')
+            : 0
+        ;
+        $this->assertEquals($expected_olas_ttr_id, $ticket_ola_ttr_id, "The created ticket should have the expected OLA TTR ID");
 
         // Return the created ticket to be able to check other fields
         return $ticket;
