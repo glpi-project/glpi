@@ -156,7 +156,7 @@ final class SessionTracker extends CommonGLPI
     /**
      * @param int $users_id
      * @param SessionFilterCriteria $filters
-     * @return array
+     * @return array<string, mixed>
      */
     private function getWebSessionsCriteria(int $users_id = 0, array $filters = []): array
     {
@@ -269,6 +269,16 @@ final class SessionTracker extends CommonGLPI
             'HAVING' => $having,
             'LIMIT' => 100,
         ];
+    }
+
+    /**
+     * @param int $users_id
+     * @param SessionFilterCriteria $filters
+     * @return array<string, mixed>
+     */
+    private function getApiSessionsCriteria(int $users_id = 0, array $filters = []): array
+    {
+
     }
 
     /**
