@@ -41,6 +41,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\SessionTracker;
 use Glpi\Session\SessionInfo;
 use Laminas\I18n\Translator\Translator;
 use Safe\Exceptions\InfoException;
@@ -88,7 +89,7 @@ class Session
     public static function destroy()
     {
         self::start();
-        self::revokeSession(self::getSessionTokenHash(), 'expired');
+        SessionTracker::revokeSession(self::getSessionTokenHash(), 'expired');
         // Unset all of the session variables.
         session_unset();
         // destroy may cause problems (no login / back to login page)
@@ -113,97 +114,6 @@ class Session
             return hash('sha256', session_id());
         }
         return null;
-    }
-
-    /**
-     * Record the new session to the database
-     * @param Auth $auth
-     * @return bool true on success, false on failure. If false is returned, the session should be destroyed and the authentication process should be aborted.
-     * @throws SessionException
-     * @internal
-     */
-    private static function recordNewSession(Auth $auth): bool
-    {
-        global $DB;
-
-        if (isCommandLine()) {
-            // Do not record sessions for command line requests.
-            return true;
-        }
-
-        try {
-            $DB->insert('glpi_user_sessions', [
-                'users_id' => $_SESSION['glpiID'],
-                'session_token_hash' => self::getSessionTokenHash(),
-                'session_file' => 'sess_' . session_id(),
-                'ip_address' => $_SERVER['REMOTE_ADDR'], //TODO This may not be correct if GLPI is behind a reverse proxy
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
-                'auth_type' => $auth->getAuthType(),
-                'created_at' => QueryFunction::now(),
-                'last_activity_at' => QueryFunction::now(),
-            ]);
-            $DB->insert('glpi_user_session_history', [
-                'users_id' => $_SESSION['glpiID'],
-                'session_token_hash' => self::getSessionTokenHash(),
-                'ip_address' => $_SERVER['REMOTE_ADDR'], //TODO This may not be correct if GLPI is behind a reverse proxy
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
-                'auth_type' => $auth->getAuthType(),
-                'logged_in_at' => QueryFunction::now(),
-            ]);
-        } catch (RuntimeException $e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * @return void
-     * @internal
-     */
-    public static function updateLastSessionActivity(): void
-    {
-        global $DB;
-
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $DB->update('glpi_user_sessions', ['last_activity_at' => date('Y-m-d H:i:s')], ['session_token_hash' => self::getSessionTokenHash()]);
-        }
-    }
-
-    /**
-     * @param string $session_token_hash
-     * @param 'user'|'admin'|'expired' $reason
-     * @return void
-     * @throws AccessDeniedHttpException
-     */
-    public static function revokeSession(string $session_token_hash, string $reason): void
-    {
-        global $DB;
-
-        $it = $DB->request([
-            'SELECT' => ['users_id'],
-            'FROM' => 'glpi_user_sessions',
-            'WHERE' => ['session_token_hash' => $session_token_hash],
-        ]);
-        $users_id = $it->current()['users_id'] ?? null;
-
-        if ($reason === 'admin' && $users_id !== self::getLoginUserID() && !self::haveRight('config', UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $DB->delete('glpi_user_sessions', ['session_token_hash' => $session_token_hash]);
-        $DB->update('glpi_user_session_history', [
-            'logged_out_at' => QueryFunction::now(),
-            'logout_reason' => $reason,
-            'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
-        ], [
-            'session_token_hash' => $session_token_hash,
-            'logged_out_at' => null, // Possibility of reused session IDs since this history is kept indefinitely.
-        ]);
-        if ($reason !== 'expired' && $users_id) {
-            $DB->update('glpi_users', [
-                'cookie_token' => null,
-            ], ['id' => $users_id]);
-        }
     }
 
     /**
@@ -328,7 +238,7 @@ class Session
 
                 $session_recorded = false;
                 try {
-                    $session_recorded = self::recordNewSession($auth);
+                    $session_recorded = SessionTracker::recordNewSession($auth);
                 } catch (Throwable) {
                     // No-op
                 }
@@ -2390,7 +2300,7 @@ class Session
     */
     public static function cleanOnLogout()
     {
-        self::revokeSession(self::getSessionTokenHash(), 'user');
+        SessionTracker::revokeSession(self::getSessionTokenHash(), 'user');
         Session::destroy();
         //Remove cookie to allow new login
         Auth::setRememberMeCookie('');

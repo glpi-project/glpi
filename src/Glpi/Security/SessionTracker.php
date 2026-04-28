@@ -34,16 +34,22 @@
 
 namespace Glpi\Security;
 
+use Auth;
 use CommonGLPI;
 use DeviceDetector\DeviceDetector;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Toolbox\IPUtilities;
+use RuntimeException;
 use Session;
 use User;
 
+/**
+ * @phpstan-type SessionFilterCriteria array{user?: string, status?: 'all'|'active', type?: 'all'|'web'|'api', ip?: string}
+ */
 final class SessionTracker extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
@@ -57,15 +63,103 @@ final class SessionTracker extends CommonGLPI
     }
 
     /**
-     * @param int $users_id
-     * @param array{user?: string, status?: 'all'|'active', type?: 'all'|'web'|'api', ip?: string} $filters
-     * @return array
+     * Record the new session to the database
+     * @param Auth $auth
+     * @return bool true on success, false on failure. If false is returned, the session should be destroyed and the authentication process should be aborted.
+     * @internal
      */
-    public function getSessions(int $users_id = 0, array $filters = []): array
+    public static function recordNewSession(Auth $auth): bool
     {
         global $DB;
 
-        Profiler::getInstance()->start('SessionTracker::getSessions');
+        if (isCommandLine()) {
+            // Do not record sessions for command line requests.
+            return true;
+        }
+
+        try {
+            $DB->insert('glpi_user_sessions', [
+                'users_id' => $_SESSION['glpiID'],
+                'session_token_hash' => Session::getSessionTokenHash(),
+                'session_file' => 'sess_' . session_id(),
+                'ip_address' => $_SERVER['REMOTE_ADDR'], //TODO This may not be correct if GLPI is behind a reverse proxy
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'auth_type' => $auth->getAuthType(),
+                'created_at' => QueryFunction::now(),
+                'last_activity_at' => QueryFunction::now(),
+            ]);
+            $DB->insert('glpi_user_session_history', [
+                'users_id' => $_SESSION['glpiID'],
+                'session_token_hash' => Session::getSessionTokenHash(),
+                'ip_address' => $_SERVER['REMOTE_ADDR'], //TODO This may not be correct if GLPI is behind a reverse proxy
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'auth_type' => $auth->getAuthType(),
+                'logged_in_at' => QueryFunction::now(),
+            ]);
+        } catch (RuntimeException) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Updates the last activity timestamp of the current session.
+     * @return void
+     * @internal
+     */
+    public static function updateLastSessionActivity(): void
+    {
+        global $DB;
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $DB->update('glpi_user_sessions', ['last_activity_at' => date('Y-m-d H:i:s')], ['session_token_hash' => Session::getSessionTokenHash()]);
+        }
+    }
+
+    /**
+     * @param string $session_token_hash
+     * @param 'user'|'admin'|'expired' $reason
+     * @return void
+     * @throws AccessDeniedHttpException
+     */
+    public static function revokeSession(string $session_token_hash, string $reason): void
+    {
+        global $DB;
+
+        $it = $DB->request([
+            'SELECT' => ['users_id'],
+            'FROM' => 'glpi_user_sessions',
+            'WHERE' => ['session_token_hash' => $session_token_hash],
+        ]);
+        $users_id = $it->current()['users_id'] ?? null;
+
+        if ($reason === 'admin' && $users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $DB->delete('glpi_user_sessions', ['session_token_hash' => $session_token_hash]);
+        $DB->update('glpi_user_session_history', [
+            'logged_out_at' => QueryFunction::now(),
+            'logout_reason' => $reason,
+            'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
+        ], [
+            'session_token_hash' => $session_token_hash,
+            'logged_out_at' => null, // Possibility of reused session IDs since this history is kept indefinitely.
+        ]);
+        if ($reason !== 'expired' && $users_id) {
+            $DB->update('glpi_users', [
+                'cookie_token' => null,
+            ], ['id' => $users_id]);
+        }
+    }
+
+    /**
+     * @param int $users_id
+     * @param SessionFilterCriteria $filters
+     * @return array
+     */
+    private function getWebSessionsCriteria(int $users_id = 0, array $filters = []): array
+    {
         $where = [];
         $having = [];
         $joins = [
@@ -151,7 +245,7 @@ final class SessionTracker extends CommonGLPI
             $having[] = ['OR' => $ip_criteria];
         }
 
-        $it = $DB->request([
+        return [
             'SELECT' => [
                 'glpi_user_session_history.id',
                 'glpi_user_session_history.users_id',
@@ -174,7 +268,22 @@ final class SessionTracker extends CommonGLPI
             ],
             'HAVING' => $having,
             'LIMIT' => 100,
-        ]);
+        ];
+    }
+
+    /**
+     * @param int $users_id The user ID to filter sessions by. If 0, sessions for all users will be returned.
+     * @param SessionFilterCriteria $filters
+     * @return array
+     */
+    public function getSessions(int $users_id = 0, array $filters = []): array
+    {
+        global $DB;
+
+        Profiler::getInstance()->start('SessionTracker::getSessions');
+
+
+        $it = $DB->request($this->getWebSessionsCriteria($users_id, $filters));
         $sessions = [];
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Create DeviceDetector instance');

@@ -132,7 +132,7 @@
 <style scoped>
     .session-tracker-toolbar {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr auto;
+        grid-template-columns: repeat(4, minmax(100px, 300px)) auto;
         grid-template-rows: repeat(3, auto);
 
         & > label {
