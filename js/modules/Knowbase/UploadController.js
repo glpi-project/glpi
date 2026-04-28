@@ -99,8 +99,32 @@ export class DocumentUploadController
             }
         });
 
-        // Form submission
-        this.#form.addEventListener('submit', (e) => this.#onSubmit(e));
+        // Validate on the upload button click rather than the form 'submit'
+        // event, so that Enter on the focused file input still opens the
+        // native file picker via the browser's default activation behaviour
+        // instead of being captured by a form-level handler.
+        if (this.#uploadBtn) {
+            this.#uploadBtn.addEventListener('click', (e) => this.#onSubmit(e));
+        }
+
+        // Safety net: the form has no `action` attribute, so block any native
+        // submission triggered through alternate paths (e.g. implicit submit).
+        this.#form.addEventListener('submit', (e) => e.preventDefault());
+
+        // Keyboard accessibility: explicitly open the picker on Enter when
+        // the visually-hidden file input has focus. The browser's default
+        // activation can be unreliable on a `visually-hidden` input, and
+        // letting the keydown bubble could otherwise trigger implicit form
+        // submission instead of the file picker.
+        if (this.#fileInput) {
+            this.#fileInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.#fileInput.click();
+                }
+            });
+        }
 
         // Modal lifecycle
         if (this.#modal) {
@@ -172,7 +196,7 @@ export class DocumentUploadController
 
         const successEntries = this.#uploader.getSuccessfulEntries();
         if (successEntries.length === 0) {
-            this.#showError(__('Please add at least one file before uploading.'));
+            this.#showError(__('Please add at least one valid file before uploading.'));
             return;
         }
 

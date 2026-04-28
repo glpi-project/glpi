@@ -570,19 +570,15 @@
             '{{ mode|e('js') }}',
         );
 
-        // Initialize document upload controller when modal opens
+        // Initialize document upload controller eagerly so the submit
+        // handler is bound before any user interaction with the modal.
         const uploadModal = document.getElementById('kb-add-document-modal');
-        if (uploadModal) {
-            uploadModal.addEventListener('shown.bs.modal', async () => {
-                const uploadPane = uploadModal.querySelector('#kb-modal-upload-pane');
-                if (uploadPane && !uploadPane.dataset.initialized) {
-                    const uploadModule = await import(
-                        "/js/modules/Knowbase/UploadController.js"
-                    );
-                    new uploadModule.DocumentUploadController(uploadPane, uploadModal);
-                    uploadPane.dataset.initialized = 'true';
-                }
-            }, { once: true });
+        const uploadPane = uploadModal?.querySelector('#kb-modal-upload-pane');
+        if (uploadPane) {
+            const uploadModule = await import(
+                "{{ js_path('js/modules/Knowbase/UploadController.js') }}"
+            );
+            new uploadModule.DocumentUploadController(uploadPane, uploadModal);
         }
     })();
 </script>

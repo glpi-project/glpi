@@ -235,7 +235,7 @@ export class DocumentLinkController
             }
         }
 
-        // Focus the Select2 search field if available, otherwise the native select
+        // Fallback to avoid focus lost
         const select2Search = this.#container.querySelector('.select2-selection');
         if (select2Search instanceof HTMLElement) {
             select2Search.focus();
