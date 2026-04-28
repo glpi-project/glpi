@@ -1732,7 +1732,6 @@ class MailCollector extends CommonDBTM
                 $content = '';
                 // Since mailbody can be big we use extract functions based on substring instead
                 // of regex capture groups to avoid backtracking errors.
-                
                 // Extract everything located prior to doctype/html declaration
                 $pre_content = Toolbox::extract_before($raw_content, '/(?:<!doctype|<html)/is');
                 if ($pre_content) {
