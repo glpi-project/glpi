@@ -2180,6 +2180,22 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        // When the LDAP_MATCHING_RULE_IN_CHAIN OID is in use (AD nested groups), the
+        // per-user query `(group_member_field=user_dn)` forces the server to perform a
+        // recursive group-tree traversal for every user, resulting in N such traversals
+        // for N users being synced. Instead, precompute memberships once per GLPI group
+        // (M queries) and serve subsequent per-user lookups from a static cache.
+        if (
+            str_contains($ldap_method["group_member_field"], '1.2.840.113556.1.4.1941')
+            && !empty($ldap_method["group_field"])
+        ) {
+            return $this->getFromLDAPGroupDiscretCached(
+                $ldap_connection,
+                $ldap_method,
+                $userdn
+            );
+        }
+
         if ($ldap_method["use_dn"]) {
             $user_tmp = $userdn;
         } else {
@@ -2213,6 +2229,121 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 }
             }
         }
+        return true;
+    }
+
+
+    /**
+     * Precompute a user_dn → group_ids mapping for all GLPI groups, then resolve
+     * the current user's memberships from cache.
+     *
+     * Called instead of the per-user LDAP query when LDAP_MATCHING_RULE_IN_CHAIN
+     * is configured, to reduce N recursive traversals to M (one per GLPI group).
+     *
+     * @param Connection $ldap_connection LDAP connection
+     * @param array      $ldap_method     LDAP method config
+     * @param string     $userdn          DN of the user to resolve
+     *
+     * @return bool
+     */
+    private function getFromLDAPGroupDiscretCached(
+        $ldap_connection,
+        array $ldap_method,
+        string $userdn
+    ): bool {
+        global $DB;
+
+        $auth_id = (int) ($ldap_method['id'] ?? 0);
+
+        // Static cache: [auth_id => [user_dn_lower => [group_id, ...]]]
+        // Populated once per auth server per process, then reused for all users.
+        static $cache = [];
+
+        if (!array_key_exists($auth_id, $cache)) {
+            $cache[$auth_id] = [];
+
+            // Extract the OID suffix from group_member_field so we can build the
+            // inverse attribute. e.g. 'member:1.2.840.113556.1.4.1941' → ':1.2.840.113556.1.4.1941'
+            $chain_suffix = '';
+            if (($colon = strpos($ldap_method['group_member_field'], ':')) !== false) {
+                $chain_suffix = substr($ldap_method['group_member_field'], $colon);
+            }
+
+            // Inverse attribute: group_field (e.g. 'memberof') + CHAIN OID suffix
+            // queries USER objects for transitive group membership.
+            $user_group_attr = $ldap_method['group_field'] . $chain_suffix;
+
+            $condition = !empty($ldap_method['condition'])
+                ? $ldap_method['condition']
+                : '(objectClass=*)';
+
+            // For each GLPI group that has an LDAP DN, fetch all transitive members.
+            $groups_iterator = $DB->request([
+                'SELECT' => ['id', 'ldap_group_dn'],
+                'FROM'   => 'glpi_groups',
+                'WHERE'  => ['NOT' => ['ldap_group_dn' => '']],
+            ]);
+
+            foreach ($groups_iterator as $group_row) {
+                $group_id = (int) $group_row['id'];
+                $group_dn = $group_row['ldap_group_dn'];
+                $escaped  = ldap_escape($group_dn, '', LDAP_ESCAPE_FILTER);
+                $filter   = "(& $condition ($user_group_attr=$escaped))";
+                $cookie   = '';
+
+                do {
+                    if (!empty($ldap_method['pagesize'])) {
+                        $controls = [[
+                            'oid'        => LDAP_CONTROL_PAGEDRESULTS,
+                            'iscritical' => true,
+                            'value'      => ['size' => (int) $ldap_method['pagesize'], 'cookie' => $cookie],
+                        ]];
+                        $sr = @ldap_search(
+                            $ldap_connection,
+                            $ldap_method['basedn'],
+                            $filter,
+                            ['dn'],
+                            0,
+                            -1,
+                            -1,
+                            LDAP_DEREF_NEVER,
+                            $controls
+                        );
+                        if (
+                            $sr !== false
+                            && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
+                            && isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])
+                        ) {
+                            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+                        } else {
+                            $cookie = '';
+                        }
+                    } else {
+                        $sr     = @ldap_search($ldap_connection, $ldap_method['basedn'], $filter, ['dn']);
+                        $cookie = '';
+                    }
+
+                    if ($sr === false) {
+                        break;
+                    }
+
+                    $info = AuthLDAP::get_entries_clean($ldap_connection, $sr);
+                    for ($i = 0; $i < ($info['count'] ?? 0); $i++) {
+                        if (!empty($info[$i]['dn'])) {
+                            $member_key = strtolower($info[$i]['dn']);
+                            $cache[$auth_id][$member_key][] = $group_id;
+                        }
+                    }
+                } while ($cookie !== '');
+            }
+        }
+
+        // Assign groups from cache — O(1) lookup, no LDAP round-trip.
+        $user_key = strtolower($userdn);
+        foreach ($cache[$auth_id][$user_key] ?? [] as $group_id) {
+            $this->fields["_groups"][] = $group_id;
+        }
+
         return true;
     }
 
