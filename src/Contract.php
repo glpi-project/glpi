@@ -649,6 +649,14 @@ class Contract extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '24',
+            'table'              => $this->getTable(),
+            'field'              => 'max_links_allowed',
+            'name'               => __('Max number of items'),
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
             'id'                 => '10',
             'table'              => $this->getTable(),
             'field'              => 'accounting_number',
