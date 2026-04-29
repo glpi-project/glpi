@@ -37,7 +37,6 @@ namespace tests\units\Glpi\Controller\Dropdown;
 use Glpi\Controller\Dropdown\VisibilitySubTargetController;
 use Glpi\Tests\DbTestCase;
 use Group;
-use Profile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use User;
@@ -91,21 +90,6 @@ final class VisibilitySubTargetControllerTest extends DbTestCase
         $this->assertMatchesRegularExpression('/name=["\']is_recursive["\']/', $content);
     }
 
-    public function testInvokeReturnsRenderedResponseForProfileType(): void
-    {
-        $this->login();
-
-        $response = $this->callController([
-            'type'     => Profile::class,
-            'items_id' => 1,
-        ]);
-
-        $content = $response->getContent();
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression('/name=["\']entities_id["\']/', $content);
-        $this->assertMatchesRegularExpression('/name=["\']is_recursive["\']/', $content);
-    }
-
     public function testInvokeRendersPrefixedFieldNames(): void
     {
         $this->login();
@@ -147,5 +131,21 @@ final class VisibilitySubTargetControllerTest extends DbTestCase
 
         $this->assertSame('', $response->getContent());
         $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
+    }
+
+    public function testInvokeRendersUnprefixedFieldNamesWhenPrefixIsEmpty(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'     => Group::class,
+            'items_id' => 1,
+            'prefix'   => '',
+        ]);
+
+        $content = $response->getContent();
+        $this->assertMatchesRegularExpression('/name=["\']entities_id["\']/', $content);
+        $this->assertMatchesRegularExpression('/name=["\']is_recursive["\']/', $content);
+        $this->assertDoesNotMatchRegularExpression('/name=["\']\[entities_id\]["\']/', $content);
     }
 }

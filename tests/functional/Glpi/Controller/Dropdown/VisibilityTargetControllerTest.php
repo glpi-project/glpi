@@ -41,8 +41,10 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Tests\DbTestCase;
 use Group;
 use KnowbaseItem;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use ReflectionMethod;
+use Reminder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use User;
@@ -212,5 +214,64 @@ final class VisibilityTargetControllerTest extends DbTestCase
         $this->assertStringContainsString('no-store', $cache_control);
         $this->assertStringContainsString('no-cache', $cache_control);
         $this->assertSame('no-cache', $response->headers->get('Pragma'));
+    }
+
+    public function testInvokeAcceptsArbitraryUnderscorePublicRight(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'  => User::class,
+            'right' => 'futureplugin_public',
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /**
+     * Note: `_public` (string vide avant le suffix) passe l'allow-list str_ends_with
+     * actuelle. Comportement accepté car aucune classe CommonDBVisible ne peut
+     * produire `_public` (strtolower(static::class) n'est jamais vide).
+     */
+    public static function provideDisallowedRights(): iterable
+    {
+        yield 'config'             => ['config'];
+        yield 'user'               => ['user'];
+        yield 'ticket_template'    => ['ticket_template'];
+        yield 'entity'             => ['entity'];
+        yield 'profile'            => ['profile'];
+        yield 'password'           => ['password'];
+        yield 'empty'              => [''];
+        yield 'public_in_middle'   => ['public_thing'];
+        yield 'similar_but_no_match' => ['knowbasepublic'];
+    }
+
+    #[DataProvider('provideDisallowedRights')]
+    public function testInvokeRejectsRightsLeakingProfileEnumeration(string $right): void
+    {
+        $this->login();
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->callController([
+            'type'  => Profile::class,
+            'right' => $right,
+        ]);
+    }
+
+    public function testReminderProducesAcceptedRight(): void
+    {
+        $this->login();
+
+        $reminder = new Reminder();
+        $method   = new ReflectionMethod($reminder, 'getShowVisibilityDropdownParams');
+        $params   = $method->invoke($reminder);
+
+        $this->assertSame('reminder_public', $params['right']);
+
+        $response = $this->callController([
+            'type'  => User::class,
+            'right' => $params['right'],
+        ]);
+        $this->assertSame(200, $response->getStatusCode());
     }
 }

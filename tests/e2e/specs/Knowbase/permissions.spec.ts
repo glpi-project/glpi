@@ -164,3 +164,142 @@ test('Resetting the target type clears the visibility picker and hides Add', asy
     await expect(modal.getByRole('combobox')).toHaveCount(1);
     await expect(modal.getByRole('button', { name: 'Add' })).toBeHidden();
 });
+
+test('Selecting a Group value loads the entity sub-picker with Child entities label', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const group_name = `KB target group ${crypto.randomUUID()}`;
+    await api.createItem('Group', {
+        name: group_name,
+        entities_id: entity_id,
+        is_recursive: 1,
+    });
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for group target type test',
+        entities_id: entity_id,
+        answer: 'Test content',
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(1);
+
+    const type_dropdown = modal.getByRole('combobox').first();
+    await type_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: 'Group', exact: true }).click();
+
+    // Selecting "Group" only injects the group picker; the entity sub-picker is
+    // loaded by a second AJAX call once an actual group value is picked.
+    await expect(modal.getByRole('combobox')).toHaveCount(2);
+
+    const group_dropdown = modal.getByRole('combobox').nth(1);
+    await group_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: group_name }).click();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(4);
+    await expect(modal.getByText('Child entities')).toBeVisible();
+    await expect(modal.getByRole('button', { name: 'Add' })).toBeVisible();
+});
+
+test('Selecting Entity target type renders entity dropdown with Child entities label', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for entity target type test',
+        entities_id: entity_id,
+        answer: 'Test content',
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    const type_dropdown = modal.getByRole('combobox').first();
+    await type_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: 'Entity', exact: true }).click();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(3);
+    await expect(modal.getByText('Child entities')).toBeVisible();
+    await expect(modal.getByRole('button', { name: 'Add' })).toBeVisible();
+});
+
+test('Adding a Group target persists it in the targets list', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const group_name = `KB target group ${crypto.randomUUID()}`;
+    await api.createItem('Group', {
+        name: group_name,
+        entities_id: entity_id,
+        is_recursive: 1,
+    });
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for group target add test',
+        entities_id: entity_id,
+        answer: 'Test content',
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    const type_dropdown = modal.getByRole('combobox').first();
+    await type_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: 'Group', exact: true }).click();
+
+    // Group type renders the group picker first; the entity sub-picker arrives
+    // only after an actual group value is chosen.
+    await expect(modal.getByRole('combobox')).toHaveCount(2);
+
+    const group_dropdown = modal.getByRole('combobox').nth(1);
+    await group_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: group_name }).click();
+
+    // Wait for the entity sub-picker AJAX to complete before submitting,
+    // otherwise the form may post stale (unset) entity values.
+    await expect(modal.getByRole('combobox')).toHaveCount(4);
+
+    // The Add button is a real <input type="submit"> that POSTs to
+    // /front/knowbaseitem.form.php, which reloads the page and closes the
+    // modal. Reopen it to verify persistence.
+    await modal.getByRole('button', { name: 'Add' }).click();
+
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText(group_name)).toBeVisible();
+});
