@@ -71,6 +71,8 @@ use Glpi\Inventory\Asset\Software;
 use Glpi\Inventory\Asset\SoundCard;
 use Glpi\Inventory\Asset\VirtualMachine;
 use Glpi\Inventory\Asset\Volume;
+use Glpi\Inventory\MainAsset\GenericAsset;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
 use Glpi\Inventory\MainAsset\NetworkEquipment;
@@ -688,6 +690,14 @@ class Inventory
         if ($main_class === null || !class_exists($main_class)) {
             $main_class = $class_ns . 'GenericAsset';
         }
+
+        if (
+            ltrim($main_class, '\\') === ltrim(GenericAsset::class, '\\')
+            && isset($this->data['network_device'])
+        ) {
+            $main_class = GenericNetworkAsset::class;
+        }
+
         return $main_class;
     }
 

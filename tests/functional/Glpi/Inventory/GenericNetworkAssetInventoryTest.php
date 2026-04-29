@@ -40,6 +40,7 @@ use Glpi\Asset\Capacity\HasDevicesCapacity;
 use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Asset\CapacityConfig;
+use Glpi\Inventory\MainAsset\GenericAsset;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\Request;
 use Glpi\Tests\InventoryTestCase;
@@ -703,5 +704,43 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $inventory = $this->doInventory($xml_source, true);
         $item = $inventory->getItem();
         $this->assertInstanceOf(NetworkEquipment::class, $item);
+    }
+
+    public function testImportNetworkEquipmentWithDefaultMainAsset(): void
+    {
+        global $DB;
+
+        // Create a custom asset with IsInventoriableCapacity using GenericAsset (the non-network
+        // default). The fix in Inventory::getMainClass() auto-upgrades to GenericNetworkAsset
+        // when network_device data is detected, preventing the "constraint (name)" rule failure.
+        $definition = $this->initAssetDefinition(
+            system_name: 'NetworkAssetDefault' . $this->getUniqueString(),
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig([
+                        'inventory_mainasset' => GenericAsset::class,
+                    ])
+                ),
+            ]
+        );
+        $classname = $definition->getAssetClassName();
+
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json'));
+        $json->itemtype = $classname;
+        $json->deviceid = 'a-network-deviceid-default';
+
+        $this->doInventory($json);
+
+        $refused = $DB->request(['FROM' => \RefusedEquipment::getTable()]);
+        $this->assertCount(0, $refused);
+
+        $equipments = $DB->request(['FROM' => $classname::getTable(), 'WHERE' => ['is_dynamic' => 1]]);
+        $this->assertCount(1, $equipments);
+
+        $equipment = new $classname();
+        $this->assertTrue($equipment->getFromDB($equipments->current()['id']));
+        $this->assertSame('ucs6248up-cluster-pa3-B', $equipment->fields['name']);
+        $this->assertSame('SSI1912014B', $equipment->fields['serial']);
     }
 }
