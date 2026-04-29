@@ -176,7 +176,7 @@ class Event extends CommonDBTM
                 new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs"),
             ]
         );
-        return $DB->affectedRows();
+        return $DB->getAffectedRows();
     }
 
     /**

@@ -35,55 +35,30 @@
 
 namespace Glpi\DBAL;
 
-use RuntimeException;
-
-/**
- *  Query expression class
- **/
-class QueryExpression
+abstract class Prepared
 {
-    private string $expression;
-
-    private ?string $alias;
+    protected string $sql;
     /** @var array<int, mixed> */
-    private array $values = [];
+    protected array $values;
 
-
-    /**
-     * Create a query expression
-     *
-     * @param string $expression The query expression
-     * @param ?string $alias     The query expression alias
-     */
-    public function __construct($expression, ?string $alias = null)
+    public function setSQL(string $sql): static
     {
-        if ($expression === null || $expression === '' || $expression === false) {
-            throw new RuntimeException('Cannot build an empty expression');
-        }
-        $this->expression = $expression;
-        $this->alias = $alias;
+        $this->sql = $sql;
+        return $this;
+    }
+
+    public function getSQL(): string
+    {
+        return $this->sql;
     }
 
     /**
-     * Query expression value
-     *
-     * @return string
-     *
-     * @psalm-taint-escape sql
+     * @param array<int, mixed> $values
      */
-    public function getValue()
+    public function setValues(array $values): static
     {
-        global $DB;
-        $sql = $this->expression;
-        if (!empty($this->alias)) {
-            $sql .= ' AS ' . $DB::quoteName($this->alias);
-        }
-        return $sql;
-    }
-
-    public function __toString()
-    {
-        return $this->getValue();
+        $this->values = $values;
+        return $this;
     }
 
     /**
@@ -94,12 +69,8 @@ class QueryExpression
         return $this->values;
     }
 
-    /**
-     * @param array<int, mixed> $values
-     */
-    public function setValues(array $values): static
+    public function __toString()
     {
-        $this->values = $values;
-        return $this;
+        return $this->getSQL();
     }
 }

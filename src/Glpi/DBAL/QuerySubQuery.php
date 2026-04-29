@@ -83,6 +83,14 @@ class QuerySubQuery extends AbstractQuery
         return $sql;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
+    public function getValues(): array
+    {
+        return $this->dbiterator->getValues();
+    }
+
     public function __toString()
     {
         return $this->getQuery();

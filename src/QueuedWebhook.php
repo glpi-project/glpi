@@ -670,7 +670,7 @@ JS);
                     ],
                 ]
             );
-            $vol = $DB->affectedRows();
+            $vol = $DB->getAffectedRows();
         }
 
         $task->setVolume($vol);

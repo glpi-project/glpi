@@ -124,4 +124,13 @@ class QueryUnion extends AbstractQuery
 
         return $query;
     }
+
+    public function getValues(): array
+    {
+        $values = [];
+        foreach ($this->queries as $query) {
+            $values = array_merge($values, $query->getValues());
+        }
+        return $values;
+    }
 }

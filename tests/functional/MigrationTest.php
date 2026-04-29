@@ -37,14 +37,18 @@ namespace tests\units;
 use ArrayIterator;
 use Computer;
 use CronTask;
+use DBmysql;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use LogicException;
 use Migration;
+use mysqli_stmt;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use ReflectionProperty;
+use RuntimeException;
 
 class MigrationTest extends DbTestCase
 {
@@ -189,9 +193,9 @@ class MigrationTest extends DbTestCase
 
         $migration->executeMigration();
         $this->assertEquals([
-            'UPDATE pre_table SET mfield = "myvalue"',
-            'UPDATE post_table SET mfield = "myvalue"',
-            'UPDATE post_otable SET ofield = "myvalue"',
+            ['sql' => 'UPDATE pre_table SET mfield = "myvalue"'],
+            ['sql' => 'UPDATE post_table SET mfield = "myvalue"'],
+            ['sql' => 'UPDATE post_otable SET ofield = "myvalue"'],
         ], $migration->getMockedQueries());
     }
 
@@ -216,9 +220,18 @@ class MigrationTest extends DbTestCase
         ]);
         $migration->executeMigration();
         $core_queries = [
-            'SELECT * FROM `glpi_configs` WHERE `context` = \'core\' AND `name` IN (\'one\', \'two\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'one\', \'key\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            [
+                'sql' => 'SELECT * FROM `glpi_configs` WHERE `context` = ? AND `name` IN (?, ?)',
+                'values' => ['core', 'one', 'two'],
+            ],
+            [
+                'sql' => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (?, ?, ?)',
+                'values' => ['core', 'one', 'key'],
+            ],
+            [
+                'sql' => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (?, ?, ?)',
+                'values' => ['core', 'two', 'value'],
+            ],
         ];
         $this->assertEquals($core_queries, $migration->getMockedQueries(), print_r($migration->getMockedQueries(), true));
 
@@ -231,9 +244,18 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            'SELECT * FROM `glpi_configs` WHERE `context` = \'test-context\' AND `name` IN (\'one\', \'two\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'one\', \'key\')',
-            'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
+            [
+                'sql' => 'SELECT * FROM `glpi_configs` WHERE `context` = ? AND `name` IN (?, ?)',
+                'values' => ['test-context', 'one', 'two'],
+            ],
+            [
+                'sql' => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (?, ?, ?)',
+                'values' => ['test-context', 'one', 'key'],
+            ],
+            [
+                'sql' => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (?, ?, ?)',
+                'values' => ['test-context', 'two', 'value'],
+            ],
         ], $migration->getMockedQueries());
 
         //test with one existing value => only new key should be inserted
@@ -271,7 +293,10 @@ class MigrationTest extends DbTestCase
         ]);
         $migration->executeMigration();
         $this->assertEquals([
-            0 => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'core\', \'two\', \'value\')',
+            [
+                'sql' => 'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (?, ?, ?)',
+                'values' => ['core', 'two', 'value'],
+            ],
         ], $migration->getMockedQueries());
     }
 
@@ -291,10 +316,16 @@ class MigrationTest extends DbTestCase
         }
 
         $this->assertEquals([
-            0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
-                . ' WHERE `table_schema` = \'' . $db . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
-            1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
-                . ' WHERE `table_schema` = \'' . $db . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\'',
+            [
+                'sql' => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
+                . ' WHERE `table_schema` = ? AND `table_type` = ? AND `table_name` LIKE ?',
+                'values' => ['mockedglpi', 'BASE TABLE', 'table1'],
+            ],
+            [
+                'sql' => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
+                . ' WHERE `table_schema` = ? AND `table_type` = ? AND `table_name` LIKE ?',
+                'values' => ['mockedglpi', 'BASE TABLE', 'table2'],
+            ],
         ], $migration->getMockedQueries());
     }
 
@@ -321,7 +352,7 @@ class MigrationTest extends DbTestCase
         $this->assertEquals('Unable to rename table glpi_existingtest (ok) to backup_glpi_existingtest (nok)!', $caught->getMessage());
 
         $this->assertEquals([
-            0 => 'DROP TABLE `backup_glpi_existingtest`',
+            ['sql' => 'DROP TABLE `backup_glpi_existingtest`'],
         ], $migration->getMockedQueries());
     }
 
@@ -338,7 +369,7 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            0 => 'RENAME TABLE `glpi_existingtest` TO `backup_glpi_existingtest`',
+            ['sql' => 'RENAME TABLE `glpi_existingtest` TO `backup_glpi_existingtest`'],
         ], $migration->getMockedQueries());
     }
 
@@ -351,10 +382,13 @@ class MigrationTest extends DbTestCase
         // Test change field with move to first column
         $migration->changeField('change_table', 'ID', 'id', 'integer', ['first' => 'first']);
         $migration->executeMigration();
-        $this->assertEquals([
-            "ALTER TABLE `change_table` DROP `id` ,\n"
-            . "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
-        ], $migration->getMockedQueries());
+        $this->assertEquals(
+            [
+                ['sql' => "ALTER TABLE `change_table` DROP `id` ,\n"
+                . "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  "],
+            ],
+            $migration->getMockedQueries()
+        );
 
         // Test change field with move to after another column
         $migration->clearMockedQueries();
@@ -362,8 +396,8 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
         $collate = $migration->getMockedDb()->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
         $this->assertEquals([
-            "ALTER TABLE `change_table` DROP `name` ,\n"
-            . "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
+            ['sql' => "ALTER TABLE `change_table` DROP `name` ,\n"
+            . "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` "],
         ], $migration->getMockedQueries());
     }
 
@@ -656,7 +690,15 @@ class MigrationTest extends DbTestCase
         ]);
         $migration->addField($table, $field, $format, $options);
         $migration->executeMigration();
-        $this->assertEquals(!is_array($sql) ? [$sql] : $sql, $migration->getMockedQueries());
+        if (!is_array($sql)) {
+            $sql = [$sql];
+        }
+
+        $queries = [];
+        foreach ($sql as $query) {
+            $queries[] = ['sql' => $query];
+        }
+        $this->assertEquals($queries, $migration->getMockedQueries());
     }
 
     public function testFormatBooleanBadDefault()
@@ -798,7 +840,7 @@ class MigrationTest extends DbTestCase
         // Case 1, rename with no buffered changes
         $migration->renameTable('glpi_oldtable', 'glpi_newtable');
         $this->assertEquals([
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+            ['sql' => "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`"],
         ], $migration->getMockedQueries());
 
         // Case 2, rename after changes were already applied
@@ -811,12 +853,12 @@ class MigrationTest extends DbTestCase
         $migration->renameTable('glpi_oldtable', 'glpi_newtable');
 
         $this->assertEquals([
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
-            "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)",
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
+            ['sql' => "SHOW INDEX FROM `glpi_oldtable`"],
+            ['sql' => "SHOW INDEX FROM `glpi_oldtable`"],
+            ['sql' => "ALTER TABLE `glpi_oldtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   "],
+            ['sql' => "ALTER TABLE `glpi_oldtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)"],
+            ['sql' => "ALTER TABLE `glpi_oldtable` ADD UNIQUE `id` (`id`)"],
+            ['sql' => "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`"],
         ], $migration->getMockedQueries());
 
         // Case 3, apply changes after renaming
@@ -829,12 +871,12 @@ class MigrationTest extends DbTestCase
         $migration->migrationOneTable('glpi_newtable');
 
         $this->assertEquals([
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "SHOW INDEX FROM `glpi_oldtable`",
-            "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`",
-            "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)",
-            "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)",
+            ['sql' => "SHOW INDEX FROM `glpi_oldtable`"],
+            ['sql' => "SHOW INDEX FROM `glpi_oldtable`"],
+            ['sql' => "RENAME TABLE `glpi_oldtable` TO `glpi_newtable`"],
+            ['sql' => "ALTER TABLE `glpi_newtable` ADD `bool_field` TINYINT NOT NULL DEFAULT '0'   "],
+            ['sql' => "ALTER TABLE `glpi_newtable` ADD FULLTEXT `fulltext_key` (`fulltext_key`)"],
+            ['sql' => "ALTER TABLE `glpi_newtable` ADD UNIQUE `id` (`id`)"],
         ], $migration->getMockedQueries());
     }
 
@@ -848,7 +890,7 @@ class MigrationTest extends DbTestCase
             '_mock_tableExists' => false,
         ]);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Table "glpi_someoldtypes" does not exists.');
         $migration->renameItemtype('SomeOldType', 'NewName');
     }
@@ -863,7 +905,7 @@ class MigrationTest extends DbTestCase
             '_mock_tableExists' => true,
         ]);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Table "glpi_someoldtypes" cannot be renamed as table "glpi_newnames" already exists.');
         $migration->renameItemtype('SomeOldType', 'NewName');
     }
@@ -886,7 +928,7 @@ class MigrationTest extends DbTestCase
             ]),
         ]);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Field "someoldtypes_id" cannot be renamed in table "glpi_item_with_fkey" as "newnames_id" is field already exists.');
         $migration->renameItemtype('SomeOldType', 'NewName');
     }
@@ -923,10 +965,10 @@ class MigrationTest extends DbTestCase
                 ) {
                     // Request used for itemtype fields
                     return new ArrayIterator([
-                        ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
-                        ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
-                        ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
-                        ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
+                        ['TABLE_NAME' => 'glpi_alerts',          'COLUMN_NAME' => 'itemtype'],
+                        ['TABLE_NAME' => 'glpi_itemantiviruses', 'COLUMN_NAME' => 'itemtype'],
+                        ['TABLE_NAME' => 'glpi_impactrelations', 'COLUMN_NAME' => 'itemtype_source'],
+                        ['TABLE_NAME' => 'glpi_impactrelations', 'COLUMN_NAME' => 'itemtype_impacted'],
                     ]);
                 }
                 return [];
@@ -938,14 +980,32 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
-            "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
-            "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
-            "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
-            . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` int unsigned NOT NULL DEFAULT '0'   ",
+            [
+                'sql' => "RENAME TABLE `glpi_someoldtypes` TO `glpi_newnames`",
+            ],
+            [
+                'sql' => "UPDATE `glpi_alerts` SET `itemtype` = ? WHERE `itemtype` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_itemantiviruses` SET `itemtype` = ? WHERE `itemtype` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_impactrelations` SET `itemtype_source` = ? WHERE `itemtype_source` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_impactrelations` SET `itemtype_impacted` = ? WHERE `itemtype_impacted` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "ALTER TABLE `glpi_oneitem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ",
+            ],
+            [
+                'sql' => "ALTER TABLE `glpi_anotheritem_with_fkey` CHANGE `someoldtypes_id` `newnames_id` int unsigned NOT NULL DEFAULT '0'   ,\n"
+                        . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` int unsigned NOT NULL DEFAULT '0'   ",
+            ],
         ], $migration->getMockedQueries());
 
         // Test renaming without DB structure update
@@ -954,10 +1014,22 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "UPDATE `glpi_computers` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_users` SET `itemtype` = 'NewName' WHERE `itemtype` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'NewName' WHERE `itemtype_source` = 'SomeOldType'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'NewName' WHERE `itemtype_dest` = 'SomeOldType'",
+            [
+                'sql' => "UPDATE `glpi_alerts` SET `itemtype` = ? WHERE `itemtype` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_itemantiviruses` SET `itemtype` = ? WHERE `itemtype` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_impactrelations` SET `itemtype_source` = ? WHERE `itemtype_source` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_impactrelations` SET `itemtype_impacted` = ? WHERE `itemtype_impacted` = ?",
+                'values' => ['NewName', 'SomeOldType'],
+            ],
         ], $migration->getMockedQueries());
 
         // Test renaming when old class and new class have the same table name
@@ -966,10 +1038,22 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "UPDATE `glpi_computers` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_users` SET `itemtype` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_source` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_source` = 'PluginFooThing'",
-            "UPDATE `glpi_stuffs` SET `itemtype_dest` = 'GlpiPlugin\\\\Foo\\\\Thing' WHERE `itemtype_dest` = 'PluginFooThing'",
+            [
+                'sql' => "UPDATE `glpi_alerts` SET `itemtype` = ? WHERE `itemtype` = ?",
+                'values' => ['GlpiPlugin\Foo\Thing', 'PluginFooThing'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_itemantiviruses` SET `itemtype` = ? WHERE `itemtype` = ?",
+                'values' => ['GlpiPlugin\Foo\Thing', 'PluginFooThing'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_impactrelations` SET `itemtype_source` = ? WHERE `itemtype_source` = ?",
+                'values' => ['GlpiPlugin\Foo\Thing', 'PluginFooThing'],
+            ],
+            [
+                'sql' => "UPDATE `glpi_impactrelations` SET `itemtype_impacted` = ? WHERE `itemtype_impacted` = ?",
+                'values' => ['GlpiPlugin\Foo\Thing', 'PluginFooThing'],
+            ],
         ], $migration->getMockedQueries());
     }
 
@@ -1025,15 +1109,48 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "UPDATE `glpi_displaypreferences` SET `num` = '100' WHERE `itemtype` = 'Computer' AND `num` = '40'",
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `id` IN ('12', '156', '421')",
-            "UPDATE `glpi_displaypreferences` SET `num` = '10' WHERE `itemtype` = 'Printer' AND `num` = '20'",
-            "UPDATE `glpi_displaypreferences` SET `num` = '1001' WHERE `itemtype` = 'Ticket' AND `num` = '1'",
-            "UPDATE `glpi_tickettemplatehiddenfields` SET `num` = '1001' WHERE `num` = '1'",
-            "UPDATE `glpi_tickettemplatemandatoryfields` SET `num` = '1001' WHERE `num` = '1'",
-            "UPDATE `glpi_tickettemplatepredefinedfields` SET `num` = '1001' WHERE `num` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '2'",
+            [
+                'sql' => "UPDATE `glpi_displaypreferences` SET `num` = ? WHERE `itemtype` = ? AND `num` = ?",
+                'values' => [100, 'Computer', 40],
+            ],
+            [
+                'sql' => "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `id` IN (?, ?, ?)",
+                'values' => [12, 156, 421],
+            ],
+            [
+                'sql' => "UPDATE `glpi_displaypreferences` SET `num` = ? WHERE `itemtype` = ? AND `num` = ?",
+                'values' => [10, 'Printer', 20],
+            ],
+            [
+                'sql' => "UPDATE `glpi_displaypreferences` SET `num` = ? WHERE `itemtype` = ? AND `num` = ?",
+                'values' => [1001, 'Ticket', 1],
+            ],
+            [
+                'sql' => "UPDATE `glpi_tickettemplatehiddenfields` SET `num` = ? WHERE `num` = ?",
+                'values' => [1001, 1],
+            ],
+            [
+                'sql' => "UPDATE `glpi_tickettemplatemandatoryfields` SET `num` = ? WHERE `num` = ?",
+                'values' => [1001, 1],
+            ],
+            [
+                'sql' => "UPDATE `glpi_tickettemplatepredefinedfields` SET `num` = ? WHERE `num` = ?",
+                'values' => [1001, 1],
+            ],
+            [
+                'sql' => "UPDATE `glpi_savedsearches` SET `query` = ? WHERE `id` = ?",
+                'values' => [
+                    'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=100&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
+                    1,
+                ],
+            ],
+            [
+                'sql' => "UPDATE `glpi_savedsearches` SET `query` = ? WHERE `id` = ?",
+                'values' => [
+                    'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=100&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
+                    2,
+                ],
+            ],
         ], $migration->getMockedQueries());
     }
 
@@ -1089,14 +1206,44 @@ class MigrationTest extends DbTestCase
         $migration->executeMigration();
 
         $this->assertEquals([
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Computer' AND `num` = '40'",
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Printer' AND `num` = '20'",
-            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Ticket' AND `num` = '1'",
-            "DELETE `glpi_tickettemplatehiddenfields` FROM `glpi_tickettemplatehiddenfields` WHERE `num` = '1'",
-            "DELETE `glpi_tickettemplatemandatoryfields` FROM `glpi_tickettemplatemandatoryfields` WHERE `num` = '1'",
-            "DELETE `glpi_tickettemplatepredefinedfields` FROM `glpi_tickettemplatepredefinedfields` WHERE `num` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
-            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&search=Search&itemtype=Computer' WHERE `id` = '2'",
+            [
+                'sql' => "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = ? AND `num` = ?",
+                'values' => ['Computer', 40],
+            ],
+            [
+                'sql' => "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = ? AND `num` = ?",
+                'values' => ['Printer', 20],
+            ],
+            [
+                'sql' => "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = ? AND `num` = ?",
+                'values' => ['Ticket', 1],
+            ],
+            [
+                'sql' => "DELETE `glpi_tickettemplatehiddenfields` FROM `glpi_tickettemplatehiddenfields` WHERE `num` = ?",
+                'values' => [1],
+            ],
+            [
+                'sql' => "DELETE `glpi_tickettemplatemandatoryfields` FROM `glpi_tickettemplatemandatoryfields` WHERE `num` = ?",
+                'values' => [1],
+            ],
+            [
+                'sql' => "DELETE `glpi_tickettemplatepredefinedfields` FROM `glpi_tickettemplatepredefinedfields` WHERE `num` = ?",
+                'values' => [1],
+            ],
+            [
+                'sql' => "UPDATE `glpi_savedsearches` SET `query` = ? WHERE `id` = ?",
+                'values' => [
+                    'is_deleted=0&as_map=0&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
+                    1,
+                ],
+            ],
+            [
+                'sql' => "UPDATE `glpi_savedsearches` SET `query` = ? WHERE `id` = ?",
+                'values' => [
+                    'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&search=Search&itemtype=Computer',
+                    2,
+                ],
+            ],
         ], $migration->getMockedQueries());
     }
 
@@ -1349,7 +1496,7 @@ class MigrationTest extends DbTestCase
 
             public function doQuery($query)
             {
-                $this->_queries[] = $query;
+                $this->_queries[] = ['sql' => $query];
                 if (isset($this->_mock_options['_mock_doQuery'])) {
                     return is_callable($this->_mock_options['_mock_doQuery'])
                         ? ($this->_mock_options['_mock_doQuery'])($query)
@@ -1419,6 +1566,43 @@ class MigrationTest extends DbTestCase
                 global $DB;
                 return $DB->quote($value, $type);
             }
+
+            public function prepare($query)
+            {
+                // Proxy prepare to the real DB instance since the mock has no mysqli handler
+                global $DB;
+                $res = $DB->prepare($query);
+                if (!$res) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'MySQL prepare error: %s (%d) in SQL query "%s".',
+                            $this->dbh->error,
+                            $this->dbh->errno,
+                            $query
+                        )
+                    );
+                }
+                $property = new ReflectionProperty(DBmysql::class, 'current_query');
+                $property->setValue($this, $query);
+                return $res;
+            }
+
+            public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
+            {
+                $params = array_values($params); //no need for the keys
+                foreach ($params as &$param) {
+                    if ($param === false) {
+                        $param = 0;
+                    }
+                }
+                $property = new ReflectionProperty(DBmysql::class, 'current_query');
+                $this->_queries[] = [
+                    'sql' => $property->getValue($this),
+                    'values' => $params,
+                ];
+
+                parent::executeStatement($stmt, $params, $types);
+            }
         };
         $db->disableTableCaching();
         return $db;
@@ -1429,7 +1613,7 @@ class MigrationTest extends DbTestCase
         global $DB;
         $db = ($db_options['_real_db'] ?? false) ? $DB : $this->getDbMock($db_options);
         foreach ($db_options as $property => $value) {
-            if (property_exists(\DBmysql::class, $property)) {
+            if (property_exists(DBmysql::class, $property)) {
                 $db->{$property} = $value;
             }
         }
@@ -1466,7 +1650,7 @@ class MigrationTest extends DbTestCase
                 $this->db->_queries = [];
             }
 
-            public function getMockedDb(): \DBmysql
+            public function getMockedDb(): DBmysql
             {
                 return $this->db;
             }

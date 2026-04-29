@@ -79,7 +79,7 @@ class CronTaskLog extends CommonDBChild
             ]
         );
 
-        return $result ? $DB->affectedRows() : 0;
+        return $result ? $DB->getAffectedRows() : 0;
     }
 
 
