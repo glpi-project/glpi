@@ -78,6 +78,10 @@
                 flex-wrap: wrap;
              }
 
+             .session-tracker-toolbar > :not(.session-actions) {
+                display: none;
+             }
+
              .desktop-only {
                 display: none;
              }
@@ -99,7 +103,7 @@
                 </h1>
             </div>
             <div>
-                <button class="btn btn-outline-danger gap-1 revoke-all-sessions" @click="revokeAllSessions">
+                <button class="btn btn-outline-danger gap-1 revoke-all-sessions">
                     <i class="ti ti-logout" aria-hidden="true"></i>
                     {{ __('Revoke all active sessions') }}
                 </button>
