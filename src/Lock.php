@@ -284,7 +284,7 @@ class Lock extends CommonGLPI
                     if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true)) {
                         $related_object = new $default_itemtype();
                         $related_object->getFromDB($object->fields[$default_items_id]);
-                        $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
+                        $default_object_link = "<a href='" . $object->getLinkURL() . "'>" . $related_object->getName() . "</a>";
                     }
 
                     echo "<td class='left'>" . $default_itemtype_label . "</td>";
