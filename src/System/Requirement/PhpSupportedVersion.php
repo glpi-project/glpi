@@ -46,7 +46,7 @@ class PhpSupportedVersion extends AbstractRequirement
      * @var string
      * @see https://www.php.net/supported-versions
      */
-    private const MIN_SECURITY_SUPPORTED_VERSION = '8.1';
+    private const MIN_SECURITY_SUPPORTED_VERSION = '8.2';
 
     public function __construct()
     {
