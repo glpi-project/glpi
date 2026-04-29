@@ -614,6 +614,7 @@ class MassiveAction
             return false;
         }
 
+        /** @var CommonDBTM $item  */
         if (!is_null($checkitem)) {
             $canupdate = $checkitem->canUpdate();
             $candelete = $checkitem->canDelete();
@@ -820,7 +821,7 @@ class MassiveAction
      **/
     public function showDefaultSubForm()
     {
-        echo Html::submit(_x('button', 'Post 3'), [
+        echo Html::submit(_x('button', 'Post 3'), [ // @todo cleanup
             'name'  => 'massiveaction',
             'icon'  => 'ti ti-device-floppy',
             'class' => 'btn btn-sm btn-primary',
@@ -852,8 +853,7 @@ class MassiveAction
                     'multiple' => true,
                 ]);
                 echo '<br>';
-                echo Html::submit(_x('button', 'Post'), [
-                echo Html::submit(_x('button', 'Post 4'), [
+                echo Html::submit(_x('button', 'Post 4'), [ // @todo cleanup
                     'name'  => 'massiveaction',
                 ]);
                 return true;
@@ -1174,7 +1174,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post 5');
+                    $submitname = _x('button', 'Post 5'); // @todo cleanup
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
@@ -1206,7 +1206,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post 6');
+                    $submitname = _x('button', 'Post 6'); // @todo cleanup
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
@@ -1232,7 +1232,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post 7');
+                    $submitname = _x('button', 'Post 7'); // @todo cleanup
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
