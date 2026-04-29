@@ -1979,6 +1979,7 @@ TWIG,
      *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
      *    - action_button_classes : string of classes to add to the action button
      *    - display          : display or return the generated html (default true)
+     *    - reauth_needed    : a user reauth is required @todo revert
      *
      * @return bool|string     the html if display parameter is false, or true
      **/
@@ -1988,6 +1989,7 @@ TWIG,
 
         /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
 
+        // default values, if not set in $options
         $p['ontop']                 = true;
         $p['num_displayed']         = -1;
         $p['forcecreate']           = false;
@@ -2008,12 +2010,14 @@ TWIG,
         $p['tag_to_send']           = 'common';
         $p['action_button_classes'] = 'btn btn-sm btn-primary me-2';
         $p['display']               = true;
+        $p['reauth_needed']         = false;
 
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
                 $p[$key] = $val;
             }
         }
+        unset($options);
 
         $url = $CFG_GLPI['root_doc'] . "/ajax/massiveaction.php";
         if ($p['container']) {
@@ -2053,6 +2057,7 @@ TWIG,
             && ($max > 0)
             && ($max < ($p['num_displayed'] + 10))
         ) {
+            // error : too much checkbox checked, too much items to process
             if (
                 !$p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])
@@ -2068,8 +2073,30 @@ TWIG,
                     );
                 }
             }
-        } else {
+        }
+        else
+        {
+//            @todo revert
+            // Reauth is needed : "Actions" button will trigger redirection to ReAuth/Prompt page instead of opening massive action modal
+//            if($p['reauth_needed'] === true) {
+//                $out = '<a role="button" class="'. htmlescape($p['action_button_classes']) . '" href="/ReAuth/Prompt" >Reauth</a>';
+//                // normalement : passer par reauthManager::redirect()
+//                // @todo i18n
+//                // @todo laisser le même libélé pour ne pas perturber les utilisateurs
+//                // @todo manque le ~glpi_rootdoc
+//                //         path: "/ReAuth/Prompt",
+//                //        name: "reauth_prompt",
+//                if ($p['display']) {
+//                    echo $out;
+//                    return true; // @todo false ??
+//                } else {
+//                    return $out;
+//                }
+//            }
+
             // Create Modal window on top
+
+
             if (
                 $p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])
@@ -2188,6 +2215,7 @@ TWIG,
             'on_change'    => '',
         ];
 
+        // replace $p values with value from $option
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
                 $p[$key] = $val;

@@ -65,17 +65,20 @@ final class ReAuthManager
      */
     public function redirect(): never
     {
-        global $CFG_GLPI;
-
-        $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
-
-        $this->setRedirectURL($current_url);
-        $this->setRedirectMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
-        $this->setRedirectData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
-
+        $this->setRedirect();
         throw new RedirectException('/ReAuth/Prompt');
     }
 
+    public function getButtonToReauthPrompt(): string
+    {
+        $this->setRedirect();
+
+        return '<a href="ReAuth/Prompt">Reauth</a>'; // @todo manque la base_url + sprintf avec i18n
+    }
+
+    /**
+     * User has a valid reauth session
+     */
     public function isReAuthenticated(): bool
     {
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
@@ -118,6 +121,11 @@ final class ReAuthManager
         return $_SESSION['glpi_reauth_redirect'] ?? '/';
     }
 
+    public function getCancelURL(): string
+    {
+        return $_SESSION['glpi_reauth_cancel_url'] ?? $this->getRedirectURL();
+    }
+
     /** @return array<string, string> */
     public function getRedirectData(): array
     {
@@ -130,6 +138,20 @@ final class ReAuthManager
     public function getRedirectMethod(): string
     {
         return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
+    }
+
+    public function setCancelURL(string $url): void
+    {
+        $_SESSION['glpi_reauth_cancel_url'] = $url;
+    }
+
+    private function setRedirect(): void
+    {
+        $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
+
+        $this->setRedirectURL($current_url);
+        $this->setRedirectMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
+        $this->setRedirectData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
     }
 
     private function getStrategy(): ReAuthStrategyInterface

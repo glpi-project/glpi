@@ -44,7 +44,6 @@
    {% endif %}
 
    <form method="post" action="{{ action }}" data-submit-once autocomplete="off">
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" name="redirect" value="{{ redirect }}" />
 
       <div class="mb-3">
@@ -53,8 +52,13 @@
       </div>
 
       <div class="d-flex justify-content-end gap-2">
-         <a href="{{ redirect }}" class="btn btn-outline-secondary">{{ __('Cancel') }}</a>
+
+          {# cancel button #}
+         <a href="{{ cancel_url }}" class="btn btn-outline-secondary">{{ __('Cancel') }}</a>
+
+          {# submit/verify button #}
          <button type="submit" class="btn btn-primary">{{ __('Verify') }}</button>
+
       </div>
    </form>
 {% endblock %}
