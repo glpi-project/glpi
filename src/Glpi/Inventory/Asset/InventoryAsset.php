@@ -219,7 +219,6 @@ abstract class InventoryAsset
         if (get_class($this->item) == $itemtype) {
             $items_id = $this->item->fields['id'] ?? 0;
         }
-        $lockedfield->getLockedNames($itemtype, $items_id);
 
         $data = $this->data;
         foreach ($data as $key => &$value) {
