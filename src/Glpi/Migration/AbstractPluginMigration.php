@@ -705,34 +705,6 @@ abstract class AbstractPluginMigration
                     ]
                 );
             }
-
-            // Idempotence: handle rows where the itemtype was already updated to the target value
-            // (e.g. via a manual SQL fix) but items_id still holds the source value.
-            if ($source_items_id !== $target_items_id) {
-                try {
-                    $this->db->update(
-                        table: $table,
-                        params: [$items_id_field => $target_items_id],
-                        where: [
-                            $itemtype_field => $target_itemtype,
-                            $items_id_field => $source_items_id,
-                        ]
-                    );
-                } catch (RuntimeException $e) {
-                    if (!str_contains($e->getMessage(), '(1062)')) {
-                        throw $e;
-                    }
-                    // Both (target_itemtype, source_items_id) and (target_itemtype, target_items_id)
-                    // exist simultaneously. The target row is the correct one — remove the partial row.
-                    $this->db->delete(
-                        $table,
-                        [
-                            $itemtype_field => $target_itemtype,
-                            $items_id_field => $source_items_id,
-                        ]
-                    );
-                }
-            }
         }
     }
 

@@ -1467,12 +1467,22 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertCount(1, $target_rows, 'Target infocom should still exist.');
     }
 
-    public function testUpdatePolymorphicReferencesIdempotenceWithPartiallyMigratedItemtype(): void
+    /**
+     * Regression test for the scenario where migrating a second item whose source_id matches the
+     * target_id already produced for a first item would corrupt the first item's relations.
+     *
+     * Overlap engineered with real fixture IDs:
+     *   - Computer[pc01] → AssetClass[pc02_id]  (target_id_A = pc02_id = source_id_B)
+     *   - Computer[pc02] → AssetClass[pc03_id]
+     *
+     * Without the fix, the secondary UPDATE for the second call
+     * (`WHERE itemtype=AssetClass AND items_id=pc02_id`) would corrupt
+     * the row correctly migrated in the first call.
+     */
+    public function testUpdatePolymorphicReferencesNoCorruptionWithOverlappingIds(): void
     {
         global $DB;
 
-        // Arrange: simulate a state where itemtype was already updated by an external SQL command
-        // but items_id still holds the old plugin value (source_id != target_id).
         $definition = $this->initAssetDefinition(
             'MyCustomAsset',
             capacities: [
@@ -1482,34 +1492,22 @@ class AbstractPluginMigrationTest extends DbTestCase
         $asset_class = $definition->getAssetClassName();
 
         $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+        $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+        $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true);
 
         $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
-
-        // Create the new asset (no infocom yet).
-        $asset_1 = new $asset_class();
-        $asset_1_id = $asset_1->add(['name' => 'Test asset 1', 'entities_id' => 0], ['disable_infocom_creation' => true]);
-        $this->assertGreaterThan(0, $asset_1_id);
-
-        // Require source_id != target_id for the secondary UPDATE path to be exercised.
-        $this->assertNotEquals(
-            $computer_1_id,
-            $asset_1_id,
-            'Test requires computer_1_id != asset_1_id to validate the secondary items_id update.'
-        );
-
-        // Create a valid infocom for the computer then overwrite its itemtype directly in DB,
-        // mimicking a manual "UPDATE glpi_infocoms SET itemtype = REPLACE(...)" workaround.
         $this->createItem(Infocom::class, [
             'itemtype'          => Computer::class,
             'items_id'          => $computer_1_id,
-            'warranty_date'     => '2024-12-04',
-            'warranty_duration' => 3,
+            'warranty_date'     => '2024-01-01',
+            'warranty_duration' => 12,
         ]);
-        $DB->update(
-            Infocom::getTable(),
-            ['itemtype' => $asset_class],
-            ['itemtype' => Computer::class, 'items_id' => $computer_1_id]
-        );
+        $this->createItem(Infocom::class, [
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer_2_id,
+            'warranty_date'     => '2025-06-15',
+            'warranty_duration' => 24,
+        ]);
 
         $instance = new class ($DB) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
@@ -1520,15 +1518,17 @@ class AbstractPluginMigrationTest extends DbTestCase
             protected function processMigration(): bool
             {
                 $definition    = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
-                $asset_1       = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
+                $asset_class   = $definition->getAssetClassName();
                 $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+                $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+                $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true);
 
-                $this->updatePolymorphicReferences(
-                    Computer::class,
-                    $computer_1_id,
-                    $asset_1::class,
-                    $asset_1->getID()
-                );
+                // target_id_A = computer_2_id = source_id_B: the overlap.
+                $this->updatePolymorphicReferences(Computer::class, $computer_1_id, $asset_class, $computer_2_id);
+
+                // The old secondary UPDATE (WHERE itemtype=AssetClass AND items_id=computer_2_id)
+                // would have matched the correctly migrated row above and corrupted it.
+                $this->updatePolymorphicReferences(Computer::class, $computer_2_id, $asset_class, $computer_3_id);
 
                 return true;
             }
@@ -1548,22 +1548,23 @@ class AbstractPluginMigrationTest extends DbTestCase
         $instance->setLogger($PHPLOGGER);
         $result = $instance->execute();
 
-        // Assert: items_id corrected to the new asset id, financial data preserved.
         $this->assertTrue($result->isFullyProcessed());
         $this->assertFalse($result->hasErrors());
 
-        $partial_rows = \getAllDataFromTable(
+        // Computer[1]'s row must survive intact at (AssetClass, computer_2_id).
+        $rows_1 = \getAllDataFromTable(
             Infocom::getTable(),
-            ['itemtype' => $asset_class, 'items_id' => $computer_1_id]
+            ['itemtype' => $asset_class, 'items_id' => $computer_2_id]
         );
-        $this->assertCount(0, $partial_rows, 'Partially migrated row should have been fixed.');
+        $this->assertCount(1, $rows_1, 'Row migrated from Computer[1] must not be corrupted by the migration of Computer[2].');
+        $this->assertEquals('2024-01-01', reset($rows_1)['warranty_date']);
 
-        $fixed_rows = \getAllDataFromTable(
+        // Computer[2]'s row must be at (AssetClass, computer_3_id).
+        $rows_2 = \getAllDataFromTable(
             Infocom::getTable(),
-            ['itemtype' => $asset_class, 'items_id' => $asset_1_id]
+            ['itemtype' => $asset_class, 'items_id' => $computer_3_id]
         );
-        $this->assertCount(1, $fixed_rows, 'Row with correct items_id should exist.');
-        $this->assertEquals('2024-12-04', reset($fixed_rows)['warranty_date']);
-        $this->assertEquals(3, reset($fixed_rows)['warranty_duration']);
+        $this->assertCount(1, $rows_2, 'Row migrated from Computer[2] must exist.');
+        $this->assertEquals('2025-06-15', reset($rows_2)['warranty_date']);
     }
 }
