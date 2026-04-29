@@ -32,6 +32,10 @@
 
 {% if showmassiveactions and count > 0 %}
     <div class="massiveactions-control card-header search-header ps-3 animate__animated animate__faster d-none">
+        {# add reauth_needed entry in massiveactionparams #}
+{#        {{ dump(item, item.fields) }}#}
+        {# @todo revert - c géré dans  ajax/massiveaction.php #}
+{#        {% set massiveactionparams = massiveactionparams|merge({'reauth_needed': item.isUserReauthenticationNeeded, 'item': item }) %} #}{# @todo peut être qu'il ne faudrait pas écraser les val de item #}
         {% do call('Html::showMassiveActions', [massiveactionparams]) %}
     </div>
 {% endif %}
