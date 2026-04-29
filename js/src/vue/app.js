@@ -77,10 +77,6 @@ const components = {};
 component_context.keys().forEach((f) => {
     // Ex: ./Debug/Toolbar.vue => DebugToolbar
     const component_name = f.replace(/^\.\/(.+)\.vue$/, '$1');
-    // Components under the Common directory are not registered globally, as they are meant to be used as child components of other components
-    if (component_name.startsWith('Common/')) {
-        return;
-    }
     components[component_name] = {
         component: vue.defineAsyncComponent(() => component_context(f)),
     };

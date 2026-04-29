@@ -56,36 +56,25 @@ final class SessionTrackerController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function showSessionList(Request $request): Response
     {
-        $sessionTracker = new SessionTracker();
-        Html::header(...SessionTracker::getHeaderParameters());
-        $sessionTracker->showSessionList();
-        Html::footer();
-        return new Response();
-    }
-
-    #[Route(
-        path: "/Security/Sessions",
-        name: "security_sessions",
-        methods: ["GET"],
-    )]
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    public function getSessions(Request $request): Response
-    {
         $users_id = $request->query->getInt('users_id', 0);
         $filters = [
             'user' => $request->query->get('user', ''),
-            'status' => $request->query->get('status', ''),
-            'type' => $request->query->get('type', ''),
+            'status' => $request->query->get('status', 'active'),
+            'type' => $request->query->get('type', 'all'),
             'ip' => $request->query->get('ip', ''),
         ];
-
         if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
             throw new AccessDeniedHttpException();
         }
+        if ($users_id > 0) {
+            unset($filters['user']);
+        }
 
-        return new JsonResponse(
-            (new SessionTracker())->getSessions($users_id, $filters)
-        );
+        $sessionTracker = new SessionTracker();
+        Html::header(...SessionTracker::getHeaderParameters());
+        $sessionTracker->showSessionList($users_id, $filters);
+        Html::footer();
+        return new Response();
     }
 
     #[Route(

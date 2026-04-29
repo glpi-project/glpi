@@ -1,0 +1,296 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+{% set user_filter_id = 'user-filter-' ~ rand %}
+{% set status_filter_id = 'status-filter-' ~ rand %}
+{% set type_filter_id = 'type-filter-' ~ rand %}
+{% set ip_filter_id = 'ip-filter-' ~ rand %}
+{% set filters_popover_id = 'filters-popover-' ~ rand %}
+{% set datatable_id = 'sessions-datatable-' ~ rand %}
+
+<div id="session-tracker">
+    <style>
+       @scope {
+          section {
+             grid-template-columns: minmax(400px, 1fr);
+             grid-template-rows: auto auto 1fr;
+          }
+
+          .session-tracker-toolbar {
+             display: grid;
+             grid-template-columns: repeat(4, minmax(100px, 300px)) auto;
+             grid-template-rows: repeat(3, auto);
+
+             & > label {
+                grid-row: 1;
+             }
+
+             & > .form-control, & > .form-select {
+                grid-row: 2;
+             }
+
+             & > .form-hint {
+                grid-row: 3;
+             }
+          }
+
+          .suspsense.loading > .fallback {
+             display: block;
+          }
+
+          .suspsense.loading > :not(.fallback) {
+             display: none;
+          }
+
+          @media (max-width: 768px) {
+             .session-tracker-toolbar {
+                display: flex;
+                flex-wrap: wrap;
+             }
+
+             .desktop-only {
+                display: none;
+             }
+          }
+
+          @media (min-width: 769px) {
+             .mobile-only {
+                display: none;
+             }
+          }
+       }
+    </style>
+    <section class="d-grid h-100 gap-2 mw-100">
+        <header class="d-flex justify-content-between">
+            <div>
+                <h1>
+                    <i class="ti ti-shield-lock" aria-hidden="true"></i>
+                    {{ __('Session list') }}
+                </h1>
+            </div>
+            <div>
+                <button class="btn btn-outline-danger gap-1 revoke-all-sessions" @click="revokeAllSessions">
+                    <i class="ti ti-logout" aria-hidden="true"></i>
+                    {{ __('Revoke all active sessions') }}
+                </button>
+            </div>
+        </header>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="session-tracker-toolbar gap-2">
+                    <label style="grid-column: 1" for="{{ user_filter_id }}" class="form-label">{{ _n('User', 'Users', 1) }}</label>
+                    <input ref="user_field" style="grid-column: 1" type="search" id="{{ user_filter_id }}" class="form-control" />
+                    <label style="grid-column: 2" for="{{ status_filter_id }}" class="form-label">{{ __('Status') }}</label>
+                    <select ref="status_field" style="grid-column: 2" id="{{ status_filter_id }}" class="form-select">
+                        <option value="active">{{ __('Active') }}</option>
+                        <option value="all">{{ __('All') }}</option>
+                    </select>
+                    <label style="grid-column: 3" for="{{ type_filter_id }}" class="form-label">{{ __('Type') }}</label>
+                    <select ref="type_field" style="grid-column: 3" id="{{ type_filter_id }}" class="form-select">
+                        <option value="all">{{ __('All') }}</option>
+                        <option value="web">{{ __('Browser') }}</option>
+                        <option value="api">{{ __('API') }}</option>
+                    </select>
+                    <label style="grid-column: 4" for="{{ ip_filter_id }}" class="form-label">{{ __('IP address') }}</label>
+                    <input ref="ip_field" style="grid-column: 4" type="search" id="{{ ip_filter_id }}" class="form-control"
+                           aria-describedby="{{ ip_filter_id }}helper"/>
+                    <span style="grid-column: 4" id="{{ ip_filter_id }}helper" class="form-hint">{{ __('CIDR notation and comma separated values are supported.') }}</span>
+                    <div style="grid-column: 5; grid-row: 2" class="d-flex align-self-center gap-2 session-actions">
+                        <button class="desktop-only btn btn-primary align-self-end gap-1 filter-sessions">
+                            <i class="ti ti-filter" aria-hidden="true"></i>
+                            {{ __('Filter') }}
+                        </button>
+                        <button class="mobile-only btn btn-primary align-self-end gap-1"
+                                aria-controls="{{ filters_popover_id }}" :aria-expanded="false" :aria-haspopup="true"
+                                data-bs-toggle="dropdown" data-bs-placement="bottom">
+                            <i class="ti ti-filter" aria-hidden="true"></i>
+                            {{ __('Filters') }}
+                        </button>
+                        <div id="{{ filters_popover_id }}" class="dropdown-menu dropdown-menu-card" role="region">
+                            <div class="p-3">
+                                <div class="filters-content mb-3 d-flex gap-1 flex-column"></div>
+                                <div class="d-flex justify-content-end gap-1">
+                                    <button class="btn btn-outline-secondary align-self-end gap-1 reset-filters">
+                                        <i class="ti ti-reload" aria-hidden="true"></i>
+                                        {{ __('Reset') }}
+                                    </button>
+                                    <button class="btn btn-primary gap-1 filter-sessions">
+                                        <i class="ti ti-filter" aria-hidden="true"></i>
+                                        {{ __('Filter') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="desktop-only btn btn-outline-secondary align-self-end gap-1 reset-filters">
+                            <i class="ti ti-reload" aria-hidden="true"></i>
+                            {{ __('Reset') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            {{ include('components/datatable.html.twig', {
+                datatable_id: datatable_id,
+                nofilter: true,
+                use_pager: true,
+                href: href,
+                columns: {
+                    type: __('Type'),
+                    user: _n('User', 'Users', 1),
+                    details: __('Details'),
+                    ip_address: __('IP address'),
+                    login: __('Login'),
+                    last_activity: __('Last activity'),
+                    status: __('Status'),
+                    actions: __('Actions'),
+                },
+                formatters: {
+                    type: 'raw_html',
+                    user: 'raw_html',
+                    details: 'raw_html',
+                    login: 'datetime',
+                    last_activity: 'datetime',
+                    status: 'raw_html',
+                    actions: 'raw_html',
+                },
+                entries: sessions,
+                total_number: sessions_count,
+            }, with_context: false) }}
+        </div>
+    </section>
+
+    <script type="module">
+        const user_filter = document.getElementById('{{ user_filter_id }}');
+        const status_filter = document.getElementById('{{ status_filter_id }}');
+        const type_filter = document.getElementById('{{ type_filter_id }}');
+        const ip_filter = document.getElementById('{{ ip_filter_id }}');
+        const filters_popover = document.getElementById('{{ filters_popover_id }}');
+        const ipv4_pattern = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+        const ipv6_pattern = /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:))|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:)((:[0-9a-fA-F]{1,4}){1,6})|(:)((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}$/;
+
+        window.addEventListener('resize', onResize);
+        onResize();
+
+        function onResize() {
+            // get all filter inputs (everything except .session-actions) and move them in the popover if the toggle button is visible, or back to the toolbar if not
+            const filter_inputs = document.querySelectorAll('.session-tracker-toolbar > :not(.session-actions), .filters-content > *');
+            const toggle_button = document.querySelector('.session-tracker-toolbar > .session-actions > .mobile-only');
+            if (window.getComputedStyle(toggle_button).display !== 'none') {
+                filter_inputs.forEach(input => {
+                    if (!filters_popover.contains(input)) {
+                        filters_popover.querySelector('.filters-content').appendChild(input);
+                    }
+                });
+            } else {
+                filter_inputs.forEach(input => {
+                    if (!input.parentElement.classList.contains('session-actions')) {
+                        document.querySelector('.session-tracker-toolbar').insertBefore(input, toggle_button.parentElement);
+                    }
+                });
+            }
+        }
+
+        document.querySelector('button.revoke-all-sessions').addEventListener('click', async () => {
+            const confirmed = await glpi_confirm_danger({
+                title: '{{ __('Revoke all active sessions') }}',
+                message: '{{ __('Are you sure you want to revoke all active sessions (excluding the current session)?') }}',
+                confirm_label: '{{ __('Revoke') }}'
+            });
+            if (confirmed) {
+                glpi_toast_info('Not implemented yet');
+            }
+        });
+
+        const revoke_buttons = document.querySelectorAll('button.revoke-session');
+        revoke_buttons.forEach(button => {
+            button.addEventListener('click', async () => {
+                const confirmed = await glpi_confirm_danger({
+                    message: '{{ __('Are you sure you want to revoke this session?') }}',
+                    confirm_label: '{{ __('Revoke') }}'
+                });
+                if (confirmed) {
+                    glpi_toast_info('Not implemented yet');
+                }
+            });
+        });
+
+        const filter_session_buttons = document.querySelectorAll('button.filter-sessions');
+        filter_session_buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const user_filter_value = user_filter.value.trim();
+                const status_filter_value = status_filter.value;
+                const type_filter_value = type_filter.value;
+                const ip_filter_value = ip_filter.value.trim();
+
+                applyFilters({
+                    'user': user_filter_value,
+                    'status': status_filter_value,
+                    'type': type_filter_value,
+                    'ip': ip_filter_value,
+                });
+            });
+        });
+
+        const reset_filter_buttons = document.querySelectorAll('button.reset-filters');
+        reset_filter_buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                applyFilters({
+                    'user': '',
+                    'status': 'active',
+                    'type': 'all',
+                    'ip': '',
+                });
+            });
+        });
+
+        function applyFilters(filters) {
+            // Validate IP filter
+            if (filters['ip'] !== '') {
+                const ip_filter_values = filters['ip'].split(',').map(v => v.trim());
+                for (const value of ip_filter_values) {
+                    if (!ipv4_pattern.test(value) && !ipv6_pattern.test(value) && !/^.+\/\d+$/.test(value)) {
+                        ip_filter.setCustomValidity(__('Please enter a valid IP address, CIDR notation, or comma separated values.'));
+                        ip_filter.reportValidity();
+                        return;
+                    }
+                }
+            }
+
+            const query_params = new URLSearchParams(filters);
+            window.location.href = `${window.location.pathname}?${query_params.toString()}`;
+        }
+    </script>
+</div>

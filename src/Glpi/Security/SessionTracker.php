@@ -269,7 +269,7 @@ final class SessionTracker extends CommonGLPI
                 'logged_in_at DESC',
             ],
             'HAVING' => $having,
-            'LIMIT' => 100,
+            'LIMIT' => $_SESSION['glpilist_limit'],
         ];
     }
 
@@ -311,20 +311,19 @@ final class SessionTracker extends CommonGLPI
             $dd->parse();
 
             if (!isset($user_cache[$data['users_id']])) {
-                $user_cache[$data['users_id']] = getUserName($data['users_id']);
+                $user_cache[$data['users_id']] = getUserLink($data['users_id']);
             }
             $is_current_session = $data['session_token_hash'] === Session::getSessionTokenHash();
-            $sessions[] = [
+            $session = [
                 'id' => $data['id'],
                 'current_session' => $is_current_session,
                 'users_id' => $data['users_id'],
-                'user_name' => $user_cache[$data['users_id']],
+                'user' => $user_cache[$data['users_id']],
                 'session_token_hash' => $data['session_token_hash'],
                 'ip_address' => $data['ip_address'],
                 'auth_type' => $data['auth_type'],
-                'logged_in_at' => $data['logged_in_at'],
-                'last_activity_at' => $data['last_activity_at'],
-                'logged_out_at' => $data['logged_out_at'],
+                'login' => $data['logged_in_at'],
+                'last_activity' => $data['last_activity_at'] ?? $data['logged_out_at'],
                 'logout_reason' => $data['logout_reason'],
                 'users_id_revoked_by' => $data['users_id_revoked_by'],
                 'user_agent_info' => [
@@ -333,6 +332,49 @@ final class SessionTracker extends CommonGLPI
                     'os' => $dd->getOs(),
                 ],
             ];
+            $session['type'] = '<span class="d-flex gap-1"><i class="ti ti-world" aria-hidden="true"></i>' . __s('Browser') . '</span>';
+            if ($data['logout_reason']) {
+                $reason_label = match($data['logout_reason']) {
+                    'user' => _sx('logout_reason', 'User logout'),
+                    'admin' => _sx('logout_reason', 'Admin revoked'),
+                    'expired' => _sx('logout_reason', 'Session expired'),
+                    default => $data['logout_reason'],
+                };
+                $reason_class = match($data['logout_reason']) {
+                    'user' => 'badge badge-outline bg-transparent text-success',
+                    'admin' => 'badge badge-outline bg-transparent text-danger',
+                    default => 'badge badge-outline bg-transparent text-info',
+                };
+                $session['status'] = '<span class="' . $reason_class . '">' . $reason_label . '</span>';
+            } else {
+                $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
+            }
+
+            $agent_browser_icons = [
+                'chrome' => 'ti ti-brand-chrome',
+                'firefox' => 'ti ti-brand-firefox',
+                'edge' => 'ti ti-brand-edge',
+                'safari' => 'ti ti-brand-safari',
+                'opera' => 'ti ti-brand-opera',
+            ];
+            $agent_icon = 'ti ti-help';
+            if ($dd->getClient()['type'] === 'browser') {
+                $agent_icon = $agent_browser_icons[strtolower($dd->getClient()['name'])] ?? $agent_icon;
+            }
+            $agent_description = $dd->getClient()['name'] . ' ' . $dd->getClient()['version'] . ' - ' . $dd->getOs()['name'] . ' ' . $dd->getOs()['version'];
+
+            $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
+            if ($is_current_session) {
+                $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
+            }
+            $session['details'] = '<span>' . $session['details'] . '</span>';
+
+            $session['actions'] = '';
+            if (!$data['logged_out_at'] && !$is_current_session) {
+                $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-session-token-hash="' . $data['session_token_hash'] . '">';
+                $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
+            }
+            $sessions[] = $session;
         }
         Profiler::getInstance()->stop('SessionTracker::getSessions - Loop sessions');
 
@@ -340,17 +382,23 @@ final class SessionTracker extends CommonGLPI
         return $sessions;
     }
 
-    public function showSessionList(int $users_id = 0): void
+    private function getSessionsCount(int $users_id = 0, array $filters = []): int
     {
-        $twig_params = [
-            'vue_props' => [
-            ],
-        ];
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div id="session-tracker"></div>
-            <script type="module">
-                window.Vue.createApp(window.Vue.components['SessionTracker/SessionTracker'].component, {{ vue_props|json_encode|raw }}).mount('#session-tracker');
-            </script>
-TWIG, $twig_params);
+        global $DB;
+
+        $criteria = $this->getWebSessionsCriteria($users_id, $filters);
+        // Remove pagination and ordering for count query
+        unset($criteria['ORDER'], $criteria['LIMIT'], $criteria['START']);
+        return $DB->request($criteria)->count();
+    }
+
+    public function showSessionList(int $users_id = 0, array $filters = []): void
+    {
+        TemplateRenderer::getInstance()->display('pages/setup/sessiontracker/sessiontracker.html.twig', [
+            'sessions' => $this->getSessions($users_id, $filters),
+            'sessions_count' => $this->getSessionsCount($users_id, $filters),
+            'filters' => $filters,
+            'href' => $_SERVER['REQUEST_URI'],
+        ]);
     }
 }
