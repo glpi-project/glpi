@@ -937,9 +937,11 @@ final class DbUtils
             $field = "$table.$field";
         }
 
+        $value_is_session_default = false;
         if (!is_array($value) && strlen($value) == 0) {
             if (isset($_SESSION['glpiactiveentities'])) {
                 $value = $_SESSION['glpiactiveentities'];
+                $value_is_session_default = true;
             } elseif (Session::isRightChecksDisabled()) {
                 return [new QueryExpression('true')];
             } elseif (isCommandLine() || Session::isCron()) {
@@ -962,7 +964,10 @@ final class DbUtils
 
         if ($is_recursive) {
             $ancestors = [];
-            if (is_array($value)) {
+            if ($value_is_session_default) {
+                $ancestors = $_SESSION['glpiparententities'] ?? [];
+                $ancestors = array_diff($ancestors, $value);
+            } elseif (is_array($value)) {
                 $ancestors = $this->getAncestorsOf("glpi_entities", $value);
                 $ancestors = array_diff($ancestors, $value);
             } elseif (strlen($value) == 0) {
