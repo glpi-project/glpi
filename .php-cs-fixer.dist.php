@@ -46,6 +46,19 @@ $finder = (new PhpCsFixer\Finder())
         'tests/e2e/',
         'vendor/',
     ])
+    ->filter(static function (\SplFileInfo $file): bool {
+        $tests_path = realpath(__DIR__ . '/tests');
+        if ($tests_path === false) {
+            return true;
+        }
+
+        $file_path = $file->getRealPath();
+        if ($file_path === false) {
+            return true;
+        }
+
+        return !str_starts_with($file_path, $tests_path . '/files-');
+    })
 ;
 
 return (new PhpCsFixer\Config())
