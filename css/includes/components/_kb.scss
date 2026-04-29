@@ -719,6 +719,17 @@
         list-style: none;
     }
 
+    // Collapsed category: hide children and rotate chevron
+    .node[data-glpi-kb-aside-category-collapsed] {
+        > ul {
+            display: none;
+        }
+
+        [data-glpi-kb-aside-category-toggle] .ti-chevron-down {
+            transform: rotate(-90deg);
+        }
+    }
+
     // Current article entry when it is not yet a favorite: hidden until the user favorites it.
     [data-glpi-kb-favorite-current="pending"] {
         display: none;

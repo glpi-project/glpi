@@ -32,9 +32,15 @@
 
 {% macro render_category(category) %}
     {% import _self as macros %}
-    <li class="node">
-        <div class="d-flex align-items-center mb-2">
-            <i class="ti ti-chevron-down me-1 fs-4"></i>
+    <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
+        <div
+            class="d-flex align-items-center mb-2 cursor-pointer"
+            data-glpi-kb-aside-category-toggle
+            role="button"
+            aria-label="{{ category.title }}"
+            aria-expanded="true"
+        >
+            <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
             {{ render_illustration(category.illustration, 20) }}
             <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
         </div>
@@ -119,4 +125,14 @@
         {% endfor %}
     </ul>
 </div>
+
+<script type="module">
+    (async () => {
+        const { GlpiKnowbaseAsideController } = await import(
+            "{{ js_path('js/modules/Knowbase/AsideController.js') }}"
+        );
+        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+        new GlpiKnowbaseAsideController(aside);
+    })();
+</script>
 
