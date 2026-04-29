@@ -37,7 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchOption;
+use Safe\Exceptions\JsonException;
 
+use function Safe\json_decode;
 use function Safe\preg_match;
 
 /**
@@ -221,8 +223,8 @@ class Log extends CommonDBTM
      * @param int $items_id
      * @param class-string<CommonDBTM> $itemtype
      * @param array $changes
-     * @param int|string $itemtype_link   (default '')
-     * @param int $linked_action   (default 0)
+     * @param int|string $itemtype_link (default '')
+     * @param int $linked_action (default 0)
      *
      * @return bool success
      */
@@ -243,13 +245,30 @@ class Log extends CommonDBTM
         $new_id           = $changes[4] ?? null;
 
         // Remove json values
-        $decoded_old_value = json_decode($old_value); //@phpstan-ignore theCodingMachineSafe.function
-        $decoded_new_value = json_decode($new_value); //@phpstan-ignore theCodingMachineSafe.function
-        if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
+        if (is_array($old_value) || is_object($old_value)) {
             $old_value = '';
+        } elseif (is_string($old_value)) {
+            try {
+                $decoded_old_value = json_decode($old_value);
+            } catch (JsonException $e) {
+                $decoded_old_value = null;
+            }
+            if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
+                $old_value = '';
+            }
         }
-        if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
+
+        if (is_array($new_value) || is_object($new_value)) {
             $new_value = '';
+        } elseif (is_string($new_value)) {
+            try {
+                $decoded_new_value = json_decode($new_value);
+            } catch (JsonException $e) {
+                $decoded_new_value = null;
+            }
+            if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
+                $new_value = '';
+            }
         }
 
         if ($uid = Session::getLoginUserID(false)) {
