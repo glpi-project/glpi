@@ -52,7 +52,7 @@
 {% endif %}
 
 {% if not is_actor_hidden %}
-   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}"
+   <select class="form-select" multiple="true" id="actor_{{ rand }}" data-actor-type="{{ actortype }}" data-testid="select-{{ actortype }}"
         {{ required ? 'required' : '' }}>
    {% for actor in actors %}
       {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}
@@ -159,7 +159,7 @@
             // prepare html for option element
             text = (is_selection && itemtype == "Group") ? title : text;
             const option_text    = `<span class="actor_text">${text}</span>`;
-            const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}">${indent}${icon}${option_text}${actions}</span>`);
+            const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}" data-testid="actor-entry-${_.escape(actorytype)}-${_.escape(itemtype)}-${_.escape(items_id)}">${indent}${icon}${option_text}${actions}</span>`);
 
             if (is_selection && itemtype == "User") {
                 const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;

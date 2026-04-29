@@ -49,12 +49,12 @@ class Budget extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
-    public static $rightname           = 'budget';
-    protected $usenotepad       = true;
+    public static string $rightname           = 'budget';
+    protected bool $usenotepad       = true;
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     public function getCloneRelations(): array
     {
@@ -99,10 +99,10 @@ class Budget extends CommonDropdown
     {
 
         if (!$withtemplate) {
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case self::class:
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::class, 'ti ti-package'),
                     ];
             }
         }
@@ -328,7 +328,8 @@ class Budget extends CommonDropdown
             $criteria = [
                 'SELECT'       => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
-                    $item_table => ['id', 'entities_id'],
+                    "$item_table.id",
+                    "$item_table.entities_id",
 
                 ],
                 'FROM'         => 'glpi_infocoms',
@@ -355,11 +356,11 @@ class Budget extends CommonDropdown
             /** @var CommonDBTM $item */
             $item = new $itemtype();
 
-            $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : new QueryExpression('0', 'is_deleted');
-            $criteria['SELECT'][$item_table][] = $item->isField('serial') ? 'serial' : new QueryExpression('NULL', 'serial');
-            $criteria['SELECT'][$item_table][] = $item->isField('otherserial') ? 'otherserial' : new QueryExpression('NULL', 'otherserial');
+            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : new QueryExpression('0', 'is_deleted');
+            $criteria['SELECT'][] = $item->isField('serial') ? "$item_table.serial" : new QueryExpression('NULL', 'serial');
+            $criteria['SELECT'][] = $item->isField('otherserial') ? "$item_table.otherserial" : new QueryExpression('NULL', 'otherserial');
             if ($item instanceof Item_Devices) {
-                $criteria['SELECT'][$item_table][] = $item::$items_id_2 . ' AS devices_id';
+                $criteria['SELECT'][] = $item_table . '.' . $item::$items_id_2 . ' AS devices_id';
             } else {
                 $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
             }
@@ -417,7 +418,7 @@ class Budget extends CommonDropdown
                 ),
                 default => QueryFunction::sum(expression: "{$cost_table}.cost", alias: 'value'),
             };
-            $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : '0 AS is_deleted';
+            $criteria['SELECT'][] = $item->maybeDeleted() ? "$item_table.is_deleted" : '0 AS is_deleted';
 
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
@@ -481,7 +482,7 @@ class Budget extends CommonDropdown
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
                     $tmpitem = getItemForItemtype($items[$itemtype]::$itemtype_2);
-                    if ($tmpitem->getFromDB($data['devices_id'])) {
+                    if ($tmpitem->getFromDB((int) $data['devices_id'])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }
                 } else {
@@ -522,7 +523,6 @@ class Budget extends CommonDropdown
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
 
@@ -645,7 +645,6 @@ class Budget extends CommonDropdown
             ],
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
 

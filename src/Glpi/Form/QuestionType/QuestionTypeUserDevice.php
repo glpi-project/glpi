@@ -322,14 +322,21 @@ TWIG;
 
         $devices = [];
         foreach ($value as $device) {
-            if (preg_match('/^([A-Za-z]+)_\d+$/', $device, $matches)) {
-                $itemtype = $matches[1];
-                $item_id = substr($device, strlen($itemtype) + 1); // Get the ID part after the itemtype
-                $item = getItemForItemtype($itemtype);
+            if (\is_array($device) && isset($device[0]) && isset($device[1]) && count($device) == 2) {
+                // Item is formatted as [itemtype, item_id]
+                $itemtype = $device[0];
+                $item_id = $device[1];
+            } elseif (\is_string($device) && preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $matches)) {
+                // Item is formatted as "itemtype_item_id"
+                $itemtype = $matches['itemtype'];
+                $item_id = $matches['id'];
+            } else {
+                continue;
+            }
 
-                if ($item instanceof CommonDBTM && $item->getFromDB($item_id)) {
-                    $devices[] = $item->getName();
-                }
+            $item = getItemForItemtype($itemtype);
+            if ($item instanceof CommonDBTM && $item->getFromDB($item_id)) {
+                $devices[] = $item->getName();
             }
         }
 

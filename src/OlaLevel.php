@@ -43,12 +43,12 @@
  **/
 class OlaLevel extends LevelAgreementLevel
 {
-    protected $rules_id_field     = 'olalevels_id';
-    protected $ruleactionclass    = 'OlaLevelAction';
-    protected static $parentclass = 'OLA';
-    protected static $fkparent    = 'olas_id';
+    protected string $rules_id_field     = 'olalevels_id';
+    protected string $ruleactionclass    = 'OlaLevelAction';
+    protected static string $parentclass = 'OLA';
+    protected static string $fkparent    = 'olas_id';
     // No criteria
-    protected $rulecriteriaclass = 'OlaLevelCriteria';
+    protected string $rulecriteriaclass = 'OlaLevelCriteria';
 
 
     public static function getTable($classname = null)

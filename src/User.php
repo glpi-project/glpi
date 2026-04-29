@@ -75,8 +75,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     use TreeBrowse;
 
     // From CommonDBTM
-    public $dohistory         = true;
-    public $history_blacklist = ['date_mod', 'date_sync', 'last_login',
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_mod', 'date_sync', 'last_login',
         'publicbookmarkorder', 'privatebookmarkorder',
     ];
 
@@ -91,9 +91,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const UPDATEAUTHENT       = 4096;
     public const IMPERSONATE         = 8192;
 
-    public static $rightname = 'user';
+    public static string $rightname = 'user';
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'password',
         'password_history',
         'personal_token',
@@ -342,9 +342,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @return void
      *
      * @since 0.83.7
+     *
+     * @deprecated 12.0.0
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
+        Toolbox::deprecated();
+
         if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
             Session::destroy();
             Session::start();
@@ -364,14 +368,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
         switch ($item::class) {
             case self::class:
                 $ong    = [];
-                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
+                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::class, 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::class, 'ti ti-package');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
                     && Session::haveRight(self::$rightname, self::READAUTHENT)
                 ) {
-                    $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::getType(), AuthLDAP::getIcon());
+                    $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::class, AuthLDAP::getIcon());
                 }
                 $ong[4] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
                 return $ong;
@@ -549,6 +553,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 Change_User::class,
                 Group_User::class,
                 Item_Kanban::class,
+                KnowbaseItem_Favorite::class,
                 KnowbaseItem_User::class,
                 Problem_User::class,
                 Profile_User::class,
@@ -582,7 +587,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         // Alert does not extends CommonDBConnexity
         $alert = new Alert();
-        $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
 
@@ -1000,7 +1005,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public function pre_addInDB()
     {
         // Hash user_dn if set
-        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
+        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && $this->input['user_dn'] !== '') {
             $this->input['user_dn_hash'] = md5($this->input['user_dn']);
         }
     }
@@ -1247,7 +1252,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input[$input_key])
                         && !str_starts_with($input_key, '_') // virtual field
-                        && $input[$input_key] != $this->getField($input_key)
+                        && $input[$input_key] != $this->fields[$input_key]
                     ) {
                         $ignored_fields[] = $input_key;
                     }
@@ -1271,7 +1276,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (
             isset($input["authtype"])
             && $input["authtype"] != Auth::DB_GLPI
-            && $input["authtype"] != $this->getField('authtype')
+            && $input["authtype"] != $this->fields['authtype']
         ) {
             $input["password"] = "";
         }
@@ -1293,18 +1298,51 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $_SESSION["glpidefault_entity"] = $input["entities_id"];
         }
 
-        // Security on default profile update
-        if (isset($input['profiles_id'])) {
-            if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))) {
-                unset($input['profiles_id']);
+        // Prepare default profiles and entities for security checks
+        $default_profile_ids = [];
+        $default_entity_id = [];
+
+        // Check if LDAP rules are set in input
+        if ($this->must_process_ruleright === true && isset($input['_ldap_rules'])) {
+            // Check if LDAP rules contain entity and profile affectations
+            if (isset($input['_ldap_rules']['rules_entities_rights'])) {
+                foreach ($input['_ldap_rules']['rules_entities_rights'] as $rule) {
+                    $default_entity_id[] = $rule[0];
+                    $default_profile_ids[] = $rule[1];
+                }
             }
+
+            // Check if LDAP rules contain entity affectations
+            if (isset($input['_ldap_rules']['rules_entities'])) {
+                foreach ($input['_ldap_rules']['rules_entities'] as $rule) {
+                    $default_entity_id[] = $rule[0];
+                }
+            }
+
+            // Check if LDAP rules contain profile affectations. One entity is required to be able to apply profile affectation.
+            if (isset($input['_ldap_rules']['rules_rights']) && count($default_entity_id) > 0) {
+                foreach ($input['_ldap_rules']['rules_rights'] as $rule) {
+                    $default_profile_ids[] = $rule;
+                }
+            }
+        }
+
+        // Security on default profile update
+        if (
+            isset($input['profiles_id'])
+            && !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
+            && $input['profiles_id'] != 0
+            && !in_array($input['profiles_id'], $default_profile_ids)
+        ) {
+            unset($input['profiles_id']);
         }
 
         // Security on default entity  update
         if (isset($input['entities_id'])) {
             if (
-                ($input['entities_id'] > 0)
-                && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+                $input['entities_id'] > 0
+                && !in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))
+                && !in_array($input['entities_id'], $default_entity_id)
             ) {
                 unset($input['entities_id']);
             } elseif ($input['entities_id'] == -1) {
@@ -1429,7 +1467,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $alert = new Alert();
             $alert->deleteByCriteria(
                 [
-                    'itemtype' => $this->getType(),
+                    'itemtype' => static::class,
                     'items_id' => $this->fields['id'],
                 ],
                 true
@@ -2334,7 +2372,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
 
             ///Only process rules if working on the master database
-            if (!$DB->isSlave()) {
+            if (!$DB->isReplica()) {
                 //Instanciate the affectation's rule
                 $rule = new RuleRightCollection();
 
@@ -2560,7 +2598,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         // force authtype as we retrieve this user by imap (we could have login with SSO)
         $this->fields["authtype"] = Auth::MAIL;
 
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
 
@@ -2669,7 +2707,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
         ///Only process rules if working on the master database
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             //Instanciate the affectation's rule
             $rule = new RuleRightCollection();
 
@@ -2753,11 +2791,9 @@ HTML;
             $impersonate_form = htmlescape(self::getFormURLWithID($ID));
             if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
-                $csrf_token = htmlescape(Session::getNewCSRFToken());
                 $impersonate_btn = <<<HTML
                     <form method="post" action="{$impersonate_form}">
                         <input type="hidden" name="id" value="{$ID}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{$csrf_token}">
                         <button type="button" name="impersonate" value="1"
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
@@ -3022,7 +3058,7 @@ HTML;
         // Hash user_dn if is updated
         if (in_array('user_dn', $this->updates)) {
             $this->updates[] = 'user_dn_hash';
-            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && $this->input['user_dn'] !== ''
                 ? md5($this->input['user_dn'])
                 : null;
         }
@@ -3118,17 +3154,17 @@ HTML;
                             )
                         ) {
                             if (AuthLDAP::forceOneUserSynchronization($item, ($ma->getAction() == 'clean_ldap_fields'), false)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -3140,18 +3176,18 @@ HTML;
                     !isset($input["authtype"])
                     || !isset($input["auths_id"])
                 ) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     return;
                 }
                 if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
                     if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                 }
                 return;
@@ -3160,7 +3196,7 @@ HTML;
                 foreach ($ids as $id) {
                     // Check rights
                     if (!$item->can($id, UPDATE)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
@@ -3174,7 +3210,7 @@ HTML;
                             $status = MassiveAction::ACTION_KO;
                         }
                     }
-                    $ma->itemDone($item->getType(), $id, $status);
+                    $ma->itemDone($item::class, $id, $status);
                 }
                 return;
 
@@ -3183,12 +3219,12 @@ HTML;
                 $totp = new TOTPManager();
                 foreach ($ids as $id) {
                     if (!$can_update_auth || !$item->can($id, UPDATE)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
                     $totp->disable2FAForUser($id);
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
                 break;
             case 'send_pw_reset':
@@ -3572,6 +3608,7 @@ HTML;
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
+            'use_join_subquery'  => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -3592,6 +3629,7 @@ HTML;
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
+            'use_join_subquery'  => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -3607,6 +3645,7 @@ HTML;
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
+            'use_join_subquery'  => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -4122,7 +4161,7 @@ HTML;
         }
 
         if (!$count) {
-            if (strlen((string) $search) > 0) {
+            if (((string) $search) !== '') {
                 $txt_search = Search::makeTextSearchValue($search);
 
                 $firstname_field = self::getTableField('firstname');
@@ -4411,7 +4450,7 @@ HTML;
 
             $paramscomment = [
                 'value'    => '__VALUE__',
-                'itemtype' => User::getType(),
+                'itemtype' => User::class,
             ];
 
             if ($view_users) {
@@ -4458,7 +4497,7 @@ HTML;
             $icons .= '</div>';
         }
 
-        if (strlen($icons) > 0) {
+        if ($icons !== '') {
             $output = "<div class='btn-group btn-group-sm " . ($p['width'] == "100%" ? "w-100" : "") . "' role='group'>{$output} {$icons}</div>";
         }
 
@@ -4639,9 +4678,49 @@ HTML;
     {
         global $CFG_GLPI, $DB;
 
-        $ID = $this->getField('id');
+        $ID = $this->getID();
 
         $start       = intval($_GET["start"] ?? 0);
+        $get_filters   = $_GET["filters"] ?? [];
+
+        $type_choices = [];
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if ($item = getItemForItemtype($itemtype)) {
+                if (!$item::canView()) {
+                    continue;
+                }
+                $type_choices[$itemtype] = $item::getTypeName(1);
+            }
+        }
+        asort($type_choices);
+
+        $entity_choices = [];
+        foreach ($this->getEntities() as $entity_id) {
+            if (Session::haveAccessToEntity($entity_id)) {
+                $entity_choices[$entity_id] = Dropdown::getDropdownName("glpi_entities", $entity_id);
+            }
+        }
+        asort($entity_choices);
+
+        $state_choices = [];
+        $state_iterator = $DB->request([
+            'SELECT' => ['id', 'completename'],
+            'FROM'   => 'glpi_states',
+        ]);
+        foreach ($state_iterator as $row) {
+            $state_choices[$row['id']] = $row['completename'];
+        }
+        asort($state_choices);
+
+        $filters = [
+            'type'        => [],
+            'entity'      => [],
+            'name'        => '',
+            'serial'      => '',
+            'otherserial' => '',
+            'states'      => [],
+            'group'    => [],
+        ];
 
         if ($tech) {
             $field_user  = 'users_id_tech';
@@ -4689,17 +4768,92 @@ HTML;
             ];
         }
 
+        $group_choices = [];
+        foreach ($groups as $g_id => $g_name) {
+            $group_choices[$g_id] = $g_name;
+        }
+        asort($group_choices);
+
+        $array_filters_choices = [
+            'type'     => $type_choices,
+            'entity'   => $entity_choices,
+            'states'   => $state_choices,
+            'group'    => $group_choices,
+        ];
+
+        foreach ($get_filters as $f => $value) {
+            if (!empty($value)) {
+                if (isset($array_filters_choices[$f])) {
+                    foreach ((array) $value as $v) {
+                        if (isset($array_filters_choices[$f][$v])) {
+                            $filters[$f][] = $v;
+                        }
+                    }
+                } elseif (in_array($f, ['name', 'serial', 'otherserial'], true)) {
+                    $filters[$f] = is_array($value) ? (string) $value[0] : (string) $value;
+                }
+            }
+        }
+
         $entries = [];
 
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if (!empty($filters['type']) && !in_array($itemtype, $filters['type'])) {
+                continue;
+            }
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $relation_table = Group_Item::getTable();
+
+                $item_criteria = [];
+                $item_criteria[$itemtable . '.' . $item->getNameField()] = ['LIKE', '%' . $filters['name'] . '%'];
+                if ($filters['serial'] !== '' && $DB->fieldExists($itemtable, 'serial')) {
+                    $item_criteria[$itemtable . '.serial'] = ['LIKE', '%' . $filters['serial'] . '%'];
+                }
+                if ($filters['otherserial'] !== '' && $DB->fieldExists($itemtable, 'otherserial')) {
+                    $item_criteria[$itemtable . '.otherserial'] = ['LIKE', '%' . $filters['otherserial'] . '%'];
+                }
+                if (count($filters['states']) > 0 && $DB->fieldExists($itemtable, 'states_id')) {
+                    $item_criteria[$itemtable . '.states_id'] = $filters['states'];
+                }
+                if (count($filters['group']) > 0) {
+                    $group_criteria = [];
+                    foreach ($filters['group'] as $lt) {
+                        $group_criteria[] = [
+                            $relation_table . '.groups_id' => $lt,
+                            $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
+                        ];
+                    }
+                    if (count($group_criteria) > 0) {
+                        $item_criteria[] = ['OR' => $group_criteria];
+                    }
+                }
+
+                foreach ($filters['entity'] as $entity_id) {
+                    if (!Session::haveAccessToEntity($entity_id)) {
+                        $filters['entity'] = array_filter(
+                            $filters['entity'],
+                            fn($value) => $value != $entity_id
+                        );
+                    }
+                }
+
+                $target_entities = count($filters['entity']) > 0 ? $filters['entity'] : $this->getEntities();
+
+                $where = ['entities_id' => $target_entities] + $criteria + $item::getSystemSQLCriteria();
+                if (count($item_criteria) > 0) {
+                    $where[] = $item_criteria;
+                }
+
                 $iterator_params = [
-                    'SELECT'  => ["$itemtable.*", "$relation_table.groups_id"],
+                    'SELECT'  => [
+                        "$itemtable.*",
+                        new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName($relation_table . '.groups_id') . ') AS ' . $DB->quoteName('groups_ids')),
+                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                    ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
                         Group_Item::getTable() => [
@@ -4713,7 +4867,7 @@ HTML;
                             ],
                         ],
                     ],
-                    'WHERE'   => ['entities_id' => $this->getEntities()] + $criteria + $item::getSystemSQLCriteria(),
+                    'WHERE'   => $where,
                     'GROUPBY' => "$itemtable.id",
                 ];
 
@@ -4726,7 +4880,7 @@ HTML;
 
                 $item_iterator = $DB->request($iterator_params);
 
-                $type_name = $item->getTypeName();
+                $type_name = $item->getTypeName(1);
 
                 foreach ($item_iterator as $data) {
                     $cansee = $item->can($data["id"], READ);
@@ -4738,18 +4892,18 @@ HTML;
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
                     }
-                    $linktypes = [];
-                    if ($data[$field_user] == $ID) {
-                        $linktypes[] = self::getTypeName(1);
-                    }
-                    if (isset($groups[$data['groups_id']])) {
-                        $linktypes[] = sprintf(
-                            __('%1$s = %2$s'),
-                            Group::getTypeName(1),
-                            $groups[$data['groups_id']]
-                        );
-                    }
                     if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
+                        $group_names = [];
+                        foreach (explode(',', $data['groups_ids'] ?? '') as $g_id) {
+                            if (empty($g_id)) {
+                                continue;
+                            }
+                            if (!isset($groups[$g_id])) {
+                                $groups[$g_id] = Dropdown::getDropdownName("glpi_groups", intval($g_id));
+                            }
+                            $group_names[] = $groups[$g_id];
+                        }
+
                         $entries[] = [
                             'itemtype'      => $itemtype,
                             'id'            => $data["id"],
@@ -4761,7 +4915,7 @@ HTML;
                             'states'        => !empty($data['states_id'])
                                 ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
                                 : '',
-                            'linktype'      => implode(', ', $linktypes),
+                            'group'         => implode(', ', $group_names),
                         ];
                     }
                     $number++;
@@ -4772,23 +4926,42 @@ HTML;
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start'                 => $start,
             'is_tab'                => true,
+            'limit'                 => $_SESSION['glpilist_limit'],
             'items_id'              => $ID,
-            'nofilter'              => true,
             'columns'               => [
-                'type'          => _n('Type', 'Types', 1),
-                'entity'        => Entity::getTypeName(1),
+                'type'          => [
+                    'label'            => _n('Type', 'Types', 1),
+                    'filter_formatter' => 'array',
+                ],
+                'entity'        => [
+                    'label'            => Entity::getTypeName(1),
+                    'filter_formatter' => 'array',
+                ],
                 'name'          => __('Name'),
                 'serial'        => __('Serial number'),
                 'otherserial'   => __('Inventory number'),
-                'states'        => __('Status'),
-                'linktype'      => '',
+                'states'        => [
+                    'label'            => __('Status'),
+                    'filter_formatter' => 'array',
+                ],
+                'group'      => [
+                    'label'            => Group::getTypeName(1),
+                    'filter_formatter' => 'array',
+                ],
             ],
+            'columns_values'        => [
+                'type'     => $type_choices,
+                'entity'   => $entity_choices,
+                'states'   => $state_choices,
+                'group'    => $group_choices,
+            ],
+            'filters' => $filters,
+            'additional_params'     => http_build_query(['filters' => $filters]),
             'formatters' => [
                 'name'          => 'raw_html',
             ],
             'entries'               => $entries,
             'total_number'          => $number,
-            'filtered_number'       => $number,
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
@@ -5888,7 +6061,7 @@ HTML;
                             self::getTable()  => 'id',
                             [
                                 'AND' => [
-                                    Alert::getTableField('itemtype') => self::getType(),
+                                    Alert::getTableField('itemtype') => static::class,
                                 ],
                             ],
                         ],
@@ -6830,6 +7003,25 @@ HTML;
                 if ($profile->haveUserRight($user_id, $module, $right, $entities_id)) {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * User has at least one of the rights for given module.
+     *
+     * @param string  $module Module to check
+     * @param int[]   $rights Rights to check
+     * @param int $entities_id Entity to check
+     *
+     * @return bool
+     */
+    public function hasRightsOr($module, $rights, $entities_id)
+    {
+        foreach ($rights as $right) {
+            if ($this->hasRight($module, $right, $entities_id)) {
+                return true;
             }
         }
         return false;

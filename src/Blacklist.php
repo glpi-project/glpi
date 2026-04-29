@@ -48,11 +48,11 @@ class Blacklist extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     /**
      * Loaded blacklists.
@@ -558,7 +558,7 @@ class Blacklist extends CommonDropdown
             if (
                 !is_numeric($value->$key)
                 && preg_match('/^.+models_id/', $key)
-                && '' == $this->process(self::MODEL, $value->$key)
+                && '' == $this->process(self::MODEL, $value->$key ?? '')
             ) {
                 unset($value->$key);
             }

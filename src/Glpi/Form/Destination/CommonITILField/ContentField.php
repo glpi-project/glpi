@@ -90,6 +90,7 @@ final class ContentField extends AbstractConfigField implements DestinationField
                 options|merge({
                     'field_class'      : '',
                     'no_label'         : true,
+                    'aria_label'       : __('Content'),
                     'enable_richtext'  : true,
                     'enable_images'    : false,
                     'enable_form_tags' : true,

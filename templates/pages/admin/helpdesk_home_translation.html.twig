@@ -138,7 +138,6 @@
 <div class="modal fade" id="helpdesk-translation-modal-{{ helpdesk_translation.fields['language'] }}" tabindex="-1" role="dialog" aria-labelledby="helpdesk-translation-modal-title-{{ helpdesk_translation.fields['language'] }}">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
         <form class="modal-content" method="POST">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             <input type="hidden" name="helpdesk_translation_id" value="{{ helpdesk_translation.getID() }}" />
 
             <div class="modal-header border-bottom-0">

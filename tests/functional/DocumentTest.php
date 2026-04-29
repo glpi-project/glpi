@@ -38,9 +38,12 @@ use DocumentCategory;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -72,7 +75,7 @@ class DocumentTest extends DbTestCase
                 'item'   => 'Config',
                 'can'    => false,
             ], [
-                'item'   => 'Item_Plug',
+                'item'   => 'Plug',
                 'can'    => false,
             ],
         ];
@@ -123,6 +126,7 @@ class DocumentTest extends DbTestCase
         $this->assertSame($expected, $tabs);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testPrepareInputForAdd()
     {
         $input = [
@@ -225,6 +229,7 @@ class DocumentTest extends DbTestCase
      * Note: The ticket status does not change to ASSIGNED in the first scenario
      * because there is no user assigned to the ticket.
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testPost_addItem()
     {
         // Login with the user.
@@ -1717,18 +1722,26 @@ class DocumentTest extends DbTestCase
         $builder->addAccessControl(AllowList::class, new AllowListConfig(
             user_ids: [getItemByTypeName(User::class, "post-only", true)],
         ));
+        $builder->addQuestion('My question', QuestionTypeLongText::class);
         $form = $this->createForm($builder);
-        $document = $this->addDocumentToItem("foo.txt", "content", $form);
+        $question = Question::getById($this->getQuestionId($form, 'My question'));
+        $document1 = $this->addDocumentToItem("foo.txt", "content", $form);
+        $document2 = $this->addDocumentToItem("foo.txt", "content", $question);
 
         // Act: try to view document as a user allowed to see the form
         $this->login("post-only");
-        $can_view = $document->canViewFile([
+        $can_view_1 = $document1->canViewFile([
             'itemtype' => Form::class,
             'items_id' => $form->getID(),
         ]);
+        $can_view_2 = $document2->canViewFile([
+            'itemtype' => Question::class,
+            'items_id' => $question->getID(),
+        ]);
 
         // Assert: the user should be allowed to see the form
-        $this->assertTrue($can_view);
+        $this->assertTrue($can_view_1);
+        $this->assertTrue($can_view_2);
     }
 
     public function testLinkedDocumentsCantBeViewedByNonFormUsers(): void
@@ -1739,18 +1752,25 @@ class DocumentTest extends DbTestCase
         $builder->addAccessControl(AllowList::class, new AllowListConfig(
             user_ids: [getItemByTypeName(User::class, "tech", true)],
         ));
+        $builder->addQuestion('My question', QuestionTypeLongText::class);
         $form = $this->createForm($builder);
-        $document = $this->addDocumentToItem("foo.txt", "content", $form);
+        $question = Question::getById($this->getQuestionId($form, 'My question'));
+        $document1 = $this->addDocumentToItem("foo.txt", "content", $form);
+        $document2 = $this->addDocumentToItem("foo.txt", "content", $question);
 
         // Act: try to view document as a user that is not allowed to see the form
         $this->login("post-only");
-        $can_view = $document->canViewFile([
+        $can_view_1 = $document1->canViewFile([
             'itemtype' => Form::class,
             'items_id' => $form->getID(),
         ]);
+        $can_view_2 = $document2->canViewFile([
+            'itemtype' => Question::class,
+            'items_id' => $question->getID(),
+        ]);
 
         // Assert: the user should not be allowed to see the form
-        $this->assertFalse($can_view);
+        $this->assertFalse($can_view_1);
+        $this->assertFalse($can_view_2);
     }
-
 }

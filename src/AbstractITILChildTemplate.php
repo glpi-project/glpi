@@ -130,7 +130,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         $content = $this->fields['content'];
         $content = DropdownTranslation::getTranslatedValue(
             $this->getID(),
-            $this->getType(),
+            static::class,
             'content',
             $_SESSION['glpilanguage'],
             $content

@@ -186,7 +186,7 @@ final class ITILCategoryField extends AbstractConfigField implements Destination
 
         foreach ($questions as $question) {
             // Only keep questions that are ITIL categories
-            if ((new QuestionTypeItemDropdown())->getDefaultValueItemtype($question) !== ITILCategory::getType()) {
+            if ((new QuestionTypeItemDropdown())->getDefaultValueItemtype($question) !== ITILCategory::class) {
                 continue;
             }
 

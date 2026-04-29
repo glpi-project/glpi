@@ -46,8 +46,7 @@ use function Safe\json_encode;
 
 class DebugCommand extends Command
 {
-    /** @var bool */
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {
@@ -72,7 +71,7 @@ class DebugCommand extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $cache_manager = new CacheManager();

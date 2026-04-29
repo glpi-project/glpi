@@ -1,0 +1,782 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.article-container {
+    max-width: 1320px !important;
+}
+
+.kb-sidepanel {
+    background-color: var(--tblr-card-cap-bg);
+    border-left: 1px solid #e1e4e8;
+    height: calc(100vh - 150px);
+
+    .steps-vertical {
+        position: relative;
+        left: -1.5rem;
+        width: calc(100% + 3rem);
+        margin-left: 0;
+        padding-right: 1.25rem;
+        border-left: none;
+    }
+
+    &.closed {
+        border-left: 0;
+        width: 0;
+        overflow: hidden;
+        padding: 0 !important;
+    }
+}
+
+.kb-title-editable {
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+
+    &.is-editing {
+        outline: none;
+        padding: 2px 6px;
+        margin: 0 -6px;
+
+        &:focus {
+            background-color: rgb(var(--tblr-primary-rgb) / 4%);
+        }
+
+        &:empty::before {
+            content: attr(data-placeholder);
+            color: var(--tblr-muted);
+            pointer-events: none;
+        }
+    }
+}
+
+.kb-article {
+    position: relative;
+    max-height: calc(100vh - 150px);
+    overflow: auto;
+    transition: width 0.35s ease-in-out;
+}
+
+[data-glpi-knowbase-side-panel-offcanvas] {
+    width: min(400px, 85vw);
+
+    .steps-vertical {
+        --tblr-steps-padding: 1.5rem;
+
+        margin-left: 0;
+    }
+}
+
+// KB Documents footer section
+
+.kb-documents-footer {
+    scroll-margin-top: 1rem;
+}
+
+// Document badge styling (matches mockup)
+.kb-item-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    .kb-unlink-item {
+        &:hover {
+            color: var(--tblr-danger) !important;
+        }
+    }
+
+    &:focus-within {
+        .kb-unlink-item {
+            opacity: 1;
+        }
+    }
+
+    &:hover {
+        border-color: var(--tblr-secondary);
+
+        a {
+            color: var(--tblr-dark);
+        }
+    }
+}
+
+// KB revision diff - inline highlights
+.kb-article--diff-mode {
+    ins.diffins {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffdel {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+
+    ins.diffmod {
+        background-color: #d4edda;
+        text-decoration: none;
+    }
+
+    del.diffmod {
+        background-color: #f8d7da;
+        text-decoration: line-through;
+    }
+}
+
+// KB revision comparison - side panel state
+.kb-sidepanel [data-glpi-current-version],
+.kb-sidepanel [data-glpi-revision-id],
+.kb-sidepanel [data-glpi-translation-revision-id],
+.kb-sidepanel [data-glpi-current-translation-language] {
+    cursor: pointer;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    &.kb-revision--selected {
+        background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+        box-shadow: inset -3px 0 0 var(--tblr-primary);
+    }
+}
+
+// Related item badge styling
+.kb-related-item-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--tblr-primary) !important;
+        color: var(--tblr-bg-surface) !important;
+        border-color: var(--tblr-primary);
+        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+
+        i {
+            color: var(--tblr-bg-surface) !important;
+        }
+    }
+}
+
+// KB permission owner footer (full-width, differentiated background)
+.kb-permission-owner {
+    background-color: var(--tblr-body-bg);
+    margin: 0 calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+    padding: var(--tblr-modal-padding);
+    border-top: 1px solid var(--tblr-border-color);
+    border-radius: 0 0 var(--tblr-modal-inner-border-radius) var(--tblr-modal-inner-border-radius);
+}
+
+// KB permission visibility fields (AJAX-loaded from visibility.php)
+.kb-permission-visibility {
+    // Override the inline d-flex from visibility.php to stack fields
+    > .d-flex {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    // Override the legacy table from subvisibility.php
+    .tab_format {
+        width: 100%;
+
+        td {
+            padding: 0.25rem 0.375rem;
+            white-space: nowrap;
+        }
+    }
+}
+
+// KB modal tabs navigation
+.kb-modal-nav {
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent !important;
+    }
+}
+
+// KB documents footer tabs navigation
+#kb-documents {
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent !important;
+    }
+}
+
+// KB comment thread reply trigger
+.kb-comment-thread {
+    .kb-reply-trigger {
+        transition: opacity 0.15s ease-in-out;
+    }
+
+    &:hover .kb-reply-trigger {
+        opacity: 1 !important;
+    }
+}
+
+// KB visibility dates
+.kb-schedule-panel {
+    min-width: 280px;
+}
+
+// Handle shared borders for comments in the same thread.
+.kb-comment-card {
+    border-radius: 0 !important;
+    border-bottom-width: 0 !important;
+}
+
+// Re-add top border radius for first comment of a thread
+.kb-comment:first-child {
+    .kb-comment-card {
+        border-top-left-radius: var(--tblr-border-radius) !important;
+        border-top-right-radius: var(--tblr-border-radius) !important;
+    }
+}
+
+// Re-add bottom border radius + border bottom for last comment of a thread.
+// This must only be done if the "reply form" is not displayed.
+.kb-comment-thread:not(.reply-shown) {
+    .kb-comment:nth-last-child(-n + 3) {
+        .kb-comment-card {
+            border-bottom-left-radius: var(--tblr-border-radius) !important;
+            border-bottom-right-radius: var(--tblr-border-radius) !important;
+            border-bottom-width: 1px !important;
+        }
+    }
+}
+
+// Re-add bottom border radius + border bottom for the "reply form".
+.kb-reply-form {
+    .kb-comment-card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-width: 1px !important;
+    }
+}
+
+// Tiptap Editor styles for KB articles
+.kb-editor-wrapper {
+    .ProseMirror {
+        outline: none;
+        min-height: 200px;
+
+        &:focus {
+            outline: none;
+        }
+
+        // Placeholder
+        p.is-editor-empty:first-child::before {
+            content: attr(data-placeholder);
+            float: inline-start;
+            color: var(--tblr-muted);
+            pointer-events: none;
+            height: 0;
+        }
+
+        // Typography
+        h1, h2, h3, h4, h5, h6 {
+            margin-block: 1.5rem 0.75rem;
+
+            &:first-child {
+                margin-block-start: 0;
+            }
+        }
+
+        p {
+            margin-block-end: 0.75rem;
+        }
+
+        ul, ol {
+            padding-inline-start: 1.5rem;
+            margin-block-end: 0.75rem;
+        }
+
+        blockquote {
+            border-inline-start: 3px solid var(--tblr-border-color);
+            padding-inline-start: 1rem;
+            margin-inline-start: 0;
+            margin-block-end: 0.75rem;
+            color: var(--tblr-muted);
+        }
+
+        code {
+            background: var(--tblr-bg-surface-secondary);
+            padding: 0.125rem 0.25rem;
+            border-radius: var(--tblr-border-radius-sm);
+            font-size: 0.875em;
+        }
+
+        pre {
+            background: var(--tblr-bg-surface-secondary);
+            padding: 1rem;
+            border-radius: var(--tblr-border-radius);
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+
+            code {
+                background: none;
+                padding: 0;
+            }
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--tblr-border-color);
+            margin: 1.5rem 0;
+        }
+
+        // Tables
+        table {
+            border-collapse: collapse;
+            margin-bottom: 0.75rem;
+            width: 100%;
+
+            td, th {
+                border: 1px solid var(--tblr-border-color);
+                padding: 0.5rem;
+                min-width: 100px;
+            }
+
+            th {
+                background: var(--tblr-bg-surface-secondary);
+                font-weight: 600;
+            }
+        }
+
+        // Images
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--tblr-border-radius);
+
+            &.ProseMirror-selectednode {
+                outline: 2px solid var(--tblr-primary);
+            }
+        }
+
+        // Links
+        a {
+            color: var(--tblr-primary);
+            text-decoration: underline;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+// Slash commands menu
+.slash-menu {
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.5rem;
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1050;
+
+    .slash-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        border: none;
+        background: none;
+        text-align: left;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius);
+        color: var(--tblr-body-color);
+        font-size: 0.875rem;
+
+        i {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        &:hover,
+        &.is-selected {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+
+    .slash-menu-empty {
+        padding: 0.5rem 0.75rem;
+        color: var(--tblr-muted);
+        font-size: 0.875rem;
+    }
+}
+
+// Bubble menu (text selection toolbar)
+.bubble-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.25rem;
+    z-index: 1060;
+
+    .bubble-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius-sm);
+        color: var(--tblr-body-color);
+
+        i {
+            font-size: 1rem;
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        &.is-active {
+            background: var(--tblr-primary);
+            color: var(--tblr-primary-fg);
+        }
+    }
+
+    .bubble-menu-divider {
+        width: 1px;
+        height: 1.25rem;
+        background: var(--tblr-border-color);
+        margin: 0 0.25rem;
+    }
+}
+
+// KB link item modal form
+.kb-link-item-form {
+    .kb-link-item-dropdowns {
+        display: flex;
+        gap: 0.5rem;
+        align-items: start;
+
+        br {
+            display: none;
+        }
+
+        // Override inline style="width: 80%" set by PHP/select2
+        select,
+        .select2-container {
+            width: 100% !important;
+        }
+
+        > .select2-container,
+        > span[id^="show_items_id"] {
+            flex: 1;
+            min-width: 0;
+        }
+    }
+
+    // Mimic modal-footer: break out of modal-body padding
+    .kb-link-item-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+        padding: 0.75rem var(--tblr-modal-padding);
+        border-top: var(--tblr-border-width) solid var(--tblr-border-color);
+    }
+}
+
+// Drop Zone for document upload
+.kb-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 1.5rem;
+    border: 2px dashed var(--tblr-border-color);
+    border-radius: 0.5rem;
+    background-color: var(--tblr-bg-surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover,
+    &.dragging {
+        border-color: var(--tblr-primary);
+        background-color: rgb(var(--tblr-primary-rgb) / 5%);
+
+        .kb-dropzone-icon {
+            color: var(--tblr-primary);
+            transform: translateY(-4px);
+        }
+    }
+}
+
+.kb-dropzone-content {
+    text-align: center;
+}
+
+.kb-dropzone-icon {
+    font-size: 2.5rem;
+    color: var(--tblr-secondary);
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.kb-dropzone-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.kb-dropzone-hint {
+    font-size: 0.8125rem;
+    margin-bottom: 0;
+}
+
+// File Preview List
+.kb-file-preview {
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.kb-file-item {
+    background-color: var(--tblr-bg-surface);
+
+    &:hover {
+        background-color: var(--tblr-bg-surface-secondary);
+    }
+
+    .kb-file-remove {
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    .min-width-0 {
+        min-width: 0;
+    }
+}
+
+// Upload progress bar
+.kb-upload-progress {
+    height: 4px;
+    background-color: var(--tblr-border-color);
+    border-radius: 2px;
+    overflow: hidden;
+
+    .kb-upload-progress-bar {
+        height: 100%;
+        background-color: var(--tblr-primary);
+        transition: width 0.3s ease;
+    }
+}
+
+// Image insert/edit dialog
+.image-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+}
+
+.image-dialog {
+    background: var(--tblr-bg-surface);
+    border-radius: var(--tblr-border-radius-lg);
+    box-shadow: var(--tblr-box-shadow-lg);
+    width: 500px;
+    max-width: 90vw;
+}
+
+.image-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--tblr-border-color);
+    font-weight: 600;
+    font-size: 1rem;
+
+    .image-dialog-close {
+        border: none;
+        background: none;
+        cursor: pointer;
+        padding: 0.25rem;
+        color: var(--tblr-secondary);
+        font-size: 1.1rem;
+
+        &:hover {
+            color: var(--tblr-body-color);
+        }
+    }
+}
+
+.image-dialog-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.image-dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--tblr-secondary);
+    }
+}
+
+.image-dialog-size-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+
+    .image-dialog-field {
+        flex: 1;
+    }
+
+    .image-dialog-lock {
+        border: 1px solid var(--tblr-border-color);
+        background: var(--tblr-bg-surface);
+        border-radius: var(--tblr-border-radius);
+        padding: 0.375rem 0.5rem;
+        cursor: pointer;
+        margin-bottom: 1px;
+        color: var(--tblr-secondary);
+
+        &.is-locked {
+            color: var(--tblr-primary);
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+    }
+}
+
+.image-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--tblr-border-color);
+}
+
+[data-main-page-aside="knowbaseitem"] {
+    max-width: 300px;
+    background-color: #fff;
+
+    .node, .article {
+        list-style: none;
+    }
+
+    // Current article entry when it is not yet a favorite: hidden until the user favorites it.
+    [data-glpi-kb-favorite-current="pending"] {
+        display: none;
+    }
+
+    // Favorites section hidden when there are no favorites to display (set server-side or by JS).
+    [data-glpi-kb-aside-favorites][data-glpi-kb-aside-favorites-hidden] {
+        display: none;
+    }
+
+    // Header border hidden when the favorites section is empty (set server-side or by JS).
+    [data-glpi-kb-aside-header][data-glpi-kb-aside-header-no-border] {
+        border-bottom: 0;
+    }
+
+    // KB aside tree hierarchy connector lines
+    .kb-tree {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        ul {
+            list-style: none;
+            padding: 0 0 0 1.5rem;
+            margin: 0;
+
+            > li {
+                position: relative;
+
+                // Use padding (not margin) so the ::after connector covers the gap
+                padding-bottom: 0.5rem;
+                margin-bottom: 0;
+
+                // L-shaped connector: starts $gap below the top edge so the
+                // vertical segment never "touches" the line above it.
+                &::before {
+                    $gap: 0.25rem;
+
+                    content: '';
+                    position: absolute;
+                    left: -1rem;
+                    top: 0;
+                    width: calc(1rem - #{$gap}); // leave a small gap before the content
+                    height: 0.625rem; // half of the 20px illustration = 10px
+                    border-left: 1px solid var(--tblr-border-color);
+                    border-bottom: 1px solid var(--tblr-border-color);
+                }
+
+                &:not(:last-child)::after {
+                    content: '';
+                    position: absolute;
+                    left: -1rem;
+                    top: 0.625rem;
+                    bottom: 0;
+                    width: 1px;
+                    background-color: var(--tblr-border-color);
+                }
+            }
+        }
+    }
+}

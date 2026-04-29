@@ -47,11 +47,11 @@ class Group extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
-    public static $rightname       = 'group';
+    public static string $rightname       = 'group';
 
-    protected $usenotepad  = true;
+    protected bool $usenotepad  = true;
 
 
     public function getCloneRelations(): array
@@ -136,16 +136,16 @@ class Group extends CommonTreeDropdown
                     }
                     $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::class);
 
-                    if ($item->getField('is_itemgroup')) {
+                    if ($item->fields['is_itemgroup']) {
                         $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_NORMAL]);
                         $ong[1] = self::createTabEntry(__('Used items'), $count, $item::class, 'ti ti-package');
                     }
-                    if ($item->getField('is_assign')) {
+                    if ($item->fields['is_assign']) {
                         $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_TECH]);
                         $ong[2] = self::createTabEntry(__('Managed items'), $count, $item::class, 'ti ti-package');
                     }
                     if (
-                        $item->getField('is_usergroup')
+                        $item->fields['is_usergroup']
                         && self::canUpdate()
                         && Session::haveRight("user", User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
@@ -315,18 +315,18 @@ class Group extends CommonTreeDropdown
                                     $input["field"] => $input["groups_id"],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                 }
                 return;
@@ -755,7 +755,7 @@ class Group extends CommonTreeDropdown
             }
 
             $assignees = [];
-            if ($grps = $item->getField($tech ? 'groups_id_tech' : 'groups_id')) {
+            if ($grps = $item->fields[$tech ? 'groups_id_tech' : 'groups_id']) {
                 foreach ($grps as $grp) {
                     if (!isset($group_links[$grp]) && $group->getFromDB($grp)) {
                         $group_links[$grp] = $group->getLink(['comments' => true]);
@@ -763,7 +763,7 @@ class Group extends CommonTreeDropdown
                     $assignees[] = $group_links[$grp] ?? '';
                 }
             }
-            if ($usr = $item->getField($tech ? 'users_id_tech' : 'users_id')) {
+            if ($usr = $item->fields[$tech ? 'users_id_tech' : 'users_id']) {
                 if (!isset($user_links[$usr]) && $tuser->getFromDB($usr)) {
                     $user_links[$usr] = $tuser->getLink(['comments' => true]);
                 }
@@ -802,7 +802,6 @@ class Group extends CommonTreeDropdown
             ],
             'entries' => $entries,
             'total_number' => $nb,
-            'filtered_number' => $nb,
             'showmassiveactions' => self::canUpdate() && $show_massive_actions,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

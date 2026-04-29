@@ -187,7 +187,8 @@ export class GlpiFormQuestionTypeSelectable {
         option
             .find('input[type="text"]')
             .on('input', (event) => this.#handleOptionChange(event))
-            .on('keydown', (event) => this.#handleKeydown(event));
+            .on('keydown', (event) => this.#handleKeydown(event))
+            .on('paste', (event) => this.#handlePaste(event));
 
         option
             .find('button[data-glpi-form-editor-question-option-remove]')
@@ -398,8 +399,7 @@ export class GlpiFormQuestionTypeSelectable {
         });
 
         // Reindex the order of the empty option
-        this._container.closest('div[data-glpi-form-editor-question-type-specific]')
-            .find('div[data-glpi-form-editor-question-extra-details]')
+        this._container.siblings('div[data-glpi-form-selectable-question-option]')
             .find('input[data-glpi-form-editor-question-option-order]')
             .val(this._container.children().length);
     }
@@ -501,6 +501,52 @@ export class GlpiFormQuestionTypeSelectable {
         }
 
         // Reload sortable
+        sortable(container);
+    }
+
+    /**
+     * Handle the paste event.
+     * When pasting multi-line text, create one option per line.
+     *
+     * @param {ClipboardEvent} event - The paste event.
+     */
+    #handlePaste(event) {
+        const clipboardData = event.originalEvent.clipboardData || window.clipboardData;
+        const pastedText = clipboardData.getData('text');
+        const lines = pastedText.split(/\r?\n/).filter(line => line.trim() !== '');
+
+        // Only handle multi-line paste
+        if (lines.length <= 1) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const input = event.target;
+
+        // Set the first line as the value of the current option
+        $(input).val($(input).val() + lines[0]);
+        this.#showOption(input);
+        this.#addNewOptionIfNeeded(input);
+
+        // Create new options for the remaining lines
+        let currentInput = input;
+        for (let i = 1; i < lines.length; i++) {
+            this.#addOption(currentInput, false, true);
+            const nextInput = $(currentInput).parent().next().find('input[type="text"]').get(0);
+            $(nextInput).val(lines[i]);
+            this.#showOption(nextInput);
+            currentInput = nextInput;
+        }
+
+        // Ensure an empty option exists at the end
+        this.#addNewOptionIfNeeded(currentInput);
+
+        this.#reindexOptions();
+        this.#getFormController().computeState();
+
+        // Reload sortable
+        const container = $(input).closest('div[data-glpi-form-editor-selectable-question-options]');
         sortable(container);
     }
 }

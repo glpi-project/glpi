@@ -112,9 +112,6 @@ class DbUtilsTest extends DbTestCase
         $this->assertTrue(isForeignKeyField('users_id_tech'));
         $this->assertFalse(isForeignKeyField('_id'));
         $this->assertFalse(isForeignKeyField(''));
-        $this->assertFalse(isForeignKeyField(null));
-        $this->assertFalse(isForeignKeyField(false));
-        $this->assertFalse(isForeignKeyField(42));
     }
 
     #[DataProvider('dataTableForeignKey')]
@@ -558,10 +555,10 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity($entity, $recursive);
 
         $instance = new \DbUtils();
-        $this->assertSame($count, $instance->countElementsInTableForMyEntities($table, $condition));
+        $this->assertSame($count, @$instance->countElementsInTableForMyEntities($table, $condition));
 
         //keep testing old method from db.function
-        $this->assertSame($count, countElementsInTableForMyEntities($table, $condition));
+        $this->assertSame($count, @countElementsInTableForMyEntities($table, $condition));
     }
 
     public static function dataCountEntities()
@@ -854,18 +851,6 @@ class DbUtilsTest extends DbTestCase
             $it->getSql()
         );
 
-        // Entity value is empty array
-        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', [], true));
-        $this->hasPhpLogRecordThatContains(
-            'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
-            LogLevel::INFO
-        );
-        $this->assertSame(0, $it->count());
-        $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE false',
-            $it->getSql()
-        );
-
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
@@ -886,18 +871,6 @@ class DbUtilsTest extends DbTestCase
         $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', 9, true)]);
         $this->assertSame(
             'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'9\')',
-            $it->getSql()
-        );
-
-        // Entity value is empty array
-        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', [], true));
-        $this->hasPhpLogRecordThatContains(
-            'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
-            LogLevel::INFO
-        );
-        $this->assertSame(0, $it->count());
-        $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (false)',
             $it->getSql()
         );
     }
@@ -1506,20 +1479,15 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertSame(
             [],
-            $instance->getDateCriteria('date', null, null)
-        );
-
-        $this->assertSame(
-            [],
             $instance->getDateCriteria('date', '', '')
         );
 
         $this->assertSame(
             [['date' => ['>=', '2018-11-09']]],
-            $instance->getDateCriteria('date', '2018-11-09', null)
+            $instance->getDateCriteria('date', '2018-11-09', '')
         );
 
-        $result = $instance->getDateCriteria('date', null, '2018-11-09');
+        $result = $instance->getDateCriteria('date', '', '2018-11-09');
         $this->assertCount(1, $result);
 
         $this->assertCount(2, $result[0]['date']);
@@ -1548,7 +1516,7 @@ class DbUtilsTest extends DbTestCase
     public function testGetDateCriteriaError1()
     {
         $instance = new \DbUtils();
-        $instance->getDateCriteria('date', '2023-02-19\', INTERVAL 1 DAY)))))', null);
+        $instance->getDateCriteria('date', '2023-02-19\', INTERVAL 1 DAY)))))', '');
         $this->hasPhpLogRecordThatContains(
             'Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.',
             LogLevel::WARNING
@@ -1558,7 +1526,7 @@ class DbUtilsTest extends DbTestCase
     public function testGetDateCriteriaError2()
     {
         $instance = new \DbUtils();
-        $instance->getDateCriteria('date', null, '2023-02-19\', INTERVAL 1 DAY)))))');
+        $instance->getDateCriteria('date', '', '2023-02-19\', INTERVAL 1 DAY)))))');
         $this->hasPhpLogRecordThatContains(
             'Invalid "2023-02-19\', INTERVAL 1 DAY)))))" date value.',
             LogLevel::WARNING

@@ -35,6 +35,7 @@
 
 namespace Glpi\Mail\SMTP\OauthProvider;
 
+use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
@@ -45,7 +46,7 @@ interface ProviderInterface
 
     /**
      * @return string
-     * @see \League\OAuth2\Client\Provider\AbstractProvider::getAuthorizationUrl()
+     * @see AbstractProvider::getAuthorizationUrl()
      */
     public function getAuthorizationUrl(array $options = []);
 
@@ -54,7 +55,7 @@ interface ProviderInterface
      * @param array $options
      *
      * @return AccessTokenInterface
-     * @see \League\OAuth2\Client\Provider\AbstractProvider::getAccessToken()
+     * @see AbstractProvider::getAccessToken()
      */
     public function getAccessToken($grant, array $options = []);
 
@@ -63,7 +64,7 @@ interface ProviderInterface
      *
      * @param  AccessToken $token
      * @return ResourceOwnerInterface
-     * @see \League\OAuth2\Client\Provider\AbstractProvider::getResourceOwner()
+     * @see AbstractProvider::getResourceOwner()
      */
     public function getResourceOwner(AccessToken $token);
 

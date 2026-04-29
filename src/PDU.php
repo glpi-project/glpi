@@ -54,18 +54,18 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public bool $dohistory                   = true;
+    public static string $rightname                   = 'datacenter';
 
     public function getCloneRelations(): array
     {
         return [
-            Item_Plug::class,
             Item_Devices::class,
             Document_Item::class,
             NetworkPort::class,
             Contract_Item::class,
             Infocom::class,
+            Plug::class,
         ];
     }
 
@@ -89,7 +89,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab(Item_Plug::class, $ong, $options)
+         ->addStandardTab(Plug::class, $ong, $options)
          ->addStandardTab(Item_Devices::class, $ong, $options)
          ->addStandardTab(NetworkPort::class, $ong, $options)
          ->addStandardTab(Infocom::class, $ong, $options)
@@ -99,7 +99,6 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
          ->addStandardTab(Item_Problem::class, $ong, $options)
          ->addStandardTab(Change_Item::class, $ong, $options)
          ->addStandardTab(Log::class, $ong, $options);
-        ;
         return $ong;
     }
 
@@ -291,16 +290,14 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Item_Plug::class,
                 PDU_Rack::class,
             ]
         );
     }
 
-
     public static function getIcon()
     {
-        return "ti ti-plug";
+        return "ti ti-battery-vertical-charging";
     }
 
     public function prepareInputForAdd($input)

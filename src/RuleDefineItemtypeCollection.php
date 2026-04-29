@@ -40,9 +40,9 @@ use function Safe\file_get_contents;
 class RuleDefineItemtypeCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = true;
-    public static $rightname           = 'rule_import';
-    public $menu_option         = 'defineasset';
+    public bool $stop_on_first_match = true;
+    public static string $rightname           = 'rule_import';
+    public string $menu_option         = 'defineasset';
 
     public function getTitle()
     {

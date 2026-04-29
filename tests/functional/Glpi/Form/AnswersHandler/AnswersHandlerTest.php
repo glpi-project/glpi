@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
+use Computer;
 use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
@@ -49,6 +50,7 @@ use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
@@ -56,13 +58,19 @@ use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Glpi\Form\ValidationResult;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 class AnswersHandlerTest extends DbTestCase
@@ -496,6 +504,65 @@ class AnswersHandlerTest extends DbTestCase
             'expectedIsValid' => true,
             'expectedErrors' => [],
         ];
+
+        $mandatory_urgency_form_builder = (new FormBuilder("Mandatory Urgency Test Form"))
+            ->addQuestion("Mandatory Urgency", QuestionTypeUrgency::class, is_mandatory: true);
+
+        yield 'Empty mandatory urgency field - should be invalid' => [
+            'builder' => $mandatory_urgency_form_builder,
+            'answers' => [
+                'Mandatory Urgency' => null,
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Urgency' => 'This field is mandatory',
+            ],
+        ];
+
+        $mandatory_request_type = new FormBuilder("Mandatory Request type form");
+        $mandatory_request_type->addQuestion(
+            name: "Mandatory type",
+            type: QuestionTypeRequestType::class,
+            is_mandatory: true,
+        );
+        yield 'Empty mandatory type field 1 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [
+                'Mandatory type' => 0,
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
+        yield 'Empty mandatory type field 2 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [
+                'Mandatory type' => null,
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
+        yield 'Empty mandatory type field 3 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [
+                'Mandatory type' => "",
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
+        yield 'Empty mandatory type field 4 - should be invalid' => [
+            'builder' => $mandatory_request_type,
+            'answers' => [],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory type' => 'This field is mandatory',
+            ],
+        ];
     }
 
     #[DataProvider('provideTestValidateAnswers')]
@@ -777,5 +844,97 @@ class AnswersHandlerTest extends DbTestCase
         // Assert: check validity
         $this->assertEquals(true, $valid_result->isValid());
         $this->assertEquals(false, $invalid_result->isValid());
+    }
+
+    public function testSaveAnswerWithConditionsOnUserDeviceQuestion(): void
+    {
+        // Arrange: create a form with a user device question
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Device",
+            type: QuestionTypeUserDevice::class,
+            extra_data: json_encode(new QuestionTypeUserDevicesConfig())
+        );
+        $builder->setQuestionVisibility(
+            question_name: "Device",
+            strategy: VisibilityStrategy::ALWAYS_VISIBLE,
+            conditions: [],
+        );
+        $builder->addQuestion("Text", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            question_name: "Text",
+            strategy: VisibilityStrategy::HIDDEN_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_type'      => Type::QUESTION,
+                    'item_name'      => "Device",
+                    'value_operator' => ValueOperator::NOT_EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: compute visiblity
+        $this->login();
+        $computer_id = getItemByTypeName(Computer::class, "_test_pc01", true);
+        $handler = AnswersHandler::getInstance();
+        $set = $handler->saveAnswers($form, [
+            $this->getQuestionId($form, "Device") => "Computer_$computer_id",
+            $this->getQuestionId($form, "Text") => "",
+        ], Session::getLoginUserID());
+
+        // Assert: no assertions, we just make sure no fatal errors occurred
+        $this->assertNotNull($set);
+    }
+
+    /**
+     * Regression test for https://github.com/glpi-project/glpi/issues/23210
+     */
+    public function testAnswerForConditionnalCheckboxIsDisplayed(): void
+    {
+        // Arrange: create a form with a condition on a checkbox
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Do you like GLPI?",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'fake-uuid' => 'Yes',
+            ])),
+        );
+        $builder->addQuestion("Tell us why", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            "Tell us why",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Do you like GLPI?",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => ["fake-uuid"],
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: send anwsers for this form
+        $this->login();
+        $handler = AnswersHandler::getInstance();
+        $input = [
+            // "" simulate the default empty value that is always sent by the HTML form.
+            $this->getQuestionId($form, "Do you like GLPI?") => ["", "fake-uuid"],
+            $this->getQuestionId($form, "Tell us why") => "Because it is great",
+        ];
+        $input = $handler->removeUnusedAnswers($form, $input);
+        $answers = $handler->saveAnswers($form, $input, Session::getLoginUserID());
+
+        // Assert: ticket description should contain both answers
+        $ticket = $answers->getCreatedItems()[0];
+        $this->assertEquals(
+            "<p><b>1) Do you like GLPI?</b>: Yes<br><b>2) Tell us why</b>: Because it is great<br></p>",
+            $ticket->fields['content'],
+        );
     }
 }

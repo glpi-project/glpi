@@ -494,7 +494,7 @@ abstract class AbstractPluginMigration
         string $target_itemtype,
         int $target_items_id
     ): void {
-        // TODO Deprecate this in GLPI 11.1.
+        // TODO Deprecate this in GLPI 12.0.
 
         $polymorphic_column_iterator = $this->db->request(
             [
@@ -561,7 +561,7 @@ abstract class AbstractPluginMigration
     /**
      * Update references to the given source itemtype and attach them to the given target itemtype.
      *
-     * @param class-string<CommonDBTM> $source_itemtype
+     * @param string $source_itemtype
      * @param class-string<CommonDBTM> $target_itemtype
      * @param class-string<CommonDBTM>[] $excluded_relations
      */

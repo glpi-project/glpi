@@ -61,7 +61,8 @@
                 'init': question is not null ? true : false,
                 'add_data_attributes': {
                     'glpi-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype': 'ITILCategory'
-                }
+                },
+                'add_field_class': itemtype != 'ITILCategory' ? 'd-none' : ''
             }
         ) }}
         {{ fields.dropdownField(

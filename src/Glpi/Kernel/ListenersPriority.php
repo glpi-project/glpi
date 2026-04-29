@@ -41,6 +41,7 @@ use Glpi\Kernel\Listener\PostBootListener\CustomObjectsBoot;
 use Glpi\Kernel\Listener\PostBootListener\InitializeCache;
 use Glpi\Kernel\Listener\PostBootListener\InitializeDbConnection;
 use Glpi\Kernel\Listener\PostBootListener\InitializePlugins;
+use Glpi\Kernel\Listener\PostBootListener\InitializeTwigEnvironment;
 use Glpi\Kernel\Listener\PostBootListener\LoadLanguage;
 use Glpi\Kernel\Listener\PostBootListener\LoadLegacyConfiguration;
 use Glpi\Kernel\Listener\PostBootListener\ProfilerStart;
@@ -70,10 +71,11 @@ final class ListenersPriority
         CheckPluginsStates::class =>                  150,
         BootPlugins::class =>                         140,
         SessionStart::class =>                        130,
-        SetDbSessionVars::class =>                    125,
-        LoadLanguage::class =>                        120,
-        InitializePlugins::class =>                   110,
-        CustomObjectsBoot::class =>                   100,
+        InitializeTwigEnvironment::class =>           120,
+        SetDbSessionVars::class =>                    110,
+        LoadLanguage::class =>                        100,
+        InitializePlugins::class =>                   90,
+        CustomObjectsBoot::class =>                   80,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

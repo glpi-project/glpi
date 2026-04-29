@@ -36,6 +36,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use CommonDBTM;
 use CommonTreeDropdown;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Exception\TooManyResultsException;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
@@ -80,6 +81,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         // During form rendering, applyValueOperator is called to compute questions visibility
         // Default value is used as value

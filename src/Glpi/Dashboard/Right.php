@@ -40,12 +40,12 @@ use Glpi\DBAL\QueryParam;
 
 class Right extends CommonDBChild
 {
-    public static $itemtype = Dashboard::class;
-    public static $items_id = 'dashboards_dashboards_id';
+    public static string $itemtype = Dashboard::class;
+    public static string $items_id = 'dashboards_dashboards_id';
 
     // prevent bad getFromDB when bootstraping tests suite
     // FIXME Should be true
-    public static $mustBeAttached = false;
+    public static bool $mustBeAttached = false;
 
     /**
      * Return rights for the provided dashboard
@@ -103,13 +103,15 @@ class Right extends CommonDBChild
         foreach ($rights as $fk => $right_line) {
             $itemtype = getItemtypeForForeignKeyField($fk);
             foreach ($right_line as $items_id) {
-                $stmt->bind_param(
-                    'isi',
-                    $dashboards_id,
-                    $itemtype,
-                    $items_id
+                $DB->executeStatement(
+                    $stmt,
+                    [
+                        $dashboards_id,
+                        $itemtype,
+                        $items_id,
+                    ],
+                    ['i', 's', 'i']
                 );
-                $DB->executeStatement($stmt);
             }
         }
     }

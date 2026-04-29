@@ -40,7 +40,6 @@
 {% endif %}
 {% set btn %}
     {% set btn_el %}
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
         <button type="submit" class="btn btn-primary">{{ __('Display report') }}</button>
     {% endset %}
     {{ fields.htmlField('', btn_el, null, {

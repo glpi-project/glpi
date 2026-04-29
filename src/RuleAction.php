@@ -46,10 +46,10 @@ class RuleAction extends CommonDBChild
     /**
      * @var class-string<Rule>
      */
-    public static $itemtype        = Rule::class;
-    public static $items_id        = 'rules_id';
-    public $dohistory              = true;
-    public $auto_message_on_action = false;
+    public static string $itemtype        = Rule::class;
+    public static string $items_id        = 'rules_id';
+    public bool $dohistory              = true;
+    public bool $auto_message_on_action = false;
 
 
     public function getForbiddenStandardMassiveAction()

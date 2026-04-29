@@ -143,7 +143,7 @@ switch ($action) {
         $payload_template = $_POST['payload_template'] ?? '';
         $webhook = new Webhook();
         if ($webhook->getFromDB($webhook_id)) {
-            if (!$webhook->canUpdateItem()) {
+            if (!$webhook->can($webhook_id, UPDATE)) {
                 throw new AccessDeniedHttpException();
             }
             if ($_POST['use_default_payload'] === 'true') {

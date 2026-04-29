@@ -40,8 +40,11 @@ use Glpi\DBAL\QueryExpression;
  **/
 class CronTaskLog extends CommonDBChild
 {
-    public static $itemtype = CronTask::class;
-    public static $items_id  = 'crontasks_id';
+    public static string $itemtype = CronTask::class;
+    public static string $items_id  = 'crontasks_id';
+
+    // Prevent CronTaskLog entries from flooding the CronTask historical tab
+    public static bool $logs_for_parent = false;
 
     // Class constant
     public const STATE_START = 0;
@@ -87,7 +90,7 @@ class CronTaskLog extends CommonDBChild
             $nb = 0;
             if ($item instanceof CronTask) {
                 $ong    = [];
-                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
+                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::class, 'ti ti-report-analytics');
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb =  countElementsInTable(
                         $this->getTable(),
@@ -96,7 +99,7 @@ class CronTaskLog extends CommonDBChild
                         ]
                     );
                 }
-                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
+                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::class);
                 return $ong;
             }
         }

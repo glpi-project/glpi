@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryFunction;
 /// Class DeviceHardDrive
 class DeviceHardDrive extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceHardDrive', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceHardDrive', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -204,7 +204,7 @@ class DeviceHardDrive extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["rpm"]) {

@@ -538,7 +538,7 @@
                               {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), specific_field_options) }}
                           {% elseif field is same as 'last_boot' and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
                               {# display last_boot data only if item is dynamic and have field #}
-                              {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}
+                              {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true)|e, __('Last boot date')) }}
                           {% elseif field in custom_fields|keys %}
                               {{ custom_fields[field].getFieldType().getFormInput(field, item.fields[field])|raw }}
                           {% endif %}

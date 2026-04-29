@@ -56,16 +56,16 @@ use function Safe\strtotime;
 class NetworkPort extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype             = 'itemtype';
-    public static $items_id             = 'items_id';
-    public $dohistory                   = true;
+    public static string $itemtype             = 'itemtype';
+    public static string $items_id             = 'items_id';
+    public bool $dohistory                   = true;
 
-    public static $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
-    protected static $forward_entity_to = ['NetworkName'];
+    protected static array $forward_entity_to = ['NetworkName'];
 
-    public static $rightname                   = 'networking';
-    protected $displaylist = false;
+    public static string $rightname                   = 'networking';
+    protected bool $displaylist = false;
 
     /**
      * Subset of input that will be used for NetworkPortInstantiation.
@@ -112,6 +112,30 @@ class NetworkPort extends CommonDBChild
     public function useDeletedToLockIfDynamic()
     {
         return false;
+    }
+
+    public static function canView(): bool
+    {
+        if (static::$rightname && Session::haveRight(static::$rightname, READ)) {
+            return true;
+        }
+        return static::canChild('canView');
+    }
+
+    public static function canCreate(): bool
+    {
+        if (static::$rightname && Session::haveRight(static::$rightname, CREATE)) {
+            return true;
+        }
+        return static::canChild('canUpdate');
+    }
+
+    public static function canUpdate(): bool
+    {
+        if (static::$rightname && Session::haveRight(static::$rightname, UPDATE)) {
+            return true;
+        }
+        return static::canChild('canUpdate');
     }
 
     /**
@@ -584,7 +608,7 @@ class NetworkPort extends CommonDBChild
         global $CFG_GLPI, $DB;
 
         $itemtype = $item::class;
-        $items_id = $item->getField('id');
+        $items_id = $item->getID();
 
         $netport = new self();
         $netport_table = $netport->getTable();
@@ -644,7 +668,7 @@ class NetworkPort extends CommonDBChild
             'FROM'   => $netport_table,
             'WHERE'  => [
                 "$netport_table.items_id"  => $item->getID(),
-                "$netport_table.itemtype"  => $item->getType(), [
+                "$netport_table.itemtype"  => $item::class, [
                     'OR' => [
                         ["$netport_table.name" => ['!=', 'Management']],
                         ["$netport_table.name" => null],
@@ -699,14 +723,9 @@ class NetworkPort extends CommonDBChild
             );
             echo "</div>";
 
-            echo "<div class='col-auto m-2'>";
-            echo "<label for='several'>" . __s('Add several ports') . "</label>";
-            echo "&nbsp;<input type='checkbox' name='several' id='several' value='1'></td>";
-            echo "</div>";
-
             echo "<div class='col-auto'>";
             echo "<button type='submit' name='add' value='1' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "<i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span>";
             echo "</button>";
             echo "</div>";
 
@@ -734,7 +753,7 @@ class NetworkPort extends CommonDBChild
             <span class='sr-only'>" . __s('Select default items to show') . "</span></span>";
 
             $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype="
-                     . self::getType();
+                     . static::class;
             $search_config_top .= Ajax::createIframeModalWindow(
                 'search_config_top',
                 $pref_url,
@@ -839,7 +858,7 @@ class NetworkPort extends CommonDBChild
             'FROM'   => $netport::getTable(),
             'WHERE'  => [
                 'items_id'  => $item->getID(),
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'name'      => 'Management',
             ] + $deleted_criteria,
         ];
@@ -1326,7 +1345,7 @@ class NetworkPort extends CommonDBChild
             $link .= '<br/>' . htmlescape($asset->fields['mac']);
         }
 
-        $ips_iterator = $this->getIpsForPort($asset->getType(), $asset->getID());
+        $ips_iterator = $this->getIpsForPort($asset::class, $asset->getID());
         $ips = '';
         foreach ($ips_iterator as $ipa) {
             $ips .= ' ' . htmlescape($ipa['name']);
@@ -1344,14 +1363,14 @@ class NetworkPort extends CommonDBChild
             $options['several'] = false;
         }
 
-        if (!self::canView()) {
+        if (($ID > 0 && !self::canView()) || !self::canCreate()) {
             return false;
         }
 
         $recursiveItems = $this->recursivelyGetItems();
         if (count($recursiveItems) > 0) {
             $lastItem             = $recursiveItems[count($recursiveItems) - 1];
-            $options['entities_id'] = $lastItem->getField('entities_id');
+            $options['entities_id'] = $lastItem->fields['entities_id'];
         } else {
             $options['entities_id'] = $_SESSION['glpiactive_entity'];
         }
@@ -1735,7 +1754,7 @@ class NetworkPort extends CommonDBChild
         if ($item::class === self::class) {
             $nbAlias = countElementsInTable(
                 'glpi_networkportaliases',
-                ['networkports_id_alias' => $item->getField('id')]
+                ['networkports_id_alias' => $item->getID()]
             );
             if ($nbAlias > 0) {
                 $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias, $item::class);
@@ -1744,7 +1763,7 @@ class NetworkPort extends CommonDBChild
             }
             $nbAggregates = countElementsInTable(
                 'glpi_networkportaggregates',
-                ['networkports_id_list'   => ['LIKE', '%"' . $item->getField('id') . '"%']]
+                ['networkports_id_list'   => ['LIKE', '%"' . $item->getID() . '"%']]
             );
             if ($nbAggregates > 0) {
                 $aggregates = self::createTabEntry(
@@ -1773,7 +1792,7 @@ class NetworkPort extends CommonDBChild
             'glpi_networkports',
             [
                 'itemtype'   => $item::class,
-                'items_id'   => $item->getField('id'),
+                'items_id'   => $item->getID(),
                 'is_deleted' => 0,
             ]
         );
@@ -1861,7 +1880,7 @@ class NetworkPort extends CommonDBChild
                         $table       => 'items_id',
                         Unmanaged::getTable()   => 'id', [
                             'AND' => [
-                                $table . '.itemtype' => Unmanaged::getType(),
+                                $table . '.itemtype' => Unmanaged::class,
                             ],
                         ],
                     ],

@@ -40,7 +40,7 @@ use function Safe\preg_match;
  **/
 class DocumentType extends CommonDropdown
 {
-    public static $rightname      = 'typedoc';
+    public static string $rightname      = 'typedoc';
 
     private static ?string $uploadable_patterns = null;
 

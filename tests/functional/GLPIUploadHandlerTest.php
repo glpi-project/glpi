@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 use GLPIUploadHandler;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 
@@ -89,6 +90,7 @@ class GLPIUploadHandlerTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('filenameValidateProvider')]
     public function testValidateFilename(\stdClass $file_object, ?string $error): void
     {
@@ -129,5 +131,17 @@ class GLPIUploadHandlerTest extends DbTestCase
             $this->assertEquals($error, $file_object->error);
         }
         $this->assertEquals($error === null, $success);
+    }
+
+    #[AllowMockObjectsWithoutExpectations]
+    public function testUpcountName(): void
+    {
+        $instance = $this->getMockBuilder(GLPIUploadHandler::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->assertEquals('file (1).png', $this->callPrivateMethod($instance, 'upcount_name', 'file.png'));
+        $this->assertEquals('file (2).png', $this->callPrivateMethod($instance, 'upcount_name', 'file (1).png'));
+        $this->assertEquals('file (3).png', $this->callPrivateMethod($instance, 'upcount_name', 'file (2).png'));
     }
 }

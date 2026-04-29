@@ -494,6 +494,7 @@ final class TOTPManager
     public function showTOTPPrompt(): void
     {
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig', [
+            'action' => 'MFA/Verify',
             'redirect' => $_GET['redirect'] ?? '',
         ]);
     }

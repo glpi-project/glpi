@@ -41,7 +41,10 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Comment;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -67,14 +70,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     use ParentStatus;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Document_Item'];
+    protected static array $forward_entity_to = ['Document_Item'];
 
-    public static $rightname                   = 'document';
-    /** @var string */
-    public static $tag_prefix                  = '#';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'document';
+    public static string $tag_prefix                  = '#';
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName($nb = 0)
@@ -307,10 +309,14 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                     && ($this->input["itemtype"] === 'Entity'))) && !empty($this->input["itemtype"])
         ) {
             $docitem = new Document_Item();
-            $docitem->add(['documents_id' => $this->fields['id'],
+            $docitem_input = [
+                'documents_id' => $this->fields['id'],
                 'itemtype'     => $this->input["itemtype"],
                 'items_id'     => $this->input["items_id"],
-            ]);
+                'is_private'   => (bool) ($this->input['is_private'] ?? false),
+            ];
+
+            $docitem->add($docitem_input);
 
             if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
                 $main_item = new $this->input["itemtype"]();
@@ -402,20 +408,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
-     * Send a document to navigator
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function send()
-    {
-        Toolbox::deprecated();
-
-        $this->getAsResponse()->send();
-    }
-
-    /**
      * Get download link for a document
      *
      * @param CommonDBTM|null   $linked_item    Item linked to the document, to check access right
@@ -427,12 +419,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         global $CFG_GLPI, $DB;
 
         $link_params = '';
-        if (is_string($linked_item)) {
-            // Old behaviour.
-            Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.', true, '11.0');
-            $linked_item = null;
-            $link_params = $linked_item;
-        } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
+        if ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
             throw new InvalidArgumentException();
         } elseif ($linked_item !== null) {
             $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item::class, $linked_item->getID());
@@ -496,6 +483,21 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $out .= "$open<span class='fw-bold'>" . $fileout . "</span>$close";
 
         return $out;
+    }
+
+    public function getDownloadUrl(?CommonDBTM $linked_item = null): string
+    {
+        $params = [
+            'docid' => $this->fields['id'],
+        ];
+
+        if ($linked_item) {
+            $params['itemtype'] = $linked_item::class;
+            $params['items_id'] = $linked_item->getID();
+        }
+
+        $params = http_build_query($params);
+        return Html::getPrefixedUrl("/front/document.send.php?$params");
     }
 
     /**
@@ -589,7 +591,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return true;
         }
 
-        if ($itemtype === Form::class && $this->canViewFileFromForm($items_id)) {
+        if (
+            $itemtype !== null
+            && is_numeric($items_id)
+            && $this->canViewFileFromForm($itemtype, (int) $items_id)
+        ) {
             return true;
         }
 
@@ -990,12 +996,34 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             ],
         ];
 
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => static::getTable(),
+            'field'              => 'filesize',
+            'name'               => __('Size'),
+            'massiveaction'      => false,
+            'datatype'           => 'specific',
+        ];
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        if ($field == 'filesize' && $values[$field] !== null) {
+            return htmlescape(Toolbox::getSize($values[$field]));
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     /**
@@ -1046,6 +1074,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $fullpath = GLPI_UPLOAD_DIR . "/" . $filename;
+        $filesize = filesize($fullpath);
         $filename = str_replace($prefix, '', $filename);
 
         if (!is_dir(GLPI_UPLOAD_DIR)) {
@@ -1119,16 +1148,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             is_writable(GLPI_UPLOAD_DIR)
             && is_writable($fullpath)
         ) { // Move if allowed
-            if (self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
-                Session::addMessageAfterRedirect(__s('Document move succeeded.'));
-            } else {
+            if (!self::renameForce($fullpath, GLPI_DOC_DIR . "/" . $new_path)) {
                 Session::addMessageAfterRedirect(__s('File move failed.'), false, ERROR);
                 return false;
             }
         } else { // Copy (will overwrite dest file is present)
             try {
                 copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
-                Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
             } catch (FilesystemException $e) {
                 Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
                 return false;
@@ -1141,6 +1167,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $input['filepath'] = $new_path;
         // Checksum
         $input['sha1sum']  = $sha1sum;
+        // Size
+        $input['filesize'] = $filesize;
         return true;
     }
 
@@ -1166,6 +1194,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $fullpath = GLPI_TMP_DIR . "/" . $filename;
+        $filesize = filesize($fullpath);
         $filename = str_replace($prefix, '', $filename);
         if (!is_dir(GLPI_TMP_DIR)) {
             Session::addMessageAfterRedirect(__s("Temporary directory doesn't exist"), false, ERROR);
@@ -1237,7 +1266,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         // Copy (will overwrite dest file if present)
         try {
             copy($fullpath, GLPI_DOC_DIR . "/" . $new_path);
-            Session::addMessageAfterRedirect(__s('Document copy succeeded.'));
         } catch (FilesystemException $e) {
             Session::addMessageAfterRedirect(__s('File move failed'), false, ERROR);
             @unlink($fullpath);
@@ -1250,6 +1278,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $input['filepath'] = $new_path;
         // Checksum
         $input['sha1sum']  = $sha1sum;
+        // Size
+        $input['filesize'] = $filesize;
         return true;
     }
 
@@ -1283,7 +1313,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 E_USER_WARNING
             );
             Session::addMessageAfterRedirect(
-                __s("Documents directory doesn't exist."),
+                __s("An unexpected error occured."),
                 false,
                 ERROR
             );
@@ -1294,10 +1324,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (!is_dir(GLPI_DOC_DIR . "/" . $subdir)) {
             try {
                 mkdir(GLPI_DOC_DIR . "/" . $subdir, 0o777, true);
-                Session::addMessageAfterRedirect(sprintf(
-                    __s('Create the directory %s'),
-                    $subdir
-                ));
             } catch (FilesystemException $e) {
                 //emtpy catch
             }
@@ -1313,7 +1339,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             );
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __s('Failed to create the directory %s. Verify that you have the correct permission'),
+                    __s('An unexpected error occured.'),
                     htmlescape($subdir)
                 ),
                 false,
@@ -1756,19 +1782,42 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return file_exists($file) && is_readable($file);
     }
 
-    private function canViewFileFromForm(int $form_id): bool
+    private function canViewFileFromForm(string $itemtype, int $items_id): bool
     {
+        if ($itemtype === Form::class) {
+            $form = Form::getById($items_id);
+            if (!$form) {
+                return false;
+            }
+        } elseif ($itemtype === Section::class) {
+            $section = Section::getById($items_id);
+            if (!$section) {
+                return false;
+            }
+            $form = $section->getForm();
+        } elseif ($itemtype === Question::class) {
+            $question = Question::getById($items_id);
+            if (!$question) {
+                return false;
+            }
+            $section = $question->getSection();
+            $form = $section->getForm();
+        } elseif ($itemtype === Comment::class) {
+            $comment = Comment::getById($items_id);
+            if (!$comment) {
+                return false;
+            }
+            $section = $comment->getSection();
+            $form = $section->getForm();
+        } else {
+            return false;
+        }
+
         $control_manager = FormAccessControlManager::getInstance();
         $parameters = new FormAccessParameters(
             session_info: Session::getCurrentSessionInfo(),
             url_parameters: [],
         );
-
-        $form = Form::getById($form_id);
-        if (!$form) {
-            return false;
-        }
-
         return $control_manager->canAnswerForm($form, $parameters);
     }
 }

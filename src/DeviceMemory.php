@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryFunction;
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -178,7 +178,7 @@ class DeviceMemory extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["devicememorytypes_id"]) {

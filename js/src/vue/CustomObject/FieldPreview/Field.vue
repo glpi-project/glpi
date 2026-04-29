@@ -18,7 +18,7 @@
 
 <template>
     <div :class="`sortable-field align-items-center ${parseInt(field_options.full_width ?? 0) === 1 ? 'col-12' : 'col-12 col-sm-6'} cursor-grab`"
-         :data-key="field_key" :data-customfield-id="customfields_id">
+         :data-key="field_key" :data-customfield-id="customfields_id" :data-testid="`sortable-field-${field_key}`">
         <input type="hidden" name="fields_display[]" :value="field_key" :disabled="!is_active" />
         <slot name="field_options"></slot>
         <div :class="`form-field row flex-grow-1 ${is_active ? 'm-1' : 'mx-0 my-1'}`">

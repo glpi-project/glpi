@@ -46,16 +46,16 @@ use Glpi\Search\DefaultSearchRequestInterface;
 class Change extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
 
     // From CommonITIL
-    public $userlinkclass               = 'Change_User';
-    public $grouplinkclass              = 'Change_Group';
-    public $supplierlinkclass           = 'Change_Supplier';
+    public string $userlinkclass               = 'Change_User';
+    public string $grouplinkclass              = 'Change_Group';
+    public string $supplierlinkclass           = 'Change_Supplier';
 
-    public static $rightname            = 'change';
-    protected $usenotepad               = true;
+    public static string $rightname            = 'change';
+    protected bool $usenotepad               = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
     public const URGENCY_MASK_FIELD            = 'urgency_mask';
@@ -234,7 +234,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $satisfaction->getFromDB($item->getID())
                         && in_array($item->fields['status'], self::getClosedStatusArray())
                     ) {
-                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::class);
                     }
 
                     return $ong;
@@ -252,7 +252,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created changes'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created changes'), $nb, $item::class);
 
                 case Group::class:
                     $nb = 0;
@@ -267,7 +267,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created changes'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created changes'), $nb, $item::class);
             }
         }
         return '';
@@ -387,7 +387,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again change to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
@@ -459,19 +460,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->handleNewItemNotifications();
-
-        if (
-            isset($this->input['_from_items_id'])
-            && isset($this->input['_from_itemtype'])
-        ) {
-            $change_item = new Change_Item();
-            $change_item->add([
-                'items_id'      => (int) $this->input['_from_items_id'],
-                'itemtype'      => $this->input['_from_itemtype'],
-                'changes_id'    => $this->fields['id'],
-                '_disablenotif' => true,
-            ]);
-        }
     }
 
     #[Override]
@@ -883,7 +871,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             default:
                 $restrict['glpi_changes_items.items_id'] = $item->getID();
-                $restrict['glpi_changes_items.itemtype'] = $item->getType();
+                $restrict['glpi_changes_items.itemtype'] = $item::class;
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [
@@ -1149,7 +1137,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 ],
             ],
             'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_changes'),
-            'ORDERBY'         => 'date_mod DESC',
+            'ORDERBY'         => 'glpi_changes.date_mod DESC',
         ];
 
         if (count($JOINS)) {

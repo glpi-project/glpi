@@ -85,7 +85,7 @@
 
 {% if tab == 'discover' %}
     <li class="plugin" data-key="{{ plugin['key'] }}" data-state="{{ plugin['state'] }}">
-        <div class="main">
+        <div class="main {% if plugin['updatable'] == true %} bg-warning-subtle{% endif %}">
             <span class="icon">{{ plugin['icon']|raw }}</span>
             <span class="details">
                 <span class="title fs-3 fw-bold">{{ plugin['name'] }}</span>
@@ -101,7 +101,7 @@
     </li>
 {% else %}
     <li class="plugin" data-key="{{ plugin['key'] }}" data-state="{{ plugin['state'] }}">
-        <div class="main">
+        <div class="main {% if plugin['updatable'] == true %} bg-warning-subtle{% endif %}">
             <span class="icon">{{ plugin['icon']|raw }}</span>
             <span class="details">
                 <span class="title fs-3 fw-bold">{{ plugin['name'] }}</span>

@@ -62,6 +62,7 @@
                      data-bs-toggle="collapse"
                      data-bs-target="#new-{{ default_action_data.class }}-block"
                      type="button"
+                     aria-label="{{ default_action_data.label }}"
                   >
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
@@ -89,7 +90,7 @@
                         <ul class="dropdown-menu">
                               {% for action, timeline_itemtype in main_actions_itemtypes %}
                                  {% if loop.index0 > 0 %}
-                                 <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                                 <li aria-label="{{ timeline_itemtype.label }}"><a class="dropdown-item action-{{ action }} answer-action" href="#"
                                     data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                                     <i class="{{ timeline_itemtype.icon }}"></i>
                                     <span>{{ timeline_itemtype.label }}</span>
@@ -141,8 +142,14 @@
 
             <span>
             {% if item.isNewItem() %}
-               <button class="btn btn-primary" type="submit" name="add" form="itil-form"
-                     title="{{ _x('button', 'Add') }}">
+               <button
+                  class="btn btn-primary"
+                  type="submit"
+                  name="add"
+                  form="itil-form"
+                  title="{{ _x('button', 'Add') }}"
+                  aria-label="{{ _x('button', 'Add') }}"
+               >
                   <i class="ti ti-plus"></i>
                   <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
                </button>
@@ -152,8 +159,16 @@
                   {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
 
                   {% if display_save_btn %}
-                     <button class="btn btn-primary btn-square" type="submit" name="update" form="itil-form"
-                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ _x('button', 'Save') }}">
+                     <button
+                        class="btn btn-primary btn-square"
+                        type="submit"
+                        name="update"
+                        form="itil-form"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="{{ _x('button', 'Save') }}"
+                        aria-label="{{ _x('button', 'Save') }}"
+                     >
                         <i class="ti ti-device-floppy"></i>
                         <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                      </button>
@@ -226,6 +241,14 @@
       $("#itil-footer .main-actions").hide();
       // hide also itil object action to prevent confusion
       $("#right-actions").hide();
+   });
+
+   $('#itil-footer .form-buttons button[name="update"]').on('click', () => {
+       const has_opened_new_form = $('#new-itilobject-form .collapse.show').length > 0
+           || $('.timeline-item .edit-content').filter((i, c) => c.textContent.trim().length > 0).length > 0;
+       if (has_opened_new_form) {
+          return confirm('{{ __("You have unsaved changes in the timeline. Are you sure you want to continue?")|e('js') }}');
+       }
    });
 
    $(function() {

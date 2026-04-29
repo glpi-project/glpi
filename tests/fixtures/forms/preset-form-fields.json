@@ -1,0 +1,163 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "a1b2c3d4-0001-4000-8000-000000000001",
+            "name": "Test form preview",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "b1b2c3d4-0001-4000-8000-000000000001",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "c1b2c3d4-0001-4000-8000-000000000001",
+                    "name": "Name",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 2,
+                    "uuid": "c1b2c3d4-0001-4000-8000-000000000002",
+                    "name": "Email",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeEmail",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 3,
+                    "uuid": "c1b2c3d4-0001-4000-8000-000000000003",
+                    "name": "Age",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeNumber",
+                    "is_mandatory": false,
+                    "vertical_rank": 2,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 4,
+                    "uuid": "c1b2c3d4-0001-4000-8000-000000000004",
+                    "name": "Prefered software",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeLongText",
+                    "is_mandatory": false,
+                    "vertical_rank": 3,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 5,
+                    "uuid": "c1b2c3d4-0001-4000-8000-000000000005",
+                    "name": "Urgency",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                    "is_mandatory": false,
+                    "vertical_rank": 4,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 6,
+                    "uuid": "c1b2c3d4-0001-4000-8000-000000000006",
+                    "name": "Request type",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeRequestType",
+                    "is_mandatory": false,
+                    "vertical_rank": 5,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": ["all"],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "preset-form-fields-token-placeholder-1234",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
+                }
+            ],
+            "destinations": [],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

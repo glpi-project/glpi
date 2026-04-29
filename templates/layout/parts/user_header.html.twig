@@ -57,7 +57,7 @@
                   }) }}
                {% endif %}
             </a>
-            <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight">
+            <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight" data-testid="user-menu-dropdown">
                <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
 
                {% if not anonymous %}
@@ -91,7 +91,8 @@
 
       {% if has_profile_right('config', constant('READ')) %}
                <a href="#" class="dropdown-item" title="{{ __('About') }}"
-                  id="show_about_modal_{{ rand_header }}">
+                  id="show_about_modal_{{ rand_header }}"
+                  data-testid="about-link">
                   <i class="ti ti-info-circle"></i>
                   {{ __('About') }}
                   {% if found_new_version is not null %}

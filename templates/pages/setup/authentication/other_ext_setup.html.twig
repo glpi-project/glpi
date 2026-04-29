@@ -124,7 +124,6 @@
                      {{ fields.textField('language_ssofield', config['language_ssofield'], __('Language')) }}
 
                      <div class="right">
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.submit('update', __('Save'), 1, {
                            icon: 'ti ti-device-floppy'
                         }) }}

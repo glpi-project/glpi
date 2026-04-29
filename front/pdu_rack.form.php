@@ -70,7 +70,7 @@ if (isset($_GET['id'])) {
     ];
 }
 
-$_SESSION['glpilisturl'][PDU_Rack::getType()] = $rack->getSearchURL();
+$_SESSION['glpilisturl'][PDU_Rack::class] = $rack->getSearchURL();
 
 $ajax = isset($_REQUEST['ajax']);
 

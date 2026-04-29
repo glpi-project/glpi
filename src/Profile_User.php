@@ -42,18 +42,18 @@ use Glpi\DBAL\QuerySubQuery;
 class Profile_User extends CommonDBRelation
 {
     // From CommonDBTM
-    public $auto_message_on_action               = false;
+    public bool $auto_message_on_action               = false;
 
     // From CommonDBRelation
-    public static $itemtype_1                    = User::class;
-    public static $items_id_1                    = 'users_id';
+    public static ?string $itemtype_1                    = User::class;
+    public static ?string $items_id_1                    = 'users_id';
 
-    public static $itemtype_2                    = Profile::class;
-    public static $items_id_2                    = 'profiles_id';
-    public static $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_2                    = Profile::class;
+    public static ?string $items_id_2                    = 'profiles_id';
+    public static int $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
 
     // Manage Entity properties forwarding
-    public static $disableAutoEntityForwarding   = true;
+    public static bool $disableAutoEntityForwarding   = true;
 
     /**
      * @since 0.84
@@ -125,7 +125,7 @@ class Profile_User extends CommonDBRelation
      */
     public static function showForUser(User $user)
     {
-        $ID = $user->getField('id');
+        $ID = $user->getID();
         if (!$user->can($ID, READ)) {
             return;
         }
@@ -224,7 +224,6 @@ class Profile_User extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => $total_num,
-            'filtered_number' => $total_num,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
@@ -246,7 +245,7 @@ class Profile_User extends CommonDBRelation
     {
         global $DB;
 
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ)) {
             return;
         }
@@ -417,7 +416,6 @@ TWIG, $avatar_params) . $username;
                 'name' => 'raw_html',
             ],
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'entries' => $entries,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
@@ -611,7 +609,6 @@ TWIG, $avatar_params) . $username;
                 'name' => 'raw_html',
             ],
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'entries' => $entries,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
@@ -660,7 +657,7 @@ TWIG, $avatar_params) . $username;
         if ($default_first) {
             $user = new User();
             if ($user->getFromDB((int) $user_ID)) {
-                $ent = $user->getField('entities_id');
+                $ent = $user->fields['entities_id'];
                 if (in_array($ent, $entities)) {
                     array_unshift($entities, $ent);
                 }
@@ -1038,16 +1035,32 @@ TWIG, $avatar_params) . $username;
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class, User::getIcon());
                     }
                     break;
 
                 case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = self::countForItem($item);
+                            $count = $DB->request([
+                                'COUNT'     => 'cpt',
+                                'FROM'      => self::getTable(),
+                                'LEFT JOIN' => [
+                                    User::getTable() => [
+                                        'FKEY' => [
+                                            self::getTable() => 'users_id',
+                                            User::getTable()  => 'id',
+                                        ],
+                                    ],
+                                ],
+                                'WHERE'     => [
+                                    User::getTable() . '.is_deleted'    => 0,
+                                    self::getTable() . '.profiles_id'  => $item->getID(),
+                                ],
+                            ])->current();
+                            $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
                     break;
 
@@ -1059,7 +1072,7 @@ TWIG, $avatar_params) . $username;
                         'Authorization',
                         'Authorizations',
                         Session::getPluralNumber()
-                    ), $nb, $item::getType());
+                    ), $nb, $item::class);
             }
         }
         return '';
@@ -1097,6 +1110,7 @@ TWIG, $avatar_params) . $username;
 
         $specificities['dropdown_method_2']       = 'dropdownUnder';
         $specificities['can_remove_all_at_once']  = false;
+        $specificities['can_link_several_times']  = true;
 
         return $specificities;
     }
@@ -1213,6 +1227,15 @@ TWIG, $avatar_params) . $username;
 
     public function post_deleteFromDB()
     {
+        $selected_user = User::getById($this->fields['users_id']);
+
+        if ($selected_user instanceof User && $selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
+            $user = new User();
+            $user->update([
+                'id' => $this->fields['users_id'],
+                'profiles_id' => 0,
+            ]);
+        }
         $this->logOperation('delete');
     }
 
@@ -1257,9 +1280,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $user->getID(),
-                $user->getType(),
+                $user::class,
                 $changes,
-                $profile->getType(),
+                $profile::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }
@@ -1277,9 +1300,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $profile->getID(),
-                $profile->getType(),
+                $profile::class,
                 $changes,
-                $user->getType(),
+                $user::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }
@@ -1297,9 +1320,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $entity->getID(),
-                $entity->getType(),
+                $entity::class,
                 $changes,
-                $user->getType(),
+                $user::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }

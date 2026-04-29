@@ -51,13 +51,10 @@ use Unmanaged;
  */
 class Request extends AbstractRequest
 {
-    /** @var Inventory */
     private Inventory $inventory;
 
-    /** @var bool */
     private bool $is_discovery = false;
 
-    /** @var string */
     private string $network_inventory_mode;
     private Conf $conf;
 
@@ -550,16 +547,16 @@ class Request extends AbstractRequest
         if (count($items) == 1) {
             $item = $items[0];
             $status += [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->fields['id'],
             ];
         } elseif (count($items)) {
             // Defines 'itemtype' only if all items has same type
             $itemtype = null;
             foreach ($items as $item) {
-                if ($itemtype === null && $item->getType() != Unmanaged::class) {
-                    $itemtype = $item->getType();
-                } elseif ($itemtype !== $item->getType()) {
+                if ($itemtype === null && !$item instanceof Unmanaged) {
+                    $itemtype = $item::class;
+                } elseif ($itemtype !== $item::class) {
                     $itemtype = false;
                     break;
                 }

@@ -172,6 +172,7 @@ class TicketParametersTest extends AbstractParametersTest
                             'mobile'     => null,
                             'firstname'  => null,
                             'realname'   => null,
+                            'registration_number' => null,
                             'used_items' => [],
                         ],
                         [
@@ -184,6 +185,7 @@ class TicketParametersTest extends AbstractParametersTest
                             'mobile'     => null,
                             'firstname'  => null,
                             'realname'   => null,
+                            'registration_number' => null,
                             'used_items' => [],
                         ],
                     ],

@@ -64,7 +64,6 @@ final class AnswersHandler
 {
     /**
      * Singleton instance
-     * @var AnswersHandler|null
      */
     protected static ?AnswersHandler $instance = null;
 
@@ -443,7 +442,7 @@ final class AnswersHandler
                 $form_item = new AnswersSet_FormDestinationItem();
                 $input = [
                     AnswersSet::getForeignKeyField() => $answers_set->getID(),
-                    'itemtype'                       => $item::getType(),
+                    'itemtype'                       => $item::class,
                     'items_id'                       => $item->getID(),
                 ];
                 if (!$form_item->add($input)) {

@@ -56,7 +56,7 @@ class DynamicRowFormatCommand extends AbstractCommand
      */
     public const ERROR_INNODB_REQUIRED = 2;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {
@@ -66,7 +66,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         $this->setDescription(__('Convert database tables to "Dynamic" row format (required for "utf8mb4" character support).'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->checkForPrerequisites();
         $this->upgradeRowFormat();

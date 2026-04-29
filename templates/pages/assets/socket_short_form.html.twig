@@ -40,7 +40,6 @@
             {{ inputs.hidden('items_id', _add_fromitem['_from_items_id']) }}
             {{ inputs.hidden('itemtype', _add_fromitem['_from_itemtype']) }}
         {% endif %}
-        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
         <div>
             {{ fields.sliderField('_add_multiple', 0, __('Add several sockets')) }}
             <script>
@@ -121,7 +120,7 @@
                 {% endif %}
             </div>
             <div class="d-flex flex-row-reverse px-4 mb-4">
-                {{ inputs.submit('execute_single', _x('button', 'Add'), 1) }}
+                {{ inputs.submit('execute_single', _x('button', 'Add'), 1, {icon: 'ti ti-plus'}) }}
             </div>
         </div>
     </div>

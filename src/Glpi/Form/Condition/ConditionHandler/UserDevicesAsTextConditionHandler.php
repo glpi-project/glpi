@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
@@ -75,6 +76,7 @@ final class UserDevicesAsTextConditionHandler implements ConditionHandlerInterfa
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         if (!$this->question_config->isMultipleDevices() && is_string($a)) {
             $a = [$a];

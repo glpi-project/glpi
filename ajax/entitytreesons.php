@@ -40,5 +40,5 @@ global $CFG_GLPI, $GLPI_CACHE;
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-echo json_encode(Entity::getEntitySelectorTree());
+echo json_encode(Entity::getEntitySelectorTree((int) ($_GET['rand'] ?? 0)));
 return;

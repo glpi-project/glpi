@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, getAjaxCsrfToken */
+/* global _ */
 
 export class ProgressIndicator
 {

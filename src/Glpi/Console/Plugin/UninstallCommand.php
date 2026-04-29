@@ -50,7 +50,7 @@ class UninstallCommand extends AbstractPluginCommand
         $this->setDescription('Run plugin(s) uninstallation script');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(
             '<error>' . __("This action will permanently delete data") . '</error>',

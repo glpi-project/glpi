@@ -571,18 +571,29 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             }
 
             // Update class references
+            $excluded_relations = [
+                // Ignore display preferences (some are created by default) and saved searches.
+                // These cannot be migrated this way, as a specific SO IDs mapping have to be applied.
+                DisplayPreference::class,
+                SavedSearch::class,
+
+                // Ignore self reference in the `genericobject` plugin table
+                PluginGenericobjectType::class,
+            ];
             $this->updateItemtypeReferences(
                 source_itemtype: $plugin_itemtype,
                 target_itemtype: $asset_definition->getAssetClassName(),
-                excluded_relations: [
-                    // Ignore display preferences (some are created by default) and saved searches.
-                    // These cannot be migrated this way, as a specific SO IDs mapping have to be applied.
-                    DisplayPreference::class,
-                    SavedSearch::class,
-
-                    // Ignore self reference in the `genericobject` plugin table
-                    PluginGenericobjectType::class,
-                ],
+                excluded_relations: $excluded_relations,
+            );
+            $this->updateItemtypeReferences(
+                source_itemtype: $plugin_itemtype . 'Type',
+                target_itemtype: $asset_definition->getAssetTypeClassName(),
+                excluded_relations: $excluded_relations,
+            );
+            $this->updateItemtypeReferences(
+                source_itemtype: $plugin_itemtype . 'Model',
+                target_itemtype: $asset_definition->getAssetModelClassName(),
+                excluded_relations: $excluded_relations,
             );
 
             // FIXME Copy history, display preferences and saved searches, for main definition, model and type ?

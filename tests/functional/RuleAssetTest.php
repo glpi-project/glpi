@@ -37,6 +37,9 @@ namespace tests\units;
 use Computer;
 use Generator;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Asset\ProviderTrait;
+use Glpi\Tests\RuleBuilder;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
 use RuleCriteria;
@@ -44,6 +47,8 @@ use SingletonRuleList;
 
 class RuleAssetTest extends DbTestCase
 {
+    use ProviderTrait;
+
     protected function testCriteriaProvider(): Generator
     {
         // Test case 1 for last_inventory_update -> Precise date
@@ -636,6 +641,472 @@ class RuleAssetTest extends DbTestCase
         $this->assertTrue($update);
         $this->assertTrue($computer_em->getFromDB($computer_id));
         $this->assertEquals($locations_id, $computer_em->getField('locations_id'));
+    }
+
+    /**
+     * Assign groups & tech group to asset on creation
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAddGroupOnAdd(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group_1 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $rule_group_2 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity_id);
+            $rule_builder->addAction('append', $field, $rule_group_1->getID());
+            $rule_builder->addAction('append', $field, $rule_group_2->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONADD);
+            $this->createRule($rule_builder);
+
+            // --- act - create an asset
+            $asset = $this->createItem($class, ['entities_id' => $entity_id] + $this->getMinimalCreationInput($class));
+
+            // --- assert - check that the asset has the groups added
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+
+            $this->assertEqualsCanonicalizing([$rule_group_1->getID(), $rule_group_2->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Assign groups & tech group to asset on creation, with a manually defined group in creation input.
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAddGroupOnAddWithInput(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group_1 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $rule_group_2 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity(0);
+            $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity_id);
+            $rule_builder->addAction('append', $field, $rule_group_1->getID());
+            $rule_builder->addAction('append', $field, $rule_group_2->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONADD);
+            $this->createRule($rule_builder);
+
+            // --- act - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'entities_id' => $entity_id,
+                    $field => [$input_group->getID()],
+                ] + $this->getMinimalCreationInput($class),
+                [
+                    $field, // rule will alter the value
+                ]
+            );
+
+            // --- assert - check that the asset has the groups added
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+
+            $this->assertEqualsCanonicalizing([$input_group->getID(), $rule_group_1->getID(), $rule_group_2->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Assign groups on update
+     *
+     * Notice group set on creation is lost after the update.
+     * - this is because of \Glpi\Features\AssignableItem::updateGroupFields() implementation that remove previous groups
+     * - important : behavior is not the same for Tickets (@see \tests\units\TicketTest::testAssignGroup())
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAddGroupOnUpdate(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group_1 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $rule_group_2 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $asset_name_to_trigger_rule = $this->getUniqueString();
+
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('name', Rule::PATTERN_IS, $asset_name_to_trigger_rule);
+            $rule_builder->addAction('append', $field, $rule_group_1->getID());
+            $rule_builder->addAction('append', $field, $rule_group_2->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONUPDATE);
+            $this->createRule($rule_builder);
+
+            // --- act - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'name'        => $this->getUniqueString(),
+                    'entities_id' => $entity_id,
+                    $field => [$input_group->getID()],
+                ] + $this->getMinimalCreationInput($class),
+                [
+                    $field, // rule will alter the value
+                ]
+            );
+
+            // --- act - update the asset : triggers rule to append groups to Asset ownership groups
+            $this->updateItem($class, $asset->getID(), ['name' => $asset_name_to_trigger_rule]);
+
+            // --- assert - check that the asset has the groups assigned and previous group is removed
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+            $this->assertEqualsCanonicalizing([$rule_group_1->getID(), $rule_group_2->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Adding groups also adds the input groups, with a manually defined group in update input.
+     *
+     * action : append
+     * field: groups_id_tech
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAddGroupOnUpdateWithInput(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group_1 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $rule_group_2 = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $asset_name_to_trigger_rule = $this->getUniqueString();
+
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('name', Rule::PATTERN_IS, $asset_name_to_trigger_rule);
+            $rule_builder->addAction('append', $field, $rule_group_1->getID());
+            $rule_builder->addAction('append', $field, $rule_group_2->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONUPDATE);
+            $this->createRule($rule_builder);
+
+            // --- act - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'name'        => $this->getUniqueString(),
+                    'entities_id' => $entity_id,
+                ] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- act - update the asset : triggers rule to append groups to Asset ownership groups
+            $this->updateItem(
+                $class,
+                $asset->getID(),
+                [
+                    'name' => $asset_name_to_trigger_rule,
+                    $field => [$input_group->getID()],
+                ],
+                [
+                    $field, // one group is also added by rule
+                ]
+            );
+
+            // --- assert - check that the asset has the rule groups assigned and the input group preserved
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+            $this->assertEqualsCanonicalizing([$input_group->getID(), $rule_group_1->getID(), $rule_group_2->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Assign groups & tech group to asset on creation.
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupOnAdd(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity_id);
+            $rule_builder->addAction('assign', $field, $rule_group->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONADD);
+            $this->createRule($rule_builder);
+
+            // --- act - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'entities_id' => $entity_id,
+                ] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- assert - check that the asset has the groups assigned and previous group is removed
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+            $this->assertEqualsCanonicalizing([$rule_group->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Assign groups & tech group to asset on creation, with a manually defined group in creation input.
+     * Group passed in input is replaced by rule assignement, the rule assigned group is recorded.
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupOnAddWithInput(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity_id);
+            $rule_builder->addAction('assign', $field, $rule_group->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONADD);
+            $this->createRule($rule_builder);
+
+            // --- act - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'entities_id' => $entity_id,
+                    $field => [$input_group->getID()],
+                ] + $this->getMinimalCreationInput($class),
+                [
+                    $field, // another group is added by rule
+                ]
+            );
+
+            // --- assert - check that the asset has the groups assigned and previous group is removed
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+            $this->assertEqualsCanonicalizing([$rule_group->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Assign groups on update.
+     * Group previously associated is removed, rule assigned group is recorded.
+     *
+     * Notice group set on creation is lost after the update.
+     * - this is because of \Glpi\Features\AssignableItem::updateGroupFields() implementation that remove previous groups
+     * - important : behavior is not the same for Tickets (@see \tests\units\TicketTest::testAssignGroup())
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupOnUpdate(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $asset_name_to_trigger_rule = $this->getUniqueString();
+
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('name', Rule::PATTERN_IS, $asset_name_to_trigger_rule);
+            $rule_builder->addAction('assign', $field, $rule_group->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONUPDATE);
+            $this->createRule($rule_builder);
+
+            // --- arrange - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'name'        => $this->getUniqueString(),
+                    'entities_id' => $entity_id,
+                    $field => [$input_group->getID()],
+                ] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- act - update the asset : triggers rule to assign $group_for_rule to Asset ownership groups
+            $this->updateItem($class, $asset->getID(), ['name' => $asset_name_to_trigger_rule]);
+
+            // --- assert - check that the asset has the groups assigned and previous group is removed
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+            $this->assertEqualsCanonicalizing([$rule_group->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
+    }
+
+    /**
+     * Assigning groups on update, with a manually defined group in update input.
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupOnUpdateWithInput(string $class): void
+    {
+        $this->login();
+
+        // fields to test + associated group type
+        $tested_fields = [
+            'groups_id_tech' => \Group_Item::GROUP_TYPE_TECH,
+            'groups_id' => \Group_Item::GROUP_TYPE_NORMAL,
+        ];
+
+        $entity_id = $this->getTestRootEntity(true);
+
+        // --- arrange - create groups
+        $rule_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+        $input_group = $this->createItem(\Group::class, $this->getMinimalCreationInput(\Group::class));
+
+        foreach ($tested_fields as $field => $type) {
+
+            // --- arrange - create rule to associate an asset with groups
+            $asset_name_to_trigger_rule = $this->getUniqueString();
+
+            $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+            $rule_builder->setEntity($entity_id);
+            $rule_builder->addCriteria('name', Rule::PATTERN_IS, $asset_name_to_trigger_rule);
+            $rule_builder->addAction('assign', $field, $rule_group->getID());
+            $rule_builder->setCondtion(\RuleAsset::ONUPDATE);
+            $this->createRule($rule_builder);
+
+            // --- arrange - create an asset
+            $asset = $this->createItem(
+                $class,
+                [
+                    'name'        => $this->getUniqueString(),
+                    'entities_id' => $entity_id,
+                ] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- act - update the asset : triggers rule to assign $group_for_rule to Asset ownership groups
+            $this->updateItem(
+                $class,
+                $asset->getID(),
+                [
+                    'name' => $asset_name_to_trigger_rule,
+                    $field => [$input_group->getID()],
+                ],
+                [
+                    $field, // group assignment is replaced by rule
+                ]
+            );
+
+            // --- assert - check that the asset has the groups assigned and previous group is removed
+            $associations = (new \Group_Item())->find([
+                'items_id' => $asset->getID(),
+                'itemtype' => $asset::class,
+                'type' => $type,
+            ]);
+            $fetched_group_ids = array_column($associations, 'groups_id');
+            $this->assertEqualsCanonicalizing([$rule_group->getID()], $fetched_group_ids, 'Unexpected Asset associated groups with ' . $class . ' ' . $field);
+        }
     }
 
     public function testGroupUserAssignFromDefaultUser()

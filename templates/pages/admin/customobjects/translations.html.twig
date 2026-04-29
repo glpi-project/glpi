@@ -35,7 +35,6 @@
         <div class="modal-content">
             <form method="POST" action="{{ get_class(item)|itemtype_form_path }}">
                 <input type="hidden" name="id" value="{{ item.fields['id'] }}">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="_save_translation" value="1" />
 
                 <div class="modal-header">
@@ -106,7 +105,6 @@
                             <div title="{{ __("Delete translation") }}" class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <form method="POST" action="{{ get_class(item)|itemtype_form_path }}" class="d-inline">
                                     <input type="hidden" name="id" value="{{ item.fields['id'] }}">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                                     <input type="hidden" name="_delete_translation" value="1" />
                                     <input type="hidden" name="field" value="{{ trans_data['id'] }}" />
                                     <input type="hidden" name="language" value="{{ trans_data['language'] }}" />

@@ -103,7 +103,7 @@ function update91xto920()
                 'completename' =>  new QueryExpression(DBmysql::quoteName("name")),
                 'is_recursive' => "1",
             ],
-            [true]
+            [new QueryExpression('true')]
         );
     }
 
@@ -653,7 +653,7 @@ function update91xto920()
             [
                 'completename' => new QueryExpression(DBmysql::quoteName("name")),
             ],
-            [true]
+            [new QueryExpression('true')]
         );
     }
 
@@ -1161,7 +1161,7 @@ function update91xto920()
         $DB->buildUpdate(
             "glpi_queuednotifications",
             ['mode' => Notification_NotificationTemplate::MODE_MAIL],
-            [true]
+            [new QueryExpression('true')]
         ),
         "9.2 set default mode in queue"
     );
@@ -1475,7 +1475,6 @@ Regards,',
         $DB->doQuery($query);
 
         //migrate kernel versions.
-        $kver = new OperatingSystemKernelVersion();
         $mapping = [];
         foreach (
             $DB->request(['SELECT' => ['id', 'os_kernel_version'],
@@ -1487,8 +1486,9 @@ Regards,',
             if (!isset($mapping[$key])) {
                 $mapping[$key] = [];
             }
-            $kver->add(['version' => $data['os_kernel_version']]);
-            $mapping[$key][$data['id']] = $kver->getID();
+            $DB->insert('glpi_operatingsystemkernelversions', ['name' => $data['os_kernel_version']]);
+            $kver_id = $DB->insertId();
+            $mapping[$key][$data['id']] = $kver_id;
         }
 
         foreach ($mapping as $map) {

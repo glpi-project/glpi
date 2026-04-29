@@ -51,12 +51,12 @@ use Session;
 
 final class Asset_PeripheralAsset extends CommonDBRelation
 {
-    public static $itemtype_1          = 'itemtype_asset';
-    public static $items_id_1          = 'items_id_asset';
+    public static ?string $itemtype_1          = 'itemtype_asset';
+    public static ?string $items_id_1          = 'items_id_asset';
 
-    public static $itemtype_2          = 'itemtype_peripheral';
-    public static $items_id_2          = 'items_id_peripheral';
-    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static ?string $itemtype_2          = 'itemtype_peripheral';
+    public static ?string $items_id_2          = 'items_id_peripheral';
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
     public function getForbiddenStandardMassiveAction()
@@ -120,7 +120,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             $updates = [];
 
             if (
-                $asset->fields['locations_id'] !== $peripheral->getField('locations_id')
+                $asset->fields['locations_id'] !== $peripheral->fields['locations_id']
                 && Entity::getUsedConfig('is_location_autoupdate', $asset->getEntityID())
             ) {
                 $updates['locations_id'] = $asset->fields['locations_id'];
@@ -131,9 +131,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             }
             if (
                 (Entity::getUsedConfig('is_user_autoupdate', $asset->getEntityID())
-                && ($asset->fields['users_id'] !== $peripheral->getField('users_id')))
+                && ($asset->fields['users_id'] !== $peripheral->fields['users_id']))
                 || (Entity::getUsedConfig('is_group_autoupdate', $asset->getEntityID())
-                 && ($asset->fields['groups_id'] !== $peripheral->getField('groups_id')))
+                 && ($asset->fields['groups_id'] !== $peripheral->fields['groups_id']))
             ) {
                 if (Entity::getUsedConfig('is_user_autoupdate', $asset->getEntityID())) {
                     $updates['users_id'] = $asset->fields['users_id'];
@@ -260,10 +260,11 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
-        $specificities = self::getRelationMassiveActionsSpecificities();
+        global $CFG_GLPI;
 
-        if (in_array($itemtype, $specificities['itemtypes'], true)) {
+        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
+
+        if (in_array($itemtype, $CFG_GLPI['directconnect_types'], true)) {
             $actions[$action_prefix . 'add']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Connect');
             $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off'></i>" . _sx('button', 'Disconnect');
         }
@@ -275,7 +276,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
-        $specificities['itemtypes'] = $CFG_GLPI['directconnect_types'];
+        $specificities['itemtypes'] = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
         $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
         $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
@@ -309,11 +310,15 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $used  = [];
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
-                $iterator = self::getUsedPeripherals($itemtype);
+                $iterator = self::getPeripheralAssets($asset, $itemtype);
+                $usediterator = self::getUsedPeripherals($itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
                     $datas[]           = $data;
+                }
+
+                foreach ($usediterator as $data) {
                     $used[$itemtype][] = $data['id'];
                 }
             }
@@ -334,7 +339,10 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'source_itemtype' => $asset::class,
                 'source_items_id' => $asset->getID(),
                 'link_types' => $CFG_GLPI['directconnect_types'],
+                'generic_source' => true,
                 'generic_target' => true,
+                'source_suffix' => '_asset',
+                'target_suffix' => '_peripheral',
                 'dropdown_options' => [
                     'entity'      => $asset->getEntityID(),
                     'entity_sons' => $asset->isRecursive(),
@@ -414,7 +422,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -496,10 +503,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         {{ fields.dropdownItemsFromItemtypes('', label, dropdown_params) }}
                         {{ fields.hiddenField('items_id_peripheral', peripheral.getID()) }}
                         {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
-                        {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -555,7 +561,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -601,7 +606,7 @@ TWIG, $twig_params);
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'items_id_peripheral' => $item->getID(),
-                'itemtype_peripheral' => $item->getType(),
+                'itemtype_peripheral' => $item::class,
             ],
         ]);
 
@@ -746,7 +751,7 @@ TWIG, $twig_params);
                 ],
                 'FROM' => self::getTable(),
                 'WHERE' => [
-                    'itemtype_asset' => $item->getType(),
+                    'itemtype_asset' => $item::class,
                     'items_id_asset' => $item->getID(),
                 ],
                 'GROUP' => 'itemtype_peripheral',
@@ -783,7 +788,7 @@ TWIG, $twig_params);
                 ],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype_peripheral' => $item->getType(),
+                    'itemtype_peripheral' => $item::class,
                     'items_id_peripheral' => $item->fields['id'],
                 ],
                 'GROUP'  => 'itemtype_peripheral',
@@ -867,8 +872,7 @@ TWIG, $twig_params);
             return 2;
         }
 
-        // Else we cannot define !
-        return 0;
+        return parent::getRelationMassiveActionsPeerForSubForm($ma);
     }
 
     /**

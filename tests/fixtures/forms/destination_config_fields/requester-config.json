@@ -1,0 +1,130 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "name": "Test requester config",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "b1c2d3e4-f5a6-7890-bcde-f12345678901",
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "c1d2e3f4-a5b6-7890-cdef-123456789012",
+                    "name": "My Requester question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeRequester",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": {
+                        "users_ids": [],
+                        "groups_ids": [],
+                        "suppliers_ids": []
+                    },
+                    "extra_data": {
+                        "is_multiple_actors": false,
+                        "enabled_types": [
+                            "User",
+                            "Group"
+                        ]
+                    },
+                    "section_id": 1,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 2,
+                    "uuid": "d1e2f3a4-b5c6-7890-defa-123456789013",
+                    "name": "My Email question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeEmail",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 3,
+                    "uuid": "e1f2a3b4-c5d6-7890-efab-123456789014",
+                    "name": "My Computer question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "is_mandatory": false,
+                    "vertical_rank": 2,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": null,
+                    "extra_data": {
+                        "itemtype": "Computer",
+                        "root_items_id": 0,
+                        "subtree_depth": 0,
+                        "selectable_tree_root": false
+                    },
+                    "section_id": 1,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 1,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

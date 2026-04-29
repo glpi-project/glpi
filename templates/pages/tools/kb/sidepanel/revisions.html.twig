@@ -1,0 +1,65 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/tools/kb/sidepanel/base.html.twig" %}
+
+{% block icon %}ti ti-history{% endblock %}
+{% block title %}{{ __("History") }}{% endblock %}
+
+{% block content %}
+    <ul class="steps steps-vertical overflow-auto my-n3 py-3" data-glpi-revisions>
+        {% for event in history.getEvents() %}
+            {% set is_revision = event is instanceof("\\Glpi\\Knowbase\\History\\RevisionEvent") %}
+            {% set is_translation_revision = event is instanceof("\\Glpi\\Knowbase\\History\\TranslationRevisionEvent") %}
+            {% set is_current_translation = event is instanceof("\\Glpi\\Knowbase\\History\\CurrentTranslationEvent") %}
+            {% set is_log = event is instanceof("\\Glpi\\Knowbase\\History\\LogEvent") %}
+            {% set is_curent_version = event is instanceof("\\Glpi\\Knowbase\\History\\CurrentVersionLogEvent") %}
+            {% set is_creation_event = event is instanceof("\\Glpi\\Knowbase\\History\\CreationEvent") %}
+
+            {{ include('pages/tools/kb/sidepanel/revision_item.html.twig', {
+                id: id,
+                event: event,
+                is_revision: is_revision,
+                is_translation_revision: is_translation_revision,
+                is_current_translation: is_current_translation,
+                is_log: is_log,
+                can_revert: can_revert,
+                users: users,
+                first: loop.first,
+                is_curent_version: is_curent_version,
+                is_creation_event: is_creation_event,
+            }, with_context = false) }}
+
+
+        {% endfor %}
+    </ul>
+{% endblock %}

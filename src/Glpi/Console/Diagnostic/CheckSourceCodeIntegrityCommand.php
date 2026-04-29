@@ -51,7 +51,7 @@ use Toolbox;
 
 class CheckSourceCodeIntegrityCommand extends AbstractCommand
 {
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -87,7 +87,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $diff = $input->getOption('diff');
         $checker = new SourceCodeIntegrityChecker();

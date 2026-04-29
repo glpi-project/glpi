@@ -106,13 +106,6 @@ class HtmlTest extends DbTestCase
         $this->assertSame($expected, \Html::convDateTime($mydate, 2, true));
     }
 
-    public function testCleanInputText()
-    {
-        $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
-        $expected = 'This is a &#039;string&#039; with some &quot;replacements&quot; needed, but not « others »!';
-        $this->assertSame($expected, @\Html::cleanInputText($origin));
-    }
-
     public function cleanParametersURL()
     {
         $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';
@@ -668,17 +661,6 @@ class HtmlTest extends DbTestCase
         }
     }
 
-    public function testEntitiesDeep()
-    {
-        $value = 'Should be \' "escaped" éè!';
-        $expected = 'Should be &#039; &quot;escaped&quot; &eacute;&egrave;!';
-        $result = @\Html::entities_deep($value);
-        $this->assertSame($expected, $result);
-
-        $result = @\Html::entities_deep([$value, $value, $value]);
-        $this->assertSame([$expected, $expected, $expected], $result);
-    }
-
     public function testCleanParametersURL()
     {
         $url = 'http://perdu.com';
@@ -742,13 +724,6 @@ class HtmlTest extends DbTestCase
         $actions = '$("#mydiv").focus();';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($string, $actions));
-    }
-
-    public function testJsFunctions()
-    {
-        $this->assertSame("$('#myid')", @\Html::jsGetElementbyID('myid'));
-        $this->assertSame("$('#myid').trigger('setValue', 'myval');", @\Html::jsSetDropdownValue('myid', 'myval'));
-        $this->assertSame("$('#myid').val()", @\Html::jsGetDropdownValue('myid'));
     }
 
     public function testCleanId()
@@ -1011,7 +986,7 @@ SCSS,
 
         $this->assertEquals(
             <<<CSS
-            
+
             nav > ul {
               margin: 0;
               padding: 0;
@@ -1244,7 +1219,7 @@ SCSS,
         yield [
             'current' => '2025-01-01 12:00:00.000',
             'timestamp' => '2025-01-01 11:59:00.000',
-            'expected'  => '1 minutes ago',
+            'expected'  => '1 minute ago',
         ];
 
         yield [
@@ -1256,7 +1231,7 @@ SCSS,
         yield [
             'current' => '2025-01-01 23:59:59.000',
             'timestamp' => '2025-01-01 22:59:59.000',
-            'expected'  => '1 hours ago',
+            'expected'  => '1 hour ago',
         ];
 
         yield [
@@ -1437,5 +1412,44 @@ SCSS,
         $_SESSION['glpilanguage'] = 'en_GB';
 
         $this->assertSame($expected, \Html::timestampToRelativeStr($timestamp));
+    }
+
+    public function testFileWithMissingTempFileDoesNotThrow(): void
+    {
+        $uploads = [
+            '_filename'      => ['20230101_120000_0000000nonexistent.txt'],
+            '_tag_filename'  => ['abc123tag'],
+        ];
+
+        $result = \Html::file([
+            'display' => false,
+            'uploads' => $uploads,
+        ]);
+
+        $this->assertIsString($result);
+        $this->hasPhpLogRecordThatContains('not found, skipping', LogLevel::WARNING);
+    }
+
+    public function testFileWithExistingTempFileReturnsFilename(): void
+    {
+        $filename = '20230101_120000_0000000testfile.txt';
+        $filepath = GLPI_TMP_DIR . '/' . $filename;
+        file_put_contents($filepath, 'test content');
+
+        try {
+            $uploads = [
+                '_filename'      => [$filename],
+                '_tag_filename'  => ['abc123tag'],
+            ];
+
+            $result = \Html::file([
+                'display' => false,
+                'uploads' => $uploads,
+            ]);
+
+            $this->assertStringContainsString('testfile.txt', $result);
+        } finally {
+            unlink($filepath);
+        }
     }
 }

@@ -38,7 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 use InvalidArgumentException;
 
 use function Safe\preg_match;
-use function Safe\strtotime;
 
 class DateType extends AbstractType
 {
@@ -70,7 +69,7 @@ TWIG, $twig_params);
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
             throw new InvalidArgumentException('The value must be in the format YYYY-MM-DD');
         }
-        return gmdate('Y-m-d', strtotime($value));
+        return $value;
     }
 
     public function formatValueFromDB(mixed $value): ?string
@@ -78,7 +77,7 @@ TWIG, $twig_params);
         if (empty($value)) {
             return null;
         }
-        return date('Y-m-d', strtotime($value . ' UTC'));
+        return $value;
     }
 
     public function getSearchOption(): ?array

@@ -1,0 +1,162 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+import { expect, test } from "../../fixtures/glpi_fixture";
+import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
+import { Profiles } from "../../utils/Profiles";
+import { getWorkerEntityId } from "../../utils/WorkerEntities";
+import { randomUUID } from "crypto";
+
+test('Link modal works when items are already linked', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const computer_name = `Computer - ${randomUUID()}`;
+    const computer_id = await api.createItem('Computer', {
+        name: computer_name,
+        entities_id: getWorkerEntityId(),
+    });
+
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: `KB article - ${randomUUID()}`,
+        entities_id: getWorkerEntityId(),
+        answer: 'Test content',
+    });
+
+    await api.createItem('KnowbaseItem_Item', {
+        knowbaseitems_id: kb_id,
+        itemtype: 'Computer',
+        items_id: computer_id,
+    });
+
+    await kb.goto(kb_id);
+
+    const related_items_tab = page.getByRole('tab', { name: /Related items/ });
+    await expect(related_items_tab).toContainText('1');
+
+    await related_items_tab.click();
+    await page.getByRole('button', { name: /Link to another item/ }).click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Link to another item')).toBeVisible();
+});
+
+test('Can link an item to a knowledge base article', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const computer_name = `Computer - ${randomUUID()}`;
+    await api.createItem('Computer', {
+        name: computer_name,
+        entities_id: getWorkerEntityId(),
+    });
+
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: 'KB article for link test',
+        entities_id: getWorkerEntityId(),
+        answer: 'Test content',
+    });
+
+    await kb.goto(kb_id);
+
+    // Counter should start at 0
+    const related_items_tab = page.getByRole('tab', { name: /Related items/ });
+    await expect(related_items_tab).toContainText('0');
+
+    // Open the Related items tab and click link button
+    await related_items_tab.click();
+    await page.getByRole('button', { name: /Link to another item/ }).click();
+
+    // Modal should open with proper content
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Link to another item')).toBeVisible();
+
+    // Select "Computers" in the itemtype dropdown
+    const itemtype_dropdown = modal.getByRole('combobox').first();
+    await kb.doSetDropdownValue(itemtype_dropdown, 'Computers');
+
+    // Select the computer in the items dropdown
+    const items_dropdown = modal.getByRole('combobox').nth(1);
+    await kb.doSetDropdownValue(items_dropdown, computer_name, false);
+
+    // Submit the form
+    await modal.getByRole('button', { name: 'Add' }).click();
+
+    // Modal should close and a success toast should appear
+    await expect(modal).toBeHidden();
+    await expect(kb.getAlert('Item linked successfully')).toBeVisible();
+
+    // Counter should be updated to 1
+    const updated_tab = page.getByRole('tab', { name: /Related items/ });
+    await expect(updated_tab).toContainText('1');
+
+    // The chip should be visible in the list
+    await expect(page.getByTestId('related-item-chip').filter({ hasText: computer_name })).toBeVisible();
+});
+
+test('Can unlink an item', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+
+    // Create a KB with a linked item
+    const computer_name = `Computer - ${randomUUID()}`;
+    const computer_id = await api.createItem('Computer', {
+        name: computer_name,
+        entities_id: getWorkerEntityId(),
+    });
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: 'KB article for link test',
+        entities_id: getWorkerEntityId(),
+        answer: 'Test content',
+    });
+    await api.createItem('KnowbaseItem_Item', {
+        itemtype: "Computer",
+        items_id: computer_id,
+        knowbaseitems_id: kb_id,
+    });
+
+    // Go to KB
+    const kb = new KnowbaseItemPage(page);
+    await kb.goto(kb_id);
+
+    // Open linked item tab
+    await expect(page.getByTestId('related-items-count')).toBeVisible();
+    await page.getByRole('tab', { name: /Related items/ }).click();
+    await expect(page.getByText(computer_name)).toBeVisible();
+
+    // Unlink item
+    await kb.getButton('Unlink item').click();
+    await kb.getButton('Unlink').click();
+    await expect(page.getByText(computer_name)).not.toBeAttached();
+    await expect(page.getByTestId('related-items-count')).toBeHidden();
+});

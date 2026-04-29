@@ -36,7 +36,7 @@
 /// Class DeviceGeneric
 class DeviceGeneric extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceGeneric', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceGeneric', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -127,7 +127,7 @@ class DeviceGeneric extends CommonDevice
         return [
             'designation'       => 'equal',
             'manufacturers_id'  => 'equal',
-            'devicecasetypes_id' => 'equal',
+            'devicegenerictypes_id' => 'equal',
             'locations_id'      => 'equal',
         ];
     }

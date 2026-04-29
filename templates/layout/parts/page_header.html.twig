@@ -48,7 +48,7 @@
    <div class="page">
 
       {% if is_vertical %}
-      <aside class="navbar navbar-vertical navbar-expand-lg sticky-lg-top sidebar">
+      <aside class="navbar navbar-vertical navbar-expand-lg sticky-lg-top sidebar" data-testid="sidebar">
          <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
                <span class="navbar-toggler-icon"></span>
@@ -91,7 +91,7 @@
       </aside>
       {% endif %}
 
-      <header class="navbar d-print-none sticky-lg-top shadow-sm {{ is_vertical ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}">
+      <header class="navbar d-print-none sticky-lg-top shadow-sm {{ is_vertical ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}" data-testid="main-header">
          {# On the helpdesk interface, the container will be displayed with a reduced width #}
          <div class="header-container container-fluid flex-xl-nowrap pe-xl-0 {{ is_helpdesk ? 'container-xl' : '' }}">
             {% if is_vertical %}

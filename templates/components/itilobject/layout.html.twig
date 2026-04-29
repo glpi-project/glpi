@@ -98,7 +98,6 @@
 
 {# Common form fields for CommonITILObject_CommonITILObject purge action #}
 <form method="POST" action="{{ call('CommonITILObject_CommonITILObject::getFormURL') }}" class="d-none" id="linked_itilobjects_{{ main_rand }}" data-submit-once>
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    <input type="hidden" name="purge" value="1" />
    <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
    <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
@@ -107,7 +106,6 @@
 {# Common form fields for "addme_as_actor" action #}
 {% for actortype in ['requester', 'observer', 'assign'] %}
    <form method="POST" action="{{ item.getFormURL() }}" class="d-none" id="addme_as_{{ actortype }}_{{ main_rand }}" data-submit-once>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
       <input type="hidden" name="addme_as_actor" value="1" />
       <input type="hidden" name="actortype" value="{{ actortype }}" />
    </form>
@@ -116,7 +114,6 @@
 <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
       action="{{ path('/front/massiveaction.php') }}?_single_item[itemtype]={{ item.getType() }}&_single_item[id]={{ item.getID() }}" data-submit-once>
    <div id="massive_container_{{ rand }}"></div>
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 </form>
 
 <script type="text/javascript">

@@ -37,13 +37,13 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Cluster extends CommonDBRelation
 {
-    public static $itemtype_1 = Cluster::class;
-    public static $items_id_1 = 'clusters_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $mustBeAttached_1 = false; // FIXME It make no sense for a cluster item to not be attached to a Cluster.
-    public static $mustBeAttached_2 = false; // FIXME It make no sense for a cluster item to not be attached to an Item.
+    public static ?string $itemtype_1 = Cluster::class;
+    public static ?string $items_id_1 = 'clusters_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static bool $mustBeAttached_1 = false; // FIXME It make no sense for a cluster item to not be attached to a Cluster.
+    public static bool $mustBeAttached_2 = false; // FIXME It make no sense for a cluster item to not be attached to an Item.
 
     public static function getTypeName($nb = 0)
     {
@@ -60,7 +60,7 @@ class Item_Cluster extends CommonDBRelation
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);
         }
-        return self::createTabEntry(_n('Item', 'Items', $nb), $nb, $item::getType(), 'ti ti-package');
+        return self::createTabEntry(_n('Item', 'Items', $nb), $nb, $item::class, 'ti ti-package');
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -141,7 +141,6 @@ class Item_Cluster extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),

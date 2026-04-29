@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
@@ -95,35 +96,20 @@ use function Safe\session_write_close;
 abstract class API
 {
     // permit writing to $_SESSION
-    /** @var bool  */
-    protected $session_write = false;
-    /** @var string  */
-
-    public static $api_url = "";
-    /** @var string  */
-    public static $content_type = "application/json";
-    /** @var string  */
-    protected $format          = "json";
-    /** @var string  */
-    protected $iptxt           = "";
-    /** @var string  */
-    protected $ipnum           = "";
-    /** @var array  */
-    protected $app_tokens      = [];
-    /** @var int  */
-    protected $apiclients_id   = 0;
-    /** @var ?DeprecatedInterface  */
-    protected $deprecated_item = null;
-    /** @var string */
-    protected $request_uri;
-    /** @var array */
-    protected $url_elements;
-    /** @var string */
-    protected $verb;
-    /** @var array */
-    protected $parameters;
-    /** @var bool */
-    protected $debug = false;
+    protected bool $session_write = false;
+    public static string $api_url = "";
+    public static string $content_type = "application/json";
+    protected string $format          = "json";
+    protected string $iptxt           = "";
+    protected string $ipnum           = "";
+    protected array $app_tokens      = [];
+    protected int $apiclients_id   = 0;
+    protected ?DeprecatedInterface $deprecated_item = null;
+    protected string $request_uri;
+    protected array $url_elements;
+    protected string $verb;
+    protected array $parameters;
+    protected bool $debug = false;
 
     /**
      * @param int $nb Unused value
@@ -295,36 +281,11 @@ abstract class API
         $this->checkAppToken();
         $this->logEndpointUsage(__FUNCTION__);
 
-        if (
-            (!isset($params['login'])
-            || empty($params['login'])
-            || !isset($params['password'])
-            || empty($params['password']))
-            && (!isset($params['user_token'])
-             || empty($params['user_token']))
-        ) {
-            $this->returnError(
-                __("parameter(s) login, password or user_token are missing"),
-                400,
-                "ERROR_LOGIN_PARAMETERS_MISSING"
-            );
-        }
+        $login    = $params['login'] ?? '';
+        $password = $params['password'] ?? '';
+        $token    = $params['user_token'] ?? '';
 
-        $auth = new Auth();
-
-        // fill missing params (in case of user_token)
-        if (!isset($params['login'])) {
-            $params['login'] = '';
-        }
-        if (!isset($params['password'])) {
-            $params['password'] = '';
-        }
-
-        $noAuto = true;
-        if (isset($params['user_token']) && !empty($params['user_token'])) {
-            $_REQUEST['user_token'] = $params['user_token'];
-            $noAuto = false;
-        } elseif (!$CFG_GLPI['enable_api_login_credentials']) {
+        if (($login !== '' || $password !== '') && !$CFG_GLPI['enable_api_login_credentials']) {
             $this->returnError(
                 __("usage of initSession resource with credentials is disabled"),
                 400,
@@ -332,26 +293,73 @@ abstract class API
                 false
             );
         }
-
-        if (!isset($params['auth'])) {
-            $params['auth'] = '';
+        if ($token !== '' && !$CFG_GLPI['enable_api_login_external_token']) {
+            $this->returnError(
+                __("usage of initSession resource with user token is disabled"),
+                400,
+                "ERROR_LOGIN_WITH_TOKEN_DISABLED",
+                false
+            );
         }
 
-        // login on glpi
-        if (!$auth->login($params['login'], $params['password'], $noAuto, false, $params['auth'])) {
-            $err = implode(' ', $auth->getErrors());
-            if (
-                isset($params['user_token'])
-                && !empty($params['user_token'])
-            ) {
-                $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
+        if (
+            (!$CFG_GLPI['enable_api_login_credentials'] || $login === '' || $password === '')
+            && (!$CFG_GLPI['enable_api_login_external_token'] || $token === '')
+        ) {
+            if ($CFG_GLPI['enable_api_login_credentials'] && $CFG_GLPI['enable_api_login_external_token']) {
+                $this->returnError(
+                    __("parameter(s) login, password or user_token are missing"),
+                    400,
+                    "ERROR_LOGIN_PARAMETERS_MISSING"
+                );
+            } elseif ($CFG_GLPI['enable_api_login_credentials']) {
+                $this->returnError(
+                    __("parameter(s) login, password are missing"),
+                    400,
+                    "ERROR_LOGIN_PARAMETERS_MISSING"
+                );
+            } else {
+                $this->returnError(
+                    __("parameter user_token is missing"),
+                    400,
+                    "ERROR_LOGIN_PARAMETERS_MISSING"
+                );
             }
-            $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
         }
+
+        $authenticated  = false;
+        $error_msg      = '';
+        $error_code     = '';
+        $use_token_auth = $CFG_GLPI['enable_api_login_external_token'] && $token !== '';
+        $use_login_auth = $CFG_GLPI['enable_api_login_credentials'] && $login !== '' && $password !== '';
+
+        if ($use_token_auth) {
+            $_REQUEST['user_token'] = $token;
+
+            $auth = new Auth();
+            $authenticated = $auth->login('', '', false, false, $params['auth'] ?? '');
+            $error_code    = 'ERROR_GLPI_LOGIN_USER_TOKEN';
+            $error_msg     = __("parameter user_token seems invalid");
+        }
+        if (!$authenticated && $use_login_auth) {
+            unset($_REQUEST['user_token']);
+
+            $auth = new Auth();
+            $authenticated = $auth->login($login, $password, true, false, $params['auth'] ?? '');
+            $error_code    = 'ERROR_GLPI_LOGIN';
+            $error_msg     = implode(' ', $auth->getErrors());
+        }
+
+        if (!$authenticated) {
+            $this->returnError($error_msg, 401, $error_code, false);
+        }
+
+        $session_token = \base64_encode((new GLPIKey())->encrypt($_SESSION['valid_id']));
+        unset($_SESSION['valid_id']); // this is not needed for the API, unsetting it prevents any unexpected exposure
 
         // stop session and return session key
         session_write_close();
-        $data = ['session_token' => $_SESSION['valid_id']];
+        $data = ['session_token' => $session_token];
 
         // Insert session data if requested
         $get_full_session = $params['get_full_session'] ?? false;
@@ -668,12 +676,12 @@ abstract class API
             && in_array($itemtype, Item_Devices::getConcernedItems())
         ) {
             $all_devices = [];
-            foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
+            foreach (Item_Devices::getItemAffinities($item::class) as $device_type) {
                 $found_devices = getAllDataFromTable(
                     $device_type::getTable(),
                     [
                         'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
+                        'itemtype'     => $item::class,
                         'is_deleted'   => 0,
                     ],
                     true
@@ -685,7 +693,7 @@ abstract class API
                     unset($device['is_deleted']);
                 }
 
-                if (!empty($found_devices)) {
+                if ($found_devices !== []) {
                     $all_devices[$device_type] = $found_devices;
                 }
             }
@@ -1032,7 +1040,7 @@ abstract class API
                     "glpi_logs",
                     [
                         'items_id'  => $item->getID(),
-                        'itemtype'  => $item->getType(),
+                        'itemtype'  => $item::class,
                     ]
                 );
             }
@@ -1279,7 +1287,7 @@ abstract class API
             foreach ($search_values as $filter_field => $filter_value) {
                 if (!$DB->fieldExists($table, $filter_field)) {
                     $this->returnError(
-                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item->getType()),
+                        sprintf(__('Field %s is not valid for %s item.'), $filter_field, $item::class),
                         400,
                         "ERROR_FIELD_NOT_FOUND"
                     );
@@ -1291,7 +1299,7 @@ abstract class API
         }
 
         // filter with entity
-        if ($item->getType() == 'Entity') {
+        if ($item instanceof Entity) {
             $criteria['WHERE'][] = getEntitiesRestrictCriteria($itemtype::getTable());
         } elseif (
             $item->isEntityAssign()
@@ -1810,7 +1818,7 @@ abstract class API
             }
 
             // if all asset, provide type in returned data
-            if ($itemtype == AllAssets::getType()) {
+            if ($itemtype == AllAssets::class) {
                 $current_line['id']       = $raw['id'];
                 $current_line['itemtype'] = $raw['TYPE'];
             }
@@ -2911,20 +2919,29 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     ) {
         $_names = [];
 
-        foreach ($params['add_keys_names'] as $kn_fkey) {
-            if ($kn_fkey == "id") {
+        $fkeys = array_filter($params['add_keys_names'], isForeignKeyField(...));
+
+        foreach ($fkeys as $kn_fkey) {
+            if ($kn_fkey !== "id" && !isset($data[$kn_fkey])) {
+                trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
+                continue;
+            }
+            $kn_id = $data[$kn_fkey];
+
+            if ($kn_fkey === "id") {
                 // Get friendlyname for current item
                 $kn_itemtype = $self_itemtype;
                 $kn_id = $data[$kn_itemtype::getIndexName()];
-            } else {
-                if (!isset($data[$kn_fkey])) {
-                    trigger_error(sprintf('Invalid value: "%s" doesn\'t exist.', $kn_fkey), E_USER_WARNING);
+            } elseif (str_contains($kn_fkey, 'items_id')) {
+                $itemtype_key = str_replace('items_id', 'itemtype', $kn_fkey);
+                if (!isset($data[$itemtype_key])) {
+                    trigger_error(sprintf('Invalid value: "%s" is missing.', $itemtype_key), E_USER_WARNING);
                     continue;
                 }
-
+                $kn_itemtype = $data[$itemtype_key];
+            } else {
                 // Get friendlyname for given fkey
                 $kn_itemtype = getItemtypeForForeignKeyField($kn_fkey);
-                $kn_id = $data[$kn_fkey];
             }
 
             // Check itemtype is valid
@@ -3293,7 +3310,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     {
         // Return massive actions for a given item
         $actions = MassiveAction::getAllMassiveActions(
-            $item::getType(),
+            $item::class,
             $item->isDeleted(),
             $item,
             $item->getID()

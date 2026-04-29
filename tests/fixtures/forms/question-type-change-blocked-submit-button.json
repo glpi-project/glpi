@@ -1,0 +1,119 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "d1e2f3a4-b5c6-7890-abcd-dep800000001",
+            "name": "Question type change blocked by submit button conditions",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "visible_if",
+            "illustration": "",
+            "submit_button_conditions": [
+                {
+                    "item_uuid": "d1e2f3a4-b5c6-7890-abcd-dep800000100",
+                    "item_type": "question",
+                    "value_operator": "greater_than",
+                    "logic_operator": "and",
+                    "value": 4
+                },
+                {
+                    "item_uuid": "d1e2f3a4-b5c6-7890-abcd-dep800000200",
+                    "item_type": "question",
+                    "value_operator": "equals",
+                    "logic_operator": "and",
+                    "value": "Expected answer 2"
+                }
+            ],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep800000010",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep800000100",
+                    "name": "My first question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 2,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep800000200",
+                    "name": "My second question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": ["all"],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "dep8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 1,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

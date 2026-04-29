@@ -43,11 +43,11 @@ use Glpi\DBAL\QueryFunction;
 class CalendarSegment extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     // From CommonDBChild
-    public static $itemtype = Calendar::class;
-    public static $items_id = 'calendars_id';
+    public static string $itemtype = Calendar::class;
+    public static string $items_id = 'calendars_id';
 
     /**
      * @since 0.84
@@ -371,7 +371,7 @@ class CalendarSegment extends CommonDBChild
     {
         global $DB;
 
-        $ID = $calendar->getField('id');
+        $ID = $calendar->getID();
         if (!$calendar->can($ID, READ)) {
             return;
         }
@@ -431,7 +431,6 @@ class CalendarSegment extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
@@ -449,7 +448,7 @@ class CalendarSegment extends CommonDBChild
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = countElementsInTable(static::getTable(), ['calendars_id' => $item->getID()]);
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';

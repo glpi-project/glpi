@@ -38,9 +38,9 @@ use Glpi\Application\View\TemplateRenderer;
 
 class RuleDefineItemtype extends Rule
 {
-    public $restrict_matching = Rule::AND_MATCHING;
+    public string|int|bool $restrict_matching = Rule::AND_MATCHING;
 
-    public static $rightname         = 'rule_import';
+    public static string $rightname         = 'rule_import';
 
     public function getTitle()
     {

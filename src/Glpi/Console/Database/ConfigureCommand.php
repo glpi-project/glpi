@@ -51,7 +51,7 @@ class ConfigureCommand extends AbstractConfigureCommand implements Configuration
         $this->setDescription('Define database configuration and writes it to the configuration file');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->configureDatabase($input, $output);
 

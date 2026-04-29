@@ -36,8 +36,6 @@ export class WorkerSessionCache
 {
     private current_profile_id: number|null = null;
 
-    private csrf_token: string|null = null;
-
     private api_client: AxiosInstance|null = null;
 
     public setCurrentProfileId(current_profile_id: number): void
@@ -48,16 +46,6 @@ export class WorkerSessionCache
     public getCurrentProfileId(): number|null
     {
         return this.current_profile_id;
-    }
-
-    public setCsrfToken(token: string): void
-    {
-        this.csrf_token = token;
-    }
-
-    public getCsrfToken(): string|null
-    {
-        return this.csrf_token;
     }
 
     public setApiClient(token: AxiosInstance): void

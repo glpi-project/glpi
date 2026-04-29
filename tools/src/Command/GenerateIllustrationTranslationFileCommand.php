@@ -41,7 +41,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class GenerateIllustrationTranslationFileCommand extends Command
 {
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     #[Override]
     protected function configure()
@@ -52,7 +52,7 @@ final class GenerateIllustrationTranslationFileCommand extends Command
     }
 
     #[Override]
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $content = "<?php" . PHP_EOL . PHP_EOL;
 

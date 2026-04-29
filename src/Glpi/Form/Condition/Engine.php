@@ -37,10 +37,8 @@ namespace Glpi\Form\Condition;
 use Glpi\Form\BlockInterface;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
-use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\Section;
 use LogicException;
 use Safe\Exceptions\JsonException;
@@ -429,34 +427,11 @@ final class Engine
             );
         }
 
-        // TODO: refactor on main branch so this can be done directly in the
-        // SingleChoiceFromValuesConditionHandler class by sending the question
-        // config to `applyValueOperator` as a 4th parameter.
-        // Can't be done on bugfix as it would be break classes implementing the
-        // interface.
-        if (
-            $condition_handler instanceof SingleChoiceFromValuesConditionHandler
-            && \in_array($operator, [
-                ValueOperator::LESS_THAN,
-                ValueOperator::LESS_THAN_OR_EQUALS,
-                ValueOperator::GREATER_THAN,
-                ValueOperator::GREATER_THAN_OR_EQUALS,
-            ], true)
-            && $config instanceof QuestionTypeSelectableExtraDataConfig
-        ) {
-            [$answer, $condition_value] = $this->mapSelectableValuesToRealValues(
-                $answer,
-                $condition->getValue(),
-                $config,
-            );
-        } else {
-            $condition_value = $condition->getValue();
-        }
-
         return $condition_handler->applyValueOperator(
             $answer,
             $condition->getValueOperator(),
-            $condition_value,
+            $condition->getValue(),
+            $config,
         );
     }
 
@@ -477,28 +452,5 @@ final class Engine
         }
 
         return false;
-    }
-
-    /**
-     * @return array{string, string}
-     */
-    private function mapSelectableValuesToRealValues(
-        mixed $answer,
-        mixed $condition_value,
-        QuestionTypeSelectableExtraDataConfig $config,
-    ): array {
-        $options = $config->getOptions();
-
-        if (is_array($answer)) {
-            $answer = array_pop($answer);
-        }
-        $answer = $options[$answer] ?? $answer;
-
-        if (is_array($condition_value)) {
-            $condition_value = array_pop($condition_value);
-        }
-        $condition_value = $options[$condition_value] ?? $condition_value;
-
-        return [$answer, $condition_value];
     }
 }

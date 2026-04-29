@@ -105,11 +105,11 @@ final class Form extends CommonDBTM implements
     public const TRANSLATION_KEY_HEADER = 'form_header';
     public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
 
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'date_mod',
     ];
 
@@ -220,6 +220,7 @@ final class Form extends CommonDBTM implements
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(self::getTable(), [
                 'forms_categories_id' => $item->getID(),
+                'is_draft' => 0,
             ]);
         }
 
@@ -459,7 +460,7 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = __('Form properties');
         $handlers = [];
         $handlers[$key][] = new TranslationHandler(
@@ -608,7 +609,7 @@ final class Form extends CommonDBTM implements
             // because the keys must be preserved
             $questions_data = (new Question())->find(
                 [$section::getForeignKeyField() => $section->fields['id']],
-                'vertical_rank ASC, horizontal_rank ASC',
+                ['vertical_rank ASC', 'horizontal_rank ASC'],
             );
             foreach ($questions_data as $row) {
                 $question = new Question();

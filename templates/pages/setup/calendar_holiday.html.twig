@@ -39,7 +39,6 @@
         <div class="d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
                 <div class="row flex-row">
-                    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                     {{ inputs.hidden('calendars_id', calendar.getID()) }}
                     {{ fields.dropdownField('Holiday', 'holidays_id', 0, __('Add a close time'), {
                         used: used,

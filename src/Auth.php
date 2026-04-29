@@ -55,27 +55,26 @@ use function Safe\session_name;
 class Auth extends CommonGLPI
 {
     /** @var array Array of errors */
-    private $errors = [];
+    private array $errors = [];
     /** @var User User class variable */
-    public $user;
+    public User $user;
     /** @var int External authentication variable */
-    public $extauth = 0;
+    public int $extauth = 0;
     /** @var array External authentication methods */
-    public $authtypes;
+    public array $authtypes;
     /** @var bool Indicates if the user is authenticated or not */
-    public $auth_succeded = false;
+    public bool $auth_succeded = false;
     /** @var bool Indicates if the user is already present in database */
-    public $user_present = false;
+    public bool $user_present = false;
     /** @var bool Indicates if the user password expired */
-    public $password_expired = false;
+    public bool $password_expired = false;
     /** @var bool Indicates the login was valid by explicitly denied by a rule */
-    public $denied_by_rule = false;
+    public bool $denied_by_rule = false;
 
     /**
      * Indicated if user was found in the directory.
-     * @var bool
      */
-    public $user_found = false;
+    public bool $user_found = false;
 
     /**
      * The user's emails found during the validation part of the login workflow.
@@ -85,20 +84,18 @@ class Auth extends CommonGLPI
 
     /**
      * The authentication method determined during the validation part of the login workflow.
-     * @var int
      */
     private int $auth_type = 0;
 
     /**
      * Indicates if an error occurs during connection to the user LDAP.
-     * @var bool
      */
-    public $user_ldap_error = false;
+    public bool $user_ldap_error = false;
 
     /** @var resource|bool LDAP connection descriptor */
     public $ldap_connection;
-    /** @var bool Store user LDAP dn */
-    public $user_dn = false;
+    /** @var string|false Store user LDAP dn */
+    public string|false $user_dn = false;
 
     public const DB_GLPI  = 1;
     public const MAIL     = 2;
@@ -706,19 +703,6 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * Get the current identification error
-     *
-     * @return string current identification error
-     *
-     * @deprecated 11.0.0
-     */
-    public function getErr()
-    {
-        Toolbox::deprecated();
-        return implode("<br>\n", array_map('htmlescape', $this->getErrors()));
-    }
-
-    /**
      * Get errors
      *
      * @since 9.4
@@ -833,10 +817,7 @@ class Auth extends CommonGLPI
                 //if LDAP enabled too, get user's infos from LDAP
                 if ((!isset($this->user->fields['authtype']) || $this->user->fields['authtype'] === self::LDAP) && Toolbox::canUseLdap()) {
                     //User has already authenticated, at least once: its ldap server is filled
-                    if (
-                        isset($this->user->fields["auths_id"])
-                        && ($this->user->fields["auths_id"] > 0)
-                    ) {
+                    if ($this->user->fields["auths_id"] > 0) {
                         $authldap = new AuthLDAP();
                         //If ldap server is enabled
                         if (
@@ -1062,8 +1043,8 @@ class Auth extends CommonGLPI
                 $this->user->fields["_extauth"] = 1;
             }
 
-            if ($DB->isSlave()) {
-                if (!$this->user_present) { // Can't add in slave mode
+            if ($DB->isReplica()) {
+                if (!$this->user_present) { // Can't add in replica mode
                     $this->addToError(__('User not authorized to connect in GLPI'));
                     $this->auth_succeded = false;
                 }
@@ -1125,7 +1106,7 @@ class Auth extends CommonGLPI
         }
 
         // Log Event (if possible)
-        if (!$DB->isSlave()) {
+        if (!$DB->isReplica()) {
             // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?: getenv("REMOTE_ADDR");
 

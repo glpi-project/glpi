@@ -42,15 +42,15 @@ use Glpi\Application\View\TemplateRenderer;
 class SoftwareLicense_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = User::class;
-    public static $items_id_1 = 'users_id';
+    public static ?string $itemtype_1 = User::class;
+    public static ?string $items_id_1 = 'users_id';
 
-    public static $itemtype_2 = SoftwareLicense::class;
-    public static $items_id_2 = 'softwarelicenses_id';
+    public static ?string $itemtype_2 = SoftwareLicense::class;
+    public static ?string $items_id_2 = 'softwarelicenses_id';
 
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
     public function prepareInputForAdd($input)
     {
@@ -73,14 +73,14 @@ class SoftwareLicense_User extends CommonDBRelation
 
         // Check quota if not unlimited (-1) and over-quota not allowed
         if (
-            $license->getField('number') != -1
-            && !$license->getField('allow_overquota')
+            $license->fields['number'] != -1
+            && !$license->fields['allow_overquota']
         ) {
             // Count current assignments (users + items)
             $count = self::countForLicense($softwarelicenses_id);
             $count += Item_SoftwareLicense::countForLicense($softwarelicenses_id);
 
-            if ($count >= $license->getField('number')) {
+            if ($count >= $license->fields['number']) {
                 Session::addMessageAfterRedirect(
                     __s('Maximum number of items reached for this license.'),
                     false,
@@ -184,13 +184,12 @@ class SoftwareLicense_User extends CommonDBRelation
                     <form method="post" action="{{ 'Item_SoftwareLicense'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
-                            {{ fields.dropdownField('SoftwareLicense', 'softwarelicenses_id', 0, null, {
+                            {{ fields.dropdownField('SoftwareLicense', 'softwarelicenses_id', 0, __('Add a licence'), {
                                 used: used,
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -251,7 +250,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

@@ -37,10 +37,10 @@
 class KnowbaseItemCategory extends CommonTreeDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'knowbasecategory';
+    public static string $rightname          = 'knowbasecategory';
 
     public const SEEALL = -1;
 
@@ -61,6 +61,22 @@ class KnowbaseItemCategory extends CommonTreeDropdown
     public static function getIcon()
     {
         return KnowbaseItem::getIcon();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getAdditionalFields()
+    {
+        $fields = parent::getAdditionalFields();
+
+        $fields[] = [
+            'name'  => 'illustration',
+            'type'  => 'illustration',
+            'label' => __('Illustration'),
+        ];
+
+        return $fields;
     }
 
     public function cleanDBonPurge()

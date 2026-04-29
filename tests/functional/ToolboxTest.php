@@ -432,26 +432,10 @@ class ToolboxTest extends DbTestCase
         $this->assertSame($upper, \Toolbox::strtoupper($lower));
     }
 
-    public static function utfProvider()
-    {
-        return [
-            ['a simple string', true],
-            ['caractère', true],
-            [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
-            [mb_convert_encoding('simple string', 'ISO-8859-15'), true],
-        ];
-    }
-
-    #[DataProvider('utfProvider')]
-    public function testSeems_utf8($string, $utf)
-    {
-        $this->assertSame($utf, @\Toolbox::seems_utf8($string));
-    }
-
     public function testSaveAndDeletePicture()
     {
         // Save an image twice
-        $test_file = __DIR__ . '/../../tests/files/test.png';
+        $test_file = GLPI_VAR_DIR . '/test.png';
         copy(__DIR__ . '/../../public/pics/add_dropdown.png', $test_file); // saved image will be removed from FS
         $first_pict = \Toolbox::savePicture($test_file);
         $this->assertMatchesRegularExpression('#[^/]+/.+\.png#', $first_pict); // generated random name inside subdir

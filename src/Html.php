@@ -43,9 +43,6 @@ use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
@@ -82,52 +79,6 @@ class Html
      * It currently requires 120 MB, but may increase a bit when the dependencies are updated.
      */
     public const MAIN_SCSS_COMPILATION_REQUIRED_MEMORY = 192 * 1024 * 1024;
-
-    /**
-     * Recursivly execute html_entity_decode on an array
-     *
-     * @param string|array $value
-     *
-     * @return string|array
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function entity_decode_deep($value)
-    {
-        Toolbox::deprecated();
-
-        if (is_array($value)) {
-            return array_map([self::class, 'entity_decode_deep'], $value);
-        }
-        if (!is_string($value)) {
-            return $value;
-        }
-
-        return html_entity_decode($value, ENT_QUOTES, "UTF-8");
-    }
-
-    /**
-     * Recursivly execute htmlentities on an array
-     *
-     * @param string|array $value
-     *
-     * @return string|array
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function entities_deep($value)
-    {
-        Toolbox::deprecated();
-
-        if (is_array($value)) {
-            return array_map([self::class, 'entities_deep'], $value);
-        }
-        if (!is_string($value)) {
-            return $value;
-        }
-
-        return htmlentities($value, ENT_QUOTES, "UTF-8");
-    }
 
     /**
      * Convert a date YY-MM-DD to DD-MM-YY for calendar
@@ -195,25 +146,6 @@ class Html
     }
 
     /**
-     * Clean string for input text field
-     *
-     * @param string $string
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function cleanInputText($string)
-    {
-        Toolbox::deprecated();
-
-        if (!is_string($string)) {
-            return $string;
-        }
-        return htmlescape($string);
-    }
-
-    /**
      * Clean all parameters of an URL. Get a clean URL
      *
      * @param string $url
@@ -244,23 +176,6 @@ class Html
         }
 
         return \htmlescape($string) . $append;
-    }
-
-    /**
-     * Clean post value for display in textarea
-     *
-     * @param string $value
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function cleanPostForTextArea($value)
-    {
-        Toolbox::deprecated();
-
-        // As input is no more sanitized automatically, this method does not need to revert backslashes anymore.
-        return $value;
     }
 
     /**
@@ -461,36 +376,6 @@ class Html
 
 
     /**
-     * Display common message for item not found
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayNotFoundError(string $additional_info = '')
-    {
-        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException` exception instead.');
-
-        throw new NotFoundHttpException();
-    }
-
-
-    /**
-     * Display common message for privileges errors
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayRightError(string $additional_info = '')
-    {
-        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException` exception instead.');
-
-        throw new AccessDeniedHttpException();
-    }
-
-
-    /**
      * Display a div containing messages set in session in the previous page
      *
      * @return void
@@ -563,22 +448,6 @@ class Html
     }
 
     /**
-     * Display Debug Information
-     *
-     * @param bool $with_session with session information (true by default)
-     * @param bool $ajax         If we're called from ajax (false by default)
-     * @param ?int $rand         Random number to identify ajax call (null by default)
-     *
-     * @return void
-     * @deprecated 10.0.0
-     **/
-    public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
-    {
-        Toolbox::deprecated('Html::displayDebugInfo is not used anymore. It was replaced by a unified debug bar.');
-    }
-
-
-    /**
      * Display a Link to the last page.
      *
      * @return void
@@ -649,23 +518,6 @@ class Html
 
 
     /**
-     * Simple Error message page
-     *
-     * @param string  $message  displayed before dying
-     * @param bool $minimal  set to true do not display app menu (false by default)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayErrorAndDie($message, $minimal = false): void
-    {
-        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\BadRequestHttpException` exception instead.');
-
-        throw new BadRequestHttpException();
-    }
-
-    /**
      * Add confirmation on button or link before action
      *
      * @param string $string             to display or array of string for using multilines
@@ -724,267 +576,6 @@ class Html
 
 
     /**
-     * Manage progresse bars
-     *
-     * @since 0.85
-     *
-     * @param string $id HTML ID of the progress bar
-     * @param array $options progress status options
-     *                    - create    do we have to create it ?
-     *                    - message   add or change the message (HTML allowed. Text content must be escaped)
-     *                    - percent   current level (Must be cast to a numeric type)
-     *
-     *
-     * @return string|void Generated HTML if `display` param is true, void otherwise.
-     *
-     * @deprecated 11.0.0
-     */
-    public static function progressBar($id, array $options = [])
-    {
-        Toolbox::deprecated(
-            '`Html::progressBar()` is deprecated.'
-            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
-            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $params = [
-            'create'    => false,
-            'message'   => null,
-            'percent'   => -1,
-            'display'   => true,
-            'colors'    => null,
-        ];
-
-        if (count($options)) {
-            foreach ($options as $key => $val) {
-                if ($key === 'colors' && $val !== null) {
-                    $params['colors'] = array_merge([
-                        'bg' => null,
-                        'fg' => null,
-                        'border' => null,
-                        'text' => null,
-                    ], $val);
-                } else {
-                    $params[$key] = $val;
-                }
-            }
-        }
-
-        $out = '';
-        if ($params['create']) {
-            $apply_custom_colors = $params['colors'] !== null;
-            $outer_style = 'height: 16px;';
-            if ($apply_custom_colors) {
-                if ($params['colors']['bg']) {
-                    $outer_style .= 'background-color: ' . $params['colors']['bg'] . ';';
-                }
-                if ($params['colors']['border']) {
-                    $outer_style .= 'border: 1px solid ' . $params['colors']['border'] . ';';
-                }
-            }
-            $inner_style = 'width: 0%; overflow: visible;';
-            $inner_class = 'progress-bar text-dark';
-            if (!$apply_custom_colors) {
-                $inner_class .= ' progress-bar-striped bg-info';
-            } else {
-                if ($params['colors']['fg']) {
-                    $inner_style .= 'background-color: ' . $params['colors']['fg'] . ';';
-                }
-                if ($params['colors']['text']) {
-                    $inner_style .= 'color: ' . $params['colors']['text'] . ';';
-                }
-            }
-            $out = '
-                <div class="progress bg-primary-emphasis bg-light" style="' . htmlescape($outer_style) . '" id="' . htmlescape($id) . '">
-                   <div class="' . htmlescape($inner_class) . '" role="progressbar"
-                         style="' . htmlescape($inner_style) . '"
-                         aria-valuenow="0"
-                         aria-valuemin="0" aria-valuemax="100"
-                         id="' . htmlescape($id) . '_text">
-                   </div>
-                </div>
-            ';
-        }
-
-        if ($params['message'] !== null) {
-            $out .= Html::scriptBlock(
-                sprintf(
-                    '$("#%s_text").html("%s");',
-                    jsescape($id),
-                    jsescape($params['message'])
-                )
-            );
-        }
-
-        if (
-            ($params['percent'] >= 0)
-            && ($params['percent'] <= 100)
-        ) {
-            $out .= Html::scriptBlock(
-                sprintf(
-                    '$("#%s_text").css("width", "%d%%");',
-                    jsescape($id),
-                    (int) $params['percent']
-                )
-            );
-        }
-
-        if (!$params['display']) {
-            return $out;
-        }
-
-        echo $out;
-        if (!$params['create']) {
-            self::glpi_flush();
-        }
-    }
-
-
-    /**
-     * Create a Dynamic Progress Bar
-     *
-     * @param string $msg  initial message (under the bar)
-     * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
-     *
-     * @return string|void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function createProgressBar($msg = null, array $options = [])
-    {
-        Toolbox::deprecated(
-            '`Html::createProgressBar()` is deprecated.'
-            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
-            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $options = array_replace([
-            'create' => true,
-            'display' => true,
-        ], $options);
-        $options['message'] = $msg;
-
-        if (!$options['display']) {
-            return self::progressBar('doaction_progress', $options);
-        }
-        self::progressBar('doaction_progress', $options);
-    }
-
-    /**
-     * Change the Message under the Progress Bar
-     *
-     * @param string $msg message under the bar
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function changeProgressBarMessage($msg = "&nbsp;")
-    {
-        Toolbox::deprecated(
-            '`Html::changeProgressBarMessage()` is deprecated.'
-            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        self::progressBar('doaction_progress', ['message' => $msg]);
-        self::glpi_flush();
-    }
-
-
-    /**
-     * Change the Progress Bar Position
-     *
-     * @param float  $crt   Current Value (less then $tot)
-     * @param float  $tot   Maximum Value
-     * @param string $msg   message inside the bar (default is %)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function changeProgressBarPosition($crt, $tot, $msg = "")
-    {
-        Toolbox::deprecated(
-            '`Html::changeProgressBarPosition()` is deprecated.'
-            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $options = [];
-
-        if (!$tot) {
-            $options['percent'] = 0;
-        } elseif ($crt > $tot) {
-            $options['percent'] = 100;
-        } else {
-            $options['percent'] = 100 * $crt / $tot;
-        }
-
-        if ($msg != "") {
-            $options['message'] = $msg;
-        }
-
-        self::progressBar('doaction_progress', $options);
-        self::glpi_flush();
-    }
-
-
-    /**
-     * Display a simple progress bar
-     *
-     * @param int $width       Width   of the progress bar
-     * @param float   $percent     Percent of the progress bar
-     * @param array   $options     possible options:
-     *            - title : string title to display (default Progesssion)
-     *            - simple : display a simple progress bar (no title / only percent)
-     *            - forcepadding : boolean force str_pad to force refresh (default true)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayProgressBar($width, $percent, $options = [])
-    {
-        Toolbox::deprecated(
-            '`Html::displayProgressBar()` is deprecated.'
-            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
-            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $param['title']        = __('Progress');
-        $param['simple']       = false;
-        $param['forcepadding'] = true;
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $param[$key] = $val;
-            }
-        }
-
-        $title   = htmlescape($param['title']);
-        $percent = htmlescape($percent);
-        $label = "";
-        if ($param['simple']) {
-            $label = "$percent%";
-            $title = "";
-        }
-
-        $output = <<<HTML
-      $title
-      <div class="progress" style="height: 15px; min-width: 50px;">
-         <div class="progress-bar bg-info" role="progressbar" style="width: {$percent}%;"
-            aria-valuenow="$percent" aria-valuemin="0" aria-valuemax="100">$label</div>
-      </div>
-HTML;
-
-        if (!$param['forcepadding']) {
-            echo $output;
-        } else {
-            echo Toolbox::str_pad($output, 4096);
-            self::glpi_flush();
-        }
-    }
-
-    /**
      * Returns a static progress bar HTML snippet.
      *
      * @param float $percentage
@@ -1000,7 +591,7 @@ HTML;
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
@@ -1146,8 +737,8 @@ TWIG,
                 Html::requireJs('marketplace');
             }
 
-            if (in_array('kb', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/kb.scss'];
+            if (in_array('tiptap', $jslibs)) {
+                Html::requireJs('tiptap');
             }
 
             if (in_array('rack', $jslibs)) {
@@ -1272,7 +863,7 @@ TWIG,
             ],
         ];
 
-        if ($can_read_dashboard && strlen($default_asset_dashboard) > 0) {
+        if ($can_read_dashboard && $default_asset_dashboard !== '') {
             $menu['assets']['default_dashboard'] = '/front/dashboard_assets.php';
         }
 
@@ -1287,7 +878,7 @@ TWIG,
             ],
         ];
 
-        if ($can_read_dashboard && strlen($default_asset_helpdesk) > 0) {
+        if ($can_read_dashboard && $default_asset_helpdesk !== '') {
             $menu['helpdesk']['default_dashboard'] = '/front/dashboard_helpdesk.php';
         }
 
@@ -1662,10 +1253,10 @@ TWIG,
         TemplateRenderer::getInstance()->display('layout/parts/page_header.html.twig', $tpl_vars);
 
         if (
-            $DB->isSlave()
+            $DB->isReplica()
             && !$DB->first_connection
         ) {
-            echo "<div id='dbslave-float'>";
+            echo "<div id='dbreplica-float'>";
             echo "<a href='#see_debug'>" . __s('SQL replica: read only') . "</a>";
             echo "</div>";
         }
@@ -1760,19 +1351,8 @@ TWIG,
     }
 
     /**
-     * Display Ajax Footer for debug
-     *
-     * @deprecated 11.0.0
      *
      * @return void
-     */
-    public static function ajaxFooter()
-    {
-        // Not currently used. Old debug stuff is now in the new debug bar.
-        Toolbox::deprecated();
-    }
-
-    /**
      * Print a simple HTML head with links
      *
      * @param string $title  title of the page
@@ -2065,24 +1645,8 @@ TWIG,
 
 
     /**
-     * Flushes the system write buffers of PHP and whatever backend PHP is using (CGI, a web server, etc).
-     * This attempts to push current output all the way to the browser with a few caveats.
-     * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
-     *
-     * @deprecated 11.0.0
      *
      * @return void
-     */
-    public static function glpi_flush()
-    {
-        trigger_error(
-            '`Html::glpi_glush()` no longer has any effect.',
-            E_USER_WARNING
-        );
-    }
-
-
-    /**
      * Set page not to use the cache
      *
      * @return void
@@ -2470,7 +2034,7 @@ TWIG,
             $p['extraparams']['add_actions'] = $p['add_actions'];
         }
         if ($p['item'] instanceof CommonDBTM) {
-            $p['extraparams']['item_itemtype'] = $p['item']->getType();
+            $p['extraparams']['item_itemtype'] = $p['item']::class;
             $p['extraparams']['item_items_id'] = $p['item']->getID();
         }
 
@@ -3781,6 +3345,16 @@ JS;
                                     setupFileUpload(fileupload_config);
                                 });
                         });
+
+                        // Close TinyMCE toolbar dropdowns and blur active buttons when clicking outside editor UI elements
+                        $(document).on('click', function(e) {
+                            const target = $(e.target);
+                            const isEditorElementClicked = target.closest('[class*="tox-"]').length > 0;
+
+                            if (!isEditorElementClicked) {
+                                $('.tox-tbtn.tox-tbtn--enabled[data-mce-name="overflow-button"]').trigger('click').trigger('blur');
+                            }
+                        });
                     }
                 }, {$language_opts});
 
@@ -3907,7 +3481,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 11.1, they are not used.
+     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 12.0, they are not used.
      **/
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
@@ -4072,7 +3646,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info param in GLPI 11.1, it is not used.
+     * @TODO Deprecate $additional_info param in GLPI 12.0, it is not used.
      * @TODO Accept an array of key/values in the $parameters param to ease its usage/escaping.
      */
     public static function printPager(
@@ -4300,8 +3874,6 @@ JAVASCRIPT
         $btoption = '',
         $confirm = ''
     ) {
-
-        $fields['_glpi_csrf_token'] = Session::getNewCSRFToken();
         $fields['_glpi_simple_form'] = 1;
         $button                      = $btname;
         if (!is_array($btname)) {
@@ -4381,7 +3953,7 @@ JAVASCRIPT
 
 
     /**
-     * Create a close form part including CSRF token
+     * Create a close form part.
      *
      * @param bool $display Display or return string (default true)
      *
@@ -4392,9 +3964,7 @@ JAVASCRIPT
      **/
     public static function closeForm($display = true)
     {
-        $out = Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-
-        $out .= "</form>";
+        $out = "</form>";
         if ($display) {
             echo $out;
             return true;
@@ -4415,66 +3985,6 @@ JAVASCRIPT
     {
         return str_replace(['[',']'], '_', $id);
     }
-
-    /**
-     * Get javascript code to get item by id
-     *
-     * @param string $id ID of the dom element
-     *
-     * @since 0.85.
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function jsGetElementbyID($id)
-    {
-        Toolbox::deprecated();
-
-        $id = jsescape($id);
-
-        return "$('#$id')";
-    }
-
-    /**
-     * Set dropdown value
-     *
-     * @param string $id      ID of the dom element
-     * @param string $value   Value to set
-     *
-     * @since 0.85.
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function jsSetDropdownValue($id, $value)
-    {
-        Toolbox::deprecated();
-
-        $value = jsescape($value);
-
-        return self::jsGetElementbyID($id) . ".trigger('setValue', '$value');";
-    }
-
-    /**
-     * Get item value
-     *
-     * @param string $id  ID of the dom element
-     *
-     * @since 0.85.
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function jsGetDropdownValue($id)
-    {
-        Toolbox::deprecated();
-
-        return self::jsGetElementbyID($id) . ".val()";
-    }
-
 
     /**
      * Adapt dropdown to clean JS
@@ -4801,7 +4311,7 @@ JS;
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
-     * @TODO Deprecate this method in GLPI 11.1, it is not used anymore in GLPI itself.
+     * @TODO Deprecate this method in GLPI 12.0, it is not used anymore in GLPI itself.
      **/
     public static function link($text, $url, $options = [])
     {
@@ -5376,11 +4886,12 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
+                      data-testid='file-upload-" . htmlescape($p['name']) . "'
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -5392,7 +4903,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png)$/i"
+            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),
@@ -5538,11 +5049,17 @@ JS;
         $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
+                $filepath = GLPI_TMP_DIR . '/' . $upload;
+                if (!file_exists($filepath)) {
+                    trigger_error(sprintf('Uploaded temp file %s not found, skipping.', $filepath), E_USER_WARNING);
+                    continue;
+                }
+
                 $prefix  = substr($upload, 0, 23);
                 $displayName = substr($upload, 23);
 
                 // get the extension icon
-                $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+                $extension = pathinfo($filepath, PATHINFO_EXTENSION);
                 $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
                 if (!is_readable(GLPI_ROOT . $extensionIcon)) {
                     $extensionIcon = '/pics/icones/defaut-dist.png';
@@ -5554,7 +5071,7 @@ JS;
                     'name'    => $upload,
                     'id'      => 'doc' . $p['name'] . mt_rand(),
                     'display' => $displayName,
-                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'size'    => filesize($filepath),
                     'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];
@@ -6056,6 +5573,9 @@ JS);
             case 'altcha':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
                 break;
+            case 'tiptap':
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/tiptap.js';
+                break;
             default:
                 $found = false;
                 if (isset($PLUGIN_HOOKS[Hooks::JAVASCRIPT][$name])) {
@@ -6299,7 +5819,7 @@ JS);
         // retrieve menu
         foreach ($_SESSION['glpimenu'] as $firstlvl) {
             if (isset($firstlvl['default'])) {
-                if (strlen($firstlvl['title']) > 0) {
+                if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default']),
                         'title' => $firstlvl['title'],
@@ -6308,7 +5828,7 @@ JS);
             }
 
             if (isset($firstlvl['default_dashboard'])) {
-                if (strlen($firstlvl['title']) > 0) {
+                if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default_dashboard']),
                         'title' => $firstlvl['title'] . " > " . __('Dashboard'),
@@ -6318,7 +5838,7 @@ JS);
 
             if (isset($firstlvl['content'])) {
                 foreach ($firstlvl['content'] as $menu) {
-                    if (isset($menu['title']) && strlen($menu['title']) > 0) {
+                    if (isset($menu['title']) && (string) $menu['title'] !== '') {
                         $fuzzy_entries[] = [
                             'url'   => self::getPrefixedUrl($menu['page']),
                             'title' => $firstlvl['title'] . " > " . $menu['title'],
@@ -6326,7 +5846,7 @@ JS);
 
                         if (isset($menu['options'])) {
                             foreach ($menu['options'] as $submenu) {
-                                if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                if (isset($submenu['title']) && (string) $submenu['title'] !== '') {
                                     $fuzzy_entries[] = [
                                         'url'   => self::getPrefixedUrl($submenu['page']),
                                         'title' => $firstlvl['title'] . " > "
@@ -6651,6 +6171,8 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
+        $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
+
         return self::getScssCompileDir($root_dir) . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
@@ -6663,7 +6185,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return $root_dir . '/public/css_compiled';
+        return str_replace(DIRECTORY_SEPARATOR, '/', $root_dir) . '/public/css_compiled';
     }
 
     /**
@@ -6696,8 +6218,14 @@ CSS;
                 if ($diff < 60) {
                     return __('Just now');
                 }
+                if ($diff < 120) {
+                    return  sprintf(__('%s minute ago'), floor($diff / 60));
+                }
                 if ($diff < 3600) {
                     return  sprintf(__('%s minutes ago'), floor($diff / 60));
+                }
+                if ($diff < 7200) {
+                    return  sprintf(__('%s hour ago'), floor($diff / 3600));
                 }
                 if ($diff < 86400) {
                     return  sprintf(__('%s hours ago'), floor($diff / 3600));

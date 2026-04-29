@@ -56,9 +56,9 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     protected static function getTypes(array $options = []): array
     {
         $allowed_types = [
-            User::getType(),
-            Group::getType(),
-            Supplier::getType(),
+            User::class,
+            Group::class,
+            Supplier::class,
         ];
 
         if (isset($options['allowed_types'])) {
@@ -149,18 +149,18 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         $possible_rights = [];
 
         // Add users if enabled
-        if (self::isTypeEnabled(User::getType(), $options)) {
-            $possible_rights[User::getType()] = self::getUsers($text, $options);
+        if (self::isTypeEnabled(User::class, $options)) {
+            $possible_rights[User::class] = self::getUsers($text, $options);
         }
 
         // Add groups if enabled
-        if (self::isTypeEnabled(Group::getType(), $options)) {
-            $possible_rights[Group::getType()] = self::getGroups($text, $options);
+        if (self::isTypeEnabled(Group::class, $options)) {
+            $possible_rights[Group::class] = self::getGroups($text, $options);
         }
 
         // Add suppliers if enabled
-        if (self::isTypeEnabled(Supplier::getType(), $options)) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
+        if (self::isTypeEnabled(Supplier::class, $options)) {
+            $possible_rights[Supplier::class] = self::getSuppliers($text, $options);
         }
 
         $results = [];

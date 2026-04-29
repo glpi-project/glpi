@@ -38,7 +38,7 @@
         {% for item in items %}
             {{ fields.htmlField(
                 '',
-                item.type_name,
+                item.type_name|e,
                 _n('Item', 'Items', items|length)
             ) }}
             {{ fields.htmlField(
@@ -79,7 +79,7 @@
     {% else %}
         {{ fields.htmlField(
             '',
-            item.fields['users_id_friendlyname'],
+            item.fields['users_id_friendlyname']|e,
             __('By')
         ) }}
     {% endif %}

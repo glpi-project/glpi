@@ -36,7 +36,6 @@
 {% set rand = random() %}
 
 <form method="post" action="{{ 'User'|itemtype_form_path }}">
-   {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
    {{ inputs.hidden('id', user.getID) }}
 
    {% if user.fields['authtype'] in [constant('Auth::LDAP')] %}

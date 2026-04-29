@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
         //if solution should be linked to selected KB entry
         $params = [
             'knowbaseitems_id' => $_POST['kb_linked_id'],
-            'itemtype'         => $track->getType(),
+            'itemtype'         => $track::class,
             'items_id'         => $track->getID(),
         ];
         $existing = $DB->request([
@@ -284,7 +284,13 @@ if ($id > 0) {
         && isset($_REQUEST['itemtype'])
         && isset($_REQUEST['items_id'])
     ) {
-        $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+        if ($_REQUEST['itemtype'] === User::class) {
+            $_REQUEST['_users_id_requester'] = $_REQUEST['items_id'];
+            unset($_REQUEST['itemtype']);
+            unset($_REQUEST['items_id']);
+        } else {
+            $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+        }
     }
 
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {

@@ -43,7 +43,6 @@
          <div class="row timeline-content t-left card mt-4">
             <form name="form" method="post" action="{{ 'ItilFollowup'|itemtype_form_path }}" data-submit-once>
 
-               <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                <input type="hidden" name="requesttypes_id" value="0" />

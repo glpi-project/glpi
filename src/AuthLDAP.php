@@ -80,48 +80,6 @@ class AuthLDAP extends CommonDBTM
     public const GROUP_SEARCH_GROUP   = 1;
     public const GROUP_SEARCH_BOTH    = 2;
 
-    /**
-     * Deleted user strategy: preserve user.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_PRESERVE = 0;
-
-    /**
-     * Deleted user strategy: put user in trashbin.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DELETE = 1;
-
-    /**
-     * Deleted user strategy: withdraw dynamic authorizations and groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_WITHDRAWDYNINFO = 2;
-
-    /**
-     * Deleted user strategy: disable user.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLE = 3;
-
-    /**
-     * Deleted user strategy: disable user and withdraw dynamic authorizations and groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
-
-    /**
-     * Deleted user strategy: disable user and withdraw groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
-
     // Deleted user strategies for user
     public const DELETED_USER_ACTION_USER_DO_NOTHING = 0;
     public const DELETED_USER_ACTION_USER_DISABLE = 1;
@@ -171,28 +129,25 @@ class AuthLDAP extends CommonDBTM
     ];
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * connection caching stuff
-     * @var array
      */
-    public static $conn_cache = [];
+    public static array $conn_cache = [];
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'rootdn_passwd',
     ];
 
     /**
      * Message of last error occurred during connection.
-     * @var ?string
      */
     private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
-     * @var ?int
      */
     private static ?int $last_errno = null;
 
@@ -218,7 +173,7 @@ class AuthLDAP extends CommonDBTM
 
     public function post_getEmpty()
     {
-        $this->fields['port']                        = '389';
+        $this->fields['port']                        = 389;
         $this->fields['condition']                   = '';
         $this->fields['login_field']                 = 'uid';
         $this->fields['sync_field']                  = null;
@@ -261,7 +216,7 @@ class AuthLDAP extends CommonDBTM
     {
         switch ($type) {
             case 'AD':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']
                  = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
                 $this->fields['login_field']               = 'samaccountname';
@@ -286,14 +241,14 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = '';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['begin_date_field']          = 'whenCreated';
                 $this->fields['end_date_field']            = 'accountExpires';
                 break;
             case 'OpenLDAP':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']                 = '(objectClass=inetOrgPerson)';
                 $this->fields['login_field']               = 'uid';
                 $this->fields['sync_field']                = 'entryuuid';
@@ -316,7 +271,7 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = 'jpegphoto';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['category_field']            = 'businesscategory';
@@ -415,7 +370,7 @@ class AuthLDAP extends CommonDBTM
                     !Session::haveRight("user", User::UPDATEAUTHENT)
                     || !$group->canGlobal(UPDATE)
                 ) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -437,9 +392,9 @@ class AuthLDAP extends CommonDBTM
                             'type'         => $input['ldap_import_type'][$id],
                         ];
                         if (self::ldapImportGroup($group_dn, $options)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($group_dn)));
                         }
                     }
@@ -451,7 +406,7 @@ class AuthLDAP extends CommonDBTM
             case 'import':
             case 'sync':
                 if (!Session::haveRight("user", User::IMPORTEXTAUTHUSERS)) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -466,9 +421,9 @@ class AuthLDAP extends CommonDBTM
                             true
                         )
                     ) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($id)));
                     }
                 }
@@ -600,24 +555,25 @@ TWIG, $twig_params);
 TWIG, ['msg' => _x('button', 'Test')]);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <script>
-                    $(() => {
-                        $('button[name="test_ldap_replicate"]').on('click', (e) => {
-                            const replicate_id = $(e.target).closest('tr').data('id');
-                            $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
-                            $(e.target).prop('disabled', true);
-                            $.post(
-                                '{{ path('ajax/ldap.php')|e('js') }}',
-                                {
-                                    id: '{{ authldaps_id|e('js') }}',
-                                    ldap_replicate_id: replicate_id,
-                                    action: 'test_ldap_replicate'
-                                }
-                            ).then(() => {
-                                displaySessionMessages();
-                                $(e.target).find('.spinner-border').remove();
-                                $(e.target).prop('disabled', false);
-                            });
+                <script type="module">
+                    $('button[name="test_ldap_replicate"]').on('click', (e) => {
+                        const replicate_id = $(e.target).closest('tr').data('id');
+                        $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
+                        $(e.target).prop('disabled', true);
+                        const testUrl = '{{ path('/AuthLDAP/')|e('js') }}{{ authldaps_id }}/Replica/' + replicate_id + '/Test';
+                        $.post(
+                            testUrl,
+                            {
+                                authldaps_id: '{{ authldaps_id|e('js') }}',
+                                authldapreplicates_id: replicate_id,
+                            }
+                        ).then(() => {
+                            glpi_toast_success('{{ __("Test successful")|e('js') }}');
+                        }, () => {
+                            glpi_toast_error('{{ __("Test failed")|e('js') }}');
+                        }).always(() => {
+                            $(e.target).find('.spinner-border').remove();
+                            $(e.target).prop('disabled', false);
                         });
                     });
                 </script>
@@ -652,7 +608,6 @@ TWIG, ['authldaps_id' => $ID]);
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
-                'filtered_number' => count($entries),
                 'showmassiveactions' => true,
                 'massiveactionparams' => [
                     'num_displayed' => count($entries),
@@ -1706,6 +1661,8 @@ TWIG, $twig_params);
             'nosort' => true,
             'start' => $values['start'],
             'limit' => $_SESSION['glpilist_limit'],
+            // preserve all existing parameters in the URL except start and order which are managed by the datatable component
+            'additional_params' => http_build_query(array_filter($values, static fn($key) => !in_array($key, ['start', 'order']), ARRAY_FILTER_USE_KEY)),
             'columns' => $columns,
             'formatters' => [
                 'user' => 'raw_html',
@@ -1713,7 +1670,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $total_results,
-            'filtered_number' => $total_results,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -2224,7 +2180,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $total_results,
-            'filtered_number' => $total_results,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -2894,6 +2849,45 @@ TWIG, $twig_params);
         }
 
         $ldapuri = self::buildUri($host, (int) $port);
+
+        if (!empty($tls_certfile)) {
+            if (!Filesystem::isFilepathSafe($tls_certfile)) {
+                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_certfile)) {
+                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            } else {
+                try {
+                    @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
+                } catch (LdapException $e) {
+                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+                }
+            }
+        }
+        if (!empty($tls_keyfile)) {
+            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
+                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_keyfile)) {
+                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            } else {
+                try {
+                    @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
+                } catch (LdapException $e) {
+                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+                }
+            }
+        }
+        if (!empty($tls_version)) {
+            $cipher_suite = 'NORMAL';
+            foreach (self::TLS_VERSIONS as $tls_version_value) {
+                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
+            }
+            try {
+                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
+            } catch (LdapException $e) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
+            }
+        }
+
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -2935,44 +2929,6 @@ TWIG, $twig_params);
                     ),
                     E_USER_WARNING
                 );
-            }
-        }
-
-        if (!empty($tls_certfile)) {
-            if (!Filesystem::isFilepathSafe($tls_certfile)) {
-                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_certfile)) {
-                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
-            } else {
-                try {
-                    @ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile);
-                } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
-                }
-            }
-        }
-        if (!empty($tls_keyfile)) {
-            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
-                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
-            } elseif (!file_exists($tls_keyfile)) {
-                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
-            } else {
-                try {
-                    @ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile);
-                } catch (LdapException $e) {
-                    trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
-                }
-            }
-        }
-        if (!empty($tls_version)) {
-            $cipher_suite = 'NORMAL';
-            foreach (self::TLS_VERSIONS as $tls_version_value) {
-                $cipher_suite .= ($tls_version_value == $tls_version ? ':+' : ':!') . 'VERS-TLS' . $tls_version_value;
-            }
-            try {
-                @ldap_set_option(null, LDAP_OPT_X_TLS_CIPHER_SUITE, $cipher_suite);
-            } catch (LdapException $e) {
-                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CIPHER_SUITE`", E_USER_WARNING);
             }
         }
 
@@ -3653,13 +3609,12 @@ TWIG, $twig_params);
                 $entity->getFromDB($_REQUEST['entities_id'])
                 && $entity->fields['authldaps_id'] > 0
             ) {
-                $authldap->getFromDB($_REQUEST['authldaps_id']);
-
                 if ($_REQUEST['authldaps_id'] === 0) {
                     // authldaps_id wasn't submitted by the user -> take entity config
                     $_REQUEST['authldaps_id'] = $entity->fields['authldaps_id'];
                 }
 
+                $authldap->getFromDB($_REQUEST['authldaps_id']);
                 $_REQUEST['basedn']       = $entity->fields['ldap_dn'];
 
                 // No dn specified in entity : use standard one

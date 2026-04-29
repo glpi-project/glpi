@@ -44,39 +44,36 @@ use Glpi\Plugin\Hooks;
 class NotificationTarget extends CommonDBChild
 {
     /** @var string unused variable */
-    public $prefix                      = '';
+    public string $prefix                      = '';
     // From CommonDBChild
-    public static $itemtype = Notification::class;
-    public static $items_id             = 'notifications_id';
-    /**
-     * @var string
-     */
-    public $table                       = 'glpi_notificationtargets';
+    public static string $itemtype = Notification::class;
+    public static string $items_id             = 'notifications_id';
+    public string $table                       = 'glpi_notificationtargets';
 
     /**
      * @var array<string, string>
      *      key is a formated <Notification::*_TYPE>_<value-of<Notification::TARGETS>>
      *      value is formated <Notification::*_TYPE>_<string(label)>
      */
-    public $notification_targets        = [];
+    public array $notification_targets        = [];
 
     /**
      * @var array<Notification::*_TYPE, array<int, string>>
      */
-    public $notification_targets_labels = [];
+    public array $notification_targets_labels = [];
 
     /**
      * @var array<string, string|array<string>> Data from the objet which can be used by the template
      */
-    public $data                        = [];
+    public array $data                        = [];
 
     /**
      * @var array<string, string|array<string|array>>
      */
-    public $tag_descriptions = [];
+    public array $tag_descriptions = [];
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * @var array<string, array{
@@ -85,12 +82,9 @@ class NotificationTarget extends CommonDBChild
      *                      username: string,
      *     }> store emails by notification
      */
-    public $target                      = [];
+    public array $target                      = [];
 
-    /**
-     * @var int
-     */
-    public $entity;
+    public int $entity;
 
     /**
      * @var T|null Object which raises the notification event
@@ -100,12 +94,12 @@ class NotificationTarget extends CommonDBChild
     /**
      * @var array<CommonGLPI> Object which is associated with the event
      */
-    public $target_object               = [];
+    public array $target_object               = [];
 
     /**
      * @var array<string, string>
      */
-    public $events = [];
+    public array $events = [];
 
     /**
      * @var array{
@@ -117,17 +111,16 @@ class NotificationTarget extends CommonDBChild
      *     },
      *     sendprivate?: bool}
      */
-    public $options = [];
+    public array $options = [];
 
-    /** @var string */
-    public $raiseevent  = '';
+    public string $raiseevent  = '';
 
     /**
      * Recipient related to called "add_recipient_to_target" hook.
      * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
      * @var array{itemtype?: class-string<CommonDBTM>, items_id?: int}
      */
-    public $recipient_data              = [];
+    public array $recipient_data              = [];
 
     private bool $allow_response        = true;
 
@@ -341,7 +334,7 @@ class NotificationTarget extends CommonDBChild
     public function getMessageID()
     {
         return self::getMessageIdForEvent(
-            $this->obj instanceof CommonDBTM ? $this->obj->getType() : null,
+            $this->obj instanceof CommonDBTM ? $this->obj::class : null,
             $this->obj instanceof CommonDBTM ? $this->obj->getID() : null,
             $this->raiseevent
         );
@@ -368,7 +361,11 @@ class NotificationTarget extends CommonDBChild
 
         $reference_event = null;
         if ($is_item_related) {
-            $message_id .= sprintf('-%s-%d', $itemtype, $items_id);
+            $message_id .= sprintf(
+                '-%s-%d',
+                str_replace('\\', '-', $itemtype), // RFC 2822 does not allow backslashes (namespaced classes)
+                $items_id
+            );
             $reference_event = $itemtype::getMessageReferenceEvent($event);
         }
 
@@ -396,8 +393,8 @@ class NotificationTarget extends CommonDBChild
     protected function computeFriendlyName()
     {
 
-        return $this->notification_targets_labels[$this->getField("type")]
-                                              [$this->getField("items_id")] ?? '';
+        return $this->notification_targets_labels[$this->fields["type"]]
+                                              [$this->fields["items_id"]] ?? '';
     }
 
     /**
@@ -484,7 +481,7 @@ class NotificationTarget extends CommonDBChild
             return false;
         }
 
-        if ($notification->getField('itemtype') != '') {
+        if ($notification->fields['itemtype'] != '') {
             $notifications_id = $notification->fields['id'];
             $canedit = $notification->can($notifications_id, UPDATE);
 
@@ -494,7 +491,7 @@ class NotificationTarget extends CommonDBChild
                 Notification::GROUP_TYPE,
             ];
             $all_exclusion_targets = [];
-            foreach ($this->notification_targets as $key => $val) {
+            foreach (array_keys($this->notification_targets) as $key) {
                 [$type, $id] = explode('_', $key);
                 $label = $this->notification_targets_labels[$type][$id];
                 if (in_array((int) $type, $allowed_exclusion_types, true)) {
@@ -662,12 +659,12 @@ class NotificationTarget extends CommonDBChild
             $user = new User();
             if (
                 !$user->getFromDB($data['users_id'])
-                || ($user->getField('is_deleted') == 1)
-                || ($user->getField('is_active') == 0)
-                || (!is_null($user->getField('begin_date'))
-                  && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
-                || (!is_null($user->getField('end_date'))
-                  && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))
+                || ($user->isDeleted())
+                || (!$user->isActive())
+                || (!is_null($user->fields['begin_date'])
+                  && ($user->fields['begin_date'] > $_SESSION["glpi_currenttime"]))
+                || (!is_null($user->fields['end_date'])
+                  && ($user->fields['end_date'] < $_SESSION["glpi_currenttime"]))
             ) {
                 // unknown, deleted or disabled user
                 return;
@@ -697,9 +694,9 @@ class NotificationTarget extends CommonDBChild
             if (empty($username)) {
                 $username = formatUserName(
                     0,
-                    $user->getField('name'),
-                    $user->getField('realname'),
-                    $user->getField('firstname'),
+                    $user->fields['name'],
+                    $user->fields['realname'],
+                    $user->fields['firstname'],
                     force_config: true
                 );
             }
@@ -718,6 +715,9 @@ class NotificationTarget extends CommonDBChild
             if (!empty($user->fields['timezone']) && 'null' !== strtolower($user->fields['timezone'])) {
                 $notificationoption['timezone'] = $user->fields['timezone'];
             }
+
+            // retrieve date_format preference of the user, fall back to global config if not set
+            $notificationoption['date_format'] = (int) ($user->fields['date_format'] ?? $CFG_GLPI['date_format'] ?? 0);
         }
 
         // Pass user type as argument ? forced for specific cases
@@ -841,11 +841,11 @@ class NotificationTarget extends CommonDBChild
         $user = new User();
         if (
             $this->obj->isField('users_id')
-            && $user->getFromDB($this->obj->getField('users_id'))
+            && $user->getFromDB($this->obj->fields['users_id'])
         ) {
             $this->addToRecipientsList([
-                'language' => $user->getField('language'),
-                'users_id' => $user->getField('id'),
+                'language' => $user->fields['language'],
+                'users_id' => $user->getID(),
             ]);
         }
     }
@@ -1243,7 +1243,7 @@ class NotificationTarget extends CommonDBChild
                 return;
             }
 
-            $id[] = $this->obj->getField($field);
+            $id[] = $this->obj->fields[$field];
         } elseif ($this->target_object !== []) {
             foreach ($this->target_object as $target) {
                 if (!$target instanceof CommonDBTM) {
@@ -1377,7 +1377,7 @@ class NotificationTarget extends CommonDBChild
         global $CFG_GLPI;
 
         $url_base = trim(Entity::getUsedConfig('url_base', $this->getEntity(), '', ''));
-        if (strlen($url_base) > 0) {
+        if ($url_base !== '') {
             return $url_base;
         }
 
@@ -1488,6 +1488,10 @@ class NotificationTarget extends CommonDBChild
     private function removeExcludedTargets(array $target_list): array
     {
         global $DB;
+
+        if ($target_list === []) {
+            return $target_list;
+        }
         $exclusions = iterator_to_array($DB->request([
             'SELECT' => ['type', 'items_id'],
             'FROM'   => self::getTable(),
@@ -1511,42 +1515,56 @@ class NotificationTarget extends CommonDBChild
             return $target_list;
         }
 
-        // Criteria to get any user IDs that are excluded
-        $criteria = [
-            'SELECT' => [User::getTableField('id')],
-            'FROM' => User::getTable(),
-            'INNER JOIN' => [
-                Profile_User::getTable() => [
-                    'ON' => [
-                        Profile_User::getTable() => 'users_id',
-                        User::getTable()         => 'id',
-                    ],
-                ],
-                Group_User::getTable() => [
-                    'ON' => [
-                        Group_User::getTable() => 'users_id',
-                        User::getTable()       => 'id',
-                    ],
-                ],
-            ],
-            'WHERE' => [
-                'OR' => [
-                    [
-                        Profile_User::getTableField('profiles_id') => array_column($exclusions, 'items_id'),
-                        Profile_User::getTableField('users_id') => $user_ids,
-                    ],
-                    [
-                        Group_User::getTableField('groups_id') => array_column($exclusions, 'items_id'),
-                        Group_User::getTableField('users_id') => $user_ids,
-                    ],
-                ],
-            ],
-        ];
+        // Separate exclusions by type to avoid confusion between profiles and groups
+        $profile_exclusions = [];
+        $group_exclusions   = [];
+        foreach ($exclusions as $ex) {
+            if (!isset($ex['type'], $ex['items_id'])) {
+                continue;
+            }
+            if ((int) $ex['type'] === Notification::PROFILE_TYPE) {
+                $profile_exclusions[] = (int) $ex['items_id'];
+            } elseif ((int) $ex['type'] === Notification::GROUP_TYPE) {
+                $group_exclusions[] = (int) $ex['items_id'];
+            }
+        }
 
         $excluded_user_ids = [];
-        $it = $DB->request($criteria);
-        foreach ($it as $data) {
-            $excluded_user_ids[] = $data['id'];
+
+        // Recover excluded users via profiles
+        if ($profile_exclusions !== []) {
+            $it = $DB->request([
+                'SELECT' => [Profile_User::getTableField('users_id')],
+                'FROM'   => Profile_User::getTable(),
+                'WHERE'  => [
+                    Profile_User::getTableField('profiles_id') => $profile_exclusions,
+                    Profile_User::getTableField('users_id')    => $user_ids,
+                ],
+            ]);
+            foreach ($it as $data) {
+                $excluded_user_ids[] = (int) $data['users_id'];
+            }
+        }
+
+        // Recover excluded users via groups
+        if ($group_exclusions !== []) {
+            $it = $DB->request([
+                'SELECT' => [Group_User::getTableField('users_id')],
+                'FROM'   => Group_User::getTable(),
+                'WHERE'  => [
+                    Group_User::getTableField('groups_id') => $group_exclusions,
+                    Group_User::getTableField('users_id')  => $user_ids,
+                ],
+            ]);
+            foreach ($it as $data) {
+                $excluded_user_ids[] = (int) $data['users_id'];
+            }
+        }
+
+        $excluded_user_ids = array_unique($excluded_user_ids);
+
+        if ($excluded_user_ids === []) {
+            return $target_list;
         }
 
         foreach ($target_list as $key => $target) {
@@ -1750,7 +1768,7 @@ class NotificationTarget extends CommonDBChild
                     return self::createTabEntry(
                         Notification::getTypeName(Session::getPluralNumber()),
                         $nb,
-                        $item::getType()
+                        $item::class
                     );
 
                 case Notification::class:
@@ -1760,7 +1778,7 @@ class NotificationTarget extends CommonDBChild
                             ['notifications_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
@@ -1885,8 +1903,8 @@ class NotificationTarget extends CommonDBChild
 
             $target = self::getInstanceByType(
                 $itemtype,
-                $item->getField('event'),
-                ['entities_id' => $item->getField('entities_id')]
+                $item->fields['event'],
+                ['entities_id' => $item->fields['entities_id']]
             );
             if ($target) {
                 return $target->showForNotification($item);

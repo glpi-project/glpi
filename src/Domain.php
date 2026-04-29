@@ -49,18 +49,15 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         post_updateItem as post_updateItemAssignableItem;
     }
 
-    public static $rightname = 'domain';
-    protected static $forward_entity_to = ['DomainRecord'];
+    public static string $rightname = 'domain';
+    protected static array $forward_entity_to = ['DomainRecord'];
 
-    /** @var bool */
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
-    public $dohistory        = true;
-    /** @var bool */
-    protected $usenotepadrights = true;
-    protected $usenotepad       = true;
-    /** @var string */
-    public static $tags             = '[DOMAIN_NAME]';
+    public bool $dohistory        = true;
+    protected bool $usenotepadrights = true;
+    protected bool $usenotepad       = true;
+    public static string $tags             = '[DOMAIN_NAME]';
 
     public function getCloneRelations(): array
     {
@@ -127,7 +124,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'itemlink_type'      => $this->getType(),
+            'itemlink_type'      => static::class,
         ];
 
         $tab[] = [
@@ -518,23 +515,23 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             case 'add_item':
                 $input = $ma->getInput();
                 if (!isset($input['domains_id'])) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::NO_ACTION);
+                    $ma->itemDone($item::class, $ids, MassiveAction::NO_ACTION);
                     return;
                 }
                 foreach ($ids as $id) {
                     $input = ['domains_id' => $input['domains_id'],
                         'items_id'                  => $id,
-                        'itemtype'                  => $item->getType(),
+                        'itemtype'                  => $item::class,
                         'domainrelations_id'        => $input['domainrelations_id'],
                     ];
                     if ($domain_item->can(-1, UPDATE, $input)) {
                         if ($domain_item->getFromDBByCrit($input)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                            $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                         } else {
                             if ($domain_item->add($input)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             }
                         }
                     }
@@ -549,19 +546,19 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                         $domain_item->find([
                             'domains_id' => $input['domains_id'],
                             'items_id'   => $id,
-                            'itemtype'   => $item->getType(),
+                            'itemtype'   => $item::class,
                         ]) as $data
                     ) {
                         $purge = !$data['is_dynamic']; // dynamic relations should be preserved for inventory lock feature (dynamic + deleted = locked)
                         if ($domain_item->delete($data, $purge)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                         $nolink = false;
                     }
                     if ($nolink) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -574,12 +571,12 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                             'itemtype'                  => $input['typeitem'],
                         ];
                         if ($domain_item->add($values)) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -589,15 +586,15 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
                     if ($domain_item->deleteItemByDomainsAndItem($key, $input['item_item'], $input['typeitem'])) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                     }
                 }
                 return;
 
             case "duplicate":
-                if ($item->getType() == 'Domain') {
+                if ($item instanceof Domain) {
                     $input     = $ma->getInput();
                     foreach (array_keys($ids) as $key) {
                         $item->getFromDB($key);
@@ -606,9 +603,9 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                         $item->fields["comment"] = $item->fields["comment"];
                         $item->fields["entities_id"] = $input['entities_id'];
                         if ($item->add($item->fields)) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         }
                     }
                 }

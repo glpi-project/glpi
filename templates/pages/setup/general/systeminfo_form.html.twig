@@ -47,7 +47,7 @@
       max: 30
    }) }}
    {{ fields.sliderField('use_log_in_files', config['use_log_in_files'], __('Logs in files (SQL, email, automatic action...)')) }}
-   {{ fields.sliderField('_dbslave_status', call('DBConnection::isDBSlaveActive'), _n('SQL replica', 'SQL replicas', 1)) }}
+   {{ fields.sliderField('_dbreplica_status', call('DBConnection::isDBReplicaActive'), _n('SQL replica', 'SQL replicas', 1)) }}
 
    {{ fields.smallTitle(__('Maintenance mode')) }}
    {{ fields.sliderField('maintenance_mode', config['maintenance_mode'], __('Maintenance mode')) }}
@@ -80,7 +80,7 @@
 
    {{ fields.smallTitle(__('Telemetry data')) }}
    {% set telemetry_enabled = call('Telemetry::isEnabled') %}
-   {{ fields.htmlField('', telemetry_enabled ? __('Yes') : __('No'), __('Telemetry enabled'), {
+   {{ fields.htmlField('', (telemetry_enabled ? __('Yes') : __('No'))|e, __('Telemetry enabled'), {
       helper: __('To enable or disable sending telemetry, please change the "telemetry" automatic action.')
    }) }}
    {{ fields.htmlField('', call('Telemetry::getViewLink'), __('Telemetry data')) }}

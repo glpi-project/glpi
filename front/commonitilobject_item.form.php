@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
     if ($item_obj->add($_POST)) {
         Event::log(
             $_POST[$obj_fkey],
-            strtolower($obj->getType()),
+            strtolower($obj::class),
             4,
             "tracking",
             //TRANS: %s is the user login

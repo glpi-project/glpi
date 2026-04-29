@@ -46,12 +46,12 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public const DEFAULT_TTL = 3600;
 
-    public static $rightname              = 'domain';
+    public static string $rightname              = 'domain';
     // From CommonDBChild
-    public static $itemtype = Domain::class;
-    public static $items_id        = 'domains_id';
-    public $dohistory              = true;
-    public static $mustBeAttached  = false;
+    public static string $itemtype = Domain::class;
+    public static string $items_id        = 'domains_id';
+    public bool $dohistory              = true;
+    public static bool $mustBeAttached  = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -452,14 +452,13 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                 <div class="mb-3">
                     <form name="domain_form{{ rand }}" id="domain_form{{ rand }}" method="post"
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domains_id) }}
 
                         <div class="d-flex">
                             {{ fields.dropdownField('DomainRecord', 'domainrecords_id', 0, label, {
                                 'condition': condition
                             }) }}
-                            {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1), null, {
+                            {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1, {'icon': 'ti ti-link'}), null, {
                                 no_label: true,
                                 mb: '',
                                 wrapper_class: 'ms-2'
@@ -476,7 +475,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                     </div>
                     <div class="mt-4 text-center">
                         <button type="button" class="btn btn-primary" id="add_new_record_btn{{ rand }}">
-                            {{ add_new_btn_msg }}
+                            <i class="ti ti-plus"></i>
+                            <span>{{ add_new_btn_msg }}</span>
                         </button>
                         <script>
                             $('#add_new_record_btn{{ rand }}').on('click', function() {
@@ -525,7 +525,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

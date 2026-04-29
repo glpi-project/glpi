@@ -41,9 +41,9 @@ use Glpi\Application\View\TemplateRenderer;
 class AuthMail extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function getTypeName($nb = 0)
     {
@@ -234,7 +234,7 @@ class AuthMail extends CommonDBTM
      */
     public function showFormTestMail()
     {
-        $ID = $this->getField('id');
+        $ID = $this->getID();
 
         if ($this->getFromDB($ID)) {
             $twig_params = [
@@ -267,7 +267,6 @@ class AuthMail extends CommonDBTM
                         }) }}
                         {{ fields.hiddenField('imap_string', connect_string) }}
                         <div>
-                            {{ fields.csrfField() }}
                             <button type="submit" name="test" class="btn btn-primary">{{ test }}</button>
                         </div>
                     </div>
@@ -374,7 +373,7 @@ TWIG, $twig_params);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
-        if (!$withtemplate && $item->can($item->getField('id'), READ)) {
+        if (!$withtemplate && $item->can($item->getID(), READ)) {
             $ong = [];
             $ong[1] = self::createTabEntry(_x('button', 'Test'), icon: 'ti ti-stethoscope');
 

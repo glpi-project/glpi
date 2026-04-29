@@ -45,6 +45,7 @@
 
 <form
     id="main-form"
+    data-testid="form-editor-container"
     data-glpi-form-editor-container
     class="
         form-editor-container
@@ -294,6 +295,7 @@
                 name="update"
                 form="main-form"
                 title="{{ __("Add") }}"
+                aria-label="{{ __("Add") }}"
             >
                 <i class="ti ti-plus me-1"></i>
                 <span class="d-block add-label">{{ __("Add") }}</span>

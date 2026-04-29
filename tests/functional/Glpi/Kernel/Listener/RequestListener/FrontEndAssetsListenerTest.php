@@ -38,6 +38,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
@@ -215,6 +216,7 @@ class FrontEndAssetsListenerTest extends GLPITestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('assetsProvider')]
     public function testServeLegacyAssetsResponse(array $structure, string $path, ?string $body, string $type): void
     {
@@ -474,6 +476,7 @@ class FrontEndAssetsListenerTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('pathProvider')]
     public function testServeLegacyAssetsFirewall(string $url_path, string $file_path, bool $is_served): void
     {
@@ -518,6 +521,7 @@ class FrontEndAssetsListenerTest extends GLPITestCase
         }
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testServeLegacyAssetsFromMarketplaceDirWithPluginPath(): void
     {
         $structure = [
@@ -551,6 +555,7 @@ class FrontEndAssetsListenerTest extends GLPITestCase
         $this->assertEquals('["b","c","d"]', $file->getContent());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testServeLegacyAssetsFromDeprecatedMarketplacePath(): void
     {
         $structure = [
@@ -584,6 +589,7 @@ class FrontEndAssetsListenerTest extends GLPITestCase
         $this->assertEquals('["b","c","d"]', $file->getContent());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testServeLegacyAssetsFromPluginInMultipleDirectories(): void
     {
         $structure = [
@@ -640,6 +646,7 @@ class FrontEndAssetsListenerTest extends GLPITestCase
         $this->assertEquals('[1, 2, 3]', $file->getContent());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testServeLegacyAssetsFromUnloadedPlugin(): void
     {
         $structure = [

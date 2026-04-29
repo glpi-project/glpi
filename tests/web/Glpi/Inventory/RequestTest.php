@@ -40,6 +40,7 @@ use GLPIKey;
 use GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
@@ -343,10 +344,59 @@ class RequestTest extends TestCase
         // disable basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => 'none',
+            'auth_required'       => Conf::NO_AUTH,
             'basic_auth_login'    => '',
             'basic_auth_password' => '',
         ]);
+    }
+
+    public static function provideInvalidAuthRequiredValues(): iterable
+    {
+        yield 'empty_string' => [''];
+        yield 'null' => [null];
+        yield 'unexpected_value' => ['unexpected_value'];
+    }
+
+    #[DataProvider('provideInvalidAuthRequiredValues')]
+    public function testAuthRequiredMisconfiguration(mixed $auth_required): void
+    {
+        try {
+            Config::setConfigurationValues('inventory', [
+                'enabled_inventory' => true,
+                'auth_required'     => $auth_required,
+            ]);
+
+            try {
+                $this->http_client->request(
+                    'POST',
+                    $this->base_uri . 'Inventory',
+                    [
+                        'headers' => [
+                            'Content-Type' => 'application/xml',
+                        ],
+                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                            . '<REQUEST>'
+                            . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                            . '<QUERY>PROLOG</QUERY>'
+                            . '</REQUEST>',
+                    ]
+                );
+                $this->fail('Expected a 503 response due to invalid inventory auth_required configuration.');
+            } catch (RequestException $e) {
+                $response = $e->getResponse();
+                $this->assertInstanceOf(Response::class, $response);
+                $this->checkJsonResponse(
+                    $response,
+                    '{"status":"error","message":"Server configuration error: invalid inventory authentication setting. Please configure the Inventory \u2192 Authorization header in GLPI.","expiration":24}',
+                    503
+                );
+            }
+        } finally {
+            Config::setConfigurationValues('inventory', [
+                'enabled_inventory' => true,
+                'auth_required'     => Conf::NO_AUTH,
+            ]);
+        }
     }
 
     public function testAuthBasicMalformed()
@@ -412,7 +462,7 @@ class RequestTest extends TestCase
         // disable basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => 'none',
+            'auth_required'       => Conf::NO_AUTH,
             'basic_auth_login'    => '',
             'basic_auth_password' => '',
         ]);
@@ -484,7 +534,7 @@ class RequestTest extends TestCase
         // disable basic auth
         Config::setConfigurationValues('inventory', [
             'enabled_inventory'   => true,
-            'auth_required'       => 'none',
+            'auth_required'       => Conf::NO_AUTH,
             'basic_auth_login'    => '',
             'basic_auth_password' => '',
         ]);
@@ -598,7 +648,124 @@ class RequestTest extends TestCase
         // disable oauth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required'     => 'none',
+            'auth_required'     => Conf::NO_AUTH,
+        ]);
+    }
+
+    public function testAuthOAuthClientCredentialsIpRestriction()
+    {
+        // Enable inventory with OAuth client credentials
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required'     => Conf::CLIENT_CREDENTIALS,
+        ]);
+
+        global $DB;
+
+        // Create an OAuth client with 192.168.99.99 in allowed_ips
+        $blocked_client = new \OAuthClient();
+        $blocked_client_id = $blocked_client->add([
+            'name'            => __FUNCTION__,
+            'is_active'       => 1,
+            'is_confidential' => 1,
+            'grants'          => ['client_credentials'],
+            'scopes'          => ['inventory'],
+            'allowed_ips'     => '192.168.99.99',
+        ]);
+        $this->assertGreaterThan(0, $blocked_client_id);
+
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM'   => \OAuthClient::getTable(),
+            'WHERE'  => ['id' => $blocked_client_id],
+        ]);
+        $this->assertCount(1, $it);
+        $blocked_data = $it->current();
+
+        // Obtaining a token must be denied because the IP is not allowed
+        try {
+            $this->http_client->request(
+                'POST',
+                $this->base_uri . 'api.php/token',
+                [
+                    'headers' => ['Content-Type' => 'application/json'],
+                    'body'    => json_encode([
+                        'grant_type'    => 'client_credentials',
+                        'client_id'     => $blocked_data['identifier'],
+                        'client_secret' => (new GLPIKey())->decrypt($blocked_data['secret']),
+                        'scope'         => 'inventory',
+                    ]),
+                ]
+            );
+            $this->fail('Expected a 401 response due to IP restriction on token endpoint');
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertSame(401, $response->getStatusCode());
+            $body = json_decode((string) $response->getBody(), true);
+            $this->assertSame('access_denied', $body['error']);
+        }
+
+        // Create an OAuth client with the local IP allowed (127.0.0.1)
+        $allowed_client = new \OAuthClient();
+        $allowed_client_id = $allowed_client->add([
+            'name'            => __FUNCTION__ . '_allowed',
+            'is_active'       => 1,
+            'is_confidential' => 1,
+            'grants'          => ['client_credentials'],
+            'scopes'          => ['inventory'],
+            'allowed_ips'     => '127.0.0.1',
+        ]);
+        $this->assertGreaterThan(0, $allowed_client_id);
+
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM'   => \OAuthClient::getTable(),
+            'WHERE'  => ['id' => $allowed_client_id],
+        ]);
+        $this->assertCount(1, $it);
+        $allowed_data = $it->current();
+
+        // Obtaining a token must succeed because the IP is allowed
+        $token_response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'api.php/token',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body'    => json_encode([
+                    'grant_type'    => 'client_credentials',
+                    'client_id'     => $allowed_data['identifier'],
+                    'client_secret' => (new GLPIKey())->decrypt($allowed_data['secret']),
+                    'scope'         => 'inventory',
+                ]),
+            ]
+        );
+        $this->assertEquals(200, $token_response->getStatusCode());
+        $token_content = json_decode((string) $token_response->getBody(), true);
+        $this->assertNotEmpty($token_content['access_token']);
+
+        // Inventory request must succeed
+        $inventory_response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type'  => 'application/xml',
+                    'Authorization' => 'Bearer ' . $token_content['access_token'],
+                ],
+                'body' => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->checkXmlResponse($inventory_response, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+
+        // disable oauth client credentials
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required'     => Conf::NO_AUTH,
         ]);
     }
 
@@ -664,7 +831,7 @@ class RequestTest extends TestCase
         // disable oauth client credentials
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
-            'auth_required'     => 'none',
+            'auth_required'     => Conf::NO_AUTH,
         ]);
     }
 }

@@ -102,7 +102,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
      */
     public const ERROR_UPDATE_FAILED = 5;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     #[Override]
     public function getSpecificMandatoryRequirements(): array
@@ -152,8 +152,10 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         $this->db->disableTableCaching();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        global $PHPLOGGER;
+
         if (!$output instanceof ConsoleOutputInterface) {
             throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
@@ -163,6 +165,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
         $update = new Update($this->db);
+        $update->setLogger($PHPLOGGER);
 
         // Initialize entities
         $_SESSION['glpidefault_entity'] = 0;

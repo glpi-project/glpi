@@ -57,28 +57,19 @@ use function Safe\preg_replace;
 abstract class InventoryAsset
 {
     /** @var array<int,object> */
-    protected $data = [];
-    /** @var CommonDBTM */
+    protected array $data = [];
     protected CommonDBTM $item;
-    /** @var ?string */
-    protected $itemtype;
+    /** @var ?class-string<CommonDBTM> */
+    protected ?string $itemtype = null;
     /** @var array<string,?object> */
-    protected $extra_data = [];
-    /** @var Agent */
+    protected array $extra_data = [];
     protected Agent $agent;
-    /** @var int */
-    protected $entities_id = 0;
-    /** @var int */
-    protected $is_recursive = 0;
-    /** @var bool */
-    protected $links_handled = false;
-    /** @var bool */
-    protected $with_history = true;
-    /** @var ?MainAsset */
-    protected $main_asset;
-    /** @var ?string */
-    protected $request_query;
-    /** @var bool */
+    protected int $entities_id = 0;
+    protected int $is_recursive = 0;
+    protected bool $links_handled = false;
+    protected bool $with_history = true;
+    protected ?MainAsset $main_asset = null;
+    protected ?string $request_query = null;
     private bool $is_new = false;
     /** @var array<string, int> */
     protected array $known_links = [];
@@ -87,7 +78,7 @@ abstract class InventoryAsset
     /** @var array<string, mixed> */
     protected array $metadata = [];
     /** @var array<string, ?array<string, string>> */
-    protected $ignored = [];
+    protected array $ignored = [];
 
 
     /**
@@ -234,6 +225,21 @@ abstract class InventoryAsset
                 $manufacturer_name = $value->manufacturers_id;
             }
 
+            // Set autoupdate system for all assets contained in this field and linked to the current item.
+            // Extract the asset class name (e.g., "Monitor" from "Glpi\Inventory\Asset\Monitor")
+            $asset_itemtype_ns = explode('\\', get_class($this));
+            $asset_itemtype = end($asset_itemtype_ns);
+
+            if ($temp_item = getItemForItemtype($asset_itemtype)) {
+                if ($temp_item->isField('autoupdatesystems_id') && isset($this->item->fields['autoupdatesystems_id'])) {
+                    if ($this->item->fields['autoupdatesystems_id'] == 0) {
+                        $value->autoupdatesystems_id = 0;
+                    } else {
+                        $value->autoupdatesystems_id = Dropdown::getDropdownName('glpi_autoupdatesystems', $this->item->fields['autoupdatesystems_id']);
+                    }
+                }
+            }
+
             foreach ($value as $key => &$val) {
                 if ($val instanceof stdClass || is_array($val)) {
                     continue;
@@ -243,9 +249,9 @@ abstract class InventoryAsset
                 //keep raw values...
                 $this->raw_links[$known_key] = $val;
 
-                //do not process field if it's locked
+                //do not process field if it's locked and from update process
                 foreach ($locks as $lock) {
-                    if ($key == $lock) {
+                    if ($key == $lock && !$this->item->isNewItem()) {
                         continue 2;
                     }
                 }
@@ -278,7 +284,7 @@ abstract class InventoryAsset
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $new_id = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
-                            $value->$key,
+                            $value->$key ?? '',
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
@@ -424,7 +430,7 @@ abstract class InventoryAsset
     protected function setItem(CommonDBTM $item): self
     {
         $this->item = $item;
-        $this->itemtype = $item->getType();
+        $this->itemtype = $item::class;
         return $this;
     }
 
@@ -470,7 +476,7 @@ abstract class InventoryAsset
             $relation = new Asset_PeripheralAsset();
             $relation->deleteByCriteria(
                 [
-                    'itemtype_asset' => Computer::getType(),
+                    'itemtype_asset' => Computer::class,
                     'itemtype_peripheral' => $input['itemtype_peripheral'],
                     'items_id_peripheral' => $input['items_id_peripheral'],
                 ],
@@ -502,14 +508,14 @@ abstract class InventoryAsset
     {
         $input = ['_auto' => 1];
         if (property_exists($value, '_inventory_users')) {
-            $input = ['_inventory_users' => $value->_inventory_users];
+            $input['_inventory_users'] = $value->_inventory_users;
         }
 
         $locks = [];
 
         if ($item !== null) {
             $lockeds = new Lockedfield();
-            $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
+            $locks = $lockeds->getLockedNames($item::class, $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
         foreach ($value as $key => $val) { // @phpstan-ignore foreach.nonIterable
@@ -527,6 +533,8 @@ abstract class InventoryAsset
                         // This is because locked fields are no longer processed or sanitized during the addition process.
                         // For more details, see: https://github.com/glpi-project/glpi/pull/19426
                         $input[$key] = $this->raw_links[$known_key];
+                    } else {
+                        $input[$key] = $val;
                     }
                 }
             } elseif (isset($this->known_links[$known_key])) {
@@ -544,7 +552,6 @@ abstract class InventoryAsset
             // Pass the tag that can be used in rules criteria
             $input['_tag'] = $data['tag'];
         }
-
         return $input;
     }
 

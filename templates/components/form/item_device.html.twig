@@ -81,7 +81,7 @@
                   {% else %}
                      {{ fields.htmlField(
                         '',
-                        __('No associated item'),
+                        __('No associated item')|e,
                         __('Itemtype'),
                         field_options
                      ) }}

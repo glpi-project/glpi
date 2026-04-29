@@ -34,7 +34,9 @@
 
 namespace tests\units;
 
+use Cartridge;
 use Glpi\Tests\DbTestCase;
+use Printer;
 
 /* Test for inc/printer.class.php */
 
@@ -42,7 +44,7 @@ class PrinterTest extends DbTestCase
 {
     public function testAdd()
     {
-        $obj = new \Printer();
+        $obj = new Printer();
 
         // Add
         $id = $obj->add([
@@ -63,7 +65,7 @@ class PrinterTest extends DbTestCase
 
     public function testDelete()
     {
-        $obj = new \Printer();
+        $obj = new Printer();
         $this->assertTrue($obj->maybeDeleted());
 
         // Add
@@ -98,33 +100,33 @@ class PrinterTest extends DbTestCase
 
         $this->login();
 
-        $p = new \Printer();
+        $p = new Printer();
 
         // Visibility from root + tree
         $this->setEntity('_test_root_entity', true);
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_all', true), READ));
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_all', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_ent0', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_ent1', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_ent2', true), READ));
 
         // Visibility from root only
         $this->setEntity('_test_root_entity', false);
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_all', true), READ));
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
-        $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
-        $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_all', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_ent0', true), READ));
+        $this->assertFalse($p->can(getItemByTypeName(Printer::class, '_test_printer_ent1', true), READ));
+        $this->assertFalse($p->can(getItemByTypeName(Printer::class, '_test_printer_ent2', true), READ));
 
         // Visibility from child
         $this->setEntity('_test_child_1', false);
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_all', true), READ));
-        $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
-        $this->assertTrue($p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
-        $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_all', true), READ));
+        $this->assertFalse($p->can(getItemByTypeName(Printer::class, '_test_printer_ent0', true), READ));
+        $this->assertTrue($p->can(getItemByTypeName(Printer::class, '_test_printer_ent1', true), READ));
+        $this->assertFalse($p->can(getItemByTypeName(Printer::class, '_test_printer_ent2', true), READ));
     }
 
     public function testDeleteByCriteria()
     {
-        $obj = new \Printer();
+        $obj = new Printer();
         $this->assertTrue($obj->maybeDeleted());
 
         // Add
@@ -137,7 +139,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         ;
         $this->assertEquals(0, $obj->isDeleted());
-        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => Printer::class, 'items_id' => $id]);
 
         // DeleteByCriteria without history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 0));
@@ -145,7 +147,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => Printer::class, 'items_id' => $id]);
         $this->assertSame($nb_after, $nb_after);
 
         // Restore
@@ -154,7 +156,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(0, $obj->getField('is_deleted'));
         $this->assertEquals(0, $obj->isDeleted());
 
-        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_before = (int) countElementsInTable('glpi_logs', ['itemtype' => Printer::class, 'items_id' => $id]);
 
         // DeleteByCriteria with history
         $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 1));
@@ -162,7 +164,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(1, $obj->getField('is_deleted'));
         $this->assertEquals(1, $obj->isDeleted());
 
-        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => 'Printer', 'items_id' => $id]);
+        $nb_after = (int) countElementsInTable('glpi_logs', ['itemtype' => Printer::class, 'items_id' => $id]);
         $this->assertSame($nb_before + 1, $nb_after);
     }
 
@@ -181,7 +183,7 @@ class PrinterTest extends DbTestCase
         $this->assertTrue($state->getFromDB($state->getID()));
 
         // Create template
-        $template = new \Printer();
+        $template = new Printer();
         $template->add([
             'name' => __METHOD__,
             'entities_id' => $entity_id,
@@ -196,14 +198,14 @@ class PrinterTest extends DbTestCase
         $infocom = new \Infocom();
         $infocom->add([
             'items_id' => $template->getID(),
-            'itemtype' => 'Printer',
+            'itemtype' => Printer::class,
             'warranty_duration' => 36,
         ]);
         $this->assertTrue($infocom->getFromDB($infocom->getID()));
         $this->assertEquals(0, $infocom->isDeleted());
 
         // Create printer from template
-        $printer = new \Printer();
+        $printer = new Printer();
         $printer_id = $template->clone();
         $this->assertTrue($printer->getFromDB($printer_id));
         $this->assertEquals(0, $printer->getField('is_template'));
@@ -212,7 +214,7 @@ class PrinterTest extends DbTestCase
         // Check infocoms
         $infocom = new \Infocom();
         $infocom->getFromDBByCrit([
-            'itemtype' => \Printer::getType(),
+            'itemtype' => Printer::getType(),
             'items_id' => $printer_id,
         ]);
         $this->assertTrue($infocom->getFromDB($infocom->getID()));
@@ -238,7 +240,7 @@ class PrinterTest extends DbTestCase
         $this->assertEquals(\Infocom::COPY_DELIVERY_DATE, $entity->getField('autofill_warranty_date'));
 
         // Create printer from template
-        $printer = new \Printer();
+        $printer = new Printer();
         $printer_id = $template->clone();
         $this->assertTrue($printer->getFromDB($printer_id));
         $this->assertEquals(0, $printer->getField('is_template'));
@@ -247,12 +249,33 @@ class PrinterTest extends DbTestCase
         // Check infocoms
         $infocom = new \Infocom();
         $infocom->getFromDBByCrit([
-            'itemtype' => \Printer::getType(),
+            'itemtype' => Printer::getType(),
             'items_id' => $printer_id,
         ]);
         $this->assertTrue($infocom->getFromDB($infocom->getID()));
         $this->assertEquals(36, $infocom->getField('warranty_duration'));
         $this->assertEquals(date('Y-m-d'), $infocom->getField('delivery_date')); // = today
         $this->assertEquals($infocom->getField('warranty_date'), $infocom->getField('warranty_date'));
+    }
+
+    public function testCleanCartridgesOnPurge()
+    {
+        $this->login();
+        $printer = $this->createItem(Printer::class, [
+            'name' => __METHOD__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $cartridge = $this->createItem(Cartridge::class, [
+            'cartridgeitems_id' => getItemByTypeName('Cartridgeitem', '_test_cartridgeitem01', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertTrue($cartridge->update([
+            'id' => $cartridge->getID(),
+            'printers_id' => $printer->getID(),
+        ]));
+
+        $this->assertTrue($printer->delete(['id' => $printer->getID()], true));
+        $cartridge->getFromDB($cartridge->getID());
+        $this->assertEquals(0, $cartridge->fields['printers_id']);
     }
 }

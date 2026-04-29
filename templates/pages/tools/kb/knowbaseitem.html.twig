@@ -43,7 +43,7 @@
     {% if item.isNewItem %}
         {{ fields.nullField() }}
     {% else %}
-        {{ fields.htmlField('', item.fields["view"], __('Views')) }}
+        {{ fields.htmlField('', item.fields["view"]|e, __('Views')) }}
     {% endif %}
 
     {% if has_profile_right('knowbase', constant('KnowbaseItem::PUBLISHFAQ')) %}
@@ -55,10 +55,10 @@
             {% else %}
                 {{ __('This item is not part of the FAQ') }}
             {% endif %}
-            {{ fields.htmlField('', faq_label, null, {
-                no_label: true
-            }) }}
         {% endset %}
+        {{ fields.htmlField('', faq_label, null, {
+            no_label: true
+        }) }}
     {% endif %}
     {% if item.fields['users_id'] %}
         {% set user_field = call('getUserLink', [item.fields['users_id']]) %}

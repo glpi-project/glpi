@@ -35,8 +35,8 @@
 
 class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_peripheralmodels";
-    public $menu_option = "model.peripheral";
+    public string $item_table  = "glpi_peripheralmodels";
+    public string $menu_option = "model.peripheral";
 
     public function getTitle()
     {

@@ -35,7 +35,7 @@
 
 class TicketSatisfaction extends CommonITILSatisfaction
 {
-    public static $rightname = 'ticket';
+    public static string $rightname = 'ticket';
 
     public static function getConfigSufix(): string
     {

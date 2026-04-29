@@ -34,13 +34,14 @@
  */
 
 use function Safe\define;
+use function Safe\hash_file;
 use function Safe\preg_replace;
 use function Safe\sha1_file;
 
 define('GLPI_ROOT', dirname(__DIR__, 2));
 
 // Current version of GLPI
-define('GLPI_VERSION', '11.0.6-dev');
+define('GLPI_VERSION', '12.0.0-dev');
 
 $schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
 define(
@@ -54,7 +55,7 @@ define(
     GLPI_VERSION . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
 );
 
-define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
+define('GLPI_MIN_PHP', '8.3'); // Must also be changed in top of public/index.php
 define('GLPI_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
 define('GLPI_YEAR', '2026');
 

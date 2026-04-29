@@ -222,7 +222,9 @@ $CFG_GLPI['document_types']               = [Budget::class, CartridgeItem::class
     SoftwareLicense::class, Supplier::class, Ticket::class, User::class,
     Certificate::class, Cluster::class, ITILFollowup::class, ITILSolution::class,
     ChangeTask::class, ProblemTask::class, TicketTask::class, Appliance::class,
-    DatabaseInstance::class, Rack::class,
+    DatabaseInstance::class, Rack::class, ComputerModel::class, MonitorModel::class,
+    NetworkEquipmentModel::class, PeripheralModel::class, PhoneModel::class, PrinterModel::class,
+    DeviceGenericModel::class,
 ];
 
 $CFG_GLPI['consumables_types']            = [Group::class, User::class];
@@ -596,8 +598,8 @@ $CFG_GLPI['javascript'] = [
     ],
     'tools'     => [
         'project'                 => ['sortable'],
-        'knowbaseitem'            => ['kb'],
-        'knowbaseitemtranslation' => ['kb'],
+        'knowbaseitem'            => ['tiptap'],
+        'knowbaseitemtranslation' => [],
         'report'                  => ['dashboard'],
         'reservationitem'         => $reservations_libs,
     ],

@@ -55,16 +55,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
-    public static $rightname                   = 'project';
-    protected $usenotepad               = true;
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ProjectCost', 'ProjectTask'];
+    public static string $rightname                   = 'project';
+    protected bool $usenotepad               = true;
 
     public const READMY                        = 1;
     public const READALL                       = 1024;
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
-    protected $team                     = [];
+    protected array $team                     = [];
 
     public function getCloneRelations(): array
     {
@@ -122,7 +122,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      **/
     public function canCreateItem(): bool
     {
-        if (!Session::haveAccessToEntity($this->getEntityID())) {
+        if (!Session::haveAccessToEntity($this->getEntityID(), $this->isTemplate() && $this->isRecursive())) {
             return false;
         }
         return Session::haveRight(self::$rightname, CREATE);
@@ -479,7 +479,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     public function getTeamCount()
     {
         $nb = 0;
-        if (is_array($this->team) && count($this->team)) {
+        if (count($this->team)) {
             foreach ($this->team as $val) {
                 $nb += count($val);
             }
@@ -632,6 +632,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -640,6 +641,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -991,6 +993,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1005,6 +1008,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
@@ -1351,7 +1355,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'formatters' => $header['formatters'],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1407,15 +1410,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Show team for a project
      * @param Project $project
-     * @param int $withtemplate
      * @return true
      **/
-    public function showTeam(Project $project, $withtemplate = 0)
+    public function showTeam(Project $project)
     {
         $ID      = $project->fields['id'];
         $canedit = $project->can($ID, UPDATE);
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             $twig_params = [
                 'id' => $ID,
                 'label' => __('Add a team member'),
@@ -1437,12 +1439,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 <div class="mb-3">
                     <form method="post" action="{{ 'ProjectTeam'|itemtype_form_path }}">
                         <div class="d-flex">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="projects_id" value="{{ id }}">
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -1479,7 +1480,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1569,14 +1569,14 @@ TWIG, $twig_params);
 
             $addselect = [];
             $ljoin = [];
-            if (Session::haveTranslations(ProjectState::getType(), 'name')) {
+            if (Session::haveTranslations(ProjectState::class, 'name')) {
                 $addselect[] = "namet2.value AS transname";
                 $ljoin['glpi_dropdowntranslations AS namet2'] = [
                     'ON' => [
                         'namet2' => 'items_id',
                         ProjectState::getTable()   => 'id', [
                             'AND' => [
-                                'namet2.itemtype' => ProjectState::getType(),
+                                'namet2.itemtype' => ProjectState::class,
                                 'namet2.language' => $_SESSION['glpilanguage'],
                                 'namet2.field'    => 'name',
                             ],
@@ -2138,7 +2138,7 @@ TWIG, $twig_params);
                     'description' => _x('filters', 'A contact in the team of the item'),
                     'supported_prefixes' => ['!'],
                 ],
-            ] + self::getKanbanPluginFilters(static::getType()),
+            ] + self::getKanbanPluginFilters(static::class),
         ]);
     }
 

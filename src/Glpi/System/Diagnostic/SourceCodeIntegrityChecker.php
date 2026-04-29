@@ -52,6 +52,7 @@ use Toolbox;
 
 use function Safe\file_get_contents;
 use function Safe\fileperms;
+use function Safe\hash_file;
 use function Safe\json_decode;
 use function Safe\preg_replace;
 

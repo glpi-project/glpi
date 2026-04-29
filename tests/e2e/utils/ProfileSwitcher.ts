@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-import { CsrfFetcher } from './CsrfFetcher';
 import { APIRequestContext } from 'playwright/test';
 import { WorkerSessionCache } from './WorkerSessionCache';
 import { Profiles } from './Profiles';
@@ -44,15 +43,11 @@ export class ProfileSwitcher
 
     private cache: WorkerSessionCache;
 
-    private crsf: CsrfFetcher;
-
     public constructor(
         request: APIRequestContext,
-        crsf: CsrfFetcher,
         cache: WorkerSessionCache,
     ) {
         this.request = request;
-        this.crsf = crsf;
         this.cache = cache;
     }
 
@@ -78,7 +73,7 @@ export class ProfileSwitcher
         }
 
         // Send http request to change profile.
-        await this.request.post(
+        const response = await this.request.post(
             `/Session/ChangeProfile`,
             {
                 form: {
@@ -86,10 +81,21 @@ export class ProfileSwitcher
                 },
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': await this.crsf.get(),
                 }
             }
         );
+
+        if (!response.ok()) {
+            throw new Error(
+                `Failed to change profile to ${profile_id}: HTTP ${response.status()}`
+            );
+        }
+
         this.cache.setCurrentProfileId(profile_id);
+    }
+
+    public async invalidateCachedProfile(): Promise<void>
+    {
+        this.cache.setCurrentProfileId(-1);
     }
 }

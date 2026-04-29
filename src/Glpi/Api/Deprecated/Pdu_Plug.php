@@ -35,8 +35,8 @@
 
 namespace Glpi\Api\Deprecated;
 
-use Item_Plug;
 use PDU;
+use Plug;
 
 class Pdu_Plug implements DeprecatedInterface
 {
@@ -44,7 +44,7 @@ class Pdu_Plug implements DeprecatedInterface
 
     public function getType(): string
     {
-        return Item_Plug::class;
+        return Plug::class;
     }
 
     public function mapCurrentToDeprecatedHateoas(array $hateoas): array
@@ -54,16 +54,16 @@ class Pdu_Plug implements DeprecatedInterface
 
     public function mapDeprecatedToCurrentFields(object $fields): object
     {
-        $this->renameField($fields, 'pdus_id', 'items_id');
-        $this->addField($fields, 'itemtype', PDU::class);
+        $this->renameField($fields, 'pdus_id', 'items_id_main');
+        $this->addField($fields, 'itemtype_main', PDU::class);
 
         return $fields;
     }
 
     public function mapCurrentToDeprecatedFields(array $fields): array
     {
-        $this->renameField($fields, 'items_id', 'pdus_id');
-        $this->deleteField($fields, 'itemtype');
+        $this->renameField($fields, 'items_id', 'items_id_main');
+        $this->deleteField($fields, 'itemtype_main');
 
         return $fields;
     }
@@ -80,7 +80,7 @@ class Pdu_Plug implements DeprecatedInterface
         return array_map(
             static function ($soption) {
                 if (isset($soption['table']) && $soption['table'] === 'glpi_pdu_plugs') {
-                    $soption['table'] = 'glpi_item_plugs';
+                    $soption['table'] = 'glpi_plugs';
                 }
                 return $soption;
             },

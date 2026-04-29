@@ -234,7 +234,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != Search::GLOBAL_SEARCH
                 && (
-                    $itemtype == AllAssets::getType()
+                    $itemtype == AllAssets::class
                     || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [

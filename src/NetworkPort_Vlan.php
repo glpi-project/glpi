@@ -38,12 +38,12 @@ use Glpi\Application\View\TemplateRenderer;
 class NetworkPort_Vlan extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = NetworkPort::class;
-    public static $items_id_1          = 'networkports_id';
+    public static ?string $itemtype_1 = NetworkPort::class;
+    public static ?string $items_id_1          = 'networkports_id';
 
-    public static $itemtype_2 = Vlan::class;
-    public static $items_id_2          = 'vlans_id';
-    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static ?string $itemtype_2 = Vlan::class;
+    public static ?string $items_id_2          = 'vlans_id';
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -139,7 +139,6 @@ class NetworkPort_Vlan extends CommonDBRelation
                     <form method="post" action="{{ 'NetworkPort_Vlan'|itemtype_form_path }}">
                         <div class="d-flex">
                             <input type="hidden" name="networkports_id" value="{{ id }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {{ fields.dropdownField('Vlan', 'vlans_id', 0, null, {
                                 no_label: true,
                                 used: used
@@ -147,7 +146,7 @@ class NetworkPort_Vlan extends CommonDBRelation
                             {{ fields.checkboxField('tagged', 0, tagged_label) }}
                         </div>
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -188,7 +187,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -260,7 +258,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

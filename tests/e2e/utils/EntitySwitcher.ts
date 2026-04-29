@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-import { CsrfFetcher } from './CsrfFetcher';
 import { APIRequestContext } from 'playwright/test';
 import { getWorkerEntityId } from './WorkerEntities';
 
@@ -41,14 +40,10 @@ export class EntitySwitcher
      */
     private request: APIRequestContext;
 
-    private crsf: CsrfFetcher;
-
     public constructor(
         request: APIRequestContext,
-        crsf: CsrfFetcher,
     ) {
         this.request = request;
-        this.crsf = crsf;
     }
 
     public async resetToDefaultWorkerEntity(): Promise<void>
@@ -80,7 +75,6 @@ export class EntitySwitcher
                 },
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': await this.crsf.get(),
                 }
             }
         );

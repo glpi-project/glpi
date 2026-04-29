@@ -1,0 +1,128 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+/**
+ * @var Migration $migration
+ * @var DBmysql $DB
+ */
+
+$migration->addField(
+    'glpi_plugs',
+    'custom_name',
+    'string'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'itemtype_main',
+    'string'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'items_id_main',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'itemtype_asset',
+    'string',
+    ['value' => '']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'items_id_asset',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'entities_id',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'is_recursive',
+    'bool'
+);
+
+$migration->addKey('glpi_plugs', ['itemtype_asset', 'items_id_asset'], 'asset_item');
+$migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'main_item');
+$migration->addKey('glpi_plugs', 'entities_id');
+$migration->addKey('glpi_plugs', 'is_recursive');
+
+$migration->migrationOneTable('glpi_plugs');
+
+// migrate existing plugs linked by glpi_items_plugs to new structure
+if ($DB->tableExists('glpi_items_plugs')) {
+    $criteria = [
+        'FROM' => 'glpi_items_plugs',
+    ];
+    $iterator = $DB->request($criteria);
+
+    foreach ($iterator as $plug_item_data) {
+        // try to load plug from DB
+        $plug_data = $DB->request([
+            'SELECT' => ["id"],
+            'FROM'   => 'glpi_plugs',
+            'WHERE'  => ['id' => $plug_item_data['plugs_id']],
+        ])->current();
+
+        // handle plug migration if exist
+        if ($plug_data !== null) {
+            for ($i = 1; $i <= $plug_item_data['number_plugs']; $i++) {
+                // create dedicated plug
+                $migration->addPostQuery(
+                    $DB->buildInsert('glpi_plugs', [
+                        'name'              => $plug_data['name'] . ' - ' . $i,
+                        'itemtype_asset'    => $plug_item_data['itemtype'],
+                        'items_id_asset'    => $plug_item_data['items_id'],
+                        'entities_id'       => 0,
+                        'is_recursive'      => 1,
+                        'comment'           => $plug_data['comment'],
+                    ])
+                );
+            }
+
+            // remove old plug
+            $migration->addPostQuery(
+                $DB->buildDelete("glpi_plugs", ['id' => $plug_item_data['plugs_id']])
+            );
+        }
+    }
+    $migration->dropTable('glpi_items_plugs');
+}

@@ -72,6 +72,10 @@ final class FuzzyMatcherTest extends GLPITestCase
         yield [$subject, "メール", true];
         yield [$subject, "サーバー", true];
         yield [$subject, "メサバー", false];
+
+        $subject = "Calculation";
+        yield [$subject, "laptop", false];
+        yield [$subject, "latop", true];
     }
 
     #[DataProvider('partialMatchStrategyProvider')]

@@ -66,6 +66,7 @@ use Location;
 use LogicException;
 use Manufacturer;
 use Network;
+use Session;
 use SoftwareLicense;
 use State;
 use Supplier;
@@ -379,6 +380,21 @@ final class ManagementController extends AbstractController
             'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Document_Item::class,
+            'x-rights-conditions' => [ // Object-level extra permissions
+                'read' => static function () {
+                    if (!Session::haveRight(Document::$rightname, Document_Item::SEEPRIVATE)) {
+                        return [
+                            'WHERE' => [
+                                'OR' => [
+                                    'is_private' => 0,
+                                    'users_id' => Session::getLoginUserID(),
+                                ],
+                            ],
+                        ];
+                    }
+                    return true; // Allow reading by default. No extra SQL conditions needed.
+                },
+            ],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -425,6 +441,11 @@ final class ManagementController extends AbstractController
                         - 4: Mid right
                         - 5: Right
                         EOT,
+                ],
+                'is_private' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Whether the document is private (visible only to technicians with SEEPRIVATE right)',
                 ],
             ],
         ];

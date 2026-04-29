@@ -186,16 +186,6 @@ class KnowbaseTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $kbitem_cat_id);
 
-        $kbitem_target = new \Entity_KnowbaseItem();
-        $kbitem_target_id = $kbitem_target->add(
-            [
-                'knowbaseitems_id' => $kbitem_id,
-                'entities_id' => 0,
-                'is_recursive' => 1,
-            ]
-        );
-        $this->assertGreaterThan(0, $kbitem_target_id);
-
         $tree = \KnowbaseItem::getTreeCategoryList($itemtype, []);
         $expected = [
             [

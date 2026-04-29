@@ -30,8 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro get_cell(rack, cell) %}
-    {% set bg_color = rack.getField('bgcolor') %}
+{% macro get_cell(cell) %}
+    {% set bg_color = cell['bgcolor'] %}
     {% set fg_color = call('Html::getInvertedColor', [bg_color]) %}
     {% set tooltip %}
         {{ __('Name') }}: {{ cell['name'] }}
@@ -89,7 +89,7 @@
             <tbody>
                 {% for out in outbound %}
                     <tr>
-                        <td>{{ _self.get_cell(out[0], out[1]) }}</td>
+                        <td>{{ _self.get_cell(out) }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -110,7 +110,7 @@
         {% endif %}
         <div class="grid-stack grid-stack-{{ cols }}" style="width: {{ grid_w }}px">
             {% for cell in cells %}
-                {{ _self.get_cell(cell[0], cell[1]) }}
+                {{ _self.get_cell(cell) }}
             {% endfor %}
             <div class="grid-stack-item lock-bottom" gs-no-resize="true" gs-no-move="true" gs-h="1"
                  gs-w="{{ cols }}" gs-x="0" gs-y="{{ rows }}"></div>

@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 use Glpi\Features\Clonable;
+use Glpi\Toolbox\URL;
 
 /**
  * Supplier class (suppliers)
@@ -49,10 +50,10 @@ class Supplier extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
-    public static $rightname           = 'contact_enterprise';
-    protected $usenotepad       = true;
+    public static string $rightname           = 'contact_enterprise';
+    protected bool $usenotepad       = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -386,10 +387,17 @@ class Supplier extends CommonDBTM
         $ret = $withname ? ('<span class="ms-3 me-1">' . htmlescape($this->fields["name"]) . '</span>') : '';
 
         if (!empty($this->fields['website'])) {
-            $ret .= "<a class='btn btn-icon btn-outline-secondary' href='" . htmlescape(Toolbox::formatOutputWebLink($this->fields['website'])) . "'
-                target='_blank' title=\"" . __s('Web') . "\">
-                <i class='ti ti-world' ></i>
-                </a>";
+            $website_url = URL::sanitizeURL(
+                Toolbox::formatOutputWebLink(
+                    $this->fields['website']
+                )
+            );
+            if ($website_url !== '') {
+                $ret .= "<a class='btn btn-icon btn-outline-secondary' href='" . htmlescape($website_url) . "'
+                    target='_blank' title=\"" . __s('Web') . "\">
+                    <i class='ti ti-world' ></i>
+                    </a>";
+            }
         }
         return $ret;
     }

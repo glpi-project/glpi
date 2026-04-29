@@ -45,6 +45,7 @@ use Html;
 use Plugin;
 use RefusedEquipment;
 use Safe\Exceptions\FilesystemException;
+use Toolbox;
 
 use function Safe\unlink;
 
@@ -106,13 +107,14 @@ trait Inventoriable
      * Display information on inventory
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     protected function showInventoryInfo()
     {
         global $CFG_GLPI, $DB;
 
-        //TODO: GLPI 11.1
-        //Toolbox::deprecated();
+        Toolbox::deprecated();
 
         if (!$this->isDynamic()) {
             return;
@@ -186,14 +188,15 @@ HTML;
     /**
      * Display agent information
      *
+     * @deprecated 12.0.0
+     *
      * @return void
      */
     protected function displayAgentInformation()
     {
         global $CFG_GLPI;
 
-        //TODO: GLPI 11.1
-        //Toolbox::deprecated();
+        Toolbox::deprecated();
 
         echo '<tr class="tab_bg_1">';
         echo '<td>' . htmlescape(Agent::getTypeName(1)) . '</td>';

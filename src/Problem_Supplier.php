@@ -42,8 +42,8 @@
 class Problem_Supplier extends CommonITILActor
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Problem::class;
-    public static $items_id_1 = 'problems_id';
-    public static $itemtype_2 = Supplier::class;
-    public static $items_id_2 = 'suppliers_id';
+    public static ?string $itemtype_1 = Problem::class;
+    public static ?string $items_id_1 = 'problems_id';
+    public static ?string $itemtype_2 = Supplier::class;
+    public static ?string $items_id_2 = 'suppliers_id';
 }

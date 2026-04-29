@@ -149,13 +149,9 @@ class Search
 
     /**
      * The output format for the search results
-     * @var int
      */
-    public static $output_type = self::HTML_OUTPUT;
-    /**
-     * @var array
-     */
-    public static $search = [];
+    public static int $output_type = self::HTML_OUTPUT;
+    public static array $search = [];
 
     /**
      * Display search engine for an type
@@ -701,6 +697,7 @@ class Search
      * @param string  $meta_type            Meta item type
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
+     * @param bool    $use_join_subquery    Use a subquery for the join (default false)
      *
      * @return string Left join string
      **/
@@ -713,7 +710,8 @@ class Search
         $meta = false,
         $meta_type = '',
         $joinparams = [],
-        $field = ''
+        $field = '',
+        $use_join_subquery = false
     ) {
         global $DB;
         $criteria = SQLProvider::getLeftJoinCriteria(
@@ -725,7 +723,8 @@ class Search
             (bool) $meta,
             (string) $meta_type,
             $joinparams,
-            $field
+            $field,
+            $use_join_subquery
         );
         $iterator = new DBmysqlIterator($DB);
         $iterator->buildQuery([
@@ -1160,30 +1159,6 @@ class Search
     public static function explodeWithID($pattern, $subject)
     {
         return SQLProvider::explodeWithID($pattern, $subject);
-    }
-
-    /**
-     * Add join for dropdown translations
-     *
-     * @param string $alias    Alias for translation table
-     * @param string $table    Table to join on
-     * @param class-string<CommonDBTM> $itemtype Item type
-     * @param string $field    Field name
-     *
-     * @return string
-     * @deprecated 11.0.0
-     */
-    public static function joinDropdownTranslations($alias, $table, $itemtype, $field)
-    {
-        global $DB;
-
-        Toolbox::deprecated();
-
-        return "LEFT JOIN " . $DB::quoteName('glpi_dropdowntranslations') . " AS " . $DB::quoteName($alias) . "
-                  ON (" . $DB::quoteName($alias . '.itemtype') . " = " . $DB->quote($itemtype) . "
-                    AND " . $DB::quoteName($alias . '.items_id') . " = " . $DB::quoteName($table . '.id') . "
-                    AND " . $DB::quoteName($alias . '.language') . " = " . $DB->quote($_SESSION['glpilanguage']) . "
-                    AND " . $DB::quoteName($alias . '.field') . " = " . $DB->quote($field) . ")";
     }
 
     /**

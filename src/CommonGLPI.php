@@ -78,44 +78,42 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Show the title of the item in the navigation header ?
      *
-     * @var bool
      */
-    protected static $showTitleInNavigationHeader = false;
+    protected static bool $showTitleInNavigationHeader = false;
 
     /**
      * Display list on Navigation Header
      *
-     * @var bool
      */
-    protected $displaylist          = true;
+    protected bool $displaylist          = true;
 
     /**
      * Show Debug
      *
-     * @var bool
      */
-    public $showdebug               = false;
+    public bool $showdebug               = false;
 
     /**
      * Tab orientation : horizontal or vertical.
      *
-     * @var string
+     * @var self::TAB_HORIZONTAL|self::TAB_VERTICAL
      */
-    public $taborientation          = 'horizontal';
+    public string $taborientation          = self::TAB_HORIZONTAL;
 
     /**
      * Rightname used to check rights to do actions on item.
      *
-     * @var string
      */
-    public static $rightname = '';
+    public static string $rightname = '';
 
     /**
      * Need to get item to show tab
      *
-     * @var bool
      */
-    public $get_item_to_display_tab = false;
+    public bool $get_item_to_display_tab = false;
+
+    public const TAB_HORIZONTAL = 'horizontal';
+    public const TAB_VERTICAL   = 'vertical';
 
     /**
      * List of tabs to add (registered by `self::registerStandardTab()`).
@@ -129,7 +127,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @var array<class-string<CommonGLPI>, array<class-string<CommonGLPI>, int>>
      */
-    private static $othertabs = [];
+    private static array $othertabs = [];
 
     public function __construct() {}
 
@@ -338,7 +336,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $onglets = [];
         // Tabs known by the object
-        if ($this->isNewItem()) {
+        if ($this->isNewItem() || (isset($options['withtemplate']) && $options['withtemplate'] == 2)) {
             $this->addDefaultFormTab($onglets);
         } else {
             $onglets = $this->defineTabs($options);
@@ -346,7 +344,7 @@ class CommonGLPI implements CommonGLPIInterface
 
         // Object with class with 'addtabon' attribute
         if (!$this->isNewItem()) {
-            $othertabs = self::getOtherTabs(static::getType());
+            $othertabs = self::getOtherTabs(static::class);
             foreach ($othertabs as $typetab) {
                 $this->addStandardTab($typetab, $onglets, $options);
             }
@@ -431,7 +429,7 @@ class CommonGLPI implements CommonGLPIInterface
             $icon = static::getIcon();
         }
         $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2'></i>" : '';
-        $ong[static::getType() . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
+        $ong[static::class . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
         return $this;
     }
 
@@ -446,7 +444,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $menu       = [];
 
-        $type       = static::getType();
+        $type       = static::class;
         $item       = new static();
         $forbidden  = $item->getForbiddenActionsForMenu();
 
@@ -457,7 +455,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $menu['page']            = $item->getSearchURL(false);
                 $menu['links']['search'] = $item->getSearchURL(false);
                 $menu['links']['lists']  = "";
-                $menu['lists_itemtype']  = $item->getType();
+                $menu['lists_itemtype']  = $item::class;
                 $menu['icon']            = $item->getIcon();
 
                 if (
@@ -709,27 +707,6 @@ class CommonGLPI implements CommonGLPIInterface
                     return $ret;
                 }
 
-                // Check if we're creating an object from template and this is not the main tab
-                if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
-                    // Display generic message for template creation
-                    $template = <<<HTML
-                    <div class="alert alert-warning d-flex">
-                        <div class="me-2">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                        <div>
-                            <strong>%s</strong><br>
-                            %s
-                        </div>
-                    </div>
-                    HTML;
-                    echo sprintf(
-                        $template,
-                        __s('Creating from template'),
-                        __s('You are currently creating an object from a template. You need to save it, in the main tab, before editing data in other tabs.')
-                    );
-                }
-
                 if ($obj = getItemForItemtype($itemtype)) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
@@ -803,7 +780,7 @@ class CommonGLPI implements CommonGLPIInterface
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
-            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', htmlescape($badge_content));
+            $counter_html = sprintf(' <span class="badge glpi-badge" data-testid="tab-count-badge">%s</span>', htmlescape($badge_content));
         }
 
         return sprintf(
@@ -839,14 +816,14 @@ class CommonGLPI implements CommonGLPIInterface
         global $CFG_GLPI;
 
         if (!empty($_GET['withtemplate'])) {
-            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::getType();
+            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::class;
         }
 
         if (
-            isset($_SESSION['glpilisturl'][static::getType()])
-            && !empty($_SESSION['glpilisturl'][static::getType()])
+            isset($_SESSION['glpilisturl'][static::class])
+            && !empty($_SESSION['glpilisturl'][static::class])
         ) {
-            return $_SESSION['glpilisturl'][static::getType()];
+            return $_SESSION['glpilisturl'][static::class];
         }
 
         return static::getSearchURL();
@@ -1009,7 +986,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $tab_params,
                 [
                     '_target' => $target,
-                    '_itemtype' => static::getType(),
+                    '_itemtype' => static::class,
                     'id' => $ID,
                 ]
             );
@@ -1042,7 +1019,7 @@ class CommonGLPI implements CommonGLPIInterface
                 'tabspanel',
                 'tabcontent',
                 $tabs,
-                static::getType(),
+                static::class,
                 $ID,
                 $this->taborientation,
                 $options
@@ -1093,12 +1070,12 @@ class CommonGLPI implements CommonGLPIInterface
 
         if (
             !static::isNewID($ID)
-            && static::getType()
+            && static::class
             && $this->displaylist
         ) {
-            $glpilistitems = & $_SESSION['glpilistitems'][static::getType()];
-            $glpilisttitle = & $_SESSION['glpilisttitle'][static::getType()];
-            $glpilisturl   = & $_SESSION['glpilisturl'][static::getType()];
+            $glpilistitems = & $_SESSION['glpilistitems'][static::class];
+            $glpilisttitle = & $_SESSION['glpilisttitle'][static::class];
+            $glpilisturl   = & $_SESSION['glpilisturl'][static::class];
             if ($this instanceof CommonDBChild && $parent = $this->getItem(true, false)) {
                 $glpilisturl = $parent::getFormURLWithID($parent->fields['id'], true);
             }
@@ -1251,6 +1228,17 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
+     * Whether to display the type icon and name title in the form header.
+     *
+     * Override this method and return false to hide the icon ribbon and type/name title
+     * from the form header (e.g. for items that render their own title inside the form body).
+     */
+    public function showFriendlyNameBadgeInForm(): bool
+    {
+        return true;
+    }
+
+    /**
      * Compute the name to be used in the main header of this item.
      *
      * @return string
@@ -1316,14 +1304,27 @@ class CommonGLPI implements CommonGLPIInterface
         echo "<div class='row'>";
         if ($this instanceof CommonDBTM) {
             TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-                'itemtype' => static::getType(),
+                'itemtype' => static::class,
             ]);
         }
+
         echo "<div class='col'>";
         if (($options['show_nav_header'] ?? true)) {
             $this->showNavigationHeader($options);
         }
+        echo "<div class=\"row\">";
+        $left_side_content = $this->getLeftSideContent();
+        if ($left_side_content !== null) {
+            // The data-main-page-aside attribute allow custom styles to be applied per itemtype.
+            $slug = Toolbox::slugify(static::class);
+            echo "<aside class=\"col card border-radius-0 p-0\" data-main-page-aside=\"$slug\">";
+            echo $left_side_content;
+            echo "</aside>";
+        }
+        echo "<div class=\"col\">";
         $this->showTabsContent($options);
+        echo "</div>";
+        echo "</div>";
         echo "</div>";
         echo "</div>";
     }
@@ -1381,7 +1382,7 @@ class CommonGLPI implements CommonGLPIInterface
             'FROM'   => KnowbaseItem::getTable(),
             'WHERE'  => [
                 KnowbaseItem_Item::getTable() . '.items_id'  => $this->fields['id'],
-                KnowbaseItem_Item::getTable() . '.itemtype'  => static::getType(),
+                KnowbaseItem_Item::getTable() . '.itemtype'  => static::class,
             ],
             'INNER JOIN'   => [
                 KnowbaseItem_Item::getTable() => [
@@ -1457,5 +1458,10 @@ class CommonGLPI implements CommonGLPIInterface
     protected function getFormHeaderToolbar(): array
     {
         return [];
+    }
+
+    protected function getLeftSideContent(): ?string
+    {
+        return null;
     }
 }

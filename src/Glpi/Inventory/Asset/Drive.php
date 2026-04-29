@@ -44,7 +44,6 @@ use function Safe\preg_match;
 
 class Drive extends Device
 {
-    /** @var Conf */
     private Conf $conf;
 
     private HardDrive $harddrives;

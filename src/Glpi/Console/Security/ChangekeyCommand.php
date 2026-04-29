@@ -58,7 +58,7 @@ class ChangekeyCommand extends AbstractCommand implements ConfigurationCommandIn
         $this->setDescription(__('Change password storage key and update values in database.'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $glpikey = new GLPIKey();
 

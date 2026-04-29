@@ -51,7 +51,7 @@ class RequirementsList implements IteratorAggregate
      *
      * @var RequirementInterface[]
      */
-    private $requirements;
+    private array $requirements;
 
     /**
      * @param RequirementInterface[] $requirements

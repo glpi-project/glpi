@@ -45,7 +45,7 @@ if (isset($_POST["update"])) {
     $inquest->update($_POST);
 
     Event::log(
-        $inquest->getField('changes_id'),
+        $inquest->fields['changes_id'],
         "change",
         4,
         "tracking",

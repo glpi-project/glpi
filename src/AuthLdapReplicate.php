@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class AuthLdapReplicate extends CommonDBTM
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function canCreate(): bool
     {
@@ -61,15 +61,38 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (isset($input["port"]) && ((int) $input["port"] == 0)) {
-            $input["port"] = 389;
-        }
-        return $input;
+        return $this->prepareInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        return $this->prepareInputForAdd($input);
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * @param array<mixed> $input
+     * @return array<mixed>|false
+     */
+    private function prepareInput(array $input): array|false
+    {
+        if (
+            ($this->isNewItem() && (!isset($input['host']) || trim((string) $input['host']) === ''))
+            || (!$this->isNewItem() && isset($input['host']) && trim((string) $input['host']) === '')
+        ) {
+            Session::addMessageAfterRedirect(
+                htmlescape(
+                    sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        __('Server')
+                    )
+                ),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return $input;
     }
 
     /**

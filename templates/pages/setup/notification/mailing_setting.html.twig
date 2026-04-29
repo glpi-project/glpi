@@ -40,7 +40,6 @@
     } %}
 
     <form action="{{ 'NotificationMailingSetting'|itemtype_form_path }}" method="post">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <input type="hidden" name="id" value="{{ config_id }}" />
 
         <div class="row">
@@ -120,6 +119,13 @@
                 field_options
             ) }}
 
+            {{ fields.dropdownYesNo(
+                "attach_ticket_documents_to_mail",
+                config('attach_ticket_documents_to_mail'),
+                __('Add documents into ticket notifications'),
+                field_options
+            ) }}
+
             {{ fields.nullField() }}
 
             {{ fields.textareaField(
@@ -134,7 +140,7 @@
             {% set extra_options = {} %}
             {% if not is_mail_function_available %}
                 {% set extra_options = {
-                    'helper': __('The PHP mail function is unknown or is not activated on your system.') ~ '\n' ~ __('The use of a SMTP is needed.')
+                    'helper': __('No way of sending emails available in PHP mode. Maybe there is a bad PHP configuration?') ~ '\n' ~ __('The use of an SMTP option is needed.')
                 } %}
             {% endif %}
             {{ fields.dropdownArrayField(

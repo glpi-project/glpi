@@ -1,0 +1,97 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "name": "Submit button visible if equals",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "visible_if",
+            "illustration": "",
+            "submit_button_conditions": [
+                {
+                    "item_uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "item_type": "question",
+                    "value_operator": "equals",
+                    "logic_operator": "and",
+                    "value": "I love GLPI"
+                }
+            ],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+                    "name": "My question used as a criteria",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "6QBh8Y32hHwvuRZWj1wS4YCISshSck5h0Dmi3TVb",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 1,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

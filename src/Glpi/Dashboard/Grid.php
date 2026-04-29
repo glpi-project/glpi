@@ -61,25 +61,16 @@ use function Safe\preg_replace;
 
 class Grid
 {
-    /** @var int */
-    protected $cell_margin     = 3;
-    /** @var int */
-    protected $grid_cols       = 26;
-    /** @var int */
-    protected $grid_rows       = 24;
-    /** @var string */
-    protected $current         = "";
-    /** @var Dashboard|null */
-    protected $dashboard       = null;
-    /** @var array */
-    protected $items           = [];
-    /** @var string */
-    protected $context            = '';
+    protected int $cell_margin     = 3;
+    protected int $grid_cols       = 26;
+    protected int $grid_rows       = 24;
+    protected string $current         = "";
+    protected ?Dashboard $dashboard       = null;
+    protected array $items           = [];
+    protected string $context            = '';
 
-    /** @var bool */
-    public static $embed              = false;
-    /** @var array */
-    public static $all_dashboards     = [];
+    public static bool $embed              = false;
+    public static array $all_dashboards     = [];
 
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
     {
@@ -123,8 +114,7 @@ class Grid
     public static function loadAllDashboards(bool $force = true): bool
     {
         if (
-            !is_array(self::$all_dashboards)
-            || count(self::$all_dashboards) === 0
+            count(self::$all_dashboards) === 0
             || $force
         ) {
             self::$all_dashboards = Dashboard::getAll($force, !self::$embed, '');
@@ -137,8 +127,8 @@ class Grid
     /**
      * Init dashboards cards
      * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-     *  - if true: load all cards in seperate ajax request
-     *    pros: slow cards wont impact the others
+     *  - if true: load all cards in separate ajax request
+     *    pros: slow cards won't impact the others
      * - else: load all cards in a single ajax request
      *    pros: less strain for the server
      *
@@ -305,6 +295,7 @@ HTML;
         $filter_label     = __s("Toggle filter mode");
         $add_dash_label   = __s("Add a new dashboard");
         $save_label       = _sx('button', "Save");
+        $reset_label      = __s("Reset dashboard to default");
 
         $gridstack_items = $this->getGridItemsHtml(!$mini);
 
@@ -339,9 +330,24 @@ HTML;
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$embed_label'></i>";
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'></i>
+               <button class='btn btn-ghost-secondary btn-icon btn-sm fs-2 ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'>
+                   <i class='ti ti-device-floppy' ></i>
+               </button>
+               <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$reset_label}'>
+                   <i class='ti ti-refresh' ></i>
+               </button>
                <span class='display-message'></span>
             </div>";
+            }
+            if ($mini && $can_edit) {
+                $rename = <<<HTML
+                    <div class='edit-dashboard-properties'>
+                        <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' title='{$reset_label}'>
+                           <i class='ti ti-refresh' ></i>
+                       </button>
+                    </div>
+HTML;
+
             }
             if (!$mini && $can_purge) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash fs-toggle delete-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$delete_label'></i>";
@@ -365,6 +371,17 @@ HTML;
                   </div>
                   $rename
                </span>
+HTML;
+            } else {
+                $left_toolbar = <<<HTML
+                    <div class="toolbar left-toolbar mb-3 position-relative">
+                        <div class='edit-dashboard-properties'>
+                            <button class='btn btn-ghost-danger btn-sm ms-1 reset-dashboard'>
+                               <i class='ti ti-refresh' ></i>
+                               {$reset_label}
+                           </button>
+                        </div>
+                    </div>
 HTML;
             }
 
@@ -448,7 +465,9 @@ TWIG, $params);
             'rand' => $rand,
             'grid_cols' => $this->grid_cols,
             'grid_rows' => $this->grid_rows,
+            'cell_margin'   => $this->cell_margin,
             'js_params' => [
+                'mini'          => $mini,
                 'current'       => $this->current,
                 'cols'          => $this->grid_cols,
                 'rows'          => $this->grid_rows,
@@ -479,7 +498,7 @@ TWIG, $params);
                 id="grid-stack-{{ rand }}"
                 gs-column="{{ grid_cols }}"
                 gs-min-row="{{ grid_rows }}"
-                style="width: 100%">
+                style="width: 100%; --gs-col-count: {{ grid_cols }}; --gs-row-count: {{ grid_rows }}; --gs-cell-margin: {{ cell_margin }}px;">
                     {{ grid_guide|raw }}
                     {{ gridstack_items|raw }}
                 </div>
@@ -576,7 +595,7 @@ TWIG, $twig_params);
      */
     public function embed(array $params)
     {
-        Toolbox::deprecated(version: '11.1.0');
+        Toolbox::deprecated(version: '12.0.0');
 
         // show embedded dashboard
         $this->initEmbed($params);
@@ -1528,7 +1547,7 @@ HTML;
         global $CFG_GLPI;
         $new_key = "";
         $target = Toolbox::cleanTarget($_REQUEST['_target'] ?? $_SERVER['REQUEST_URI'] ?? "");
-        if (isset($_SESSION['last_dashboards']) && strlen($target) > 0) {
+        if (isset($_SESSION['last_dashboards']) && $target !== '') {
             $target = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
             if (!isset($_SESSION['last_dashboards'][$target])) {
                 return "";
@@ -1566,7 +1585,7 @@ HTML;
 
         if (!$strict) {
             $restored = $grid->restoreLastDashboard();
-            if (strlen($restored) > 0) {
+            if ($restored !== '') {
                 return $restored;
             }
         }

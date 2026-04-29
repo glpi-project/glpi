@@ -43,8 +43,7 @@ use Glpi\DBAL\QueryExpression;
  **/
 abstract class CommonTreeDropdown extends CommonDropdown
 {
-    /** @var bool $can_be_translated */
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
 
     public function getAdditionalFields()
@@ -107,7 +106,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     [$this->getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -266,8 +265,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $currentNode = clone $this;
 
             if ($currentNode->getFromDB($ID)) {
-                $currentNodeCompleteName = $currentNode->getField("completename");
-                $nextNodeLevel           = ($currentNode->getField("level") + 1);
+                $currentNodeCompleteName = $currentNode->fields['completename'];
+                $nextNodeLevel           = ($currentNode->fields['level'] + 1);
             } else {
                 $nextNodeLevel = 1;
             }
@@ -277,8 +276,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [$this->getForeignKeyField() => $ID],
             ];
-            if (Session::haveTranslations($this->getType(), 'completename')) {
-                DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
+            if (Session::haveTranslations(static::class, 'completename')) {
+                DropdownTranslation::regenerateAllCompletenameTranslationsFor(static::class, $ID);
             }
 
             foreach ($DB->request($query) as $data) {
@@ -307,8 +306,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ['id' => $data['id']]
                 );
                 // Translations :
-                if (Session::haveTranslations($this->getType(), 'completename')) {
-                    DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
+                if (Session::haveTranslations(static::class, 'completename')) {
+                    DropdownTranslation::regenerateAllCompletenameTranslationsFor(static::class, $data['id']);
                 }
 
                 $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
@@ -392,9 +391,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ];
             Log::history(
                 $parent,
-                $this->getType(),
+                static::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_ADD_SUBITEM
             );
         }
@@ -426,9 +425,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ];
                     Log::history(
                         $oldParentID,
-                        $this->getType(),
+                        static::class,
                         $changes,
-                        $this->getType(),
+                        static::class,
                         Log::HISTORY_DELETE_SUBITEM
                     );
                 }
@@ -445,9 +444,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ];
                     Log::history(
                         $newParentID,
-                        $this->getType(),
+                        static::class,
                         $changes,
-                        $this->getType(),
+                        static::class,
                         Log::HISTORY_ADD_SUBITEM
                     );
                 }
@@ -461,16 +460,16 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 ];
                 Log::history(
                     $ID,
-                    $this->getType(),
+                    static::class,
                     $changes,
-                    $this->getType(),
+                    static::class,
                     Log::HISTORY_UPDATE_SUBITEM
                 );
             }
 
             // Force DB cache refresh
-            getAncestorsOf(getTableForItemType($this->getType()), $ID);
-            getSonsOf(getTableForItemType($this->getType()), $ID);
+            getAncestorsOf(getTableForItemType(static::class), $ID);
+            getSonsOf(getTableForItemType(static::class), $ID);
         }
     }
 
@@ -487,9 +486,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ];
             Log::history(
                 $parent,
-                $this->getType(),
+                static::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_DELETE_SUBITEM
             );
         }
@@ -549,7 +548,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     <form action="{{ form_url }}" method="post">
                         {{ fields.largeTitle(header) }}
                         <input type="hidden" name="{{ fk }}" value="{{ id }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div>
                             <div>
                                 {{ fields.textField('name', '', name_label, {
@@ -563,7 +561,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                                 {% endif %}
                             </div>
                             <div class="d-flex flex-row-reverse pe-2">
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                             </div>
                         </div>
                     </form>
@@ -628,7 +626,7 @@ TWIG, $twig_params);
                     case 'dropdownValue':
                         if (!isset($values_cache[$field['name']][$data[$field['name']]])) {
                             $values_cache[$field['name']][$data[$field['name']]] = Dropdown::getDropdownName(
-                                $field['name'],
+                                getTableNameForForeignKeyField($field['name']),
                                 $data[$field['name']]
                             );
                         }
@@ -666,7 +664,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => static::canUpdate(),
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -727,7 +724,7 @@ TWIG, $twig_params);
                     $fk     = $item->getForeignKeyField();
                     $parent = clone $item;
                     if (!$parent->getFromDB($input['parent'])) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                         $ma->addMessage($parent->getErrorMessage(ERROR_NOT_FOUND));
                         return;
                     }
@@ -745,22 +742,22 @@ TWIG, $twig_params);
                                         $fk  => $parent->getID(),
                                     ])
                                 ) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                 }
                 return;
@@ -892,7 +889,7 @@ TWIG, $twig_params);
     public function getAncestors(): iterable
     {
         $ancestor_ids = getAncestorsOf($this->getTable(), $this->getID());
-        if (empty($ancestor_ids)) {
+        if ($ancestor_ids === []) {
             return [];
         }
         return static::getSeveralFromDBByCrit(['id' => $ancestor_ids]);

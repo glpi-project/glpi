@@ -43,11 +43,11 @@
 class Change_Change extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Change::class;
-    public static $items_id_1   = 'changes_id_1';
+    public static ?string $itemtype_1 = Change::class;
+    public static ?string $items_id_1   = 'changes_id_1';
 
-    public static $itemtype_2 = Change::class;
-    public static $items_id_2   = 'changes_id_2';
+    public static ?string $itemtype_2 = Change::class;
+    public static ?string $items_id_2   = 'changes_id_2';
 
     public static function getTypeName($nb = 0)
     {

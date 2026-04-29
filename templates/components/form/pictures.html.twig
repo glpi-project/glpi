@@ -75,14 +75,9 @@
                     </div>
                 {% endif %}
                 {% if has_qr %}
-                    {% set barcode %}
-                        {{ call('BarcodeManager::renderQRCode', [
-                            item
-                        ])|raw }}
-                    {% endset %}
                     {{ fields.htmlField(
                         'qrcode',
-                        barcode,
+                        call('BarcodeManager::renderQRCode', [item]),
                         __('Asset URL'),
                         {
                             'is_horizontal': false,

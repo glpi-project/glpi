@@ -39,9 +39,11 @@ use Glpi\Message\MessageType;
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
 use Glpi\Tests\GLPITestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 class StoredProgressIndicatorTest extends GLPITestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testConstructor(): void
     {
         // Arrange

@@ -172,12 +172,12 @@ final class StatusChecker
                 ],
             ];
             // Check replica SQL server connection
-            if (DBConnection::isDBSlaveActive()) {
-                $DBslave = DBConnection::getDBSlaveConf();
-                if (is_array($DBslave->dbhost)) {
-                    $hosts = $DBslave->dbhost;
+            if (DBConnection::isDBReplicaActive()) {
+                $DBReplica = DBConnection::getDBReplicaConf();
+                if (is_array($DBReplica->dbhost)) {
+                    $hosts = $DBReplica->dbhost;
                 } else {
-                    $hosts = [$DBslave->dbhost];
+                    $hosts = [$DBReplica->dbhost];
                 }
 
                 if (count($hosts)) {
@@ -276,7 +276,7 @@ final class StatusChecker
                             }
                         } catch (RuntimeException $e) {
                             // May be missing LDAP extension (Probably test environment)
-                            $status['servers'][$method['name']] = [
+                            $status['servers'][$display_name] = [
                                 'status' => self::STATUS_PROBLEM,
                             ];
                             $total_error++;

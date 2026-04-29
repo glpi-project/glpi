@@ -42,7 +42,7 @@ class Manufacturer extends CommonDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
 
     public static function getTypeName($nb = 0)
@@ -86,7 +86,7 @@ class Manufacturer extends CommonDropdown
             (isset($this->input['_registeredID']))
             && (is_array($this->input['_registeredID']))
         ) {
-            $input = ['itemtype' => $this->getType(),
+            $input = ['itemtype' => static::class,
                 'items_id' => $this->getID(),
             ];
 

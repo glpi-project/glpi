@@ -187,7 +187,7 @@ final class SearchEngine
 
         // Add entity meta if needed
         if ($item->isField('entities_id') && !($item instanceof Entity)) {
-            $linked[] = Entity::getType();
+            $linked[] = Entity::class;
         }
 
         return array_unique($linked);
@@ -399,7 +399,7 @@ final class SearchEngine
         // Instanciate an object to access method
         $data['item'] = null;
 
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype != AllAssets::class) {
             $data['item'] = getItemForItemtype($itemtype);
         }
 
@@ -466,7 +466,11 @@ final class SearchEngine
                                     || !$criterion['meta'])
                             ) {
                                 $data['toview'][] = $criterion['field'];
-                            } elseif ($criterion['field'] == 'all') {
+                            } elseif (
+                                $criterion['field'] == 'all'
+                                && isset($criterion['value'])
+                                && (string) $criterion['value'] !== ''
+                            ) {
                                 $data['search']['all_search'] = true;
                             } elseif ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;
@@ -478,7 +482,7 @@ final class SearchEngine
 
                         if (
                             isset($criterion['value'])
-                            && (strlen($criterion['value']) > 0)
+                            && ((string) $criterion['value']) !== ''
                         ) {
                             $data['search']['no_search'] = false;
                         }
@@ -623,7 +627,7 @@ final class SearchEngine
 
         $params['display_type'] = Search::HTML_OUTPUT;
 
-        echo "<div class='search_page row'>";
+        echo "<div class='search_page row' data-testid='search-page'>";
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);

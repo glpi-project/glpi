@@ -44,7 +44,7 @@ class CleanSoftwareCron extends CommonDBTM
 
     public const MAX_BATCH_SIZE = 2000;
 
-    protected static $notable = true;
+    protected static bool $notable = true;
 
     /**
      * Get task description

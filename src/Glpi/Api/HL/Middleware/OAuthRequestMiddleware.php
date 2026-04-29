@@ -81,7 +81,7 @@ class OAuthRequestMiddleware extends AbstractMiddleware implements RequestMiddle
             return;
         }
         foreach ($scopes_required['OR'] as $scope) {
-            if (in_array($scope, $client['scopes'], true)) {
+            if (in_array($scope, $client['scopes'] ?? [], true)) {
                 $next($input);
                 return;
             }

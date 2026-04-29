@@ -41,7 +41,7 @@
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
-/* global uploaded_images */
+/* global uploaded_images, removeFailedUploadImage */
 
 var timeoutglobalvar;
 
@@ -284,18 +284,15 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
-
-    if (document.getElementById) { // DOM3 = IE5, NS6
-        if (document.getElementById(id).value == '0') {
-            document.getElementById(id).value = '1';
-            if (img_name !== '') {
-                document[img_name].src=img_src_yes;
-            }
-        } else {
-            document.getElementById(id).value = '0';
-            if (img_name !== '') {
-                document[img_name].src=img_src_no;
-            }
+    if (document.getElementById(id).value == '0') {
+        document.getElementById(id).value = '1';
+        if (img_name !== '') {
+            document[img_name].src=img_src_yes;
+        }
+    } else {
+        document.getElementById(id).value = '0';
+        if (img_name !== '') {
+            document[img_name].src=img_src_no;
         }
     }
 }
@@ -1036,7 +1033,7 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
-    // TODO in GLPI 11.1: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+    // TODO in GLPI 12.0: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
 
     if (typeof(text) !== 'string') {
         return text;
@@ -1300,27 +1297,15 @@ function initTooltips(container) {
     );
 }
 
-/*
- * Sends the CSRF token in ajax POST requests headers.
- */
-$(document).ajaxSend(
-    function(event, xhr, settings) {
-        if (settings.type !== 'POST') {
-            return;
-        }
-
-        xhr.setRequestHeader('X-Glpi-Csrf-Token', getAjaxCsrfToken());
-    }
-);
-
 /**
  * Returns CSRF token that can be used for AJAX requests.
  *
- * @returns {string|null}
+ * @deprecated
+ * @returns {string}
  */
 function getAjaxCsrfToken() {
-    const meta  = document.querySelector('meta[property="glpi:csrf_token"]');
-    return meta !== null ? meta.getAttribute('content') : null;
+    console.warn('Csrf protection is now handled without tokens.');
+    return "";
 }
 
 // init tooltips
@@ -1953,6 +1938,7 @@ function setupFileUpload(config) {
                 $.blueimp.fileupload.prototype.options.add.call(this, e, data);
             },
             done: function (event, data) {
+                const form = $(this).closest('form');
                 const uploader_name = $('#' + field_id).fileupload('option', 'formData').name;
                 // eslint-disable-next-line no-undef
                 handleUploadedFile(
@@ -1961,11 +1947,12 @@ function setupFileUpload(config) {
                     config.name,
                     $('#' + CSS.escape(config.filecontainer)),
                     config.editor_id
-                );
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-                // remove required
-                $('#' + field_id).removeAttr('required');
+                ).then(() => {
+                    // enable submit button after upload
+                    form.find(':submit').prop('disabled', false);
+                    // remove required
+                    $(`#${field_id}`).removeAttr('required');
+                });
             },
             fail: function (e, data) {
                 // enable submit button after upload
@@ -1974,6 +1961,9 @@ function setupFileUpload(config) {
                     ? data.jqXHR.responseText
                     : data.jqXHR.statusText;
                 alert(err);
+                $.each(data.files, function(index, file) {
+                    removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
+                });
             },
             processfail: function (e, data) {
                 // enable submit button after upload
@@ -1986,23 +1976,7 @@ function setupFileUpload(config) {
                             .css('width', '100%')
                             .show();
 
-                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
-                        if (config.editor_id && typeof tinyMCE !== 'undefined') {
-                            const editor = tinyMCE.get(config.editor_id);
-                            if (editor) {
-                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                                if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
-                                    if (img.length > 0) {
-                                        editor.dom.remove(img);
-                                    }
-                                    const index = uploaded_images.findIndex((entry) => entry.upload_id === uploaded_image.upload_id);
-                                    if (index !== -1) {
-                                        uploaded_images.splice(index, 1);
-                                    }
-                                }
-                            }
-                        }
+                        removeFailedUploadImage({filename: file.name, editor_id: config.editor_id});
                         return;
                     }
                 });

@@ -51,7 +51,6 @@ class GenericAjaxCrudController extends AbstractController
 {
     /**
      * Object to update, delete, restore or purge
-     * @var CommonDBTM
      */
     protected CommonDBTM $item;
 

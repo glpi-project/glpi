@@ -73,48 +73,39 @@ abstract class MainAsset extends InventoryAsset
 {
     use InventoryNetworkPort;
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
         NetworkCard::class => null,
     ];
-    /** @var mixed */
-    protected $raw_data;
-    /** @var stdClass */
-    protected $hardware;
-    /** @var ?int */
-    protected $states_id_default;
-    /** @var stdClass */
-    private $current_data;
+    protected mixed $raw_data;
+    protected stdClass $hardware;
+    protected ?int $states_id_default = null;
+    private stdClass $current_data;
     /** @var array<string, InventoryAsset[]> */
-    protected $assets = [];
-    /** @var Conf */
-    protected $conf;
+    protected array $assets = [];
+    protected Conf $conf;
     /** @var RefusedEquipment[] */
-    protected $refused = [];
+    protected array $refused = [];
     /** @var CommonDBTM[] */
-    protected $inventoried = [];
-    /** @var bool */
-    protected $partial = false;
-    /** @var bool */
+    protected array $inventoried = [];
+    protected bool $partial = false;
     protected bool $is_discovery = false;
-    /** @var int */
-    protected $current_key;
+    protected int $current_key;
 
     /** @var array<string,mixed> */
-    protected $ruleentity_data = [];
+    protected array $ruleentity_data = [];
 
     /** @var array<string,mixed> */
-    protected $rulelocation_data = [];
+    protected array $rulelocation_data = [];
 
     /** @var array<string,mixed> */
     protected array $rulematchedlog_input = [];
 
     public function __construct(CommonDBTM $item, $data)
     {
-        $namespaced = explode('\\', static::class);
-        $this->itemtype = array_pop($namespaced);
+        $this->itemtype = $item::class;
         $this->item = $item;
         //store raw data for reference
         $this->raw_data = $data;
@@ -522,7 +513,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         if (isset($this->item)) {
-            $input['itemtype'] = $this->item->getType();
+            $input['itemtype'] = $this->item::class;
         }
 
         if (property_exists($val, 'comment')) {
@@ -630,7 +621,7 @@ abstract class MainAsset extends InventoryAsset
 
             if (isset($datarules['_no_rule_matches']) && $datarules['_no_rule_matches'] == '1') {
                 //no rule matched, this is a new one
-                $this->rulepassed(0, $this->item->getType(), null);
+                $this->rulepassed(0, $this->item::class, null);
             } elseif (!isset($datarules['found_inventories'])) {
                 if ($this->isAccessPoint($data)) {
                     //Only main item is stored as refused, not all APs
@@ -869,7 +860,9 @@ abstract class MainAsset extends InventoryAsset
             $doTransfer = Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
             $transfer = new Transfer();
             if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
-                $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
+                /** @var class-string<CommonDBTM> $current_itemtype */
+                $current_itemtype = $this->itemtype;
+                $item_to_transfer = [$current_itemtype => [$items_id]];
                 $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
                 //and set new entity in session
                 $_SESSION['glpiactiveentities']        = [$entities_id];
@@ -893,7 +886,7 @@ abstract class MainAsset extends InventoryAsset
         //check for any old agent to remove
         $agent = new Agent();
         $agent->deleteByCriteria([
-            'itemtype' => $this->item->getType(),
+            'itemtype' => $this->item::class,
             'items_id' => $items_id,
             'NOT' => [
                 'id' => $this->agent->fields['id'],
@@ -943,8 +936,8 @@ abstract class MainAsset extends InventoryAsset
 
         //Ports are handled a different way on network equipments and printers
         if (
-            $this->item->getType() != 'NetworkEquipment'
-            && $this->item->getType() != 'Printer'
+            !$this->item instanceof NetworkEquipment
+            && !$this->item instanceof Printer
         ) {
             if (!$this->isPartial() || count($this->ports)) {
                 $this->handlePorts();

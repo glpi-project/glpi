@@ -47,11 +47,11 @@ use function Safe\preg_match;
 class Link extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    public static $rightname = 'link';
+    public static string $rightname = 'link';
     /** @var string[] */
-    public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
+    public static array $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',
         'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL',
     ];
@@ -105,11 +105,11 @@ class Link extends CommonDBTM
                     ['glpi_links_itemtypes','glpi_links'],
                     [
                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                        'glpi_links_itemtypes.itemtype'  => $item::class,
                     ] + $entity_criteria
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -563,13 +563,13 @@ class Link extends CommonDBTM
                     {% if show_add %}
                         <a class="btn btn-primary ms-1" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
                             <i class="ti ti-link"></i>
-                            {{ add_msg }}
+                            <span>{{ add_msg }}</span>
                         </a>
                     {% endif %}
                     {% if show_configure %}
                         <a class="btn btn-primary ms-1" href="{{ 'Link'|itemtype_search_path }}">
                             <i class="ti ti-settings"></i>
-                            {{ configure_msg }}
+                            <span>{{ configure_msg }}</span>
                         </a>
                     {% endif %}
                 </div>
@@ -640,7 +640,6 @@ TWIG, $buttons_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

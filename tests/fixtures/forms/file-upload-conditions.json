@@ -1,0 +1,112 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "b2c3d4e5-f6a7-8901-abcd-ef1234567890",
+            "name": "File upload conditions",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "b2c3d4e5-0001-0001-0001-000000000001",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "b2c3d4e5-0001-0001-0001-000000000010",
+                    "name": "My target question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "visible_if",
+                    "validation_strategy": "no_validation",
+                    "conditions": [
+                        {
+                            "item_uuid": "b2c3d4e5-0001-0001-0001-000000000011",
+                            "item_type": "question",
+                            "value_operator": "not_empty",
+                            "logic_operator": "and",
+                            "value": null
+                        }
+                    ],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 2,
+                    "uuid": "b2c3d4e5-0001-0001-0001-000000000011",
+                    "name": "My file question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeFile",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": ["all"],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "GQBh8Y32hHwvuRZWj1wS4YCISshSck5h0Dmi3TVg",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 1,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

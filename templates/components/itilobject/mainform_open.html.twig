@@ -48,7 +48,6 @@
    {% if not item.isNewItem() %}
        <input type="hidden" name="id" value="{{ item.fields['id'] }}" />
    {% endif %}
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    <input type="hidden" name="_skip_default_actor" value="1" />
 
    {% if itiltemplate_key is defined and itiltemplate.fields['id'] is defined %}
@@ -64,11 +63,6 @@
 
    {% if params['problems_id'] is defined or params['_problems_id'] is defined %}
       <input type="hidden" name="_problems_id" value="{{ params['problems_id'] ?? params['_problems_id'] }}" />
-   {% endif %}
-
-   {% if params['_add_fromitem'] is defined %}
-      <input type="hidden" name="_from_items_id" value="{{ params['_from_items_id'] ?? 0 }}" />
-      <input type="hidden" name="_from_itemtype" value="{{ params['_from_itemtype'] ?? '' }}" />
    {% endif %}
 
    {% if params['_promoted_fup_id'] is defined and params['_promoted_fup_id'] > 0 %}

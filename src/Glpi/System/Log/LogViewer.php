@@ -42,12 +42,9 @@ use Session;
 
 final class LogViewer extends CommonGLPI
 {
-    /**
-     * @var LogParser
-     */
-    private $log_parser;
+    private LogParser $log_parser;
 
-    public static $rightname = 'system_logs';
+    public static string $rightname = 'system_logs';
 
     public function __construct()
     {

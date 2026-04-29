@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Document_Item Class
@@ -44,13 +45,21 @@ use Glpi\DBAL\QueryExpression;
 class Document_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Document::class;
-    public static $items_id_1    = 'documents_id';
-    public static $take_entity_1 = true;
+    public static ?string $itemtype_1 = Document::class;
+    public static ?string $items_id_1    = 'documents_id';
+    public static bool $take_entity_1 = true;
 
-    public static $itemtype_2    = 'itemtype';
-    public static $items_id_2    = 'items_id';
-    public static $take_entity_2 = false;
+    public static ?string $itemtype_2    = 'itemtype';
+    public static ?string $items_id_2    = 'items_id';
+    public static bool $take_entity_2 = false;
+
+    /**
+     * Right constant to see private documents attached to items.
+     * This follows the ITILSubItemRights pattern (value 8192).
+     *
+     * @var int
+     */
+    public const SEEPRIVATE = 8192;
 
     public static function getTypeName($nb = 0)
     {
@@ -78,6 +87,25 @@ class Document_Item extends CommonDBRelation
         }
 
         return parent::canCreateItem();
+    }
+
+    public function canViewItem(): bool
+    {
+        if (!parent::canViewItem()) {
+            return false;
+        }
+
+        if ((bool) $this->fields['is_private']) {
+            if (Session::haveRight(Document::$rightname, self::SEEPRIVATE)) {
+                return true;
+            }
+            if ($this->fields['users_id'] === Session::getLoginUserID()) {
+                return true;
+            }
+            return false;
+        }
+
+        return true;
     }
 
     public function prepareInputForAdd($input)
@@ -203,6 +231,7 @@ class Document_Item extends CommonDBRelation
             $input  = [
                 'id'              => $this->fields['items_id'],
                 'date_mod'        => $_SESSION["glpi_currenttime"],
+                '_do_update_date_mod' => true,
             ];
 
             if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -293,7 +322,6 @@ class Document_Item extends CommonDBRelation
                     Document::canView()
                     || ($item::class === Ticket::class)
                     || ($item::class === Reminder::class)
-                    || ($item::class === KnowbaseItem::class)
                 ) {
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nbitem = self::countForItem($item);
@@ -356,7 +384,6 @@ class Document_Item extends CommonDBRelation
                 {% set rand = random() %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}">
-                        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('documents_id', doc.fields['id']) }}
                         {{ fields.dropdownItemsFromItemtypes('', add_item_msg, {
                             'itemtypes': doc.getItemtypesThatCanHave(),
@@ -473,7 +500,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -496,15 +522,12 @@ TWIG, $twig_params);
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
-        $ID = $item->getField('id');
-
-        if ($item->isNewID($ID)) {
+        if ($item->isNewItem()) {
             return false;
         }
 
         if (
             ($item::class !== Ticket::class)
-            && ($item::class !== KnowbaseItem::class)
             && ($item::class !== Reminder::class)
             && !Document::canView()
         ) {
@@ -725,7 +748,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && $withtemplate < 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -757,6 +779,66 @@ TWIG, $twig_params);
         $specificities['button_labels']['remove_item'] = $specificities['button_labels']['remove'];
 
         return $specificities;
+    }
+
+    /**
+     * @param CommonDBTM|null $checkitem
+     * @return array<string, string>
+     */
+    public function getSpecificMassiveActions($checkitem = null): array
+    {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
+        // Replace the generic MassiveAction:add_transfer_list with our own processor so that
+        // we can redirect the transfer to the underlying Document instead of the relation
+        $generic_key = MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list';
+        if (isset($actions[$generic_key])) {
+            $label = $actions[$generic_key];
+            unset($actions[$generic_key]);
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list'] = $label;
+        }
+
+        return $actions;
+    }
+
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM $item
+     * @param array<int> $ids
+     */
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ): void {
+        global $CFG_GLPI;
+
+        if ($ma->getAction() !== 'add_transfer_list') {
+            parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+            return;
+        }
+
+        if (!isset($_SESSION['glpitransfer_list'])) {
+            $_SESSION['glpitransfer_list'] = [];
+        }
+
+        // Remove any residual Document_Item entries to avoid errors in transfer list.
+        unset($_SESSION['glpitransfer_list'][Document_Item::class]);
+        if (!isset($_SESSION['glpitransfer_list'][Document::class])) {
+            $_SESSION['glpitransfer_list'][Document::class] = [];
+        }
+
+        foreach ($ids as $id) {
+            if (!$item->getFromDB($id)) {
+                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                continue;
+            }
+            $doc_id = (int) $item->fields['documents_id'];
+            $_SESSION['glpitransfer_list'][Document::class][$doc_id] = $doc_id;
+            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+        }
+
+        $ma->setRedirect($CFG_GLPI['root_doc'] . '/front/transfer.action.php');
     }
 
     /**
@@ -798,7 +880,22 @@ TWIG, $twig_params);
                 ];
             }
 
-            $params = array_merge_recursive($params, $kb_params);
+            // Use a subquery to check visibility instead of merging LEFT JOINs
+            // into the main query, which would multiply rows when a KB article
+            // has multiple visibility targets (profiles, users, groups, entities).
+            $subquery_criteria = [
+                'SELECT' => ['glpi_knowbaseitems.id'],
+                'FROM'   => 'glpi_knowbaseitems',
+            ];
+            if (isset($kb_params['LEFT JOIN'])) {
+                $subquery_criteria['LEFT JOIN'] = $kb_params['LEFT JOIN'];
+            }
+            if (isset($kb_params['WHERE'])) {
+                $subquery_criteria['WHERE'] = $kb_params['WHERE'];
+            }
+            $params['WHERE'][] = [
+                'glpi_knowbaseitems.id' => new QuerySubQuery($subquery_criteria),
+            ];
         }
 
         return $params;
@@ -940,6 +1037,25 @@ TWIG, $twig_params);
         }
 
         return $criteria;
+    }
+
+    /**
+     * Get rights definitions for this class.
+     * Adds the SEEPRIVATE right for viewing private documents on ITIL objects.
+     *
+     * @param string $interface Interface type ('central' or 'helpdesk')
+     *
+     * @return array<int, string> Array of rights with their labels
+     */
+    public function getRights($interface = 'central'): array
+    {
+        $values = [];
+
+        if ($interface === 'central') {
+            $values[self::SEEPRIVATE] = __('See private ones');
+        }
+
+        return $values;
     }
 
     public static function getIcon()

@@ -45,12 +45,12 @@ use Glpi\Application\View\TemplateRenderer;
 class Item_Project extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Project::class;
-    public static $items_id_1          = 'projects_id';
+    public static ?string $itemtype_1 = Project::class;
+    public static ?string $items_id_1          = 'projects_id';
 
-    public static $itemtype_2          = 'itemtype';
-    public static $items_id_2          = 'items_id';
-    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static ?string $itemtype_2          = 'itemtype';
+    public static ?string $items_id_2          = 'items_id';
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public static function getTypeName($nb = 0)
     {
@@ -86,11 +86,10 @@ class Item_Project extends CommonDBRelation
      * Print the HTML array for Items linked to a project
      *
      * @param Project $project
-     * @param int $withtemplate
      *
      * @return bool
      **/
-    public static function showForProject(Project $project, int $withtemplate = 0): bool
+    public static function showForProject(Project $project): bool
     {
         $instID = $project->getID();
 
@@ -170,8 +169,7 @@ class Item_Project extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
             'item' => $project,
-            'can_edit' => $canedit && $withtemplate != 2,
-            'withtemplate' => $withtemplate,
+            'can_edit' => $canedit,
             'used' => $used,
             'datatable_params' => [
                 'is_tab' => true,
@@ -206,13 +204,13 @@ class Item_Project extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
 
                 default:
                     if (
                         Project::canView()
                         && $item instanceof CommonDBTM
-                        && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+                        && in_array($item::class, $CFG_GLPI["project_asset_types"])
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             // Direct one
@@ -231,7 +229,7 @@ class Item_Project extends CommonDBRelation
                                 }
                             }
                         }
-                        return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
             }
         }
@@ -248,12 +246,12 @@ class Item_Project extends CommonDBRelation
         }
 
         if ($item instanceof Project) {
-            return self::showForProject($item, $withtemplate);
+            return self::showForProject($item);
         }
 
         if (
             Project::canView()
-            && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+            && in_array($item::class, $CFG_GLPI["project_asset_types"])
         ) {
             return self::showForAsset($item);
         }

@@ -39,12 +39,12 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 {
     // From RuleCollection
 
-    public $stop_on_first_match = true;
-    public $can_replay_rules    = true;
-    public $menu_type           = 'dictionnary';
-    public $menu_option         = 'software';
+    public bool $stop_on_first_match = true;
+    public bool $can_replay_rules    = true;
+    public string $menu_type           = 'dictionnary';
+    public string $menu_option         = 'software';
 
-    public static $rightname           = 'rule_dictionnary_software';
+    public static string $rightname           = 'rule_dictionnary_software';
 
     public function getTitle()
     {
@@ -92,7 +92,6 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                     </div>
                     <div class="card-footer d-flex flex-row-reverse">
                         <input type="hidden" name="replay_confirm" value="replay_confirm">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" name="replay_rule" class="btn btn-primary">{{ btn_label }}</button>
                     </div>
                 </div>

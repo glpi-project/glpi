@@ -45,11 +45,11 @@ use function Safe\getimagesize;
 class Notepad extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
-    public $dohistory              = false;
-    public $auto_message_on_action = false; // Link in message can't work'
-    public static $logs_for_parent = true;
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
+    public bool $dohistory              = false;
+    public bool $auto_message_on_action = false; // Link in message can't work'
+    public static bool $logs_for_parent = true;
 
 
     public static function getTypeName($nb = 0)
@@ -122,7 +122,7 @@ class Notepad extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -148,7 +148,7 @@ class Notepad extends CommonDBChild
 
         return countElementsInTable(
             'glpi_notepads',
-            ['itemtype' => $item->getType(),
+            ['itemtype' => $item::class,
                 'items_id' => $item->getID(),
             ]
         );
@@ -181,7 +181,7 @@ class Notepad extends CommonDBChild
                 ],
             ],
             'WHERE'     => [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
             ],
             'ORDERBY'   => 'date_mod DESC',
@@ -331,18 +331,14 @@ class Notepad extends CommonDBChild
         $rand      = mt_rand();
         $canedit   = Session::haveRight($item::$rightname, UPDATENOTE);
 
-        if (
-            $canedit
-            && !(!empty($withtemplate) && ($withtemplate == 2))
-        ) {
+        if (!(!empty($withtemplate) && ($withtemplate == 2))) {
             TemplateRenderer::getInstance()->display('components/notepad/form.html.twig', [
                 'rand'      => $rand,
                 'url'       => Toolbox::getItemTypeFormURL('Notepad'),
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
                 'notes'     => $notes,
                 'canedit'   => $canedit,
-                'candelete' => $canedit,
             ]);
         }
         return true;

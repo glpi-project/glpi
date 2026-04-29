@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Rack;
 
 /* Test for inc/item_rack.class.php */
@@ -862,6 +863,7 @@ class Item_RackTest extends DbTestCase
      * Test verifying that unlinking an asset not connected to a rack
      * results in NO_ACTION (skipped) rather than an error.
      */
+    #[AllowMockObjectsWithoutExpectations]
     public function testUnlinkAssetNotLinkedToRack()
     {
         // Create a Computer that is NOT linked to any rack

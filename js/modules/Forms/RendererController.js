@@ -250,7 +250,7 @@ export class GlpiFormRendererController
                     targetElement = inputFields.parent();
                 }
 
-                const content = `<span id="${_.escape(errorId)}" class="invalid-tooltip ${extra_class}">${_.escape(error.message)}</span>`;
+                const content = `<span id="${_.escape(errorId)}" class="invalid-tooltip ${extra_class}" data-testid="validation-error-message">${_.escape(error.message)}</span>`;
                 if (position === "append") {
                     targetElement.append(content);
                 } else {

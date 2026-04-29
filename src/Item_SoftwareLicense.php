@@ -43,11 +43,11 @@ use Glpi\DBAL\QueryUnion;
 class Item_SoftwareLicense extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
 
-    public static $itemtype_2 = SoftwareLicense::class;
-    public static $items_id_2 = 'softwarelicenses_id';
+    public static ?string $itemtype_2 = SoftwareLicense::class;
+    public static ?string $items_id_2 = 'softwarelicenses_id';
 
 
     public function post_addItem()
@@ -180,9 +180,9 @@ class Item_SoftwareLicense extends CommonDBRelation
                             $number += SoftwareLicense_User::countForLicense($license_id);
 
                             if (
-                                $license->getField('number') != -1
-                                && $number >= $license->getField('number')
-                                && !$license->getField('allow_overquota')
+                                $license->fields['number'] != -1
+                                && $number >= $license->fields['number']
+                                && !$license->fields['allow_overquota']
                             ) {
                                 $can_add_user = false;
                                 break;
@@ -247,18 +247,18 @@ class Item_SoftwareLicense extends CommonDBRelation
                                            => $input['softwarelicenses_id'],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
 
@@ -286,19 +286,19 @@ class Item_SoftwareLicense extends CommonDBRelation
                                 if ($csv->can(-1, CREATE, $params)) {
                                     //Process rules
                                     if ($csv->add($params)) {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                     } else {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     }
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 }
                             } else {
                                 Session::addMessageAfterRedirect(__s('A version is required!'), false, ERROR);
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     }
                 }
@@ -317,11 +317,11 @@ class Item_SoftwareLicense extends CommonDBRelation
                         if ($input['itemtype'] == User::class) {
                             $item_licence = new SoftwareLicense_User();
                             if (
-                                $license->getField('number') != -1
-                                && $number >= $license->getField('number')
-                                && !$license->getField('allow_overquota')
+                                $license->fields['number'] != -1
+                                && $number >= $license->fields['number']
+                                && !$license->fields['allow_overquota']
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage(sprintf(__s('Maximum number of items reached for license "%s".'), htmlescape($license->getName())));
                                 continue;
                             }
@@ -340,15 +340,15 @@ class Item_SoftwareLicense extends CommonDBRelation
 
                         if ($item_licence->can(-1, UPDATE, $input_data)) {
                             if ($item_licence->add($input_data)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                     }
                 }
                 return;
@@ -519,7 +519,7 @@ class Item_SoftwareLicense extends CommonDBRelation
     {
         global $DB;
 
-        $softwarelicense_id = $license->getField('id');
+        $softwarelicense_id = $license->getID();
         $license_table = SoftwareLicense::getTable();
         $item_license_table = self::getTable(self::class);
 
@@ -632,8 +632,8 @@ class Item_SoftwareLicense extends CommonDBRelation
         //and over-quota is not allowed, do not allow to add more assets
         if (
             $canedit
-            && ($license->getField('number') == -1 || $number < $license->getField('number')
-            || $license->getField('allow_overquota'))
+            && ($license->fields['number'] == -1 || $number < $license->fields['number']
+            || $license->fields['allow_overquota'])
         ) {
             echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
             echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";

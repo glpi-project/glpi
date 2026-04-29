@@ -53,23 +53,20 @@ class GLPIKey
     /**
      * Key file path.
      *
-     * @var string
      */
-    private $keyfile;
+    private string $keyfile;
 
     /**
      * Legacy key file path.
      *
-     * @var string
      */
-    private $legacykeyfile;
+    private string $legacykeyfile;
 
     /**
      * List of crypted DB fields.
      *
-     * @var array
      */
-    protected $fields = [
+    protected array $fields = [
         'glpi_apiclients.app_token',
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
@@ -86,9 +83,8 @@ class GLPIKey
      * List of crypted configuration values.
      * Each key corresponds to a configuration context, and contains list of configs names.
      *
-     * @var array
      */
-    protected $configs = [
+    protected array $configs = [
         'core'   => [
             'glpinetwork_registration_key',
             'proxy_passwd',

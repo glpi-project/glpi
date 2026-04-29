@@ -35,8 +35,8 @@
 
 class DropdownVisibility extends CommonDBChild
 {
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
-    public $dohistory              = false;
-    public static $logs_for_parent = false;
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
+    public bool $dohistory              = false;
+    public static bool $logs_for_parent = false;
 }

@@ -38,13 +38,13 @@ use Glpi\Application\View\TemplateRenderer;
 class Contract_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Contract::class;
-    public static $items_id_1 = 'contracts_id';
+    public static ?string $itemtype_1 = Contract::class;
+    public static ?string $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = User::class;
-    public static $items_id_2 = 'users_id';
+    public static ?string $itemtype_2 = User::class;
+    public static ?string $items_id_2 = 'users_id';
 
-    public static $check_entity_coherency = false; // `entities_id`/`is_recursive` fields from user should not be used here
+    public static bool $check_entity_coherency = false; // `entities_id`/`is_recursive` fields from user should not be used here
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -138,7 +138,6 @@ class Contract_User extends CommonDBRelation
                     <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(user) }}">
                         <input type="hidden" name="items_id" value="{{ user.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
                                 used: used,
@@ -223,10 +222,10 @@ TWIG, $twig_params);
                 'name' => 'raw_html',
                 'supplier' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

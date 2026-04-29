@@ -72,6 +72,14 @@ if (isset($_POST["add"])) {
     Html::back();
 } elseif (isset($_POST["additem"])) {
     if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
+        if (!$_POST['domains_id']) {
+            $message = sprintf(
+                __('Mandatory fields are not filled. Please correct: %s'),
+                _n('Domain', 'Domains', 1)
+            );
+            Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+            Html::back();
+        }
         $ditem->check(-1, UPDATE, $_POST);
         $ditem->addItem($_POST);
     }

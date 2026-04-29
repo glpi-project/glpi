@@ -72,6 +72,7 @@ use ItemVirtualMachine;
 use Monitor;
 use NetworkPort;
 use NetworkPortType;
+use OAuthClient;
 use Peripheral;
 use Plugin;
 use Printer;
@@ -140,11 +141,13 @@ class Conf extends CommonGLPI
 
     public const STALE_AGENT_ACTION_TRASHBIN = 2;
 
+    public const NO_AUTH = 'none';
+
     public const CLIENT_CREDENTIALS = 'client_credentials';
 
     public const BASIC_AUTH = 'basic_auth';
 
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
     public const IMPORTFROMFILE     = 1024;
     public const UPDATECONFIG       = 2048;
@@ -315,7 +318,7 @@ class Conf extends CommonGLPI
         if ($item instanceof self) {
             $tabs = [];
             if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
-                $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
+                $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::class);
             }
             if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
                 $tabs[2] = self::createTabEntry(__('Import from file'), icon: 'ti ti-upload');
@@ -327,7 +330,7 @@ class Conf extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             /** @var self $item */
             switch ($tabnum) {
                 case 1:
@@ -396,18 +399,50 @@ class Conf extends CommonGLPI
             echo "</tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            echo "<i class='ti ti-cloud-lock me-2'></i>";
-            echo "<label for='auth'>" . __s('Authorization header') . "</label>";
+            $auth_rand = mt_rand();
+            echo "<i class='ti ti-shield me-2'></i>";
+            echo "<label for='dropdown_auth_required{$auth_rand}'>" . __s('Authorization header') . "</label>";
+            echo "<span class='required'>*</span>";
             echo "</td>";
-            echo "<td>";
+            echo "<td colspan='3'>";
             Dropdown::showFromArray('auth_required', [
-                'none' => __('None'),
+                '' => Dropdown::EMPTY_VALUE,
                 self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
                 self::BASIC_AUTH => __s('Basic Authentication'),
+                self::NO_AUTH => __('None (not recommended)'),
             ], [
-                'value' => $config['auth_required'] ?? 'none',
+                'value' => $config['auth_required'] ?? '',
+                'required' => true,
+                'rand' => $auth_rand,
             ]);
+            echo "<div id='oauth_client_hint_row' class='mt-1'>";
+            echo "<div class='alert alert-info d-inline-flex align-items-center mb-0 py-2' role='note'>";
+            echo "<i class='ti ti-info-circle flex-shrink-0 me-1'></i>";
+            echo "<span>";
+            echo __s('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.');
+            echo '<br>';
+            echo sprintf(
+                __s('The generated client ID and secret must then be set in the GLPI Agent configuration using the %s and %s parameters.'),
+                '<code>oauth-client-id</code>',
+                '<code>oauth-client-secret</code>'
+            );
+            echo ' <a href="' . htmlescape(OAuthClient::getFormURL()) . '">';
+            echo __s('Add an OAuth client');
+            echo ' <i class="ti ti-external-link ms-1"></i>';
+            echo '</a>';
+            echo "</span>";
+            echo "</div>";
+            echo "</div>";
+            echo "<div id='no_auth_warning_row' class='mt-1'>";
+            echo "<div class='alert alert-warning d-inline-flex align-items-center mb-0 py-2' role='alert'>";
+            echo "<i class='ti ti-alert-triangle flex-shrink-0 me-1'></i>";
+            echo "<span>";
+            echo __s('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.');
+            echo "</span>";
+            echo "</div>";
+            echo "</div>";
             echo "</td></tr>";
+
             echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
             echo "<td>";
             echo "<i class='ti ti-abc me-2'></i>";
@@ -417,7 +452,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_login", [
-                "value" => $config["basic_auth_login"],
+                "value" => $config["basic_auth_login"] ?? '',
             ]);
             echo "</td>";
             echo "</tr>";
@@ -430,20 +465,21 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo Html::input("basic_auth_password", [
-                "value" => (new GLPIKey())->decrypt($config['basic_auth_password']),
+                "value" => (new GLPIKey())->decrypt($config['basic_auth_password'] ?? ''),
                 "type" => "password",
             ]);
             echo "</td>";
             echo "</tr>";
             echo Html::scriptBlock("
                 function toggleDisplayLoginInputs(select) {
-                    let displayedInputs = false;
                     const selectedValue = $(select).val();
-                    if (selectedValue == '" . self::BASIC_AUTH . "') {
-                        displayedInputs = true;
-                    }
-                    $('#basic_auth_login_row').toggle(displayedInputs);
-                    $('#basic_auth_password_row').toggle(displayedInputs);
+                    const isBasicAuth = selectedValue == '" . self::BASIC_AUTH . "';
+                    const isOAuth = selectedValue == '" . self::CLIENT_CREDENTIALS . "';
+                    const isNoAuth = selectedValue == '" . self::NO_AUTH . "';
+                    $('#basic_auth_login_row').toggle(isBasicAuth);
+                    $('#basic_auth_password_row').toggle(isBasicAuth);
+                    $('#oauth_client_hint_row').toggle(isOAuth);
+                    $('#no_auth_warning_row').toggle(isNoAuth);
                 }
 
                 const selectAuthHeader = $(`select[name='auth_required']`);
@@ -461,7 +497,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_volume'>";
-            echo Item_Disk::createTabEntry(Item_Disk::getTypeName(Session::getPluralNumber()), 0, Item_Disk::getType());
+            echo Item_Disk::createTabEntry(Item_Disk::getTypeName(Session::getPluralNumber()), 0, Item_Disk::class);
             echo "</label>";
             echo "</td>";
             echo "<td width='360'>";
@@ -474,7 +510,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_networkdrive'>";
-            echo DeviceDrive::createTabEntry(__('Network drives'), 0, DeviceDrive::getType());
+            echo DeviceDrive::createTabEntry(__('Network drives'), 0, DeviceDrive::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -489,7 +525,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_drive'>";
-            echo DeviceDrive::createTabEntry(__('Removable drives'), 0, DeviceDrive::getType());
+            echo DeviceDrive::createTabEntry(__('Removable drives'), 0, DeviceDrive::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -502,7 +538,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='import_software'>";
-            echo Software::createTabEntry(Software::getTypeName(Session::getPluralNumber()), 0, Software::getType());
+            echo Software::createTabEntry(Software::getTypeName(Session::getPluralNumber()), 0, Software::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -517,7 +553,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_monitor'>";
-            echo Monitor::createTabEntry(Monitor::getTypeName(Session::getPluralNumber()), 0, Monitor::getType());
+            echo Monitor::createTabEntry(Monitor::getTypeName(Session::getPluralNumber()), 0, Monitor::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -531,7 +567,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_printer'>";
-            echo Printer::createTabEntry(Printer::getTypeName(Session::getPluralNumber()), 0, Printer::getType());
+            echo Printer::createTabEntry(Printer::getTypeName(Session::getPluralNumber()), 0, Printer::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -546,7 +582,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_peripheral'>";
-            echo Peripheral::createTabEntry(Peripheral::getTypeName(Session::getPluralNumber()), 0, Peripheral::getType());
+            echo Peripheral::createTabEntry(Peripheral::getTypeName(Session::getPluralNumber()), 0, Peripheral::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -560,7 +596,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_antivirus'>";
-            echo ItemAntivirus::createTabEntry(ItemAntivirus::getTypeName(Session::getPluralNumber()), 0, ItemAntivirus::getType());
+            echo ItemAntivirus::createTabEntry(ItemAntivirus::getTypeName(Session::getPluralNumber()), 0, ItemAntivirus::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -575,7 +611,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_process'>";
-            echo Item_Process::createTabEntry(Item_Process::getTypeName(Session::getPluralNumber()), 0, Item_Process::getType());
+            echo Item_Process::createTabEntry(Item_Process::getTypeName(Session::getPluralNumber()), 0, Item_Process::class);
             echo "</label>";
             echo "</td>";
             echo "<td width='360'>";
@@ -587,7 +623,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_env'>";
-            echo Item_Environment::createTabEntry(Item_Environment::getTypeName(Session::getPluralNumber()), 0, Item_Environment::getType());
+            echo Item_Environment::createTabEntry(Item_Environment::getTypeName(Session::getPluralNumber()), 0, Item_Environment::class);
             echo "</label>";
             echo "</td>";
             echo "<td width='360'>";
@@ -602,7 +638,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_unmanaged'>";
-            echo Unmanaged::createTabEntry(Unmanaged::getTypeName(Session::getPluralNumber()), 0, Unmanaged::getType());
+            echo Unmanaged::createTabEntry(Unmanaged::getTypeName(Session::getPluralNumber()), 0, Unmanaged::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -621,7 +657,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='dropdown_states_id_default$rand'>";
-            echo State::createTabEntry(__('Default status'), 0, State::getType());
+            echo State::createTabEntry(__('Default status'), 0, State::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -639,7 +675,7 @@ class Conf extends CommonGLPI
             echo "</td>";
 
             echo "<td><label for='dropdown_inventory_frequency$rand'>";
-            echo self::createTabEntry(__('Inventory frequency (in hours)'), 0, self::getType());
+            echo self::createTabEntry(__('Inventory frequency (in hours)'), 0, static::class);
             echo "</label></td><td>";
             Dropdown::showNumber(
                 "inventory_frequency",
@@ -658,7 +694,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='dropdown_entities_id_default$rand'>";
-            echo Entity::createTabEntry(__('Default entity'), 0, Entity::getType());
+            echo Entity::createTabEntry(__('Default entity'), 0, Entity::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -676,7 +712,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='import_monitor_on_partial_sn'>";
-            echo Monitor::createTabEntry(__('Import monitor on serial partial match'), 0, Monitor::getType());
+            echo Monitor::createTabEntry(__('Import monitor on serial partial match'), 0, Monitor::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -700,7 +736,7 @@ class Conf extends CommonGLPI
             echo sprintf(
                 '<a href="%s">%s</a>',
                 htmlescape(Rule::getSearchURL()),
-                Rule::createTabEntry(Rule::getTypeName(Session::getPluralNumber()), 0, Rule::getType())
+                Rule::createTabEntry(Rule::getTypeName(Session::getPluralNumber()), 0, Rule::class)
             );
             echo "</td>";
             echo "<td colspan='2'>";
@@ -708,7 +744,7 @@ class Conf extends CommonGLPI
             echo sprintf(
                 '<a href="%s">%s</a>',
                 htmlescape(NetworkPortType::getSearchURL()),
-                NetworkPort::createTabEntry(NetworkPortType::getTypeName(), 0, NetworkPort::getType())
+                NetworkPort::createTabEntry(NetworkPortType::getTypeName(), 0, NetworkPort::class)
             );
             echo "</td>";
             echo "</tr>";
@@ -722,7 +758,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_vm'>";
-            echo ItemVirtualMachine::createTabEntry(__('Import virtual machines'), 0, ItemVirtualMachine::getType());
+            echo ItemVirtualMachine::createTabEntry(__('Import virtual machines'), 0, ItemVirtualMachine::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -734,7 +770,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='dropdown_vm_type$rand'>";
-            echo ComputerType::createTabEntry(ComputerType::getTypeName(1), 0, ComputerType::getType());
+            echo ComputerType::createTabEntry(ComputerType::getTypeName(1), 0, ComputerType::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -753,7 +789,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='vm_as_computer'>";
-            echo Computer::createTabEntry(__('Create computer for virtual machines'), 0, Computer::getType());
+            echo Computer::createTabEntry(__('Create computer for virtual machines'), 0, Computer::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -765,7 +801,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='vm_components'>";
-            echo ItemVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, ItemVirtualMachine::getType());
+            echo ItemVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, ItemVirtualMachine::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -792,7 +828,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_processor'>";
-            echo DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), 0, DeviceProcessor::getType());
+            echo DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), 0, DeviceProcessor::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -805,7 +841,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_harddrive'>";
-            echo DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), 0, DeviceHardDrive::getType());
+            echo DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), 0, DeviceHardDrive::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -820,7 +856,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_memory'>";
-            echo DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), 0, DeviceMemory::getType());
+            echo DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), 0, DeviceMemory::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -833,7 +869,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_soundcard'>";
-            echo DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), 0, DeviceSoundCard::getType());
+            echo DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), 0, DeviceSoundCard::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -849,7 +885,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_networkcard'>";
-            echo DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), 0, DeviceNetworkCard::getType());
+            echo DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), 0, DeviceNetworkCard::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -862,7 +898,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_networkcardvirtual'>";
-            echo DeviceNetworkCard::createTabEntry(__('Virtual network cards'), 0, DeviceNetworkCard::getType());
+            echo DeviceNetworkCard::createTabEntry(__('Virtual network cards'), 0, DeviceNetworkCard::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -878,7 +914,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_graphiccard'>";
-            echo DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), 0, DeviceGraphicCard::getType());
+            echo DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), 0, DeviceGraphicCard::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -891,7 +927,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_simcard'>";
-            echo DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), 0, DeviceSimcard::getType());
+            echo DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), 0, DeviceSimcard::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -907,7 +943,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_drive'>";
-            echo DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), 0, DeviceDrive::getType());
+            echo DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), 0, DeviceDrive::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -920,7 +956,7 @@ class Conf extends CommonGLPI
 
             echo "<td>";
             echo "<label for='component_powersupply'>";
-            echo DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), 0, DevicePowerSupply::getType());
+            echo DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), 0, DevicePowerSupply::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -936,7 +972,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='component_control'>";
-            echo DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), 0, DeviceControl::getType());
+            echo DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), 0, DeviceControl::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -950,7 +986,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='component_battery'>";
-            echo DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), 0, DeviceBattery::getType());
+            echo DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), 0, DeviceBattery::class);
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -965,7 +1001,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan=4 >" . __s('Agent cleanup') . "</th></tr>";
             echo "<tr class='tab_bg_1'><td><label for='dropdown_stale_agents_delay$rand'>";
-            echo Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, Agent::getType());
+            echo Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, Agent::class);
             echo "</label></td><td width='20%'>";
             Dropdown::showNumber(
                 'stale_agents_delay',
@@ -978,7 +1014,7 @@ class Conf extends CommonGLPI
                 ]
             );
             echo "</td><td><label for='dropdown_stale_agents_action$rand'>";
-            echo Agent::createTabEntry(_n('Action', 'Actions', 1), 0, Agent::getType());
+            echo Agent::createTabEntry(_n('Action', 'Actions', 1), 0, Agent::class);
             echo "</label></td><td width='20%'>";
             //action
             $action = self::getDefaults()['stale_agents_action'];
@@ -1009,7 +1045,7 @@ class Conf extends CommonGLPI
             //blocaction with status
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
             echo "<td>";
-            echo State::createTabEntry(__('If the asset status is'), 0, State::getType());
+            echo State::createTabEntry(__('If the asset status is'), 0, State::class);
             echo "</td>";
             echo "<td width='20%'>";
             $condition = [];
@@ -1034,7 +1070,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action2'><td colspan=2></td>";
             echo "<td>";
-            echo State::createTabEntry(__('Status to apply'), 0, State::getType());
+            echo State::createTabEntry(__('Status to apply'), 0, State::class);
             echo "</td>";
             echo "<td width='20%'>";
             State::dropdown(
@@ -1054,7 +1090,7 @@ class Conf extends CommonGLPI
             $in_row = true;
             /**
              * @var string $plugin
-             * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+             * @phpstan-var array{label: string, item_action: bool, render_callback: callable, action_callback: callable}[] $actions
              */
             foreach ($plugin_actions as $plugin => $actions) {
                 if (is_array($actions) && Plugin::isPluginActive($plugin)) {
@@ -1119,7 +1155,6 @@ class Conf extends CommonGLPI
         }
 
         $defaults = self::getDefaults();
-        unset($values['_glpi_csrf_token']);
 
         $ext_configs = array_filter($values, static fn($k, $v) => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
 
@@ -1144,6 +1179,24 @@ class Conf extends CommonGLPI
         ) {
             // keep only the "All" value
             $values['stale_agents_status_condition'] = ['all'];
+        }
+
+        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
+        if ($enabled_inventory) {
+            $allowed_auth_required = [
+                self::CLIENT_CREDENTIALS,
+                self::BASIC_AUTH,
+                self::NO_AUTH,
+            ];
+            $auth_required = $values['auth_required'] ?? null;
+            if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
+                Session::addMessageAfterRedirect(
+                    __s('Inventory is enabled. Please select a valid authorization header method.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
         }
 
         if (isset($values['auth_required']) && $values['auth_required'] === Conf::BASIC_AUTH) {
@@ -1306,7 +1359,7 @@ class Conf extends CommonGLPI
             'stale_agents_status'            => 0,
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
-            'auth_required'                  => 'none',
+            'auth_required'                  => '',
             'basic_auth_login'               => '',
             'basic_auth_password'            => '',
         ];

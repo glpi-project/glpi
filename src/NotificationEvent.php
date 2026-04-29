@@ -38,7 +38,7 @@
  **/
 class NotificationEvent extends CommonDBTM
 {
-    protected static $notable = true;
+    protected static bool $notable = true;
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -131,7 +131,7 @@ class NotificationEvent extends CommonDBTM
             //Foreach notification
             $notifications = Notification::getNotificationsByEventAndType(
                 $event,
-                $item->getType(),
+                $item::class,
                 $notificationtarget->getEntity()
             );
 

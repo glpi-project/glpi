@@ -43,7 +43,7 @@ use stdClass;
 
 class Itemtype extends MainAsset
 {
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware' => null,
         'bios' => null,
         'users' => null,
@@ -58,7 +58,9 @@ class Itemtype extends MainAsset
     public function __construct($data)
     {
         $namespaced = explode('\\', static::class);
-        $this->itemtype = array_pop($namespaced);
+        if ($item = getItemForItemtype(array_pop($namespaced))) {
+            $this->itemtype = $item::class;
+        }
         //store raw data for reference
         $this->raw_data = $data;
     }

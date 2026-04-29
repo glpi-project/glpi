@@ -144,7 +144,7 @@ class TicketParameters extends CommonITILObjectParameters
 
         // Add assets
         $values['assets'] = [];
-        $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
+        $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::class, $fields['id']);
         foreach ($items_ticket as $item_ticket) {
             $itemtype = $item_ticket->fields['itemtype'];
             if (!in_array($itemtype, $CFG_GLPI["asset_types"])) {

@@ -88,7 +88,7 @@ class GeolocationField {
             placeholder: __('Search')
         });
         geocoder.on('markgeocode', (e) => {
-            this._map.fitBounds(e.geocode.bbox);
+            this.map.fitBounds(e.geocode.bbox);
         });
         this.map.addControl(geocoder);
         this.#autoSearch();

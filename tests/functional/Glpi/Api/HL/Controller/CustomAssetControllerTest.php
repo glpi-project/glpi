@@ -105,6 +105,7 @@ class CustomAssetControllerTest extends HLAPITestCase
                 'teststring' => 'Test String A',
                 'customtagmulti' => null,
                 'customtagsingle' => null,
+                'testboolean' => null,
             ],
         ]);
     }

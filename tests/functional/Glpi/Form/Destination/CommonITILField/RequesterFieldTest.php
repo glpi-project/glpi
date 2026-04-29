@@ -221,6 +221,32 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testSpecificActorsExcludesUnauthorizedGroups(): void
+    {
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $authorized_group = $this->createItem(Group::class, [
+            'name'         => 'testSpecificActorsExcludesUnauthorizedGroups Authorized',
+            'is_requester' => 1,
+        ]);
+        $unauthorized_group = $this->createItem(Group::class, [
+            'name'         => 'testSpecificActorsExcludesUnauthorizedGroups Unauthorized',
+            'is_requester' => 0,
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    Group::getForeignKeyField() . '-' . $authorized_group->getID(),
+                    Group::getForeignKeyField() . '-' . $unauthorized_group->getID(),
+                ]
+            ),
+            answers: [],
+            expected_actors: [['items_id' => $authorized_group->getID()]]
+        );
+    }
+
     public function testActorsFromSpecificQuestions(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();

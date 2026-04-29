@@ -390,6 +390,9 @@ trait AssignableItem
         return true;
     }
 
+    /**
+     * Fill $this->fields['groups_id'] and $this->fields['groups_id_tech'] with database values
+     */
     private function loadGroupFields(): void
     {
         global $DB;

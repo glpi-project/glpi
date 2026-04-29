@@ -57,7 +57,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 
-    $displaywith = is_a($_POST['idtable'], CommonITILObject::class, true) ? ['id'] : ['otherserial', 'serial'];
+    $displaywith = Dropdown::getDisplayWith($_POST["idtable"]);
     $p = [
         'value'               => 0,
         'valuename'           => Dropdown::EMPTY_VALUE,

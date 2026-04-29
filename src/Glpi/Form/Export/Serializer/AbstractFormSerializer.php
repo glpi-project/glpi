@@ -60,6 +60,9 @@ abstract class AbstractFormSerializer
             // Need to handle arrays of objects
             new ArrayDenormalizer(),
 
+            // Fix union type handling of illustration field
+            new CustomIllustrationContentSpecificationNormalizer(),
+
             // The `propertyTypeExtractor` parameter is required to normalize
             // nested objects because we are not a full symfony application.
             // See: https://symfony.com/doc/current/components/serializer.html#recursive-denormalization-and-type-safety

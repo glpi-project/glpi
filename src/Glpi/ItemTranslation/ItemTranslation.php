@@ -49,10 +49,10 @@ use function Safe\json_encode;
 
 abstract class ItemTranslation extends CommonDBChild
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
     #[Override]
     public function prepareInputForAdd($input): array
@@ -206,7 +206,7 @@ abstract class ItemTranslation extends CommonDBChild
     {
         $translations = (new static())->find([
             static::$items_id => $item->getID(),
-            static::$itemtype => $item->getType(),
+            static::$itemtype => $item::class,
         ]);
 
         return array_map(fn($id) => static::getById($id), array_keys($translations));
@@ -219,7 +219,7 @@ abstract class ItemTranslation extends CommonDBChild
     {
         $translation = (new static())->find([
             static::$items_id => $item->getID(),
-            static::$itemtype => $item->getType(),
+            static::$itemtype => $item::class,
             'key'             => $key,
             'language'        => $language,
         ]);

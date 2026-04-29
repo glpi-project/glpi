@@ -89,7 +89,7 @@ class DatabaseInstance extends InventoryAsset
             ],
             'FROM'   => GDatabaseInstance::getTable(),
             'WHERE'  => [
-                'itemtype'     => $this->item->getType(),
+                'itemtype'     => $this->item::class,
                 'items_id'     => $this->item->fields['id'],
             ],
         ]);
@@ -118,7 +118,7 @@ class DatabaseInstance extends InventoryAsset
                 'name'         => $val->name ?? '',
                 'entities_id'  => $this->item->fields['entities_id'],
                 'linked_item' => [
-                    'itemtype' => $this->item->getType(),
+                    'itemtype' => $this->item::class,
                     'items_id' => $this->item->fields['id'],
                 ],
             ];
@@ -134,7 +134,7 @@ class DatabaseInstance extends InventoryAsset
                     // add instance
                     $input += [
                         'entities_id'  => $this->entities_id,
-                        'itemtype'     => $this->item->getType(),
+                        'itemtype'     => $this->item::class,
                         'items_id'     => $this->item->fields['id'],
                     ];
                     $items_id = $instance->add($input);

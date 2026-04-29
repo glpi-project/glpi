@@ -10,6 +10,14 @@ Please note that current repository is about GLPI core only. All related plugins
 
 **⚠️ Please never use standard issues to report security problems. See [security policy](https://github.com/glpi-project/glpi/security/policy) for more details. ⚠️**
 
+## IA Agents
+
+Many people have the idea to propose code modifications from IA Agents, verbatim (or almost). We recently get lots of this kind of contributions. **That kind of IA only contribution will be refused.**
+
+You can of course take help from any way you want (including IA agents), but a **human must** review and test the proposal; we do not want to debate with an AI bot.
+
+Another point: licensing around IA agents commit is currently quite uncertain. We prefer keeping things simple, so **we won't accept any code explicitely authored from any IA agent**.
+
 ## Bugs
 
 Note that issues are handled on a best-effort basis. If you need a quick fix or any guarantee, take a look at **[profesional services](http://services.glpi-network.com/)** or [partners](https://glpi-project.org/partners/).

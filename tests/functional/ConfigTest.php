@@ -39,6 +39,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 use Glpi\Tests\DbTestCase;
 use Log;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Session;
@@ -413,6 +414,7 @@ class ConfigTest extends DbTestCase
         ];
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('dbEngineProvider')]
     public function testCheckDbEngine($raw, $version, $compat)
     {

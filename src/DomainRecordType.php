@@ -40,10 +40,9 @@ use function Safe\json_encode;
 
 class DomainRecordType extends CommonDropdown
 {
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
-    /** @var array */
-    public static $knowtypes = [
+    public static array $knowtypes = [
         [
             'id'        => 1,
             'name'      => 'A',
@@ -225,7 +224,7 @@ class DomainRecordType extends CommonDropdown
 
         switch ($field_type) {
             case 'fields':
-                $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
+                $printable = !empty($field_value) ? json_encode(json_decode($field_value), JSON_PRETTY_PRINT) : '';
                 echo '<textarea name="' . htmlescape($field_name) . '" cols="75" rows="25">' . htmlescape($printable) . '</textarea >';
                 break;
         }
@@ -380,7 +379,7 @@ class DomainRecordType extends CommonDropdown
      */
     public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
     {
-        $fields = json_decode($this->fields['fields'] ?? '[]', true);
+        $fields = json_decode($this->fields['fields'] ?: '[]', true);
         if (empty($fields)) {
             $fields = [
                 [

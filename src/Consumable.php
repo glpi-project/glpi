@@ -53,14 +53,14 @@ class Consumable extends CommonDBChild
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Infocom'];
-    public $no_form_page                = true;
+    protected static array $forward_entity_to = ['Infocom'];
+    public bool $no_form_page                = true;
 
-    public static $rightname                   = 'consumable';
+    public static string $rightname                   = 'consumable';
 
     // From CommonDBChild
-    public static $itemtype = ConsumableItem::class;
-    public static $items_id             = 'consumableitems_id';
+    public static string $itemtype = ConsumableItem::class;
+    public static string $items_id             = 'consumableitems_id';
 
     public function getCloneRelations(): array
     {
@@ -111,11 +111,11 @@ class Consumable extends CommonDBChild
     public function post_addItem()
     {
         // inherit infocom
-        $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::getType(), $this->fields[ConsumableItem::getForeignKeyField()]);
+        $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::class, $this->fields[ConsumableItem::getForeignKeyField()]);
         if (count($infocoms)) {
             $infocom = reset($infocoms);
             $infocom->clone([
-                'itemtype'  => self::getType(),
+                'itemtype'  => static::class,
                 'items_id'  => $this->getID(),
             ]);
         }
@@ -207,7 +207,7 @@ class Consumable extends CommonDBChild
             return;
         }
 
-        $action_prefix = self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $action_prefix = static::class . MassiveAction::CLASS_ACTION_SEPARATOR;
         $actions[$action_prefix . 'backtostock'] = __s('Back to stock');
         $actions[$action_prefix . 'give'] = _sx('button', 'Give');
     }
@@ -220,7 +220,7 @@ class Consumable extends CommonDBChild
         switch ($ma->getAction()) {
             case 'give':
                 // Retrieve entity restrict from consumable item
-                $consumable_id = current($input['items'][self::getType()]);
+                $consumable_id = current($input['items'][static::class]);
                 $consumable = new self();
                 if (
                     $consumable_id === false
@@ -583,7 +583,7 @@ class Consumable extends CommonDBChild
         global $DB;
 
         $itemtype = $user::class;
-        $items_id = $user->getField('id');
+        $items_id = $user->getID();
 
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
@@ -641,7 +641,7 @@ class Consumable extends CommonDBChild
 
         $envs = [];
         foreach ($filtered_data as $env) {
-            $env['itemtype'] = self::getType();
+            $env['itemtype'] = static::class;
             $envs[$env['id']] = $env;
         }
 
@@ -811,7 +811,6 @@ class Consumable extends CommonDBChild
             'footers' => [$footer],
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }
@@ -843,7 +842,7 @@ class Consumable extends CommonDBChild
      **/
     public static function countForConsumableItem(ConsumableItem $item)
     {
-        return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
+        return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getID()]);
     }
 
     /**
@@ -855,7 +854,7 @@ class Consumable extends CommonDBChild
     {
         return countElementsInTable(['glpi_consumables'], [
             'glpi_consumables.itemtype' => 'User',
-            'glpi_consumables.items_id' => $item->getField('id'),
+            'glpi_consumables.items_id' => $item->getID(),
             'NOT' => ['glpi_consumables.date_out' => 'NULL'],
         ]);
     }

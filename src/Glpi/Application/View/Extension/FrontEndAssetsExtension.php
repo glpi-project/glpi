@@ -59,9 +59,8 @@ class FrontEndAssetsExtension extends AbstractExtension
 {
     /**
      * GLPI root dir.
-     * @var string
      */
-    private $root_dir;
+    private string $root_dir;
 
     public function __construct(string $root_dir = GLPI_ROOT)
     {

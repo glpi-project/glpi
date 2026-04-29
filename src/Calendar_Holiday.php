@@ -37,15 +37,15 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Calendar_Holiday extends CommonDBRelation
 {
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     // From CommonDBRelation
-    public static $itemtype_1 = Calendar::class;
-    public static $items_id_1 = 'calendars_id';
-    public static $itemtype_2 = Holiday::class;
-    public static $items_id_2 = 'holidays_id';
+    public static ?string $itemtype_1 = Calendar::class;
+    public static ?string $items_id_1 = 'calendars_id';
+    public static ?string $itemtype_2 = Holiday::class;
+    public static ?string $items_id_2 = 'holidays_id';
 
-    public static $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
     /**
      * @since 0.84
@@ -68,7 +68,7 @@ class Calendar_Holiday extends CommonDBRelation
     {
         global $DB;
 
-        $ID = $calendar->getField('id');
+        $ID = $calendar->getID();
         if (!$calendar->can($ID, READ)) {
             return false;
         }
@@ -147,7 +147,6 @@ class Calendar_Holiday extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
@@ -167,7 +166,7 @@ class Calendar_Holiday extends CommonDBRelation
                 return self::createTabEntry(
                     _n('Close time', 'Close times', Session::getPluralNumber()),
                     $nb,
-                    $item::getType()
+                    $item::class
                 );
             }
         }

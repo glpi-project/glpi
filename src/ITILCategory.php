@@ -44,10 +44,10 @@ class ITILCategory extends CommonTreeDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'itilcategory';
+    public static string $rightname          = 'itilcategory';
 
     public function getAdditionalFields()
     {
@@ -74,7 +74,7 @@ class ITILCategory extends CommonTreeDropdown
             ],
             [
                 'name'      => 'knowbaseitemcategories_id',
-                'label'     => __('Knowledge base'),
+                'label'     => KnowbaseItemCategory::getTypeName(1),
                 'type'      => 'dropdownValue',
                 'list'      => true,
             ],
@@ -476,7 +476,7 @@ class ITILCategory extends CommonTreeDropdown
 
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='5'>";
-        $itilcategory_type = $itilcategory->getType();
+        $itilcategory_type = $itilcategory::class;
         echo "<a href='" . htmlescape($itilcategory_type::getSearchURL()) . "'>";
         echo htmlescape(self::getTypeName(count($iterator)));
         echo "</a>";

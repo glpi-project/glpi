@@ -61,7 +61,7 @@ abstract class Device extends InventoryAsset
             'FROM'      => $itemdevicetable,
             'WHERE'     => [
                 "$itemdevicetable.items_id"     => $this->item->fields['id'],
-                "$itemdevicetable.itemtype"     => $this->item->getType(),
+                "$itemdevicetable.itemtype"     => $this->item::class,
             ],
         ]);
 
@@ -76,7 +76,7 @@ abstract class Device extends InventoryAsset
     {
         global $DB;
 
-        $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
+        $devicetypes = Item_Devices::getItemAffinities($this->item::class);
 
         $itemdevicetype = $this->getItemtype();
         if (in_array($itemdevicetype, $devicetypes)) {
@@ -117,7 +117,7 @@ abstract class Device extends InventoryAsset
                 $i_criteria = $itemdevice->getImportCriteria();
                 $fk_input = [
                     $fk                  => $device_id,
-                    'itemtype'           => $this->item->getType(),
+                    'itemtype'           => $this->item::class,
                     'items_id'           => $this->item->fields['id'],
                     'is_dynamic'         => 1,
                 ];
@@ -167,7 +167,7 @@ abstract class Device extends InventoryAsset
                         $itemdevice_data = [
                             'id'                 => $existing_item['id'],
                             $fk                  => $device_id,
-                            'itemtype'           => $this->item->getType(),
+                            'itemtype'           => $this->item::class,
                             'items_id'           => $this->item->fields['id'],
                             'is_dynamic'         => 1,
                         ] + $this->handleInput($val, $itemdevice);
@@ -181,7 +181,7 @@ abstract class Device extends InventoryAsset
                     $itemdevice->getEmpty();
                     $itemdevice_data = [
                         $fk => $device_id,
-                        'itemtype' => $this->item->getType(),
+                        'itemtype' => $this->item::class,
                         'items_id' => $this->item->fields['id'],
                         'is_dynamic' => 1,
                     ] + $this->handleInput($val, $itemdevice);
@@ -222,6 +222,6 @@ abstract class Device extends InventoryAsset
         /** @var class-string<Item_Devices> $item_device */
         $item_device = $this->getItemtype();
         $affinities = $item_device::itemAffinity();
-        return in_array('*', $affinities) || in_array($this->item->getType(), $item_device::itemAffinity());
+        return in_array('*', $affinities) || in_array($this->item::class, $item_device::itemAffinity());
     }
 }

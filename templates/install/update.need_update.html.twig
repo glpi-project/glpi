@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 {% do call(['Html', 'nullHeader'], [__('Update needed')]) %}
 <div class="container-fluid mb-4">
     <div class="row justify-content-evenly">
@@ -48,7 +46,6 @@
                 {% if not core_requirements.hasMissingMandatoryRequirements() %}
                     {% if not is_outdated %}
                         <form method="post" action="{{ path('install/update.php') }}" class="p-2">
-                            {{ fields.csrfField() }}
                             <input type="hidden" name="from_update" value="1">
                             {% if not is_stable_release %}
                                 {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}

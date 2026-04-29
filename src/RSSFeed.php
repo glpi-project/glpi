@@ -50,9 +50,9 @@ use function Safe\parse_url;
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    public static $rightname    = 'rssfeed_public';
+    public static string $rightname    = 'rssfeed_public';
 
     public const PERSONAL = 128;
 
@@ -434,7 +434,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                             'Target',
                             'Targets',
                             Session::getPluralNumber()
-                        ), $nb, $item::getType());
+                        ), $nb, $item::class);
                     }
                     return $showtab;
             }

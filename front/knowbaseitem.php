@@ -56,7 +56,7 @@ if (
 ) {
     if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types']) && $item = getItemForItemtype($_GET["item_itemtype"])) {
         if ($item->can($_GET["item_items_id"], READ)) {
-            $_GET["contains"] = $item->getField('name');
+            $_GET["contains"] = $item->fields['name'];
         }
     }
 }

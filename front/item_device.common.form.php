@@ -110,10 +110,10 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    if (in_array($item_device->getType(), $CFG_GLPI['devices_in_menu'])) {
-        $menus = ["assets", strtolower($item_device->getType())];
+    if (in_array($item_device::class, $CFG_GLPI['devices_in_menu'])) {
+        $menus = ["assets", strtolower($item_device::class)];
     } else {
-        $menus = ["config", "commondevice", $item_device->getType()];
+        $menus = ["config", "commondevice", $item_device::class];
     }
 
     $item_device::displayFullPageForItem($_GET["id"], $menus, $options ?? []);

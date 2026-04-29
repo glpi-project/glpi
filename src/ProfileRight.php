@@ -45,9 +45,9 @@ use Glpi\DBAL\QuerySubQuery;
 class ProfileRight extends CommonDBChild
 {
     // From CommonDBChild:
-    public static $itemtype = Profile::class;
-    public static $items_id = 'profiles_id'; // Field name
-    public $dohistory       = true;
+    public static string $itemtype = Profile::class;
+    public static string $items_id = 'profiles_id'; // Field name
+    public bool $dohistory       = true;
 
     /**
      * {@inheritDoc}
@@ -60,7 +60,7 @@ class ProfileRight extends CommonDBChild
     {
         global $DB;
 
-        if ($DB->isSlave()) {
+        if ($DB->isReplica()) {
             return false;
         }
         $new_item = new static();
@@ -70,17 +70,15 @@ class ProfileRight extends CommonDBChild
 
         $input = $new_item->prepareInputForClone($input);
 
-        $result = $DB->updateOrInsert(static::getTable(), $input, [
+        $DB->updateOrInsert(static::getTable(), $input, [
             'name' => $input['name'],
             'profiles_id' => $input['profiles_id'],
         ]);
-        if ($result !== false) {
-            $new_item->getFromDBByCrit([
-                'name' => $input['name'],
-                'profiles_id' => $input['profiles_id'],
-            ]);
-            $new_item->post_clone($this, $history);
-        }
+        $new_item->getFromDBByCrit([
+            'name' => $input['name'],
+            'profiles_id' => $input['profiles_id'],
+        ]);
+        $new_item->post_clone($this, $history);
 
         return $new_item->fields['id'];
     }
@@ -249,8 +247,7 @@ class ProfileRight extends CommonDBChild
         );
         $stmt = $DB->prepare($query);
         foreach ($iterator as $right) {
-            $stmt->bind_param('ss', $profiles_id, $right['NAME']);
-            $DB->executeStatement($stmt);
+            $DB->executeStatement($stmt, [$profiles_id, $right['NAME']]);
         }
     }
 

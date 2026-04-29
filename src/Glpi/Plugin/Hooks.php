@@ -41,11 +41,6 @@ namespace Glpi\Plugin;
  */
 class Hooks
 {
-    /**
-     * @deprecated 11.0.0
-     */
-    public const CSRF_COMPLIANT = 'csrf_compliant';
-
     // File hooks
     /**
      * Add CSS file in the head of all non-anonymous pages.
@@ -566,6 +561,20 @@ class Hooks
     public const SHOW_ITEM_STATS           = 'show_item_stats';
 
     /**
+     * Register a function to display new variables in reply messages.
+     * The function is called with the name of actual item.
+     * The function is expected to return an array with parmeter.
+     */
+    public const GET_CONTENT_TEMPLATE_PARAMETER      = 'get_content_template_parameter';
+
+    /**
+     * Register a function to display new variables in reply messages.
+     * The function is called with type and id of the actuel item.
+     * The function is expected to return an array with parameters values.
+     */
+    public const GET_CONTENT_TEMPLATE_VALUE       = 'get_content_template_value';
+
+    /**
      * Register a function to add additional permission restrictions for the item.
      * The function is called with the item as a parameter.
      * The function is expected to return nothing.
@@ -719,11 +728,6 @@ class Hooks
      * - 'hide_in_menu' => If true, the option is not available in the dropdown menu but the related items may still be shown in the timeline.
      */
     public const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';
-
-    /**
-     * @deprecated 11.0.0 Use `TIMELINE_ITEMS` instead. The usage of both hooks is the same.
-     */
-    public const SHOW_IN_TIMELINE        = 'show_in_timeline';
 
     /**
      * Register a function to add new items to the timeline of a Ticket, Change or Problem.
@@ -1408,6 +1412,8 @@ class Hooks
             self::POST_SHOW_TAB,
             self::POST_PREPAREADD,
             self::SHOW_ITEM_STATS,
+            self::GET_CONTENT_TEMPLATE_PARAMETER,
+            self::GET_CONTENT_TEMPLATE_VALUE,
             self::TIMELINE_ACTIONS,
         ];
     }

@@ -86,7 +86,6 @@ trait AsyncOperationProgressControllerTrait
                 'Content-Type'   => 'text/html',
                 'Content-Length' => \strlen($progress_indicator->getStorageKey()),
                 'Cache-Control'  => 'no-cache,no-store',
-                'Pragma'         => 'no-cache',
                 'Connection'     => 'close',
             ]
         );

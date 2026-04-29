@@ -50,18 +50,18 @@ class Cartridge extends CommonDBRelation
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Infocom'];
-    public $dohistory                   = true;
-    public $no_form_page                = true;
+    protected static array $forward_entity_to = ['Infocom'];
+    public bool $dohistory                   = true;
+    public bool $no_form_page                = true;
 
-    public static $rightname = 'cartridge';
+    public static string $rightname = 'cartridge';
 
-    public static $itemtype_1 = CartridgeItem::class;
-    public static $items_id_1 = 'cartridgeitems_id';
+    public static ?string $itemtype_1 = CartridgeItem::class;
+    public static ?string $items_id_1 = 'cartridgeitems_id';
 
-    public static $itemtype_2 = Printer::class;
-    public static $items_id_2 = 'printers_id';
-    public static $mustBeAttached_2 = false;
+    public static ?string $itemtype_2 = Printer::class;
+    public static ?string $items_id_2 = 'printers_id';
+    public static bool $mustBeAttached_2 = false;
 
     public function getCloneRelations(): array
     {
@@ -141,8 +141,8 @@ class Cartridge extends CommonDBRelation
             $printer = new Printer();
             if (
                 $printer->getFromDB($this->fields['printers_id'])
-                && (($this->fields['pages'] > $printer->getField('last_pages_counter'))
-                    || ($this->oldvalues['pages'] == $printer->getField('last_pages_counter')))
+                && (($this->fields['pages'] > $printer->fields['last_pages_counter'])
+                    || ($this->oldvalues['pages'] == $printer->fields['last_pages_counter']))
             ) {
                 $printer->update([
                     'id' => $printer->getID(),
@@ -326,7 +326,7 @@ class Cartridge extends CommonDBRelation
         if ($this->getFromDB($ID)) {
             $printer = new Printer();
             $toadd   = [];
-            if ($printer->getFromDB($this->getField("printers_id"))) {
+            if ($printer->getFromDB($this->fields["printers_id"])) {
                 $toadd['pages'] = $printer->fields['last_pages_counter'];
             }
 
@@ -350,7 +350,7 @@ class Cartridge extends CommonDBRelation
                     __('Uninstalling a cartridge'),
                 ];
                 Log::history(
-                    $this->getField("printers_id"),
+                    $this->fields["printers_id"],
                     'Printer',
                     $changes,
                     0,
@@ -746,7 +746,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     {
         global $DB;
 
-        $tID = $cartitem->getField('id');
+        $tID = $cartitem->getID();
         if (!$cartitem->can($tID, READ)) {
             return false;
         }
@@ -923,7 +923,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'footers' => $footers,
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -942,7 +941,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     public static function showAddForm(CartridgeItem $cartitem)
     {
 
-        $ID = $cartitem->getField('id');
+        $ID = $cartitem->getID();
         if (!$cartitem->can($ID, UPDATE)) {
             return false;
         }
@@ -963,9 +962,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                                 field_class: 'col-4',
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ add_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ add_label }}</span></button>
                                 <input type="hidden" name="cartridgeitems_id" value="{{ cartridgeitems_id }}">
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% endset %}
                             {{ fields.htmlField('', btn, null, {
                                 no_label: true,
@@ -993,7 +991,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        $instID = $printer->getField('id');
+        $instID = $printer->getID();
         if (!self::canView()) {
             return false;
         }
@@ -1072,7 +1070,6 @@ TWIG, $twig_params);
                                 {% set btn_install %}
                                     <input type="hidden" name="printers_id" value="{{ printer.getID() }}">
                                     <input type="submit" name="install" value="{{ install_label }}" class="btn btn-primary">
-                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                 {% endset %}
                                 {{ fields.htmlField('', btn_install, null, {
                                     no_label: true,
@@ -1214,7 +1211,6 @@ TWIG, ['printer_id' => $printer->getID()]);
             'footers' => $footers,
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1233,10 +1229,10 @@ TWIG, ['printer_id' => $printer->getID()]);
             return false;
         }
 
-        $printer->check($this->getField('printers_id'), UPDATE);
+        $printer->check($this->fields['printers_id'], UPDATE);
 
         $cartitem = new CartridgeItem();
-        $cartitem->getFromDB($this->getField('cartridgeitems_id'));
+        $cartitem->getFromDB($this->fields['cartridgeitems_id']);
 
         TemplateRenderer::getInstance()->display('pages/assets/cartridge.html.twig', [
             'item' => $this,
@@ -1279,7 +1275,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      */
     public static function countForCartridgeItem(CartridgeItem $item)
     {
-        return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.cartridgeitems_id' => $item->getField('id')]);
+        return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.cartridgeitems_id' => $item->getID()]);
     }
 
     /**
@@ -1289,7 +1285,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      */
     public static function countForPrinter(Printer $item)
     {
-        return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);
+        return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getID()]);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

@@ -67,19 +67,11 @@ class NotificationTargetCertificate extends NotificationTarget
         $events = $this->getAllEvents();
         $certificate = $this->obj;
 
-        if (!isset($options['certificates'])) {
-            $options['certificates'] = [];
-            if (!$certificate->isNewItem()) {
-                $options['certificates'][] = $certificate->fields;// Compatibility with old behaviour
-            }
-        } else {
-            Toolbox::deprecated('Using "certificates" option in NotificationTargetCertificate is deprecated.');
+        $options['certificates'] = [];
+        if (!$certificate->isNewItem()) {
+            $options['certificates'][] = $certificate->fields;// Compatibility with old behaviour
         }
-        if (!isset($options['entities_id'])) {
-            $options['entities_id'] = $certificate->fields['entities_id'];
-        } else {
-            Toolbox::deprecated('Using "entities_id" option in NotificationTargetCertificate is deprecated.');
-        }
+        $options['entities_id'] = $certificate->fields['entities_id'];
 
         $this->data['##certificate.action##'] = $events[$event];
         $this->data['##certificate.entity##'] = Dropdown::getDropdownName(

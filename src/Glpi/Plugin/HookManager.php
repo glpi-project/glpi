@@ -36,7 +36,6 @@
 namespace Glpi\Plugin;
 
 use LogicException;
-use Toolbox;
 
 class HookManager
 {
@@ -45,20 +44,6 @@ class HookManager
     public function __construct(string $plugin)
     {
         $this->plugin = $plugin;
-    }
-
-    /**
-     * Enable CSRF
-     *
-     * @deprecated 11.0.0
-     */
-    public function enableCSRF(): void
-    {
-        Toolbox::deprecated();
-
-        global $PLUGIN_HOOKS;
-
-        $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;
     }
 
     /**

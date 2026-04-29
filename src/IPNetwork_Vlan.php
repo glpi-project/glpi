@@ -39,12 +39,12 @@
 class IPNetwork_Vlan extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = IPNetwork::class;
-    public static $items_id_1          = 'ipnetworks_id';
+    public static ?string $itemtype_1 = IPNetwork::class;
+    public static ?string $items_id_1          = 'ipnetworks_id';
 
-    public static $itemtype_2 = Vlan::class;
-    public static $items_id_2          = 'vlans_id';
-    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static ?string $itemtype_2 = Vlan::class;
+    public static ?string $items_id_2          = 'vlans_id';
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
     public function getForbiddenStandardMassiveAction()
@@ -142,8 +142,8 @@ class IPNetwork_Vlan extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='ipnetworks_id' value='$ID'>";
             Vlan::dropdown(['used' => $used]);
-            echo "&nbsp;<input type='submit' name='add' value='" . _sx('button', 'Associate')
-                      . "' class='btn btn-primary'>";
+            echo "&nbsp;<button type='submit' name='add'"
+                      . " class='btn btn-primary'><i class='ti ti-link'></i><span>" . _sx('button', 'Associate') . "</span></button>";
             echo "</td></tr>";
 
             echo "</table>";
@@ -244,7 +244,7 @@ class IPNetwork_Vlan extends CommonDBRelation
                             ['ipnetworks_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::getType());
+                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::class);
             }
         }
         return '';

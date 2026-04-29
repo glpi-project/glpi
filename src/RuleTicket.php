@@ -36,7 +36,7 @@
 class RuleTicket extends RuleCommonITILObject
 {
     // From Rule
-    public static $rightname = 'rule_ticket';
+    public static string $rightname = 'rule_ticket';
 
     public function getTitle()
     {
@@ -181,10 +181,11 @@ class RuleTicket extends RuleCommonITILObject
     public function getCriterias()
     {
 
-        static $criterias = [];
+        static $criterias_by_class = [];
 
-        if (count($criterias)) {
-            return $criterias;
+        $rule_class = static::class;
+        if (isset($criterias_by_class[$rule_class])) {
+            return $criterias_by_class[$rule_class];
         }
 
         $criterias = parent::getCriterias();
@@ -290,6 +291,8 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['_locations_code']['table']              = 'glpi_locations';
         $criterias['_locations_code']['field']              = 'code';
         $criterias['_locations_code']['name']               = __('Location code');
+
+        $criterias_by_class[$rule_class] = $criterias;
 
         return $criterias;
     }

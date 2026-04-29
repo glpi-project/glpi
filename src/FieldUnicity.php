@@ -41,11 +41,11 @@ use Glpi\Application\View\TemplateRenderer;
 class FieldUnicity extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
 
-    public $can_be_translated  = false;
+    public bool $can_be_translated  = false;
 
-    public static $rightname          = 'config';
+    public static string $rightname          = 'config';
 
 
     public static function getTypeName($nb = 0)
@@ -542,6 +542,7 @@ class FieldUnicity extends CommonDropdown
                 $where_field => ['<>', getTableNameForForeignKeyField($where_field) ? 0 : ''],
             ];
         }
+        $where += $item::getSystemSQLCriteria();
         $item_table = $item::getTable();
 
         $iterator = $DB->request([
@@ -580,7 +581,6 @@ class FieldUnicity extends CommonDropdown
             'columns' => $columns,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

@@ -43,8 +43,8 @@ class Datacenter extends CommonDBTM
     use AssetImage;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public bool $dohistory                   = true;
+    public static string $rightname                   = 'datacenter';
 
     public static function getTypeName($nb = 0)
     {
@@ -167,7 +167,7 @@ class Datacenter extends CommonDBTM
             'massiveaction'      => false,
         ];
 
-        if (($itemtype != Rack::getType()) && ($itemtype != DCRoom::getType())) {
+        if (($itemtype != Rack::class) && ($itemtype != DCRoom::class)) {
             $tab[] = [
                 'id'            => '1451',
                 'table'         => Datacenter::getTable(),

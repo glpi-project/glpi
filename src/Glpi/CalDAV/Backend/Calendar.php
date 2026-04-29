@@ -89,7 +89,7 @@ class Calendar extends AbstractBackend
         }
 
         $principal_calendar_key = Planning::getPlanningKeyForActor(
-            $principal_item->getType(),
+            $principal_item::class,
             $principal_item->fields['id']
         );
 
@@ -107,7 +107,7 @@ class Calendar extends AbstractBackend
 
         if ($principal_item instanceof User) {
             $user_params = importArrayFromDB($principal_item->fields['plannings']);
-            $user_calendars = is_array($user_params) && array_key_exists('plannings', $user_params)
+            $user_calendars = array_key_exists('plannings', $user_params)
             ? $user_params['plannings']
             : [];
             foreach ($user_calendars as $key => $calendar_params) {
@@ -383,7 +383,7 @@ class Calendar extends AbstractBackend
             if (false === $items_id) {
                 return false;
             }
-            return $this->storeVCalendarData($calendarData, $items_id, $item->getType());
+            return $this->storeVCalendarData($calendarData, $items_id, $item::class);
         }
 
         $input['id'] = $item->fields['id'];
@@ -397,7 +397,7 @@ class Calendar extends AbstractBackend
         if (false === $update) {
             return false;
         }
-        return $this->storeVCalendarData($calendarData, $item->fields['id'], $item->getType());
+        return $this->storeVCalendarData($calendarData, $item->fields['id'], $item::class);
     }
 
     /**

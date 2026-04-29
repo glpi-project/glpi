@@ -1,0 +1,122 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro render_category(category) %}
+    {% import _self as macros %}
+    <li class="node">
+        <div class="d-flex align-items-center mb-2">
+            <i class="ti ti-chevron-down me-1 fs-4"></i>
+            {{ render_illustration(category.illustration, 20) }}
+            <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
+        </div>
+        <ul>
+            {{ macros.render_node(category) }}
+        </ul>
+    </li>
+{% endmacro %}
+
+{% macro render_article(article, add_margin = false, favorite_state = null) %}
+    <li
+        {% if favorite_state is not null %}
+            data-glpi-kb-favorite-current="{{ favorite_state }}"
+        {% endif %}
+        class="article {{ add_margin ? 'mb-2' : '' }}"
+    >
+        <a class="text-dark text-truncate d-block" href="{{ article.link }}">
+            {{ render_illustration(article.illustration, 20) }}
+            {{ article.title }}
+        </a>
+    </li>
+{% endmacro %}
+
+{% macro render_node(node) %}
+    {% import _self as macros %}
+    {% for article in node.articles %}
+        {{ macros.render_article(article) }}
+    {% endfor %}
+    {% for category in node.categories %}
+        {{ macros.render_category(category) }}
+    {% endfor %}
+{% endmacro %}
+
+{% import _self as macros %}
+
+{% set hide_favorites = not has_other_favorites and not current_is_favorite %}
+
+<div class="card-header" data-glpi-kb-aside-header {{ hide_favorites ? 'data-glpi-kb-aside-header-no-border' : '' }}>
+    <h3 class="card-title fw-bold">{{ __("Articles") }}</h3>
+</div>
+
+<div
+    class="card-body flex-grow-0"
+    data-glpi-kb-aside-favorites
+    data-testid="kb-aside-favorites"
+    {{ hide_favorites ? 'data-glpi-kb-aside-favorites-hidden' : '' }}
+>
+    <h4 class="card-title fw-bold fs-4">
+        <i class="ti ti-star-filled me-1 fs-5 text-yellow"></i>
+        {{ __("Favorites") }}
+    </h4>
+        <ul class="kb-tree ps-0">
+            {% for article in favorites %}
+                {% if article.is_current %}
+                    {{ macros.render_article(
+                        article,
+                        true,
+                        current_is_favorite ? 'active' : 'pending',
+                    ) }}
+                {% else %}
+                    {{ macros.render_article(article, true) }}
+                {% endif %}
+            {% endfor %}
+        </ul>
+</div>
+
+<div class="card-body">
+    <ul class="kb-tree ps-0">
+        {# Render root articles in a special "uncategorized" category #}
+        {% if tree.articles|length %}
+            {{ macros.render_category({
+                title: __("Uncategorized"),
+                illustration: "kb-faq",
+                articles: tree.articles,
+                categories: [],
+            }) }}
+        {% endif %}
+
+        {# Render each categories #}
+        {% for category in tree.categories %}
+            {{ macros.render_category(category) }}
+        {% endfor %}
+    </ul>
+</div>
+

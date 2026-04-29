@@ -38,10 +38,10 @@
  **/
 class Item_DeviceProcessor extends Item_Devices
 {
-    public static $itemtype_2 = DeviceProcessor::class;
-    public static $items_id_2 = 'deviceprocessors_id';
+    public static ?string $itemtype_2 = DeviceProcessor::class;
+    public static ?string $items_id_2 = 'deviceprocessors_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')

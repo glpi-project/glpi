@@ -35,6 +35,7 @@
     {% set name     = entry_i['name'] ?? entry_i['filename'] %}
     {% set filename = entry_i['filename'] ?? entry_i['name'] %}
     {% set fk = item.getForeignKeyField() %}
+    {% set is_private = entry_i['is_private'] ?? 0 %}
 
     {% if entry_i['filename'] %}
         {% set docpath = path('front/document.send.php?docid=' ~ entry_i['id'] ~ "&" ~ fk ~ "=" ~ item.fields["id"]) %}
@@ -61,6 +62,15 @@
         </div>
     {% endif %}
 
+    {% if is_private %}
+        <div class="col-auto">
+            <span class="badge bg-warning text-dark" title="{{ __('Private') }}"
+                  data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="ti ti-lock"></i>
+            </span>
+        </div>
+    {% endif %}
+
     <div class="col-auto">
         <div class="list-group-item-actions">
             {% if entry_i['_can_edit'] %}
@@ -75,7 +85,6 @@
                 <form class="d-inline" method="post" action="{{ item.getFormURL() }}">
                     <input type="hidden" name="{{ fk }}" value="{{ item.fields['id'] }}">
                     <input type="hidden" name="documents_id" value="{{ entry_i['id'] }}">
-                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
                             title="{{ _x('button', 'Delete permanently') }}"
                             data-bs-toggle="tooltip" data-bs-placement="top">
@@ -90,7 +99,6 @@
                 <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
                     <input type="hidden" name="id" value="{{ entry_i['id'] }}">
                     <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">
-                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                     <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
                             title="{{ blacklisted_title }}"
                             data-bs-toggle="tooltip" data-bs-placement="top">

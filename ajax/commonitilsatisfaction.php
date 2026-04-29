@@ -49,13 +49,13 @@ if (isset($_POST['inquest_config' . $config_suffix], $_POST['entities_id'])) {
         if (!$ent->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
-        $inquest_delay             = $ent->getfield('inquest_delay' . $config_suffix);
-        $inquest_rate              = $ent->getfield('inquest_rate' . $config_suffix);
-        $inquest_duration          = $ent->getfield('inquest_duration' . $config_suffix);
-        $inquest_max_rate          = $ent->getfield('inquest_max_rate' . $config_suffix);
-        $inquest_default_rate      = $ent->getfield('inquest_default_rate' . $config_suffix);
-        $inquest_mandatory_comment = $ent->getfield('inquest_mandatory_comment' . $config_suffix);
-        $max_closedate             = $ent->getfield('max_closedate' . $config_suffix);
+        $inquest_delay             = $ent->fields['inquest_delay' . $config_suffix];
+        $inquest_rate              = $ent->fields['inquest_rate' . $config_suffix];
+        $inquest_duration          = $ent->fields['inquest_duration' . $config_suffix];
+        $inquest_max_rate          = $ent->fields['inquest_max_rate' . $config_suffix];
+        $inquest_default_rate      = $ent->fields['inquest_default_rate' . $config_suffix];
+        $inquest_mandatory_comment = $ent->fields['inquest_mandatory_comment' . $config_suffix];
+        $max_closedate             = $ent->fields['max_closedate' . $config_suffix];
     } else {
         $inquest_delay             = -1;
         $inquest_rate              = -1;

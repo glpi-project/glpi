@@ -43,11 +43,11 @@ use Glpi\Application\View\TemplateRenderer;
 class Change_Ticket extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Change::class;
-    public static $items_id_1   = 'changes_id';
+    public static ?string $itemtype_1 = Change::class;
+    public static ?string $items_id_1   = 'changes_id';
 
-    public static $itemtype_2 = Ticket::class;
-    public static $items_id_2   = 'tickets_id';
+    public static ?string $itemtype_2 = Ticket::class;
+    public static ?string $items_id_2   = 'tickets_id';
 
 
     public static function getTypeName($nb = 0)
@@ -134,34 +134,32 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     break;
                 }
-                $ticket = new Ticket();
-                $field = $ticket->getForeignKeyField();
+                $field = Ticket::getForeignKeyField();
 
                 $input = $ma->getInput();
 
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
-                        if ($ticket->getFromDB($item->fields['tickets_id'])) {
-                            $input2 = [$field              => $item->fields['tickets_id'],
-                                'taskcategories_id' => $input['taskcategories_id'],
-                                'actiontime'        => $input['actiontime'],
-                                'content'           => $input['content'],
-                            ];
-                            if ($task->can(-1, CREATE, $input2)) {
-                                if ($task->add($input2)) {
-                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                                } else {
-                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                                }
+                        $input2 = [
+                            $field              => $item->getID(),
+                            'taskcategories_id' => $input['taskcategories_id'],
+                            'actiontime'        => $input['actiontime'],
+                            'content'           => $input['content'],
+                        ];
+                        if ($task->can(-1, CREATE, $input2)) {
+                            if ($task->add($input2)) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 return;
@@ -212,7 +210,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
     {
         global $DB;
 
-        $ID = $change->getField('id');
+        $ID = $change->getID();
         if (!$change->can($ID, READ)) {
             return;
         }
@@ -288,7 +286,6 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -314,7 +311,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
     {
         global $DB;
 
-        $ID = $ticket->getField('id');
+        $ID = $ticket->getID();
         if (!$ticket->can($ID, READ)) {
             return;
         }
@@ -391,7 +388,6 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

@@ -77,72 +77,62 @@ class DatabaseSchemaIntegrityChecker
     /**
      * DB instance.
      *
-     * @var DBmysql
      */
-    protected $db;
+    protected DBmysql $db;
 
     /**
      * Do not check tokens related to "DYNAMIC" row format migration.
      *
-     * @var bool
      */
-    protected $ignore_dynamic_row_format_migration;
+    protected bool $ignore_dynamic_row_format_migration;
 
     /**
      * Do not check tokens related to migration from "MyISAM" to "InnoDB".
      *
-     * @var bool
      */
-    protected $ignore_innodb_migration;
+    protected bool $ignore_innodb_migration;
 
     /**
      * Do not check tokens related to migration from "datetime" to "timestamp".
      *
-     * @var bool
      */
-    protected $ignore_timestamps_migration;
+    protected bool $ignore_timestamps_migration;
 
     /**
      * Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
      *
-     * @var bool
      */
-    protected $ignore_unsigned_keys_migration;
+    protected bool $ignore_unsigned_keys_migration;
 
     /**
      * Do not check tokens related to migration from "utf8" to "utf8mb4".
      *
-     * @var bool
      */
-    protected $ignore_utf8mb4_migration;
+    protected bool $ignore_utf8mb4_migration;
 
     /**
      * Ignore differences that has no effect on application (columns and keys order for instance).
      *
-     * @var bool
      */
-    protected $strict;
+    protected bool $strict;
 
     /**
      * Local cache for normalized SQL.
      *
-     * @var array
      */
-    private $normalized = [];
+    private array $normalized = [];
 
     /**
      * Differ instance.
      *
-     * @var Differ
      */
-    private $differ;
+    private Differ $differ;
 
     /**
      * GLPI database version.
      *
-     * @var string
      */
-    private $db_version;
+    private ?string $db_version = null;
 
     /**
      * @param DBmysql $db                                 DB instance.

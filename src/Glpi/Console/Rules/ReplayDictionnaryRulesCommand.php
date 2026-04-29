@@ -91,7 +91,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $dictionnary = $input->getOption('dictionnary');

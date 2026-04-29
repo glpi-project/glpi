@@ -58,7 +58,7 @@ class GrantCommand extends AbstractUserCommand
         $this->addOption('recursive', 'r', InputOption::VALUE_NONE, __('Recursive'));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): ?int
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $username = $input->getArgument('username');
         $profile = $input->getOption('profile');

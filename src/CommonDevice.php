@@ -41,12 +41,12 @@ use Glpi\DBAL\QueryFunction;
  */
 abstract class CommonDevice extends CommonDropdown
 {
-    public static $rightname          = 'device';
+    public static string $rightname          = 'device';
 
-    public $can_be_translated  = false;
+    public bool $can_be_translated  = false;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -379,6 +379,15 @@ abstract class CommonDevice extends CommonDropdown
             'datatype'           => 'dropdown',
         ];
 
+        $tab[] = [
+            'id'       => 86,
+            'table'      => static::getTable(),
+            'field'      => 'is_recursive',
+            'name'       => __('Child entities'),
+            'datatype'   => 'bool',
+            'searchtype' => 'equals',
+        ];
+
         return $tab;
     }
 
@@ -597,7 +606,7 @@ abstract class CommonDevice extends CommonDropdown
             (isset($this->input['_registeredID']))
             && (is_array($this->input['_registeredID']))
         ) {
-            $input = ['itemtype' => $this->getType(),
+            $input = ['itemtype' => static::class,
                 'items_id' => $this->getID(),
             ];
 
@@ -662,5 +671,11 @@ abstract class CommonDevice extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-components";
+    }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        $options['itemtype'] = static::class;
+        parent::displayFullPageForItem($id, $menus, $options);
     }
 }

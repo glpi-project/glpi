@@ -33,7 +33,6 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 <form name="form" method="post" action="rule.backup.php" enctype="multipart/form-data">
-   {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
    <div class="center">
       <h2>{{ __('Import rules from an XML file') }}</h2>
       <input type="file" name="xml_file">

@@ -52,6 +52,7 @@
    <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}" aria-label="{{ firstlevel['title'] }}">
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
          data-bs-toggle="dropdown" role="button"
+         data-testid="sidebar-menu-toggle"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
          <i class="{{ firstlevel['icon'] ?? '' }}"></i>
          <span class="menu-label">{{ firstlevel['title'] }}</span>

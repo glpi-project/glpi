@@ -208,7 +208,9 @@ class Update
             // e.g. with `NO_ZERO_DATE` flag `ALTER TABLE` operations fails when a row contains a `0000-00-00 00:00:00` datetime value.
             // Unitary removal of these flags is not pôssible as MySQL 8.0 triggers warning if
             // `STRICT_{ALL|TRANS}_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO` are not used all together.
-            $sql_mode = $DB->doQuery(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')))->fetch_assoc()['sql_mode'] ?? '';
+            /** @var mysqli_result $request */
+            $request = $DB->doQuery(sprintf('SELECT @@sql_mode as %s', $DB->quoteName('sql_mode')));
+            $sql_mode = (string) ($request->fetch_assoc()['sql_mode'] ?? '');
             $sql_mode_flags = array_filter(
                 explode(',', $sql_mode),
                 fn(string $flag) => !in_array(

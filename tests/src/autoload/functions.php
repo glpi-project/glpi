@@ -40,6 +40,7 @@ use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
+use Glpi\Inventory\Conf;
 use Glpi\Socket;
 
 function loadDataset()
@@ -792,6 +793,13 @@ function loadDataset()
                 'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
                 'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0", "multiple" => "1"],
             ],
+            [
+                'system_name' => 'testboolean',
+                'assets_assetdefinitions_id' => 'Test01',
+                'label' => 'Test Boolean',
+                'type' => 'Glpi\\Asset\\CustomFieldType\\BooleanType',
+                'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0"],
+            ],
         ],
         'Glpi\\CustomAsset\\Test01Asset' => [
             [
@@ -953,6 +961,8 @@ function loadDataset()
         Search::$search = [];
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
+
+    Config::setConfigurationValues('inventory', ['auth_required' => Conf::NO_AUTH]);
     $DB->commit();
 
     $_SESSION = $session_bak; // Unset force session variables

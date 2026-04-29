@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\ServiceCatalog\Provider;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ItemRequestContext;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
@@ -59,7 +60,7 @@ final class KnowbaseItemProvider implements LeafProviderInterface
 
         $knowbase_items = [];
 
-        $criteria = [];
+        $criteria = [new QueryExpression('true')];
         if ($category_id !== null) {
             $criteria['forms_categories_id'] = $category_id;
         }

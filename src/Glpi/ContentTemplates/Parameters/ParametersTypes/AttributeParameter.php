@@ -52,9 +52,8 @@ class AttributeParameter extends AbstractParameterType
      * when dealing with timestamp so the user know how to reformat the date as
      * needed, ...
      *
-     * @var string
      */
-    protected $filter;
+    protected string $filter;
 
     /**
      * @param string $key    Key to access this value

@@ -234,14 +234,6 @@ describe('Common', () => {
         expect(common.getFlatPickerLocale('de', 'DE')).toBe('de');
     });
 
-    it('getAjaxCsrfToken', () => {
-        const csrf_meta = document.createElement('meta');
-        csrf_meta.setAttribute('property', 'glpi:csrf_token');
-        csrf_meta.setAttribute('content', 'dummy_csrf_token_value');
-        document.head.append(csrf_meta);
-        expect(common.getAjaxCsrfToken()).toBe('dummy_csrf_token_value');
-    });
-
     it('tableToDetails', () => {
         document.body.innerHTML = `
             <div id="sysinfo">

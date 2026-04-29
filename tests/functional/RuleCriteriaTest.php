@@ -202,9 +202,9 @@ class RuleCriteriaTest extends DbTestCase
         $this->assertSame($input, $criteria->prepareInputForAdd($input));
 
         // Expects prepareInputForAdd to return false if `rules_id` is not a valid ID
-        $input = ['rules_id' => $rules_id + 1000, 'criteria' => 'name'];
+        $input = ['rules_id' => $rules_id + 1000000000, 'criteria' => 'name'];
         $this->assertFalse($criteria->prepareInputForAdd($input));
-        $this->hasSessionMessages(ERROR, ['Parent item Rule #' . ($rules_id + 1000) . ' is invalid.']);
+        $this->hasSessionMessages(ERROR, ['Parent item Rule #' . ($rules_id + 1000000000) . ' is invalid.']);
     }
 
     public function testGetSearchOptionsNew()
@@ -255,7 +255,7 @@ class RuleCriteriaTest extends DbTestCase
         $this->assertSame('version', $result[1]->fields['criteria']);
 
         //Try to get criteria for a non existing rule
-        $this->assertEmpty($criteria->getRuleCriterias(100));
+        $this->assertEmpty($criteria->getRuleCriterias(1000000000));
     }
 
     public function testMatchConditionWildcardOfFind()

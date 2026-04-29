@@ -67,7 +67,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
                     [static::$items_id => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }

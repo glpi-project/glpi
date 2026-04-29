@@ -491,11 +491,11 @@ HTML;
                if ($(this).attr('data-show-all-tabs') === 'true') {
                   loadAllTabs();
                   // show all tabs by adding active and show classes to all tabs
-                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
+                  $('#$tabdiv_id').parent().find('[data-glpi-tab-content].tab-pane').addClass('active show').removeClass('fade');
                } else {
                   // Remove active and show classes from all tabs except the one that is clicked
                   let clicked_tab = $(this).attr('data-bs-target');
-                  $('#$tabdiv_id').parent().find('.tab-pane:not(' + clicked_tab + ')').removeClass('active show');
+                  $('#$tabdiv_id').parent().find('[data-glpi-tab-content].tab-pane:not(' + clicked_tab + ')').removeClass('active show');
                   loadTabContents($(this), false, !first_load);
                }
             });
@@ -697,14 +697,14 @@ JS;
         // Old scheme
         if (
             isset($options["update_item"])
-            && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))
+            && (is_array($options["update_item"]) || ((string) $options["update_item"]) !== '')
         ) {
             $field     = "update_item";
         }
         // New scheme
         if (
             isset($options["toupdate"])
-            && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))
+            && (is_array($options["toupdate"]) || ((string) $options["toupdate"]) !== '')
         ) {
             $field     = "toupdate";
         }

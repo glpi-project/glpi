@@ -45,11 +45,11 @@ use function Safe\strtotime;
 class Reservation extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = ReservationItem::class;
-    public static $items_id          = 'reservationitems_id';
+    public static string $itemtype = ReservationItem::class;
+    public static string $items_id          = 'reservationitems_id';
 
-    public static $rightname                = 'reservation';
-    public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static string $rightname                = 'reservation';
+    public static int $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public static function getTypeName($nb = 0)
     {
@@ -62,7 +62,7 @@ class Reservation extends CommonDBChild
             !$withtemplate
             && Session::haveRight("reservation", READ)
         ) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
         return '';
     }
@@ -222,31 +222,31 @@ class Reservation extends CommonDBChild
                 }
 
                 if ($newID = $rr->add($reservation_input)) {
-                    Event::log(
-                        $newID,
-                        "reservation",
-                        4,
-                        "inventory",
-                        sprintf(
-                            __s('%1$s adds the reservation %2$s for item %3$s'),
-                            $_SESSION["glpiname"],
-                            $newID,
-                            $reservationitems_id
-                        )
-                    );
-
                     $rri = new ReservationItem();
                     $rri->getFromDB($reservationitems_id);
                     $item = getItemForItemtype($rri->fields["itemtype"]);
-                    $item->getFromDB($rri->fields["items_id"]);
-
-                    Session::addMessageAfterRedirect(
-                        sprintf(
-                            __s('Reservation added for item %s at %s'),
-                            $item->getLink(),
-                            htmlescape(Html::convDateTime($reservation_input['begin']))
-                        )
-                    );
+                    if ($item && $item->getFromDB($rri->fields["items_id"])) {
+                        Event::log(
+                            $newID,
+                            "reservation",
+                            4,
+                            "inventory",
+                            sprintf(
+                                __s('%1$s adds reservation %2$s for %3$s %4$s'),
+                                $_SESSION["glpiname"],
+                                $newID,
+                                $item::getTypeName(1),
+                                $item->getNameID(['forceid' => true])
+                            )
+                        );
+                        Session::addMessageAfterRedirect(
+                            sprintf(
+                                __s('Reservation added for item %s at %s'),
+                                $item->getLink(),
+                                htmlescape(Html::convDateTime($reservation_input['begin']))
+                            )
+                        );
+                    }
                 }
             }
         }
@@ -795,7 +795,7 @@ class Reservation extends CommonDBChild
             // Set item if not set
             if (
                 (!isset($options['item']) || (count($options['item']) === 0))
-                && ($itemid = $resa->getField('reservationitems_id'))
+                && ($itemid = $resa->fields['reservationitems_id'])
             ) {
                 $options['item'][$itemid] = $itemid;
             }
@@ -1011,7 +1011,7 @@ class Reservation extends CommonDBChild
         ReservationItem::showActivationFormForItem($item);
 
         $ri = new ReservationItem();
-        if (!$ri->getFromDBbyItem($item->getType(), $item->getID())) {
+        if (!$ri->getFromDBbyItem($item::class, $item->getID())) {
             return;
         }
 
@@ -1219,7 +1219,6 @@ JAVASCRIPT;
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }
@@ -1334,52 +1333,52 @@ JAVASCRIPT;
         switch ($ma->getAction()) {
             case 'enable':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         // Treat as OK
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
                         $result = $reservation_item->add([
-                            'itemtype' => $item->getType(),
+                            'itemtype' => $item::class,
                             'items_id' => $id,
                             'is_active' => 1,
                         ]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     }
                 }
                 break;
             case 'disable':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;
             case 'available':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 1,
                         ]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;
             case 'unavailable':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 0,
                         ]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;

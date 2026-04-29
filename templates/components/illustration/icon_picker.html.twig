@@ -1,0 +1,116 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{#
+ # Reusable illustration picker component.
+ #
+ # Parameters:
+ #   - name: input name attribute (optional, defaults to '')
+ #   - value: current illustration value
+ #   - size: icon preview size in pixels (defaults to 100)
+ #   - preview_css_classes: CSS classes for the clickable preview container
+ #   - preview_inner_css_classes: CSS classes for the inner preview wrapper
+ #   - backdrop: whether the modal should have a backdrop (defaults to true)
+ #}
+
+{% set custom_icon_prefix = constant(
+    'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
+) %}
+{% set container_id = "illustration-picker-" ~ random() %}
+{% set modal_id = "illustration-modal-" ~ random() %}
+{% set size = size ?? 100 %}
+{% set backdrop = backdrop ?? true %}
+{% set preview_css_classes = preview_css_classes ?? "illustration-selector d-flex align-items-center card border-1" %}
+{% set preview_inner_css_classes = preview_inner_css_classes ?? "card-body aspect-ratio-1" %}
+
+<div id="{{ container_id }}">
+    <input
+        {% if name is defined and name is not empty %}
+            name="{{ name }}"
+        {% endif %}
+        type="hidden"
+        value="{{ value }}"
+        data-glpi-icon-picker-value
+        data-testid="illustration-input"
+    >
+
+    <div
+        class="{{ preview_css_classes }}"
+        role="button"
+        aria-label="{{ __("Select an illustration") }}"
+        data-bs-toggle="modal"
+        data-bs-target="#{{ modal_id }}"
+        data-glpi-icon-picker-value-preview
+        data-testid="illustration-picker"
+    >
+        <div class="{{ preview_inner_css_classes }}">
+            {% set is_custom_file = value starts with custom_icon_prefix %}
+            <div
+                {% if is_custom_file %}
+                    data-glpi-icon-picker-value-preview-custom
+                    data-testid="illustration-custom-preview"
+                {% else %}
+                    data-glpi-icon-picker-value-preview-native
+                {% endif %}
+            >
+                {{ render_illustration(value, size) }}
+            </div>
+            {% if is_custom_file %}
+                <div class="d-none" data-glpi-icon-picker-value-preview-native>
+                    {{ render_illustration('', size) }}
+                </div>
+            {% else %}
+                <div class="d-none" data-glpi-icon-picker-value-preview-custom data-testid="illustration-custom-preview">
+                    {{ render_illustration(custom_icon_prefix, size) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {{ include('components/illustration/icon_picker_modal.html.twig', {
+        'id': modal_id,
+        'backdrop': backdrop,
+    }, with_context: false) }}
+
+    <script defer type="module">
+        (async () => {
+            const module = await import(
+                "/js/modules/IllustrationPicker/Controller.js"
+            );
+            new module.GlpiIllustrationPickerController(
+                document.getElementById('{{ container_id|e('js') }}'),
+                document.getElementById('{{ modal_id|e('js') }}'),
+                "{{ custom_icon_prefix|e('js') }}",
+            );
+        })();
+    </script>
+</div>

@@ -57,12 +57,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
+    protected static array $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
 
-    public static $rightname                   = 'software';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'software';
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -284,17 +284,17 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     }
                     if ($item->can($input['item_items_id'], UPDATE)) {
                         if ($item->merge($items)) {
-                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
 
@@ -317,13 +317,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                                                   => $output['softwarecategories_id'],
                             ])
                         ) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -336,14 +336,14 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     if ($item->can($id, UPDATE)) {
                         $allowed_ids[] = $id;
                     } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $allowed_ids) > 0) {
-                    $ma->itemDone($item->getType(), $allowed_ids, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $allowed_ids, MassiveAction::ACTION_OK);
                 } else {
-                    $ma->itemDone($item->getType(), $allowed_ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $allowed_ids, MassiveAction::ACTION_KO);
                 }
 
                 return;
@@ -927,7 +927,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     {
         global $DB;
 
-        $ID   = $this->getField('id');
+        $ID   = $this->getID();
         $this->check($ID, UPDATE);
 
         $iterator = $DB->request([
@@ -988,7 +988,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1012,7 +1011,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     {
         global $DB;
 
-        $ID = $this->getField('id');
+        $ID = $this->getID();
 
         $item = array_keys($item);
 
@@ -1080,7 +1079,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                         'glpi_softwareversions',
                         [
                             'softwares_id' => $ID,
-                            'entities_id'  => $this->getField('entities_id'),
+                            'entities_id'  => $this->fields['entities_id'],
                         ],
                         [
                             'id' => $from['id'],

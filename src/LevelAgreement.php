@@ -45,17 +45,15 @@ use function Safe\strtotime;
 abstract class LevelAgreement extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory          = true;
-    public static $rightname       = 'slm';
+    public bool $dohistory          = true;
+    public static string $rightname       = 'slm';
 
     // From CommonDBChild
-    public static $itemtype = SLM::class;
-    public static $items_id = 'slms_id';
+    public static string $itemtype = SLM::class;
+    public static string $items_id = 'slms_id';
 
-    /** @var string  */
-    protected static $prefix            = '';
-    /** @var string  */
-    protected static $prefixticket      = '';
+    protected static string $prefix            = '';
+    protected static string $prefixticket      = '';
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
     /** @var string|class-string<CommonDBTM> */
@@ -158,7 +156,7 @@ abstract class LevelAgreement extends CommonDBChild
             $this->check($ID, READ);
         } else {
             // Create item
-            $options[static::$items_id] = $slm->getField('id');
+            $options[static::$items_id] = $slm->getID();
 
             // force itemtype of parent
             static::$itemtype = get_class($slm);
@@ -421,7 +419,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -479,7 +476,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -496,16 +492,16 @@ TWIG, $twig_params);
     {
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'SLM':
                     /** @var SLM $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
-                            ['slms_id' => $item->getField('id')]
+                            ['slms_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());
+                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::class);
             }
         }
         return '';

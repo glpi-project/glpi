@@ -36,7 +36,7 @@
 /// Class DevicePowerSupply
 class DevicePowerSupply extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {
@@ -128,7 +128,7 @@ class DevicePowerSupply extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["power"]) {

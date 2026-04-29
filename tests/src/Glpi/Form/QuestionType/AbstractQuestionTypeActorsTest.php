@@ -419,4 +419,36 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
         $this->assertArrayHasKey(QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS, $result);
         $this->assertFalse($result[QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS]);
     }
+
+    public function testTransformConditionValueForComparisonsWithPreparedAnswerFormat(): void
+    {
+        $glpi_id   = getItemByTypeName(User::class, 'glpi', true);
+        $tech_id   = getItemByTypeName(User::class, 'tech', true);
+        $group_id  = getItemByTypeName(Group::class, '_test_group_1', true);
+
+        $question_type = new (static::getQuestionType())();
+
+        // Single user — the format returned by prepareEndUserAnswer()
+        $result = $question_type->transformConditionValueForComparisons(
+            [['itemtype' => User::class, 'items_id' => $glpi_id]],
+            null
+        );
+        $this->assertContains('glpi', $result);
+
+        // Multiple actors of mixed types
+        $result = $question_type->transformConditionValueForComparisons(
+            [
+                ['itemtype' => User::class,  'items_id' => $glpi_id],
+                ['itemtype' => User::class,  'items_id' => $tech_id],
+                ['itemtype' => Group::class, 'items_id' => $group_id],
+            ],
+            null
+        );
+        $this->assertContains('glpi', $result);
+        $this->assertContains('tech', $result);
+        $this->assertContains('_test_group_1', $result);
+
+        // Empty array must return empty array without error
+        $this->assertSame([], $question_type->transformConditionValueForComparisons([], null));
+    }
 }

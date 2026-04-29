@@ -59,7 +59,6 @@
                 action="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}"
             >
                 <input type="hidden" name="name" value="{{ label }}"/>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" name="add" value=""/>
             </form>
         {% endfor %}
@@ -84,7 +83,7 @@
             {{ __("No items will be created for this form.") }}
         </p>
     {% else %}
-        <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
+        <section class="accordion mt-4 pe-none" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
                 {% set is_expanded = active_destination == destination.getID() %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}

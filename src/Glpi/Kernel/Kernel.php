@@ -36,15 +36,20 @@ namespace Glpi\Kernel;
 
 use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
+use Glpi\DependencyInjection\Compiler\RemoveUnwantedTwigExtensionsPass;
 use Override;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Bundle\DebugBundle\DebugBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,6 +57,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
 use Throwable;
 
 final class Kernel extends BaseKernel
@@ -118,12 +124,13 @@ final class Kernel extends BaseKernel
         $bundles = [];
 
         $bundles[] = new FrameworkBundle();
+        $bundles[] = new TwigBundle();
+        $bundles[] = new TwigComponentBundle();
 
         if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
                 DebugBundle::class,
-                TwigBundle::class,
             ];
             foreach ($dev_bundles_classes as $bundle_class) {
                 if (\class_exists($bundle_class)) {
@@ -142,16 +149,27 @@ final class Kernel extends BaseKernel
 
         parent::boot();
 
-        // Define synthetic logger service
-        $this->container->set('logger', $this->logger);
+        $container = $this->container;
+
+        if (!($container instanceof ContainerInterface)) {
+            throw new RuntimeException('Services container is expected to be set.');
+        }
+
+        $container->set('logger', $this->logger); // Define synthetic logger service
 
         if (!$already_booted && !$this->in_reboot) {
-            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
+            $event_dispatcher = $container->get('event_dispatcher');
+
+            if (!($event_dispatcher instanceof EventDispatcherInterface)) {
+                throw new RuntimeException('Event dispatcher service is expected to be registered in the services container.');
+            }
+
+            $event_dispatcher->dispatch(new PostBootEvent());
         }
     }
 
     #[Override()]
-    public function reboot(?string $warmupDir)
+    public function reboot(?string $warmupDir): void
     {
         $this->in_reboot = true;
 
@@ -183,12 +201,29 @@ final class Kernel extends BaseKernel
         return parent::buildContainer();
     }
 
+    #[Override()]
+    protected function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        // Must run AFTER Symfony\Bundle\TwigBundle\DependencyInjection\Compiler\ExtensionPass,
+        // which is registered at TYPE_BEFORE_OPTIMIZATION with priority 10
+        // In Symfony\Bundle\TwigBundle\TwigBundle
+        $container->addCompilerPass(
+            new RemoveUnwantedTwigExtensionsPass(),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION,
+            9
+        );
+    }
+
     protected function configureContainer(ContainerConfigurator $container): void
     {
         $projectDir = $this->getProjectDir();
 
-        $container->import($projectDir . '/dependency_injection/services.php', 'php');
         $container->import($projectDir . '/dependency_injection/framework.php', 'php');
+        $container->import($projectDir . '/dependency_injection/services.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig.php', 'php');
+        $container->import($projectDir . '/dependency_injection/twig_component.php', 'php');
         $container->import($projectDir . '/dependency_injection/web_profiler.php', 'php');
     }
 
@@ -294,9 +329,17 @@ final class Kernel extends BaseKernel
         try {
             $response->send();
         } catch (Throwable $exception) {
-            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
+            $dispatcher = $this->container?->get('event_dispatcher');
 
-            $dispatcher = $this->container->get('event_dispatcher');
+            if (!($dispatcher instanceof EventDispatcherInterface)) {
+                throw new RuntimeException(
+                    'Event dispatcher service is expected to be registered in the services container.',
+                    $exception->getCode(),
+                    $exception
+                );
+            }
+
+            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
             $dispatcher->dispatch($event, KernelEvents::EXCEPTION);
 
             if ($event->hasResponse()) {

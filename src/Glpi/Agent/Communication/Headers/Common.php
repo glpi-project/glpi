@@ -45,7 +45,6 @@ class Common
     /**
      * "Content-Type" HTTP header
      *
-     * @var string
      */
     protected string $content_type;
 
@@ -54,7 +53,6 @@ class Common
      *
      * Must follow RFC7231 - https://tools.ietf.org/html/rfc7231#page-38
      *
-     * @var string
      */
     protected string $accept;
 
@@ -62,7 +60,6 @@ class Common
      * "Cache-Control" HTTP header
      * Required
      *
-     * @var string
      */
     protected string $cache_control = 'no-cache,no-store';
 
@@ -70,19 +67,8 @@ class Common
      * "Connection" HTTP header
      * Required
      *
-     * @var string
      */
     protected string $connection = 'close';
-
-    /**
-     * "Pragma" HTTP header
-     * Required
-     *
-     * Avoid any caching done by the server
-     *
-     * @var string
-     */
-    protected string $pragma = 'no-cache';
 
     //GLPI agent headers
     /**
@@ -91,7 +77,6 @@ class Common
      *
      * Plain text UUID which can be reduced in a 128 bits raw id (ex. 3a609a2e-947f-4e6a-9af9-32c024ac3944)
      *
-     * @var string
      */
     protected string $glpi_agent_id;
 
@@ -100,7 +85,6 @@ class Common
      *
      * 8 digit hexadecimal string in higher case like 2E6A9AF1
      *
-     * @var string
      */
     protected string $glpi_request_id;
 
@@ -109,7 +93,6 @@ class Common
      *
      * List of agentid separated by commas
      *
-     * @var string
      */
     protected string $glpi_cryptokey_id;
 
@@ -118,19 +101,16 @@ class Common
      *
      * List of agentid separated by commas
      *
-     * @var string
      */
     protected string $glpi_proxy_id;
 
     /**
      * Authorization header
-     * @var ?string
      */
     protected ?string $authorization = null;
 
     /**
      * Define HTTP Authorization Header Authorization type
-     * @var string
      */
     protected string $www_authenticate;
 
@@ -141,7 +121,6 @@ class Common
     {
         return [
             'content_type',
-            'pragma',
             'glpi_agent_id',
             'cache_control',
             'connection',

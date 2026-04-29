@@ -37,12 +37,12 @@ use Glpi\DBAL\QueryExpression;
 
 class Appliance_Item_Relation extends CommonDBRelation
 {
-    public static $itemtype_1 = Appliance_Item::class;
-    public static $items_id_1 = 'appliances_items_id';
+    public static ?string $itemtype_1 = Appliance_Item::class;
+    public static ?string $items_id_1 = 'appliances_items_id';
     //static public $take_entity_1 = false;
 
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
     //static public $take_entity_2 = true;
 
     public static function getTypeName($nb = 0)
@@ -264,8 +264,6 @@ class Appliance_Item_Relation extends CommonDBRelation
                 . Html::submit(_x('button', "Add"), ['name' => 'add'])
                 . Html::closeForm(false);
 
-            $crsf_token = Session::getNewCSRFToken();
-
             $js = "
                 $(function() {
                     $(document).on('click', '.add_relation', function() {
@@ -286,7 +284,6 @@ class Appliance_Item_Relation extends CommonDBRelation
 
                         $.post('" . jsescape($form_url) . "', {
                             'id': relations_id,
-                            '_glpi_csrf_token': '" . jsescape($crsf_token) . "',
                             'purge': 1,
                         }, function() {
                             location.reload();

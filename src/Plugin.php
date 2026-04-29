@@ -48,7 +48,6 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\ini_get;
@@ -56,7 +55,6 @@ use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
-use function Safe\realpath;
 use function Safe\scandir;
 
 class Plugin extends CommonDBTM
@@ -144,28 +142,27 @@ class Plugin extends CommonDBTM
      */
     private const PLUGIN_KEY_PATTERN = '/^[a-z0-9]+$/i';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * Indicates whether plugins have been initialized.
      *
-     * @var bool
      */
-    private static $plugins_initialized = false;
+    private static bool $plugins_initialized = false;
 
     /**
      * Booted plugin list
      *
      * @var string[]
      */
-    private static $booted_plugins = [];
+    private static array $booted_plugins = [];
 
     /**
      * Activated plugin list
      *
      * @var string[]
      */
-    private static $activated_plugins = [];
+    private static array $activated_plugins = [];
 
 
     /**
@@ -173,14 +170,14 @@ class Plugin extends CommonDBTM
      *
      * @var string[]
      */
-    private static $autoloaded_plugins = [];
+    private static array $autoloaded_plugins = [];
 
     /**
      * Loaded plugin list
      *
      * @var string[]
      */
-    private static $loaded_plugins = [];
+    private static array $loaded_plugins = [];
 
     /**
      * Indicates whether the plugins execution is forced.
@@ -190,7 +187,6 @@ class Plugin extends CommonDBTM
     /**
      * Store additional infos for each plugins
      *
-     * @var array
      */
     private array $plugins_information = [];
 
@@ -1096,7 +1092,7 @@ class Plugin extends CommonDBTM
      *
      * @return array
      */
-    public function getList(array $fields = [], array $order = ['name', 'directory'])
+    public function getList(array $fields = [], array $order = ['directory'])
     {
         global $DB;
 
@@ -1645,7 +1641,7 @@ class Plugin extends CommonDBTM
         $content = '';
 
         $plug     = new Plugin();
-        $pluglist = $plug->find([], "name, directory");
+        $pluglist = $plug->find([], ['state', 'name', 'directory']);
         foreach ($pluglist as $plugin) {
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
@@ -1656,7 +1652,7 @@ class Plugin extends CommonDBTM
 
             $msg  = substr(str_pad($plugin['directory'], 30), 0, 20)
                  . " Name: " . Toolbox::substr(str_pad($name, 40), 0, 30)
-                 . " Version: " . str_pad($version, 10)
+                 . " Version: " . str_pad($version, 12)
                  . " State: " . str_pad($state, 40)
                  . " Install Method: " . $install_method;
             $content .= "\n" . $msg;
@@ -1797,10 +1793,6 @@ class Plugin extends CommonDBTM
                 foreach ($PLUGIN_HOOKS[$name] as $plugin_key => $tab) {
                     if (!Plugin::isPluginActive($plugin_key)) {
                         continue;
-                    }
-
-                    if ($name === Hooks::SHOW_IN_TIMELINE) { // @phpstan-ignore classConstant.deprecated
-                        Toolbox::deprecated('`show_in_timeline` hook is deprecated, use `timeline_items` instead.');
                     }
 
                     if (isset($tab[$itemtype])) {
@@ -3115,56 +3107,6 @@ class Plugin extends CommonDBTM
     }
 
 
-    /**
-     * Return the web path for a given plugin key
-     *
-     * @since 9.5
-     *
-     * @param string $plugin_key plugin system key
-     * @param bool $full if true, append root_doc from config
-     * @param bool $use_url_base if true, url_base instead root_doc
-     *
-     * @return false|string the web path
-     *
-     * @deprecated 11.0
-     */
-    public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
-    {
-        global $CFG_GLPI;
-
-        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
-
-        try {
-            $marketplace_dir = realpath(GLPI_MARKETPLACE_DIR);
-        } catch (FilesystemException) {
-            $marketplace_dir = null;
-        }
-
-        $found       = false;
-        $marketplace = false;
-        foreach (static::getPluginDirectories() as $plugins_directory) {
-            if (is_dir("$plugins_directory/$plugin_key")) {
-                $found       = true;
-                $marketplace = realpath($plugins_directory) === $marketplace_dir;
-                break;
-            }
-        }
-
-        if (!$found) {
-            return false;
-        }
-
-        $path = ($marketplace ? 'marketplace' : 'plugins') . '/' . $plugin_key;
-
-        if ($full) {
-            $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
-            $path = "$root/$path";
-        }
-
-        return $path;
-    }
-
-
     public static function getIcon()
     {
         return "ti ti-puzzle";
@@ -3258,12 +3200,12 @@ class Plugin extends CommonDBTM
                     if (!$plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->install($id);
                         if ($plugin->isInstalled($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3273,12 +3215,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isInstalled($plugin->fields['directory'])) {
                         $plugin->uninstall($id);
                         if (!$plugin->isInstalled($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3288,12 +3230,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isInstalled($plugin->fields['directory']) && !$plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->activate($id);
                         if ($plugin->isActivated($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3303,12 +3245,12 @@ class Plugin extends CommonDBTM
                     if ($plugin->isActivated($plugin->fields['directory'])) {
                         $plugin->unactivate($id);
                         if (!$plugin->isActivated($plugin->fields['directory'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3317,9 +3259,9 @@ class Plugin extends CommonDBTM
                     $plugin->getFromDB($id);
                     if (!$plugin->isLoadable($plugin->fields['directory'])) {
                         $plugin->clean($id);
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                        $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                 }
                 return;
@@ -3362,6 +3304,17 @@ class Plugin extends CommonDBTM
             'pages/admin/plugins/list_suspend_banner.html.twig',
             [
                 'execution_suspended' => $this->isPluginsExecutionSuspended(),
+            ]
+        );
+    }
+
+    final public function getPluginsUpdatableAlert(): string
+    {
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/plugins/updatable_alert.html.twig',
+            [
+                'count' => MarketplaceController::countUpdatablePlugins(),
             ]
         );
     }

@@ -70,12 +70,7 @@ final class ItemsController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Read category
-        $category_id = $request->query->get('category', 0);
-
-        if (!is_numeric($category_id)) {
-            // Invalid input
-            throw new NotFoundHttpException();
-        }
+        $category_id = $request->query->getInt('category');
 
         if ($category_id > 0) {
             if (Category::getById($category_id) === false) {
@@ -94,8 +89,7 @@ final class ItemsController extends AbstractController
         $sort_strategy = $request->query->getEnum(
             'sort_strategy',
             SortStrategyEnum::class,
-            SortStrategyEnum::getDefault()
-        );
+        ) ?? SortStrategyEnum::getDefault();
 
         // Build session + url params
         $session = Session::getCurrentSessionInfo();
@@ -134,6 +128,7 @@ final class ItemsController extends AbstractController
             [
                 'category_id'       => $category_id,
                 'filter'            => $filter,
+                'sort_strategy'     => $sort_strategy->value,
                 'ancestors'         => $ancestors,
                 'items'             => $result['items'],
                 'total'             => $result['total'],

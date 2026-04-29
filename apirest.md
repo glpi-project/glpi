@@ -118,7 +118,6 @@ $ curl -X GET \
    "session": {
       'glpi_plugins': ...,
       'glpicookietest': ...,
-      'glpicsrftokens': ...,
       ...
    }
 }
@@ -420,7 +419,6 @@ $ curl -X GET \
       'session': {
          'glpi_plugins': ...,
          'glpicookietest': ...,
-         'glpicsrftokens': ...,
          ...
       }
    }
@@ -1670,6 +1668,10 @@ One of theses parameter(s) is missing:
 
 The GLPI setup forbid the login with credentials, you must login with your user_token instead.
 See your personal preferences page or setup API access in GLPI main interface.
+
+### ERROR_LOGIN_WITH_TOKEN_DISABLED
+
+The GLPI setup forbid the login with user token, you must login with your login/password instead.
 
 ### ERROR_GLPI_LOGIN_USER_TOKEN
 

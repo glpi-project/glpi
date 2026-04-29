@@ -40,7 +40,7 @@
 class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
     /** @var HTMLTableBase The table that owns the current super header */
-    private $table;
+    private HTMLTableBase $table;
 
     /**
      * @param HTMLTableBase         $table    HTMLTableBase object: table owning the current header

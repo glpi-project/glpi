@@ -45,19 +45,19 @@ use Glpi\Team\Team;
 class ProjectTaskTeam extends CommonDBRelation
 {
     // From CommonDBTM
-    public $dohistory                  = true;
-    public $no_form_page               = true;
+    public bool $dohistory                  = true;
+    public bool $no_form_page               = true;
 
     // From CommonDBRelation
-    public static $itemtype_1 = ProjectTask::class;
-    public static $items_id_1          = 'projecttasks_id';
+    public static ?string $itemtype_1 = ProjectTask::class;
+    public static ?string $items_id_1          = 'projecttasks_id';
 
-    public static $itemtype_2          = 'itemtype';
-    public static $items_id_2          = 'items_id';
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_2          = 'itemtype';
+    public static ?string $items_id_2          = 'items_id';
+    public static int $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
     /** @var class-string<CommonDBTM>[] */
-    public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
+    public static array $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
 
 
     /**
@@ -98,7 +98,7 @@ class ProjectTaskTeam extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
-                    return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(1), $nb, $item::class);
             }
         }
         return '';
@@ -203,14 +203,14 @@ class ProjectTaskTeam extends CommonDBRelation
         $task = new ProjectTask();
         $task->getFromDB($input['projecttasks_id']);
         switch ($input['itemtype']) {
-            case User::getType():
+            case User::class:
                 Planning::checkAlreadyPlanned(
                     $input['items_id'],
                     $task->fields['plan_start_date'],
                     $task->fields['plan_end_date']
                 );
                 break;
-            case Group::getType():
+            case Group::class:
                 $group_iterator = $DB->request([
                     'SELECT' => 'users_id',
                     'FROM'   => Group_User::getTable(),
@@ -224,8 +224,8 @@ class ProjectTaskTeam extends CommonDBRelation
                     );
                 }
                 break;
-            case Supplier::getType():
-            case Contact::getType():
+            case Supplier::class:
+            case Contact::class:
                 //only Users can be checked for planning conflicts
                 break;
             default:

@@ -86,7 +86,7 @@ enum LocationFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== Location::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== Location::class || !is_numeric($value['items_id'])) {
             return null;
         }
 

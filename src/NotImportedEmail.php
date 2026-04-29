@@ -33,12 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * NotImportedEmail Class
  **/
 class NotImportedEmail extends CommonDBTM
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const MATCH_NO_RULE     = 0;
     public const USER_UNKNOWN      = 1;
@@ -105,7 +107,7 @@ class NotImportedEmail extends CommonDBTM
             case 'delete_email':
             case 'import_email':
                 if (!$item->canUpdate()) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                 } else {
                     $input = $ma->getInput();
                     if (count($ids)) {
@@ -116,7 +118,7 @@ class NotImportedEmail extends CommonDBTM
                             $mailcollector->deleteOrImportSeveralEmails($ids, 1, $input['entities_id']);
                         }
                     }
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_OK);
                 }
                 return;
         }
@@ -210,7 +212,7 @@ class NotImportedEmail extends CommonDBTM
     {
         global $DB;
 
-        $DB->delete('glpi_notimportedemails', [1]);
+        $DB->delete('glpi_notimportedemails', [new QueryExpression('true')]);
     }
 
 

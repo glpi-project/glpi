@@ -99,16 +99,14 @@ class CacheManager
     /**
      * Configuration directory.
      *
-     * @var string
      */
-    private $config_dir;
+    private string $config_dir;
 
     /**
      * Cache directory.
      *
-     * @var string
      */
-    private $cache_dir;
+    private string $cache_dir;
 
     public function __construct(string $config_dir = GLPI_CONFIG_DIR, ?string $cache_dir = null)
     {
@@ -608,6 +606,11 @@ PHP;
         // This command will clear the Symfony cache gracefully.
         $app = new Application($localKernel);
         $app->setAutoExit(false);
-        $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
+        // Skip optional cache warmers (e.g. Twig templates, more than 400 to cache so cause memory exception - default 128M).
+        // Templates are compiled lazily on first render.
+        $app->run(
+            new ArrayInput(['command' => 'cache:clear', '--no-optional-warmers' => true]),
+            new NullOutput()
+        );
     }
 }

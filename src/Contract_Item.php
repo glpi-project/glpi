@@ -43,11 +43,11 @@ use Glpi\Application\View\TemplateRenderer;
 class Contract_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Contract::class;
-    public static $items_id_1 = 'contracts_id';
+    public static ?string $itemtype_1 = Contract::class;
+    public static ?string $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -291,7 +291,6 @@ class Contract_Item extends CommonDBRelation
                     <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             <div class="col-auto">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
@@ -376,10 +375,10 @@ TWIG, $twig_params);
                 'name' => 'raw_html',
                 'supplier' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -611,7 +610,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

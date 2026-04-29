@@ -122,7 +122,7 @@ class NetworkEquipmentModelStencil extends Stencil
             $networkPort->getFromDBByCrit([
                 'logical_number' => $port['number'],
                 'items_id'  => $this->getStencilItem()->getID(),
-                'itemtype'  => $this->getStencilItem()->getType(),
+                'itemtype'  => $this->getStencilItem()::class,
                 'is_deleted' => 0,
             ]) && $networkPort->fields['ifstatus']
         ) {

@@ -41,6 +41,7 @@ use DisplayPreference;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldType\DropdownType;
+use Glpi\Asset\CustomFieldType\RawType;
 use Glpi\Asset\CustomFieldType\StringType;
 use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
@@ -723,6 +724,10 @@ TWIG, $twig_params);
             'states_id'        => [
                 'text' => __('Status'),
                 'type' => DropdownType::class,
+            ],
+            '_dc_breadcrumbs' => [
+                'text' => __('Data center position'),
+                'type' => RawType::class,
             ],
             'locations_id'     => [
                 'text' => Location::getTypeName(1),

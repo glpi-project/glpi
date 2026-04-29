@@ -51,7 +51,7 @@ final class GenerateFormForeachIllustrationsCommand extends AbstractCommand
         $this->setDescription(__("Generate one form per available illustration."));
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $manager = new IllustrationManager();
         $illustrations = $manager->getAllIconsIds();

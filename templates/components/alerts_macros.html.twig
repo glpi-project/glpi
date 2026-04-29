@@ -31,32 +31,14 @@
  #}
 
 {% macro alert(alert_type = "", title = "", messages = [], icon = "", important = false) %}
-   <div class="alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }}" role="alert">
-      <div class="d-flex">
-         <div class="me-2">
-            <i class="{{ icon }} fs-2x alert-icon"></i>
-         </div>
-         <div>
-            {% if title|length %}
-               <h4 class="alert-title">
-                  {{ title }}
-               </h4>
-            {% endif %}
-            {% if messages|length > 0 %}
-               <div class="text-muted">
-                  {% if messages is iterable %}
-                     {% for message in messages %}
-                        {{ message }}
-                        {% if loop.last %}<br />{% endif %}
-                     {% endfor %}
-                  {% else %}
-                     {{ messages }}
-                  {% endif %}
-               </div>
-            {% endif %}
-         </div>
-      </div>
-   </div>
+   {#{% do call('Toolbox::deprecated', ['Twig alert macros are deprecated. Use the Alert Twig component instead.']) %}#}
+   {{ component('Alert', {
+      type: alert_type,
+      title: title,
+      messages: messages,
+      icon: icon,
+      important: important,
+   }) }}
 {% endmacro %}
 
 {% macro alert_success(title = "", messages = [], important = false) %}

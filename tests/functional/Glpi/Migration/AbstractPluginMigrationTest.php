@@ -53,11 +53,13 @@ use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\DbTestCase;
 use Infocom;
 use Monitor;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionClass;
 use TaskCategory;
 
 class AbstractPluginMigrationTest extends DbTestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function testExecuteWithUnvalidatedPrerequisites(): void
     {
         // Arrange
@@ -106,6 +108,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals($expected_messages, $result->getMessages());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testExecuteWithValidatePrerequisitesException(): void
     {
         // Arrange
@@ -344,6 +347,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals($expected_messages, $result->getMessages());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCheckDbFieldsExists(): void
     {
         // Arrange
@@ -423,6 +427,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([], $messages_2);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testImportItem(): void
     {
         // Arrange
@@ -559,6 +564,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([Computer::class => [$computer_id_1, $computer_id_2, $computer_id_3]], $result->getReusedItemsIds());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testImportItemWithErrorAndSessionMessage(): void
     {
         // Arrange
@@ -629,6 +635,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals([], $result->getReusedItemsIds());
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCopyItems(): void
     {
         // Arrange
@@ -746,8 +753,22 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'items_id' => $custom_cat->getID(),
                     'itemtype' => $custom_cat::class,
                     'language' => 'es_SP',
+                    'field'    => 'completename',
+                    'value'    => 'ES - _cat_1',
+                ],
+                [
+                    'items_id' => $custom_cat->getID(),
+                    'itemtype' => $custom_cat::class,
+                    'language' => 'es_SP',
                     'field'    => 'name',
                     'value'    => 'ES - _cat_1',
+                ],
+                [
+                    'items_id' => $custom_cat->getID(),
+                    'itemtype' => $custom_cat::class,
+                    'language' => 'fr_FR',
+                    'field'    => 'completename',
+                    'value'    => 'FR - _cat_1',
                 ],
                 [
                     'items_id' => $custom_cat->getID(),
@@ -1049,7 +1070,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
         $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true); // this one will not be migrated
 
-        $DB->delete(Infocom::getTable(), [new QueryExpression(true)]);
+        $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
         $this->createItems(
             Infocom::class,
             [
@@ -1096,7 +1117,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
         );
 
-        $DB->delete(Contract_Item::getTable(), [new QueryExpression(true)]);
+        $DB->delete(Contract_Item::getTable(), [new QueryExpression('true')]);
         $this->createItems(
             Contract_Item::class,
             [
@@ -1235,8 +1256,13 @@ class AbstractPluginMigrationTest extends DbTestCase
             \getAllDataFromTable(Contract_Item::getTable())
         );
 
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             [
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_3_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
                 [
                     'itemtype'     => $my_asset_1::class,
                     'items_id'     => $my_asset_1->getID(),
@@ -1252,16 +1278,12 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'items_id'     => $my_asset_2->getID(),
                     'contracts_id' => $contract_3->getID(),
                 ],
-                [
-                    'itemtype'     => Computer::class,
-                    'items_id'     => $computer_3_id,
-                    'contracts_id' => $contract_1->getID(),
-                ],
             ],
             \array_values($contract_relations)
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testMapItem(): void
     {
         // Arrange
@@ -1294,6 +1316,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         );
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testCountRecords(): void
     {
         // Arrange

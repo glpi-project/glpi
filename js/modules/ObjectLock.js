@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_confirm, glpi_alert, getAjaxCsrfToken */
+/* global glpi_confirm, glpi_alert */
 /* global _ */
 
 /**
@@ -164,7 +164,6 @@ class ObjectLock {
                             'Accept': 'application/json',
                             'Content-Type': 'application/x-www-form-urlencoded;',
                             'X-Requested-With': 'XMLHttpRequest',
-                            'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
                         },
                         body: `unlock=1&id=${this.lock.id}`
                     }).catch(() => {

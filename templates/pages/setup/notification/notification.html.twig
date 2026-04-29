@@ -40,7 +40,7 @@
     {{ fields.dropdownYesNo('allow_response', item.fields['allow_response'], __('Allow response')) }}
 
     {% if not has_profile_right('config', constant('UPDATE')) %}
-        {{ fields.htmlField('', item.fields['itemtype'], _n('Type', 'Types', 1)) }}
+        {{ fields.htmlField('', item.fields['itemtype']|e, _n('Type', 'Types', 1)) }}
     {% elseif call('Config::canUpdate') and item.getEntityID == 0 %}
         {{ fields.dropdownItemTypes('itemtype', item.fields['itemtype'], _n('Type', 'Types', 1), {
             types: config('notificationtemplates_types'),

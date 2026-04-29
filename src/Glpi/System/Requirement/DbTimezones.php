@@ -45,9 +45,8 @@ class DbTimezones extends AbstractRequirement
     /**
      * DB instance.
      *
-     * @var DBmysql
      */
-    private $db;
+    private DBmysql $db;
 
     public function __construct(DBmysql $db)
     {

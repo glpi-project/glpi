@@ -52,15 +52,14 @@ use Glpi\Dashboard\Filters\{
 use Glpi\Plugin\Hooks;
 use Plugin;
 use Session;
-use Toolbox;
 
 /**
  * Filter class
  **/
 class Filter extends CommonDBChild
 {
-    public static $itemtype = Dashboard::class;
-    public static $items_id = 'dashboards_dashboards_id';
+    public static string $itemtype = Dashboard::class;
+    public static string $items_id = 'dashboards_dashboards_id';
 
     /**
      * Return IDs of filters that can be applied to given table.
@@ -141,21 +140,6 @@ class Filter extends CommonDBChild
         }
 
         return $filters;
-    }
-
-    /**
-     * Return all available filters.
-     * Keys are filters ids, values are filters labels.
-     *
-     * @return array of filters
-     *
-     * @deprecated 11.0.0.
-     */
-    public static function getAll(): array
-    {
-        Toolbox::deprecated();
-
-        return self::getFilterChoices();
     }
 
     /**

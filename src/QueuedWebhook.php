@@ -45,10 +45,10 @@ use function Safe\strtotime;
 
 class QueuedWebhook extends CommonDBChild
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
-    public static $itemtype = Webhook::class;
-    public static $items_id = 'webhooks_id';
+    public static string $itemtype = Webhook::class;
+    public static string $items_id = 'webhooks_id';
 
     public static function getTypeName($nb = 0)
     {
@@ -118,12 +118,12 @@ class QueuedWebhook extends CommonDBChild
                 foreach ($ids as $id) {
                     if ($item->canEdit($id)) {
                         if ($item::sendById($id)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                     }
                 }
                 return;
@@ -188,7 +188,11 @@ class QueuedWebhook extends CommonDBChild
 
         if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
-            $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], 'validate_cra_challenge', $webhook->fields['secret']);
+            $result = $webhook::validateCRAChallenge(
+                $queued_webhook->fields['url'],
+                $queued_webhook->fields['body'] ?: sha1((string) $queued_webhook->getID()),
+                $webhook->fields['secret']
+            );
             if ($result['status'] !== true) {
                 Toolbox::logInFile('webhook', "CRA challenge failed for webhook {$webhook->fields['name']} ({$webhook->getID()})");
                 return false;

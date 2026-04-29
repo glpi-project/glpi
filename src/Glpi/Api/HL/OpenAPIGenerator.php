@@ -38,6 +38,7 @@ namespace Glpi\Api\HL;
 use CommonGLPI;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Debug\Profiler;
 use Glpi\OAuth\Server;
 use ReflectionClass;
 use Session;
@@ -162,6 +163,7 @@ EOT;
 
         $controllers = Router::getInstance()->getControllers();
         foreach ($controllers as $controller) {
+            Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval for ' . $controller::class, Profiler::CATEGORY_HLAPI);
             $known_schemas = $controller::getKnownSchemas($api_version);
             $short_name = (new ReflectionClass($controller))->getShortName();
             $controller_name = str_replace('Controller', '', $short_name);
@@ -215,6 +217,7 @@ EOT;
                 $schemas[$calculated_name]['x-controller'] = $controller::class;
                 $schemas[$calculated_name]['x-schemaname'] = $schema_name;
             }
+            Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval for ' . $controller::class);
         }
 
         return self::$component_schemas_cache[$api_version] = $schemas;

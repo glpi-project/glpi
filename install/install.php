@@ -278,7 +278,7 @@ function step4(string $databasename, string $newdatabasename): void
 
     //create security key
     $glpikey = new GLPIKey();
-    if (!$glpikey->generate(update_db: false)) {
+    if (!$glpikey->keyExists() && !$glpikey->generate(update_db: false)) {
         echo "<p><strong>" . __s('Security key cannot be generated!') . "</strong></p>";
         $prev_form($host, $user, $password);
         return;

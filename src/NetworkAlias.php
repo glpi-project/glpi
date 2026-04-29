@@ -44,11 +44,11 @@ use Glpi\Application\View\TemplateRenderer;
 class NetworkAlias extends FQDNLabel
 {
     // From CommonDBChild
-    public static $itemtype = NetworkName::class;
-    public static $items_id           = 'networknames_id';
-    public $dohistory                 = true;
+    public static string $itemtype = NetworkName::class;
+    public static string $items_id           = 'networknames_id';
+    public bool $dohistory                 = true;
 
-    public static $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
 
     public static function getTypeName($nb = 0)
@@ -81,7 +81,7 @@ class NetworkAlias extends FQDNLabel
 
         $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-        $options['entities_id'] = $lastItem->getField('entities_id');
+        $options['entities_id'] = $lastItem->fields['entities_id'];
         $this->showFormHeader($options);
 
         echo "<tr class='tab_bg_1'><td>";
@@ -175,7 +175,7 @@ class NetworkAlias extends FQDNLabel
             $item = $father->getItem();
         }
 
-        if ($item->getType() !== NetworkName::class) {
+        if (!$item instanceof NetworkName) {
             return;
         }
 
@@ -404,7 +404,7 @@ class NetworkAlias extends FQDNLabel
             echo "</tr>";
 
             Session::initNavigateListItems(
-                $item->getType(),
+                $item::class,
                 //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                 sprintf(
                     __('%1$s = %2$s'),
@@ -436,7 +436,7 @@ class NetworkAlias extends FQDNLabel
             ]);
 
             foreach ($iterator as $data) {
-                Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
+                Session::addToNavigateListItems($alias::class, $data["alias_id"]);
                 if ($address->getFromDB($data["address_id"])) {
                     echo "<tr class='tab_bg_1'>";
                     echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>"
@@ -472,7 +472,7 @@ class NetworkAlias extends FQDNLabel
         if (
             ($item instanceof CommonDBTM)
             && $item->getID()
-            && $item->can($item->getField('id'), READ)
+            && $item->can($item->getID(), READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {

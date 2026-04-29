@@ -135,7 +135,6 @@
                         '{{ la_field.type_str }}_delete': 1,
                         'id': {{ item.fields['id'] }},
                         'type': {{ la_field.type }},
-                        '_glpi_csrf_token': '{{ csrf_token() }}',
                         '_glpi_simple_form': 1,
                         'delete_date': delete_date
                      });

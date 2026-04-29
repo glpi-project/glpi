@@ -67,7 +67,7 @@ class GlpiCommonAjaxController
         // Send AJAX request
         try {
             const response = await $.ajax({
-                url: `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
+                url: form.data('ajaxSubmitUrl') || `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
                 method: 'POST',
                 contentType: 'application/json',
                 data: data,
@@ -153,7 +153,7 @@ class GlpiCommonAjaxController
                 const baseKey = key.slice(0, -2);
                 // Initialize as array if not an array
                 if (_.get(form_object, baseKey) === undefined || !Array.isArray(_.get(form_object, baseKey))) {
-                    _.set(form_object, baseKey, []);
+                    _.setWith(form_object, baseKey, [], Object);
                 }
                 // Push value to array directly instead of using indexed key
                 _.get(form_object, baseKey).push(value);

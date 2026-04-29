@@ -84,21 +84,18 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Items with invalid HTML.
      *
-     * @var array
      */
     private array $invalid_items = [];
 
     /**
      * Count of items with invalid HTML that have NOT been fixed.
      *
-     * @var int
      */
     private int $failed_items_count = 0;
 
     /**
      * Columns which contains rich text, populated by analyzing search options.
      *
-     * @var array
      */
     private array $text_fields = [];
 
@@ -124,7 +121,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->warnAboutExecutionTime();
         $this->findTextFields();
@@ -263,7 +260,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     {
         global $DB;
 
-        $itemtype = $item::getType();
+        $itemtype = $item::class;
 
         // update the item
         $update = [];
@@ -297,7 +294,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     {
         $new_value = $item->fields[$field];
 
-        if (in_array($item::getType(), [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
+        if (in_array($item::class, [Ticket::class, ITILFollowup::class]) && $field == 'content') {
             $new_value = $this->fixEmailHeadersEncoding($new_value);
         }
 
@@ -422,7 +419,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
             [$field => ['LIKE', '%&quot(?!;)/%']],
         ];
 
-        if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
+        if (in_array($itemtype, [Ticket::class, ITILFollowup::class]) && $field == 'content') {
             $searches[] = [
                 $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)'],
             ];

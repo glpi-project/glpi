@@ -44,14 +44,15 @@ use RuntimeException;
  **/
 class QueryUnion extends AbstractQuery
 {
+    /** @var QuerySubQuery[] */
     private array $queries = [];
 
     /**
      * Create a sub query
      *
-     * @param array $queries An array of queries to union. Either SubQuery objects
+     * @param array<int|string, QuerySubQuery|array<string, mixed>> $queries An array of queries to union. Either SubQuery objects
      *                          or an array of criteria to build them.
-     * @param bool $distinct Include duplicates or not. Turning on may has
+     * @param bool $distinct Include duplicates or not. Turning on may have
      *                          huge cost on queries performances.
      * @param string $alias Union ALIAS. Defaults to null.
      * @see addQuery
@@ -68,7 +69,7 @@ class QueryUnion extends AbstractQuery
     /**
      * Add a query
      *
-     * @param QuerySubQuery|array $query Either a SubQuery object
+     * @param QuerySubQuery|array<string,mixed> $query Either a SubQuery object
      *                                   or an array of criteria to build it.
      *
      * @return void
@@ -85,7 +86,7 @@ class QueryUnion extends AbstractQuery
     /**
      * Get queries
      *
-     * @return array
+     * @return QuerySubQuery[]
      */
     public function getQueries()
     {

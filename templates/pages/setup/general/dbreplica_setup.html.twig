@@ -56,9 +56,9 @@
         3: __('If synced or read-only account'),
         4: __('Always'),
     } %}
-    {{ fields.dropdownArrayField('use_slave_for_search', config['use_slave_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
+    {{ fields.dropdownArrayField('use_replica_for_search', config['use_replica_for_search'], replica_search_opts, __('Use the replica for the search engine')) }}
 
-    {{ inputs.hidden('_dbslave_status', 1) }}
+    {{ inputs.hidden('_dbreplica_status', 1) }}
 </div>
 
 <div class="hr-text">

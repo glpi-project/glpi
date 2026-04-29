@@ -45,30 +45,27 @@ abstract class CommonDropdown extends CommonDBTM
     use AssetImage;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * For delete operation (entity will overload this value)
      *
-     * @var bool
      */
-    public $must_be_replace = false;
+    public bool $must_be_replace = false;
 
     /**
      * Menu & navigation
      *
-     * @var bool
      */
-    public $display_dropdowntitle  = true;
+    public bool $display_dropdowntitle  = true;
 
     /**
      * Flag to determine whether dropdown can be translated.
      *
-     * @var bool
      */
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
     public static function getTypeName($nb = 0)
     {
@@ -222,9 +219,17 @@ abstract class CommonDropdown extends CommonDBTM
 
     public function defineTabs($options = [])
     {
+        global $CFG_GLPI;
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+
+        if (
+            in_array(static::class, $CFG_GLPI['document_types'])
+        ) {
+            $this->addStandardTab(Document_Item::class, $ong, $options);
+        }
+
         if ($this->dohistory) {
             $this->addStandardTab(Log::class, $ong, $options);
         }
@@ -365,11 +370,27 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         $fields = $this->getAdditionalFields();
+        $is_device_model = ($this instanceof CommonDeviceModel);
+
+        $has_device_model = false;
+        if (!$is_device_model) {
+            $model_fk = $this->getModelForeignKeyField();
+            if (
+                $model_fk !== null
+                && str_contains($model_fk, 'device')
+                && isset($this->fields[$model_fk])
+                && $this->fields[$model_fk] > 0
+            ) {
+                $has_device_model = true;
+            }
+        }
 
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
-            'item'   => $this,
-            'params' => $options,
+            'item'              => $this,
+            'params'            => $options,
             'additional_fields' => $fields,
+            'is_device_model'   => $is_device_model,
+            'has_device_model'  => $has_device_model,
         ]);
 
         return true;
@@ -565,7 +586,7 @@ abstract class CommonDropdown extends CommonDBTM
                         $items_id_field = reset($items_id_matches);
                     }
                     $or_criteria[] = [
-                        $itemtype_field => $this->getType(),
+                        $itemtype_field => static::class,
                         $items_id_field => $this->getID(),
                     ];
                 } else {
@@ -638,7 +659,7 @@ abstract class CommonDropdown extends CommonDBTM
             echo "<form action='" . $target . "' method='post'>";
             echo "<table class='tab_cadre'><tr>";
             echo "<td><input type='hidden' name='id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape(static::class) . "' />";
             echo "<input type='hidden' name='forcepurge' value='1'>";
             echo "<input class='btn btn-primary' type='submit' name='purge'
                 value=\"" . _sx('button', 'Confirm') . "\">";
@@ -675,7 +696,7 @@ abstract class CommonDropdown extends CommonDBTM
             $replacement_options
         );
         echo "<input type='hidden' name='id' value='$ID' />";
-        echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";
+        echo "<input type='hidden' name='itemtype' value='" . htmlescape(static::class) . "' />";
         echo "</td><td>";
         echo "<input class='btn btn-primary' type='submit' name='replace' value=\"" . _sx('button', 'Replace') . "\">";
         echo "</td><td>";
@@ -789,7 +810,7 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         $ruleinput      = ["name" => $value];
-        $rulecollection = RuleCollection::getClassByType($this->getType(), true);
+        $rulecollection = RuleCollection::getClassByType(static::class, true);
 
         foreach ($this->additional_fields_for_dictionnary as $field) {
             if (isset($external_params[$field])) {
@@ -879,9 +900,9 @@ abstract class CommonDropdown extends CommonDBTM
                                     'is_recursive' => 1,
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
@@ -907,14 +928,14 @@ abstract class CommonDropdown extends CommonDBTM
                                     $input2['id'] = $newid;
                                     $item->update($input2);
                                 }
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }

@@ -38,6 +38,7 @@ use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\EmptyCurlContentException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -271,22 +272,6 @@ class Toolbox
     public static function strtoupper($str)
     {
         return mb_strtoupper($str, "UTF-8");
-    }
-
-
-    /**
-     * Is a string seems to be UTF-8 one ?
-     *
-     * @param string $str string to analyse
-     *
-     * @return bool
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function seems_utf8($str)
-    {
-        Toolbox::deprecated();
-        return mb_check_encoding($str, "UTF-8");
     }
 
 
@@ -666,82 +651,6 @@ class Toolbox
         );
     }
 
-
-    /**
-     * Send a file (not a document) to the navigator
-     * See Document->send();
-     *
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
-     * @param bool     $expires_headers add expires headers maximize cacheability ?
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
-    {
-        Toolbox::deprecated();
-
-        static::getFileAsResponse($file, $filename, $mime, $expires_headers)->send();
-    }
-
-
-    /**
-     *  Add slash for variable & array
-     *
-     * @param string|string[] $value value to add slashes
-     *
-     * @return string|string[]
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function addslashes_deep($value)
-    {
-        Toolbox::deprecated();
-
-        global $DB;
-
-        $value = ((array) $value === $value)
-                  ? array_map([self::class, 'addslashes_deep'], $value)
-                  : (
-                      is_null($value)
-                       ? null : (is_resource($value) || is_object($value)
-                       ? $value : $DB->escape(
-                           str_replace(
-                               ['&#039;', '&#39;', '&#x27;', '&apos;', '&quot;'],
-                               ["'", "'", "'", "'", "\""],
-                               $value
-                           )
-                       ))
-                  );
-
-        return $value;
-    }
-
-
-    /**
-     * Strip slash  for variable & array
-     *
-     * @param array|string $value  item to stripslashes
-     *
-     * @return array|string stripslashes item
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function stripslashes_deep($value)
-    {
-        Toolbox::deprecated();
-
-        $value = ((array) $value === $value)
-                  ? array_map([self::class, 'stripslashes_deep'], $value)
-                  : (is_null($value)
-                        ? null : (is_resource($value) || is_object($value)
-                                    ? $value : stripslashes($value)));
-
-        return $value;
-    }
 
     /** Converts an array of parameters into a query string to be appended to a URL.
      *
@@ -1496,6 +1405,15 @@ class Toolbox
             }
         }
 
+        $curl_version = curl_version();
+        if (defined('CURLSSLOPT_NATIVE_CA')
+            && $curl_version
+            && version_compare($curl_version['version'], '7.71', '>=')) {
+            $opts += [
+                CURLOPT_SSL_OPTIONS => CURLSSLOPT_NATIVE_CA,
+            ];
+        }
+
         curl_setopt_array($ch, $opts);
         $content = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
@@ -2228,9 +2146,11 @@ class Toolbox
             // Enable NO_AUTO_VALUE_ON_ZERO for glpi_entities insertion (needed for id=0 root entity)
             $original_sql_mode = null;
             if ($table === 'glpi_entities') {
-                $original_sql_mode = $database->doQuery(
+                /** @var mysqli_result $request */
+                $request = $database->doQuery(
                     sprintf('SELECT @@sql_mode as %s', $database->quoteName('sql_mode'))
-                )->fetch_assoc()['sql_mode'] ?? '';
+                );
+                $original_sql_mode = $request->fetch_assoc()['sql_mode'] ?? '';
                 $new_sql_mode = $original_sql_mode !== ''
                     ? $original_sql_mode . ',NO_AUTO_VALUE_ON_ZERO'
                     : 'NO_AUTO_VALUE_ON_ZERO';
@@ -2250,20 +2170,14 @@ class Toolbox
 
                 $stmt = $database->prepare($database->buildInsert($table, $reference));
 
-                $types = str_repeat('s', count($data[0]));
                 foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
-                        $msg = "Error binding params in table $table\n";
-                        $msg .= json_encode($row);
-                        throw new RuntimeException($msg);
-                    }
-                    $res = $stmt->execute();
-                    if (false === $res) {
+                    try {
+                        $database->executeStatement($stmt, $row);
+                    } catch (StatementException $e) {
                         $msg = $stmt->error;
                         $msg .= "\nError execution statement in table $table\n";
                         $msg .= json_encode($row);
-                        throw new RuntimeException($msg);
+                        throw new RuntimeException($msg, 0, $e);
                     }
 
                     $progress_indicator?->advance();
@@ -2505,18 +2419,34 @@ class Toolbox
      */
     public static function getDocumentsFromTag(string $content_text): array
     {
+        $all_tags = [];
+
         preg_match_all(
             '/' . Document::getImageTag('(([a-z0-9]+|[\.\-]?)+)') . '/',
             $content_text,
             $matches,
             PREG_PATTERN_ORDER
         );
-        if (!isset($matches[1]) || count($matches[1]) == 0) {
+        if (isset($matches[1]) && count($matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $matches[1]);
+        }
+
+        preg_match_all(
+            '/<img[^>]+id=["\']([a-z0-9\.\-]+)["\'][^>]*>/i',
+            $content_text,
+            $img_matches,
+            PREG_PATTERN_ORDER
+        );
+        if (count($img_matches[1]) > 0) {
+            $all_tags = array_merge($all_tags, $img_matches[1]);
+        }
+
+        if (count($all_tags) === 0) {
             return [];
         }
 
         $document = new Document();
-        return $document->find(['tag' => array_unique($matches[1])]);
+        return $document->find(['tag' => array_unique($all_tags)]);
     }
 
     /**
@@ -2646,7 +2576,7 @@ class Toolbox
                             $docitem->add(['documents_id'  => $image['id'],
                                 '_do_notif'     => false,
                                 '_disablenotif' => true,
-                                'itemtype'      => $item->getType(),
+                                'itemtype'      => $item::class,
                                 'items_id'      => $item->fields['id'],
                             ]);
                         }
@@ -2891,12 +2821,16 @@ class Toolbox
     /**
      * Format a web link adding http:// if missing
      *
-     * @param string $link link to format
+     * @param ?string $link link to format
      *
      * @return string formatted link.
      **/
     public static function formatOutputWebLink($link)
     {
+        if (empty($link)) {
+            return (string) $link;
+        }
+
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
         }

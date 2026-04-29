@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global bootstrap, _, getAjaxCsrfToken */
+/* global bootstrap, _ */
 
 export class GlpiIllustrationPickerController
 {
@@ -302,7 +302,6 @@ export class GlpiIllustrationPickerController
             body: form_data,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
             }
         });
 

@@ -79,59 +79,50 @@ class MailCollector extends CommonDBTM
     private ?AbstractStorage $storage = null;
     /**
      * UID of the current message
-     * @var int
      */
-    public $uid             = -1;
+    public int $uid             = -1;
     /**
      * structure used to store files attached to a mail
      * @var ?array
      */
-    public $files;
+    public ?array $files = null;
     /**
      * structure used to store alt files attached to a mail
-     * @var array
      */
-    public $altfiles;
+    public array $altfiles;
     /**
      * Tag used to recognize embedded images of a mail
-     * @var array
      */
-    public $tags;
+    public array $tags;
     /**
      * Message to add to body to build ticket
-     * @var string
      */
-    public $addtobody;
+    public string $addtobody;
     /**
      * Number of fetched emails
-     * @var int
      */
-    public $fetch_emails    = 0;
+    public int $fetch_emails    = 0;
     /**
      * Maximum number of emails to fetch : default to 10
-     * @var int
      */
-    public $maxfetch_emails = 10;
+    public int $maxfetch_emails = 10;
     /**
      * array of indexes -> uid for messages
-     * @var array
      */
-    public $messages_uid    = [];
+    public array $messages_uid    = [];
     /**
      * Max size for attached files
-     * @var int
      */
-    public $filesize_max    = 0;
+    public int $filesize_max    = 0;
 
     /**
      * Flag that tells whether the body is in HTML format or not.
-     * @var bool
      */
-    private $body_is_html   = false;
+    private bool $body_is_html   = false;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
-    public static $rightname       = 'config';
+    public static string $rightname       = 'config';
 
     // Destination folder
     public const REFUSED_FOLDER  = 'refused';
@@ -141,11 +132,11 @@ class MailCollector extends CommonDBTM
     public const REQUESTER_FIELD_FROM = 0;
     public const REQUESTER_FIELD_REPLY_TO = 1;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'passwd',
     ];
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'errors',
         'last_collect_date',
     ];
@@ -1274,7 +1265,7 @@ class MailCollector extends CommonDBTM
     public function cleanSubject($text)
     {
         $text = str_replace("=20", "\n", $text);
-        return $text;
+        return mb_substr($text, 0, 255, 'UTF-8');
     }
 
 
@@ -1641,6 +1632,17 @@ class MailCollector extends CommonDBTM
             }
 
             $contents = $this->getDecodedContent($part);
+
+            // Restore CRLF line endings for message/rfc822 (embedded email) attachments.
+            // The Laminas MIME parser strips all \r characters when splitting multipart
+            // boundaries (see Laminas\Mime\Decode::splitMime), which produces LF-only
+            // line endings. RFC 2822 requires CRLF, and without them, Quoted-Printable
+            // soft line breaks (=\r\n) become invalid (=\n), making the extracted EML
+            // unreadable in strict clients such as Outlook.
+            if (strtolower($content_type) === 'message/rfc822') {
+                $contents = preg_replace('/(?<!\r)\n/', "\r\n", $contents);
+            }
+
             if (file_put_contents($path . $filename, $contents)) {
                 $this->files[$filename] = $filename;
 
@@ -2108,7 +2110,7 @@ class MailCollector extends CommonDBTM
 
                 // Handle old format MessageId where itemtype was not in header
                 if (empty($itemtype) && !empty($items_id)) {
-                    $itemtype = Ticket::getType();
+                    $itemtype = Ticket::class;
                 }
 
                 if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
@@ -2256,7 +2258,7 @@ class MailCollector extends CommonDBTM
         $new_pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
-            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
+            . '(-(?<itemtype>[a-z\-]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
             . '\/(?<event>[a-z_]+)' // event
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
@@ -2265,7 +2267,7 @@ class MailCollector extends CommonDBTM
         if (preg_match($new_pattern, $header, $values) === 1) {
             return [
                 'uuid'     => $values['uuid'],
-                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'itemtype' => !empty($values['itemtype']) ? str_replace('-', '\\', $values['itemtype']) : null, // restore backslashes in namespaced classes
                 'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
                 'event'    => $values['event'],
             ];

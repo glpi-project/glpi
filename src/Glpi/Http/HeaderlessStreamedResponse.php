@@ -54,7 +54,7 @@ class HeaderlessStreamedResponse extends StreamedResponse
         parent::__construct($callback);
     }
 
-    public function sendHeaders(): static
+    public function sendHeaders(?int $statusCode = null): static
     {
         // Sending headers is disabled.
 

@@ -86,7 +86,7 @@ class InstallCommand extends AbstractPluginCommand
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $this->normalizeInput($input);

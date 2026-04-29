@@ -76,7 +76,7 @@ final class InventoryController extends AbstractController
             $handle = true;
             $contents = '';
             if (!$request->isMethod('POST')) {
-                if ($request->get('action') === 'getConfig') {
+                if ($request->query->get('action') === 'getConfig') {
                     /**
                      * Even if Fusion protocol is not supported for getConfig requests, they
                      * should be handled and answered with a json content type
@@ -123,7 +123,7 @@ final class InventoryController extends AbstractController
         }
 
         $inventory_request = new \Glpi\Inventory\Request();
-        $refused_id = (int) $request->get('id');
+        $refused_id = $request->request->getInt('id');
 
         $refused = new RefusedEquipment();
 

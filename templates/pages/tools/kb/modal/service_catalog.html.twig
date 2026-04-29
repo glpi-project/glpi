@@ -1,0 +1,129 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form
+    class="d-flex flex-column"
+    data-glpi-service-catalog-form
+>
+    <div class="mb-4">
+        <label class="form-check form-switch mb-0">
+            <input
+                type="hidden"
+                value="0"
+                name="show_in_service_catalog"
+            >
+            <input
+                class="form-check-input"
+                type="checkbox"
+                name="show_in_service_catalog"
+                value="1"
+                data-glpi-service-catalog-toggle
+                aria-controls="service-catalog-config-{{ id }}"
+                {{ show_in_service_catalog ? "checked" : "" }}
+            >
+            <span class="form-check-label">{{ __("Show in service catalog") }}</span>
+        </label>
+    </div>
+
+    <fieldset
+        id="service-catalog-config-{{ id }}"
+        class="border-0 p-0 m-0"
+        data-glpi-service-catalog-config
+        {{ show_in_service_catalog ? '' : 'disabled' }}
+    >
+        <legend class="visually-hidden">
+            {{ __("Details to display in service catalog") }}
+        </legend>
+        <div class="mb-3">
+            <label class="form-check form-switch mb-0">
+                <input type="hidden" name="is_pinned" value="0">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="is_pinned"
+                    value="1"
+                    {{ is_pinned ? 'checked' : '' }}
+                >
+                <span class="form-check-label">{{ __("Pin to top of the service catalog") }}</span>
+            </label>
+        </div>
+
+        {{ fields.textareaField(
+            'description',
+            description,
+            __('Description'),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+                'enable_richtext': true,
+                'enable_images': false,
+            }
+        ) }}
+
+        {{ fields.dropdownField(
+            'Glpi\\Form\\Category',
+            'forms_categories_id',
+            forms_categories_id,
+            _n('Category', 'Categories', 1),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+            }
+        ) }}
+    </fieldset>
+
+    <div class="d-flex mt-3">
+        <button
+            class="btn btn-ghost-secondary ms-auto me-2"
+            type="button"
+            data-bs-dismiss="modal"
+        >{{ __('Cancel') }}</button>
+        <button
+            type="submit"
+            class="btn btn-primary"
+            data-glpi-service-catalog-submit
+        >
+            <i class="ti ti-device-floppy" data-glpi-icon aria-hidden="true"></i>
+            <i class="ti ti-loader-2 fa-spin d-none" data-glpi-loading aria-hidden="true"></i>
+            <span>{{ __('Save') }}</span>
+        </button>
+    </div>
+
+    <input
+        type="hidden"
+        name="id"
+        value="{{ id }}"
+        data-glpi-kb-id
+    >
+</form>

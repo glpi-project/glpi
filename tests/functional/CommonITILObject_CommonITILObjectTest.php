@@ -44,6 +44,8 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 {
     public function testCountAllLinks()
     {
+        $this->login();
+
         // Create a Ticket
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
@@ -241,6 +243,8 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
     public function testGetAllLinkedTo()
     {
+        $this->login();
+
         // Create a Ticket
         $ticket = new \Ticket();
         $tickets_id = $ticket->add([
@@ -511,5 +515,79 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
     {
         $instance = new $class();
         $this->assertSame($expected, $instance->normalizeInput($input));
+    }
+
+    /**
+     * Test that a ticket cannot be linked to itself (self-link prevention).
+     */
+    public function testPreventSelfLink()
+    {
+        $this->login();
+
+        // Create a ticket
+        $ticket_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name' => 'Test ticket for self-link prevention',
+                'content' => 'Test content',
+                'status' => \Ticket::INCOMING,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        )->getID();
+
+        // Try to link the ticket to itself - should fail
+        $ticket_ticket = new \Ticket_Ticket();
+        $result = $ticket_ticket->add([
+            'tickets_id_1' => $ticket_id,
+            'tickets_id_2' => $ticket_id,
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]);
+        $this->assertFalse($result);
+
+        // Try the other way around - should also fail
+        $result = $ticket_ticket->add([
+            'tickets_id_1' => $ticket_id,
+            'tickets_id_2' => $ticket_id,
+            'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH,
+        ]);
+        $this->assertFalse($result);
+
+        // Same test for Change
+        $change_id = $this->createItem(
+            \Change::class,
+            [
+                'name' => 'Test change for self-link prevention',
+                'content' => 'Test content',
+                'status' => \Change::INCOMING,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        )->getID();
+
+        $change_change = new \Change_Change();
+        $result = $change_change->add([
+            'changes_id_1' => $change_id,
+            'changes_id_2' => $change_id,
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]);
+        $this->assertFalse($result);
+
+        // Same test for Problem
+        $problem_id = $this->createItem(
+            \Problem::class,
+            [
+                'name' => 'Test problem for self-link prevention',
+                'content' => 'Test content',
+                'status' => \Problem::INCOMING,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        )->getID();
+
+        $problem_problem = new \Problem_Problem();
+        $result = $problem_problem->add([
+            'problems_id_1' => $problem_id,
+            'problems_id_2' => $problem_id,
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]);
+        $this->assertFalse($result);
     }
 }

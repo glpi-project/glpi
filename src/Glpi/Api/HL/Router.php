@@ -93,7 +93,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.2.0';
+    public const API_VERSION = '2.3.0';
 
     /**
      * @var AbstractController[]
@@ -117,21 +117,18 @@ class Router
 
     /**
      * The request as it was received by the router (and after some very basic processing).
-     * @var ?Request
      * @internal Only intended to be used by tests
      */
     private ?Request $original_request = null;
 
     /**
      * The final state of the request after it was modified by the request middlewares.
-     * @var ?Request
      * @internal Only intended to be used by tests
      */
     private ?Request $final_request = null;
 
     /**
      * The last route that was matched and invoked.
-     * @var ?RoutePath
      * @internal Only intended to be used by tests
      */
     private ?RoutePath $last_invoked_route = null;
@@ -177,6 +174,11 @@ EOT;
                 'api_version' => '2',
                 'version' => '2.2.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
+            ],
+            [
+                'api_version' => '2',
+                'version' => '2.3.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
             ],
         ];
     }
@@ -605,6 +607,9 @@ EOT;
     public function handleRequest(Request $request): Response
     {
         global $CFG_GLPI;
+
+        // Reset client state so each request starts with a clean slate
+        $this->current_client = null;
 
         // Start an output buffer to capture any potential debug errors
         $current_output_buffer_level = ob_get_level();

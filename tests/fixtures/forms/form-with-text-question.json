@@ -7,7 +7,7 @@
             "name": "Simple form",
             "header": null,
             "description": null,
-            "entity_name": "Root entity > E2ETestEntity",
+            "entity_name": "Root entity",
             "is_recursive": true,
             "is_active": false,
             "submit_button_visibility_strategy": "",
@@ -71,7 +71,7 @@
             "data_requirements": [
                 {
                     "itemtype": "Entity",
-                    "name": "Root entity > E2ETestEntity"
+                    "name": "Root entity"
                 }
             ]
         }

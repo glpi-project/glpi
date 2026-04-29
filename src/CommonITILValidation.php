@@ -49,11 +49,11 @@ use function Safe\json_encode;
 abstract class CommonITILValidation extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action    = false;
+    public bool $auto_message_on_action    = false;
 
-    public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
     public const VALIDATE               = 1024;
 
@@ -305,7 +305,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
                 $nb = countElementsInTable(static::getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -354,16 +354,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $input["status"]          = self::WAITING;
 
         if (
-            (!isset($input['itemtype_target']) || empty($input['itemtype_target']))
-            && (isset($input['users_id_validate']) && !empty($input['users_id_validate']))
-        ) {
-            Toolbox::deprecated('Defining "users_id_validate" field during creation is deprecated in "CommonITILValidation".');
-            $input['itemtype_target'] = User::class;
-            $input['items_id_target'] = $input['users_id_validate'];
-            unset($input['users_id_validate']);
-        }
-
-        if (
             !isset($input['itemtype_target']) || empty($input['itemtype_target'])
             || !isset($input["items_id_target"]) || $input["items_id_target"] <= 0
         ) {
@@ -402,6 +392,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'id' => $itilobject->getID(),
             'global_validation' => static::computeValidationStatus($itilobject),
             '_from_itilvalidation' => true,
+            '_trigger' => $this,
         ];
 
         // to fix lastupdater
@@ -558,6 +549,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 'id'                    => $item->getID(),
                 'global_validation'     => static::computeValidationStatus($item),
                 '_from_itilvalidation'  => true,
+                '_trigger'              => $this,
             ];
 
             if (!$item->update($input)) {
@@ -975,13 +967,6 @@ abstract class CommonITILValidation extends CommonDBChild
                             'comment_submission'   => $input['comment_submission'],
                         ];
                         if ($valid->can(-1, CREATE, $input2)) {
-                            if (array_key_exists('users_id_validate', $input)) {
-                                Toolbox::deprecated('Usage of "users_id_validate" in input is deprecated. Use "itemtype_target"/"items_id_target" instead.');
-                                $input['itemtype_target'] = User::class;
-                                $input['items_id_target'] = $input['users_id_validate'];
-                                unset($input['users_id_validate']);
-                            }
-
                             $itemtype  = $input['itemtype_target'];
                             $items_ids = $input['items_id_target'];
 
@@ -997,17 +982,17 @@ abstract class CommonITILValidation extends CommonDBChild
                                 }
                             }
                             if ($ok) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -2127,7 +2112,7 @@ HTML;
         $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
         if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
             throw new RuntimeException('Failed to delete unused approval step.');
-        };
+        }
     }
 
     public function recomputeItilStatus(): void
@@ -2149,6 +2134,7 @@ HTML;
                 'id' => $itil_object->getID(),
                 'global_validation' => self::computeValidationStatus($itil_object),
                 '_from_itilvalidation' => true,
+                '_trigger' => $this,
                 '_validationsteps_id' => $validationstep_id ?? null,
             ]
         );

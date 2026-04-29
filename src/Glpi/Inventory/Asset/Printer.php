@@ -106,16 +106,16 @@ class Printer extends InventoryAsset
         $entities_id = $this->entities_id;
 
         $lclass = null;
-        if (class_exists($this->item->getType() . '_Item')) {
-            $lclass = $this->item->getType() . '_Item';
-        } elseif (class_exists('Item_' . $this->item->getType())) {
-            $lclass = 'Item_' . $this->item->getType();
-        } elseif (in_array($this->item->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
+        if (class_exists($this->item::class . '_Item')) {
+            $lclass = $this->item::class . '_Item';
+        } elseif (class_exists('Item_' . $this->item::class)) {
+            $lclass = 'Item_' . $this->item::class;
+        } elseif (in_array($this->item::class, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
             $lclass = Asset_PeripheralAsset::class;
         }
 
         if (!\is_a($lclass, CommonDBTM::class, true)) {
-            throw new RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
+            throw new RuntimeException('Unable to find linked item object name for ' . $this->item::class);
         }
 
         foreach ($this->data as $key => $val) {

@@ -47,16 +47,14 @@ class PhpVersion extends AbstractRequirement
     /**
      * Minimal required PHP version (inclusive).
      *
-     * @var string
      */
-    private $min_version;
+    private string $min_version;
 
     /**
      * Maximum required PHP version (inclusive).
      *
-     * @var string
      */
-    private $max_version;
+    private string $max_version;
 
     /**
      * @param string $min_version  Minimal required PHP version (inclusive)

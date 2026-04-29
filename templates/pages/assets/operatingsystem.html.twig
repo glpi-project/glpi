@@ -118,7 +118,7 @@
 
     {{ fields.htmlField(
         'install_date',
-        item.fields['install_date']|formatted_datetime,
+        item.fields['install_date']|formatted_datetime|e,
         __('Installation date')
     ) }}
 

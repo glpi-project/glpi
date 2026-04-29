@@ -37,6 +37,7 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Section;
 use Override;
 
@@ -70,7 +71,7 @@ final class SectionTagProvider implements TagProviderInterface, TagWithIdValueIn
         if (!$section) {
             return '';
         }
-        return $section->fields['name'];
+        return FormTranslation::translate($section, Section::TRANSLATION_KEY_NAME) ?? $section->fields['name'];
     }
 
     #[Override]

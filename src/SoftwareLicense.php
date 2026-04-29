@@ -60,12 +60,12 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     /// TODO move to CommonDBChild ?
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom'];
+    protected static array $forward_entity_to = ['Infocom'];
 
-    public static $rightname                   = 'license';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'license';
+    protected bool $usenotepad               = true;
 
 
     public function getCloneRelations(): array
@@ -989,7 +989,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     {
         global $DB;
 
-        $softwares_id  = $software->getField('id');
+        $softwares_id  = $software->getID();
         $license       = new self();
 
         if (!$software->can($softwares_id, READ)) {
@@ -1162,7 +1162,6 @@ TWIG, $twig_params);
             'footer_class' => 'fw-bold',
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

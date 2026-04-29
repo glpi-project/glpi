@@ -1,0 +1,15 @@
+diff --git a/node_modules/tinymce/tinymce.js b/node_modules/tinymce/tinymce.js
+index 52446aa..cf9d69c 100644
+--- a/node_modules/tinymce/tinymce.js
++++ b/node_modules/tinymce/tinymce.js
+@@ -12723,10 +12723,6 @@
+                 editorManager.focusedEditor = editor;
+                 editor.dispatch('focus', { blurredEditor: focusedEditor });
+                 editor.focus(true);
+-                const browser = detect$1().browser;
+-                if (editor.inline !== true && (browser.isSafari() || browser.isChromium())) {
+-                    bringEditorIntoView(editor);
+-                }
+             }
+         });
+         editor.on('focusout', () => {

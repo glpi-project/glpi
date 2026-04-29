@@ -38,23 +38,17 @@
  **/
 class HTMLTableCell extends HTMLTableEntity
 {
-    /** @var HTMLTableRow */
-    private $row;
-    /** @var HTMLTableHeader */
-    private $header;
-    /** @var ?HTMLTableCell */
-    private $father;
+    private HTMLTableRow $row;
+    private HTMLTableHeader $header;
+    private ?HTMLTableCell $father;
     /** @var array<string, array<self>> */
-    private $sons = [];
-    /** @var ?CommonDBTM */
-    private $item;
-    /** @var ?int */
-    private $numberOfLines;
-    /** @var ?int */
-    private $start;
+    private array $sons = [];
+    private ?CommonDBTM $item = null;
+    private ?int $numberOfLines = null;
+    private ?int $start = null;
 
     /** @var array|false List of rows that have specific attributs */
-    private $attributForTheRow = false;
+    private array|false $attributForTheRow = false;
 
     /**
      * @param HTMLTableRow    $row
@@ -87,23 +81,10 @@ class HTMLTableCell extends HTMLTableEntity
             }
 
             if ($this->father->header != $this->header->getFather()) {
-                if (
-                    ($this->father->header instanceof HTMLTableHeader)
-                    && ($this->header->getFather() instanceof HTMLTableHeader)
-                ) {
+                if ($this->header->getFather() instanceof HTMLTableHeader) {
                     throw new HTMLTableCellFatherCoherentHeader($this->header->getFather()->getName()
                                                             . ' != '
                                                             . $this->father->header->getName());
-                }
-
-                if ($this->father->header instanceof HTMLTableHeader) {
-                    throw new HTMLTableCellFatherCoherentHeader('NULL != '
-                                                            . $this->father->header->getName());
-                }
-
-                if ($this->header->getFather() instanceof HTMLTableHeader) {
-                    throw new HTMLTableCellFatherCoherentHeader($this->header->getFather()->getName()
-                                                            . ' != NULL');
                 }
 
                 throw new HTMLTableCellFatherCoherentHeader('NULL != NULL');

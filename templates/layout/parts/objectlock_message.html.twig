@@ -50,7 +50,6 @@
             {{ __('Read-only mode') }}
         </span>
         <form method="post" class="d-inline">
-            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
             {{ inputs.submit('lockwrite', __('Edit'), 1, {
                 class: 'btn btn-sm btn-primary ms-2',
                 icon: 'ti ti-pencil',

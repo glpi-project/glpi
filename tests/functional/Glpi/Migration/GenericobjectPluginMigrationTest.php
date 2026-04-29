@@ -83,6 +83,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             $DB->dropTable($table['TABLE_NAME']);
         }
 
+        $DB->clearSchemaCache();
         parent::tearDownAfterClass();
     }
 
@@ -861,6 +862,58 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             $contract_item = new Contract_Item();
             $this->assertTrue($contract_item->getFromDBByCrit($expected_contract_item), json_encode($expected_contract_item));
         }
+    }
+
+    public function testItemtypeReferencesAreUpdatedForAssetTypeAndModel(): void
+    {
+        global $DB;
+
+        // Arrange: insert FieldUnicity records using Type and Model sub-itemtypes,
+        // which are not standalone custom dropdowns and have no explicit updateItemtypeReferences()
+        // call before this fix.
+        $DB->insert(FieldUnicity::getTable(), [
+            'name'         => 'Smartphone type uniqueness',
+            'itemtype'     => 'PluginGenericobjectSmartphoneType',
+            'fields'       => 'name',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'is_active'    => 1,
+        ]);
+        $DB->insert(FieldUnicity::getTable(), [
+            'name'         => 'Smartphone model uniqueness',
+            'itemtype'     => 'PluginGenericobjectSmartphoneModel',
+            'fields'       => 'name',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'is_active'    => 1,
+        ]);
+
+        // Act
+        $migration = new GenericobjectPluginMigration($DB);
+        $result    = new PluginMigrationResult();
+        $this->setPrivateProperty($migration, 'result', $result);
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: references must be updated to the migrated class names
+        $smartphone_definition = getItemByTypeName(AssetDefinition::class, 'Smartphone');
+
+        $type_unicity = new FieldUnicity();
+        $this->assertTrue(
+            $type_unicity->getFromDBByCrit([
+                'name'     => 'Smartphone type uniqueness',
+                'itemtype' => $smartphone_definition->getAssetTypeClassName(),
+            ]),
+            'itemtype reference for SmartphoneType was not updated'
+        );
+
+        $model_unicity = new FieldUnicity();
+        $this->assertTrue(
+            $model_unicity->getFromDBByCrit([
+                'name'     => 'Smartphone model uniqueness',
+                'itemtype' => $smartphone_definition->getAssetModelClassName(),
+            ]),
+            'itemtype reference for SmartphoneModel was not updated'
+        );
     }
 
     /**

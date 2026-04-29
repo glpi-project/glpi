@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class DeviceSensorTest extends DbTestCase
 {
@@ -143,9 +144,7 @@ class DeviceSensorTest extends DbTestCase
         ];
     }
 
-    /**
-     * @dataProvider importProvider
-     */
+    #[DataProvider('importProvider')]
     public function testImport(array $input, ?array $result): void
     {
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);

@@ -51,7 +51,7 @@ if (
     }
 
     switch ($_POST["itemtype"]) {
-        case User::getType():
+        case User::class:
             $link = null;
             $comments = [];
             if ($_POST['value'] == 0) {
@@ -86,7 +86,7 @@ if (
             }
             break;
 
-        case Group::getType():
+        case Group::class:
             if ($_POST['value'] != 0) {
                 $group = new Group();
                 if (!is_array($_POST["value"]) && $group->getFromDB($_POST['value']) && $group->canView()) {
@@ -102,7 +102,7 @@ if (
             }
             break;
 
-        case Supplier::getType():
+        case Supplier::class:
             $tmpname = [
                 'comment' => "",
             ];

@@ -35,7 +35,6 @@
 
 <form class="d-flex mb-3" method="post" action="{{ 'Link_Itemtype'|itemtype_form_path }}" data-submit-once>
     {{ inputs.hidden('links_id', links_id) }}
-    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
     {{ fields.dropdownItemTypes('itemtype', null, __('Add an item type'), {
         types: config('link_types'),
         used: used,

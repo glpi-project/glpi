@@ -5,6 +5,7 @@
     bootstrap="tests/bootstrap.php"
     colors="true"
     cacheDirectory="files/_cache/tests"
+    displayDetailsOnAllIssues="true"
 >
   <source>
     <include>

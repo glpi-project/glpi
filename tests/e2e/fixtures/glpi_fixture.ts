@@ -35,14 +35,13 @@ import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { Config } from '../utils/Config';
 import { JSDOM } from 'jsdom';
-import { CsrfExtractor } from '../utils/CsrfExtractor';
 import { Constants } from '../utils/Constants';
 import { ProfileSwitcher } from '../utils/ProfileSwitcher';
-import { CsrfFetcher } from '../utils/CsrfFetcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
+import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -50,9 +49,10 @@ export const test = baseTest.extend<{
     anonymousPage: Page,
     profile: ProfileSwitcher,
     entity: EntitySwitcher,
-    csrf: CsrfFetcher,
     formImporter: FormImporter,
     api: Api,
+    debug: DebugModeSwitcher,
+    retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
     workerSessionCache: WorkerSessionCache,
@@ -81,15 +81,11 @@ export const test = baseTest.extend<{
         // unsetting storage state.
         const context = await request.newContext({ storageState: undefined });
 
-        // Render the login page in order to extract the CSRF token and find the
+        // Render the login page in order to find the
         // login and password fields names
         const response = await context.get(Config.getBaseUrl());
         const body = await response.text();
         const document = new JSDOM(body).window.document;
-
-        // Extract CSRF token
-        const csrf_extractor = new CsrfExtractor();
-        const token = csrf_extractor.extractToken(body);
 
         // Extract login field name
         const login_field = document.getElementById('login_name');
@@ -125,7 +121,6 @@ export const test = baseTest.extend<{
             form: {
                 [login_field_name]     : `${worker_login}`,
                 [password_field_name]  : `${worker_login}`,
-                '_glpi_csrf_token': token,
             }
         });
 
@@ -135,21 +130,16 @@ export const test = baseTest.extend<{
         await use(file_name);
     }, { scope: 'worker' }],
 
-    // Service used to fetch a CSRF token.
-    csrf: [async ({ request, workerSessionCache }, use) => {
-        await use(new CsrfFetcher(request, workerSessionCache));
-    }, { scope: 'test' }],
-
     // Service used to switch profiles as needed.
-    profile: [async ({ request, csrf, workerSessionCache }, use) => {
-        await use(new ProfileSwitcher(request, csrf, workerSessionCache));
+    profile: [async ({ request, workerSessionCache }, use) => {
+        await use(new ProfileSwitcher(request, workerSessionCache));
     }, { scope: 'test' }],
 
     // Service used to switch entites.
     // Unlike the profile service, this shouldn't be needed on most tests, it is
     // only required when testing very specific entity related actions
-    entity:  [async ({ request, csrf }, use) => {
-        await use(new EntitySwitcher(request, csrf));
+    entity:  [async ({ request }, use) => {
+        await use(new EntitySwitcher(request));
     }, { scope: 'test' }],
 
     // Service used to send API request to GLPI.
@@ -157,13 +147,17 @@ export const test = baseTest.extend<{
         await use(new Api(workerSessionCache));
     }, { scope: 'test' }],
 
-    formImporter: [async ({ request, csrf }, use) => {
-        await use(new FormImporter(request, csrf));
+    formImporter: [async ({ request }, use) => {
+        await use(new FormImporter(request));
+    }, { scope: 'test' }],
+
+    // Service used to switch debug mode on/off.
+    debug: [async ({ request }, use) => {
+        await use(new DebugModeSwitcher(request));
     }, { scope: 'test' }],
 
     // Store the state of the current session.
-    // This avoid fetching CSRF token multiple times or trying to set a profile
-    // that is already the one being used.
+    // This avoid trying to set a profile that is already the one being used.
     // Worker scoped so we will get one object per thread (= per session since
     // each of our thread has a unique account).
     workerSessionCache: [async ({}, use) => {
@@ -182,4 +176,16 @@ export const test = baseTest.extend<{
         await use(await context.newPage());
         await context.close();
     },
+
+    // Increase the timeout when retrying a test.
+    // This is needed because the first retry on the CI enable trace mode to
+    // debug the error, which slow the test down.
+    // This can cause the test to go over the 30 seconds timeout so this fixture
+    // add a bit a leeway to avoid this unfortunate side effect.
+    retryTimeout: [async ({}, use, testInfo) => {
+        if (testInfo.retry > 0) {
+            testInfo.setTimeout(testInfo.timeout * 2);
+        }
+        await use();
+    }, { auto: true, scope: 'test' }],
 });

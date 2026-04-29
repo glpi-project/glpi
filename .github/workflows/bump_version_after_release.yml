@@ -1,5 +1,8 @@
 name: "Bump version after release"
 
+permissions:
+  contents: "read"
+
 on:
   release:
     types:
@@ -70,7 +73,7 @@ jobs:
           git push origin ${{ env.BUMP_BRANCH }}
       - name: "Create Pull Request"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
-        uses: "actions/github-script@v8"
+        uses: "actions/github-script@v9"
         with:
           script: |
             const { repo, owner } = context.repo;

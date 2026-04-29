@@ -53,7 +53,7 @@ class NetworkEquipment extends MainAsset
     /** @var array<string, object> */
     private array $management_ports = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
         NetworkPort::class       => null,
@@ -142,8 +142,8 @@ class NetworkEquipment extends MainAsset
                 $stack = clone $val;
                 $stack->firmware = $switch->firmware ?? $switch->version ?? '';
                 $stack->serial = $switch->serial;
-                $stack->model = $switch->model;
-                $stack->$model_field = $switch->model;
+                $stack->model = $switch->model ?? 0;
+                $stack->$model_field = $switch->model ?? 0;
                 $stack->description = $stack->name . ' - ' . $switch_name;
                 $stack->name = $stack->name . ' - ' . $switch_name;
                 if ($switch_name != ($switch->stack_number ?? '')) {
@@ -489,7 +489,7 @@ class NetworkEquipment extends MainAsset
                     $ipaddress = new IPAddress($ip);
                     $criteria = [
                         'mainitems_id' => $item->fields['id'],
-                        'mainitemtype' => $item::getType(),
+                        'mainitemtype' => $item::class,
                         'is_dynamic'   => 1,
                         'name'         => $ipaddress->getTextual(),
                     ];

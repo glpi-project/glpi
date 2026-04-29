@@ -68,7 +68,6 @@
    <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
          action="{{ path('/front/massiveaction.php') }}?_single_item[itemtype]={{ item.getType() }}&_single_item[id]={{ item.getID() }}" data-submit-once>
       <div id="massive_container_{{ rand }}"></div>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    </form>
 {% endif %}
 
@@ -80,28 +79,30 @@
              value="{{ template_name }}" />
    {% endif %}
    <h3 class="card-title d-flex align-items-center ps-0 {{ in_navheader ? "ps-sm-5" : "ps-sm-4" }}">
-      {% set icon = item.getIcon() %}
-      {% if not in_navheader and icon|length > 0 %}
-         <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
-            <i class="{{ icon }} fa-2x"></i>
-         </div>
-      {% endif %}
-      <span {% if in_navheader %} class="status rounded-1 me-1" {% endif %}>
-         {% if in_navheader %}
-            <i class="{{ icon }}"></i>
+      {% if item.showFriendlyNameBadgeInForm() %}
+         {% set icon = item.getIcon() %}
+         {% if not in_navheader and icon|length > 0 %}
+            <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
+               <i class="{{ icon }} fa-2x"></i>
+            </div>
          {% endif %}
-         {% if withtemplate == 1 and item.id > 0 %}
-            {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
-         {% elseif not item.isNewItem() %}
-            {{ nametype }} - <span id="header-friendlyname"> {{ friendlyname }} </span>
-         {% else %}
-            {{ nametype }}
+         <span {% if in_navheader %} class="status rounded-1 me-1" {% endif %}>
+            {% if in_navheader %}
+               <i class="{{ icon }}"></i>
+            {% endif %}
+            {% if withtemplate == 1 and item.id > 0 %}
+               {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
+            {% elseif not item.isNewItem() %}
+               {{ nametype }} - <span id="header-friendlyname"> {{ friendlyname }} </span>
+            {% else %}
+               {{ nametype }}
+            {% endif %}
+         </span>
+         {% if in_navheader and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
+            <span class="mx-1 status rounded-1" title="{{ __('Automatic Inventory') }}" data-bs-toggle="tooltip">
+               <i class="{{ call('Agent::getIcon') }}"></i>
+            </span>
          {% endif %}
-      </span>
-      {% if in_navheader and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
-      <span class="mx-1 status rounded-1" title="{{ __('Automatic Inventory') }}" data-bs-toggle="tooltip">
-         <i class="{{ call('Agent::getIcon') }}"></i>
-      </span>
       {% endif %}
       {% if in_navheader and item.isField('is_deleted') %}
       {% set title = item.isField('date_mod') ? __('Item has been deleted on %s')|format(item.fields['date_mod']) : __('Deleted') %}
@@ -155,7 +156,9 @@
                {% if not disabled %}<input form="main-form" type="hidden" name="is_recursive" value="0" />{% endif %}
                <input form="main-form" class="form-check-input" type="checkbox" name="is_recursive" value="1"
                   {% if item.isRecursive() %}checked="checked"{% endif %}
-                  {% if disabled %}disabled="disabled"{% endif %} />
+                  {% if disabled %}disabled="disabled"{% endif %}
+                  data-glpi-child-entities-checkbox
+               />
                {% if item is instanceof('CommonDBChild') and item.isNewItem() and item.isRecursive() %}
                   {# Send value on hidden field to ensure creation will use inherited recursivity on CommonDBChild #}
                   <input form="main-form" type="hidden" name="is_recursive" value="1" />

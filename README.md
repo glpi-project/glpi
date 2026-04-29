@@ -75,7 +75,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB >= 10.6 or MySQL >= 8.0
-* PHP >= 8.2
+* PHP >= 8.3
 * Mandatory PHP extensions:
     - dom, fileinfo, filter, libxml, simplexml, xmlreader, xmlwriter (these are enabled in PHP by default)
     - bcmath (QRCode generation)

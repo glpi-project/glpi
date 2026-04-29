@@ -51,17 +51,17 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * @var bool From CommonDBTM
      */
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     /**
      * @var bool From CommonDropdown
      */
-    public $display_dropdowntitle = false;
+    public bool $display_dropdowntitle = false;
 
     /**
      * @var bool From CommonDropdown
      */
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     /**
      * Concrete items to be instanciated

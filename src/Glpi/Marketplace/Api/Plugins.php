@@ -51,10 +51,9 @@ use function Safe\session_write_close;
 
 class Plugins
 {
-    /** @var ?Client */
-    protected $httpClient  = null;
+    protected ?Client $httpClient  = null;
     /** @var ?array  */
-    protected $last_error  = null;
+    protected ?array $last_error  = null;
 
     public const COL_PAGE    = 200;
 
@@ -68,12 +67,11 @@ class Plugins
     /**
      * Flag that indicates that plugin list is truncated (due to an errored response from marketplace API).
      *
-     * @var bool
      */
-    protected $is_list_truncated = false;
+    protected bool $is_list_truncated = false;
 
     /** @var ?array */
-    public static $plugins = null;
+    public static ?array $plugins = null;
 
     public function __construct()
     {
@@ -257,7 +255,7 @@ class Plugins
             $plugins_colct = self::$plugins;
         }
 
-        if (strlen($tag_filter) > 0) {
+        if ($tag_filter !== '') {
             $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
             if ($this->last_error !== null) {
                 $this->is_list_truncated = true;
@@ -265,7 +263,7 @@ class Plugins
             $plugins_colct  = array_intersect_key($plugins_colct, array_flip($tagged_plugins));
         }
 
-        if (strlen($string_filter) > 0) {
+        if ($string_filter !== '') {
             $plugins_colct = array_filter($plugins_colct, fn($plugin) => str_contains(strtolower(json_encode($plugin)), strtolower($string_filter)));
         }
 

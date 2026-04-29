@@ -35,8 +35,8 @@
 
 class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnaryDropdownCollection
 {
-    public $item_table  = "glpi_operatingsystemservicepacks";
-    public $menu_option = "os_sp";
+    public string $item_table  = "glpi_operatingsystemservicepacks";
+    public string $menu_option = "os_sp";
 
     public function getTitle()
     {
