@@ -115,7 +115,7 @@
     /**
      * Watching for changes in the search filter to update the hidden/expanded state of the nodes.
      */
-    watch(() => search_filter, (new_value) => {
+    watch(search_filter, (new_value) => {
         walkTree(tree_data.value, 0, null, (node) => {
             const match = new_value.length === 0 || node.label.toLowerCase().includes(new_value.toLowerCase());
             if (!node.children.length) {
