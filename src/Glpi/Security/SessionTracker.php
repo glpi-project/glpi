@@ -160,6 +160,8 @@ final class SessionTracker extends CommonGLPI
      */
     private function getWebSessionsCriteria(int $users_id = 0, array $filters = []): array
     {
+        global $DB;
+
         $where = [];
         $having = [];
         $joins = [
@@ -278,7 +280,7 @@ final class SessionTracker extends CommonGLPI
      */
     private function getApiSessionsCriteria(int $users_id = 0, array $filters = []): array
     {
-
+        return [];
     }
 
     /**

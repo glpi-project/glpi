@@ -40,6 +40,12 @@
     });
 
     function applyFilters() {
+        console.log('Applying filters', {
+            user: user_filter.value,
+            status: status_filter.value,
+            type: type_filter.value,
+            ip: ip_filter.value,
+        });
         // Validate IP filter before emitting filter event
         const ip_filter_value = ip_filter.value.trim();
         if (ip_filter_value !== '') {
@@ -99,12 +105,16 @@
             <span style="grid-column: 4" :id="`${ip_filter_id}helper`" class="form-hint">{{ __('CIDR notation and comma separated values are supported.') }}</span>
         </Teleport>
         <div style="grid-column: 5; grid-row: 2" class="d-flex align-self-center gap-2">
-            <button class="btn btn-primary align-self-end gap-1" @click="is_mobile ? undefined : applyFilters"
-                    :aria-controls="is_mobile ? filters_popover_id : undefined" :aria-expanded="false" :aria-haspopup="is_mobile"
-                    :data-bs-toggle="is_mobile ? 'dropdown' : undefined" data-bs-placement="bottom">
+            <button v-if="!is_mobile" class="btn btn-primary align-self-end gap-1" @click="applyFilters">
                 <i class="ti ti-filter" aria-hidden="true"></i>
-                {{ is_mobile ? __('Filters') : __('Filter') }}
-                <span v-if="is_mobile && active_filters_count > 0" class="badge bg-info text-info-fg badge-notification badge-pill" v-text="active_filters_count"></span>
+                {{ __('Filter') }}
+            </button>
+            <button v-else class="btn btn-primary align-self-end gap-1"
+                    :aria-controls="filters_popover_id" :aria-expanded="false" :aria-haspopup="true"
+                    data-bs-toggle="dropdown" data-bs-placement="bottom">
+                <i class="ti ti-filter" aria-hidden="true"></i>
+                {{ __('Filters') }}
+                <span v-if="active_filters_count > 0" class="badge bg-info text-info-fg badge-notification badge-pill" v-text="active_filters_count"></span>
             </button>
             <div :id="filters_popover_id" class="dropdown-menu dropdown-menu-card" role="region">
                 <div class="p-3">

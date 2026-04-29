@@ -27,19 +27,8 @@
     }) {
         loading.value = true;
         error.value = null;
-        const query_params = new URLSearchParams();
-        if (filters.user) {
-            query_params.append('user', filters.user);
-        }
-        if (filters.status) {
-            query_params.append('status', filters.status);
-        }
-        if (filters.type) {
-            query_params.append('type', filters.type);
-        }
-        if (filters.ip) {
-            query_params.append('ip', filters.ip);
-        }
+        const query_params = new URLSearchParams(filters);
+
         fetch(`${CFG_GLPI.root_doc}/Security/Sessions?${query_params.toString()}`, {
             method: 'GET',
             headers: {
