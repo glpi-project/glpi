@@ -122,6 +122,8 @@
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <a href="{{ path('/front/logviewer.php') }}?action=download_log_file&amp;filepath={{ log['filepath']|url_encode }}"
+                                                       title="{{ __("Download file") }}"
+                                                       data-bs-toggle="tooltip" data-bs-placement="bottom"
                                                        class="dropdown-item">
                                                         <i class="ti ti-file-download" aria-hidden="true"></i>
                                                         <span>{{ __("Download file") }}</span>
@@ -143,7 +145,7 @@
                                                     <li>
                                                         <button type="submit" name="action" value="delete"
                                                                      class="dropdown-item"
-                                                                     title="{{ __("Empty file") }}"
+                                                                     title="{{ __("Delete file") }}"
                                                                      onclick="return confirm('{{ __("Are you sure you want to delete this file?")|e('js') }}')"
                                                                      data-bs-toggle="tooltip" data-bs-placement="bottom">
                                                             <i class="ti ti-trash-x" aria-hidden="true"></i>
