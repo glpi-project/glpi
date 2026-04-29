@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 
 class RuleTicket extends Rule
 {
@@ -468,9 +469,10 @@ class RuleTicket extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
+                                $regexvalue = Sanitizer::unsanitize($regexvalue);
                                 $group = new Group();
                                 if (
-                                    $group->getFromDBByCrit(["name" => $regexvalue,
+                                    $group->getFromDBByCrit(["completename" => $regexvalue,
                                         "is_requester" => true,
                                     ])
                                 ) {
@@ -483,9 +485,10 @@ class RuleTicket extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
+                                $regexvalue = Sanitizer::unsanitize($regexvalue);
                                 $group = new Group();
                                 if (
-                                    $group->getFromDBByCrit(["name" => $regexvalue,
+                                    $group->getFromDBByCrit(["completename" => $regexvalue,
                                         "is_watcher" => true,
                                     ])
                                 ) {
@@ -498,9 +501,10 @@ class RuleTicket extends Rule
                                     $action->fields["value"],
                                     $regex_result
                                 );
+                                $regexvalue = Sanitizer::unsanitize($regexvalue);
                                 $group = new Group();
                                 if (
-                                    $group->getFromDBByCrit(["name" => $regexvalue,
+                                    $group->getFromDBByCrit(["completename" => $regexvalue,
                                         "is_assign" => true,
                                     ])
                                 ) {
