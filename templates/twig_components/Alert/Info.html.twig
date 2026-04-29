@@ -60,7 +60,7 @@
             <div>
                 <a class="alert-link"
                    href="{{ link_url }}"
-                   target="{{ link_target }}"
+                   target="{{ link_blank ? '_blank' : '_self' }}"
                 >
                     {{ link_text ? link_text : link_url }}
                 </a>

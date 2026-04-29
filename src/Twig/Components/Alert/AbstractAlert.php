@@ -56,7 +56,7 @@ abstract class AbstractAlert
 
     public ?string $link_text = null;
 
-    public ?string $link_target = '_blank';
+    public bool $link_blank = true;
 
     public function getResolvedIcon(): string
     {
