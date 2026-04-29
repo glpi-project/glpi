@@ -75,7 +75,7 @@ class Report extends CommonGLPI
         // Default Report included
         $report_list = [];
         $report_list["default"]["name"] = __('Default report');
-        $report_list["default"]["file"] = "/front/report.default.php";
+        $report_list["default"]["file"] = $root_doc . "/front/report.default.php";
 
         if (Contract::canView()) {
             $report_list["Contrats"]["name"] = __('By contract');
