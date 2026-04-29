@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
         if ($instance->update([
             'id'       => $_POST['databaseinstances_id'],
             'items_id' => ($_POST['items_id'] ?? 0),
-            'itemtype' => $itemtype,
+            'itemtype' => $_POST['itemtype'],
         ])) {
             Event::log(
                 $_POST['databaseinstances_id'],
