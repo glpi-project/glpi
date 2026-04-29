@@ -259,5 +259,19 @@ export class KnowbaseItemPage extends GlpiPage
     {
         return this.getHistoryEvents().filter({hasText: text});
     }
+
+    public async doOpenPermissionsModal(): Promise<Locator>
+    {
+        // Wait for ArticleController to finish initialization (it removes pe-none after attaching all listeners)
+        // eslint-disable-next-line playwright/no-raw-locators -- No semantic alternative for article container
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('Targets').click();
+
+        const modal = this.page.getByRole('dialog');
+        await expect(modal).toBeVisible();
+
+        return modal;
+    }
 }
 

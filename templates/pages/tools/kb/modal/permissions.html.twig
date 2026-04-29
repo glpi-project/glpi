@@ -45,12 +45,15 @@
                 }) }}
                 <div id="visibility-submit{{ rand }}" class="d-none d-flex gap-2 align-items-center">
                     <div class="flex-grow-1">
-                        <div id="visibility{{ rand }}" class="kb-permission-visibility"></div>
+                        <div id="visibility{{ rand }}"
+                             class="kb-permission-visibility"
+                             aria-label="{{ _n('Target', 'Targets', 1) }}"></div>
                     </div>
-                    <input type="submit"
-                           name="addvisibility"
-                           value="{{ _x('button', 'Add') }}"
-                           class="btn btn-primary">
+                    <button type="submit"
+                            name="addvisibility"
+                            class="btn btn-primary">
+                        {{ _x('button', 'Add') }}
+                    </button>
                 </div>
             </div>
             <script>
@@ -78,9 +81,10 @@
 {% endif %}
 
 {# Permissions list #}
-<div class="list-group list-group-flush" data-glpi-permissions-list>
+<div class="list-group list-group-flush" role="list" data-glpi-permissions-list>
     {% for entry in entries %}
             <div class="list-group-item d-flex align-items-center gap-2 px-0"
+                 role="listitem"
                  data-glpi-permission-id="{{ entry.id }}"
                  data-glpi-permission-itemtype="{{ entry.itemtype }}">
 
@@ -105,8 +109,9 @@
                         {% if entry.is_recursive %}
                             <span class="badge bg-secondary-lt"
                                   title="{{ __('Recursive') }}"
+                                  aria-label="{{ __('Recursive') }}"
                                   data-bs-toggle="tooltip">
-                                <i class="ti ti-arrow-iteration me-1"></i>R
+                                <i class="ti ti-arrow-iteration me-1" aria-hidden="true"></i><span aria-hidden="true">R</span>
                             </span>
                         {% endif %}
                     </div>
