@@ -102,7 +102,7 @@
             <span id="visibility{{ rand }}"></span>
             <script type="module">
                 const { VisibilityTargetController } = await import(
-                    "{{ js_path('js/modules/VisibilityTargetController.js') }}"
+                    "/js/modules/VisibilityTargetController.js"
                 );
                 new VisibilityTargetController({
                     trigger: 'dropdown__visibility__type_{{ rand }}',

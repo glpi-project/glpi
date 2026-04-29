@@ -53,19 +53,29 @@
                            class="btn btn-primary">
                 </div>
             </div>
-            <script type="module">
-                const { VisibilityTargetController } = await import(
-                    "{{ js_path('js/modules/VisibilityTargetController.js') }}"
-                );
-                new VisibilityTargetController({
-                    trigger:       'dropdown__type{{ rand }}',
-                    output:        'visibility{{ rand }}',
-                    submitWrapper: 'visibility-submit{{ rand }}',
-                    params: {
-                        ...{{ visiblity_dropdown_params|json_encode|raw }},
-                        nobutton: 1,
-                    },
-                });
+            {# Plain <script> (not type="module"): this template is injected
+               via jQuery .html() by the sidepanel loader, which uses
+               domEval() and does NOT execute module scripts. Dynamic import()
+               works fine inside a classic script.
+
+               The bare `/js/modules/...` path is rewritten by the GLPI
+               importmap with a per-file CRC32c hash, so edits to the module
+               bust the browser/HTTP cache automatically. #}
+            <script>
+                (async () => {
+                    const { VisibilityTargetController } = await import(
+                        "/js/modules/VisibilityTargetController.js"
+                    );
+                    new VisibilityTargetController({
+                        trigger:       'dropdown__type{{ rand }}',
+                        output:        'visibility{{ rand }}',
+                        submitWrapper: 'visibility-submit{{ rand }}',
+                        params: {
+                            ...{{ visiblity_dropdown_params|json_encode|raw }},
+                            nobutton: 1,
+                        },
+                    });
+                })();
             </script>
         </form>
     </div>
@@ -140,9 +150,13 @@
 </div>
 
 {% if can_edit %}
-<script type="module">
-    const list = document.querySelector('[data-glpi-permissions-list]');
-    if (list) {
+<script>
+    (() => {
+        const list = document.querySelector('[data-glpi-permissions-list]');
+        if (!list) {
+            return;
+        }
+
         list.addEventListener('click', async (e) => {
             const btn = e.target.closest('[data-glpi-permission-delete]');
             if (!btn) {
@@ -188,6 +202,6 @@
                 glpi_toast_error('{{ __("An error occurred while deleting the permission.")|e("js") }}');
             }
         });
-    }
+    })();
 </script>
 {% endif %}

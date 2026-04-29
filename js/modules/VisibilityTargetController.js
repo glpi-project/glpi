@@ -39,6 +39,12 @@
  * via `$.fn.load()`. The fragment returned by the controller may contain
  * `<script>` tags (Select2 init code emitted by GLPI dropdowns); these are
  * re-executed after injection to preserve the previous behavior.
+ *
+ * The trigger dropdown is managed by Select2, which emits jQuery-only `change`
+ * events via `$(elem).trigger('change')` — these do NOT propagate to native
+ * `addEventListener` handlers. We therefore subscribe via jQuery here. This is
+ * the only place in this module that touches jQuery; everything else (fetch,
+ * DOM injection, class toggles) uses standard browser APIs.
  */
 export class VisibilityTargetController
 {
@@ -72,7 +78,9 @@ export class VisibilityTargetController
             return;
         }
 
-        this.#trigger.addEventListener('change', (e) => this.#onChange(e.target.value));
+        // 'change' is required (not 'select2:select'): we also need to react
+        // when the user clears the dropdown back to the empty value.
+        $(this.#trigger).on('change', (e) => this.#onChange(e.target.value));
     }
 
     /**

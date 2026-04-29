@@ -36,7 +36,6 @@
 namespace Glpi\Controller\Dropdown;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\BadRequestHttpException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,8 +57,13 @@ final class VisibilitySubTargetController extends AbstractController
         $type     = (string) $input->get('type', '');
         $items_id = $input->getInt('items_id', 0);
 
+        // The legacy ajax/subvisibility.php returned an empty body in this case;
+        // the jQuery `.load()` handler wired by Ajax::updateItemJsCode triggers
+        // on every change of the parent dropdown, including resetting it to its
+        // empty option (items_id = 0). Returning a 4xx here would inject an
+        // error page into the sub-target div.
         if ($items_id <= 0 || !in_array($type, self::SUPPORTED_TYPES, true)) {
-            throw new BadRequestHttpException();
+            return new Response('');
         }
 
         $raw_prefix = (string) $input->get('prefix', '');
