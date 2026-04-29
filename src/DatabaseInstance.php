@@ -451,33 +451,22 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         $canedit = $item->can($item->getID(), UPDATE);
 
         if ($canedit && $withtemplate != 2) {
-            echo "<div class='firstbloc'>";
-            echo "<form method='post' action='" . self::getFormURL() . "'>";
-            // echo __s('Link an existing database instance');
-            echo "<div class='d-flex'>";
-            echo "<div class='col-auto'>";
-            Dropdown::show(
-                self::class,
-                [
-                    'name'      => 'id',
-                    'condition' => [
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand'            => mt_rand(),
+                'link_itemtype'   => self::class,
+                'generic_source'  => true,
+                'source_itemtype' => $item->getType(),
+                'source_items_id' => $item->fields['id'],
+                'target_itemtype' => self::class,
+                'dropdown_options' => [
+                    'condition'   => [
                         'is_deleted' => 0,
                         'items_id'   => 0,
                     ],
-                    'entity'    => $item->getEntityID(),
-                ]
-            );
-            echo "</div>";
-            echo "<div class='col-auto'>";
-            echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>";
-            echo "<input type='hidden' name='itemtype' value='" . $item::class . "'>";
-            echo "<button type='submit' name='update' value='1' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span>";
-            echo "</button>";
-            echo "</div>";
-            echo "</div>"; //d-flex
-            Html::closeForm();
-            echo "</div>"; //firstbloc
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                ],
+            ]);
         }
 
         $instances = $DB->request([
