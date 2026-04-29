@@ -89,6 +89,7 @@ class ReAuthController extends AbstractController
         if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
 
+            // catched in RedirectPostExceptionListener
             throw new ReauthRedirectException(
                 $this->reAuthManager->getRedirectURL(),
                 $this->reAuthManager->getRedirectData(),

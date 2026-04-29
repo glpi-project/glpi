@@ -2073,30 +2073,8 @@ TWIG,
                     );
                 }
             }
-        }
-        else
-        {
-//            @todo revert
-            // Reauth is needed : "Actions" button will trigger redirection to ReAuth/Prompt page instead of opening massive action modal
-//            if($p['reauth_needed'] === true) {
-//                $out = '<a role="button" class="'. htmlescape($p['action_button_classes']) . '" href="/ReAuth/Prompt" >Reauth</a>';
-//                // normalement : passer par reauthManager::redirect()
-//                // @todo i18n
-//                // @todo laisser le même libélé pour ne pas perturber les utilisateurs
-//                // @todo manque le ~glpi_rootdoc
-//                //         path: "/ReAuth/Prompt",
-//                //        name: "reauth_prompt",
-//                if ($p['display']) {
-//                    echo $out;
-//                    return true; // @todo false ??
-//                } else {
-//                    return $out;
-//                }
-//            }
-
+        } else {
             // Create Modal window on top
-
-
             if (
                 $p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])

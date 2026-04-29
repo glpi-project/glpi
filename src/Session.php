@@ -181,15 +181,15 @@ class Session
 
         self::loadLanguage();
 
-                    if ($auth->password_expired) {
-                        // Make sure we are not in debug mode, as it could trigger some ajax request that would
-                        // fail the session check (as we use a special partial session here without profiles) and thus
-                        // destroy the session.
-                        $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
-                        $_SESSION['glpi_password_expired'] = 1;
-                        // Do not init profiles, as user has to update its password to be able to use GLPI
-                        return;
-                    }
+        if ($auth->password_expired) {
+            // Make sure we are not in debug mode, as it could trigger some ajax request that would
+            // fail the session check (as we use a special partial session here without profiles) and thus
+            // destroy the session.
+            $_SESSION["glpi_use_mode"] = self::NORMAL_MODE;
+            $_SESSION['glpi_password_expired'] = 1;
+            // Do not init profiles, as user has to update its password to be able to use GLPI
+            return;
+        }
 
         // glpiprofiles -> other available profile with link to the associated entities
         Plugin::doHook(Hooks::INIT_SESSION);
