@@ -1137,7 +1137,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 ],
             ],
             'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_changes'),
-            'ORDERBY'         => 'date_mod DESC',
+            'ORDERBY'         => 'glpi_changes.date_mod DESC',
         ];
 
         if (count($JOINS)) {
