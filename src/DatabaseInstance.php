@@ -455,7 +455,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
                 'rand'            => mt_rand(),
                 'link_itemtype'   => self::class,
                 'generic_source'  => true,
-                'source_itemtype' => $item->getType(),
+                'source_itemtype' => $item::class,
                 'source_items_id' => $item->fields['id'],
                 'target_itemtype' => self::class,
                 'dropdown_options' => [
