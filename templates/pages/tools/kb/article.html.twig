@@ -551,7 +551,7 @@
 <script type="module">
     (async () => {
         const module = await import(
-            "{{ js_path('js/modules/Knowbase/ArticleController.js') }}"
+            "/js/modules/Knowbase/ArticleController.js"
         );
         new module.GlpiKnowbaseArticleController(
             document.querySelector('[data-glpi-knowbase-article]'),

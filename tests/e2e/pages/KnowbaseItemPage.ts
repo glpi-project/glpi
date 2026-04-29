@@ -259,5 +259,29 @@ export class KnowbaseItemPage extends GlpiPage
     {
         return this.getHistoryEvents().filter({hasText: text});
     }
+
+    public getAsideCategory(title: string): Locator
+    {
+        return this.page.getByRole('group', { name: title });
+    }
+
+    public getAsideCategoryToggle(title: string): Locator
+    {
+        return this.page.getByRole('button', { name: title, exact: true });
+    }
+
+    public getAsideCategoryArticle(
+        category_title: string,
+        article_title: string
+    ): Locator {
+        return this.getAsideCategory(category_title).getByRole('link', {
+            name: article_title
+        });
+    }
+
+    public async doToggleAsideCategory(title: string): Promise<void>
+    {
+        await this.getAsideCategoryToggle(title).click();
+    }
 }
 
