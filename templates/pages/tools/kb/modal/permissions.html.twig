@@ -75,7 +75,10 @@
                             nobutton: 1,
                         },
                     });
-                })();
+                })().catch((e) => {
+                    glpi_toast_error('{{ __("An unexpected error occurred.")|e("js") }}');
+                    console.error(e);
+                });
             </script>
         </form>
     </div>

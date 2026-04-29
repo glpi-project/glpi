@@ -63,7 +63,7 @@ final class VisibilitySubTargetController extends AbstractController
         // empty option (items_id = 0). Returning a 4xx here would inject an
         // error page into the sub-target div.
         if ($items_id <= 0 || !in_array($type, self::SUPPORTED_TYPES, true)) {
-            return new Response('');
+            return $this->withNoCache(new Response(''));
         }
 
         $raw_prefix = (string) $input->get('prefix', '');
@@ -79,13 +79,22 @@ final class VisibilitySubTargetController extends AbstractController
             $entity_dropdown_params['toadd'] = [-1 => __('No restriction')];
         }
 
-        return $this->render(
+        return $this->withNoCache($this->render(
             'components/dropdown/visibility_sub_target.html.twig',
             [
                 'prefix'                 => $prefix,
                 'suffix'                 => $suffix,
                 'entity_dropdown_params' => $entity_dropdown_params,
             ]
-        );
+        ));
+    }
+
+    // prevent shared cache leaks
+    private function withNoCache(Response $response): Response
+    {
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        $response->headers->set('Pragma', 'no-cache');
+
+        return $response;
     }
 }

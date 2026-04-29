@@ -85,8 +85,10 @@ final class VisibilitySubTargetControllerTest extends DbTestCase
             'items_id' => 1,
         ]);
 
+        $content = $response->getContent();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertNotSame('', $response->getContent());
+        $this->assertMatchesRegularExpression('/name=["\']entities_id["\']/', $content);
+        $this->assertMatchesRegularExpression('/name=["\']is_recursive["\']/', $content);
     }
 
     public function testInvokeReturnsRenderedResponseForProfileType(): void
@@ -98,7 +100,52 @@ final class VisibilitySubTargetControllerTest extends DbTestCase
             'items_id' => 1,
         ]);
 
+        $content = $response->getContent();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertNotSame('', $response->getContent());
+        $this->assertMatchesRegularExpression('/name=["\']entities_id["\']/', $content);
+        $this->assertMatchesRegularExpression('/name=["\']is_recursive["\']/', $content);
+    }
+
+    public function testInvokeRendersPrefixedFieldNames(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'     => Group::class,
+            'items_id' => 1,
+            'prefix'   => 'foo',
+        ]);
+
+        $content = $response->getContent();
+        $this->assertMatchesRegularExpression('/name=["\']foo\[entities_id\]["\']/', $content);
+        $this->assertMatchesRegularExpression('/name=["\']foo\[is_recursive\]["\']/', $content);
+    }
+
+    public function testInvokeSetsNoCacheHeaders(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'     => Group::class,
+            'items_id' => 1,
+        ]);
+
+        $cache_control = $response->headers->get('Cache-Control');
+        $this->assertStringContainsString('no-store', $cache_control);
+        $this->assertStringContainsString('no-cache', $cache_control);
+        $this->assertSame('no-cache', $response->headers->get('Pragma'));
+    }
+
+    public function testInvokeSetsNoCacheHeadersOnEmptyResponse(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'     => Group::class,
+            'items_id' => 0,
+        ]);
+
+        $this->assertSame('', $response->getContent());
+        $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
     }
 }

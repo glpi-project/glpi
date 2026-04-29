@@ -58,7 +58,11 @@ final class VisibilityTargetController extends AbstractController
         $type  = (string) $input->get('type', '');
         $right = (string) $input->get('right', '');
 
-        if ($type === '' || $right === '' || !in_array($type, self::SUPPORTED_TYPES, true)) {
+        if (
+            $type === ''
+            || !in_array($type, self::SUPPORTED_TYPES, true)
+            || !$this->isAllowedRight($right)
+        ) {
             throw new BadRequestHttpException();
         }
 
@@ -72,7 +76,7 @@ final class VisibilityTargetController extends AbstractController
         $entity      = $input->getInt('entity', -1);
         $is_recursive = (bool) $input->get('is_recursive', false);
 
-        return $this->render(
+        $response = $this->render(
             'components/dropdown/visibility_target.html.twig',
             [
                 'type'              => $type,
@@ -88,6 +92,27 @@ final class VisibilityTargetController extends AbstractController
                 'profile_condition' => $this->getProfileCondition($right),
             ]
         );
+
+        //prevent shared cache leaks.
+        $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate');
+        $response->headers->set('Pragma', 'no-cache');
+
+        return $response;
+    }
+
+    /**
+     * Limit `right` to visibility rights to block profile-enumeration probing
+     * (`right=config`, `right=user...). Production callers: CommonDBVisible
+     * (`*_public`) and the knowbase sidepanel (`knowbase`/`faq`).
+     */
+    private function isAllowedRight(string $right): bool
+    {
+        if ($right === '') {
+            return false;
+        }
+
+        return str_ends_with($right, '_public')
+            || in_array($right, ['knowbase', 'faq'], true);
     }
 
     /**

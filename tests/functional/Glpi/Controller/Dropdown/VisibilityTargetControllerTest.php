@@ -35,9 +35,14 @@
 namespace tests\units\Glpi\Controller\Dropdown;
 
 use Computer;
+use Entity;
 use Glpi\Controller\Dropdown\VisibilityTargetController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Tests\DbTestCase;
+use Group;
+use KnowbaseItem;
+use Profile;
+use ReflectionMethod;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use User;
@@ -56,7 +61,7 @@ final class VisibilityTargetControllerTest extends DbTestCase
 
         $this->expectException(BadRequestHttpException::class);
         $this->callController([
-            'right' => 'interface',
+            'right' => 'knowbase',
         ]);
     }
 
@@ -77,7 +82,19 @@ final class VisibilityTargetControllerTest extends DbTestCase
         $this->expectException(BadRequestHttpException::class);
         $this->callController([
             'type'  => Computer::class,
-            'right' => 'interface',
+            'right' => 'knowbase',
+        ]);
+    }
+
+    public function testInvokeWithDisallowedRightThrowsBadRequest(): void
+    {
+        $this->login();
+
+        // `config` would otherwise leak which profiles hold the admin right.
+        $this->expectException(BadRequestHttpException::class);
+        $this->callController([
+            'type'  => Profile::class,
+            'right' => 'config',
         ]);
     }
 
@@ -87,11 +104,74 @@ final class VisibilityTargetControllerTest extends DbTestCase
 
         $response = $this->callController([
             'type'  => User::class,
-            'right' => 'interface',
+            'right' => 'knowbase',
         ]);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertNotSame('', $response->getContent());
+        $this->assertMatchesRegularExpression('/name=["\']users_id["\']/', $response->getContent());
+    }
+
+    public function testInvokeRendersGroupDropdownWithSubVisibilityTarget(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'  => Group::class,
+            'right' => 'knowbase',
+        ]);
+
+        $content = $response->getContent();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertMatchesRegularExpression('/name=["\']groups_id["\']/', $content);
+        $this->assertMatchesRegularExpression('/id="subvisibility\d+"/', $content);
+    }
+
+    public function testInvokeRendersEntityDropdown(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'         => Entity::class,
+            'right'        => 'knowbase',
+            'is_recursive' => 1,
+        ]);
+
+        $content = $response->getContent();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertMatchesRegularExpression('/name=["\']entities_id["\']/', $content);
+        $this->assertMatchesRegularExpression('/name=["\']is_recursive["\']/', $content);
+    }
+
+    public function testInvokeRendersProfileDropdown(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'  => Profile::class,
+            'right' => 'knowbase',
+        ]);
+
+        $content = $response->getContent();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertMatchesRegularExpression('/name=["\']profiles_id["\']/', $content);
+    }
+
+    /**
+     * Profile::dropdown is async-rendered (Ajax Select2), so profile names
+     * never reach the initial HTML. Reflect into the private method instead.
+     */
+    public function testFaqRightUsesReadFaqBitmask(): void
+    {
+        $controller = new VisibilityTargetController();
+        $method     = new ReflectionMethod($controller, 'getProfileCondition');
+
+        $kb_condition  = $method->invoke($controller, 'knowbase');
+        $faq_condition = $method->invoke($controller, 'faq');
+
+        $this->assertSame('knowbase', $kb_condition['glpi_profilerights.name']);
+        $this->assertSame('knowbase', $faq_condition['glpi_profilerights.name']);
+        $this->assertSame(['&', READ | CREATE | UPDATE | PURGE], $kb_condition['glpi_profilerights.rights']);
+        $this->assertSame(['&', KnowbaseItem::READFAQ], $faq_condition['glpi_profilerights.rights']);
     }
 
     public function testInvokeWithNobuttonHidesAddButton(): void
@@ -100,7 +180,7 @@ final class VisibilityTargetControllerTest extends DbTestCase
 
         $response = $this->callController([
             'type'     => User::class,
-            'right'    => 'interface',
+            'right'    => 'knowbase',
             'nobutton' => 1,
         ]);
 
@@ -113,9 +193,24 @@ final class VisibilityTargetControllerTest extends DbTestCase
 
         $response = $this->callController([
             'type'  => User::class,
-            'right' => 'interface',
+            'right' => 'knowbase',
         ]);
 
         $this->assertStringContainsString('name="addvisibility"', $response->getContent());
+    }
+
+    public function testInvokeSetsNoCacheHeaders(): void
+    {
+        $this->login();
+
+        $response = $this->callController([
+            'type'  => User::class,
+            'right' => 'knowbase',
+        ]);
+
+        $cache_control = $response->headers->get('Cache-Control');
+        $this->assertStringContainsString('no-store', $cache_control);
+        $this->assertStringContainsString('no-cache', $cache_control);
+        $this->assertSame('no-cache', $response->headers->get('Pragma'));
     }
 }
