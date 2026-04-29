@@ -36,6 +36,10 @@
 namespace Glpi\Controller\Dropdown;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Group;
+use Profile;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,13 +47,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class VisibilitySubTargetController extends AbstractController
 {
-    private const SUPPORTED_TYPES = ['Group', 'Profile'];
+    private const SUPPORTED_TYPES = [Group::class, Profile::class];
 
     #[Route(
         '/Dropdown/VisibilitySubTarget',
         name: 'visibility_sub_target',
         methods: ['POST']
     )]
+    #[SecurityStrategy(Firewall::STRATEGY_CENTRAL_ACCESS)]
     public function __invoke(Request $request): Response
     {
         $input = $request->request;

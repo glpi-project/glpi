@@ -35,22 +35,29 @@
 
 namespace Glpi\Controller\Dropdown;
 
+use Entity;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Group;
 use KnowbaseItem;
+use Profile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use User;
 
 final class VisibilityTargetController extends AbstractController
 {
-    private const SUPPORTED_TYPES = ['User', 'Group', 'Entity', 'Profile'];
+    private const SUPPORTED_TYPES = [User::class, Group::class, Entity::class, Profile::class];
 
     #[Route(
         '/Dropdown/VisibilityTarget',
         name: 'visibility_target',
         methods: ['POST']
     )]
+    #[SecurityStrategy(Firewall::STRATEGY_CENTRAL_ACCESS)]
     public function __invoke(Request $request): Response
     {
         $input = $request->request;
