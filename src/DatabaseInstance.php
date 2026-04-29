@@ -470,7 +470,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             echo "</div>";
             echo "<div class='col-auto'>";
             echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>";
-            echo "<input type='hidden' name='itemtype' value='" . $item->getType() . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . $item::class . "'>";
             echo "<button type='submit' name='update' value='1' class='btn btn-primary ms-1'>";
             echo "<i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span>";
             echo "</button>";
@@ -558,17 +558,17 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
                     if ($db_instance->getFromDB($id)) {
                         if ($db_instance->can($id, UPDATE)) {
                             if ($db_instance->update(['id' => $id, 'items_id' => 0, 'itemtype' => ''])) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($db_instance->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($db_instance->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($db_instance->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
