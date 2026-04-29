@@ -3,7 +3,28 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.7] unreleased
+## [11.0.8] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.7] 2026-04-29
 
 ### Added
 - Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
