@@ -22,7 +22,7 @@ jobs:
       # Checkout points at the fork (head.repo) — pull_request_target defaults
       # to the base repo, where the PR's head SHA does not exist.
       - name: "Checkout PR (metadata only)"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v6"
         with:
           fetch-depth: 0
           repository: ${{ github.event.pull_request.head.repo.full_name }}
