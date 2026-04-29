@@ -80,6 +80,7 @@ class MassiveAction
 
     /**
      * Class used to process current action.
+     * @var class-string|null
      */
     private string $processor;
 
@@ -819,7 +820,7 @@ class MassiveAction
      **/
     public function showDefaultSubForm()
     {
-        echo Html::submit(_x('button', 'Post'), [
+        echo Html::submit(_x('button', 'Post 3'), [
             'name'  => 'massiveaction',
             'icon'  => 'ti ti-device-floppy',
             'class' => 'btn btn-sm btn-primary',
@@ -852,6 +853,7 @@ class MassiveAction
                 ]);
                 echo '<br>';
                 echo Html::submit(_x('button', 'Post'), [
+                echo Html::submit(_x('button', 'Post 4'), [
                     'name'  => 'massiveaction',
                 ]);
                 return true;
@@ -1068,7 +1070,19 @@ class MassiveAction
                             "infocom"  => UPDATE,
                         ]);
                     } else {
-                        $so_item->checkGlobal(UPDATE);
+                        // redirect to reauth if needed // @todo cleanup
+                        // pas possible de faire redirection ici, c'est géré en ajax : pas d'effet
+                        // mais on peut afficher un bouton vers la reauth et on redirige vers la page actuelle
+                        $reauth_needed = null;
+                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed); // @todo juste update ? action delete/purge/etc
+                        if (!$allowed && !$reauth_needed) {
+                            // just to throw the redirect Exception, maybe we can refactor
+                            // maybe we can refactor \CommonDBTM::checkGlobal to call \CommonDBTM::throwAccessDeniedException.
+                            // then we can just call this method here instead of checkGlobal()
+                            $so_item->checkGlobal(UPDATE);
+                        }
+                        // continue event if not currently authorized, to show the submit button
+                        // right check (and reauth redirection) will be process on form submission
                     }
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
@@ -1160,7 +1174,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post');
+                    $submitname = _x('button', 'Post 5');
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
@@ -1192,7 +1206,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post');
+                    $submitname = _x('button', 'Post 6');
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
@@ -1218,7 +1232,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post');
+                    $submitname = _x('button', 'Post 7');
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
