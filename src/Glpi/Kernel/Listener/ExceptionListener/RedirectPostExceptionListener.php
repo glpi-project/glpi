@@ -61,16 +61,12 @@ final readonly class RedirectPostExceptionListener implements EventSubscriberInt
             return;
         }
 
-        // The original CSRF token was already consumed during the initial request validation.
-        // Remove it so the Twig template can inject a fresh one via {{ csrf_token() }}.
-        $post_data = $throwable->getData();
-        unset($post_data['_glpi_csrf_token']);
-
         // Carry the original URL as a POST field so that Html::getRefererUrl() can return
         // the correct "back" URL on the replayed request.
         // Without this, the browser would send Referer: /ReAuth/Verify (the page that served
         // this auto-submit form), causing Html::back() to redirect to the wrong place.
-        $post_data['_glpi_http_referer'] = $throwable->getUrl();
+        $post_data = $throwable->getData();
+        $post_data['_glpi_http_referer'] = $throwable->getUrl(); // @todo sert encore ?
 
         $response = new Response(
             TemplateRenderer::getInstance()->render('pages/redirect_post.html.twig', [
