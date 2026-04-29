@@ -4712,7 +4712,8 @@ HTML;
             'serial'      => '',
             'otherserial' => '',
             'states'      => [],
-            'group'    => [],
+            'group'       => [],
+            'users'       => [],
         ];
 
         if ($tech) {
@@ -4762,16 +4763,22 @@ HTML;
         }
 
         $group_choices = [];
-        foreach ($groups as $g_id => $g_name) {
-            $group_choices[$g_id] = $g_name;
+        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
+            $group_choices[$g_id] = $row['completename'];
         }
         asort($group_choices);
+
+        $user_choices = [];
+        foreach (self::getSqlSearchResult(false, 'all') as $row) {
+            $user_choices[$row['id']] = formatUserName($row['id'], $row['name'], $row['realname'], $row['firstname']);
+        }
 
         $array_filters_choices = [
             'type'     => $type_choices,
             'entity'   => $entity_choices,
             'states'   => $state_choices,
             'group'    => $group_choices,
+            'users'    => $user_choices,
         ];
 
         foreach ($get_filters as $f => $value) {
@@ -4814,15 +4821,16 @@ HTML;
                 }
                 if (count($filters['group']) > 0) {
                     $group_criteria = [];
-                    foreach ($filters['group'] as $lt) {
+                    foreach ($filters['group'] as $group_id) {
                         $group_criteria[] = [
-                            $relation_table . '.groups_id' => $lt,
+                            $relation_table . '.groups_id' => (int) $group_id,
                             $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
                         ];
                     }
-                    if (count($group_criteria) > 0) {
-                        $item_criteria[] = ['OR' => $group_criteria];
-                    }
+                    $item_criteria[] = ['OR' => $group_criteria];
+                }
+                if (count($filters['users']) > 0) {
+                    $item_criteria[$itemtable . '.' . $field_user] = $filters['users'];
                 }
 
                 foreach ($filters['entity'] as $entity_id) {
@@ -4887,14 +4895,19 @@ HTML;
                     }
                     if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
                         $group_names = [];
-                        foreach (explode(',', $data['groups_ids'] ?? '') as $g_id) {
-                            if (empty($g_id)) {
+                        foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
+                            if (empty($group_id)) {
                                 continue;
                             }
-                            if (!isset($groups[$g_id])) {
-                                $groups[$g_id] = Dropdown::getDropdownName("glpi_groups", intval($g_id));
+                            $group_id = (int) $group_id;
+                            if (!isset($group_choices[$group_id])) {
+                                $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", $group_id);
                             }
-                            $group_names[] = $groups[$g_id];
+                            $group_names[] = $group_choices[$group_id];
+                        }
+                        $user_id = (int) ($data[$field_user] ?? 0);
+                        if ($user_id > 0 && !isset($user_choices[$user_id])) {
+                            $user_choices[$user_id] = getUserName($user_id);
                         }
 
                         $entries[] = [
@@ -4908,7 +4921,8 @@ HTML;
                             'states'        => !empty($data['states_id'])
                                 ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
                                 : '',
-                            'group'         => implode(', ', $group_names),
+                            'group'         => implode('<br>', array_filter($group_names)),
+                            'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
                         ];
                     }
                     $number++;
@@ -4937,21 +4951,27 @@ HTML;
                     'label'            => __('Status'),
                     'filter_formatter' => 'array',
                 ],
-                'group'      => [
-                    'label'            => Group::getTypeName(1),
+                'group'         => [
+                    'label'            => Group::getTypeName(Session::getPluralNumber()),
+                    'filter_formatter' => 'array',
+                ],
+                'users'         => [
+                    'label'            => self::getTypeName(Session::getPluralNumber()),
                     'filter_formatter' => 'array',
                 ],
             ],
             'columns_values'        => [
-                'type'     => $type_choices,
-                'entity'   => $entity_choices,
-                'states'   => $state_choices,
-                'group'    => $group_choices,
+                'type'      => $type_choices,
+                'entity'    => $entity_choices,
+                'states'    => $state_choices,
+                'group'     => $group_choices,
+                'users'     => $user_choices,
             ],
             'filters' => $filters,
             'additional_params'     => http_build_query(['filters' => $filters]),
             'formatters' => [
-                'name'          => 'raw_html',
+                'name'   => 'raw_html',
+                'group'  => 'raw_html',
             ],
             'entries'               => $entries,
             'total_number'          => $number,
