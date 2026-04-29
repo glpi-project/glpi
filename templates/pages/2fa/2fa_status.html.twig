@@ -31,7 +31,6 @@
  #}
 
 {% import 'pages/2fa/macros.html.twig' as tfa %}
-{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <form method="post" action="#" data-submit-once>
     {% set status_message %}
@@ -43,7 +42,10 @@
             {{ __('Optional') }}
         {% endif %}
     {% endset %}
-    {{ alerts.alert_info(__('2FA enabled'), [status_message]) }}
+    <twig:Alert
+        :title="__('2FA enabled')"
+        :message="status_message"
+    />
    {{ tfa.tfa_backup_codes_container() }}
    <div>
       {% if enforcement != constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}

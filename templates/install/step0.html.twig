@@ -30,19 +30,14 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
-
 <div class="container text-center">
    <div class="text-start">
-      {% set alert_messages %}
-         {{ __("Choose 'Install' for a completely new installation of GLPI.") }}<br>
-         {{ __("Select 'Upgrade' to update your version of GLPI from an earlier version") }}
-      {% endset %}
-
-      {{ alerts.alert_info(
-         __('Installation or update of GLPI'),
-         alert_messages
-      ) }}
+       <twig:Alert
+           :title="__('Installation or update of GLPI')"
+       >
+           {{ __("Choose 'Install' for a completely new installation of GLPI.") }}<br>
+           {{ __("Select 'Upgrade' to update your version of GLPI from an earlier version") }}
+       </twig:Alert>
    </div>
 
    <form action="install.php" method="post" class="d-inline" data-submit-once>
