@@ -97,7 +97,7 @@ export class VisibilityTargetController
      */
     async #onChange(type)
     {
-        if (type === '') {
+        if (type === '' || type === '0') {
             this.#output.replaceChildren();
             this.#toggleSubmit(false);
             return;

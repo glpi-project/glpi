@@ -93,3 +93,74 @@ test('Can delete a permission from the modal', async ({ page, profile, api }) =>
 
     await expect(deleteBtn).not.toBeAttached();
 });
+
+test('Selecting a target type injects the matching visibility picker', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for target type injection test',
+        entities_id: entity_id,
+        answer: 'Test content',
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(1);
+    await expect(modal.getByRole('button', { name: 'Add' })).toBeHidden();
+
+    const type_dropdown = modal.getByRole('combobox').first();
+    await type_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: 'User', exact: true }).click();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(2);
+    await expect(modal.getByRole('button', { name: 'Add' })).toBeVisible();
+});
+
+test('Resetting the target type clears the visibility picker and hides Add', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for target type reset test',
+        entities_id: entity_id,
+        answer: 'Test content',
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Targets').click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    const type_dropdown = modal.getByRole('combobox').first();
+    await type_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: 'User', exact: true }).click();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(2);
+    await expect(modal.getByRole('button', { name: 'Add' })).toBeVisible();
+
+    await type_dropdown.click();
+    await page.getByRole('listbox').getByRole('option', { name: '-----' }).click();
+
+    await expect(modal.getByRole('combobox')).toHaveCount(1);
+    await expect(modal.getByRole('button', { name: 'Add' })).toBeHidden();
+});
