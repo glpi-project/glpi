@@ -47,6 +47,7 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
+use LDAP\Result;
 use Sabre\VObject\Component\VCard;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
@@ -2186,7 +2187,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         // for N users being synced. Instead, precompute memberships once per GLPI group
         // (M queries) and serve subsequent per-user lookups from a static cache.
         if (
-            str_contains($ldap_method["group_member_field"], '1.2.840.113556.1.4.1941')
+            str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
             && !empty($ldap_method["group_field"])
         ) {
             return $this->getFromLDAPGroupDiscretCached(
@@ -2240,9 +2241,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * Called instead of the per-user LDAP query when LDAP_MATCHING_RULE_IN_CHAIN
      * is configured, to reduce N recursive traversals to M (one per GLPI group).
      *
-     * @param Connection $ldap_connection LDAP connection
-     * @param array      $ldap_method     LDAP method config
-     * @param string     $userdn          DN of the user to resolve
+     * @param Connection           $ldap_connection LDAP connection
+     * @param array<string, mixed> $ldap_method     LDAP method config
+     * @param string               $userdn          DN of the user to resolve
      *
      * @return bool
      */
@@ -2310,7 +2311,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                             $controls
                         );
                         if (
-                            $sr !== false
+                            $sr instanceof Result
                             && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
                             && isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])
                         ) {
@@ -2327,6 +2328,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         break;
                     }
 
+                    /** @var Result $sr */
                     $info = AuthLDAP::get_entries_clean($ldap_connection, $sr);
                     for ($i = 0; $i < ($info['count'] ?? 0); $i++) {
                         if (!empty($info[$i]['dn'])) {

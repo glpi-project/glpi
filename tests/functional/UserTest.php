@@ -2598,7 +2598,7 @@ class UserTest extends DbTestCase
             'getFromLDAPGroupDiscret',
             null,
             array_merge($ldap_method_base, [
-                'group_member_field' => 'member:1.2.840.113556.1.4.1941',
+                'group_member_field' => 'member:' . AuthLDAP::MATCHING_RULE_IN_CHAIN_OID,
             ]),
             'uid=testuser,dc=example,dc=com',
             'testuser'
@@ -2632,7 +2632,7 @@ class UserTest extends DbTestCase
             'condition'        => '',
             'pagesize'         => 0,
             'group_field'      => 'member',
-            'group_member_field' => 'member:1.2.840.113556.1.4.1941',
+            'group_member_field' => 'member:' . AuthLDAP::MATCHING_RULE_IN_CHAIN_OID,
             'use_dn'           => 1,
             'group_condition'  => '',
             'login_field'      => 'uid',

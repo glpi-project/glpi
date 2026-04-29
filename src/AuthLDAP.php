@@ -80,6 +80,9 @@ class AuthLDAP extends CommonDBTM
     public const GROUP_SEARCH_GROUP   = 1;
     public const GROUP_SEARCH_BOTH    = 2;
 
+    /** OID for the LDAP_MATCHING_RULE_IN_CHAIN extended match rule (AD nested groups). */
+    public const MATCHING_RULE_IN_CHAIN_OID = '1.2.840.113556.1.4.1941';
+
     /**
      * Deleted user strategy: preserve user.
      * @var int
