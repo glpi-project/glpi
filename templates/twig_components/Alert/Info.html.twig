@@ -31,7 +31,7 @@
  #}
 
 {% set _classes = 'alert alert-' ~ this.type %}
-{% if important|default(false) %}
+{% if this.important %}
     {% set _classes = _classes ~ ' alert-important' %}
 {% endif %}
 
@@ -42,27 +42,27 @@
         </div>
         <div class="flex-grow-1">
             {% block title %}
-                {% if title|length %}
+                {% if this.title|length %}
                     <h4 class="alert-title">
-                        {{ title }}
+                        {{ this.title }}
                     </h4>
                 {% endif %}
             {% endblock %}
             {% block content %}
-                {% if message %}
+                {% if this.message %}
                     <div class="text-muted">
-                        {{ message }}
+                        {{ this.message }}
                     </div>
                 {% endif %}
             {% endblock %}
         </div>
-        {% if link_url %}
+        {% if this.link_url %}
             <div>
                 <a class="alert-link"
-                   href="{{ link_url }}"
-                   target="{{ link_blank ? '_blank' : '_self' }}"
+                   href="{{ this.link_url }}"
+                   target="{{ this.link_blank ? '_blank' : '_self' }}"
                 >
-                    {{ link_text ? link_text : link_url }}
+                    {{ this.link_text ? this.link_text : this.link_url }}
                 </a>
             </div>
         {% endif %}
