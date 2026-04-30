@@ -93,7 +93,7 @@ if (isset($_POST["validatortype"])) {
                 }
 
                 $supervisor_entities = Profile_User::getUserEntities($requester->fields['users_id_supervisor']);
-                if (!in_array($_POST['entity'] ?? '', $supervisor_entities)) {
+                if (!isset($_POST['entity']) || !in_array($_POST['entity'], $supervisor_entities)) {
                     continue;
                 }
 
