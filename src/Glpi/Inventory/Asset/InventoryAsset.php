@@ -211,14 +211,6 @@ abstract class InventoryAsset
 
         //load locked field for current itemtype
         $itemtype = $this->getItemtype();
-        new Lockedfield();
-
-        $items_id = 0;
-        //compare current itemtype with mainasset itemtype to be sure
-        //to get related lock
-        if (get_class($this->item) == $itemtype) {
-            $items_id = $this->item->fields['id'] ?? 0;
-        }
 
         $data = $this->data;
         foreach ($data as $key => &$value) {
