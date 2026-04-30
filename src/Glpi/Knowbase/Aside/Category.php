@@ -45,6 +45,7 @@ final class Category implements Node
     public function __construct(
         public readonly string $title,
         public readonly string $illustration,
+        public readonly int $id,
     ) {}
 
     public function addArticle(Article $article): void

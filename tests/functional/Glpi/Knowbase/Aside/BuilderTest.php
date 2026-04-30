@@ -130,6 +130,26 @@ final class BuilderTest extends DbTestCase
         $this->assertSame('kb-faq', $by_title['Default illustrated']->illustration);
     }
 
+    public function testBuildTreeIncludesCategoryId(): void
+    {
+        $this->login();
+
+        $cat = $this->makeCategory('IdCheck');
+
+        $tree = (new Builder())->buildTree();
+
+        $found = null;
+        foreach ($tree->getCategories() as $node) {
+            if ($node->title === 'IdCheck') {
+                $found = $node;
+                break;
+            }
+        }
+
+        $this->assertNotNull($found);
+        $this->assertSame($cat->getID(), $found->id);
+    }
+
     private function makeCategory(string $name, int $parent_id = 0): KnowbaseItemCategory
     {
         return $this->createItem(KnowbaseItemCategory::class, [

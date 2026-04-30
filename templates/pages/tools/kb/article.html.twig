@@ -531,7 +531,13 @@
 
 {% if mode == 'add' %}
     <div class="px-4 mb-2 d-flex">
-        <button class="btn btn-primary ms-auto" data-glpi-kb-add-article>
+        <button
+            class="btn btn-primary ms-auto"
+            data-glpi-kb-add-article
+            {% if prefilled_category_id is defined %}
+                data-glpi-kb-prefilled-category-id="{{ prefilled_category_id }}"
+            {% endif %}
+        >
             <i class="ti ti-plus me-2"></i>
             {{ __("Add article") }}
         </button>

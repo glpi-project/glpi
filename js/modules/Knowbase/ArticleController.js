@@ -1113,6 +1113,22 @@ export class GlpiKnowbaseArticleController
             form.appendChild(input);
         }
 
+        const add_button = document.querySelector('[data-glpi-kb-add-article]');
+        const prefilled_category_id = Number(add_button?.dataset.glpiKbPrefilledCategoryId);
+        if (Number.isInteger(prefilled_category_id) && prefilled_category_id > 0) {
+            const defined_input = document.createElement('input');
+            defined_input.type = 'hidden';
+            defined_input.name = '__categories_defined';
+            defined_input.value = '1';
+            form.appendChild(defined_input);
+
+            const categories_input = document.createElement('input');
+            categories_input.type = 'hidden';
+            categories_input.name = '_categories[]';
+            categories_input.value = String(prefilled_category_id);
+            form.appendChild(categories_input);
+        }
+
         document.body.appendChild(form);
         setHasUnsavedChanges(false);
         form.submit();
