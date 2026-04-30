@@ -2551,7 +2551,7 @@ class UserTest extends DbTestCase
      * LDAP_MATCHING_RULE_IN_CHAIN OID is present in group_member_field.
      *
      * The cached path queries GLPI groups from DB (no LDAP call when DB is empty)
-     * and always returns true, while the standard path returns false when
+     * and returns true, while the standard path returns false when
      * group_member_field is empty.
      */
     #[RequiresPhpExtension('ldap')]
