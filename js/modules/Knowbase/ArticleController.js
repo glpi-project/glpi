@@ -1105,6 +1105,14 @@ export class GlpiKnowbaseArticleController
             answer: answer,
         };
 
+        const illustration_input = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-icon-picker-value]'
+        );
+        const illustration = illustration_input?.value ?? '';
+        if (illustration && illustration !== 'kb-faq') {
+            fields.illustration = illustration;
+        }
+
         for (const [key, value] of Object.entries(fields)) {
             const input = document.createElement('input');
             input.type = 'hidden';

@@ -52,6 +52,7 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\UI\IllustrationManager;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -736,7 +737,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["users_id"] = Session::getLoginUserID();
         }
 
-        return $input;
+        return $this->prepareIllustrationInput($input);
     }
 
     public function prepareInputForUpdate($input)
@@ -744,6 +745,43 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // set title for question if empty
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
+        }
+
+        return $this->prepareIllustrationInput($input);
+    }
+
+    /**
+     * Drop the `illustration` field from $input when it is neither a known
+     * native icon nor an existing custom illustration file. The picker UI
+     * always submits valid values; this guards against direct POSTs.
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function prepareIllustrationInput(array $input): array
+    {
+        if (!array_key_exists('illustration', $input)) {
+            return $input;
+        }
+
+        $value = (string) $input['illustration'];
+        if ($value === '') {
+            return $input;
+        }
+
+        $manager = new IllustrationManager();
+        $prefix  = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+
+        if (str_starts_with($value, $prefix)) {
+            $custom_id = substr($value, strlen($prefix));
+            if ($manager->getCustomIllustrationFile($custom_id) === null) {
+                unset($input['illustration']);
+            }
+            return $input;
+        }
+
+        if (!in_array($value, $manager->getAllIconsIds(), true)) {
+            unset($input['illustration']);
         }
 
         return $input;
@@ -832,7 +870,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->updateCounter();
 
         $params = [
-            'item_id' => $this->fields['id'],
+            'item_id' => $mode === 'add' ? null : $this->fields['id'],
             'subject' => $this->fields['name'],
             'answer'  => $this->getAnswer(),
             'mode'    => $mode,
@@ -894,7 +932,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             // Add actions
             $params['actions'] = $this->getEditorActions();
         } elseif ($mode === "add") {
-            $params['can_edit'] = $this->can(-1, CREATE);
+            $params['can_edit']     = $this->can(-1, CREATE);
+            $params['illustration'] = 'kb-faq';
         }
 
         $out = TemplateRenderer::getInstance()->render(
