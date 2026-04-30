@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
+- Password policy and 2FA settings moved from `Setup > General` to `Setup > Security`.
 
 ### Deprecated
 
