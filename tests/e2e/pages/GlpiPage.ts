@@ -198,7 +198,6 @@ export class GlpiPage
     public async doSearchForEntity(entity_name: string): Promise<void>
     {
         await this.getTextbox("Search entities").fill(entity_name);
-        await this.getButton("Search").click();
     }
 
     public async doSwitchToEntityWithRecursion(
