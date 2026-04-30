@@ -40,8 +40,11 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use ITILCategory;
+use OLA;
 use Override;
 use Session;
+use SLA;
+use SLM;
 
 use function Safe\json_decode;
 
@@ -89,6 +92,11 @@ class QuestionTypeItemDropdown extends QuestionTypeItem
         array_walk_recursive($dropdown_itemtypes, function (&$value, $key) {
             $value = $key;
         });
+
+        $dropdown_itemtypes[SLM::getTypeName(Session::getPluralNumber())] = [
+          SLA::getType() => SLA::getType(),
+          OLA::getType() => OLA::getType(),
+        ];
 
         return $dropdown_itemtypes;
     }
