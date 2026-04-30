@@ -38,15 +38,23 @@ import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 type OpenForm = (ticket: TicketPage, page: Page) => Promise<void>;
 
-const warning_cases: { form: string; open: OpenForm }[] = [
+type WarningCase = {
+    form: string;
+    block: string;
+    open: OpenForm;
+};
+
+const warning_cases: WarningCase[] = [
     {
         form: 'followup',
+        block: 'new-ITILFollowup-block',
         open: async (ticket) => {
             await ticket.getButton('Answer').click();
         },
     },
     {
         form: 'task',
+        block: 'new-TicketTask-block',
         open: async (ticket, page) => {
             await ticket.getButton('View other actions').click();
             await page.getByRole('listitem', { name: 'Create a task' }).click();
@@ -54,6 +62,7 @@ const warning_cases: { form: string; open: OpenForm }[] = [
     },
     {
         form: 'solution',
+        block: 'new-ITILSolution-block',
         open: async (ticket, page) => {
             await ticket.getButton('View other actions').click();
             await page.getByRole('listitem', { name: 'Add a solution' }).click();
@@ -61,6 +70,7 @@ const warning_cases: { form: string; open: OpenForm }[] = [
     },
     {
         form: 'document',
+        block: 'new-Document_Item-block',
         open: async (ticket, page) => {
             await ticket.getButton('View other actions').click();
             await page.getByRole('listitem', { name: 'Add a document' }).click();
@@ -68,6 +78,7 @@ const warning_cases: { form: string; open: OpenForm }[] = [
     },
     {
         form: 'validation',
+        block: 'new-TicketValidation-block',
         open: async (ticket, page) => {
             await ticket.getButton('View other actions').click();
             await page.getByRole('listitem', { name: 'Ask for approval' }).click();
@@ -75,7 +86,7 @@ const warning_cases: { form: string; open: OpenForm }[] = [
     },
 ];
 
-for (const { form, open } of warning_cases) {
+for (const { form, block, open } of warning_cases) {
     test(`warning appears and blocks save when ${form} form is open`, async ({ profile, page, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const ticket_id = await api.createItem('Ticket', {
@@ -87,6 +98,11 @@ for (const { form, open } of warning_cases) {
         const ticket = new TicketPage(page);
         await ticket.goto(ticket_id);
         await open(ticket, page);
+
+        // Bootstrap Collapse goes: 'collapse' → 'collapsing' (350ms) → 'collapse show'.
+        // The JS condition checks for '.collapse.show', so we must wait until the
+        // animation completes before clicking Save.
+        await expect(page.getByTestId(block)).toHaveClass(/\bshow\b/);
 
         let dialog_message = '';
         page.once('dialog', (dialog) => {
