@@ -102,11 +102,9 @@ class ActorEmailValidationTest extends DbTestCase
     #[DataProvider('emailValidationProvider')]
     public function testActorEmailValidation(string $email, int $expected): void
     {
-        // Tests the JavaScript regex used in templates/components/itilobject/actors/field.html.twig
+        // Tests the regex used in templates/components/itilobject/actors/field.html.twig
         // for validating email addresses in the Select2 tag creation
-        $pattern = '/^[\p{L}\p{N}\p{M}._%+\'-]+@([\p{L}\p{N}\p{M}._-]+\.)+[\p{L}\p{N}]{2,63}$/u';
-
-        $is_valid = preg_match($pattern, $email);
+        $is_valid = preg_match(\Toolbox::ACTOR_EMAIL_VALIDATION_REGEX, $email);
 
         $this->assertSame(
             $expected,
