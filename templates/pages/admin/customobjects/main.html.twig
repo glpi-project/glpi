@@ -41,7 +41,7 @@
 {% block form_fields %}
     {% if not item.isNewItem() and item.isActive() and not has_rights_enabled %}
         <twig:Alert:Warning
-            :title="__('There is currently no profile with access to items with current definition.')"
+            :message="__('There is currently no profile with access to items with current definition.')"
         />
     {% endif %}
 

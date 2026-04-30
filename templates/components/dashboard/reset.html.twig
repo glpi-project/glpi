@@ -36,7 +36,7 @@
     {% if dashboard.fields['context'] == 'core' or dashboard.fields['context'] == 'mini_core' %}
         <div>
             <twig:Alert:Danger
-                :title="__('This will reset all filters, cards, and sharing options in this dashboard with the one selected!')"
+                :message="__('This will reset all filters, cards, and sharing options in this dashboard with the one selected!')"
             />
             {{ fields.dropdownArrayField('default_dashboard_key', null, default_dashboards, __('Default dashboard to reset to'), {
                 full_width: true,
@@ -51,7 +51,7 @@
         </div>
     {% else %}
         <twig:Alert:Danger
-            :title="__('Resetting this dashboard is not currently supported.')"
+            :message="__('Resetting this dashboard is not currently supported.')"
         />
     {% endif %}
 </div>

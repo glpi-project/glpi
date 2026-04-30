@@ -51,7 +51,7 @@
             {% set message = __('After 12 hours, you can no longer modify your response.') %}
         {% endif %}
         <twig:Alert
-            :title="message"
+            :message="message"
         />
         {% if item.fields['date_answered'] is empty and expired %}
             {{ fields.htmlField(
