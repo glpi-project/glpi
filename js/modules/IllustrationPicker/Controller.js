@@ -55,12 +55,25 @@ export class GlpiIllustrationPickerController
      */
     #custom_icon_prefix;
 
+    /**
+     * @type {string}
+     */
+    #initial_value;
+
+    /**
+     * @type {string}
+     */
+    #initial_preview_html;
+
     constructor(container, modal_node, custom_icon_prefix)
     {
         this.#container = container;
         this.#modal_node = modal_node;
         this.#custom_icon_prefix = custom_icon_prefix;
         this.#initEventListeners();
+
+        this.#initial_value = this.#getSelectedIllustrationsInput().value;
+        this.#initial_preview_html = this.#getPreviewElement().innerHTML;
 
         container.glpiIllustrationPicker = this;
         container.dispatchEvent(new CustomEvent('glpi:illustration-picker:ready', {
@@ -92,6 +105,32 @@ export class GlpiIllustrationPickerController
             preview.removeAttribute('data-bs-target');
             preview.setAttribute('aria-disabled', 'true');
         }
+    }
+
+    /**
+     * @return {string}
+     */
+    getValue()
+    {
+        return this.#getSelectedIllustrationsInput().value;
+    }
+
+    /**
+     * Promote the current state as the new baseline used by restore().
+     */
+    commit()
+    {
+        this.#initial_value = this.#getSelectedIllustrationsInput().value;
+        this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+    }
+
+    /**
+     * Revert input value and preview rendering to the last committed baseline.
+     */
+    restore()
+    {
+        this.#getSelectedIllustrationsInput().value = this.#initial_value;
+        this.#getPreviewElement().innerHTML = this.#initial_preview_html;
     }
 
     #getPreviewElement()

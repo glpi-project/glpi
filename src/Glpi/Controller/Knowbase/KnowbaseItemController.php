@@ -155,6 +155,10 @@ final class KnowbaseItemController extends AbstractController
             $update_data['name'] = $name;
         }
 
+        if (isset($data['illustration'])) {
+            $update_data['illustration'] = trim((string) $data['illustration']);
+        }
+
         $success = $kbitem->update($update_data);
 
         if ($success) {
