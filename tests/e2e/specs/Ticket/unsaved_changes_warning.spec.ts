@@ -80,7 +80,7 @@ for (const { form, open } of warning_cases) {
         await profile.set(Profiles.SuperAdmin);
         const ticket_id = await api.createItem('Ticket', {
             name: `Test warning with open ${form} form`,
-            content: '',
+            content: 'test',
             entities_id: getWorkerEntityId(),
         });
 
@@ -88,13 +88,14 @@ for (const { form, open } of warning_cases) {
         await ticket.goto(ticket_id);
         await open(ticket, page);
 
-        const dialog_promise = page.waitForEvent('dialog');
+        let dialog_message = '';
+        page.once('dialog', (dialog) => {
+            dialog_message = dialog.message();
+            void dialog.dismiss();
+        });
         await ticket.getButton('Save').click();
-        const dialog = await dialog_promise;
 
-        expect(dialog.message()).toContain('unsaved changes');
-        await dialog.dismiss();
-
+        expect(dialog_message).toContain('unsaved changes');
         await expect(page).toHaveURL(new RegExp(`id=${ticket_id}`));
     });
 }
@@ -103,7 +104,7 @@ test('no warning when saving ticket without open timeline form', async ({ profil
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {
         name: 'Test no warning on save',
-        content: '',
+        content: 'test',
         entities_id: getWorkerEntityId(),
     });
 
@@ -123,7 +124,7 @@ test('no warning when saving ticket in waiting status', async ({ profile, page, 
     await profile.set(Profiles.SuperAdmin);
     const ticket_id = await api.createItem('Ticket', {
         name: 'Test no warning on waiting ticket',
-        content: '',
+        content: 'test',
         status: 4,
         entities_id: getWorkerEntityId(),
     });
