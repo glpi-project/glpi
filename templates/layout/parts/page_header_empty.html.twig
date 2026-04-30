@@ -38,7 +38,7 @@
    {% endif %}
    <div class="page">
 
-      <header class="navbar d-print-none sticky-lg-top shadow-sm topbar">
+      <header class="navbar d-print-none sticky-lg-top shadow-sm topbar" role="banner">
          <div class="container-fluid">
             <a href="{{ index_path() }}" title="{{ __('Home') }}" class="navbar-brand">
                <span class="glpi-logo"></span>
@@ -48,4 +48,4 @@
 
       <div class="page-wrapper mb-0">
          <div class="page-body container-fluid">
-            <main role="main" id="page" class="legacy">
+            <main role="main" id="page" class="legacy" tabindex="-1">
