@@ -35,7 +35,6 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Location;
@@ -86,22 +85,32 @@ enum LocationFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== Location::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== Location::getType()) {
             return null;
         }
 
-        return (int) $value['items_id'];
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
+        }
+
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id) && $items_id > -1) {
+                return (int) $items_id;
+            }
+        }
+
+        return null;
     }
 
     private function getLocationIDForLastValidAnswer(
         AnswersSet $answers_set,
     ): ?int {
-        $items_answers = $answers_set->getAnswersByType(
-            QuestionTypeItemDropdown::class
-        );
         $location_answers = array_filter(
-            $items_answers,
-            fn(Answer $a) => ($a->getRawAnswer()['itemtype'] ?? '') === Location::class,
+            $answers_set->getAnswersByType(
+                QuestionTypeItemDropdown::class
+            ),
+            fn($answer) => $answer->getRawAnswer()['itemtype'] === Location::getType()
         );
         if (count($location_answers) == 0) {
             return null;
@@ -109,10 +118,18 @@ enum LocationFieldStrategy: string
 
         $answer = end($location_answers);
         $value = $answer->getRawAnswer();
-        if (!is_numeric($value['items_id'])) {
-            return null;
+
+        $items_ids = $value['items_ids'] ?? [];
+        if (!is_array($items_ids)) {
+            $items_ids = [$items_ids];
         }
 
-        return (int) $value['items_id'];
+        foreach ($items_ids as $items_id) {
+            if (is_numeric($items_id) && $items_id > -1) {
+                return (int) $items_id;
+            }
+        }
+
+        return null;
     }
 }

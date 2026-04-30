@@ -402,7 +402,7 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $default_value = new QuestionTypeItemDefaultValueConfig(1);
+        $default_value = new QuestionTypeItemDefaultValueConfig([1]);
         $extra_data = new QuestionTypeItemDropdownExtraDataConfig(Location::getType());
         yield 'Item Dropdown question type' => [
             [
@@ -446,7 +446,7 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $default_value = new QuestionTypeItemDefaultValueConfig(1);
+        $default_value = new QuestionTypeItemDefaultValueConfig([1]);
         $extra_data = new QuestionTypeItemExtraDataConfig(Computer::getType());
         yield 'GLPI Object question type' => [
             [
@@ -1552,12 +1552,14 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Computer::class,
-                        'items_id' => getItemByTypeName(
-                            Computer::class,
-                            '_test_pc01',
-                            true
-                        ),
+                        'itemtype'   => Computer::class,
+                        'items_ids'  => [
+                            getItemByTypeName(
+                                Computer::class,
+                                '_test_pc01',
+                                true
+                            ),
+                        ],
                     ],
                     'logic_operator' => LogicOperator::AND,
                 ],
@@ -1580,12 +1582,14 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => [
-                        'itemtype' => Location::class,
-                        'items_id' => getItemByTypeName(
-                            Location::class,
-                            '_sublocation01',
-                            true
-                        ),
+                        'itemtype'   => Location::class,
+                        'items_ids'  => [
+                            getItemByTypeName(
+                                Location::class,
+                                '_sublocation01',
+                                true
+                            ),
+                        ],
                     ],
                     'logic_operator' => LogicOperator::AND,
                 ],
@@ -1659,8 +1663,8 @@ final class FormMigrationTest extends DbTestCase
                     [
                         'value_operator' => ValueOperator::EQUALS,
                         'value'          => [
-                            'itemtype' => Location::class,
-                            'items_id' => $expected_location_id,
+                            'itemtype'   => Location::class,
+                            'items_ids'  => [$expected_location_id],
                         ],
                         'logic_operator' => LogicOperator::AND,
                     ],
@@ -3534,7 +3538,7 @@ final class FormMigrationTest extends DbTestCase
         $condition_data = array_pop($conditions_data);
         $this->assertEquals([
             "itemtype" => ITILCategory::class,
-            "items_id" => $category->getID(),
+            "items_ids" => [$category->getID()],
         ], $condition_data->getValue());
     }
 

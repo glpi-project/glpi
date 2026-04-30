@@ -39,17 +39,24 @@
     data-glpi-conditions-editor-value
 >
 
+<script>console.log('input_value', {{ input_value|json_encode|raw }})</script>
+
 {% if input_value is iterable and input_value.itemtype is not same as(itemtype) %}
     {% set input_value = {
         'itemtype': itemtype,
-        'items_id': 0,
+        'items_ids': [0],
     } %}
+{% endif %}
+
+{# Ensure that items_ids is always an array, even for single selection #}
+{% if input_value is iterable and input_value.items_ids is not iterable %}
+    {% set input_value = input_value|merge({'items_ids': [input_value.items_ids]}) %}
 {% endif %}
 
 {{ fields.dropdownField(
     itemtype,
-    input_name ~ '[items_id]',
-    input_value.items_id|default(0),
+    input_name ~ '[items_ids]',
+    is_multiple_items ? input_value.items_ids|default([]) : input_value.items_ids|default([0])|first,
     '',
     {
         'no_label'     : true,
@@ -64,5 +71,6 @@
         'field_class'  : [
             'me-2 value-selector flex-grow-1',
         ]|join(' '),
+        'multiple'     : is_multiple_items,
     }
 ) }}

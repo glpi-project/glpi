@@ -496,6 +496,7 @@ final class DefaultDataManager
                 'root_items_id'        => 0,
                 'subtree_depth'        => 0,
                 'selectable_tree_root' => false,
+                'is_multiple_items'    => false,
             ]),
         ];
     }
@@ -522,6 +523,7 @@ final class DefaultDataManager
                 'root_items_id'        => 0,
                 'subtree_depth'        => 0,
                 'selectable_tree_root' => false,
+                'is_multiple_items'    => false,
             ]),
         ];
     }

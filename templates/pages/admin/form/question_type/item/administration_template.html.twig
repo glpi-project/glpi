@@ -57,13 +57,32 @@
         {% set dropdown_options = dropdown_options|merge({'displaywith': displaywith}) %}
     {% endif %}
 
+    {# Single item dropdown #}
     {{ fields.dropdownField(
         default_itemtype|default(itemtypes|first|first),
         'default_value',
-        default_items_id,
+        default_items_ids|default([])|first|default(0),
         '',
-        dropdown_options
+        dropdown_options|merge({
+            'field_class': 'col-12 col-sm-6 items-dropdown' ~ (is_multiple_items ? ' d-none' : ''),
+            'disabled'   : is_multiple_items,
+        })
     ) }}
+
+    {# Multiple items dropdown #}
+    {{ fields.dropdownField(
+        default_itemtype|default(itemtypes|first|first),
+        'default_value',
+        default_items_ids|default([]),
+        '',
+        dropdown_options|merge({
+            'field_class': 'col-12 col-sm-6 items-dropdown' ~ (is_multiple_items ? '' : ' d-none'),
+            'multiple'   : true,
+            'disabled'   : not is_multiple_items,
+        })
+    ) }}
+
+    {# Render advanced configuration template #}
     {{ advanced_config|raw }}
 </div>
 
