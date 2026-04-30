@@ -576,7 +576,7 @@
         const uploadPane = uploadModal?.querySelector('#kb-modal-upload-pane');
         if (uploadPane) {
             const uploadModule = await import(
-                "{{ js_path('js/modules/Knowbase/UploadController.js') }}"
+                "/js/modules/Knowbase/UploadController.js"
             );
             new uploadModule.DocumentUploadController(uploadPane, uploadModal);
         }
