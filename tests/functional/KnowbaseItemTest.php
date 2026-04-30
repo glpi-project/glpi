@@ -922,6 +922,149 @@ HTML,
         $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
     }
 
+    public function testShowFullAddModePrefillsCategoryFromGet(): void
+    {
+        $this->login();
+
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+        ]);
+        $cat_id = $cat->getID();
+
+        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
+        try {
+            $_GET['knowbaseitemcategories_id'] = $cat_id;
+            $item = new KnowbaseItem();
+            $item->getEmpty();
+            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
+            $this->assertStringContainsString(
+                'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
+                $html
+            );
+        } finally {
+            if ($previous === null) {
+                unset($_GET['knowbaseitemcategories_id']);
+            } else {
+                $_GET['knowbaseitemcategories_id'] = $previous;
+            }
+        }
+    }
+
+    public function testShowFullAddModeIgnoresUnknownCategory(): void
+    {
+        $this->login();
+
+        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
+        try {
+            $_GET['knowbaseitemcategories_id'] = 999999;
+            $item = new KnowbaseItem();
+            $item->getEmpty();
+            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
+            $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+        } finally {
+            if ($previous === null) {
+                unset($_GET['knowbaseitemcategories_id']);
+            } else {
+                $_GET['knowbaseitemcategories_id'] = $previous;
+            }
+        }
+    }
+
+    public function testShowFullAddModeIgnoresNonNumericCategory(): void
+    {
+        $this->login();
+
+        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
+        try {
+            $_GET['knowbaseitemcategories_id'] = 'abc';
+            $item = new KnowbaseItem();
+            $item->getEmpty();
+            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
+            $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+        } finally {
+            if ($previous === null) {
+                unset($_GET['knowbaseitemcategories_id']);
+            } else {
+                $_GET['knowbaseitemcategories_id'] = $previous;
+            }
+        }
+    }
+
+    public function testShowFullAddModeIgnoresCategoryFromUnreachableEntity(): void
+    {
+        $this->login();
+
+        $sibling_entity_id = (int) getItemByTypeName('Entity', '_test_child_1', true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $sibling_entity_id,
+            'is_recursive'              => 0,
+        ]);
+        $cat_id = $cat->getID();
+
+        // Restrict the active session to a sibling that cannot reach the category
+        $this->setEntity('_test_child_2', false);
+
+        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
+        try {
+            $_GET['knowbaseitemcategories_id'] = $cat_id;
+            $item = new KnowbaseItem();
+            $item->getEmpty();
+            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
+            $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+
+            $options = $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => $cat_id]);
+            $this->assertArrayNotHasKey('knowbaseitemcategories_id', $options);
+        } finally {
+            if ($previous === null) {
+                unset($_GET['knowbaseitemcategories_id']);
+            } else {
+                $_GET['knowbaseitemcategories_id'] = $previous;
+            }
+        }
+    }
+
+    public function testShowFullAddModePrefillsCategoryFromOptions(): void
+    {
+        $this->login();
+
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+        ]);
+        $cat_id = $cat->getID();
+
+        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
+        try {
+            unset($_GET['knowbaseitemcategories_id']);
+
+            $item = new KnowbaseItem();
+            $item->getEmpty();
+            $html = (string) $item->showFull([
+                'mode'                      => 'add',
+                'display'                   => false,
+                'knowbaseitemcategories_id' => $cat_id,
+            ]);
+
+            $this->assertStringContainsString(
+                'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
+                $html
+            );
+        } finally {
+            if ($previous === null) {
+                unset($_GET['knowbaseitemcategories_id']);
+            } else {
+                $_GET['knowbaseitemcategories_id'] = $previous;
+            }
+        }
+    }
+
     protected function testGetVisibilityCriteriaProvider(): iterable
     {
         yield from $this->testGetVisibilityCriteriaProvider_FAQ_public();
