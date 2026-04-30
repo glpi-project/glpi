@@ -10940,30 +10940,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Diagnostic\\\\CheckHtmlEncodingCommand\\:\\:countItems\\(\\) has parameter \\$items_array with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Console\\\\Diagnostic\\\\CheckHtmlEncodingCommand\\:\\:fixOneItem\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Console\\\\Diagnostic\\\\CheckHtmlEncodingCommand\\:\\:\\$invalid_items type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Console\\\\Diagnostic\\\\CheckHtmlEncodingCommand\\:\\:\\$text_fields type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Ldap\\\\SynchronizeUsersCommand\\:\\:formatPossiblesDeletedUserOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

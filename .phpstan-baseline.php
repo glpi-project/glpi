@@ -7358,42 +7358,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTypeName\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of method Glpi\\\\Console\\\\Diagnostic\\\\CheckHtmlEncodingCommand\\:\\:fixOneItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access an offset on float\\|int\\|list\\<mixed\\>\\|string\\|false\\|null\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
