@@ -350,6 +350,7 @@ class HtmlTest extends DbTestCase
             'Webhook',
             'SLM',
             'Config',
+            'Glpi\Security\SecurityConfig',
             'FieldUnicity',
             'CronTask',
             'Auth',

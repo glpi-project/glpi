@@ -42,6 +42,7 @@ use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\SecurityConfig;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -61,6 +62,9 @@ final class SecurityConfigController extends AbstractController
         }
 
         $config_id = Config::getConfigIDForContext('core');
+        if ($config_id === null) {
+            throw new RuntimeException('Unable to find any configs for context "core"');
+        }
         SecurityConfig::displayFullPageForItem($config_id, ["config", SecurityConfig::class], [
             'formoptions'  => "data-track-changes=true",
         ]);
@@ -81,6 +85,9 @@ final class SecurityConfigController extends AbstractController
         }
 
         $config_id = Config::getConfigIDForContext('core');
+        if ($config_id === null) {
+            throw new RuntimeException('Unable to find any configs for context "core"');
+        }
         $config = new Config();
 
         $update_input = $request->request->all();

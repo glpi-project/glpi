@@ -100,6 +100,7 @@ class Log extends CommonDBTM
         }
 
         $nb = 0;
+        $itemtype = $item::class;
         if (
             $_SESSION['glpishow_count_on_tabs']
             && ($item instanceof CommonDBTM)
@@ -110,8 +111,9 @@ class Log extends CommonDBTM
                     'items_id' => $item->getID(),
                 ]
             );
+            $itemtype = self::getLogItemType($item);
         }
-        return self::createTabEntry(self::getTypeName(1), $nb, self::getLogItemType($item));
+        return self::createTabEntry(self::getTypeName(1), $nb, $itemtype);
     }
 
 
@@ -1469,10 +1471,10 @@ class Log extends CommonDBTM
     /**
      * Check if the given item's class specifies a custom itemtype to use in log entries, and return it. Otherwise, return the class name of the given item.
      * This is currently used for {@link \Glpi\Security\SecurityConfig} as all historical data is stored for {@link Config}.
-     * @param CommonGLPI $item
-     * @return string
+     * @param CommonDBTM $item
+     * @return class-string<CommonDBTM>
      */
-    private static function getLogItemtype(CommonGLPI $item): string
+    private static function getLogItemtype(CommonDBTM $item): string
     {
         return property_exists($item, 'log_itemtype') ? $item::$log_itemtype : $item::class;
     }
