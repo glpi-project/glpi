@@ -490,11 +490,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'LIMIT' => 1,
         ])->current();
 
-        if ((int) ($source_link['cpt'] ?? 0) > 0) {
-            return true;
-        }
-
-        if (!is_a($source_itemtype, CommonITILObject::class, true)) {
+        if (
+            (int) ($source_link['cpt'] ?? 0) <= 0
+            && !is_a($source_itemtype, CommonITILObject::class, true)
+        ) {
             return false;
         }
 
