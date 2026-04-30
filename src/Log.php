@@ -106,12 +106,12 @@ class Log extends CommonDBTM
         ) {
             $nb = countElementsInTable(
                 'glpi_logs',
-                ['itemtype' => $item::class,
+                ['itemtype' => self::getLogItemType($item),
                     'items_id' => $item->getID(),
                 ]
             );
         }
-        return self::createTabEntry(self::getTypeName(1), $nb, $item::class);
+        return self::createTabEntry(self::getTypeName(1), $nb, self::getLogItemType($item));
     }
 
 
@@ -170,7 +170,7 @@ class Log extends CommonDBTM
                         $changes          =  [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     }
                 } elseif (
-                    ($val2['linkfield'] == $key && $real_type === $item::class)
+                    ($val2['linkfield'] == $key && $real_type === self::getLogItemType($item))
                        || ($key == $val2['field'] && $val2['table'] == $item->getTable())
                        || ($val2['linkfield'] == $key && $item instanceof Infocom)
                 ) {
@@ -318,7 +318,7 @@ class Log extends CommonDBTM
             return;
         }
 
-        $itemtype = $item::class;
+        $itemtype = self::getLogItemType($item);
         $items_id = $item->getField('id');
 
         $start       = intval(($_GET["start"] ?? 0));
@@ -353,7 +353,7 @@ class Log extends CommonDBTM
             : [],
             'csv_url'           => $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
                 'filter'   => $filters,
-                'itemtype' => $item::class,
+                'itemtype' => $itemtype,
                 'id'       => $item->getId(),
             ]),
         ]);
@@ -380,7 +380,7 @@ class Log extends CommonDBTM
     {
         $DBread = DBConnection::getReadConnection();
 
-        $itemtype  = $item::class;
+        $itemtype  = self::getLogItemType($item);
         $items_id  = $item->getField('id');
         $itemtable = $item->getTable();
 
@@ -936,7 +936,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item::class;
+        $itemtype = self::getLogItemType($item);
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
@@ -977,7 +977,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item::class;
+        $itemtype = self::getLogItemType($item);
         $items_id = $item->getField('id');
 
         $affected_fields = ['linked_action', 'itemtype_link', 'id_search_option'];
@@ -1151,7 +1151,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item::class;
+        $itemtype = self::getLogItemType($item);
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
@@ -1464,5 +1464,16 @@ class Log extends CommonDBTM
         }
         $stmt->close();
         static::resetQueue();
+    }
+
+    /**
+     * Check if the given item's class specifies a custom itemtype to use in log entries, and return it. Otherwise, return the class name of the given item.
+     * This is currently used for {@link \Glpi\Security\SecurityConfig} as all historical data is stored for {@link Config}.
+     * @param CommonGLPI $item
+     * @return string
+     */
+    private static function getLogItemtype(CommonGLPI $item): string
+    {
+        return property_exists($item, 'log_itemtype') ? $item::$log_itemtype : $item::class;
     }
 }
