@@ -67,6 +67,9 @@
 
 {{ include('layout/parts/head.html.twig') }}
 <body class="welcome-anonymous">
+   <div class="skip-links">
+      <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Skip to main content') }}</a>
+   </div>
    <main id="page" class="page-anonymous" role="main" tabindex="-1">
       <div class="flex-fill d-flex flex-column justify-content-center py-4 mt-4">
          {% set style = null %}
