@@ -1419,10 +1419,13 @@ TWIG, $twig_params);
                     'delete' => _x('button', 'Put in trashbin'),
                     'restore' => _x('button', 'Restore'),
                     'purge' => _x('button', 'Delete permanently'),
+                    ProjectTaskTeam::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'affect_to_team' => _x('button', 'Affect to team'),
+                    ProjectTaskTeam::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unaffect_to_team' => _x('button', 'Unaffect to team'),
                 ],
             ],
         ]);
     }
+
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {

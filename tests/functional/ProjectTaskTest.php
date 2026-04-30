@@ -38,6 +38,7 @@ use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
 use Project;
 use ProjectTask;
+use ProjectTaskTeam;
 
 /* Test for inc/projecttask.class.php */
 
@@ -79,7 +80,7 @@ class ProjectTaskTest extends DbTestCase
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $task_id = $ptask->fields['id'];
 
-        $team = new \ProjectTaskTeam();
+        $team = new ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
@@ -100,7 +101,7 @@ class ProjectTaskTest extends DbTestCase
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
-        $team = new \ProjectTaskTeam();
+        $team = new ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
@@ -130,7 +131,7 @@ class ProjectTaskTest extends DbTestCase
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
-        $team = new \ProjectTaskTeam();
+        $team = new ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
@@ -405,7 +406,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEquals($task->fields['name'] . ' (copy)', $clonedTask->fields['name']);
 
         // Load task team
-        $project_task_team = new \ProjectTaskTeam();
+        $project_task_team = new ProjectTaskTeam();
         $team = [];
         foreach ($project_task_team->find(['projecttasks_id' => $task->fields['id']]) as $row) {
             $team[] = [
@@ -857,7 +858,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create user team
-        $user_team = $this->createItem(\ProjectTaskTeam::getType(), [
+        $user_team = $this->createItem(ProjectTaskTeam::getType(), [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \User::class,
             'items_id'        => $user->getID(),
@@ -876,14 +877,14 @@ class ProjectTaskTest extends DbTestCase
         $this->createItem(\Group_User::getType(), ['groups_id' => $group->getID(), 'users_id' => $user->getID()]);
 
         // Create group team
-        $this->createItem(\ProjectTaskTeam::getType(), [
+        $this->createItem(ProjectTaskTeam::getType(), [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \Group::class,
             'items_id'        => $group->getID(),
         ]);
 
         // Remove user team
-        $this->deleteItem(\ProjectTaskTeam::getType(), $user_team->getID());
+        $this->deleteItem(ProjectTaskTeam::getType(), $user_team->getID());
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an array with the task ID if $search_in_groups is true
         $this->assertEquals(
@@ -934,7 +935,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create group team
-        $this->createItem(\ProjectTaskTeam::getType(), [
+        $this->createItem(ProjectTaskTeam::getType(), [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \Group::class,
             'items_id'        => $group->getID(),
@@ -1002,5 +1003,67 @@ class ProjectTaskTest extends DbTestCase
         $input = ['percent_done' => 50];
         $result = $task2->autoSetDate($input);
         $this->assertNull($result['real_end_date']);
+    }
+
+    public function testAffectAndUnaffectTeamMember(): void
+    {
+        $this->login();
+
+        $project = $this->createItem(Project::class, ['name' => __FUNCTION__]);
+        $task    = $this->createItem(ProjectTask::class, [
+            'name'        => __FUNCTION__,
+            'projects_id' => $project->getID(),
+        ]);
+        $group = getItemByTypeName('Group', '_test_group_1');
+
+        $criteria = [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'Group',
+            'items_id'        => $group->getID(),
+        ];
+
+        // Ajout d'un membre
+        $team_entry = $this->createItem(ProjectTaskTeam::class, $criteria);
+        $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+
+        // Vérification via getTeamFor
+        $team = ProjectTaskTeam::getTeamFor($task->getID());
+        $this->assertCount(1, $team['Group']);
+        $this->assertSame($group->getID(), $team['Group'][0]['items_id']);
+
+        // Suppression du membre
+        $this->deleteItem(ProjectTaskTeam::class, $team_entry->getID());
+        $this->assertSame(0, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+
+        $team = ProjectTaskTeam::getTeamFor($task->getID());
+        $this->assertCount(0, $team['Group']);
+    }
+
+    public function testAffectTeamMemberDuplicatePrevented(): void
+    {
+        $this->login();
+
+        $project = $this->createItem(Project::class, ['name' => __FUNCTION__]);
+        $task    = $this->createItem(ProjectTask::class, [
+            'name'        => __FUNCTION__,
+            'projects_id' => $project->getID(),
+        ]);
+        $group = getItemByTypeName('Group', '_test_group_1');
+
+        $criteria = [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'Group',
+            'items_id'        => $group->getID(),
+        ];
+
+        $this->createItem(ProjectTaskTeam::class, $criteria);
+        $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+
+        // Le doublon est détecté par countElementsInTable avant tout INSERT
+        $already_exists = countElementsInTable(ProjectTaskTeam::getTable(), $criteria) > 0;
+        $this->assertTrue($already_exists);
+
+        // Toujours une seule entrée en base
+        $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
     }
 }

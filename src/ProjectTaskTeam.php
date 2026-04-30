@@ -87,6 +87,100 @@ class ProjectTaskTeam extends CommonDBRelation
         return $forbidden;
     }
 
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        global $CFG_GLPI;
+
+        switch ($ma->getAction()) {
+            case 'affect_to_team':
+            case 'unaffect_to_team':
+                $rand = Dropdown::showItemTypes('itemtype', static::$available_types);
+                echo '<br>';
+                $params = [
+                    'idtable'             => '__VALUE__',
+                    'display_emptychoice' => true,
+                    'name'                => 'items_id',
+                    'entity_restrict'     => Session::getActiveEntity(),
+                    'rand'                => $rand,
+                ];
+                Ajax::updateItemOnSelectEvent(
+                    "dropdown_itemtype$rand",
+                    "results_itemtype$rand",
+                    $CFG_GLPI['root_doc'] . '/ajax/dropdownAllItems.php',
+                    $params
+                );
+                echo "<span id='results_itemtype$rand'></span>";
+                echo '<br>';
+
+                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    /**
+     * @param int[] $ids
+     */
+    public static function processMassiveActionsForOneItemtype(
+        MassiveAction $ma,
+        CommonDBTM $item,
+        array $ids
+    ): void {
+        $action = $ma->getAction();
+        $input  = $ma->getInput();
+
+        if (!in_array($action, ['affect_to_team', 'unaffect_to_team'], true)) {
+            parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+            return;
+        }
+
+        if (
+            empty($input['itemtype'])
+            || !isset($input['items_id'])
+            || (int) $input['items_id'] <= 0
+        ) {
+            foreach ($ids as $id) {
+                $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+            }
+            return;
+        }
+
+        $team = new self();
+
+        foreach ($ids as $id) {
+            if (!$item->can($id, UPDATE)) {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                continue;
+            }
+
+            $criteria = [
+                'projecttasks_id' => $id,
+                'itemtype'        => $input['itemtype'],
+                'items_id'        => (int) $input['items_id'],
+            ];
+
+            if ($action === 'affect_to_team') {
+                if (countElementsInTable(self::getTable(), $criteria) > 0) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                    continue;
+                }
+                $result = $team->add($criteria);
+            } else {
+                if (countElementsInTable(self::getTable(), $criteria) === 0) {
+                    $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                    continue;
+                }
+                $result = $team->deleteByCriteria($criteria);
+            }
+
+            if ($result) {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+            } else {
+                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+            }
+        }
+    }
+
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
