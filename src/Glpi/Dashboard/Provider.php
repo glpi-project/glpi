@@ -1576,7 +1576,7 @@ class Provider
             ),
             'reset' => 'reset',
         ];
-        $is_group = str_starts_with($case, 'group');
+        $is_group = ($ug_table === Group::getTable());
         $data = [];
         foreach ($iterator as $result) {
             $s_params['criteria'][0]['value'] = $result['actor_id'];
