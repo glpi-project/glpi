@@ -32,7 +32,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% set params  = params ?? [] %}
 {% set rand_field = rand|default(random()) %}
 
@@ -81,7 +81,10 @@
         {% set cra_tooltip = __('Challenge–response authentication can be used to validate the identity of the target server before any data is sent from GLPI. This uses the shared secret that was generated in the above section.') %}
 
         {% if constant('GLPI_WEBHOOK_CRA_MANDATORY') %}
-            {{ alerts.alert_info(__('CRA is mandatory due to GLPI configuration'), [cra_tooltip]) }}
+            <twig:Alert
+                :title="__('CRA is mandatory due to GLPI configuration')"
+                :message="cra_tooltip"
+            />
             <input type="hidden" name="use_cra_challenge" value="1" />
         {% else %}
             {{ fields.checkboxField(

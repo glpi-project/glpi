@@ -31,14 +31,27 @@
  #}
 
 {% macro alert(alert_type = "", title = "", messages = [], icon = "", important = false) %}
-   {#{% do call('Toolbox::deprecated', ['Twig alert macros are deprecated. Use the Alert Twig component instead.']) %}#}
-   {{ component('Alert', {
-      type: alert_type,
-      title: title,
-      messages: messages,
-      icon: icon,
-      important: important,
-   }) }}
+    {% do call('Toolbox::deprecated', ['Twig alert macros are deprecated. Use the Alert Twig component instead.']) %}
+    {% set _message = '' %}
+    {% if messages is iterable %}
+        {% for message in messages %}
+            {% if _message %}
+                {% set _message = _message ~ "\n" %}
+            {% endif %}
+
+            {% set _message = _message ~ message %}
+        {% endfor %}
+    {% else %}
+        {% set _message = messages %}
+    {% endif %}
+
+    {{ component('Alert', {
+        type: alert_type,
+        title: title,
+        message: _message,
+        icon: icon,
+        important: important,
+    }) }}
 {% endmacro %}
 
 {% macro alert_success(title = "", messages = [], important = false) %}

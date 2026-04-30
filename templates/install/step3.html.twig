@@ -30,16 +30,14 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
-
 <h3>{{ __('Test of the connection at the database') }}</h3>
 
 {% if host|length == 0 or user|length == 0 or link.connect_error %}
 
-   {{ alerts.alert_danger(
-      __("Can't connect to the database"),
-      __('The server answered: %s')|format(link.connect_error)
-   ) }}
+    <twig:Alert:Danger
+        :title="__('Can\'t connect to the database')"
+        :message="__('The server answered: %s')|format(link.connect_error)"
+    />
 
    <form action="install.php" method="post" class="d-inline" data-submit-once>
       <button type="submit" name="submit" class="btn btn-warning">
@@ -51,22 +49,22 @@
       <input type="hidden" name="install" value="Etape_1">
    </form>
 {% else %}
-   {{ alerts.alert_success(
-      __('Database connection successful'),
-   ) }}
+    <twig:Alert:Success
+        :message="__('Database connection successful')"
+    />
 
    {% if not engine_requirement.isValidated() %}
-      {{ alerts.alert_danger(
-         __('Database engine is not supported.'),
-         engine_requirement.getValidationMessages()
-      ) }}
+       <twig:Alert:Danger
+           :title="__('Database engine is not supported.')"
+           :message="engine_requirement.getValidationMessages()"
+       />
    {% endif %}
 
    {% if not config_requirement.isValidated() %}
-      {{ alerts.alert_danger(
-         __('Database configuration is not supported.'),
-         config_requirement.getValidationMessages()
-      ) }}
+       <twig:Alert:Danger
+           :title="__('Database configuration is not supported.')"
+           :message="config_requirement.getValidationMessages()"
+       />
    {% endif %}
 
    {% if engine_requirement.isValidated() and config_requirement.isValidated() %}

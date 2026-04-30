@@ -30,7 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set is_ajax = data['searchform_id'] is defined and data['searchform_id'] is not null %}
 {% set fluid_search = fluid_search|default(true) %}
 {% if not is_ajax %}
@@ -83,9 +82,14 @@
             {% endif %}
         {% elseif as_map %}
             {% if search_error %}
-                {{ alerts.alert_danger(__('An error occurred during the search'), __('Consider changing the search criteria or adjusting the displayed columns.')) }}
+                <twig:Alert:Danger
+                    :title="__('An error occurred during the search')"
+                    :message="__('Consider changing the search criteria or adjusting the displayed columns.')"
+                />
             {% else %}
-                {{ alerts.alert_info(__('No results found')) }}
+                <twig:Alert
+                    :message="__('No results found')"
+                />
             {% endif %}
         {% endif %}
     </form>

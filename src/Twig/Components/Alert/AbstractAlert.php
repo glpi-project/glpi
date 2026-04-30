@@ -46,14 +46,17 @@ abstract class AbstractAlert
 
     public string $title = '';
 
-    /**
-     * @var iterable<mixed>|string
-     */
-    public iterable|string $messages = [];
+    public string $message = '';
 
     public string $icon = '';
 
     public bool $important = false;
+
+    public ?string $link_url = null;
+
+    public ?string $link_text = null;
+
+    public bool $link_blank = false;
 
     public function getResolvedIcon(): string
     {

@@ -79,11 +79,13 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            {% import 'components/alerts_macros.html.twig' as alerts %}
             <form name="testrule_form" id="softdictionnary_confirmation" method="post" action="{{ target }}">
                 <div class="card">
                     <div class="card-body">
-                        {{ alerts.alert_warning(warning_title, warning_message) }}
+                        <twig:Alert:Warning
+                            :title="warning_title"
+                            :message="warning_message"
+                        />
                         <div>
                             {{ fields.dropdownField('Manufacturer', 'manufacturer', 0, manufacturer_label, {
                                 emptylabel: emptylabel,

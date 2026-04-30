@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
-
 {% if canedit %}
     {% include 'components/tab/addlink_block.html.twig' with {'add_link': form_url, 'button_label': __('Add a remote management')} %}
 {% endif %}
@@ -55,8 +53,8 @@
         'massiveactionparams': massiveactionparams,
     }, with_context = false) }}
 {% else %}
-    {{ alerts.alert_info(
-        __('No results found')
-    ) }}
+    <twig:Alert
+        :message="__('No results found')"
+    />
 {% endif %}
 
