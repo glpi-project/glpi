@@ -8991,16 +8991,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.4.31",
+            "version": "2.4.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "f47ebaa990027cc12cea5af43e62d3ab8e860a5d"
+                "reference": "86b89b0399797706a07c1fd4eec3158460b13f7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/f47ebaa990027cc12cea5af43e62d3ab8e860a5d",
-                "reference": "f47ebaa990027cc12cea5af43e62d3ab8e860a5d",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/86b89b0399797706a07c1fd4eec3158460b13f7f",
+                "reference": "86b89b0399797706a07c1fd4eec3158460b13f7f",
                 "shasum": ""
             },
             "require": {
@@ -9009,14 +9009,14 @@
                 "ext-gd": "*",
                 "ext-pcre": "*",
                 "php": ">=8.1",
-                "tecnickcom/tc-lib-color": "^2.3"
+                "tecnickcom/tc-lib-color": "^2.5"
             },
             "require-dev": {
-                "pdepend/pdepend": "2.16.2",
+                "pdepend/pdepend": "^2.16",
                 "phpcompatibility/php-compatibility": "^10.0.0@dev",
-                "phpmd/phpmd": "2.15.0",
-                "phpunit/phpunit": "13.1.1 || 12.5.17 || 11.5.55 || 10.5.63",
-                "squizlabs/php_codesniffer": "4.0.1"
+                "phpmd/phpmd": "^2.15",
+                "phpunit/phpunit": "^13.1 || ^12.5 || ^11.5 || ^10.5",
+                "squizlabs/php_codesniffer": "^4.0"
             },
             "type": "library",
             "autoload": {
@@ -9036,7 +9036,7 @@
                 }
             ],
             "description": "PHP library to generate linear and bidimensional barcodes",
-            "homepage": "http://www.tecnick.com",
+            "homepage": "https://tcpdf.org",
             "keywords": [
                 "3 of 9",
                 "ANSI MH10.8M-1983",
@@ -9080,7 +9080,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.31"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode"
             },
             "funding": [
                 {
@@ -9088,20 +9088,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-04-11T16:55:36+00:00"
+            "time": "2026-04-30T19:47:34+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.3.12",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "d76454d5723379d73629f46114e4b69ec77175df"
+                "reference": "ebb76dfb334b7a0b470e765a7b46c5635dce2fe0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/d76454d5723379d73629f46114e4b69ec77175df",
-                "reference": "d76454d5723379d73629f46114e4b69ec77175df",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/ebb76dfb334b7a0b470e765a7b46c5635dce2fe0",
+                "reference": "ebb76dfb334b7a0b470e765a7b46c5635dce2fe0",
                 "shasum": ""
             },
             "require": {
@@ -9109,11 +9109,11 @@
                 "php": ">=8.1"
             },
             "require-dev": {
-                "pdepend/pdepend": "2.16.2",
+                "pdepend/pdepend": "^2.16",
                 "phpcompatibility/php-compatibility": "^10.0.0@dev",
-                "phpmd/phpmd": "2.15.0",
-                "phpunit/phpunit": "13.1.1 || 12.5.17 || 11.5.55 || 10.5.63",
-                "squizlabs/php_codesniffer": "4.0.1"
+                "phpmd/phpmd": "^2.15",
+                "phpunit/phpunit": "^13.1 || ^12.5 || ^11.5 || ^10.5",
+                "squizlabs/php_codesniffer": "^4.0"
             },
             "type": "library",
             "autoload": {
@@ -9133,7 +9133,7 @@
                 }
             ],
             "description": "PHP library to manipulate various color representations",
-            "homepage": "http://www.tecnick.com",
+            "homepage": "https://tcpdf.org",
             "keywords": [
                 "cmyk",
                 "color",
@@ -9150,7 +9150,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.3.12"
+                "source": "https://github.com/tecnickcom/tc-lib-color"
             },
             "funding": [
                 {
@@ -9158,7 +9158,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-04-11T16:53:57+00:00"
+            "time": "2026-04-30T19:21:47+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
