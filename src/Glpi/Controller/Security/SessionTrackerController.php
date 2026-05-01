@@ -63,6 +63,8 @@ final class SessionTrackerController extends AbstractController
             'type' => $request->query->get('type', 'all'),
             'ip' => $request->query->get('ip', ''),
         ];
+        $start = $request->query->getInt('start', 0);
+
         if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
             throw new AccessDeniedHttpException();
         }
@@ -72,7 +74,7 @@ final class SessionTrackerController extends AbstractController
 
         $sessionTracker = new SessionTracker();
         Html::header(...SessionTracker::getHeaderParameters());
-        $sessionTracker->showSessionList($users_id, $filters);
+        $sessionTracker->showSessionList($users_id, $filters, $start);
         Html::footer();
         return new Response();
     }

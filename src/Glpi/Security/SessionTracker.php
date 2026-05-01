@@ -156,9 +156,10 @@ final class SessionTracker extends CommonGLPI
     /**
      * @param int $users_id
      * @param SessionFilterCriteria $filters
+     * @param int $start
      * @return array<string, mixed>
      */
-    private function getWebSessionsCriteria(int $users_id = 0, array $filters = []): array
+    private function getWebSessionsCriteria(int $users_id = 0, array $filters = [], int $start = 0): array
     {
         global $DB;
 
@@ -217,10 +218,6 @@ final class SessionTracker extends CommonGLPI
             $where['glpi_user_session_history.logged_out_at'] = null;
         }
 
-        if (isset($filters['type']) && $filters['type'] !== 'all') {
-            //TODO
-        }
-
         if (isset($filters['ip']) && $filters['ip'] !== '') {
             $ips = array_map('trim', explode(',', $filters['ip']));
             $ip_criteria = [];
@@ -269,6 +266,7 @@ final class SessionTracker extends CommonGLPI
                 'logged_in_at DESC',
             ],
             'HAVING' => $having,
+            'START' => $start,
             'LIMIT' => $_SESSION['glpilist_limit'],
         ];
     }
@@ -286,16 +284,16 @@ final class SessionTracker extends CommonGLPI
     /**
      * @param int $users_id The user ID to filter sessions by. If 0, sessions for all users will be returned.
      * @param SessionFilterCriteria $filters
+     * @param int $start The offset for pagination
      * @return array
      */
-    public function getSessions(int $users_id = 0, array $filters = []): array
+    public function getSessions(int $users_id = 0, array $filters = [], int $start = 0): array
     {
         global $DB;
 
         Profiler::getInstance()->start('SessionTracker::getSessions');
 
-
-        $it = $DB->request($this->getWebSessionsCriteria($users_id, $filters));
+        $it = $DB->request($this->getWebSessionsCriteria($users_id, $filters, $start));
         $sessions = [];
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Create DeviceDetector instance');
@@ -392,13 +390,14 @@ final class SessionTracker extends CommonGLPI
         return $DB->request($criteria)->count();
     }
 
-    public function showSessionList(int $users_id = 0, array $filters = []): void
+    public function showSessionList(int $users_id = 0, array $filters = [], int $start = 0): void
     {
         TemplateRenderer::getInstance()->display('pages/setup/sessiontracker/sessiontracker.html.twig', [
-            'sessions' => $this->getSessions($users_id, $filters),
+            'sessions' => $this->getSessions($users_id, $filters, $start),
             'sessions_count' => $this->getSessionsCount($users_id, $filters),
             'filters' => $filters,
-            'href' => $_SERVER['REQUEST_URI'],
+            'start' => $start,
+            'href' => parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),
         ]);
     }
 }
