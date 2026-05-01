@@ -6668,8 +6668,6 @@ CSS;
     {
         $file = preg_replace('/\.scss$/', '', $file);
 
-        $file = str_replace(DIRECTORY_SEPARATOR, '/', $file);
-
         return self::getScssCompileDir($root_dir) . '/' . str_replace('/', '_', $file) . '.min.css';
     }
 
@@ -6682,7 +6680,7 @@ CSS;
      */
     public static function getScssCompileDir(string $root_dir = GLPI_ROOT)
     {
-        return str_replace(DIRECTORY_SEPARATOR, '/', $root_dir) . '/public/css_compiled';
+        return $root_dir . '/public/css_compiled';
     }
 
     /**
