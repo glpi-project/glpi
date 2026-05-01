@@ -41,7 +41,7 @@ final class IPUtilities
         if ($ip === null) {
             return false;
         }
-        return in_array($ip, GLPI_TRUSTED_REVERSE_PROXIES, true);
+        return in_array($ip, GLPI_TRUSTED_REVERSE_PROXIES, true); // @phpstan-ignore function.impossibleType
     }
 
     public static function getClientIP(): ?string
