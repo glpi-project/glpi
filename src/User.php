@@ -3689,6 +3689,7 @@ HTML;
             'datatype'          => 'specific',
             'additionalfields'  => ['2fa'],
             'nosearch'          => true, // Searching virtual fields is not supported currently
+            'nosort'            => true, // Same as above
         ];
 
         // add objectlock search options
