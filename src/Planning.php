@@ -519,23 +519,38 @@ JAVASCRIPT;
 
         // define options for current page
         if ($fullview) {
+            $filters = [];
+            if (isset($_SESSION['glpi_plannings']['filters'])) {
+                foreach ($_SESSION['glpi_plannings']['filters'] as $key => $filter) {
+                    $filters['filters'][$key] = self::getPlanningFilterInfo($key, $filter);
+                }
+            }
+            if (isset($_SESSION['glpi_plannings']['plannings'])) {
+                foreach ($_SESSION['glpi_plannings']['plannings'] as $key => $filter) {
+                    $filters['plannings'][$key] = self::getPlanningFilterInfo($key, $filter);
+                }
+            }
+
             $options = [
                 'full_view'    => true,
-                'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
+                'fullcalendar_options' => [
+                    'initialView' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
+                ],
+                'filters'      => $filters,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
                 'can_delete'   => PlanningExternalEvent::canPurge(),
-                'rand'         => mt_rand(),
             ];
         } else {
             // short view (on Central page)
             $options = [
                 'full_view'    => false,
-                'default_view' => 'listFull',
-                'header'       => false,
-                'height'       => 'auto',
-                'rand'         => mt_rand(),
+                'fullcalendar_options' => [
+                    'initialView' => 'listFull',
+                    'header'       => false,
+                    'height'       => 'auto',
+                ],
                 'now'          => date("Y-m-d H:i:s"),
             ];
         }
@@ -730,27 +745,13 @@ JAVASCRIPT;
         TemplateRenderer::getInstance()->display('pages/assistance/planning/filters.html.twig');
     }
 
-    /**
-     * Display a single line of planning filter.
-     * See self::showPlanningFilter function
-     *
-     * @param string $filter_key identify curent line of filter
-     * @param array $filter_data array of filter date, must contain:
-     *   * 'show_delete' (boolean): show delete button
-     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
-     * @param array $options
-     *
-     * @return void
-     * @used-by templates/pages/assistance/planning/filters.html.twig
-     * @used-by templates/pages/assistance/planning/single_filter.html.twig
-     */
-    public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
+    public static function getPlanningFilterInfo(string $filter_key, array $filter_data, array $options = []): ?array
     {
         global $CFG_GLPI;
 
         // Invalid data, skip
         if (!isset($filter_data['type'])) {
-            return;
+            return null;
         }
 
         $params['show_delete']        = true;
@@ -767,6 +768,8 @@ JAVASCRIPT;
         $expanded = '';
         $title = '';
         $caldav_item_url = null;
+        $child_filters = [];
+
         if ($filter_data['type'] === 'user') {
             $uID = $actor[1];
             $user = new User();
@@ -781,6 +784,15 @@ JAVASCRIPT;
             $title = $group->getName(); // Will return N/A if it doesn't exist anymore
             if ($group_exists) {
                 $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+
+                if ($caldav_item_url !== null) {
+                    foreach ($filter_data['users'] as $user_key => $user_data) {
+                        $child_filters[$user_key] = self::getPlanningFilterInfo($user_key, $user_data, [
+                            'show_delete' => false,
+                            'filter_color_index' => $params['filter_color_index'],
+                        ]);
+                    }
+                }
             }
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
@@ -813,9 +825,9 @@ JAVASCRIPT;
                 $title = __('Done elements');
             } else {
                 if (!getItemForItemtype($filter_key)) {
-                    return;
+                    return null;
                 } elseif (!$filter_key::canView()) {
-                    return;
+                    return null;
                 }
                 $title = $filter_key::getTypeName();
             }
@@ -848,7 +860,11 @@ JAVASCRIPT;
             $login_user->getFromDB(Session::getLoginUserID(true));
         }
 
-        TemplateRenderer::getInstance()->display('pages/assistance/planning/single_filter.html.twig', [
+        if ($filter_data['type'] === 'external') {
+            $filter_data['url_safe'] = Toolbox::isUrlSafe($filter_data['url'] ?? '');
+        }
+
+        return [
             'filter_key'            => $filter_key,
             'filter_data'           => $filter_data,
             'expanded'              => $expanded,
@@ -861,7 +877,8 @@ JAVASCRIPT;
             'login_user'            => $login_user,
             'webcal_base_url'       => $webcal_base_url,
             'caldav_url'            => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
-        ]);
+            'child_filters'         => $child_filters,
+        ];
     }
 
     /**
@@ -1528,15 +1545,15 @@ TWIG, $twig_params);
     public static function toggleFilter($options = [])
     {
         $key = 'filters';
+        $display = filter_var($options['display'], FILTER_VALIDATE_BOOLEAN);
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
             $key = 'plannings';
         }
         if (empty($options['parent'])) {
-            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = ($options['display'] === 'true');
+            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = $display;
         } else {
             $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
-            [$options['name']]['display']
-            = ($options['display'] === 'true');
+            [$options['name']]['display'] = $display;
         }
         self::savePlanningsInDB();
     }
@@ -1740,7 +1757,7 @@ TWIG, $twig_params);
                              && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
-                'color'       => (empty($event['color'])
+                'backgroundColor'       => (empty($event['color'])
                               ? self::$palette_bg[$index_color]
                               : $event['color']),
                 'borderColor' => (empty($event['event_type_color'])
@@ -1776,7 +1793,7 @@ TWIG, $twig_params);
                 $param['view_name'] === "resourceWeek"
                 && !empty($event['event_cat_color'])
             ) {
-                $new_event['color'] = $event['event_cat_color'];
+                $new_event['backgroundColor'] = $event['event_cat_color'];
             }
 
             // manage reccurent events
