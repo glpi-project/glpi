@@ -719,20 +719,6 @@ TWIG,
                 ]);
             }
 
-            if (in_array('planning', $jslibs)) {
-                Html::requireJs('planning');
-            }
-
-            if (in_array('fullcalendar', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'lib/fullcalendar.css'];
-                Html::requireJs('fullcalendar');
-            }
-
-            if (in_array('reservations', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/reservations.scss'];
-                Html::requireJs('reservations');
-            }
-
             if (in_array('dashboard', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
             }
@@ -5518,9 +5504,6 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
-            case 'planning':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
-                break;
             case 'flatpickr':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
@@ -5530,19 +5513,6 @@ JS);
                     if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
-                    }
-                }
-                break;
-            case 'fullcalendar':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
-                if (isset($_SESSION['glpilanguage'])) {
-                    foreach ([2, 3] as $loc) {
-                        $filename = "lib/fullcalendar/core/locales/"
-                         . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                            $_SESSION['glpi_js_toload'][$name][] = $filename;
-                            break;
-                        }
                     }
                 }
                 break;
@@ -5582,9 +5552,6 @@ JS);
                 break;
             case 'photoswipe':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
-                break;
-            case 'reservations':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
                 break;
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
