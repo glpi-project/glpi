@@ -124,6 +124,13 @@ use function Safe\unpack;
 class Toolbox
 {
     /**
+     * Regular expression pattern for validating email addresses in ITIL actor fields.
+     * Supports UTF-8 characters and special characters as per RFC 6531.
+     * @var string
+     */
+    public const ACTOR_EMAIL_VALIDATION_REGEX = '/^[\p{L}\p{N}\p{M}._%+\'-]+@([\p{L}\p{N}\p{M}._-]+\.)+[\p{L}\p{N}]{2,63}$/u';
+
+    /**
      * Wrapper for max_input_vars
      *
      * @since 0.84
