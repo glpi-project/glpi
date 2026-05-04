@@ -420,6 +420,11 @@
                                                             'multiple': true,
                                                         }, with_context = false) }}
 
+                                                        <div class="invalid-feedback d-block mt-2"
+                                                             role="alert"
+                                                             id="kb-document-upload-error"
+                                                             data-glpi-kb-upload-error></div>
+
                                                         {# KB-specific: Description #}
                                                         <div class="mb-3 mt-3">
                                                             <label for="kb-document-description" class="form-label">
@@ -441,7 +446,7 @@
                                                                 {{ __('Cancel') }}
                                                             </button>
                                                             <button type="submit" class="btn btn-primary"
-                                                                    data-glpi-kb-upload-submit disabled>
+                                                                    data-glpi-kb-upload-submit>
                                                                 <i class="ti ti-upload me-1"></i>
                                                                 {{ __('Upload Documents') }}
                                                             </button>
@@ -464,7 +469,12 @@
                                                         <label for="kb-link-document-select" class="form-label">
                                                             {{ __('Search for a document') }}
                                                         </label>
-                                                        <select id="kb-link-document-select" class="form-select"></select>
+                                                        <select id="kb-link-document-select"
+                                                                class="form-select"></select>
+                                                        <div class="invalid-feedback d-block mt-2"
+                                                             role="alert"
+                                                             id="kb-document-link-error"
+                                                             data-glpi-kb-link-error></div>
                                                     </div>
 
                                                     {# Selected documents list (matching upload tab style) #}
@@ -481,7 +491,7 @@
                                                             {{ __('Cancel') }}
                                                         </button>
                                                         <button type="button" class="btn btn-primary"
-                                                                data-glpi-kb-link-submit disabled>
+                                                                data-glpi-kb-link-submit>
                                                             <i class="ti ti-link me-1"></i>
                                                             {{ __('Link Documents') }}
                                                         </button>
@@ -560,19 +570,15 @@
             '{{ mode|e('js') }}',
         );
 
-        // Initialize document upload controller when modal opens
+        // Initialize document upload controller eagerly so the submit
+        // handler is bound before any user interaction with the modal.
         const uploadModal = document.getElementById('kb-add-document-modal');
-        if (uploadModal) {
-            uploadModal.addEventListener('shown.bs.modal', async () => {
-                const uploadPane = uploadModal.querySelector('#kb-modal-upload-pane');
-                if (uploadPane && !uploadPane.dataset.initialized) {
-                    const uploadModule = await import(
-                        "/js/modules/Knowbase/UploadController.js"
-                    );
-                    new uploadModule.DocumentUploadController(uploadPane, uploadModal);
-                    uploadPane.dataset.initialized = 'true';
-                }
-            }, { once: true });
+        const uploadPane = uploadModal?.querySelector('#kb-modal-upload-pane');
+        if (uploadPane) {
+            const uploadModule = await import(
+                "/js/modules/Knowbase/UploadController.js"
+            );
+            new uploadModule.DocumentUploadController(uploadPane, uploadModal);
         }
     })();
 </script>

@@ -36,12 +36,12 @@
            id="{{ input_id }}"
            name="{{ input_name }}"
            {{ multiple ? 'multiple' : '' }}
-           class="d-none"
+           class="visually-hidden"
            data-glpi-file-uploader-input>
     <div class="file-uploader-dropzone-content">
         <i class="ti ti-cloud-upload file-uploader-dropzone-icon"></i>
         <p class="file-uploader-dropzone-title">{{ __('Drop files here or click to browse') }}</p>
-        <span class="btn btn-outline-primary btn-sm mt-2">
+        <span class="btn btn-outline-primary btn-sm mt-2" aria-hidden="true">
             <i class="ti ti-folder-open me-1"></i>{{ __('Browse Files') }}
         </span>
     </div>

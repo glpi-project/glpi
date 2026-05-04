@@ -58,6 +58,15 @@ export class DocumentUploadController
     /** @type {HTMLButtonElement} */
     #uploadBtn;
 
+    /** @type {HTMLElement|null} */
+    #errorContainer;
+
+    /** @type {HTMLElement|null} */
+    #dropzone;
+
+    /** @type {HTMLInputElement|null} */
+    #fileInput;
+
     /**
      * @param {HTMLElement} container - Form container (tab pane)
      * @param {HTMLElement|null} modal - Modal element (optional)
@@ -68,6 +77,9 @@ export class DocumentUploadController
         this.#modal = modal;
         this.#form = container.querySelector('form');
         this.#uploadBtn = container.querySelector('[data-glpi-kb-upload-submit]');
+        this.#errorContainer = container.querySelector('[data-glpi-kb-upload-error]');
+        this.#dropzone = container.querySelector('[data-glpi-file-uploader-dropzone]');
+        this.#fileInput = container.querySelector('[data-glpi-file-uploader-input]');
 
         if (!this.#form) {
             throw new Error('DocumentUploadController: form element not found');
@@ -80,13 +92,39 @@ export class DocumentUploadController
 
     #bindEvents()
     {
-        // Update submit button state when uploader state changes
+        // Clear validation error as soon as the uploader state changes
         this.#container.addEventListener('file-uploader:change', () => {
-            this.#updateUploadButton();
+            if (this.#uploader.hasSuccessfulUploads()) {
+                this.#clearError();
+            }
         });
 
-        // Form submission
-        this.#form.addEventListener('submit', (e) => this.#onSubmit(e));
+        // Validate on the upload button click rather than the form 'submit'
+        // event, so that Enter on the focused file input still opens the
+        // native file picker via the browser's default activation behaviour
+        // instead of being captured by a form-level handler.
+        if (this.#uploadBtn) {
+            this.#uploadBtn.addEventListener('click', (e) => this.#onSubmit(e));
+        }
+
+        // Safety net: the form has no `action` attribute, so block any native
+        // submission triggered through alternate paths (e.g. implicit submit).
+        this.#form.addEventListener('submit', (e) => e.preventDefault());
+
+        // Keyboard accessibility: explicitly open the picker on Enter when
+        // the visually-hidden file input has focus. The browser's default
+        // activation can be unreliable on a `visually-hidden` input, and
+        // letting the keydown bubble could otherwise trigger implicit form
+        // submission instead of the file picker.
+        if (this.#fileInput) {
+            this.#fileInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.#fileInput.click();
+                }
+            });
+        }
 
         // Modal lifecycle
         if (this.#modal) {
@@ -98,6 +136,7 @@ export class DocumentUploadController
 
             this.#modal.addEventListener('hidden.bs.modal', () => {
                 this.#uploader.reset();
+                this.#clearError();
                 const descField = this.#form.querySelector('#kb-document-description');
                 if (descField) {
                     descField.value = '';
@@ -106,14 +145,41 @@ export class DocumentUploadController
         }
     }
 
-    #updateUploadButton()
+    #showError(message)
     {
-        if (!this.#uploadBtn) {
-            return;
+        if (this.#errorContainer) {
+            this.#errorContainer.textContent = message;
         }
 
-        this.#uploadBtn.disabled = this.#uploader.isUploading()
-            || !this.#uploader.hasSuccessfulUploads();
+        // The label provides the visual error state (is-invalid border).
+        if (this.#dropzone) {
+            this.#dropzone.classList.add('is-invalid');
+        }
+
+        // The input is the actual focusable control: ARIA + focus go on it.
+        if (this.#fileInput) {
+            this.#fileInput.setAttribute('aria-invalid', 'true');
+            if (this.#errorContainer?.id) {
+                this.#fileInput.setAttribute('aria-describedby', this.#errorContainer.id);
+            }
+            this.#fileInput.focus();
+        }
+    }
+
+    #clearError()
+    {
+        if (this.#errorContainer) {
+            this.#errorContainer.textContent = '';
+        }
+
+        if (this.#dropzone) {
+            this.#dropzone.classList.remove('is-invalid');
+        }
+
+        if (this.#fileInput) {
+            this.#fileInput.removeAttribute('aria-invalid');
+            this.#fileInput.removeAttribute('aria-describedby');
+        }
     }
 
     /**
@@ -123,11 +189,18 @@ export class DocumentUploadController
     {
         e.preventDefault();
 
-        const successEntries = this.#uploader.getSuccessfulEntries();
-        if (successEntries.length === 0) {
+        if (this.#uploader.isUploading()) {
+            this.#showError(__('Please wait until file uploads complete.'));
             return;
         }
 
+        const successEntries = this.#uploader.getSuccessfulEntries();
+        if (successEntries.length === 0) {
+            this.#showError(__('Please add at least one valid file before uploading.'));
+            return;
+        }
+
+        this.#clearError();
         this.#setLoading(true);
 
         try {
@@ -155,7 +228,7 @@ export class DocumentUploadController
             this.#uploadBtn.dataset.originalHtml = this.#uploadBtn.innerHTML;
             this.#uploadBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${__('Uploading...')}`;
         } else {
-            this.#updateUploadButton();
+            this.#uploadBtn.disabled = false;
             if (this.#uploadBtn.dataset.originalHtml) {
                 this.#uploadBtn.innerHTML = this.#uploadBtn.dataset.originalHtml;
             }
