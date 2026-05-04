@@ -4902,7 +4902,7 @@ HTML;
                             if (!isset($group_choices[$group_id])) {
                                 $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
                             }
-                            $group_names[] = $group_choices[$group_id];
+                            $group_names[] = htmlescape($group_choices[$group_id]);
                         }
                         $user_id = (int) ($data[$field_user] ?? 0);
                         if ($user_id > 0 && !isset($user_choices[$user_id])) {
