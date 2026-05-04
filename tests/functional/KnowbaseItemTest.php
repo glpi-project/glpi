@@ -1780,7 +1780,7 @@ HTML,
             '_itemtype'  => \Ticket::class,
             '_items_id'  => $ticket->getID(),
             '_do_item_link' => false,
-        ]);
+        ], ['answer']);
 
         $this->assertTrue($kb->getFromDB($kb->getID()));
 
@@ -1831,7 +1831,7 @@ HTML,
             'password2'    => 'testpassword',
             '_profiles_id' => $profile->getID(),
             '_entities_id' => 0,
-        ]);
+        ], ['password', 'password2']);
 
         $this->login($user->fields['name'], 'testpassword');
 
@@ -1846,7 +1846,7 @@ HTML,
             '_itemtype'     => \Ticket::class,
             '_items_id'     => $ticket->getID(),
             '_do_item_link' => false,
-        ]);
+        ], ['answer']);
 
         $this->assertTrue($kb->getFromDB($kb->getID()));
 
