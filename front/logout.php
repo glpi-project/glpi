@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 /**
  * @since 0.85
  */
@@ -50,7 +52,7 @@ if (
     && strlen($CFG_GLPI['ssologout_url']) > 0
 ) {
     Session::cleanOnLogout();
-    Html::redirect($CFG_GLPI["ssologout_url"]);
+    Html::redirect(URL::sanitizeURL($CFG_GLPI["ssologout_url"]));
 }
 
 if (

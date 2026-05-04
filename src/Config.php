@@ -192,6 +192,13 @@ class Config extends CommonDBTM
             }
         }
 
+        if (isset($input['ssologout_url']) && !empty($input['ssologout_url'])) {
+            if (!Toolbox::isValidWebUrl($input['ssologout_url'])) {
+                Session::addMessageAfterRedirect(__('Invalid SSO logout URL.'), false, ERROR);
+                return false;
+            }
+        }
+
         $input = $this->handleSmtpInput($input);
 
         if (isset($input["proxy_passwd"]) && empty($input["proxy_passwd"])) {
