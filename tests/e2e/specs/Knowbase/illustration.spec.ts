@@ -112,3 +112,60 @@ test('Can pick a custom illustration', async ({ page, profile, api }) => {
     const custom_preview = page.getByTestId('illustration-custom-preview');
     await expect(custom_preview).toBeVisible();
 });
+
+test('Can pick an illustration when creating an article', async ({ page, profile, entity }) => {
+    await profile.set(Profiles.SuperAdmin);
+    await entity.resetToDefaultWorkerEntity();
+
+    await page.goto('/front/knowbaseitem.form.php', { waitUntil: 'domcontentloaded' });
+
+    // Pick a native icon before saving
+    await page.getByTestId('illustration-picker').click();
+    const modal = page.getByTestId('illustration-picker-modal');
+    await expect(modal).toBeVisible();
+    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await expect(modal).toBeHidden();
+
+    // Fill the title
+    const subject = page.getByTestId('subject');
+    await subject.click();
+    await subject.pressSequentially('KB created with custom icon');
+
+    // Submit the new article
+    await page.getByRole('button', { name: 'Add article' }).click();
+    await page.waitForURL(/knowbaseitem\.form\.php\?id=\d+/);
+
+    // Verify the chosen icon was persisted
+    await expect(page.getByTestId('illustration-input')).toHaveValue('antivirus');
+});
+
+test('Picking an illustration during creation does not trigger an UpdateIllustration AJAX call', async ({ page, profile, entity }) => {
+    await profile.set(Profiles.SuperAdmin);
+    await entity.resetToDefaultWorkerEntity();
+
+    await page.goto('/front/knowbaseitem.form.php', { waitUntil: 'domcontentloaded' });
+
+    const ajax_calls: string[] = [];
+    page.on('request', (request) => {
+        if (request.url().includes('/UpdateIllustration')) {
+            ajax_calls.push(request.url());
+        }
+    });
+
+    await page.getByTestId('illustration-picker').click();
+    const modal = page.getByTestId('illustration-picker-modal');
+    await expect(modal).toBeVisible();
+    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await expect(modal).toBeHidden();
+
+    expect(ajax_calls).toHaveLength(0);
+
+    const subject = page.getByTestId('subject');
+    await subject.click();
+    await subject.pressSequentially('KB regression no AJAX on pick');
+
+    await page.getByRole('button', { name: 'Add article' }).click();
+    await page.waitForURL(/knowbaseitem\.form\.php\?id=\d+/);
+
+    await expect(page.getByTestId('illustration-input')).toHaveValue('antivirus');
+});
