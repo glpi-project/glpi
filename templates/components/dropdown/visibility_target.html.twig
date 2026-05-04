@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set sub_target_id = 'subvisibility' ~ rand %}
+{% set sub_target_url = path('visibility_sub_target') %}
+
+<div class="d-flex">
+    {% if type == 'User' %}
+        {% do call('User::dropdown', [{
+            'right': allusers ? 'all' : right,
+            'name': prefix ~ 'users_id' ~ suffix,
+        }]) %}
+
+    {% elseif type == 'Group' %}
+        {% do call('Group::dropdown', [{
+            'rand': rand,
+            'name': prefix ~ 'groups_id' ~ suffix,
+            'toupdate': {
+                'value_fieldname': 'value',
+                'to_update': sub_target_id,
+                'url': sub_target_url,
+                'moreparams': {
+                    'items_id': '__VALUE__',
+                    'type': type,
+                    'prefix': raw_prefix,
+                },
+            },
+        }]) %}
+        <span id="{{ sub_target_id }}"></span>
+
+    {% elseif type == 'Entity' %}
+        {% do call('Entity::dropdown', [{
+            'value': session('glpiactive_entity'),
+            'name': prefix ~ 'entities_id' ~ suffix,
+            'entity': entity,
+            'entity_sons': is_recursive,
+        }]) %}
+        <div class="ms-3">{{ __('Child entities') }}</div>
+        {% do call('Dropdown::showYesNo', [prefix ~ 'is_recursive' ~ suffix]) %}
+
+    {% elseif type == 'Profile' %}
+        {% do call('Profile::dropdown', [{
+            'rand': rand,
+            'name': prefix ~ 'profiles_id' ~ suffix,
+            'condition': profile_condition,
+            'toupdate': {
+                'value_fieldname': 'value',
+                'to_update': sub_target_id,
+                'url': sub_target_url,
+                'moreparams': {
+                    'items_id': '__VALUE__',
+                    'type': type,
+                    'prefix': raw_prefix,
+                },
+            },
+        }]) %}
+        <span id="{{ sub_target_id }}"></span>
+    {% endif %}
+
+    {% if show_button %}
+        <input type="submit"
+               name="addvisibility"
+               value="{{ _x('button', 'Add') }}"
+               class="btn btn-primary ms-3">
+    {% endif %}
+</div>

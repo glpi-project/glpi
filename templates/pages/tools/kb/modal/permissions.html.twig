@@ -53,23 +53,31 @@
                            class="btn btn-primary">
                 </div>
             </div>
+            {# Plain <script> (not type="module"): this template is injected
+               via jQuery .html() by the sidepanel loader, which uses
+               domEval() and does NOT execute module scripts. Dynamic import()
+               works fine inside a classic script.
+
+               The bare `/js/modules/...` path is rewritten by the GLPI
+               importmap with a per-file CRC32c hash, so edits to the module
+               bust the browser/HTTP cache automatically. #}
             <script>
-                $('#dropdown__type{{ rand }}').on('change', (e) => {
-                    const $submit = $('#visibility-submit{{ rand }}');
-                    if (e.target.value === '') {
-                        $('#visibility{{ rand }}').empty();
-                        $submit.addClass('d-none').removeClass('d-flex');
-                        return;
-                    }
-                    $('#visibility{{ rand }}').load(
-                        `${CFG_GLPI.root_doc}/ajax/visibility.php`,
-                        {
+                (async () => {
+                    const { VisibilityTargetController } = await import(
+                        "/js/modules/VisibilityTargetController.js"
+                    );
+                    new VisibilityTargetController({
+                        trigger:       'dropdown__type{{ rand }}',
+                        output:        'visibility{{ rand }}',
+                        submitWrapper: 'visibility-submit{{ rand }}',
+                        params: {
                             ...{{ visiblity_dropdown_params|json_encode|raw }},
-                            type: e.target.value,
                             nobutton: 1,
                         },
-                        () => $submit.removeClass('d-none').addClass('d-flex')
-                    );
+                    });
+                })().catch((e) => {
+                    glpi_toast_error('{{ __("An unexpected error occurred.")|e("js") }}');
+                    console.error(e);
                 });
             </script>
         </form>
@@ -159,6 +167,9 @@
             }
 
             const row = btn.closest('[data-glpi-permission-id]');
+            if (!row) {
+                return;
+            }
             const permission_id = row.dataset.glpiPermissionId;
             const itemtype = row.dataset.glpiPermissionItemtype;
 
