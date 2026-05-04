@@ -2675,4 +2675,49 @@ class UserTest extends DbTestCase
         $this->assertTrue($result);
         $this->assertEmpty($user2->fields['_groups'] ?? []);
     }
+
+    public function testIsValidUserForEntity(): void
+    {
+        $this->login();
+
+        $root_entity_id   = $this->getTestRootEntity(true);
+        $child1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $child2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+        $profile_id       = getItemByTypeName('Profile', 'Self-Service', true);
+
+        // Active user with profile in root entity
+        $valid_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $root_entity_id,
+        ]);
+        $this->assertTrue(User::isValidUserForEntity($valid_user->getID(), $root_entity_id));
+
+        // Inactive user with profile in root entity
+        $inactive_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'is_active'     => 0,
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $root_entity_id,
+        ]);
+        $this->assertFalse(User::isValidUserForEntity($inactive_user->getID(), $root_entity_id));
+
+        // User with profile in child_1 only: valid for child_1, not for child_2
+        $child1_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $child1_entity_id,
+        ]);
+        $this->assertTrue(User::isValidUserForEntity($child1_user->getID(), $child1_entity_id));
+        $this->assertFalse(User::isValidUserForEntity($child1_user->getID(), $child2_entity_id));
+
+        // User with recursive profile in root entity: valid for child entities
+        $recursive_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $root_entity_id,
+            '_is_recursive' => 1,
+        ]);
+        $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
+    }
 }
