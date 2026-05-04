@@ -1372,4 +1372,199 @@ class AbstractPluginMigrationTest extends DbTestCase
         $this->assertEquals(27, $count_with_condition2);
         $this->assertEquals(0, $count_empty_table);
     }
+
+    public function testUpdatePolymorphicReferencesHandlesDuplicateTarget(): void
+    {
+        global $DB;
+
+        // Arrange: simulate a state where the target row already exists in glpi_infocoms,
+        // e.g. from a previous migration run that partially committed.
+        $definition = $this->initAssetDefinition(
+            'MyCustomAsset',
+            capacities: [
+                new Capacity(name: HasInfocomCapacity::class),
+            ]
+        );
+        $asset_class = $definition->getAssetClassName();
+
+        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
+
+        // Source infocom (original plugin data).
+        $this->createItem(Infocom::class, [
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer_1_id,
+            'warranty_date'     => '2024-12-04',
+            'warranty_duration' => 3,
+        ]);
+
+        // Create the asset without auto-creating its infocom.
+        $asset_1 = new $asset_class();
+        $asset_1_id = $asset_1->add(['name' => 'Test asset 1', 'entities_id' => 0], ['disable_infocom_creation' => true]);
+        $this->assertGreaterThan(0, $asset_1_id);
+        $asset_1->getFromDB($asset_1_id);
+
+        // Target infocom already exists (simulates a previous migration run).
+        $this->createItem(Infocom::class, [
+            'itemtype'          => $asset_class,
+            'items_id'          => $asset_1_id,
+            'warranty_date'     => '2024-12-04',
+            'warranty_duration' => 3,
+        ]);
+
+        $instance = new class ($DB) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition    = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+                $asset_1       = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
+                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+
+                $this->updatePolymorphicReferences(
+                    Computer::class,
+                    $computer_1_id,
+                    $asset_1::class,
+                    $asset_1->getID()
+                );
+
+                return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
+        };
+
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute();
+
+        // Assert: no errors, source row removed, target row intact.
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        $source_rows = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => Computer::class, 'items_id' => $computer_1_id]
+        );
+        $this->assertCount(0, $source_rows, 'Source infocom should have been removed.');
+
+        $target_rows = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class, 'items_id' => $asset_1_id]
+        );
+        $this->assertCount(1, $target_rows, 'Target infocom should still exist.');
+    }
+
+    /**
+     * Regression test for the scenario where migrating a second item whose source_id matches the
+     * target_id already produced for a first item would corrupt the first item's relations.
+     *
+     * Overlap engineered with real fixture IDs:
+     *   - Computer[pc01] → AssetClass[pc02_id]  (target_id_A = pc02_id = source_id_B)
+     *   - Computer[pc02] → AssetClass[pc03_id]
+     *
+     * Without the fix, the secondary UPDATE for the second call
+     * (`WHERE itemtype=AssetClass AND items_id=pc02_id`) would corrupt
+     * the row correctly migrated in the first call.
+     */
+    public function testUpdatePolymorphicReferencesNoCorruptionWithOverlappingIds(): void
+    {
+        global $DB;
+
+        $definition = $this->initAssetDefinition(
+            'MyCustomAsset',
+            capacities: [
+                new Capacity(name: HasInfocomCapacity::class),
+            ]
+        );
+        $asset_class = $definition->getAssetClassName();
+
+        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+        $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+        $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true);
+
+        $DB->delete(Infocom::getTable(), [new QueryExpression('true')]);
+        $this->createItem(Infocom::class, [
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer_1_id,
+            'warranty_date'     => '2024-01-01',
+            'warranty_duration' => 12,
+        ]);
+        $this->createItem(Infocom::class, [
+            'itemtype'          => Computer::class,
+            'items_id'          => $computer_2_id,
+            'warranty_date'     => '2025-06-15',
+            'warranty_duration' => 24,
+        ]);
+
+        $instance = new class ($DB) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition    = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+                $asset_class   = $definition->getAssetClassName();
+                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+                $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+                $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true);
+
+                // target_id_A = computer_2_id = source_id_B: the overlap.
+                $this->updatePolymorphicReferences(Computer::class, $computer_1_id, $asset_class, $computer_2_id);
+
+                // The old secondary UPDATE (WHERE itemtype=AssetClass AND items_id=computer_2_id)
+                // would have matched the correctly migrated row above and corrupted it.
+                $this->updatePolymorphicReferences(Computer::class, $computer_2_id, $asset_class, $computer_3_id);
+
+                return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
+        };
+
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute();
+
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        // Computer[1]'s row must survive intact at (AssetClass, computer_2_id).
+        $rows_1 = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class, 'items_id' => $computer_2_id]
+        );
+        $this->assertCount(1, $rows_1, 'Row migrated from Computer[1] must not be corrupted by the migration of Computer[2].');
+        $this->assertEquals('2024-01-01', reset($rows_1)['warranty_date']);
+
+        // Computer[2]'s row must be at (AssetClass, computer_3_id).
+        $rows_2 = \getAllDataFromTable(
+            Infocom::getTable(),
+            ['itemtype' => $asset_class, 'items_id' => $computer_3_id]
+        );
+        $this->assertCount(1, $rows_2, 'Row migrated from Computer[2] must exist.');
+        $this->assertEquals('2025-06-15', reset($rows_2)['warranty_date']);
+    }
 }
