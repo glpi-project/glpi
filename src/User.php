@@ -47,6 +47,7 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
+use LDAP\Result;
 use Sabre\VObject\Component\VCard;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
@@ -2180,6 +2181,18 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        // Use cached lookup when MATCHING_RULE_IN_CHAIN is set (AD nested groups).
+        if (
+            str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
+            && !empty($ldap_method["group_field"])
+        ) {
+            return $this->getFromLDAPGroupDiscretCached(
+                $ldap_connection,
+                $ldap_method,
+                $userdn
+            );
+        }
+
         if ($ldap_method["use_dn"]) {
             $user_tmp = $userdn;
         } else {
@@ -2213,6 +2226,121 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 }
             }
         }
+        return true;
+    }
+
+
+    /**
+     * Variant of getFromLDAPGroupDiscret() for MATCHING_RULE_IN_CHAIN (AD nested groups).
+     * Fetches members per group (M queries) and caches results for subsequent users.
+     *
+     * @param Connection $ldap_connection LDAP connection
+     * @param array<string, mixed> $ldap_method LDAP method config
+     * @param string $userdn DN of the user to resolve
+     *
+     * @return bool true if groups were resolved, false on LDAP error
+     */
+    private function getFromLDAPGroupDiscretCached(
+        $ldap_connection,
+        array $ldap_method,
+        string $userdn
+    ): bool {
+        global $DB;
+
+        $auth_id = (int) ($ldap_method['id'] ?? 0);
+
+        // Keyed by auth_id then lowercase user DN; populated once per process.
+        static $cache = [];
+
+        if (!array_key_exists($auth_id, $cache)) {
+            $cache[$auth_id] = [];
+
+            // Keep the OID suffix from group_member_field (e.g. ':1.2.840.113556.1.4.1941').
+            $chain_suffix = '';
+            if (($colon = strpos($ldap_method['group_member_field'], ':')) !== false) {
+                $chain_suffix = substr($ldap_method['group_member_field'], $colon);
+            }
+
+            $user_group_attr = $ldap_method['group_field'] . $chain_suffix;
+
+            $condition = !empty($ldap_method['condition'])
+                ? $ldap_method['condition']
+                : '(objectClass=*)';
+
+            $groups_iterator = $DB->request([
+                'SELECT' => ['id', 'ldap_group_dn'],
+                'FROM'   => 'glpi_groups',
+                'WHERE'  => ['NOT' => ['ldap_group_dn' => '']],
+            ]);
+
+            $ldap_error = false;
+
+            foreach ($groups_iterator as $group_row) {
+                $group_id = (int) $group_row['id'];
+                $group_dn = $group_row['ldap_group_dn'];
+                $escaped  = ldap_escape($group_dn, '', LDAP_ESCAPE_FILTER);
+                $filter   = "(& $condition ($user_group_attr=$escaped))";
+                $cookie   = '';
+
+                do {
+                    if (!empty($ldap_method['pagesize'])) {
+                        $controls = [[
+                            'oid'        => LDAP_CONTROL_PAGEDRESULTS,
+                            'iscritical' => true,
+                            'value'      => ['size' => (int) $ldap_method['pagesize'], 'cookie' => $cookie],
+                        ]];
+                        $sr = @ldap_search(
+                            $ldap_connection,
+                            $ldap_method['basedn'],
+                            $filter,
+                            ['dn'],
+                            0,
+                            -1,
+                            -1,
+                            LDAP_DEREF_NEVER,
+                            $controls
+                        );
+                        if (
+                            $sr instanceof Result
+                            && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
+                            && isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])
+                        ) {
+                            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+                        } else {
+                            $cookie = '';
+                        }
+                    } else {
+                        $sr     = @ldap_search($ldap_connection, $ldap_method['basedn'], $filter, ['dn']);
+                        $cookie = '';
+                    }
+
+                    if ($sr === false) {
+                        $ldap_error = true;
+                        break 2;
+                    }
+
+                    /** @var Result $sr */
+                    $info = AuthLDAP::get_entries_clean($ldap_connection, $sr);
+                    for ($i = 0; $i < ($info['count'] ?? 0); $i++) {
+                        if (!empty($info[$i]['dn'])) {
+                            $member_key = strtolower($info[$i]['dn']);
+                            $cache[$auth_id][$member_key][] = $group_id;
+                        }
+                    }
+                } while ($cookie !== '');
+            }
+
+            if ($ldap_error) {
+                unset($cache[$auth_id]);
+                return false;
+            }
+        }
+
+        $user_key = strtolower($userdn);
+        foreach ($cache[$auth_id][$user_key] ?? [] as $group_id) {
+            $this->fields["_groups"][] = $group_id;
+        }
+
         return true;
     }
 
