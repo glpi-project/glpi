@@ -247,7 +247,7 @@
         data-testid="survey"
         class="mt-5 w-100 hide-form-button-separator"
         method="POST"
-        action="{{ "TicketSatisfaction"|itemtype_form_path }}"
+        action="{{ survey.getType()|itemtype_form_path }}"
     >
         <div>
             {{ survey.showSatisactionForm(item, false) }}

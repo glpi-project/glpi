@@ -6399,16 +6399,4 @@ JAVASCRIPT;
         return $restrict;
     }
 
-    private function getSatisfactionSurvey(): ?TicketSatisfaction
-    {
-        $satisfaction = static::getSatisfactionClassInstance();
-        if (!$satisfaction instanceof TicketSatisfaction) {
-            return null;
-        }
-        $survey_exist = $satisfaction->getFromDBByCrit([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
-        return $survey_exist ? $satisfaction : null;
-    }
 }

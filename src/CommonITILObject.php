@@ -689,6 +689,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'canassign'               => $canupdate,
             'can_requester'           => $this->canRequesterUpdateItem(),
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
+            'survey'                  => $this->getSatisfactionSurvey(),
         ]);
 
         return true;
@@ -11057,6 +11058,24 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         return ($tot > 0 ? 1 : 0);
+    }
+
+    /**
+     * Returns the satisfaction survey instance for the current item if it exists, null otherwise.
+     *
+     * @return CommonITILSatisfaction|null
+     */
+    public function getSatisfactionSurvey(): ?CommonITILSatisfaction
+    {
+        $satisfaction = static::getSatisfactionClassInstance();
+        if ($satisfaction === null) {
+            return null;
+        }
+        $survey_exist = $satisfaction->getFromDBByCrit([
+            static::getForeignKeyField() => $this->getID(),
+        ]);
+
+        return $survey_exist ? $satisfaction : null;
     }
 
     /**
