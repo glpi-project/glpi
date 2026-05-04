@@ -30,22 +30,35 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro render_category(category) %}
+{% macro render_category(category, can_create = false) %}
     {% import _self as macros %}
     <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
-        <button
-            type="button"
-            class="d-flex align-items-center mb-2 p-0 w-100 text-start border-0 bg-transparent"
-            data-glpi-kb-aside-category-toggle
-            aria-label="{{ category.title }}"
-            aria-expanded="true"
-        >
-            <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
-            {{ render_illustration(category.illustration, 20) }}
-            <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
-        </button>
+        <div class="d-flex align-items-center mb-2">
+            <button
+                type="button"
+                class="d-flex align-items-center p-0 flex-grow-1 text-start border-0 bg-transparent"
+                data-glpi-kb-aside-category-toggle
+                aria-label="{{ category.title }}"
+                aria-expanded="true"
+            >
+                <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
+                {{ render_illustration(category.illustration, 20) }}
+                <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
+            </button>
+            {% if can_create and category.id > 0 %}
+                <a
+                    href="{{ path('glpi_knowbaseitem_form_central', {knowbaseitemcategories_id: category.id}) }}"
+                    class="d-flex align-items-center ms-2 p-1 text-secondary"
+                    data-glpi-kb-aside-category-add
+                    aria-label="{{ __('Create an article in %s')|format(category.title) }}"
+                    title="{{ __('Create an article in this category') }}"
+                >
+                    <i class="ti ti-plus" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+        </div>
         <ul>
-            {{ macros.render_node(category) }}
+            {{ macros.render_node(category, can_create) }}
         </ul>
     </li>
 {% endmacro %}
@@ -64,13 +77,13 @@
     </li>
 {% endmacro %}
 
-{% macro render_node(node) %}
+{% macro render_node(node, can_create = false) %}
     {% import _self as macros %}
     {% for article in node.articles %}
         {{ macros.render_article(article) }}
     {% endfor %}
     {% for category in node.categories %}
-        {{ macros.render_category(category) }}
+        {{ macros.render_category(category, can_create) }}
     {% endfor %}
 {% endmacro %}
 
@@ -112,6 +125,7 @@
         {# Render root articles in a special "uncategorized" category #}
         {% if tree.articles|length %}
             {{ macros.render_category({
+                id: 0,
                 title: __("Uncategorized"),
                 illustration: "kb-faq",
                 articles: tree.articles,
@@ -121,7 +135,7 @@
 
         {# Render each categories #}
         {% for category in tree.categories %}
-            {{ macros.render_category(category) }}
+            {{ macros.render_category(category, can_create) }}
         {% endfor %}
     </ul>
 </div>

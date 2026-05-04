@@ -745,6 +745,24 @@
         border-bottom: 0;
     }
 
+    // "+" button to create an article in a category: hidden by default,
+    // revealed on hover of the parent category row or when keyboard-focused.
+    [data-glpi-kb-aside-category-add] {
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out;
+    }
+
+    [data-glpi-kb-aside-category]:hover [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-add]:focus-visible {
+        opacity: 1;
+    }
+
+    @media (hover: none) {
+        [data-glpi-kb-aside-category-add] {
+            opacity: 1;
+        }
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;

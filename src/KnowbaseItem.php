@@ -301,6 +301,50 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
     }
 
+    /**
+     * Validate that the given category id can be used as a prefill for the
+     * current session: it must exist and belong to a reachable entity.
+     *
+     * @return int|null Category id when readable, null otherwise.
+     */
+    private function getReadablePrefilledCategoryId(int $category_id): ?int
+    {
+        if ($category_id <= 0) {
+            return null;
+        }
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($category_id)) {
+            return null;
+        }
+        if (
+            !Session::haveAccessToEntity(
+                (int) $category->fields['entities_id'],
+                (bool) $category->fields['is_recursive']
+            )
+        ) {
+            return null;
+        }
+        return $category_id;
+    }
+
+    /**
+     * @param array<string, mixed> $query_params
+     * @return array<string, mixed>
+     */
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+        if (isset($query_params['knowbaseitemcategories_id'])) {
+            $category_id = $this->getReadablePrefilledCategoryId(
+                (int) $query_params['knowbaseitemcategories_id']
+            );
+            if ($category_id !== null) {
+                $options['knowbaseitemcategories_id'] = $category_id;
+            }
+        }
+        return $options;
+    }
+
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
@@ -782,7 +826,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
-        $this->showFull(['mode' => 'add']);
+        $this->showFull(['mode' => 'add'] + $options);
         return true;
     }
 
@@ -895,6 +939,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['actions'] = $this->getEditorActions();
         } elseif ($mode === "add") {
             $params['can_edit'] = $this->can(-1, CREATE);
+
+            $raw_category_id = (int) ($options['knowbaseitemcategories_id']
+                ?? $_GET['knowbaseitemcategories_id']
+                ?? 0);
+            $prefilled_category_id = $this->getReadablePrefilledCategoryId($raw_category_id);
+            if ($prefilled_category_id !== null) {
+                $params['prefilled_category_id'] = $prefilled_category_id;
+            }
         }
 
         $out = TemplateRenderer::getInstance()->render(
@@ -2661,6 +2713,7 @@ TWIG, $twig_params);
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
+                'can_create'          => self::canCreate(),
             ]
         );
     }
