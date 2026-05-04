@@ -71,23 +71,29 @@ class ReminderTest extends DbTestCase
         );
 
         $this->login('normal', 'normal');
+        // 'normal' user has access to all entities in the test DB, so glpishowallentities=1
+        // and getEntitiesRestrictCriteria returns 'true' (no restriction needed) for the
+        // profiles block. glpi_entities_reminders uses $complete_request=true so it still
+        // returns the explicit IN list.
         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
                OR `glpi_reminders_users`.`users_id` = '5'
                OR (`glpi_profiles_reminders`.`profiles_id` = '2'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_profiles_reminders`.`entities_id` IN ($all_entities))))
+                         OR (true)))
                OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
         $this->assertSame(
             $expected,
             trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict()))
         );
 
+        // Both 'tech' and 'normal' users have access to all entities in the test DB,
+        // so glpishowallentities=1 and the profiles/groups entity blocks get 'true'.
         $this->login('tech', 'tech');
         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_profiles_reminders`.`profiles_id` = '6'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_profiles_reminders`.`entities_id` IN ($all_entities))))
+                         OR (true)))
                OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
         $this->assertSame(
             $expected,
@@ -102,10 +108,10 @@ class ReminderTest extends DbTestCase
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_groups_reminders`.`groups_id` IN ('42', '1337')
                     AND (`glpi_groups_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_groups_reminders`.`entities_id` IN ($all_entities))))
+                         OR (true)))
                OR (`glpi_profiles_reminders`.`profiles_id` = '6'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_profiles_reminders`.`entities_id` IN ($all_entities))))
+                         OR (true)))
                OR (`glpi_entities_reminders`.`entities_id` IN ($all_entities)))");
         $this->assertSame(
             $expected,
