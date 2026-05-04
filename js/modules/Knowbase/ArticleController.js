@@ -815,6 +815,8 @@ export class GlpiKnowbaseArticleController
                 this.#editor.setEditable(false);
                 this.#is_editing = false;
                 this.#disableTitleEditing(true);
+                this.#getIllustrationPicker()?.restore();
+                this.#setIllustrationEditable(false);
 
                 edit_button.classList.remove('d-none');
                 save_button.classList.add('d-none');
@@ -850,34 +852,36 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        // Update hook for illustration input
-        const original_descriptor = Object.getOwnPropertyDescriptor(
-            HTMLInputElement.prototype, 'value'
-        );
-        const controller = this;
-        Object.defineProperty(illustration_input, 'value', {
-            get() {
-                return original_descriptor.get.call(this);
-            },
-            set(new_value) {
-                const old_value = original_descriptor.get.call(this);
-                original_descriptor.set.call(this, new_value);
-                if (new_value !== old_value) {
-                    controller.#saveIllustration(new_value);
-                }
-            },
-        });
+        this.#setIllustrationEditable(this.#is_editing);
     }
 
-    async #saveIllustration(illustration)
+    #setIllustrationEditable(editable)
     {
-        if (this.#item_id === null) {
+        const picker = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-illustration-picker]'
+        );
+        if (!picker) {
             return;
         }
 
-        await post(`Knowbase/${this.#item_id}/UpdateIllustration`, {
-            illustration: illustration,
-        });
+        if (picker.glpiIllustrationPicker) {
+            picker.glpiIllustrationPicker.setEditable(editable);
+            return;
+        }
+
+        picker.addEventListener(
+            'glpi:illustration-picker:ready',
+            (e) => e.detail.controller.setEditable(editable),
+            { once: true }
+        );
+    }
+
+    #getIllustrationPicker()
+    {
+        const picker = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-illustration-picker]'
+        );
+        return picker?.glpiIllustrationPicker ?? null;
     }
 
     #initScheduleVisibilityDialog(modal)
@@ -970,6 +974,7 @@ export class GlpiKnowbaseArticleController
         }
 
         this.#enableTitleEditing();
+        this.#setIllustrationEditable(true);
         this.#is_editing = true;
 
         this.#editor.focus();
@@ -1048,6 +1053,10 @@ export class GlpiKnowbaseArticleController
             if (new_title !== null) {
                 body.name = new_title;
             }
+            const picker = this.#getIllustrationPicker();
+            if (picker !== null) {
+                body.illustration = picker.getValue();
+            }
 
             await post(`Knowbase/KnowbaseItem/${this.#item_id}/Answer`, body);
 
@@ -1058,10 +1067,12 @@ export class GlpiKnowbaseArticleController
             }
             this.#editor.setEditable(false);
             this.#disableTitleEditing();
+            this.#setIllustrationEditable(false);
             this.#is_editing = false;
 
             this.#base_content = this.#original_content;
             this.#base_title = this.#original_title;
+            picker?.commit();
 
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');
@@ -1272,6 +1283,7 @@ export class GlpiKnowbaseArticleController
             if (this.#title_element) {
                 this.#title_element.textContent = this.#base_title;
             }
+            this.#getIllustrationPicker()?.restore();
             return;
         }
 
@@ -1292,6 +1304,7 @@ export class GlpiKnowbaseArticleController
             if (this.#title_element) {
                 this.#title_element.textContent = this.#base_title;
             }
+            this.#getIllustrationPicker()?.restore();
             return;
         }
 
@@ -1339,6 +1352,8 @@ export class GlpiKnowbaseArticleController
             this.#title_element.textContent = this.#base_title;
         }
         this.#disableTitleEditing();
+        this.#getIllustrationPicker()?.restore();
+        this.#setIllustrationEditable(false);
         this.#is_editing = false;
 
         // Restore main editor actions visibility

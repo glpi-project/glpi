@@ -46,27 +46,26 @@ test('Can pick a native illustration', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
+    await kb.editor.enterEditMode();
 
-    // Open the illustration picker modal
-    const picker_button = page.getByTestId('illustration-picker');
+    const picker_button = page.getByRole('button', { name: 'Select an illustration' });
     await picker_button.click();
 
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
 
-    // Pick a native icon from the search results
-    const save_promise = page.waitForResponse(
-        response => response.url().includes('/UpdateIllustration')
-            && response.status() === 200
-    );
     const icon = modal.getByRole('img', { name: "Antivirus", exact: true });
     await icon.click();
-    await save_promise;
 
-    // Modal should close after selecting a custom file
     await expect(modal).toBeHidden();
 
-    // Verify the icon was saved by reloading the page
+    const save_request = page.waitForRequest(
+        req => req.url().includes(`/Knowbase/KnowbaseItem/${id}/Answer`) && req.method() === 'POST'
+    );
+    await kb.editor.save();
+    const req = await save_request;
+    expect(JSON.parse(req.postData() ?? '{}')).toMatchObject({ illustration: 'antivirus' });
+
     await page.reload();
     await expect(page.getByTestId('illustration-input')).toHaveValue('antivirus');
 });
@@ -82,33 +81,97 @@ test('Can pick a custom illustration', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
+    await kb.editor.enterEditMode();
 
-    // Open the illustration picker modal
-    const picker_button = page.getByTestId('illustration-picker');
+    const picker_button = page.getByRole('button', { name: 'Select an illustration' });
     await picker_button.click();
 
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
 
-    // Switch to the upload tab
     await modal.getByText('Upload your own illustration').click();
 
-    // Upload a custom icon
     await kb.doAddFileToUploadArea("test_icon.png", page.getByRole('dialog'));
 
-    // Click "Use selected file" and wait for the save request
-    const save_promise = page.waitForResponse(
-        response => response.url().includes('/UpdateIllustration')
-            && response.status() === 200
+    const save_request = page.waitForRequest(
+        req => req.url().includes(`/Knowbase/KnowbaseItem/${id}/Answer`) && req.method() === 'POST'
     );
     await modal.getByText('Use selected file').click();
-    await save_promise;
 
-    // Modal should close after selecting a custom file
     await expect(modal).toBeHidden();
 
-    // Verify a custom illustration preview is shown
+    await kb.editor.save();
+    const req = await save_request;
+    expect(JSON.parse(req.postData() ?? '{}').illustration).toMatch(/^custom:/);
+
     await page.reload();
     const custom_preview = page.getByTestId('illustration-custom-preview');
     await expect(custom_preview).toBeVisible();
+});
+
+test('Illustration is not editable until edit mode is entered (regression #248)', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB illustration read-only test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+
+    await kb.goto(id);
+
+    const picker = page.getByTestId('illustration-picker');
+    const modal = page.getByTestId('illustration-picker-modal');
+
+    await expect(page.getByRole('button', { name: 'Select an illustration' })).toHaveCount(0);
+    await expect(picker).toHaveAttribute('aria-disabled', 'true');
+
+    await picker.click();
+    await expect(modal).toBeHidden();
+
+    await kb.editor.enterEditMode();
+
+    await expect(page.getByRole('button', { name: 'Select an illustration' })).toBeVisible();
+    await expect(picker).not.toHaveAttribute('aria-disabled', 'true');
+
+    await kb.editor.cancel();
+
+    await expect(page.getByRole('button', { name: 'Select an illustration' })).toHaveCount(0);
+    await expect(picker).toHaveAttribute('aria-disabled', 'true');
+});
+
+test('Cancelling edit reverts illustration to original', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB illustration cancel revert test',
+        entities_id: getWorkerEntityId(),
+        answer: 'My answer',
+    });
+
+    await kb.goto(id);
+
+    const illustration_input = page.getByTestId('illustration-input');
+    const original_value = await illustration_input.inputValue();
+                                                                                                  
+    // eslint-disable-next-line playwright/prefer-web-first-assertions
+    expect(original_value).not.toBe('antivirus');
+
+    await kb.editor.enterEditMode();
+
+    await page.getByRole('button', { name: 'Select an illustration' }).click();
+    const modal = page.getByTestId('illustration-picker-modal');
+    await expect(modal).toBeVisible();
+    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await expect(modal).toBeHidden();
+
+    await expect(illustration_input).toHaveValue('antivirus');
+
+    await kb.editor.cancel();
+    await expect(illustration_input).toHaveValue(original_value);
+
+    await page.reload();
+    await expect(page.getByTestId('illustration-input')).toHaveValue(original_value);
 });

@@ -89,8 +89,9 @@
                     {{ include('components/illustration/icon_picker.html.twig', {
                         'value': illustration,
                         'size': 48,
-                        'preview_css_classes': "kb-illustration-preview d-flex align-items-center justify-content-center rounded cursor-pointer",
+                        'preview_css_classes': "kb-illustration-preview d-flex align-items-center justify-content-center rounded",
                         'preview_inner_css_classes': "",
+                        'editable': false,
                     }, with_context: false) }}
                 </div>
             {% endif %}
