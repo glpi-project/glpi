@@ -515,7 +515,7 @@ TWIG, $avatar_params) . $username;
             'WHERE'           => [
                 "$putable.profiles_id"  => $ID,
                 "$utable.is_deleted"    => 0,
-            ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
+            ] + getEntitiesRestrictCriteria($putable, 'entities_id', '', true),
             'ORDER'         => $sort_params,
             'START'         => $start,
             'LIMIT'         => $limit,
