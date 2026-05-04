@@ -55,6 +55,3 @@ describe('setupAjaxDropdown()', () => {
         });
     });
 });
-
-
-

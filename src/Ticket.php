@@ -4329,7 +4329,7 @@ JAVASCRIPT;
                         $options['criteria'][3]['searchtype'] = 'equals';
                         $options['criteria'][3]['value']      = CommonITILValidation::WAITING;
                         $options['criteria'][3]['link']       = 'AND';
-                        $forcetab                         = 'TicketValidation$1';
+                        $forcetab                             = 'Ticket$main';
 
                         $main_header = "<a href=\"" . htmlescape(Ticket::getSearchURL() . "?" . Toolbox::append_params($options)) . "\">"
                             . Html::makeTitle(__('Your tickets to approve'), $displayed_row_count, $total_row_count) . "</a>";
