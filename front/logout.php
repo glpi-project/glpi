@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+use Glpi\Toolbox\URL;
 
 /**
  * @since 0.85
@@ -46,7 +46,7 @@ if (
     && (string) $CFG_GLPI['ssologout_url'] !== ''
 ) {
     Session::cleanOnLogout();
-    Html::redirect($CFG_GLPI["ssologout_url"]);
+    Html::redirect(URL::sanitizeURL($CFG_GLPI["ssologout_url"]));
 }
 
 if (

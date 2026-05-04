@@ -136,6 +136,9 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(4, $prepare);
         $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
         $this->assertArrayHasKey('current_filename', $prepare);
@@ -149,6 +152,9 @@ class DocumentTest extends DbTestCase
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(5, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertArrayHasKey('current_filename', $prepare);
         $this->assertEmpty($prepare['current_filename']);
