@@ -38,7 +38,7 @@ describe('setupAjaxDropdown()', () => {
             content: "My ticket content",
         }).then((ticket_id) => {
             // open Ticket view on Approval tab
-            cy.visit(`/front/ticket.form.php?id=${ticket_id}&forcetab=TicketValidation$1`);
+            cy.visit(`/front/ticket.form.php?id=${ticket_id}&forcetab=Ticket$main`);
             // prepare to intercept the ajax call to getDropdownValue
             cy.intercept('/ajax/getDropdownValue.php').as('getDropdownValue');
             // click on "Send an approval request" button
@@ -55,6 +55,3 @@ describe('setupAjaxDropdown()', () => {
         });
     });
 });
-
-
-
