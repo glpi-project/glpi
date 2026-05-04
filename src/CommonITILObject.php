@@ -10043,7 +10043,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                     $input[$input_key][$value_key] = $actor['items_id'];
 
-                    if (array_key_exists('use_notification', $actor)) {
+                    if ($actor_itemtype !== Group::class && array_key_exists('use_notification', $actor)) {
                         $input[$notif_key]['use_notification'][$value_key]  = $actor['use_notification'];
                         $input[$notif_key]['alternative_email'][$value_key] = $actor['alternative_email'] ?? '';
                     }
