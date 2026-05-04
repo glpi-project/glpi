@@ -727,6 +727,7 @@ class Group extends CommonTreeDropdown
         $user_links = [];
 
         $entries = [];
+        $can_update = self::canUpdate();
         foreach ($datas as $data) {
             if (!($item = getItemForItemtype($data['itemtype']))) {
                 continue;
@@ -746,7 +747,7 @@ class Group extends CommonTreeDropdown
                 'name'     => $item->getLink(['comments' => true]),
                 'entity'   => $entity_names[$item->getEntityID()],
             ];
-            if ($item->can($item->getID(), READ) && self::canUpdate()) {
+            if ($can_update && $item->canViewItem()) {
                 // Show massive actions if there is at least one viewable/updatable item.
                 $show_massive_actions = true;
             } else {
@@ -802,7 +803,7 @@ class Group extends CommonTreeDropdown
             ],
             'entries' => $entries,
             'total_number' => $nb,
-            'showmassiveactions' => self::canUpdate() && $show_massive_actions,
+            'showmassiveactions' => $can_update && $show_massive_actions,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,

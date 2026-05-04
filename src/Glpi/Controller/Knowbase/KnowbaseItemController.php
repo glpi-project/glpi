@@ -68,9 +68,6 @@ final class KnowbaseItemController extends AbstractController
     public function content(Request $request): Response
     {
         $id = $request->attributes->getInt('knowbaseitems_id');
-        if (!KnowbaseItem::canView()) {
-            throw new AccessDeniedHttpException();
-        }
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();

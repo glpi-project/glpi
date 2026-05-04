@@ -1712,6 +1712,7 @@ TWIG, $twig_params);
             }
         }
 
+        $can_update_project = Project::canUpdate();
         foreach ($projects as $subproject) {
             $item = array_merge($subproject, [
                 '_itemtype' => self::class,
@@ -1727,7 +1728,7 @@ TWIG, $twig_params);
             }
 
             $project->fields = $subproject;
-            $item['_readonly'] = !$project->can($project->getID(), UPDATE);
+            $item['_readonly'] = !$can_update_project || !$project->canUpdateItem();
 
             $subproject_teams = array_filter($projectteams, static fn($e) => $e['projects_id'] === $subproject['id']);
             foreach ($subproject_teams as $teammember) {

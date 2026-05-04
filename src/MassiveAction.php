@@ -1679,6 +1679,11 @@ class MassiveAction
                     break;
                 }
 
+                if (!$item::canUpdate()) {
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    break;
+                }
+
                 // Load input
                 $input = $ma->getInput();
                 $amendment = $input['amendment'];
@@ -1687,7 +1692,7 @@ class MassiveAction
                     $item->getFromDB($id);
 
                     // Check rights
-                    if (!$item->can($item->getID(), UPDATE)) {
+                    if (!$item->canUpdateItem()) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;

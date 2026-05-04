@@ -341,6 +341,10 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      */
     private static function getTicketProblemsData($tickets_id): array
     {
+        if (!Problem::canView()) {
+            return [];
+        }
+
         $ticket = new Ticket();
         $ticket->fields['id'] = $tickets_id;
         $iterator = self::getListForItem($ticket);
@@ -349,7 +353,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         foreach ($iterator as $data) {
             $problem = new Problem();
             $problem->getFromDB($data['id']);
-            if ($problem->can($problem->getID(), READ)) {
+            if ($problem->canViewItem()) {
                 $problems[$data['id']] = $data;
             }
         }
