@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,35 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\ContentTemplates\Parameters;
+namespace Glpi\Controller\UI;
 
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use OLA;
+use Glpi\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * Parameters for "OLA" items.
- *
- * @since 10.0.0
- */
-class OLAParameters extends LevelAgreementParameters
+class DropdownController extends AbstractController
 {
-    public function getAvailableParameters(): array
+    #[Route(
+        path: "/dropdown",
+        name: "glpi_ui_dropdown",
+    )]
+    public function __invoke(Request $request): Response
     {
-        return parent::getAvailableParameters() + [new ObjectParameter(new GroupParameters()),];
-    }
+        $itemtype = $request->query->getString('itemtype');
+        $fieldName = $request->query->getString('fieldname');
+        $selectedValue = $request->query->getInt('value', 0);
 
-    public static function getDefaultNodeName(): string
-    {
-        return 'ola';
-    }
-
-    public static function getObjectLabel(): string
-    {
-        return OLA::getTypeName(1);
-    }
-
-    protected function getTargetClasses(): array
-    {
-        return [OLA::class];
+        return $this->render('components/dropdown/dropdown.html.twig', [
+            'itemtype'  => $itemtype,
+            'fieldname' => $fieldName,
+            'selected_value' => $selectedValue,
+            'options' => [
+                'full_width' => true,
+                'no_label' => true,
+                'include_field' => false,
+            ],
+        ]);
     }
 }

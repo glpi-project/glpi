@@ -36,17 +36,19 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\OLAParameters;
 use Glpi\Tests\AbstractParametersTest;
+use Glpi\Tests\Glpi\SLMTrait;
 
 class OLAParametersTest extends AbstractParametersTest
 {
+    use SLMTrait;
+
     public function testGetValues(): void
     {
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $this->createItem('OLA', [
+        $this->createOLA([
             'name'            => 'ola_testGetValues',
             'type'            => 1,
-            'entities_id'     => $test_entity_id,
             'number_time'     => 4,
             'definition_time' => 'hour',
         ]);

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,35 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\ContentTemplates\Parameters;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use OLA;
-
-/**
- * Parameters for "OLA" items.
- *
- * @since 10.0.0
- */
-class OLAParameters extends LevelAgreementParameters
-{
-    public function getAvailableParameters(): array
-    {
-        return parent::getAvailableParameters() + [new ObjectParameter(new GroupParameters()),];
-    }
-
-    public static function getDefaultNodeName(): string
-    {
-        return 'ola';
-    }
-
-    public static function getObjectLabel(): string
-    {
-        return OLA::getTypeName(1);
-    }
-
-    protected function getTargetClasses(): array
-    {
-        return [OLA::class];
-    }
-}
+abstract class SLAField extends SLMField {}

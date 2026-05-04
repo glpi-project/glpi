@@ -56,6 +56,7 @@ use Document_Item;
 use Dropdown;
 use Entity;
 use Entity_KnowbaseItem;
+use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\Operator;
@@ -102,6 +103,7 @@ use SavedSearch;
 use Search;
 use Session;
 use SLA;
+use SLM;
 use Software;
 use Ticket;
 use TicketSatisfaction;
@@ -6179,10 +6181,8 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_problems.time_to_resolve":
                 case "glpi_changes.time_to_resolve":
                 case "glpi_tickets.time_to_own":
-                case "glpi_tickets.internal_time_to_own":
-                case "glpi_tickets.internal_time_to_resolve":
                     // Due date + progress
-                    if (in_array($orig_id, [151, 158, 181, 186])) {
+                    if (in_array($orig_id, [151, 158, 181])) {
                         $out = htmlescape(Html::convDateTime($data[$ID][0]['name']));
 
                         $color = null;
@@ -6190,10 +6190,7 @@ final class SQLProvider implements SearchProviderInterface
                             $data[$ID][0]['status'] == CommonITILObject::WAITING
                         ) {
                             // No due date in waiting status for TTRs
-                            if (
-                                $table . '.' . $field == "glpi_tickets.time_to_resolve"
-                                || $table . '.' . $field == "glpi_tickets.internal_time_to_resolve"
-                            ) {
+                            if ($table . '.' . $field == "glpi_tickets.time_to_resolve") {
                                 return '';
                             } else {
                                 $color = '#AAAAAA';
@@ -6227,20 +6224,11 @@ final class SQLProvider implements SearchProviderInterface
                             case "glpi_tickets.time_to_own":
                                 $slaField = 'slas_id_tto';
                                 break;
-                            case "glpi_tickets.internal_time_to_own":
-                                $slaField = 'olas_id_tto';
-                                $sla_class = OLA::class;
-                                break;
-                            case "glpi_tickets.internal_time_to_resolve":
-                                $slaField = 'olas_id_ttr';
-                                $sla_class = OLA::class;
-                                break;
                         }
 
                         switch ($table . '.' . $field) {
                             // If ticket has been taken into account: no progression display
                             case "glpi_tickets.time_to_own":
-                            case "glpi_tickets.internal_time_to_own":
                                 if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
                                     return $out;
                                 }
@@ -6335,9 +6323,9 @@ final class SQLProvider implements SearchProviderInterface
                         }
 
                         $progressbar_data = [
-                            'text'         => Html::convDateTime($data[$ID][0]['name']),
-                            'percent'      => $percentage,
-                            'percent_text' => $percentage_text,
+                            'text'         => Html::convDateTime($data[$ID][0]['name']) ?? '',
+                            'percent'      => (int) $percentage,
+                            'percent_text' => (string) $percentage_text,
                             'color'        => $color,
                         ];
                     } else {
@@ -6348,7 +6336,6 @@ final class SQLProvider implements SearchProviderInterface
 
                         switch ($table . "." . $field) {
                             case "glpi_tickets.time_to_resolve":
-                            case "glpi_tickets.internal_time_to_resolve":
                             case "glpi_problems.time_to_resolve":
                             case "glpi_changes.time_to_resolve":
                                 $solve_date = $data[$ID][0]['solvedate'];
@@ -6384,6 +6371,135 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
                     break;
+
+                    // OLA TTO / OLA TTR - due time and due time + progress
+                case "glpi_items_olas.due_time":
+                    $out = '';
+
+                    $data_items = array_filter($data[$ID], fn($key) => is_numeric($key), ARRAY_FILTER_USE_KEY);
+                    foreach ($data_items as $data_item) {
+                        // data used :
+                        // - name -> due_time (see below)
+                        // - status (ticket status)
+                        // - takeintoaccount_delay_stat
+                        // - date (ticket creation date)
+                        // - olas_id
+                        // - waiting_time
+                        // - end_time
+                        $ticket_status = $data_item['status'] ?? null;
+                        $due_time = $data_item['name'] ?? null;
+                        $ticket_creation_date = $data_item['date'] ?? null;
+                        $waiting_time = $data_item['waiting_time'] ?? null;
+                        $ola_end_time = $data_item['end_time'] ?? null;
+                        $olas_id = $data_item['olas_id'] ?? null;
+
+                        $ola = new OLA();
+                        // no item_olas associated
+                        if (!$olas_id) {
+                            continue;
+                        }
+                        if (!$ola->getFromDB($olas_id)) {
+                            throw new Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
+                        }
+                        $ola_name = $ola->fields['name'];
+                        $ola_type = $ola->fields['type']; // won't change between loops
+
+                        // no due time set, nothing to display
+                        if (is_null($due_time)) {
+                            continue;
+                        }
+
+                        // For TTR : no display if ticket is in waiting status
+                        if (
+                            $ticket_status == CommonITILObject::WAITING
+                            && $ola_type == SLM::TTR) {
+                            continue;
+                        }
+
+                        // ticket is solved or closed, no progress to display, just display the date
+                        if (
+                            ($ticket_status == Ticket::SOLVED)
+                            || ($ticket_status == Ticket::CLOSED)
+                        ) {
+                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            continue;
+                        }
+
+                        // no progress bar if ola completed (end_time is set)
+                        if ($ola_end_time) {
+                            $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
+                            continue;
+                        }
+
+                        // - progress bar construction
+                        $color = null;
+                        if ($ticket_status == CommonITILObject::WAITING) {
+                            $color = '#AAAAAA';
+                        }
+
+                        // time calculations to build the progress bar
+                        // progress bar is displayed only is ola is not completed
+                        $delay_between_ticket_creation_and_now = $ola->getActiveTimeBetween($ticket_creation_date, date('Y-m-d H:i:s'));
+                        $delay_between_ticket_creation_and_ola_due_time = $ola->getActiveTimeBetween($ticket_creation_date, $due_time);
+
+                        if (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0) {
+                            $percentage_done = round((100 * ($delay_between_ticket_creation_and_now - $waiting_time)) / ($delay_between_ticket_creation_and_ola_due_time - $waiting_time));
+                        } else {
+                            // Total time is null : no active time
+                            $percentage_done = 100;
+                        }
+                        if ($percentage_done > 100) {
+                            $percentage_done = 100;
+                        }
+                        switch ($_SESSION['glpiduedatewarning_unit']) {
+                            case 'hour':
+                                $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
+                                $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                                break;
+                            case 'day':
+                                $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
+                                $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                                break;
+                            case '%':
+                            default:
+                                $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
+                                $less_warn = (100 - $percentage_done);
+                                break;
+                        }
+
+                        $less_crit_limit = 0;
+                        $less_crit = 0;
+                        if ($_SESSION['glpiduedatecritical_unit'] == '%') {
+                            $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
+                            $less_crit = (100 - $percentage_done);
+                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+                            $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
+                            $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+                            $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
+                            $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
+                        }
+
+                        if ($color === null) {
+                            $color = $_SESSION['glpiduedateok_color'];
+                            if ($less_crit < $less_crit_limit) {
+                                $color = $_SESSION['glpiduedatecritical_color'];
+                            } elseif ($less_warn < $less_warn_limit) {
+                                $color = $_SESSION['glpiduedatewarning_color'];
+                            }
+                        }
+
+                        $progressbar_data = [
+                            'text' => $ola_name . ' : ' . Html::convDateTime($due_time),
+                            'percent' => (int) $percentage_done,
+                            'percent_text' => (string) $percentage_done,
+                            'color' => $color,
+                        ];
+
+                        $out .= self::getProgressBar([$progressbar_data]);
+                    }
+
+                    return $out;
 
                 case "glpi_softwarelicenses.number":
                     if ($data[$ID][0]['min'] == -1) {
@@ -7037,7 +7153,7 @@ final class SQLProvider implements SearchProviderInterface
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
                         $progressbar_data = array_map(fn($entry) => [
-                            'percent'      => ltrim(($entry['name'] ?? ""), "0"),
+                            'percent'      => (int) ltrim(($entry['name'] ?? ""), "0"),
                             'percent_text' => ltrim(($entry['name'] ?? ""), "0"),
                             'color'        => 'green',
                             'text'         => '',
@@ -7047,19 +7163,7 @@ final class SQLProvider implements SearchProviderInterface
                         $progressbar_data = [$progressbar_data];
                     }
 
-                    $out = '';
-                    foreach ($progressbar_data as $k => $v) {
-                        $out .= '<div class="mb-1"><span class="text-nowrap">' . \htmlescape($v['text']) . '</span>'
-                            . '<div class="progress" style="height: 16px">'
-                            . '<div class="progress-bar progress-bar-striped" role="progressbar"'
-                            . ' style="width:' . \htmlescape($v['percent']) . '%; background-color:' . \htmlescape($v['color']) . ';"'
-                            . ' aria-valuenow="' . \htmlescape($v['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
-                            . \htmlescape($v['percent_text']) . '%'
-                            . '</div>'
-                            . '</div></div>';
-                    }
-
-                    return $out;
+                    return self::getProgressBar($progressbar_data);
                 case 'color':
                     $color = \htmlescape($data[$ID][0]['name']);
                     return "<div class='badge_block' style='border-color: $color'>
@@ -7217,5 +7321,23 @@ final class SQLProvider implements SearchProviderInterface
                 )
             )
         );
+    }
+
+    /**
+     * @param array<array{percent:int, percent_text:string, color:string, text:string}> $progressbar_data
+     */
+    public static function getProgressBar(array $progressbar_data): string
+    {
+        $out = '';
+        foreach ($progressbar_data as $pg_data) {
+            $out .= '<div class="mb-1"><span class="text-nowrap">' . \htmlescape($pg_data['text']) . '</span>'
+                . '<div class="progress" style="height: 16px">'
+                . '<div class="progress-bar progress-bar-striped" role="progressbar"'
+                . ' style="width:' . $pg_data['percent'] . '%; background-color:' . \htmlescape($pg_data['color']) . ';"'
+                . ' aria-valuenow="' . $pg_data['percent'] . '" aria-valuemin="0" aria-valuemax="100">'
+                . \htmlescape($pg_data['percent_text']) . '%'
+                . '</div></div></div>';
+        }
+        return $out;
     }
 }

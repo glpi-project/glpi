@@ -44,6 +44,7 @@ use Glpi\Form\QuestionType\QuestionTypeDateTimeExtraDataConfig;
 use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\Tests\Glpi\SLMTrait;
 use OLA;
 use Override;
 use SLM;
@@ -53,6 +54,7 @@ use TicketTemplatePredefinedField;
 final class OLATTOFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
+    use SLMTrait;
 
     public function testDefaultTemplateWithPredefinedField(): void
     {
@@ -61,15 +63,8 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_ola_tto = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_tto] = $this->createOLA();
+
         $this->createItem(
             TicketTemplatePredefinedField::class,
             [
@@ -91,15 +86,7 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
     public function testSpecificOLATTO(): void
     {
         $this->login();
-        $created_ola_tto = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_tto] = $this->createOLA();
 
         $this->checkOLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
@@ -118,24 +105,9 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_ola_tto = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
-        $created_ola_tto_for_template = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_tto] = $this->createOLA();
+        ['ola' => $created_ola_tto_for_template] = $this->createOLA();
+
         $this->createItem(
             TicketTemplatePredefinedField::class,
             [
@@ -267,7 +239,11 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
+        if ($expected_olas_tto_id !== 0 && countElementsInTable(OLA::getTable(), ['id' => $expected_olas_tto_id]) !== 1) {
+            throw new \Exception("Expected OLA TTO with ID $expected_olas_tto_id not found in database. Wrong data preparation.");
+        }
         $destination = current($destinations);
+
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
@@ -286,15 +262,15 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
         // Get created ticket
         $created_items = $answers->getCreatedItems();
         $this->assertCount(1, $created_items);
+        /** @var Ticket $ticket */
         $ticket = current($created_items);
 
         // Check ola_id_tto field
-        $this->assertEquals($expected_olas_tto_id, $ticket->fields['olas_id_tto']);
-
-        // Check internal_time_to_own field
-        if ($expected_tto_date !== null) {
-            $this->assertEquals($expected_tto_date, $ticket->fields['internal_time_to_own']);
-        }
+        $ticket_tto_id = $expected_olas_tto_id
+            ? ($ticket->getOlasTTOData()[0])['olas_id'] ?? throw new \Exception('Ola TTO not found')
+            : 0
+        ;
+        $this->assertEquals($expected_olas_tto_id, $ticket_tto_id, "The created ticket should have the expected OLA TTO ID");
 
         // Return the created ticket to be able to check other fields
         return $ticket;
@@ -325,7 +301,7 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {
-        yield 'SLA from template or none' => [
+        yield 'OLA from template or none' => [
             'field_key'     => OLATTOField::getKey(),
             'fields_to_set' => [
                 'sla_rule' => 1, // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
@@ -335,7 +311,7 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
             ),
         ];
 
-        yield 'Specific SLA' => [
+        yield 'Specific OLA' => [
             'field_key'     => OLATTOField::getKey(),
             'fields_to_set' => [
                 'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
@@ -346,6 +322,8 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
                         'type'            => SLM::TTO,
                         'number_time'     => 1,
                         'definition_time' => 'hour',
+                        'groups_id' => getItemByTypeName(\Group::class, '_test_group_1', true),
+                        'slms_id' => getItemByTypeName(SLM::class, 'Test SLM', true), // should be created by the test case
                     ]
                 )->getID(),
             ],

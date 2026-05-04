@@ -38,6 +38,7 @@ use Calendar;
 use CronTask;
 use DateInterval;
 use Group;
+use Item_Ola;
 use OLA;
 use SLA;
 use SlaLevel_Ticket;
@@ -81,6 +82,7 @@ trait SLMTrait
                 'number_time' => $amount,
                 'definition_time' => $unit,
                 'slms_id' => $slm->getID(),
+                'groups_id' => $group->getID(),
             ]
         );
 
@@ -140,6 +142,11 @@ trait SLMTrait
         SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(CronTask::class, 'slaticket'));
     }
 
+    private function runOlaCron(): void
+    {
+        Item_Ola::cronOlaTicket(getItemByTypeName(CronTask::class, 'slaticket'));
+    }
+
     /**
      * beware that DateInterval expects self::xxx to be ['minutes, etc ... doc à compléter) @todoseb
      *
@@ -172,4 +179,5 @@ trait SLMTrait
 
         return new DateInterval(sprintf('P%d%s', $amount, strtoupper(substr($unit, 0, 1))));
     }
+
 }
