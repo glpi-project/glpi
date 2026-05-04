@@ -695,15 +695,36 @@ abstract class AbstractPluginMigration
                 if (!str_contains($e->getMessage(), '(1062)')) {
                     throw $e;
                 }
-                // A row with (target_itemtype, target_items_id) already exists (e.g. from a previous
-                // migration run). The source row is now a stale duplicate — remove it.
-                $this->db->delete(
-                    $table,
-                    [
+                // Bulk update failed: fall back to row-by-row to only remove conflicting entries.
+                $source_rows = $this->db->request([
+                    'SELECT' => 'id',
+                    'FROM'   => $table,
+                    'WHERE'  => [
                         $itemtype_field => $source_itemtype,
                         $items_id_field => $source_items_id,
-                    ]
-                );
+                    ],
+                ]);
+                foreach ($source_rows as $source_row) {
+                    try {
+                        $this->db->update(
+                            table: $table,
+                            params: [
+                                $itemtype_field => $target_itemtype,
+                                $items_id_field => $target_items_id,
+                            ],
+                            where: ['id' => $source_row['id']]
+                        );
+                    } catch (RuntimeException $inner_e) {
+                        if (!str_contains($inner_e->getMessage(), '(1062)')) {
+                            throw $inner_e;
+                        }
+                        $this->db->delete($table, ['id' => $source_row['id']]);
+                        $this->result->addMessage(
+                            MessageType::Warning,
+                            sprintf('Duplicate entry ignored in %s (id=%d).', $table, $source_row['id'])
+                        );
+                    }
+                }
             }
         }
     }
