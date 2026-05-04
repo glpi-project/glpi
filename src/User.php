@@ -4333,9 +4333,9 @@ HTML;
      * Check if a user is valid (active, not deleted, in entity) without loading all users.
      *
      * @param int              $user_id           User ID to check
-     * @param int|array        $entity_restrict   Entity ID or list of entity IDs
+     * @param int|int[]        $entity_restrict   Entity ID or list of entity IDs
      */
-    public static function isValidUserForEntity(int $user_id, $entity_restrict): bool
+    public static function isValidUserForEntity(int $user_id, int|array $entity_restrict): bool
     {
         global $DB;
 
