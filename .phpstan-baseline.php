@@ -17084,12 +17084,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PendingReason_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$interval of method DateTime\\:\\:add\\(\\) expects DateInterval, DateInterval\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/PendingReason_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Agent\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 4,
