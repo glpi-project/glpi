@@ -1320,7 +1320,7 @@ abstract class API
             // some CommonDBChild classes may not have entities_id fields and isEntityAssign still return true (like ITILTemplateMandatoryField)
             && array_key_exists('entities_id', $item->fields)
         ) {
-            $entity_restrict = getEntitiesRestrictCriteria($itemtype::getTable(), '', $_SESSION['glpiactiveentities'], $item->maybeRecursive(), true);
+            $entity_restrict = getEntitiesRestrictCriteria($itemtype::getTable(), '', '', $item->maybeRecursive(), true);
 
             if ($item instanceof SavedSearch) {
                 $criteria['WHERE'][] = [
