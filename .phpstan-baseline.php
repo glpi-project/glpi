@@ -800,12 +800,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_project.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'id\' might not exist on array\\{id\\: mixed\\}\\|array\\{racks_id\\: mixed, orientation\\: mixed, position\\: mixed, _onlypdu\\?\\: mixed\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_rack.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'racks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -1282,7 +1276,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\.\\.\\.\\$arg1 of function max expects non\\-empty\\-array, list given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 5,
+	'count' => 3,
 	'path' => __DIR__ . '/install/empty_data.php',
 ];
 $ignoreErrors[] = [
@@ -3130,7 +3124,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3167,6 +3161,12 @@ $ignoreErrors[] = [
 	'message' => '#^Property CommonDBTM\\:\\:\\$updates \\(list\\<string\\>\\) does not accept array\\<int\\<0, max\\>, string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 14,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Strict comparison using \\!\\=\\= between \'Supplier\' and \'Group\' will always evaluate to true\\.$#',
+	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3998,6 +3998,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'periodicity\'\\|\'periodicitynotice\' might not exist on non\\-empty\\-array\\{periodicity\\?\\: non\\-falsy\\-string, periodicitynotice\\?\\: non\\-falsy\\-string\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Contract.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getForeignKeyFieldForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -4068,12 +4074,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Contract_User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "&" between int\\|string and 2 results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Binary operation "\\+" between int and 604800\\|string results in an error\\.$#',
@@ -4918,7 +4918,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Session\\:\\:haveTranslations\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
@@ -8954,7 +8954,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#4 \\$value of method Glpi\\\\Form\\\\Migration\\\\FormMigration\\:\\:addValidationCondition\\(\\) expects string, float\\|int\\|string given\\.$#',
+	'message' => '#^Parameter \\#4 \\$value of method Glpi\\\\Form\\\\Migration\\\\FormMigration\\:\\:addValidationCondition\\(\\) expects string, float\\|int\\<0, max\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
@@ -10154,6 +10154,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to an undefined method object\\:\\:getManagementPorts\\(\\)\\.$#',
+	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 4,
@@ -10222,7 +10228,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getManagementPorts\\(\\) on object\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -11948,12 +11954,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$strategy on Glpi\\\\Security\\\\Attribute\\\\SecurityStrategy\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/ControllerListener/FirewallStrategyListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$strategy of method Glpi\\\\Http\\\\Firewall\\:\\:applyStrategy\\(\\) expects \'admin_access\'\\|\'authenticated\'\\|\'central_access\'\\|\'faq_access\'\\|\'helpdesk_access\'\\|\'no_check\', string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -12212,18 +12212,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Marketplace/NotificationTargetController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getAPI\\(\\) on Glpi\\\\Marketplace\\\\Controller\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method hasWriteAccess\\(\\) on Glpi\\\\Marketplace\\\\Controller\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method requiresHigherOffer\\(\\) on Glpi\\\\Marketplace\\\\Controller\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -12260,7 +12248,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Migration\\\\GenericobjectPluginMigration\\:\\:getCustomFieldSpecs\\(\\) should return array\\{system_name\\: string, label\\: string, type\\: class\\-string\\<Glpi\\\\Asset\\\\CustomFieldType\\\\AbstractType\\>, itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}\\} but returns array\\{system_name\\: string, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\StringType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\URLType\', options\\?\\: array\\{step\\: \'any\'\\}, translations\\?\\: array\\{\\}\\}\\|array\\{system_name\\: string\\|null, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DropdownType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\StringType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\URLType\', itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\<\'max\'\\|\'min\'\\|\'step\', int\\>, translations\\?\\: array\\{\\}\\}\\.$#',
+	'message' => '#^Method Glpi\\\\Migration\\\\GenericobjectPluginMigration\\:\\:getCustomFieldSpecs\\(\\) should return array\\{system_name\\: string, label\\: string, type\\: class\\-string\\<Glpi\\\\Asset\\\\CustomFieldType\\\\AbstractType\\>, itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}\\} but returns array\\{system_name\\: string, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\StringType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\URLType\', options\\?\\: array\\{step\\: \'any\'\\}, translations\\?\\: array\\{\\}\\}\\|array\\{system_name\\: string\\|null, label\\: string, type\\: \'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\BooleanType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateTimeType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DateType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\DropdownType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\NumberType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\StringType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\TextType\'\\|\'Glpi\\\\\\\\Asset\\\\\\\\CustomFieldType\\\\\\\\URLType\', itemtype\\?\\: class\\-string\\<CommonDBTM\\>, options\\?\\: array\\{\\}\\|array\\{min\\?\\: int, max\\?\\: int, step\\?\\: int\\}, translations\\?\\: array\\{\\}\\}\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
@@ -13148,6 +13136,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset 0\\|1\\|2\\|3\\|4\\|5\\|6 might not exist on array\\{\\}\\|array\\{"\\\\032"\\}\\|array\\{0\\: \'"\', 1\\?\\: "\\\\032"\\}\\|list\\{0\\: "\\\\000", 1\\?\\: "\\\\n"\\|"\\\\r"\\|"\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 2\\?\\: "\\\\r"\\|"\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 3\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 4\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 5\\?\\: "\\\\032"\\|\'"\', 6\\?\\: "\\\\032"\\}\\|list\\{0\\: "\\\\n", 1\\?\\: "\\\\r"\\|"\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 2\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 3\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 4\\?\\: "\\\\032"\\|\'"\', 5\\?\\: "\\\\032"\\}\\|list\\{0\\: "\\\\r", 1\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 2\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 3\\?\\: "\\\\032"\\|\'"\', 4\\?\\: "\\\\032"\\}\\|list\\{0\\: \'\\\\\'\', 1\\?\\: "\\\\032"\\|\'"\', 2\\?\\: "\\\\032"\\}\\|list\\{0\\: \'\\\\\\\\\', 1\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 2\\?\\: "\\\\032"\\|\'"\', 3\\?\\: "\\\\032"\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Sanitizer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -13373,12 +13367,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$timestamp of function date expects int\\|null, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 10,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$url of static method Ajax\\:\\:createIframeModalWindow\\(\\) expects string, string\\|true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -15944,42 +15932,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationMailing.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between \'\\#\\#\' and non\\-empty\\-array\\|non\\-falsy\\-string\\|true results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTarget.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between \'\\#\\#FOREACH FIRST …\' and non\\-empty\\-array\\|non\\-falsy\\-string\\|true results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTarget.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between \'\\#\\#FOREACH LAST …\' and non\\-empty\\-array\\|non\\-falsy\\-string\\|true results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTarget.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between \'\\#\\#FOREACH\' and non\\-empty\\-array\\|non\\-falsy\\-string\\|true results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTarget.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between \'\\#\\#lang\\.\' and non\\-empty\\-array\\|non\\-falsy\\-string\\|true results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTarget.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between non\\-falsy\\-string and non\\-empty\\-array\\|non\\-falsy\\-string\\|true results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 3,
-	'path' => __DIR__ . '/src/NotificationTarget.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'class\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -16654,7 +16606,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property NotificationTarget\\<Project\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 1,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
@@ -16703,6 +16655,12 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Log\\:\\:getHistoryData\\(\\) expects CommonDBTM, ProjectTask\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property NotificationTarget\\<ProjectTask\\>\\:\\:\\$data \\(array\\<string, array\\<string\\>\\|string\\>\\) does not accept array\\<string, array\\<array\\<string, mixed\\>\\|string\\>\\|string\\>\\.$#',
+	'identifier' => 'assign.propertyType',
+	'count' => 2,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
@@ -16850,7 +16808,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method NotificationTemplate\\:\\:getDataForHtml\\(\\) should return array\\<string, array\\<string\\>\\|string\\> but returns array\\<string, array\\<array\\<string\\>\\|string\\>\\|string\\>\\.$#',
+	'message' => '#^Method NotificationTemplate\\:\\:getDataForHtml\\(\\) should return array\\<string, array\\<string\\>\\|string\\> but returns array\\<string, array\\<string, array\\<string\\>\\|string\\>\\|string\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
@@ -17116,6 +17074,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method PendingReason_Item\\:\\:handleTimelineEdits\\(\\) should return array but returns array\\<string, mixed\\>\\|false\\.$#',
 	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PendingReason_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'pendingreasons_id\' might not exist on array\\{pendingreasons_id\\?\\: mixed, followup_frequency\\?\\: mixed, followups_before_resolution\\?\\: mixed, last_bump_date\\?\\: mixed\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/PendingReason_Item.php',
 ];
@@ -17458,7 +17422,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#3 \\$users_id of method PlanningRecall\\:\\:getFromDBForItemAndUser\\(\\) expects int, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
@@ -18214,7 +18178,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method maybeTemplate\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -19299,6 +19263,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getForeignKeyFieldForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SavedSearch.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of method Search\\:\\:prepareDatasForSearch\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',
@@ -20519,12 +20489,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonITILValidation\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot assign offset \'name\' to array\\<string, \\(int\\|string\\)\\>\\|string\\.$#',
-	'identifier' => 'offsetAssign.dimType',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
