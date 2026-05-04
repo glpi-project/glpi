@@ -4329,6 +4329,63 @@ HTML;
         return $DB->request($criteria);
     }
 
+    /**
+     * Check if a user is valid (active, not deleted, in entity) without loading all users.
+     *
+     * @param int              $user_id           User ID to check
+     * @param int|int[]        $entity_restrict   Entity ID or list of entity IDs
+     */
+    public static function isValidUserForEntity(int $user_id, int|array $entity_restrict): bool
+    {
+        global $DB;
+
+        if (!is_array($entity_restrict) && $entity_restrict < 0) {
+            $entity_restrict = $_SESSION["glpiactiveentities"];
+        }
+
+        $config = Config::getConfigurationValues('core');
+
+        $where = [
+            'glpi_users.id'         => $user_id,
+            'glpi_users.is_deleted' => 0,
+            'glpi_users.is_active'  => 1,
+            [
+                'OR' => [
+                    ['glpi_users.begin_date' => null],
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'OR' => [
+                    ['glpi_users.end_date' => null],
+                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'NOT' => ['glpi_users.id' => $config['system_user']],
+            ],
+        ];
+
+        $entity_criteria = getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true);
+        if (!empty($entity_criteria)) {
+            $where['OR'] = $entity_criteria;
+        }
+
+        return $DB->request([
+            'COUNT'    => 'cpt',
+            'FROM'     => 'glpi_users',
+            'LEFT JOIN' => [
+                'glpi_profiles_users' => [
+                    'ON' => [
+                        'glpi_profiles_users' => 'users_id',
+                        'glpi_users'          => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => $where,
+        ])->current()['cpt'] > 0;
+    }
+
 
     /**
      * Make a select box with all glpi users where select key = name
