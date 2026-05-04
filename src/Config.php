@@ -1103,10 +1103,6 @@ class Config extends CommonDBTM
                     $item->showFormLogs();
                     break;
 
-                case 10:
-                    $item->showFormSecurity();
-                    break;
-
                 case 11:
                     Impact::showConfigForm();
                     break;

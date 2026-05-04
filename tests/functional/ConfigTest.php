@@ -912,19 +912,4 @@ class ConfigTest extends DbTestCase
         ]);
         $this->assertEquals('freesans', $CFG_GLPI['pdffont']);
     }
-
-    public function testShowFormSecurity(): void
-    {
-        // Arrange: login
-        $this->login();
-
-        // Act: display the security from
-        $config = new Config();
-        ob_start();
-        $config->showFormSecurity();
-        $html = ob_get_clean();
-
-        // Assert: make sure we reached this point without errors
-        $this->assertNotEmpty($html);
-    }
 }
