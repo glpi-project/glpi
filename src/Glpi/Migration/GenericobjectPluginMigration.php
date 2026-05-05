@@ -1277,6 +1277,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 break;
         }
 
+        $is_dropdown_type = false;
         if (\isForeignKeyField($field_name)) {
             // Foreign key field
             if ($this->isAGenericObjectFkeyField($field_name)) {
@@ -1284,18 +1285,23 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 $target_type = $this->getTargetItemtype($source_type);
             } else {
                 $target_type = \getItemtypeForForeignKeyField($field_name);
-                if ($target_type === null) {
-                    throw new MigrationException(
-                        sprintf(__('Unable to import the "%s" field.'), $field_name),
-                        sprintf('Unable to import the `%s` field.', $field_name)
-                    );
-                }
             }
-            $specs['system_name'] = $this->getTargetField($itemtype, $field_name, with_prefix: false);
-            $specs['label']       = $target_type::getTypeName();
-            $specs['type']        = DropdownType::class;
-            $specs['itemtype']    = $target_type;
-        } else {
+            if ($target_type !== null) {
+                $is_dropdown_type = true;
+
+                $specs['system_name'] = $this->getTargetField($itemtype, $field_name, with_prefix: false);
+                $specs['label']       = $target_type::getTypeName();
+                $specs['type']        = DropdownType::class;
+                $specs['itemtype']    = $target_type;
+            } else {
+                $this->progress_indicator?->addMessage(
+                    MessageType::Warning,
+                    sprintf(__('Unable to find the target type for the "%s" field, it will not be imported as a dropdown field.'), $field_name)
+                );
+            }
+        }
+
+        if (!$is_dropdown_type) {
             // Keep only the main column type by removing anything that is preceded by a space (e.g. " unsigned")
             // or a parenthesis (e.g. "(255)").
             $field_type = \strtolower(preg_replace('/^([a-z]+)([ (].+)*$/', '$1', $field_type));
