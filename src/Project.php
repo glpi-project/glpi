@@ -2537,7 +2537,7 @@ TWIG, $twig_params);
 
         if ($iterator->count()) {
             $avg = $iterator->current()['percent_done'];
-            $percent_done = is_null($avg) ? 0 : $avg;
+            $percent_done = $avg ?? 0;
         } else {
             $percent_done = 0;
         }
