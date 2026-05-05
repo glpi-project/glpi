@@ -11065,7 +11065,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return CommonITILSatisfaction|null
      */
-    public function getSatisfactionSurvey(): ?CommonITILSatisfaction
+    protected function getSatisfactionSurvey(): ?CommonITILSatisfaction
     {
         $satisfaction = static::getSatisfactionClassInstance();
         if ($satisfaction === null) {
