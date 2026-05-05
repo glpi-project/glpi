@@ -87,6 +87,9 @@ use Supplier;
 use SupplierType;
 use User;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 #[Route(path: '/Management', tags: ['Management'])]
 final class ManagementController extends AbstractController
 {
@@ -1186,7 +1189,12 @@ EOT,
         if ($document->getFromDB($request->getAttribute('id'))) {
             if ($document->canViewFile()) {
                 $symfony_response = $document->getAsResponse();
-                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
+
+                ob_start();
+                $symfony_response->sendContent();
+                $content = ob_get_clean();
+
+                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
             }
             return self::getAccessDeniedErrorResponse();
         }
