@@ -1612,4 +1612,79 @@ class PendingReasonTest extends DbTestCase
         }
         $this->assertTrue($warning_found, 'Expected warning about missing pending reason not found');
     }
+
+    public function testPrepareInputForAdd()
+    {
+        $pr = new PendingReason();
+
+        // Normal case
+        $this->assertEquals([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'followup_frequency' => 1,
+            'followups_before_resolution' => 2,
+            'itilfollowuptemplates_id' => 3,
+            'solutiontemplates_id' => 4,
+            'is_pending_per_default' => 0,
+        ], $pr->prepareInputForAdd([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'followup_frequency' => 1,
+            'followups_before_resolution' => 2,
+            'itilfollowuptemplates_id' => 3,
+            'solutiontemplates_id' => 4,
+        ]));
+
+        // No solution template = no auto resolve
+        $this->assertEquals([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'followup_frequency' => 1,
+            'followups_before_resolution' => 0,
+            'itilfollowuptemplates_id' => 3,
+            'solutiontemplates_id' => 0,
+            'is_pending_per_default' => 0,
+        ], $pr->prepareInputForAdd([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'followup_frequency' => 1,
+            'followups_before_resolution' => 2,
+            'itilfollowuptemplates_id' => 3,
+            'solutiontemplates_id' => 0,
+        ]));
+
+        // Is pending per default
+        $this->assertEquals([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'is_default' => 0,
+            'is_pending_per_default' => 0,
+            'followups_before_resolution' => 0,
+        ], $pr->prepareInputForAdd([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'is_default' => 0,
+            'is_pending_per_default' => 1,
+        ]));
+        $this->assertEquals([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'is_default' => 1,
+            'is_pending_per_default' => 1,
+            'followups_before_resolution' => 0,
+        ], $pr->prepareInputForAdd([
+            'name' => 'Test',
+            'entities_id' => 1,
+            'is_recursive' => 1,
+            'is_default' => 1,
+            'is_pending_per_default' => 1,
+        ]));
+    }
 }

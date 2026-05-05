@@ -36,6 +36,12 @@ The present file will list all changes made to the project; according to the
 - The planning widget on the homepage no longer shows completed events to improve performance and relevance.
   Previously, it would display completed events if that filter was enabled in the calendar view.
 
+- Pending reason UI and save logic changed to prevent auto-resolve without selection of a solution template.
+  Any existing pending reasons with "Follow-ups before automatic resolution" set without a solution template
+  will be automatically updated to set the "Follow-ups before automatic resolution" to "Automatic resolution disabled"
+  to prevent the "Failed to load SolutionTemplate" PHP warnings that were raised previously.
+  The pending reason UI in followups and tasks will only show the "Automatic follow-up" and "Automatic resolution" options when a followup template and solution template respectively are set for the pending reason.
+
 ### Deprecated
 
 ### Removed

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,29 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
+/**
+ * @var DBmysql $DB
+ * @var Migration $migration
+ */
 
-use function Safe\json_encode;
-
-// Direct access to file
-
-header("Content-Type: application/json; charset=UTF-8");
-
-// Tech only
-if (Session::getCurrentInterface() !== "central") {
-    throw new AccessDeniedHttpException();
-}
-
-// Read parameter and load pending reason
-$pending_reason = PendingReason::getById($_REQUEST['pendingreasons_id'] ?? null);
-if (!$pending_reason) {
-    throw new BadRequestHttpException();
-}
-
-echo json_encode([
-    'followup_frequency'          => $pending_reason->fields['followup_frequency'],
-    'followups_before_resolution' => $pending_reason->fields['followups_before_resolution'],
-    'itilfollowuptemplates_id' => $pending_reason->fields['itilfollowuptemplates_id'],
-    'solutiontemplates_id' => $pending_reason->fields['solutiontemplates_id'],
-]);
+$DB->update(
+    'glpi_pendingreasons',
+    ['followups_before_resolution' => 0],
+    ['solutiontemplates_id' => 0]
+);
