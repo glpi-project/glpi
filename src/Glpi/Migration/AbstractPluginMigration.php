@@ -679,17 +679,53 @@ abstract class AbstractPluginMigration
             // and it is impossible to handle them here automatically, especially
             // because it can be related to code located in plugins.
             // Therefore, doing updates directly in DB is the best option here.
-            $this->db->update(
-                table: $table,
-                params: [
-                    $itemtype_field => $target_itemtype,
-                    $items_id_field => $target_items_id,
-                ],
-                where: [
-                    $itemtype_field => $source_itemtype,
-                    $items_id_field => $source_items_id,
-                ]
-            );
+            try {
+                $this->db->update(
+                    table: $table,
+                    params: [
+                        $itemtype_field => $target_itemtype,
+                        $items_id_field => $target_items_id,
+                    ],
+                    where: [
+                        $itemtype_field => $source_itemtype,
+                        $items_id_field => $source_items_id,
+                    ]
+                );
+            } catch (RuntimeException $e) {
+                if (!str_contains($e->getMessage(), '(1062)')) {
+                    throw $e;
+                }
+                // Bulk update failed: fall back to row-by-row to only remove conflicting entries.
+                $source_rows = $this->db->request([
+                    'SELECT' => 'id',
+                    'FROM'   => $table,
+                    'WHERE'  => [
+                        $itemtype_field => $source_itemtype,
+                        $items_id_field => $source_items_id,
+                    ],
+                ]);
+                foreach ($source_rows as $source_row) {
+                    try {
+                        $this->db->update(
+                            table: $table,
+                            params: [
+                                $itemtype_field => $target_itemtype,
+                                $items_id_field => $target_items_id,
+                            ],
+                            where: ['id' => $source_row['id']]
+                        );
+                    } catch (RuntimeException $inner_e) {
+                        if (!str_contains($inner_e->getMessage(), '(1062)')) {
+                            throw $inner_e;
+                        }
+                        $this->db->delete($table, ['id' => $source_row['id']]);
+                        $this->result->addMessage(
+                            MessageType::Warning,
+                            sprintf('Duplicate entry ignored in %s (id=%d).', $table, $source_row['id'])
+                        );
+                    }
+                }
+            }
         }
     }
 

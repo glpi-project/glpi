@@ -875,6 +875,9 @@ test('Can duplicate a section with questions and change their types', async ({ p
     const s2_q0_dd = form.getDropdownByLabel('Question type', s2_q0);
     await form.doSetDropdownValue(s2_q0_dd, 'Long answer', false);
 
+    // Wait for all async question type changes to complete before saving
+    await expect(page.getByTestId('question-loading')).toHaveCount(0);
+
     // Save and reload
     await form.doSaveFormEditorAndReload();
 

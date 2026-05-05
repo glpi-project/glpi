@@ -10,6 +10,7 @@ services:
       # E2E env is exposed on the 8090 port
       # See: https://github.com/glpi-project/docker-images/blob/main/githubactions-php-apache/files/etc/apache2/sites-available/000-default.conf
       E2E_BASE_URL: http://localhost:8090
+      PWTEST_SHARD_WEIGHTS: "40:60"
     volumes:
       - type: "bind"
         source: "${APPLICATION_ROOT}"

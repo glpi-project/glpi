@@ -56,9 +56,11 @@ final class ExportController extends AbstractController
         // Read parameters
         $ids = $request->query->all()["ids"] ?? [];
 
+        // Ensure user can view all forms
+        $forms = array_filter(Form::getByIds($ids), fn(Form $form) => $form->can($form->getID(), READ));
+
         // Execute export
         $serializer = new FormSerializer();
-        $forms = Form::getByIds($ids);
         $export = $serializer->exportFormsToJson($forms);
 
         // Output file

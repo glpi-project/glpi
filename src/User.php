@@ -47,6 +47,7 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
+use LDAP\Result;
 use Sabre\VObject\Component\VCard;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
@@ -2185,6 +2186,18 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        // Use cached lookup when MATCHING_RULE_IN_CHAIN is set (AD nested groups).
+        if (
+            str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
+            && !empty($ldap_method["group_field"])
+        ) {
+            return $this->getFromLDAPGroupDiscretCached(
+                $ldap_connection,
+                $ldap_method,
+                $userdn
+            );
+        }
+
         if ($ldap_method["use_dn"]) {
             $user_tmp = $userdn;
         } else {
@@ -2218,6 +2231,121 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 }
             }
         }
+        return true;
+    }
+
+
+    /**
+     * Variant of getFromLDAPGroupDiscret() for MATCHING_RULE_IN_CHAIN (AD nested groups).
+     * Fetches members per group (M queries) and caches results for subsequent users.
+     *
+     * @param Connection $ldap_connection LDAP connection
+     * @param array<string, mixed> $ldap_method LDAP method config
+     * @param string $userdn DN of the user to resolve
+     *
+     * @return bool true if groups were resolved, false on LDAP error
+     */
+    private function getFromLDAPGroupDiscretCached(
+        $ldap_connection,
+        array $ldap_method,
+        string $userdn
+    ): bool {
+        global $DB;
+
+        $auth_id = (int) ($ldap_method['id'] ?? 0);
+
+        // Keyed by auth_id then lowercase user DN; populated once per process.
+        static $cache = [];
+
+        if (!array_key_exists($auth_id, $cache)) {
+            $cache[$auth_id] = [];
+
+            // Keep the OID suffix from group_member_field (e.g. ':1.2.840.113556.1.4.1941').
+            $chain_suffix = '';
+            if (($colon = strpos($ldap_method['group_member_field'], ':')) !== false) {
+                $chain_suffix = substr($ldap_method['group_member_field'], $colon);
+            }
+
+            $user_group_attr = $ldap_method['group_field'] . $chain_suffix;
+
+            $condition = !empty($ldap_method['condition'])
+                ? $ldap_method['condition']
+                : '(objectClass=*)';
+
+            $groups_iterator = $DB->request([
+                'SELECT' => ['id', 'ldap_group_dn'],
+                'FROM'   => 'glpi_groups',
+                'WHERE'  => ['NOT' => ['ldap_group_dn' => '']],
+            ]);
+
+            $ldap_error = false;
+
+            foreach ($groups_iterator as $group_row) {
+                $group_id = (int) $group_row['id'];
+                $group_dn = $group_row['ldap_group_dn'];
+                $escaped  = ldap_escape($group_dn, '', LDAP_ESCAPE_FILTER);
+                $filter   = "(& $condition ($user_group_attr=$escaped))";
+                $cookie   = '';
+
+                do {
+                    if (!empty($ldap_method['pagesize'])) {
+                        $controls = [[
+                            'oid'        => LDAP_CONTROL_PAGEDRESULTS,
+                            'iscritical' => true,
+                            'value'      => ['size' => (int) $ldap_method['pagesize'], 'cookie' => $cookie],
+                        ]];
+                        $sr = @ldap_search(
+                            $ldap_connection,
+                            $ldap_method['basedn'],
+                            $filter,
+                            ['dn'],
+                            0,
+                            -1,
+                            -1,
+                            LDAP_DEREF_NEVER,
+                            $controls
+                        );
+                        if (
+                            $sr instanceof Result
+                            && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
+                            && isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])
+                        ) {
+                            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+                        } else {
+                            $cookie = '';
+                        }
+                    } else {
+                        $sr     = @ldap_search($ldap_connection, $ldap_method['basedn'], $filter, ['dn']);
+                        $cookie = '';
+                    }
+
+                    if ($sr === false) {
+                        $ldap_error = true;
+                        break 2;
+                    }
+
+                    /** @var Result $sr */
+                    $info = AuthLDAP::get_entries_clean($ldap_connection, $sr);
+                    for ($i = 0; $i < ($info['count'] ?? 0); $i++) {
+                        if (!empty($info[$i]['dn'])) {
+                            $member_key = strtolower($info[$i]['dn']);
+                            $cache[$auth_id][$member_key][] = $group_id;
+                        }
+                    }
+                } while ($cookie !== '');
+            }
+
+            if ($ldap_error) {
+                unset($cache[$auth_id]);
+                return false;
+            }
+        }
+
+        $user_key = strtolower($userdn);
+        foreach ($cache[$auth_id][$user_key] ?? [] as $group_id) {
+            $this->fields["_groups"][] = $group_id;
+        }
+
         return true;
     }
 
@@ -3695,6 +3823,7 @@ HTML;
             'datatype'          => 'specific',
             'additionalfields'  => ['2fa'],
             'nosearch'          => true, // Searching virtual fields is not supported currently
+            'nosort'            => true, // Same as above
         ];
 
         // add objectlock search options
@@ -4205,6 +4334,63 @@ HTML;
         }
         $criteria['WHERE'] = $WHERE;
         return $DB->request($criteria);
+    }
+
+    /**
+     * Check if a user is valid (active, not deleted, in entity) without loading all users.
+     *
+     * @param int              $user_id           User ID to check
+     * @param int|int[]        $entity_restrict   Entity ID or list of entity IDs
+     */
+    public static function isValidUserForEntity(int $user_id, int|array $entity_restrict): bool
+    {
+        global $DB;
+
+        if (!is_array($entity_restrict) && $entity_restrict < 0) {
+            $entity_restrict = $_SESSION["glpiactiveentities"];
+        }
+
+        $config = Config::getConfigurationValues('core');
+
+        $where = [
+            'glpi_users.id'         => $user_id,
+            'glpi_users.is_deleted' => 0,
+            'glpi_users.is_active'  => 1,
+            [
+                'OR' => [
+                    ['glpi_users.begin_date' => null],
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'OR' => [
+                    ['glpi_users.end_date' => null],
+                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'NOT' => ['glpi_users.id' => $config['system_user']],
+            ],
+        ];
+
+        $entity_criteria = getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true);
+        if ($entity_criteria !== []) {
+            $where['OR'] = $entity_criteria;
+        }
+
+        return $DB->request([
+            'COUNT'    => 'cpt',
+            'FROM'     => 'glpi_users',
+            'LEFT JOIN' => [
+                'glpi_profiles_users' => [
+                    'ON' => [
+                        'glpi_profiles_users' => 'users_id',
+                        'glpi_users'          => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => $where,
+        ])->current()['cpt'] > 0;
     }
 
 
@@ -4719,7 +4905,8 @@ HTML;
             'serial'      => '',
             'otherserial' => '',
             'states'      => [],
-            'group'    => [],
+            'group'       => [],
+            'users'       => [],
         ];
 
         if ($tech) {
@@ -4769,16 +4956,22 @@ HTML;
         }
 
         $group_choices = [];
-        foreach ($groups as $g_id => $g_name) {
-            $group_choices[$g_id] = $g_name;
+        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
+            $group_choices[$g_id] = $row['completename'];
         }
         asort($group_choices);
+
+        $user_choices = [];
+        foreach (self::getSqlSearchResult(false, 'all') as $row) {
+            $user_choices[$row['id']] = formatUserName($row['id'], $row['name'], $row['realname'], $row['firstname']);
+        }
 
         $array_filters_choices = [
             'type'     => $type_choices,
             'entity'   => $entity_choices,
             'states'   => $state_choices,
             'group'    => $group_choices,
+            'users'    => $user_choices,
         ];
 
         foreach ($get_filters as $f => $value) {
@@ -4821,15 +5014,16 @@ HTML;
                 }
                 if (count($filters['group']) > 0) {
                     $group_criteria = [];
-                    foreach ($filters['group'] as $lt) {
+                    foreach ($filters['group'] as $group_id) {
                         $group_criteria[] = [
-                            $relation_table . '.groups_id' => $lt,
+                            $relation_table . '.groups_id' => (int) $group_id,
                             $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
                         ];
                     }
-                    if (count($group_criteria) > 0) {
-                        $item_criteria[] = ['OR' => $group_criteria];
-                    }
+                    $item_criteria[] = ['OR' => $group_criteria];
+                }
+                if (count($filters['users']) > 0) {
+                    $item_criteria[$itemtable . '.' . $field_user] = $filters['users'];
                 }
 
                 foreach ($filters['entity'] as $entity_id) {
@@ -4894,14 +5088,18 @@ HTML;
                     }
                     if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
                         $group_names = [];
-                        foreach (explode(',', $data['groups_ids'] ?? '') as $g_id) {
-                            if (empty($g_id)) {
+                        foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
+                            if (empty($group_id)) {
                                 continue;
                             }
-                            if (!isset($groups[$g_id])) {
-                                $groups[$g_id] = Dropdown::getDropdownName("glpi_groups", intval($g_id));
+                            if (!isset($group_choices[$group_id])) {
+                                $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
                             }
-                            $group_names[] = $groups[$g_id];
+                            $group_names[] = htmlescape($group_choices[$group_id]);
+                        }
+                        $user_id = (int) ($data[$field_user] ?? 0);
+                        if ($user_id > 0 && !isset($user_choices[$user_id])) {
+                            $user_choices[$user_id] = getUserName($user_id);
                         }
 
                         $entries[] = [
@@ -4915,7 +5113,8 @@ HTML;
                             'states'        => !empty($data['states_id'])
                                 ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
                                 : '',
-                            'group'         => implode(', ', $group_names),
+                            'group'         => implode('<br>', array_filter($group_names)),
+                            'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
                         ];
                     }
                     $number++;
@@ -4944,21 +5143,27 @@ HTML;
                     'label'            => __('Status'),
                     'filter_formatter' => 'array',
                 ],
-                'group'      => [
-                    'label'            => Group::getTypeName(1),
+                'group'         => [
+                    'label'            => Group::getTypeName(Session::getPluralNumber()),
+                    'filter_formatter' => 'array',
+                ],
+                'users'         => [
+                    'label'            => self::getTypeName(Session::getPluralNumber()),
                     'filter_formatter' => 'array',
                 ],
             ],
             'columns_values'        => [
-                'type'     => $type_choices,
-                'entity'   => $entity_choices,
-                'states'   => $state_choices,
-                'group'    => $group_choices,
+                'type'      => $type_choices,
+                'entity'    => $entity_choices,
+                'states'    => $state_choices,
+                'group'     => $group_choices,
+                'users'     => $user_choices,
             ],
             'filters' => $filters,
             'additional_params'     => http_build_query(['filters' => $filters]),
             'formatters' => [
-                'name'          => 'raw_html',
+                'name'   => 'raw_html',
+                'group'  => 'raw_html',
             ],
             'entries'               => $entries,
             'total_number'          => $number,

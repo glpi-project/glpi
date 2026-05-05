@@ -48,39 +48,15 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="login_name">{{ __('Login') }}</label>
-                    <input type="text" class="form-control" id="login_name" name="login_name" placeholder="" tabindex="1"/>
+                    <input type="text" class="form-control" id="login_name" name="login_name" placeholder=""/>
                 </div>
                 <div class="mb-4">
                     <div class="d-flex">
                         <label class="form-label" for="login_password">
                             {{ __('Password') }}
                         </label>
-
-                        {% if show_lost_password %}
-                            <span class="ms-auto form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
-                                <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
-                                    {{ __('Forgotten password?') }}
-                                </a>
-                            </span>
-                            {% if config('display_login_source') %}
-                                <script>
-                                    $(() => {
-                                        if ($('select[name="auth"]').val() === 'local') {
-                                            $('.forgot_password').removeClass('d-none');
-                                        }
-                                        $('select[name="auth"]').on('change', function () {
-                                            if ($(this).val() === 'local') {
-                                                $('.forgot_password').removeClass('d-none');
-                                            } else {
-                                                $('.forgot_password').addClass('d-none');
-                                            }
-                                        });
-                                    });
-                                </script>
-                            {% endif %}
-                        {% endif %}
                     </div>
-                    <input type="password" class="form-control" id="login_password" name="login_password" placeholder="" autocomplete="off" tabindex="2"/>
+                    <input type="password" class="form-control" id="login_password" name="login_password" placeholder="" autocomplete="off"/>
                 </div>
 
                 {% if config('display_login_source') %}
@@ -100,9 +76,32 @@
                 {% endif %}
 
                 <div class="form-footer">
-                    <button type="submit" name="submit" class="btn btn-primary w-100" tabindex="3">
+                    <button type="submit" name="submit" class="btn btn-primary w-100 mb-2">
                         {{ __('Sign in') }}
                     </button>
+                    {% if show_lost_password %}
+                        <div class="ms-auto text-center forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
+                            <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
+                                {{ __('Forgotten password?') }}
+                            </a>
+                        </div>
+                        {% if config('display_login_source') %}
+                            <script>
+                                $(() => {
+                                    if ($('select[name="auth"]').val() === 'local') {
+                                        $('.forgot_password').removeClass('d-none');
+                                    }
+                                    $('select[name="auth"]').on('change', function () {
+                                        if ($(this).val() === 'local') {
+                                            $('.forgot_password').removeClass('d-none');
+                                        } else {
+                                            $('.forgot_password').addClass('d-none');
+                                        }
+                                    });
+                                });
+                            </script>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
 

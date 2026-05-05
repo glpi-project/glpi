@@ -39,6 +39,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use GLPIMailer;
 use Group;
 use Session;
 use Ticket;
@@ -256,7 +257,7 @@ enum ITILActorFieldStrategy: string
             }, []);
         } elseif ($answer->getType() instanceof QuestionTypeEmail) {
             $value = $answer->getRawAnswer();
-            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            if (GLPIMailer::validateAddress($value)) {
                 return [
                     [
                         'itemtype' => User::class,

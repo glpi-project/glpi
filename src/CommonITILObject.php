@@ -9620,15 +9620,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     && $actor['items_id'] > 0
                     && $found === false
                 ) {
-                    $valid_users = iterator_to_array(
-                        User::getSqlSearchResult(
-                            false,
-                            'all',
-                            $this->fields['entities_id']
-                        )
-                    );
-
-                    if (isset($valid_users[$actor['items_id']])) {
+                    if (User::isValidUserForEntity($actor['items_id'], $this->fields['entities_id'])) {
                         $added[] = $actor;
                     }
                 } elseif ($found === false) {

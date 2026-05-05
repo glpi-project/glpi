@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Change;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
@@ -54,15 +55,23 @@ use Glpi\Toolbox\MarkdownRenderer;
 use Glpi\UI\ThemeManager;
 use Html;
 use JsonException;
+use Laminas\I18n\Translator\TextDomain;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Problem;
 use Profile;
 use ProfileRight;
 use Session;
 use Throwable;
+use Ticket;
 use Transfer;
 use User;
 
+use function Safe\array_replace_recursive;
+use function Safe\fclose;
 use function Safe\file_get_contents;
+use function Safe\fopen;
+use function Safe\json_encode;
+use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -128,6 +137,44 @@ EOT,
                                 // Filled dynamically below
                             ],
                         ],
+                        'helpdesk_hardware' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'x-version-introduced' => '2.3',
+                            'enum' => [0, 1, 2, 3],
+                            'description' => <<<EOT
+                                Indicates the level of rights the user has regarding associating assets with assistance items (like tickets). Possible values:
+                                - 0: Cannot associate any assets with assistance items
+                                - 1: Can link their own assets with assistance items
+                                - 2: Can link any assets with assistance items
+                                - 3: Same as 2 but may see both "My devices" and "All items" in the web interface when associating assets with assistance items
+                                See 'helpdesk_item_type' for which item types can be associated when helpdesk_hardware is greater than 0.
+EOT,
+                        ],
+                        'helpdesk_item_type' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'If helpdesk_hardware is greater than 0, this is a JSON-encoded string which indicates the item types that the user can associate with assistance items.',
+                        ],
+                        'managed_domainrecordtypes' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'A JSON-encoded string which indicates the IDs of domain record types that the user can manage. An array element with a value of -1 indicates that the user can manage all domain record types.',
+                        ],
+                        'ticket_status' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'JSON encoded object which indicates the status transitions the user can perform for tickets. For example, if the user can close a ticket that is solved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
+                        ],
+                        'change_status' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'JSON encoded object which indicates the status transitions the user can perform for changes. For example, if the user can close a change that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
+                        ],
+                        'problem_status' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-version-introduced' => '2.3',
+                            'description' => 'JSON encoded object which indicates the status transitions the user can perform for problems. For example, if the user can close a problem that is resolved. The keys are the source statuses. The values are an object with the keys as the target statuses and values as booleans indicating if it is allowed.',
+                        ],
                     ],
                 ],
                 'active_entity' => [
@@ -138,6 +185,11 @@ EOT,
                         'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
                         'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
                     ],
+                ],
+                'groups' => [
+                    'x-version-introduced' => '2.3',
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => ['type' => Doc\Schema::TYPE_INTEGER],
                 ],
             ],
         ];
@@ -283,17 +335,44 @@ EOT,
         $swagger_content .= Html::script('/lib/swagger-ui.js');
         $swagger_content .= Html::css('/lib/swagger-ui.css');
         $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
+
+        $hlapi_versions = array_filter(Router::getAPIVersions(), static fn($v) => $v['api_version'] !== '1');
+        $doc_json_paths = [];
+        foreach ($hlapi_versions as $version_info) {
+            $is_deprecated = $version_info['deprecated'] ?? false;
+            $doc_json_paths[] = [
+                'url' => $CFG_GLPI['root_doc'] . '/api.php/v' . $version_info['version'] . '/doc.json',
+                'name' => 'v' . $version_info['version'] . ($is_deprecated ? ' (deprecated)' : ''),
+                'version' => $version_info['version'],
+            ];
+        }
         $api_version = $this->getAPIVersion($request);
-        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/v' . $api_version . '/doc.json';
+        // sort by version number descending and keep the current version first to make sure the right version is always selected
+        usort($doc_json_paths, static function ($a, $b) use ($api_version) {
+            if ($a['version'] === $api_version) {
+                return -1;
+            }
+            if ($b['version'] === $api_version) {
+                return 1;
+            }
+            return version_compare($b['version'], $a['version']);
+        });
+        $doc_json_paths = json_encode($doc_json_paths, JSON_THROW_ON_ERROR);
+
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
-        <body>
+        <body style="margin:0; padding:0;">
             <div id="swagger-ui"></div>
             <script>
                 const ui = window.SwaggerUIBundle({
-                    url: '{$doc_json_path}',
+                    urls: {$doc_json_paths},
                     dom_id: '#swagger-ui',
+                    presets: [
+                      SwaggerUIBundle.presets.apis,
+                      SwaggerUIStandalonePreset
+                    ],
+                    layout: 'StandaloneLayout',
                     docExpansion: 'none',
                     validatorUrl: 'none',
                     filter: true,
@@ -499,6 +578,10 @@ HTML;
                 'name' => 'active_entities',
                 'default' => [],
             ],
+            'glpigroups' => [
+                'name' => 'groups',
+                'default' => [],
+            ],
         ];
         $session = [];
         foreach ($allowed_keys_mapping as $key => $new_key) {
@@ -507,10 +590,41 @@ HTML;
         // Convert current_time YYYY-MM-DD HH-mm-ss to RFC3339 datetime
         $session['current_time'] = date(DATE_RFC3339, strtotime($session['current_time']));
         $active_profile = $_SESSION['glpiactiveprofile'];
+
+        $default_ticket_status = array_reduce(array_keys(Ticket::getAllStatusArray()), static function ($acc, $status) {
+            $acc[$status] = array_reduce(array_keys(Ticket::getAllStatusArray()), static function ($acc2, $target_status) {
+                $acc2[$target_status] = true;
+                return $acc2;
+            }, []);
+            return $acc;
+        }, []);
+        $ticket_status = array_map(static fn($transitions) => array_map(static fn($allowed) => $allowed === 1, $transitions), $active_profile['ticket_status'] ?? []);
+
+        $default_change_status = array_reduce(array_keys(Change::getAllStatusArray()), static function ($acc, $status) {
+            $acc[$status] = array_reduce(array_keys(Change::getAllStatusArray()), static function ($acc2, $target_status) {
+                $acc2[$target_status] = true;
+                return $acc2;
+            }, []);
+            return $acc;
+        }, []);
+        $change_status = array_map(static fn($transitions) => array_map(static fn($allowed) => $allowed === 1, $transitions), $active_profile['change_status'] ?? []);
+
+        $default_problem_status = array_reduce(array_keys(Problem::getAllStatusArray()), static function ($acc, $status) {
+            $acc[$status] = array_reduce(array_keys(Problem::getAllStatusArray()), static function ($acc2, $target_status) {
+                $acc2[$target_status] = true;
+                return $acc2;
+            }, []);
+            return $acc;
+        }, []);
+        $problem_status = array_map(static fn($transitions) => array_map(static fn($allowed) => $allowed === 1, $transitions), $active_profile['problem_status'] ?? []);
+
         $session['active_profile'] = [
             'id' => $active_profile['id'],
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
+            'ticket_status' => json_encode(array_replace_recursive($default_ticket_status, $ticket_status)),
+            'change_status' => json_encode(array_replace_recursive($default_change_status, $change_status)),
+            'problem_status' => json_encode(array_replace_recursive($default_problem_status, $problem_status)),
         ];
 
         if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
@@ -522,6 +636,12 @@ HTML;
                     $session['active_profile']['rights'][$key] = 0;
                 }
             }
+        }
+
+        if (version_compare($this->getAPIVersion($request), '2.3', '>=')) {
+            $session['active_profile']['helpdesk_hardware'] = $active_profile['helpdesk_hardware'] ?? 0;
+            $session['active_profile']['helpdesk_item_type'] = json_encode($active_profile['helpdesk_item_type'] ?? []);
+            $session['active_profile']['managed_domainrecordtypes'] = json_encode($active_profile['managed_domainrecordtypes'] ?? []);
         }
 
         $session['active_entity'] = [
@@ -814,5 +934,75 @@ HTML;
         };
         $select_tree($entitiestree);
         return new JSONResponse($entitiestree);
+    }
+
+    #[Route(path: '/locales', methods: ['GET'], tags: ['Localization'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\Route(
+        description: 'Get the localization strings',
+        parameters: [
+            new Doc\Parameter(
+                name: 'domain',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING
+                ),
+                location: Doc\Parameter::LOCATION_QUERY,
+            ),
+        ]
+    )]
+    public function getLocales(Request $request): Response
+    {
+        global $TRANSLATE, $CFG_GLPI;
+
+        $messages = $TRANSLATE->getAllMessages($_GET['domain']);
+        if (!($messages instanceof TextDomain)) {
+            // No TextDomain found means that there is no translations for given domain.
+            // It is mostly related to plugins that does not provide any translations.
+            $default_response = [
+                '' => [
+                    'language'     => $TRANSLATE->getLocale(),
+                    'plural-forms' => 'nplurals=2; plural=(n != 1);',
+                ],
+            ];
+            return new JSONResponse($default_response);
+        }
+
+        // Extract headers from main po file
+        $po_file = GLPI_ROOT . '/locales/' . preg_replace(
+            '/\.mo$/',
+            '.po',
+            $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
+        );
+        $po_file_handle = fopen(
+            $po_file,
+            'rb'
+        );
+
+        $in_headers = false;
+        $headers = [];
+        $header_keys = ['language', 'plural-forms'];
+        while (false !== ($line = fgets($po_file_handle))) {
+            if (preg_match('/^msgid\s+""\s*$/', $line)) {
+                $in_headers = true;
+                continue;
+            }
+            if ($in_headers && preg_match('/^msgid\s+".*"\s*$/', $line)) {
+                break; // new msgid = end of headers parsing
+            }
+            $header = [];
+            if ($in_headers && preg_match('/^"(?P<name>[a-z-]+):\s*(?P<value>.*)\\\n"\s*$/i', $line, $header)) {
+                $header_name = strtolower($header['name']);
+                $header_value = $header['value'];
+                if (in_array($header_name, $header_keys)) {
+                    $headers[$header_name] = $header_value;
+                }
+            }
+        }
+        fclose($po_file_handle);
+
+        // Output messages and headers
+        $messages[''] = $headers;
+        $messages->ksort();
+        return new JSONResponse((array) $messages);
     }
 }

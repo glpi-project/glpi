@@ -164,7 +164,29 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
 
-## [11.0.7] unreleased
+
+## [11.0.8] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.7] 2026-04-29
 
 ### Added
 - Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
@@ -195,10 +217,19 @@ The present file will list all changes made to the project; according to the
 ## [11.0.6] 2026-03-03
 
 ### Added
+- New schemas/endpoints for over 25 types and models in High-Level API v2.3.
+- New schemas/endpoints for antivirus, virtual machine, connections, remote management, and many more types related to assets in High-Level API v2.3.
+- New schemas/endpoints for Email authentication servers, ldap replicates, email collectors, field unicity, and automatic actions in High-Level API v2.3.
+- New schemas/endpoints for Project and Project Task teams in High-Level API v2.3.
+- Added more properties to Project Task schema in High-Level API v2.3.
 
 ### Changed
+- State visiblity data is now writable in the High-Level API. **This change affects all API versions**.
 
 ### Deprecated
+- v2.0, v2.1, and v2.2 of the High-Level API. 
+These versions will still be available but will show a warning in the documentation indicating they are deprecated and will be removed in a future major version.
+If you have anything pinned to specific v2 versions, please try to pin to the latest version (v2.3) if possible to avoid future issues when the older versions are removed.
 
 ### Removed
 
@@ -1002,7 +1033,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.25] unreleased
+## [10.0.26] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.25] 2026-04-29
 
 ### Added
 

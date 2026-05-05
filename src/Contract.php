@@ -617,6 +617,14 @@ class Contract extends CommonDBTM implements StateInterface
         ];
 
         $tab[] = [
+            'id'                 => '24',
+            'table'              => $this->getTable(),
+            'field'              => 'max_links_allowed',
+            'name'               => __('Max number of items'),
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
             'id'                 => '10',
             'table'              => static::getTable(),
             'field'              => 'accounting_number',

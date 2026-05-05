@@ -48,8 +48,19 @@ use JsonException;
 use LogicException;
 use Rule;
 use RuleAction;
+use RuleAssetCollection;
+use RuleChangeCollection;
 use RuleCollection;
 use RuleCriteria;
+use RuleDefineItemtypeCollection;
+use RuleImportAssetCollection;
+use RuleImportEntityCollection;
+use RuleLocationCollection;
+use RuleMailCollectorCollection;
+use RuleProblemCollection;
+use RuleRightCollection;
+use RuleSoftwareCategoryCollection;
+use RuleTicketCollection;
 use Session;
 
 #[Route(path: '/Rule', requirements: [
@@ -278,25 +289,24 @@ final class RuleController extends AbstractController
 
     public static function getRuleCollections(): array
     {
-        global $CFG_GLPI;
-
         /** @var class-string<RuleCollection>[] $collections */
-        $collections = $CFG_GLPI['rulecollections_types'];
+        $collections = [
+            RuleDefineItemtypeCollection::class,
+            RuleImportAssetCollection::class,
+            RuleImportEntityCollection::class,
+            RuleLocationCollection::class,
+            RuleMailCollectorCollection::class,
+            RuleRightCollection::class,
+            RuleSoftwareCategoryCollection::class,
+            RuleTicketCollection::class,
+            RuleChangeCollection::class,
+            RuleProblemCollection::class,
+            RuleAssetCollection::class,
+        ];
         $visible_collections = [];
         foreach ($collections as $collection) {
-            if (!\is_a($collection, RuleCollection::class, true)) {
-                continue; // Ignore invalid classes
-            }
-
-            /** @var RuleCollection $instance */
-            $instance = new $collection();
-            if ($instance->canList()) {
-                $rule_class = $instance::getRuleClassName();
-                if (str_starts_with($rule_class, 'Rule')) {
-                    // Only handle rules from the core in the global namespace here
-                    $visible_collections[] = substr($rule_class, 4);
-                }
-            }
+            $rule_class = $collection::getRuleClassName();
+            $visible_collections[] = substr($rule_class, 4);
         }
 
         return $visible_collections;

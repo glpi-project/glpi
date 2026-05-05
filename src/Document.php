@@ -223,10 +223,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     {
         global $CFG_GLPI;
 
-        // security (don't accept filename from $_REQUEST)
-        if (array_key_exists('filename', $_REQUEST)) {
-            unset($input['filename']);
-        }
+        $input = $this->filterFields($input);
+
+        // current_filename is not necessary (item is new, current_filename should not exist
+        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        $input['current_filename'] = '';
 
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
@@ -247,9 +248,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         } elseif (!empty($input["upload_file"])) {
             // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
-        } elseif (isset($input['filepath']) && file_exists(GLPI_DOC_DIR . '/' . $input['filepath'])) {
-            // Document is created using an existing document file
-            $upload_ok = true;
         }
 
         // Tag
@@ -339,12 +337,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForUpdate($input)
     {
-        // security (don't accept filename from $_REQUEST)
-        if (array_key_exists('filename', $_REQUEST)) {
-            unset($input['filename']);
-        }
+        $input = $this->filterFields($input);
 
         if (isset($input['current_filepath'])) {
+            // Always use the values stored in DB to prevent arbitrary file deletion
+            $input['current_filepath'] = $this->fields['filepath'];
+            $input['current_filename'] = $this->fields['filename'];
+
             if (!empty($input["_filename"])) {
                 self::moveDocument($input, array_shift($input["_filename"]));
             } elseif (!empty($input["upload_file"])) {
@@ -1819,5 +1818,22 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             url_parameters: [],
         );
         return $control_manager->canAnswerForm($form, $parameters);
+    }
+
+    /**
+     * Remove $input fields that should not be provided by user input
+     *
+     * @param  array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function filterFields(array $input): array
+    {
+        // security (don't accept filename from $_REQUEST)
+        if (array_key_exists('filename', $_REQUEST)) {
+            unset($input['filename']);
+        }
+
+        $blacklisted = ['filepath', 'sha1sum'];
+        return array_filter($input, static fn($v, $k) => !in_array($k, $blacklisted), ARRAY_FILTER_USE_BOTH);
     }
 }

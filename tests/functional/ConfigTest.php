@@ -927,4 +927,29 @@ class ConfigTest extends DbTestCase
         // Assert: make sure we reached this point without errors
         $this->assertNotEmpty($html);
     }
+
+    public function testPrepareInputForUpdateSsoLogoutUrl(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $config = new Config();
+
+        // Invalid URL
+        $config->prepareInputForUpdate([
+            'ssologout_url' => 'not a valid URL',
+        ]);
+        $this->assertEquals('', $CFG_GLPI['ssologout_url']);
+        $this->hasSessionMessages(ERROR, [
+            'Invalid SSO logout URL.',
+        ]);
+
+        // Valid URL
+        $config->prepareInputForUpdate([
+            'ssologout_url' => 'https://example.org/logout/',
+        ]);
+        $this->assertEquals('https://example.org/logout/', $CFG_GLPI['ssologout_url']);
+    }
 }

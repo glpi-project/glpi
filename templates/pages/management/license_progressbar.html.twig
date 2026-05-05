@@ -35,7 +35,7 @@
     {% set is_unlimited = total == -1 %}
     {% set license_contexts = {
         'valid': {
-            'progress' : (100 * licences_assigned / total)|round(2),
+            'progress' : (total > 0 ? (100 * licences_assigned / total) : 0)|round(2),
             'icon' : 'ti ti-circle-check text-success',
             'color': 'bg-success',
             'remaining': remaining|number_format,

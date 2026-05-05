@@ -70,7 +70,7 @@ if (($_POST["action"] ?? null) == "clone_event") {
 }
 
 if (($_POST["action"] ?? null) == "delete_event") {
-    $extevent->check(-1, DELETE);
+    $extevent->check((int) $_POST['event']['items_id'], DELETE);
     echo Planning::deleteEvent($_POST['event']);
     return;
 }

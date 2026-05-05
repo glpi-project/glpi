@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a872d5b6252080449e3c7c30854ea560",
+    "content-hash": "fac702daf314924f9f46ab92a2644afa",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -11545,25 +11545,25 @@
         },
         {
             "name": "glpi-project/phpstan-glpi",
-            "version": "1.1.1",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/phpstan-glpi.git",
-                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe"
+                "reference": "2d0e9c1ef5f2110618b70e49d250f64868f2f85c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/phpstan-glpi/zipball/e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
-                "reference": "e98ef833abc1389a0cc69743db5b1f3a7dc8ccfe",
+                "url": "https://api.github.com/repos/glpi-project/phpstan-glpi/zipball/2d0e9c1ef5f2110618b70e49d250f64868f2f85c",
+                "reference": "2d0e9c1ef5f2110618b70e49d250f64868f2f85c",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.4",
                 "phpstan/phpstan": "^2.1",
-                "symfony/polyfill-php80": "^1.32"
+                "symfony/polyfill-php80": "^1.33"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.85",
+                "friendsofphp/php-cs-fixer": "^3.94",
                 "php-parallel-lint/php-parallel-lint": "^1.4",
                 "phpstan/phpstan-phpunit": "^2.0",
                 "phpunit/phpunit": "^9.6"
@@ -11588,9 +11588,9 @@
             "description": "PHPStan rules for GLPI.",
             "support": {
                 "issues": "https://github.com/glpi-project/phpstan-glpi/issues",
-                "source": "https://github.com/glpi-project/phpstan-glpi/tree/1.1.1"
+                "source": "https://github.com/glpi-project/phpstan-glpi/tree/1.2.0"
             },
-            "time": "2025-08-11T13:48:13+00:00"
+            "time": "2026-04-30T10:05:25+00:00"
         },
         {
             "name": "glpi-project/rector-glpi",
@@ -12154,11 +12154,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.46",
+            "version": "2.1.54",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a193923fc2d6325ef4e741cf3af8c3e8f54dbf25",
-                "reference": "a193923fc2d6325ef4e741cf3af8c3e8f54dbf25",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8be50c3992107dc837b17da4d140fbbdf9a5c5bd",
+                "reference": "8be50c3992107dc837b17da4d140fbbdf9a5c5bd",
                 "shasum": ""
             },
             "require": {
@@ -12203,7 +12203,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-01T09:25:14+00:00"
+            "time": "2026-04-29T13:31:09+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

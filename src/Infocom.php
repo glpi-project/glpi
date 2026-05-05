@@ -206,7 +206,7 @@ class Infocom extends CommonDBChild
             [
                 'suppliers_id' => $item->getID(),
                 'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
-            ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
+            ] + getEntitiesRestrictCriteria('glpi_infocoms', '', '')
         );
     }
 

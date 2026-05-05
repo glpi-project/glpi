@@ -3851,7 +3851,7 @@ HTML;
                 $multi = true;
             }
         } else {
-            $where += getEntitiesRestrictCriteria($table, '', $_SESSION['glpiactiveentities'], $multi);
+            $where += getEntitiesRestrictCriteria($table, '', '', $multi);
             if (count($_SESSION['glpiactiveentities']) > 1) {
                 $multi = true;
             }

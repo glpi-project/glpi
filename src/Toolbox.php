@@ -124,6 +124,13 @@ use function Safe\unpack;
 class Toolbox
 {
     /**
+     * Regular expression pattern for validating email addresses in ITIL actor fields.
+     * Supports UTF-8 characters and special characters as per RFC 6531.
+     * @var string
+     */
+    public const ACTOR_EMAIL_VALIDATION_REGEX = '/^[\p{L}\p{N}\p{M}._%+\'-]+@([\p{L}\p{N}\p{M}._-]+\.)+[\p{L}\p{N}]{2,63}$/u';
+
+    /**
      * Wrapper for max_input_vars
      *
      * @since 0.84
@@ -783,7 +790,7 @@ class Toolbox
             }
         }
         //TRANS: %1$s is a number maybe float or string and %2$s the unit
-        return sprintf(__('%1$s %2$s'), round($size, 2), $val);
+        return sprintf(__('%1$s %2$s'), round((float) $size, 2), $val);
     }
 
 

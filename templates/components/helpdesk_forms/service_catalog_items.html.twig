@@ -100,7 +100,7 @@
 {% endfor %}
 
 {# Add pagination if there are more items than items_per_page #}
-{% set sort_strategy = sort_strategy|default('popularity') %}
+{% set sort_strategy = sort_strategy|default(default_sort_strategy)|default('popularity') %}
 {% if total > items_per_page %}
     {% set total_pages = ((total + items_per_page - 1) / items_per_page)|round(0, 'floor') %}
     {% set adjacents = 2 %}

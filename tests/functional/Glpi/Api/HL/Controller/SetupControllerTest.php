@@ -35,10 +35,19 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use AuthLDAP;
+use AuthLdapReplicate;
+use AuthMail;
+use Computer;
 use Config;
+use Glpi\Api\HL\Controller\SetupController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Link;
+use MailCollector;
+use NotImportedEmail;
+use QueuedWebhook;
+use SLM;
 
 class SetupControllerTest extends HLAPITestCase
 {
@@ -54,7 +63,7 @@ class SetupControllerTest extends HLAPITestCase
                     foreach ($content as $asset) {
                         $this->assertNotEmpty($asset['itemtype']);
                         $this->assertNotEmpty($asset['name']);
-                        $this->assertEquals('/Setup/' . $asset['itemtype'], $asset['href']);
+                        $this->assertStringStartsWith('/Setup/', $asset['href']);
                     }
                 });
         });
@@ -64,18 +73,38 @@ class SetupControllerTest extends HLAPITestCase
     {
         $this->login();
         $entity = $this->getTestRootEntity(true);
+        $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+
         $dataset = [
             [
                 'name' => 'testAutoSearch_1',
                 'entity' => $entity,
+                'slm' => $slm->getID(),
+                'time' => 30,
+                'time_unit' => 'hour',
+                'execution_time' => 45,
+                'url' => 'https://example.com',
+                'link' => 'https://example.com',
             ],
             [
                 'name' => 'testAutoSearch_2',
                 'entity' => $entity,
+                'slm' => $slm->getID(),
+                'time' => 30,
+                'time_unit' => 'hour',
+                'execution_time' => 45,
+                'url' => 'https://example.com',
+                'link' => 'https://example.com',
             ],
             [
                 'name' => 'testAutoSearch_3',
                 'entity' => $entity,
+                'slm' => $slm->getID(),
+                'time' => 30,
+                'time_unit' => 'hour',
+                'execution_time' => 45,
+                'url' => 'https://example.com',
+                'link' => 'https://example.com',
             ],
         ];
         $this->api->call(new Request('GET', '/Setup'), function ($call) use ($dataset) {
@@ -85,7 +114,24 @@ class SetupControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) use ($dataset) {
                     $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $type) {
-                        $this->api->autoTestSearch('/Setup/' . $type['itemtype'], $dataset);
+                        if ($type['itemtype'] === 'ManualLink') {
+                            $dataset[0]['itemtype'] = Computer::class;
+                            $dataset[0]['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                            $dataset[1]['itemtype'] = Computer::class;
+                            $dataset[1]['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                            $dataset[2]['itemtype'] = Computer::class;
+                            $dataset[2]['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                        } elseif ($type['itemtype'] === 'FieldUnicity') {
+                            $dataset[0]['itemtype'] = Computer::class;
+                            $dataset[0]['fields'] = 'serial';
+                            $dataset[1]['itemtype'] = Computer::class;
+                            $dataset[1]['fields'] = 'serial';
+                            $dataset[2]['itemtype'] = Computer::class;
+                            $dataset[2]['fields'] = 'serial';
+                        } else {
+                            continue;
+                        }
+                        $this->api->autoTestSearch($type['href'], $dataset);
                     }
                 });
         });
@@ -94,14 +140,61 @@ class SetupControllerTest extends HLAPITestCase
     public function testAutoCRUD()
     {
         $this->login();
+
+
         $this->api->call(new Request('GET', '/Setup'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertGreaterThanOrEqual(1, count($content));
+                    $entity = $this->getTestRootEntity(true);
+                    $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+                    $sla = $this->createItem('SLA', [
+                        'name' => 'Test SLA for AutoCRUD',
+                        'entities_id' => $entity,
+                        'slms_id' => $slm->getID(),
+                        'number_time' => 30,
+                        'definition_time' => 'hour',
+                    ]);
+                    $ola = $this->createItem('OLA', [
+                        'name' => 'Test OLA for AutoCRUD',
+                        'entities_id' => $entity,
+                        'slms_id' => $slm->getID(),
+                        'number_time' => 30,
+                        'definition_time' => 'hour',
+                    ]);
                     foreach ($content as $type) {
-                        $this->api->autoTestCRUD('/Setup/' . $type['itemtype']);
+                        if ($type['itemtype'] === 'CronTask' || $type['itemtype'] === 'QueuedWebhook') {
+                            continue;
+                        }
+                        $create_params = [];
+                        if ($type['itemtype'] === 'SLA' || $type['itemtype'] === 'OLA') {
+                            $create_params['slm'] = $slm->getID();
+                            $create_params['entity'] = $entity;
+                            $create_params['time'] = 30;
+                            $create_params['time_unit'] = 'hour';
+                        } elseif ($type['itemtype'] === 'ManualLink') {
+                            $create_params['itemtype'] = Computer::class;
+                            $create_params['url'] = 'https://example.com';
+                            $create_params['items_id'] = getItemByTypeName(Computer::class, '_test_pc01', true);
+                        } elseif ($type['itemtype'] === 'SlaLevel') {
+                            $create_params['execution_time'] = 45;
+                            $create_params['sla'] = $sla->getID();
+                            $create_params['entity'] = $entity;
+                        } elseif ($type['itemtype'] === 'OlaLevel') {
+                            $create_params['execution_time'] = 45;
+                            $create_params['ola'] = $ola->getID();
+                            $create_params['entity'] = $entity;
+                        } elseif ($type['itemtype'] === 'FieldUnicity') {
+                            $create_params['itemtype'] = Computer::class;
+                            $create_params['fields'] = 'serial';
+                        } elseif ($type['itemtype'] === 'MailCollector') {
+                            $create_params['host'] = '{imap.example.com:993/imap/ssl/novalidate-cert}';
+                        } elseif ($type['itemtype'] === 'AuthLdapReplicate') {
+                            $create_params['host'] = 'ldap.example.com';
+                        }
+                        $this->api->autoTestCRUD($type['href'], $create_params);
                     }
                 });
         });
@@ -112,51 +205,122 @@ class SetupControllerTest extends HLAPITestCase
         $this->loginWeb();
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
-        $this->api->call(new Request('GET', '/Setup'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertGreaterThanOrEqual(1, count($content));
-                    foreach ($content as $type) {
-                        $create_request = new Request('POST', $type['href']);
-                        $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
-                        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
-                        $new_location = null;
-                        $new_items_id = null;
-                        $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                            /** @var \HLAPICallAsserter $call */
-                            $call->response
-                                ->isOK()
-                                ->headers(function ($headers) use (&$new_location) {
-                                    $new_location = $headers['Location'];
-                                })
-                                ->jsonContent(function ($content) use (&$new_items_id) {
-                                    $new_items_id = $content['id'];
-                                });
-                        });
-                        if ($type['itemtype'] === 'LDAPDirectory') {
-                            $this->api->autoTestCRUDNoRights(
-                                endpoint: $type['href'],
-                                itemtype: AuthLDAP::class,
-                                items_id: (int) $new_items_id,
-                                deny_create: static function () {
-                                    $_SESSION['glpiactiveprofile'][AuthLDAP::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
-                                },
-                                deny_purge: static function () {
-                                    $_SESSION['glpiactiveprofile'][AuthLDAP::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
-                                },
-                            );
-                        } else {
-                            $this->api->autoTestCRUDNoRights(
-                                endpoint: $type['href'],
-                                itemtype: $type['itemtype'],
-                                items_id: (int) $new_items_id,
-                            );
-                        }
-                    }
-                });
-        });
+        $types_20 = SetupController::getSetupEndpointTypes20();
+        $types_23 = SetupController::getSetupEndpointTypes23();
+
+        $entity = $this->getTestRootEntity(true);
+        $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+        $sla = $this->createItem('SLA', [
+            'name' => 'Test SLA for AutoCRUD',
+            'entities_id' => $entity,
+            'slms_id' => $slm->getID(),
+            'number_time' => 30,
+            'definition_time' => 'hour',
+        ]);
+        $ola = $this->createItem('OLA', [
+            'name' => 'Test OLA for AutoCRUD',
+            'entities_id' => $entity,
+            'slms_id' => $slm->getID(),
+            'number_time' => 30,
+            'definition_time' => 'hour',
+        ]);
+
+        foreach ([...$types_20, ...$types_23] as $type) {
+            if ($type === 'QueuedWebhook') {
+                continue;
+            }
+            $itemtype = $type;
+            $create_request = new Request('POST', '/Setup/' . $type);
+            $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
+            $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+            if ($type === 'SLA' || $type === 'OLA') {
+                $create_request->setParameter('slm', $slm->getID());
+                $create_request->setParameter('time', 2);
+                $create_request->setParameter('time_unit', 'hour');
+            } elseif ($type === 'FieldUnicity') {
+                $create_request->setParameter('itemtype', 'Computer');
+                $create_request->setParameter('fields', 'serial');
+            } elseif ($type === 'EmailCollector') {
+                $itemtype = MailCollector::class;
+                $create_request->setParameter('host', '{imap.example.com:993/imap/ssl/novalidate-cert}');
+            } elseif ($type === 'EmailAuthServer') {
+                $itemtype = AuthMail::class;
+            } elseif ($type === 'LDAPDirectory') {
+                $itemtype = AuthLDAP::class;
+            } elseif ($type === 'LDAPDirectoryReplicate') {
+                $itemtype = AuthLdapReplicate::class;
+                $create_request->setParameter('ldap_directory', getItemByTypeName('AuthLDAP', '_local_ldap', true));
+                $create_request->setParameter('host', 'ldap.example.com');
+            } elseif ($type === 'ManualLink') {
+                $create_request->setParameter('itemtype', Computer::class);
+                $create_request->setParameter('url', 'https://example.com');
+                $create_request->setParameter('items_id', getItemByTypeName(Computer::class, '_test_pc01', true));
+            } elseif ($type === 'ExternalLink') {
+                $itemtype = Link::class;
+            } elseif ($type === 'SLALevel') {
+                $create_request->setParameter('execution_time', 45);
+                $create_request->setParameter('sla', $sla->getID());
+                $create_request->setParameter('entity', $entity);
+            } elseif ($type === 'OLALevel') {
+                $create_request->setParameter('execution_time', 45);
+                $create_request->setParameter('ola', $ola->getID());
+                $create_request->setParameter('entity', $entity);
+            }
+            $new_location = null;
+            $new_items_id = null;
+            $this->login();
+            $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->headers(function ($headers) use (&$new_location) {
+                        $new_location = $headers['Location'];
+                    })
+                    ->jsonContent(function ($content) use (&$new_items_id) {
+                        $new_items_id = $content['id'];
+                    });
+            });
+            if (
+                $type === 'LDAPDirectory'
+                || $type === 'LDAPDirectoryReplicate'
+                || $type === 'EmailAuthServer'
+                || $type === 'FieldUnicity'
+                || $type === 'EmailCollector'
+                || $type === 'Webhook'
+            ) {
+                $this->api->autoTestCRUDNoRights(
+                    endpoint: '/Setup/' . $type,
+                    itemtype: $itemtype,
+                    items_id: (int) $new_items_id,
+                    deny_create: static function () use ($itemtype) {
+                        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                    deny_purge: static function () use ($itemtype) {
+                        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                );
+            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
+                $this->api->autoTestCRUDNoRights(
+                    endpoint: '/Setup/' . $type,
+                    itemtype: $itemtype,
+                    items_id: (int) $new_items_id,
+                    deny_create: static function () {
+                        $_SESSION['glpiactiveprofile']['slm'] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                    deny_purge: static function () {
+                        $_SESSION['glpiactiveprofile']['slm'] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                );
+            } elseif ($type === 'ManualLink') {
+                continue;
+            } else {
+                $this->api->autoTestCRUDNoRights(
+                    endpoint: '/Setup/' . $type,
+                    itemtype: $itemtype,
+                    items_id: (int) $new_items_id,
+                );
+            }
+        }
     }
 
     public function testCRUDConfigValues()
@@ -326,5 +490,172 @@ class SetupControllerTest extends HLAPITestCase
                     $this->assertArrayHasKey('errors', $content);
                 });
         });
+    }
+
+    private function createQueuedWebhook()
+    {
+        $webhook = $this->createItem('Webhook', [
+            'name' => 'Test Queued Webhook',
+            'url' => 'https://example.com',
+            'http_method' => 'POST',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $queued_webhook = $this->createItem('QueuedWebhook', [
+            'webhooks_id' => $webhook->getID(),
+            'url' => 'https://example.com',
+            'http_method' => 'POST',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertEquals($webhook->getID(), $queued_webhook->fields['webhooks_id']);
+        $this->assertEquals('https://example.com', $queued_webhook->fields['url']);
+        return $queued_webhook;
+    }
+
+    public function testCRUDQueuedWebhook()
+    {
+        $this->login();
+        $queued_webhook = $this->createQueuedWebhook();
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) use ($queued_webhook) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($queued_webhook) {
+                    $this->assertEquals($queued_webhook->getID(), $content['id']);
+                    $this->assertEquals('https://example.com', $content['url']);
+                    $this->assertEquals('POST', $content['http_method']);
+                });
+        });
+
+        $this->api->call(new Request('DELETE', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) use ($queued_webhook) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($queued_webhook) {
+                    $this->assertTrue($content['is_deleted']);
+                });
+        });
+
+        $force_delete_request = new Request('DELETE', '/Setup/QueuedWebhook/' . $queued_webhook->getID());
+        $force_delete_request->setParameter('force', true);
+        $this->api->call($force_delete_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testCRUDNotImportedEmails()
+    {
+        $not_imported_id = $this->createItem(NotImportedEmail::class, [
+            'from' => 'sender@example.com',
+            'to' => 'helpdesk@example.com',
+            'subject' => 'Test email',
+            'messageid' => '8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com',
+            'reason' => NotImportedEmail::USER_UNKNOWN,
+        ])->getID();
+
+        // search, get, delete only
+
+        $this->login();
+        $this->api->call(new Request('GET', '/Setup/NotImportedEmail'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $found = false;
+                    foreach ($content as $email) {
+                        if ($email['messageid'] === '8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com') {
+                            $found = true;
+                            $this->assertEquals('sender@example.com', $email['from']);
+                            $this->assertEquals('helpdesk@example.com', $email['to']);
+                            $this->assertEquals('Test email', $email['subject']);
+                            $this->assertEquals(NotImportedEmail::USER_UNKNOWN, $email['reason']);
+                            break;
+                        }
+                    }
+                    $this->assertTrue($found);
+                });
+        });
+
+        $this->api->call(new Request('GET', "/Setup/NotImportedEmail/{$not_imported_id}"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($email) {
+                    $this->assertEquals('8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com', $email['messageid']);
+                    $this->assertEquals('helpdesk@example.com', $email['to']);
+                    $this->assertEquals('Test email', $email['subject']);
+                    $this->assertEquals(NotImportedEmail::USER_UNKNOWN, $email['reason']);
+                });
+        });
+
+        $this->api->call(new Request('DELETE', "/Setup/NotImportedEmail/{$not_imported_id}"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+        $this->api->call(new Request('GET', "/Setup/NotImportedEmail/{$not_imported_id}"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testCRUDNoRightsQueuedWebhook()
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $queued_webhook = $this->createQueuedWebhook();
+
+        $_SESSION['glpiactiveprofile'][QueuedWebhook::$rightname] = ALLSTANDARDRIGHT & ~READ;
+
+        $this->api->call(new Request('GET', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][QueuedWebhook::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+
+        $this->api->call(new Request('DELETE', '/Setup/QueuedWebhook/' . $queued_webhook->getID()), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+    }
+
+    public function testCRUDNotImportedEmailsNoRights()
+    {
+        $not_imported_id = $this->createItem(NotImportedEmail::class, [
+            'from' => 'sender@example.com',
+            'to' => 'helpdesk@example.com',
+            'subject' => 'Test email',
+            'messageid' => '8f9510c1-0f31-450d-8082-71f22e2ac58f@exmaple.com',
+            'reason' => NotImportedEmail::USER_UNKNOWN,
+        ])->getID();
+
+        $this->api->autoTestCRUDNoRights(
+            endpoint: '/Setup/NotImportedEmail',
+            itemtype: NotImportedEmail::class,
+            items_id: $not_imported_id,
+            deny_purge: static function () {
+                $_SESSION['glpiactiveprofile'][NotImportedEmail::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+            },
+            create_params: [
+                'from' => 'sender2@example.com',
+                'to' => 'helpdesk@example.com',
+                'subject' => 'Test email',
+                'messageid' => 'c9b53a8a-a460-4b4a-98ad-02fd548e3c25@exmaple.com',
+                'reason' => NotImportedEmail::USER_UNKNOWN,
+            ],
+            extra_options: ['skip_create_test' => true, 'skip_update_test' => true],
+        );
     }
 }

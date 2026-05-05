@@ -42,6 +42,7 @@ use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Tests\DbTestCase;
@@ -2076,5 +2077,94 @@ class EntityTest extends DbTestCase
             $should_be_expanded ? 1 : 0,
             $request_form
         );
+    }
+
+    public static function serviceCatalogDefaultSortStrategyProvider(): iterable
+    {
+        yield 'Entity without config inherits popularity from root' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => '-2'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+
+        yield 'Entity with explicit alphabetical value' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::ALPHABETICAL,
+        ];
+
+        yield 'Entity with explicit reverse_alphabetical value' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'reverse_alphabetical'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::REVERSE_ALPHABETICAL,
+        ];
+
+        yield 'Entity inherits alphabetical from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => '-2'],
+            ],
+            'entity' => 'entity_aa',
+            'expected_strategy' => SortStrategyEnum::ALPHABETICAL,
+        ];
+
+        yield 'Child overrides parent alphabetical with popularity' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 'popularity'],
+            ],
+            'entity' => 'entity_aa',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+
+        yield 'Invalid stored value falls back to default' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'unknown_value'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+    }
+
+    #[DataProvider('serviceCatalogDefaultSortStrategyProvider')]
+    public function testServiceCatalogDefaultSortStrategy(
+        array $entities,
+        string $entity,
+        SortStrategyEnum $expected_strategy,
+    ): void {
+        $this->login();
+
+        // Arrange: create requested entities
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                                  => $to_create['name'],
+                'entities_id'                           => $parent,
+                'service_catalog_default_sort_strategy' => $to_create['config'],
+            ]);
+        }
+
+        // Act
+        $entity = getItemByTypeName(Entity::class, $entity);
+        $actual_strategy = $entity->getServiceCatalogDefaultSortStrategy();
+
+        // Assert
+        $this->assertEquals($expected_strategy, $actual_strategy);
     }
 }

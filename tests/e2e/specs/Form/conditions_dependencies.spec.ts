@@ -315,6 +315,7 @@ test(`Can't change type of a question used in submit button conditions with unsu
     await expect(dialog).toBeVisible();
     await expect(dialog.getByRole('link', { name: 'Submit button visibility' })).toBeVisible();
     await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(dialog).toBeHidden();
 
     // Change the type of the second question to Long answer: should succeed (operator is compatible)
     const second_question = form.getNthQuestion(1);

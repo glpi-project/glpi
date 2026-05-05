@@ -211,6 +211,13 @@ class Config extends CommonDBTM
             }
         }
 
+        if (isset($input['ssologout_url']) && !empty($input['ssologout_url'])) {
+            if (!Toolbox::isValidWebUrl($input['ssologout_url'])) {
+                Session::addMessageAfterRedirect(__s('Invalid SSO logout URL.'), false, ERROR);
+                return false;
+            }
+        }
+
         $input = $this->handleSmtpInput($input);
 
         if (isset($input["proxy_passwd"]) && empty($input["proxy_passwd"])) {
@@ -1937,8 +1944,6 @@ class Config extends CommonDBTM
             $sender = Config::getNoReplyEmailSender($entities_id);
             if ($sender['email'] !== null) {
                 return $sender;
-            } else {
-                trigger_error('No-Reply address is not defined in configuration.', E_USER_WARNING);
             }
         }
 

@@ -1857,4 +1857,118 @@ HTML,
 
         return new Crawler($html);
     }
+
+    public function testRelinkEmbeddedDocumentsFromTicketSolution(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'    => __FUNCTION__,
+            'content' => __FUNCTION__,
+        ]);
+
+        $document = $this->createItem(\Document::class, [
+            'name'     => __FUNCTION__,
+            'filename' => 'test.txt',
+        ]);
+
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ]);
+
+        $doc_url = '/front/document.send.php?docid=' . $document->getID()
+            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket->getID();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'       => __FUNCTION__,
+            'answer'     => '<p><a href="' . $doc_url . '">doc</a></p>',
+            'is_faq'     => 0,
+            'users_id'   => Session::getLoginUserID(),
+            '_itemtype'  => \Ticket::class,
+            '_items_id'  => $ticket->getID(),
+            '_do_item_link' => false,
+        ], ['answer']);
+
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+
+        $this->assertStringContainsString('itemtype=KnowbaseItem', $kb->fields['answer']);
+        $this->assertStringContainsString('items_id=' . $kb->getID(), $kb->fields['answer']);
+        $this->assertStringNotContainsString('itemtype=Ticket', $kb->fields['answer']);
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(\Document_Item::getTable(), [
+                'documents_id' => $document->getID(),
+                'itemtype'     => KnowbaseItem::class,
+                'items_id'     => $kb->getID(),
+            ])
+        );
+    }
+
+    public function testRelinkEmbeddedDocumentsBlockedWithoutSourceAccess(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'    => __FUNCTION__,
+            'content' => __FUNCTION__,
+        ]);
+
+        $document = $this->createItem(\Document::class, [
+            'name'     => __FUNCTION__,
+            'filename' => 'test.txt',
+        ]);
+
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \Ticket::class,
+            'items_id'     => $ticket->getID(),
+        ]);
+
+        $profile = $this->createItem(\Profile::class, [
+            'name'      => __FUNCTION__,
+            'interface' => 'central',
+            'knowbase'  => KnowbaseItem::PUBLISHFAQ | CREATE,
+            'ticket'    => 0,
+        ]);
+
+        $user = $this->createItem(\User::class, [
+            'name'         => __FUNCTION__,
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => $profile->getID(),
+            '_entities_id' => 0,
+        ], ['password', 'password2']);
+
+        $this->login($user->fields['name'], 'testpassword');
+
+        $doc_url = '/front/document.send.php?docid=' . $document->getID()
+            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket->getID();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'          => __FUNCTION__,
+            'answer'        => '<p><a href="' . $doc_url . '">doc</a></p>',
+            'is_faq'        => 1,
+            'users_id'      => $user->getID(),
+            '_itemtype'     => \Ticket::class,
+            '_items_id'     => $ticket->getID(),
+            '_do_item_link' => false,
+        ], ['answer']);
+
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+
+        $this->assertStringNotContainsString('itemtype=KnowbaseItem', $kb->fields['answer']);
+        $this->assertStringContainsString('itemtype=Ticket', $kb->fields['answer']);
+
+        $this->assertEquals(
+            0,
+            countElementsInTable(\Document_Item::getTable(), [
+                'documents_id' => $document->getID(),
+                'itemtype'     => KnowbaseItem::class,
+                'items_id'     => $kb->getID(),
+            ])
+        );
+    }
 }

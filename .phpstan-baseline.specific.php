@@ -189,6 +189,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTarget.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$interval of method DateTime\\:\\:add\\(\\) expects DateInterval, DateInterval\\|false given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PendingReason_Item.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
 	'count' => 2,

@@ -44,6 +44,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
+use Safe\DateTime;
 use Session;
 use Throwable;
 
@@ -137,7 +138,7 @@ final class ResourceAccessor
             $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $prop_name);
             if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
-                $prop_name = strstr($prop_name, '.', true);
+                $prop_name = (string) strstr($prop_name, '.', true);
                 $prop = $schema['properties'][$prop_name];
             } else {
                 if ($prop['readOnly'] ?? false) {
@@ -147,12 +148,23 @@ final class ResourceAccessor
             }
 
             // Field resolution priority: x-field -> x-join.fkey -> property name
-            if (isset($prop['x-field'])) {
+            if (isset($prop['x-input-field'])) {
+                $internal_name = $prop['x-input-field'];
+            } elseif (isset($prop['x-field'])) {
                 $internal_name = $prop['x-field'];
             } elseif (isset($prop['x-join']['fkey'])) {
                 $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
             } else {
                 $internal_name = $prop_name;
+            }
+
+            if (array_key_exists('format', $prop) && $prop['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME) {
+                // convert RFC 3339 to YYYY-MM-DD HH:MM:SS
+                if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
+                    $dt = new DateTime(ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name));
+                    $params[$internal_name] = $dt->format('Y-m-d H:i:s');
+                }
+                continue;
             }
 
             // Modify the request params to support setting a dropdown value by its id as expected from the OpenAPI schema
@@ -167,6 +179,76 @@ final class ResourceAccessor
             }
         }
         return $params;
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     * @param array<string, mixed> $input
+     * @param bool $is_create_input Whether the input is for a create or update action.
+     * @return array<string, array{error: string, message: string}[]>
+     */
+    private static function validateInputParamsBySchema(array $schema, array $input, bool $is_create_input): array
+    {
+        $errors = [];
+        $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+
+        if ($is_create_input) {
+            // Check required properties
+            foreach ($flattened_properties as $prop_name => $prop) {
+                if (($prop['required'] ?? false) && !ArrayPathAccessor::hasElementByArrayPath($input, $prop_name)) {
+                    $errors[$prop_name][] = [
+                        'error' => 'required',
+                        'message' => 'This field is required',
+                    ];
+                }
+            }
+        }
+
+        foreach ($input as $key => $value) {
+            if (!isset($flattened_properties[$key])) {
+                continue;
+            }
+            $prop = $flattened_properties[$key];
+
+            if (isset($prop['maxLength']) && is_string($value) && strlen($value) > $prop['maxLength']) {
+                $errors[$key][] = [
+                    'error' => 'maxLength',
+                    'message' => "This field must be at most {$prop['maxLength']} characters long",
+                    'maxLength' => $prop['maxLength'],
+                ];
+            }
+
+            $min = $prop['minimum'] ?? null;
+            $max = $prop['maximum'] ?? null;
+            if ($min !== null && $max !== null && is_numeric($value) && ($value < $min || $value > $max)) {
+                $errors[$key][] = [
+                    'error' => 'range',
+                    'message' => "This field must be between {$prop['minimum']} and {$prop['maximum']}",
+                    'minimum' => $prop['minimum'] ?? null,
+                    'maximum' => $prop['maximum'] ?? null,
+                ];
+            } elseif ($min !== null && is_numeric($value) && $value < $min) {
+                $errors[$key][] = [
+                    'error' => 'minimum',
+                    'message' => "This field must be at least {$prop['minimum']}",
+                    'minimum' => $prop['minimum'] ?? null,
+                ];
+            } elseif ($max !== null && is_numeric($value) && $value > $max) {
+                $errors[$key][] = [
+                    'error' => 'maximum',
+                    'message' => "This field must be at most {$prop['maximum']}",
+                    'maximum' => $prop['maximum'] ?? null,
+                ];
+            }
+            if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
+                $errors[$key][] = [
+                    'error' => 'pattern',
+                    'message' => "This field must match the pattern {$prop['pattern']}",
+                    'pattern' => $prop['pattern'],
+                ];
+            }
+        }
+        return $errors;
     }
 
     /**
@@ -186,6 +268,13 @@ final class ResourceAccessor
         // TODO This should probably be handled in a more generic way (support other fields that can be used during creation but not updates)
         if (array_key_exists('entity', $request_attrs)) {
             unset($request_attrs['entity']);
+        }
+        $errors = self::validateInputParamsBySchema($schema, $request_params, false);
+        if ($errors !== []) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'Invalid input parameters', $errors),
+                400
+            );
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
         $input['id'] = $items_id;
@@ -220,6 +309,13 @@ final class ResourceAccessor
     {
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
+        }
+        $errors = self::validateInputParamsBySchema($schema, $request_params, true);
+        if ($errors !== []) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'Invalid input parameters', $errors),
+                400
+            );
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
 
@@ -356,7 +452,7 @@ final class ResourceAccessor
     {
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
         $item = self::getItemFromSchema($schema);
-        $force = $request_params['force'] ?? false;
+        $force = filter_var($request_params['force'] ?? false, FILTER_VALIDATE_BOOLEAN);
         $input = ['id' => (int) $items_id];
         $purge = !$item->maybeDeleted() || $force;
         if (!$item->can($items_id, $purge ? PURGE : DELETE, $input)) {

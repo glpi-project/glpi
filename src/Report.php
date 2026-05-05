@@ -68,32 +68,34 @@ class Report extends CommonGLPI
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
+        $root_doc = $CFG_GLPI['root_doc'];
+
         // Report generation
         // Default Report included
         $report_list = [];
         $report_list["default"]["name"] = __('Default report');
-        $report_list["default"]["file"] = "/front/report.default.php";
+        $report_list["default"]["file"] = $root_doc . "/front/report.default.php";
 
         if (Contract::canView()) {
             $report_list["Contrats"]["name"] = __('By contract');
-            $report_list["Contrats"]["file"] = "/front/report.contract.php";
+            $report_list["Contrats"]["file"] = $root_doc . "/front/report.contract.php";
         }
         if (Infocom::canView()) {
             $report_list["Par_annee"]["name"] = __('By year');
-            $report_list["Par_annee"]["file"] = "/front/report.year.php";
+            $report_list["Par_annee"]["file"] = $root_doc . "/front/report.year.php";
             $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative information');
-            $report_list["Infocoms"]["file"]  = "/front/report.infocom.php";
+            $report_list["Infocoms"]["file"]  = $root_doc . "/front/report.infocom.php";
             $report_list["Infocoms2"]["name"] = __('Other financial and administrative information (licenses, cartridges, consumables)');
-            $report_list["Infocoms2"]["file"] = "/front/report.infocom.conso.php";
+            $report_list["Infocoms2"]["file"] = $root_doc . "/front/report.infocom.conso.php";
         }
         if (Session::haveRight("networking", READ)) {
             // Network socket report
             $report_list["Rapport prises reseau"]["name"] = __('Network report');
-            $report_list["Rapport prises reseau"]["file"] = "/front/report.networking.php";
+            $report_list["Rapport prises reseau"]["file"] = $root_doc . "/front/report.networking.php";
         }
         if (Session::haveRight("reservation", READ)) {
             $report_list["reservation"]["name"] = __('Loan');
-            $report_list["reservation"]["file"] = "/front/report.reservation.php";
+            $report_list["reservation"]["file"] = $root_doc . "/front/report.reservation.php";
         }
         //TODO This should probably check all state_types
         if (
@@ -105,7 +107,7 @@ class Report extends CommonGLPI
             || Phone::canView()
         ) {
             $report_list["state"]["name"] = __('Status');
-            $report_list["state"]["file"] = "/front/report.state.php";
+            $report_list["state"]["file"] = $root_doc . "/front/report.state.php";
         }
 
         // Handle reports from plugins

@@ -80,6 +80,9 @@ class AuthLDAP extends CommonDBTM
     public const GROUP_SEARCH_GROUP   = 1;
     public const GROUP_SEARCH_BOTH    = 2;
 
+    /** OID for the LDAP_MATCHING_RULE_IN_CHAIN extended match rule (AD nested groups). */
+    public const MATCHING_RULE_IN_CHAIN_OID = '1.2.840.113556.1.4.1941';
+
     // Deleted user strategies for user
     public const DELETED_USER_ACTION_USER_DO_NOTHING = 0;
     public const DELETED_USER_ACTION_USER_DISABLE = 1;
@@ -3977,7 +3980,11 @@ TWIG, $twig_params);
             $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
             $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
-            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()));
+            $count = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $count = countElementsInTable('glpi_authldapreplicates', ['authldaps_id' => $item->getID()]);
+            }
+            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()), $count);
 
             return $ong;
         }

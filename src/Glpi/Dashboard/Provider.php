@@ -1576,12 +1576,15 @@ class Provider
             ),
             'reset' => 'reset',
         ];
+        $is_group = ($ug_table === Group::getTable());
         $data = [];
         foreach ($iterator as $result) {
             $s_params['criteria'][0]['value'] = $result['actor_id'];
             $data[] = [
                 'number' => $result['nb_tickets'],
-                'label'  => $case_array[0] === 'user' ? formatUserName($result['actor_id'], $result['username'], $result['second'], $result['first']) : $result['name'],
+                'label'  => $is_group
+                    ? ($result['first'] ?? '')
+                    : formatUserName($result['actor_id'], $result['username'] ?? '', $result['second'] ?? '', $result['first'] ?? ''),
                 'url'    => Ticket::getSearchURL() . "?" . Toolbox::append_params($s_params),
             ];
         }

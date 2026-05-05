@@ -122,6 +122,65 @@ class NotificationTargetUserTest extends DbTestCase
         $this->checkTemplateData($target->data, $expected);
     }
 
+    public static function passwordTokenUrlProvider(): array
+    {
+        $cases = [
+            // Normal sha1 hex token (happy path) — no special chars, rawurlencode is a no-op
+            'sha1 hex token'              => ['a3f4b2c1d5e6789012345678901234567890abcd'],
+            // Base64 chars: + must become %2B, not a space (urldecode regression)
+            'token with +'                => ['abc+def+ghi'],
+            // Base64 chars: / must become %2F
+            'token with /'                => ['abc/def/ghi'],
+            // Base64 chars: = (padding) must become %3D
+            'token with ='                => ['abc='],
+            // All base64 special chars combined
+            'token with +, / and ='       => ['aB3+cd/ef=='],
+        ];
+
+        $events = [
+            'passwordinit'   => [
+                'passwordinit',
+                '##user.passwordiniturl##',
+            ],
+            'passwordforget' => [
+                'passwordforget',
+                '##user.passwordforgeturl##',
+            ],
+        ];
+
+        $result = [];
+        foreach ($events as $event_label => [$event, $url_tag]) {
+            foreach ($cases as $token_label => [$raw_token]) {
+                $result["$event_label / $token_label"] = [$event, $url_tag, $raw_token];
+            }
+        }
+        return $result;
+    }
+
+    #[DataProvider('passwordTokenUrlProvider')]
+    public function testPasswordTokenUrlIsProperlyEncoded(
+        string $event,
+        string $url_tag,
+        string $raw_token
+    ): void {
+        $encrypted_token = (new \GLPIKey())->encrypt($raw_token);
+
+        $user = new \User();
+        $user->fields = ['password_forget_token' => $encrypted_token];
+
+        $target = new \NotificationTargetUser(
+            getItemByTypeName('Entity', '_test_root_entity', true),
+            $event,
+            $user
+        );
+        $target->addDataForTemplate($event);
+
+        $url = $target->data[$url_tag];
+
+        $this->assertStringNotContainsString(' ', $url, 'URL must not contain spaces');
+        $this->assertStringContainsString('password_forget_token=' . rawurlencode($raw_token), $url);
+    }
+
     private function checkTemplateData(array $data, array $expected)
     {
         foreach ($expected as $key => $value) {

@@ -48,6 +48,7 @@ $action = $_REQUEST['action'] ?? null;
 
 switch ($action) {
     case 'valide_cra_challenge':
+        Session::checkRight('config', UPDATE);
         $webhook = new Webhook();
         if ($webhook->getFromDB($_POST['webhook_id'])) {
             $response = Webhook::validateCRAChallenge($webhook->fields['url'], 'validate_cra_challenge', $_POST['secret']);
@@ -127,11 +128,24 @@ switch ($action) {
             $error[] = __s('Please select an event');
         }
 
+        // Validate that the requested itemtype matches the webhook's configured itemtype
+        if (
+            count($error) === 0
+            && $webhook->getID()
+            && $itemtype !== $webhook->fields['itemtype']
+        ) {
+            throw new AccessDeniedHttpException();
+        }
+
         if (count($error) > 0) {
             array_unshift($error, __s("Result can't be loaded :"));
             echo implode("<br>&nbsp; - ", $error);
         } else {
             $obj = getItemForItemtype($itemtype);
+            // Check that the current user has READ access to this item
+            if ($obj === false || !$obj->can($items_id, READ)) {
+                throw new AccessDeniedHttpException();
+            }
             $obj->getFromDB($items_id);
             $path = $webhook->getApiPath($obj);
             echo $webhook->getResultForPath($path, $event, $itemtype, $items_id, $raw_output);
@@ -163,6 +177,7 @@ switch ($action) {
         }
         return;
     case 'resend':
+        Session::checkRight('config', UPDATE);
         $result = QueuedWebhook::sendById($_POST['id']);
         if (!$result) {
             throw new BadRequestHttpException();

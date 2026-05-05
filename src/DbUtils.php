@@ -893,13 +893,19 @@ final class DbUtils
             $field = "$table.$field";
         }
 
+        $value_is_session_default = false;
         if ($value === '') {
             if (isset($_SESSION['glpiactiveentities'])) {
                 $value = $_SESSION['glpiactiveentities'];
+                $value_is_session_default = true;
             } elseif (Session::isRightChecksDisabled()) {
                 return [new QueryExpression('true')];
             } elseif (isCommandLine() || Session::isCron()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
+            } else {
+                // No active session and no privileged context: deny all access to prevent
+                // invalid SQL criterion (entities_id = '' on integer column → MySQL warning 1292).
+                return [new QueryExpression('false')];
             }
         }
 
@@ -914,7 +920,10 @@ final class DbUtils
 
         if ($is_recursive) {
             $ancestors = [];
-            if (is_array($value)) {
+            if ($value_is_session_default) {
+                $ancestors = $_SESSION['glpiparententities'] ?? [];
+                $ancestors = array_diff($ancestors, $value);
+            } elseif (is_array($value)) {
                 $ancestors = $this->getAncestorsOf("glpi_entities", $value);
                 $ancestors = array_diff($ancestors, $value);
             } elseif ($value === '') {

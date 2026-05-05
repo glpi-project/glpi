@@ -95,14 +95,22 @@ class PhpSupportedVersionTest extends GLPITestCase
 
         yield [
             'phpversion' => '8.1.0-rc1',
-            'validated'  => true,
-            'messages'   => [],
+            'validated'  => false,
+            'messages'   => [
+                'PHP 8.1 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
         ];
 
         yield [
             'phpversion' => '8.1.7',
-            'validated'  => true,
-            'messages'   => [],
+            'validated'  => false,
+            'messages'   => [
+                'PHP 8.1 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
         ];
 
         yield [
@@ -125,6 +133,30 @@ class PhpSupportedVersionTest extends GLPITestCase
 
         yield [
             'phpversion' => '8.3.1',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.4.0-dev',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.4.3',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.5.0-dev',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.5.5',
             'validated'  => true,
             'messages'   => [],
         ];

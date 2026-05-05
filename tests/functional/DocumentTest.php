@@ -135,22 +135,32 @@ class DocumentTest extends DbTestCase
 
         $doc = new \Document();
         $prepare = $doc->prepareInputForAdd($input);
-        $this->assertCount(3, $prepare);
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(4, $prepare);
         $this->assertSame('A_name.pdf', $prepare['filename']);
         $this->assertSame('A_name.pdf', $prepare['name']);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(4, $prepare);
 
         $this->login();
         $uid = getItemByTypeName('User', TU_USER, true);
         $prepare = $doc->prepareInputForAdd($input);
-        $this->assertCount(4, $prepare);
         $this->assertArrayHasKey('users_id', $prepare);
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(5, $prepare);
         $this->assertSame($uid, $prepare['users_id']);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
+        $this->assertCount(5, $prepare);
 
         $item = new \Computer();
         $cid = $item->add([
@@ -172,17 +182,91 @@ class DocumentTest extends DbTestCase
         $input['upload_file'] = 'filename.ext';
 
         $prepare = $mdoc->prepareInputForAdd($input);
-        $this->assertCount(6, $prepare);
         $this->assertArrayHasKey('users_id', $prepare);
         $this->assertArrayHasKey('tag', $prepare);
         $this->assertArrayHasKey('itemtype', $prepare);
         $this->assertArrayHasKey('items_id', $prepare);
         $this->assertArrayHasKey('filename', $prepare);
         $this->assertArrayHasKey('name', $prepare);
+        $this->assertArrayHasKey('current_filename', $prepare);
+        $this->assertEmpty($prepare['current_filename']);
         $this->assertSame($uid, $prepare['users_id']);
         $this->assertSame('Computer', $prepare['itemtype']);
         $this->assertSame($cid, $prepare['items_id']);
         $this->assertSame('A_name.pdf', $prepare['name']);
+        $this->assertCount(7, $prepare);
+    }
+
+    public function testPrepareInputForAddIgnoreBlacklistedFields(): void
+    {
+        $_ignored = 'should_be_ignored';
+        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+        $prepare = (new \Document())->prepareInputForAdd($input);
+
+        $this->assertArrayNotHasKey('filepath', $prepare);
+        $this->assertArrayNotHasKey('sha1sum', $prepare);
+    }
+
+    /**
+     * Ensure filepath and sha1sum are not updated by prepareInputForUpdate, even if they are present in the input.
+     */
+    public function testPrepareInputForUpdateIgnoreBlacklistedFields(): void
+    {
+        $_ignored = 'should_be_ignored';
+        $input = ['name' => 'legit name', 'filepath' => $_ignored, 'sha1sum' =>  $_ignored];
+
+        $doc_id = (new \Document())->add(['name' => 'le document']);
+        $prepare = (new \Document())->prepareInputForUpdate($input + ['id' => $doc_id]);
+
+        $this->assertArrayNotHasKey('filepath', $prepare);
+        $this->assertArrayNotHasKey('sha1sum', $prepare);
+    }
+
+    #[AllowMockObjectsWithoutExpectations]
+    public function testPrepareInputForUpdateIgnoreBlacklistedFieldsWithUpload(): void
+    {
+        $this->login();
+
+        // Create a document with a mocked file upload
+        $mdoc = $this->getMockBuilder(\Document::class)
+            ->onlyMethods(['moveUploadedDocument'])
+            ->getMock();
+        $mdoc->method('moveUploadedDocument')->willReturn(true);
+
+        $doc_id = $mdoc->add([
+            'name'        => 'test document with upload',
+            'upload_file' => 'filename.txt',
+        ]);
+        $this->assertGreaterThan(0, $doc_id);
+
+        // Read back the stored values right after the upload-add
+        $doc = new \Document();
+        $this->assertTrue($doc->getFromDB($doc_id));
+        $original_filepath = $doc->fields['filepath'];
+        $original_sha1sum  = $doc->fields['sha1sum'];
+
+        // Attempt to update the document with blacklisted fields
+        $_fake = 'should_be_ignored';
+        $doc->update([
+            'id'       => $doc_id,
+            'name'     => 'updated name',
+            'filepath' => $_fake,
+            'sha1sum'  => $_fake,
+        ]);
+
+        // Re-read from DB and verify blacklisted fields were NOT overwritten
+        $doc_after = new \Document();
+        $this->assertTrue($doc_after->getFromDB($doc_id));
+
+        $this->assertNotSame($_fake, $doc_after->fields['filepath']);
+        $this->assertNotSame($_fake, $doc_after->fields['sha1sum']);
+
+        // Values must be identical to what they were right after the upload
+        $this->assertSame($original_filepath, $doc_after->fields['filepath']);
+        $this->assertSame($original_sha1sum, $doc_after->fields['sha1sum']);
+
+        // Non-blacklisted field must have been updated correctly
+        $this->assertSame('updated name', $doc_after->fields['name']);
     }
 
     /** Cannot work without a real document uploaded.

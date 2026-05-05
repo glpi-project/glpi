@@ -77,6 +77,11 @@ class QueuedWebhook extends CommonDBChild
         return false;
     }
 
+    public static function canPurge(): bool
+    {
+        return (bool) Session::haveRight(static::$rightname, UPDATE);
+    }
+
     public static function getForbiddenActionsForMenu()
     {
         return ['add'];
@@ -215,7 +220,7 @@ class QueuedWebhook extends CommonDBChild
                         RequestOptions::FORM_PARAMS => [
                             'grant_type' => 'client_credentials',
                             'client_id' => $webhook->fields['clientid'],
-                            'client_secret' => $webhook->fields['clientsecret'],
+                            'client_secret' => (new GLPIKey())->decrypt($webhook->fields['clientsecret']),
                             'scope' => '',
                         ],
                     ]);
