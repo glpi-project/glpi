@@ -39,6 +39,8 @@ use KnowbaseItemCategory;
 
 final class Builder
 {
+    public function __construct(private readonly int $current_id = 0) {}
+
     public function buildTree(): Tree
     {
         $tree = new Tree();
@@ -61,6 +63,7 @@ final class Builder
                 title: $article_data['name'] ?? '',
                 illustration: $article_data['illustration'] ?? 'kb-faq',
                 link: KnowbaseItem::getFormURLWithID($article_data['id']),
+                is_current: $this->current_id > 0 && (int) $article_data['id'] === $this->current_id,
             ));
         }
 

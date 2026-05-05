@@ -106,6 +106,69 @@ final class BuilderTest extends DbTestCase
         $this->assertEmpty($plants_node->getCategories());
     }
 
+    public function testWithoutCurrentId(): void
+    {
+        $this->login();
+
+        // Arrange: create articles
+        $this->makeArticle('Article A');
+        $this->makeArticle('Article B');
+
+        // Act: build the tree
+        $tree = (new Builder())->buildTree();
+
+        // Assert: No article was marked as the current article
+        foreach ($tree->getArticles() as $article) {
+            $this->assertFalse($article->is_current);
+        }
+    }
+
+    public function testCurrentIdMarksMatchingRootArticle(): void
+    {
+        $this->login();
+
+        // Arrange: create articles
+        $this->makeArticle('Other article');
+        $target = $this->makeArticle('Target article');
+
+        // Act: build the tree
+        $tree = (new Builder($target->getID()))->buildTree();
+
+        // Assert: Root article was marked correctly
+        $by_title = array_column($tree->getArticles(), null, 'title');
+        $this->assertFalse($by_title['Other article']->is_current);
+        $this->assertTrue($by_title['Target article']->is_current);
+    }
+
+    public function testCurrentIdMarksMatchingNestedArticle(): void
+    {
+        $this->login();
+
+        // Arrange: create articles and categories
+        $category = $this->makeCategory('Animals');
+        $this->makeArticle('Root article');
+        $nested = $this->makeArticle('Nested article', $category->getID());
+
+        // Act: build the tree
+        $tree = (new Builder($nested->getID()))->buildTree();
+
+        $by_title = array_column($tree->getArticles(), null, 'title');
+        $this->assertFalse($by_title['Root article']->is_current);
+
+        $animals_node = null;
+        foreach ($tree->getCategories() as $node) {
+            if ($node->title === 'Animals') {
+                $animals_node = $node;
+                break;
+            }
+        }
+        $this->assertNotNull($animals_node);
+
+        // Assert: Nested article was marked correctly
+        $nested_by_title = array_column($animals_node->getArticles(), null, 'title');
+        $this->assertTrue($nested_by_title['Nested article']->is_current);
+    }
+
     public function testCategoryIllustrationIsPropagatedFromDb(): void
     {
         $this->login();
