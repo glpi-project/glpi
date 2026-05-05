@@ -887,6 +887,10 @@ final class Search
                 }
             }
             foreach ($mapped_objs as $path => $data) {
+                if ($data === null) {
+                    ArrayPathAccessor::setElementByArrayPath($result, $path, null);
+                    continue;
+                }
                 $existing_data = ArrayPathAccessor::getElementByArrayPath($result, $path) ?? [];
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $data = array_merge($existing_data, $data);
