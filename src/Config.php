@@ -215,7 +215,7 @@ class Config extends CommonDBTM
 
         if (isset($input['ssologout_url']) && !empty($input['ssologout_url'])) {
             if (!Toolbox::isValidWebUrl($input['ssologout_url'])) {
-                Session::addMessageAfterRedirect(__('Invalid SSO logout URL.'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid SSO logout URL.'), false, ERROR);
                 return false;
             }
         }
