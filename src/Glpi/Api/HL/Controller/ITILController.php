@@ -69,6 +69,7 @@ use ITILCategory;
 use ITILFollowup;
 use ITILSolution;
 use Location;
+use OlaLevel;
 use Planning;
 use PlanningEventCategory;
 use PlanningExternalEvent;
@@ -444,46 +445,137 @@ final class ITILController extends AbstractController
                     'readOnly' => true,
                     'description' => 'Total SLA waiting duration in seconds',
                 ];
-                /*
-                 * @FIXME There can be multiple OLAs now, how should we handle this?
-                 * - Should we provide the first element found in API v2.1.x?
-                 *
-                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel') + ['x-version-introduced' => '2.1.0'];
+
+                // OLA fields: since OLAs are now stored in the items_ola junction table
+                // (no more direct olas_id_ttr / olas_id_tto FK on the ticket), we use
+                // x-mapper to read the first TTR / first TTO OLA for backward compatibility.
+                //
+                // A per-request static cache avoids repeated getById + getOlas*Data() calls
+                // when multiple OLA fields are resolved for the same ticket during a list.
+                $ola_data_cache = [];
+                $get_ola_data = static function (int $ticket_id, int $ola_type) use (&$ola_data_cache): ?array {
+                    $cache_key = $ticket_id . '_' . $ola_type;
+                    if (!array_key_exists($cache_key, $ola_data_cache)) {
+                        $ticket = Ticket::getById($ticket_id);
+                        if (!$ticket instanceof Ticket) {
+                            $ola_data_cache[$cache_key] = null;
+                        } else {
+                            $olas = $ola_type === \SLM::TTR
+                                ? $ticket->getOlasTTRData()
+                                : $ticket->getOlasTTOData();
+                            $ola_data_cache[$cache_key] = $olas !== [] ? $olas[0] : null;
+                        }
+                    }
+                    return $ola_data_cache[$cache_key];
+                };
+
+                $ola_dropdown_properties = [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'nullable' => true,
+                    'x-full-schema' => 'OLA',
+                    'x-mapped-from' => 'id',
+                    'properties' => [
+                        'id'   => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    ],
+                ];
+                $schemas[$itil_type]['properties']['ola_ttr'] = $ola_dropdown_properties + [
+                    'x-version-introduced' => '2.1.0',
+                    'x-mapper' => static function ($v) use ($get_ola_data): array|string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
+                    },
+                ];
+                $schemas[$itil_type]['properties']['ola_tto'] = $ola_dropdown_properties + [
+                    'x-version-introduced' => '2.1.0',
+                    'x-mapper' => static function ($v) use ($get_ola_data): array|string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTO);
+                        return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
+                    },
+                ];
+
+                // OLA level for TTR (equivalent of sla_level_ttr)
+                $schemas[$itil_type]['properties']['ola_level_ttr'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'nullable' => true,
+                    'x-full-schema' => 'OLALevel',
+                    'x-mapped-from' => 'id',
+                    'properties' => [
+                        'id'   => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                    ],
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?array {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        if ($ola === null || empty($ola['level']) || !($ola['level'] instanceof OlaLevel)) {
+                            return null;
+                        }
+                        return ['id' => $ola['level']->getID(), 'name' => $ola['level']->getName()];
+                    },
+                ];
+
+                // OLA waiting duration (sum of TTR + TTO waiting times; replaces old single ola_waiting_duration column)
                 $schemas[$itil_type]['properties']['ola_waiting_duration'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'readOnly' => true,
                     'description' => 'Total OLA waiting duration in seconds',
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): int {
+                        $ttr = $get_ola_data((int) $v, \SLM::TTR);
+                        $tto = $get_ola_data((int) $v, \SLM::TTO);
+                        return (int) ($ttr['waiting_time'] ?? 0) + (int) ($tto['waiting_time'] ?? 0);
+                    },
                 ];
+
+                // OLA begin dates (replacing ola_ttr_begin_date / ola_tto_begin_date columns)
                 $schemas[$itil_type]['properties']['ola_ttr_begin_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        return ($ola !== null && !empty($ola['start_time'])) ? $ola['start_time'] : null;
+                    },
                 ];
                 $schemas[$itil_type]['properties']['ola_tto_begin_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTO);
+                        return ($ola !== null && !empty($ola['start_time'])) ? $ola['start_time'] : null;
+                    },
                 ];
+
+                // OLA due dates (replacing internal_time_to_resolve / internal_time_to_own columns)
                 $schemas[$itil_type]['properties']['internal_resolution_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'readOnly' => true,
-                    'x-field' => 'internal_time_to_resolve',
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTR);
+                        return ($ola !== null && !empty($ola['due_time'])) ? $ola['due_time'] : null;
+                    },
                 ];
                 $schemas[$itil_type]['properties']['internal_take_into_account_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'readOnly' => true,
-                    'x-field' => 'internal_time_to_own',
+                    'x-mapped-from' => 'id',
+                    'x-mapper' => static function ($v) use ($get_ola_data): ?string {
+                        $ola = $get_ola_data((int) $v, \SLM::TTO);
+                        return ($ola !== null && !empty($ola['due_time'])) ? $ola['due_time'] : null;
+                    },
                 ];
-                */
+
             }
             if ($itil_type === Ticket::class || $itil_type === Change::class) {
                 $schemas[$itil_type]['properties']['global_validation'] = [
