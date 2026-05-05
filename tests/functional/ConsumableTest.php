@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Log;
 
 class ConsumableTest extends DbTestCase
 {
@@ -45,6 +46,7 @@ class ConsumableTest extends DbTestCase
     public function testOutAndBackToStock()
     {
 
+        global $DB;
         $consumable = new \Consumable();
 
         $consumable_item = new \ConsumableItem();
@@ -82,14 +84,77 @@ class ConsumableTest extends DbTestCase
             // Give 1/4 of consumable pool to test group 1
             if ($i % 4 === 0) {
                 $consumable->out($c_id, 'Group', $gid1);
+                $this->assertEquals(
+                    1,
+                    countElementsInTable(
+                        'glpi_logs',
+                        [
+                            'items_id' => $cu_id,
+                            'itemtype' => \ConsumableItem::class,
+                            'itemtype_link' => \Consumable::class,
+                            'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                            'old_value' => '',
+                            'new_value' => sprintf(
+                                __('%1$s (%2$s) given to: %3$s (%4$s id %5$s)'),
+                                'Test consumable item',
+                                $c_id,
+                                'Test group 1',
+                                'Group',
+                                $gid1
+                            ),
+                        ]
+                    )
+                );
             }
             // Give 1/4 of consumable pool to test group 2
             if ($i % 4 === 1) {
                 $consumable->out($c_id, 'Group', $gid2);
+                $this->assertEquals(
+                    1,
+                    countElementsInTable(
+                        'glpi_logs',
+                        [
+                            'items_id' => $cu_id,
+                            'itemtype' => \ConsumableItem::class,
+                            'itemtype_link' => \Consumable::class,
+                            'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                            'old_value' => '',
+                            'new_value' => sprintf(
+                                __('%1$s (%2$s) given to: %3$s (%4$s id %5$s)'),
+                                'Test consumable item',
+                                $c_id,
+                                'Test group 2',
+                                'Group',
+                                $gid2
+                            ),
+                        ]
+                    )
+                );
             }
             // Give 1/4 of consumable pool to test user
             if ($i % 4 === 2) {
                 $consumable->out($c_id, 'User', $uid);
+                $this->assertEquals(
+                    1,
+                    countElementsInTable(
+                        'glpi_logs',
+                        [
+                            'items_id' => $cu_id,
+                            'itemtype' => \ConsumableItem::class,
+                            'itemtype_link' => \Consumable::class,
+                            'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                            'old_value' => '',
+                            'new_value' => sprintf(
+                                __('%1$s (%2$s) given to: %3$s (%4$s id %5$s)'),
+                                'Test consumable item',
+                                $c_id,
+                                'User group',
+                                'User',
+                                $uid
+                            ),
+                        ]
+                    )
+                );
             }
         }
 
@@ -100,6 +165,20 @@ class ConsumableTest extends DbTestCase
 
         // Test back to stock
         $this->assertTrue($consumable->backToStock(['id' => $c_ids[0]]));
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                'glpi_logs',
+                [
+                    'items_id' => $cu_id,
+                    'itemtype' => \ConsumableItem::class,
+                    'itemtype_link' => \Consumable::class,
+                    'linked_action' => Log::HISTORY_UPDATE_SUBITEM,
+                    'old_value' => '',
+                    'new_value' => sprintf(__('Return %1$s (%2$s) to stock'), 'Test consumable item', $c_ids[0]),
+                ]
+            )
+        );
         $this->assertEquals(6, $consumable->getUnusedNumber($cu_id));
         $this->assertEquals(14, $consumable->getOldNumber($cu_id));
 
