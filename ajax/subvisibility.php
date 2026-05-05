@@ -36,7 +36,7 @@
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!empty($_POST['type'])) {
+if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
     $prefix = '';
     $suffix = '';
     if (!empty($_POST['prefix'])) {
@@ -47,26 +47,21 @@ if (!empty($_POST['type'])) {
     switch ($_POST['type']) {
         case 'Group':
         case 'Profile':
-            $rand = mt_rand();
-            $params = [
-                'value' => $_SESSION['glpiactive_entity'],
+            $params = ['value' => $_SESSION['glpiactive_entity'],
                 'name'  => $prefix . 'entities_id' . $suffix,
-                'width' => '100%',
-                'rand' => $rand,
             ];
             if (Session::canViewAllEntities()) {
                 $params['toadd'] = [-1 => __('No restriction')];
             }
-            echo '<div class="col-6">';
-            echo "<label class=\"form-label\" for=\"dropdown_entities_id$rand\">" . htmlescape(Entity::getTypeName(1)) . "</label>";
+            echo "<table class='tab_format'><tr><td>";
+            echo htmlescape(Entity::getTypeName(1));
+            echo "</td><td>";
             Entity::dropdown($params);
-            echo "</div>";
-            echo "<div class=\"col-6\">";
-            echo "<label class=\"form-label\" for=\"dropdown_is_recursive$rand\">" . htmlescape(__('Child entities')) . "</label>";
-            Dropdown::showYesNo($prefix . 'is_recursive' . $suffix, 1, params: [
-                'rand' => $rand,
-            ]);
-            echo "</div>";
+            echo "</td><td>";
+            echo __s('Child entities');
+            echo "</td><td>";
+            Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
+            echo "</td></tr></table>";
             break;
     }
 }

@@ -55,26 +55,33 @@ if (
         $_POST['prefix'] = '';
     }
 
+    echo "<div class='d-flex'>";
     switch ($_POST['type']) {
         case 'User':
             $params = [
                 'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-                'name'  => $prefix . 'users_id' . $suffix,
-                'width' => '100%',
-                'aria_label' => User::getTypeName(1),
+                'name' => $prefix . 'users_id' . $suffix,
             ];
             User::dropdown($params);
             $display = true;
             break;
 
         case 'Group':
-            $params = [
-                'rand'  => $rand,
-                'name'  => $prefix . 'groups_id' . $suffix,
-                'width' => '100%',
-                'aria_label' => Group::getTypeName(1),
+            $params             = ['rand' => $rand,
+                'name' => $prefix . 'groups_id' . $suffix,
             ];
+            $params['toupdate'] = ['value_fieldname'
+                                                  => 'value',
+                'to_update'  => "subvisibility$rand",
+                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'moreparams' => ['items_id' => '__VALUE__',
+                    'type'     => $_POST['type'],
+                    'prefix'   => $_POST['prefix'],
+                ],
+            ];
+
             Group::dropdown($params);
+            echo "<span id='subvisibility$rand'></span>";
             $display = true;
             break;
 
@@ -84,9 +91,9 @@ if (
                 'name'        => $prefix . 'entities_id' . $suffix,
                 'entity'      => $_POST['entity'] ?? -1,
                 'entity_sons' => $_POST['is_recursive'] ?? false,
-                'width'       => '100%',
-                'aria_label'  => Entity::getTypeName(1),
             ]);
+            echo '<div class="ms-3">' . __s('Child entities') . '</div>';
+            Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
             $display = true;
             break;
 
@@ -97,17 +104,26 @@ if (
                 $righttocheck = 'knowbase';
                 $checkright   = KnowbaseItem::READFAQ;
             }
-            $params = [
+            $params             = [
                 'rand'      => $rand,
                 'name'      => $prefix . 'profiles_id' . $suffix,
-                'width'     => '100%',
                 'condition' => [
                     'glpi_profilerights.name'     => $righttocheck,
                     'glpi_profilerights.rights'   => ['&', $checkright],
                 ],
-                'aria_label'  => Profile::getTypeName(1),
             ];
+            $params['toupdate'] = ['value_fieldname'
+                                                  => 'value',
+                'to_update'  => "subvisibility$rand",
+                'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
+                'moreparams' => ['items_id' => '__VALUE__',
+                    'type'     => $_POST['type'],
+                    'prefix'   => $_POST['prefix'],
+                ],
+            ];
+
             Profile::dropdown($params);
+            echo "<span id='subvisibility$rand'></span>";
             $display = true;
             break;
     }
@@ -116,4 +132,5 @@ if (
         echo "<input type='submit' name='addvisibility' value=\"" . _sx('button', 'Add') . "\"
                    class='btn btn-primary ms-3'>";
     }
+    echo "</div>";
 }
