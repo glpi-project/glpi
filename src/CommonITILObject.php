@@ -624,7 +624,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $this->restoreInputAndDefaults($ID, $options);
 
-        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());
+        $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->can($this->getID(), UPDATE));
 
         if ($ID && in_array($this->fields['status'], static::getClosedStatusArray())) {
             $canupdate = false;
@@ -1855,7 +1855,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 // Can only update initial fields if no followup or task already added
-                if ($this->canUpdateItem()) {
+                if ($this->can($this->getID(), UPDATE)) {
                     $allowed_fields[] = 'content';
                     $allowed_fields[] = 'urgency';
                     $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
@@ -6629,7 +6629,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             // Second column TITLE
             $second_column = "<span class='b'>" . htmlescape($item->getName()) . "</span>&nbsp;";
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $second_column  = sprintf(
                     __s('%1$s (%2$s)'),
                     "<a id='" . htmlescape($item::class . $item->getID() . $rand) . "' href=\"" . htmlescape($item->getLinkURL()) . "\">$second_column</a>",
@@ -7070,7 +7070,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             $name = '<span class="fw-bold">' . htmlescape($item->getName()) . '</span>';
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $name  = sprintf(
                     __s('%1$s (%2$s)'),
                     '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
@@ -7569,7 +7569,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return [];
         }
 
-        if ($params['check_view_rights'] && !$this->canViewItem()) {
+        if ($params['check_view_rights'] && !$this->can($this->getID(), READ)) {
             return [];
         }
 
@@ -7578,7 +7578,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
-        $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], static::getClosedStatusArray());
+        $canupdate_parent = $this->can($this->getID(), UPDATE) && !in_array($this->fields['status'], static::getClosedStatusArray());
 
         //checks rights
         $restrict_fup = $restrict_task = [];
@@ -7656,8 +7656,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $followup->fields = $followup_row;
                 $followup->post_getFromDB();
 
-                if (!$params['check_view_rights'] || $followup->canViewItem()) {
-                    $followup_row['can_edit'] = $followup->canUpdateItem();
+                if (!$params['check_view_rights'] || $followup->can($followup->getID(), READ)) {
+                    $followup_row['can_edit'] = $followup->can($followup->getID(), UPDATE);
                     $followup_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -7692,11 +7692,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
                 $tltask = getItemForItemtype($taskClass);
+                if (($tltask === false)) {
+                    continue;
+                }
                 $tltask->fields = $task_row;
                 $tltask->post_getFromDB();
 
-                if (!$params['check_view_rights'] || $tltask->canViewItem()) {
-                    $task_row['can_edit'] = $tltask->canUpdateItem();
+                if (!$params['check_view_rights'] || $tltask->can($tltask->getID(), READ)) {
+                    $task_row['can_edit'] = $tltask->can($tltask->getID(), UPDATE);
                     $task_row['can_promote']
                         = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
@@ -7879,7 +7882,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item['is_private'] = $document_item['is_private'];
 
                 $item['timeline_position'] = $document_item['timeline_position'];
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_edit'] = $document_obj->can($document_obj->getID(), UPDATE);
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
@@ -8034,7 +8037,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $can_requester = $item->canRequesterUpdateItem();
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
             'item'          => $item,
-            'canupdate'     => (Session::getCurrentInterface() == "central" && $item->canUpdateItem()),
+            'canupdate'     => (Session::getCurrentInterface() == "central" && $item->can($item->getID(), UPDATE)),
             'can_requester' => $can_requester,
         ]);
     }
@@ -11129,6 +11132,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $this->loadActors();
         }
 
+        $can_update_item = $this->can($this->getID(), UPDATE);
         if (
             array_key_exists('_actors', $input)
             && is_array($input['_actors'])
@@ -11139,7 +11143,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
                     continue;
                 }
-                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
+                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$can_update_item) {
                     continue;
                 }
 

@@ -2979,7 +2979,7 @@ HTML;
         $ismyself = $ID == Session::getLoginUserID();
         $higherrights = $this->currentUserHaveMoreRightThan($ID);
         if ($ID) {
-            $caneditpassword = ($this->canUpdateItem() && $higherrights) || ($ismyself && Session::haveRight('password_update', 1));
+            $caneditpassword = ($this->can($this->getID(), UPDATE) && $higherrights) || ($ismyself && Session::haveRight('password_update', 1));
         } else {
             // can edit on creation form
             $caneditpassword = true;

@@ -362,7 +362,7 @@ class Dropdown
                     if (
                         $params['value']
                         && $item->getFromDB($params['value'])
-                        && $item->canViewItem()
+                        && $item->can($item->getID(), READ)
                     ) {
                         $options_tooltip['link'] = $item->getLinkURL();
                     } else {

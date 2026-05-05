@@ -2058,8 +2058,7 @@ TWIG, $twig_params);
             if (
                 $item->getFromDB($params['items_id'])
                 && empty($item->fields['is_deleted'])
-                && $item::canUpdate()
-                && $item->canUpdateItem()
+                && $item->can($item->getID(), UPDATE)
             ) {
                 // item exists and is not in bin
 

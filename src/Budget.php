@@ -130,7 +130,7 @@ class Budget extends CommonDropdown
             'item' => $this,
             'no_header' => true,
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
         return true;

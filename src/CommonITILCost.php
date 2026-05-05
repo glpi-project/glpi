@@ -437,7 +437,7 @@ abstract class CommonITILCost extends CommonDBChild
             'items_id_field' => static::$items_id,
             'parent_id' => $item->getID(),
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 
@@ -462,7 +462,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         if (
             !$item->getFromDB($ID)
-            || !$item->canViewItem()
+            || !$item->can($item->getID(), READ)
             || !static::canView()
         ) {
             return false;

@@ -68,13 +68,10 @@ final class KnowbaseItemController extends AbstractController
     public function content(Request $request): Response
     {
         $id = $request->attributes->getInt('knowbaseitems_id');
-        if (!KnowbaseItem::canView()) {
-            throw new AccessDeniedHttpException();
-        }
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
-        } elseif (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->can($kbitem->getID(), READ)) {
             throw new AccessDeniedHttpException();
         }
         return new Response(RichText::getSafeHtml($kbitem->fields['answer']));
@@ -96,7 +93,7 @@ final class KnowbaseItemController extends AbstractController
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
-        } elseif (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->can($kbitem->getID(), READ)) {
             throw new AccessDeniedHttpException();
         }
         return new StreamedResponse(static function () use ($kbitem) {

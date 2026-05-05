@@ -53,7 +53,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     }
 
     $task = $parent::getTaskClassInstance();
-    if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
+    if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->can($task->getID(), UPDATE)) {
         throw new AccessDeniedHttpException();
     }
     if (!in_array($task->fields['state'], [0, Planning::INFO])) {

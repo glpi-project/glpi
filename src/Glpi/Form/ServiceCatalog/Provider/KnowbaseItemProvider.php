@@ -55,6 +55,10 @@ final class KnowbaseItemProvider implements LeafProviderInterface
     #[Override]
     public function getItems(ItemRequest $item_request): array
     {
+        if (!KnowbaseItem::canView()) {
+            return [];
+        }
+
         $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 

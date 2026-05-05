@@ -620,13 +620,13 @@ class PendingReason_Item extends CommonDBRelation
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);
-        return $item->canUpdateItem();
+        return $item->can($item->getID(), UPDATE);
     }
 
     public function canPurgeItem(): bool
     {
         $itemtype = $this->fields['itemtype'];
         $item = $itemtype::getById($this->fields['items_id']);
-        return $item->canUpdateItem();
+        return $item->can($item->getID(), UPDATE);
     }
 }

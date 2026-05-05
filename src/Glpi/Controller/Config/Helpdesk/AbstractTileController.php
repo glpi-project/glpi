@@ -67,7 +67,7 @@ abstract class AbstractTileController extends AbstractController
             // Invalid database data
             throw new RuntimeException();
         }
-        if (!$linked_item::canUpdate() || !$linked_item->canUpdateItem()) {
+        if (!$linked_item->can($linked_item->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -81,7 +81,7 @@ abstract class AbstractTileController extends AbstractController
         if (!$linked_entity->getFromDB($linked_entity_id)) {
             throw new BadRequestHttpException();
         }
-        if (!$linked_entity::canUpdate() || !$linked_entity->canUpdateItem()) {
+        if (!$linked_entity->can($linked_entity->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -99,7 +99,7 @@ abstract class AbstractTileController extends AbstractController
         ) {
             throw new BadRequestHttpException();
         }
-        if (!$linked_item::canUpdate() || !$linked_item->canUpdateItem()) {
+        if (!$linked_item->can($linked_item->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

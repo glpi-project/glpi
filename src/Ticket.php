@@ -3703,7 +3703,7 @@ JAVASCRIPT;
         // check right used for this ticket
         $canupdate     = !$ID
                         || (Session::getCurrentInterface() == "central"
-                            && $this->canUpdateItem());
+                            && $this->can($this->getID(), UPDATE));
         $can_requester = $this->canRequesterUpdateItem();
         $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
@@ -5738,12 +5738,15 @@ JAVASCRIPT;
         if ($p['full_transaction']) {
             $DB->beginTransaction();
         }
+
+        $can_update_merge_target = $merge_target->can($merge_target->getID(), UPDATE);
+        $can_add_document = $merge_target->canAddItem('Document');
         foreach ($ticket_ids as $id) {
             try {
                 if (!$p['full_transaction']) {
                     $DB->beginTransaction();
                 }
-                if ($merge_target->canUpdateItem() && $ticket->can($id, DELETE)) {
+                if ($can_update_merge_target && $ticket->can($id, DELETE)) {
                     if (!$ticket->getFromDB($id)) {
                         //Cannot retrieve ticket. Abort/fail the merge
                         throw new RuntimeException(sprintf(__('Failed to load ticket %d'), $id), 1);
@@ -5831,7 +5834,7 @@ JAVASCRIPT;
                         }
                     }
                     if (in_array('Document', $p['linktypes'])) {
-                        if (!$merge_target->canAddItem('Document')) {
+                        if (!$can_add_document) {
                             throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                         }
                         $tomerge = $document_item->find([
