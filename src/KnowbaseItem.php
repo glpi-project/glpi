@@ -2802,6 +2802,7 @@ TWIG, $twig_params);
         $articles = [];
         foreach ($DB->request($criteria) as $data) {
             $articles[] = new Article(
+                id: (int) $data['id'],
                 title: $data['name'] ?? '',
                 illustration: $data['illustration'] ?: 'kb-faq',
                 link: self::getFormURLWithID($data['id']),
