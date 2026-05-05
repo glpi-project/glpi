@@ -168,8 +168,8 @@
                         "{{ js_path('js/modules/Knowbase/PermissionsFormController.js') }}"
                     );
                     new GlpiKnowbasePermissionsFormController(
-                        document.getElementById('kb-permissions-form-{{ rand }}'),
-                        '{{ rand }}',
+                        document.getElementById('kb-permissions-form-{{ rand|e('js') }}'),
+                        '{{ rand|e('js') }}',
                         {{ visiblity_dropdown_params|json_encode|raw }},
                     );
                 })();
