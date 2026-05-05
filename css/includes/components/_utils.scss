@@ -138,3 +138,13 @@
         opacity: 100 !important;
     }
 }
+
+.text-hover-link {
+    &:hover {
+        color: color-mix(
+            in srgb,
+            transparent,
+            var(--tblr-link-hover-color) var(--tblr-link-opacity, 100%)
+        ) !important;
+    }
+}

@@ -55,9 +55,13 @@
         {% if favorite_state is not null %}
             data-glpi-kb-favorite-current="{{ favorite_state }}"
         {% endif %}
+        {% if article.is_current %}
+            data-glpi-kb-article-current
+            aria-current="page"
+        {% endif %}
         class="article {{ add_margin ? 'mb-2' : '' }}"
     >
-        <a class="text-dark text-truncate d-block" href="{{ article.link }}">
+        <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
             {{ render_illustration(article.illustration, 20) }}
             {{ article.title }}
         </a>
