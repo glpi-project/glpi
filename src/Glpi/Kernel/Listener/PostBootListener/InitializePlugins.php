@@ -34,7 +34,6 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
-use Glpi\Application\Environment;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Kernel\KernelListenerTrait;
@@ -68,26 +67,11 @@ final readonly class InitializePlugins implements EventSubscriberInterface
         $plugin = new Plugin();
 
         if (!$plugin->isPluginsExecutionSuspended()) {
-            if (Environment::get()->shouldSetupTesterPlugin()) {
-                $this->setupTesterPlugin();
-            }
-
             $plugin->init();
         }
 
         $this->pluginContainer->initializeContainer();
 
         Profiler::getInstance()->stop('InitializePlugins::execute');
-    }
-
-    private function setupTesterPlugin(): void
-    {
-        global $DB;
-        $DB->updateOrInsert(table: Plugin::getTable(), params: [
-            'directory' => 'tester',
-            'name'      => 'tester',
-            'state'     => 1,
-            'version'   => '1.0.0',
-        ], where: ['directory' => 'tester']);
     }
 }
