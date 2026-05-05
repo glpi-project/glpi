@@ -125,7 +125,7 @@ export class GlpiKnowbasePermissionsFormController
     async #loadSubvisibility(type)
     {
         const params = new URLSearchParams({ type });
-        const response = await post('ajax/subvisibility.php', params);
+        const response = await post('Knowbase/PermissionSubvisibility', params);
         const html = await response.text();
         $(this.#advancedContent).html(html); // jQuery is needed here to run scripts
     }
