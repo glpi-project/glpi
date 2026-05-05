@@ -68,6 +68,7 @@ use Safe\Exceptions\PcreException;
 use Safe\Exceptions\UrlException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\base64_decode;
@@ -79,10 +80,10 @@ use function Safe\curl_getinfo;
 use function Safe\curl_init;
 use function Safe\error_log;
 use function Safe\fclose;
-use function Safe\file_get_contents;
 use function Safe\filemtime;
 use function Safe\finfo_open;
 use function Safe\fopen;
+use function Safe\fread;
 use function Safe\fwrite;
 use function Safe\getimagesize;
 use function Safe\gzcompress;
@@ -661,14 +662,19 @@ class Toolbox
             );
         }
 
-        try {
-            $content = file_get_contents($path);
-        } catch (FilesystemException $e) {
-            throw new HttpException(500, $e->getMessage(), $e);
-        }
+        return new StreamedResponse(
+            function () use ($path) {
+                $file_stream = fopen($path, 'r');
 
-        return new Response(
-            content: $content,
+                // Flush the response into small chunks to prevent loading the whole file contents into the memory.
+                // This is mandatory to prevent memory exhaustion when sending huge files.
+                while (!feof($file_stream)) {
+                    echo fread($file_stream, 8192);
+                    flush();
+                }
+
+                fclose($file_stream);
+            },
             status: 200,
             headers: $headers
         );
