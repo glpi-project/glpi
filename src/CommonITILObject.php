@@ -11097,6 +11097,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param CommonITILObject $item The ITIL Object
      * @return void
      * @since 11.0.0
+     * @TODO Remove this unused method in GLPI 12.0.
      */
     final protected static function showSatisfactionTabContent(CommonITILObject $item): void
     {
