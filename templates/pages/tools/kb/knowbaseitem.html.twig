@@ -105,7 +105,7 @@
                     $('#dropdown__visibility__type_{{ rand }}').on('change', (e) => {
                         const selected_type = e.target.value;
                         $('#visibility{{ rand }}').load(
-                            '{{ path('/ajax/visibility.php') }}',
+                            '{{ path('knowbase_permission_dropdown') }}',
                             {
                                 'type': selected_type,
                                 'right': 'knowbase',

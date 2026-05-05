@@ -1243,14 +1243,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
+            $label =  __('Permissions');
+            $icon = "ti ti-lock";
             $actions[] = new EditorAction(
-                label: _n('Target', 'Targets', Session::getPluralNumber()),
-                icon: "ti ti-eye",
+                label: $label,
+                icon: $icon,
                 type: EditorActionType::OPEN_MODAL,
                 params: [
                     'id' => $this->fields['id'],
                     'key' => 'SidePanel/permissions',
-                    'title' => _n('Target', 'Targets', Session::getPluralNumber()),
+                    'title' => $label,
+                    'icon' => $icon,
                 ],
             );
             $actions[] = new EditorAction(

@@ -30,119 +30,153 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import "components/form/fields_macros.html.twig" as fields %}
+{% set has_entries = entries|length > 0 %}
+
+{# Status label #}
+<h3 class="mb-2 fs-4" data-testid="permissions-status">
+    {{ __('Can be viewed by:') }}
+</h3>
+
+{# Permissions list #}
+<ul class="list-group list-group-flush" data-testid="permissions-list" data-glpi-permissions-list>
+    {% if not has_entries %}
+        <div class="text-secondary py-1" data-testid="empty-permissions">
+            {{ __('This article is not yet visible to anyone.') }}
+        </div>
+    {% endif %}
+
+    {% for entry in entries %}
+        <li class="list-group-item d-flex align-items-center gap-2 py-2 px-0 border-0"
+            data-testid="permission-entry"
+            data-glpi-permission-id="{{ entry.id }}"
+            data-glpi-permission-itemtype="{{ entry.itemtype }}"
+        >
+
+            {# Avatar: user picture for Users, typed icon for others #}
+            {% if entry.type == 'User' %}
+                {{ include('components/user/picture.html.twig', {
+                    users_id: entry.users_id,
+                    avatar_size: 'avatar-sm',
+                    with_link: false,
+                    enable_anonymization: false,
+                }) }}
+            {% else %}
+                <span
+                    class="avatar avatar-sm rounded {{ entry.badge_class }}"
+                    title="{{ entry.type|itemtype_name }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="left"
+                >
+                    <i class="ti {{ entry.icon }}"></i>
+                </span>
+            {% endif %}
+
+            {# Info #}
+            <div class="flex-grow-1" style="min-width: 0;">
+                <div class="d-flex align-items-center gap-1" data-testid="entry-label">
+                    <span class="fw-medium text-truncate">{{ entry.name }}</span>
+                    {% if entry.type == "Entity" and entry.is_recursive %}
+                        <span class="text-secondary">({{ __("recursive") }})</span>
+                    {% endif %}
+                </div>
+                {% if entry.entity_name and (entry.entities_id != 0 or entry.is_recursive != 1) %}
+                    <div class="text-secondary small text-truncate" data-testid="entry-context">
+                        {{ entry.entity_name }}
+                        {% if entry.type != "Entity" and entry.is_recursive %}
+                            <span>({{ __("recursive") }})</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Delete button #}
+            {% if can_edit %}
+                <button type="button"
+                    class="btn btn-ghost-danger btn-sm btn-icon ms-auto"
+                    data-glpi-permission-delete
+                    title="{{ __('Delete') }}"
+                    data-bs-toggle="tooltip"
+                >
+                    <i class="ti ti-trash"></i>
+                </button>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
 
 {# Add target form #}
 {% if can_edit %}
-    <div>
+    <div class="mt-4">
         <form method="post" action="{{ 'KnowbaseItem'|itemtype_form_path }}">
             <input type="hidden" name="knowbaseitems_id" value="{{ id }}">
-            <div class="d-flex flex-column gap-2">
-                {{ fields.dropdownItemTypes('_type', '', __('Add a target'), {
-                    types: ['Entity', 'Group', 'Profile', 'User'],
-                    rand: rand,
-                    mb: '',
-                }) }}
-                <div id="visibility-submit{{ rand }}" class="d-none d-flex gap-2 align-items-center">
-                    <div class="flex-grow-1">
-                        <div id="visibility{{ rand }}" class="kb-permission-visibility"></div>
+            {% set add_label = __('Add access for') %}
+            <div class="row g-3" id="kb-permissions-form-{{ rand }}" data-testid="publish-form">
+                {# Row 1: type + item dropdowns + Entity child entities inline #}
+                <div class="col-12">
+                    <div class="row g-2 align-items-end">
+                        <div class="col">
+                            <label class="form-label">{{ add_label }}</label>
+                            <div class="input-group">
+                                <div class="flex-grow-1 visibility-type-col" id="visibility-type-col{{ rand }}">
+                                    {% do call('Dropdown::showItemTypes', ['_type', ['Entity', 'Group', 'Profile', 'User'], {
+                                        'rand': rand,
+                                        'value': '',
+                                        'emptylabel': __('Select a type...'),
+                                        'aria_label': add_label,
+                                        'width': '100%',
+                                    }]) %}
+                                </div>
+                                <div class="flex-grow-30 d-none visibility-item-col" id="visibility{{ rand }}" style="min-width: 0; flex-basis: 0;"></div>
+                            </div>
+                        </div>
+                        <div class="col-auto d-none" id="visibility-recursive{{ rand }}" data-testid="child-entities-label">
+                            <label
+                                class="form-label"
+                                for="dropdown_is_recursive{{ rand }}"
+                            >{{ __('Child entities') }}</label>
+                            {% do call('Dropdown::showYesNo', ['is_recursive', 1, -1, {
+                                rand: rand,
+                            }]) %}
+                        </div>
                     </div>
-                    <input type="submit"
-                           name="addvisibility"
-                           value="{{ _x('button', 'Add') }}"
-                           class="btn btn-primary">
+                </div>
+                {# Advanced options #}
+                <div id="visibility-advanced{{ rand }}" class="col-12 d-none">
+                    <div id="visibility-advanced-content{{ rand }}" class="row g-3 kb-permission-visibility" data-testid="advanced-content"></div>
+                </div>
+                {# Toggle + Submit #}
+                <div class="col-12 d-flex justify-content-between align-items-center">
+                    <button type="button"
+                        id="visibility-advanced-toggle{{ rand }}"
+                        class="btn btn-sm btn-link text-start p-0 d-none"
+                    >
+                        <i class="ti ti-settings me-1"></i>{{ __('Show advanced options') }}
+                    </button>
+                    <div class="ms-auto">
+                        <button type="submit"
+                                id="visibility-submit-btn{{ rand }}"
+                                name="addvisibility"
+                                class="btn btn-primary d-none">
+                            <i class="ti ti-plus me-1"></i>{{ _x('button', 'Add') }}
+                        </button>
+                    </div>
                 </div>
             </div>
-            <script>
-                $('#dropdown__type{{ rand }}').on('change', (e) => {
-                    const $submit = $('#visibility-submit{{ rand }}');
-                    if (e.target.value === '') {
-                        $('#visibility{{ rand }}').empty();
-                        $submit.addClass('d-none').removeClass('d-flex');
-                        return;
-                    }
-                    $('#visibility{{ rand }}').load(
-                        `${CFG_GLPI.root_doc}/ajax/visibility.php`,
-                        {
-                            ...{{ visiblity_dropdown_params|json_encode|raw }},
-                            type: e.target.value,
-                            nobutton: 1,
-                        },
-                        () => $submit.removeClass('d-none').addClass('d-flex')
+            <script type="module">
+                (async () => {
+                    const { GlpiKnowbasePermissionsFormController } = await import(
+                        "{{ js_path('js/modules/Knowbase/PermissionsFormController.js') }}"
                     );
-                });
+                    new GlpiKnowbasePermissionsFormController(
+                        document.getElementById('kb-permissions-form-{{ rand|e('js') }}'),
+                        '{{ rand|e('js') }}',
+                        {{ visiblity_dropdown_params|json_encode|raw }},
+                    );
+                })();
             </script>
         </form>
     </div>
-    <hr class="mt-3 mb-2">
 {% endif %}
-
-{# Permissions list #}
-<div class="list-group list-group-flush" data-glpi-permissions-list>
-    {% for entry in entries %}
-            <div class="list-group-item d-flex align-items-center gap-2 px-0"
-                 data-glpi-permission-id="{{ entry.id }}"
-                 data-glpi-permission-itemtype="{{ entry.itemtype }}">
-
-                {# Avatar: user picture for Users, typed icon for others #}
-                {% if entry.type == 'User' %}
-                    {{ include('components/user/picture.html.twig', {
-                        users_id: entry.users_id,
-                        avatar_size: 'avatar-sm',
-                        with_link: false,
-                        enable_anonymization: false,
-                    }) }}
-                {% else %}
-                    <span class="avatar avatar-sm rounded {{ entry.badge_class }}">
-                        <i class="ti {{ entry.icon }}"></i>
-                    </span>
-                {% endif %}
-
-                {# Info #}
-                <div class="flex-grow-1" style="min-width: 0;">
-                    <div class="d-flex align-items-center gap-1">
-                        <span class="fw-medium text-truncate">{{ entry.name }}</span>
-                        {% if entry.is_recursive %}
-                            <span class="badge bg-secondary-lt"
-                                  title="{{ __('Recursive') }}"
-                                  data-bs-toggle="tooltip">
-                                <i class="ti ti-arrow-iteration me-1"></i>R
-                            </span>
-                        {% endif %}
-                    </div>
-                    <div class="text-secondary small">{{ __('Can view') }}</div>
-                    {% if entry.entity_name %}
-                        <div class="text-secondary small text-truncate">{{ entry.entity_name }}</div>
-                    {% endif %}
-                </div>
-
-                {# Delete button #}
-                {% if can_edit %}
-                    <button type="button"
-                            class="btn btn-ghost-danger btn-sm btn-icon ms-auto"
-                            data-glpi-permission-delete
-                            title="{{ __('Delete') }}"
-                            data-bs-toggle="tooltip">
-                        <i class="ti ti-trash"></i>
-                    </button>
-                {% endif %}
-            </div>
-    {% endfor %}
-</div>
-
-{# Owner footer (full-width, differentiated background) #}
-<div class="kb-permission-owner d-flex align-items-center gap-2">
-    {{ include('components/user/picture.html.twig', {
-        users_id: owner.users_id,
-        avatar_size: 'avatar-sm',
-        with_link: false,
-        enable_anonymization: false,
-    }) }}
-    <div class="flex-grow-1" style="min-width: 0;">
-        <span class="fw-medium text-truncate d-block">{{ owner.name }}</span>
-        <div class="text-secondary small">{{ __('Owner') }}</div>
-    </div>
-</div>
 
 {% if can_edit %}
 <script>

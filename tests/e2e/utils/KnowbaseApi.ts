@@ -56,6 +56,18 @@ export class KnowbaseApi
         });
     }
 
+    public async addEntityVisibility(
+        kb_id: number,
+        entity_id: number,
+        is_recursive: boolean,
+    ): Promise<number> {
+        return await this.api.createItem('Entity_KnowbaseItem', {
+            knowbaseitems_id: kb_id,
+            entities_id: entity_id,
+            is_recursive: is_recursive ? 1 : 0,
+        });
+    }
+
     public async addTranslation(kb_id: number, language: string, params: {
         name: string,
         answer: string,
@@ -79,3 +91,5 @@ export class KnowbaseApi
         );
     }
 }
+
+
