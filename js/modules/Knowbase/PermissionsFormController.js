@@ -117,7 +117,7 @@ export class GlpiKnowbasePermissionsFormController
             type,
             nobutton: 1,
         });
-        const response = await post('ajax/visibility.php', params);
+        const response = await post('Knowbase/PermissionDropdown', params);
         const html = await response.text();
         $(this.#visibility).html(html);
     }
