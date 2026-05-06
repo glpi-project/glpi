@@ -63,7 +63,8 @@ final class AnswerTagProvider implements TagProviderInterface, TagWithIdValueInt
     #[Override]
     public function getTagContentForValue(
         string $value,
-        AnswersSet $answers_set
+        AnswersSet $answers_set,
+        bool $encode = true
     ): string {
         $id = (int) $value;
 
@@ -77,6 +78,18 @@ final class AnswerTagProvider implements TagProviderInterface, TagWithIdValueInt
         }
 
         $answer = array_pop($answers);
+        if (!$encode) {
+            $type = $answer->getType();
+            if ($type === null) {
+                return '';
+            }
+            $question = Question::getById($answer->getQuestionId());
+            if ($question === false) {
+                return '';
+            }
+            $formatted = $type->formatRawAnswer($answer->getRawAnswer(), $question);
+            return $type instanceof RawAnswerIsHtmlInterface ? strip_tags($formatted) : $formatted;
+        }
         return $answer->getFormattedAnswer() ?? '';
     }
 

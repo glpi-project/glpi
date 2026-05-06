@@ -86,7 +86,7 @@ final readonly class Answer implements JsonSerializable
         return $this->raw_answer;
     }
 
-    public function getFormattedAnswer(): ?string
+    public function getFormattedAnswer($encode = true): ?string
     {
         $type = $this->getType();
         if ($type === null) {
@@ -100,7 +100,7 @@ final readonly class Answer implements JsonSerializable
 
         $formatted = $type->formatRawAnswer($this->getRawAnswer(), $question);
 
-        if (!$type instanceof RawAnswerIsHtmlInterface) {
+        if (!$type instanceof RawAnswerIsHtmlInterface && $encode) {
             $formatted = \htmlescape($formatted);
         }
 
