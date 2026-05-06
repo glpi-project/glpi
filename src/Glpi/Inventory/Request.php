@@ -162,8 +162,6 @@ class Request extends AbstractRequest
      */
     public function getParams(mixed $data): void
     {
-        global $CFG_GLPI;
-
         $this->inventory = new Inventory();
         $this->inventory->contact($data);
 
@@ -195,8 +193,6 @@ class Request extends AbstractRequest
      */
     public function prolog(mixed $data): void
     {
-        global $CFG_GLPI;
-
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
@@ -255,7 +251,14 @@ class Request extends AbstractRequest
     }
 
 
-    public function getConfiguration(mixed $content)
+    /**
+     * Handle agent CONFIGURATION request
+     *
+     * @param mixed $content Inventory input following specs
+     *
+     * @return void
+     */
+    public function getConfiguration(mixed $content): void
     {
         $hook_response = Plugin::doHookFunction(
             Hooks::INVENTORY_GET_CONFIGURATION,
