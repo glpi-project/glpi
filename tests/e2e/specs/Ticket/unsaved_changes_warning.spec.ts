@@ -109,7 +109,9 @@ for (const { form, block, open } of warning_cases) {
             dialog_message = dialog.message();
             void dialog.dismiss();
         });
-        await ticket.getButton('Save').click();
+        // The Save button is intentionally hidden while a timeline form is open.
+        // Force-click to test that the JS warning still fires as a safety net.
+        await ticket.getButton('Save').click({ force: true });
 
         expect(dialog_message).toContain('unsaved changes');
         await expect(page).toHaveURL(new RegExp(`id=${ticket_id}`));

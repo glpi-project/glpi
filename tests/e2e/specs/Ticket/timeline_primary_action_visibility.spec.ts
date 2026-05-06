@@ -104,16 +104,16 @@ for (const { form, block, open } of form_cases) {
         const ticket = new TicketPage(page);
         await ticket.goto(ticket_id);
 
-        await expect(page.locator('#right-actions')).toBeVisible();
+        await expect(ticket.getButton('Save')).toBeVisible();
 
         await open(ticket, page);
         await expect(page.getByTestId(block)).toHaveClass(/\bshow\b/);
 
-        await expect(page.locator('#right-actions')).not.toBeVisible();
+        await expect(ticket.getButton('Save')).toBeHidden();
 
-        await page.getByTestId(block).locator('.close-itil-answer').click();
+        await page.getByTestId(block).getByRole('button', { name: 'Close' }).click();
         await expect(page.getByTestId(block)).not.toHaveClass(/\bshow\b/);
 
-        await expect(page.locator('#right-actions')).toBeVisible();
+        await expect(ticket.getButton('Save')).toBeVisible();
     });
 }
