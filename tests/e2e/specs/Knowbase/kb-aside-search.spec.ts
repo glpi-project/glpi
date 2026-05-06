@@ -163,6 +163,75 @@ test('Clearing the search restores the full tree', async ({
     await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeVisible();
 });
 
+test('Only matching favorites remain visible', async ({
+    page,
+    profile,
+    api,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const token_a   = randomUUID().slice(0, 8);
+    const token_b   = randomUUID().slice(0, 8);
+    const article_a = `E2E Favorite A ${token_a}`;
+    const article_b = `E2E Favorite B ${token_b}`;
+
+    const article_a_id = await api.createItem('KnowbaseItem', {
+        name: article_a,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    const article_b_id = await api.createItem('KnowbaseItem', {
+        name: article_b,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await api.knowbase.addFavorite(article_a_id);
+    await api.knowbase.addFavorite(article_b_id);
+
+    await kb.goto(article_b_id);
+
+    // Search for token_a, the article_a must stay visible in favorites, article_b must be hidden
+    await kb.doSearchAside(token_a);
+    await expect(kb.getFavoriteArticle(article_a)).toBeVisible();
+    await expect(kb.getFavoriteArticle(article_b)).toBeHidden();
+    await expect(kb.favoritesSection).toBeVisible();
+});
+
+test('Favorites section is hidden when no favorites match the search, and restored on clear', async ({
+    page,
+    profile,
+    api,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const token          = randomUUID().slice(0, 8);
+    const no_match_token = randomUUID().slice(0, 8);
+    const article_name   = `E2E Favorite ${token}`;
+
+    const article_id = await api.createItem('KnowbaseItem', {
+        name: article_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await api.knowbase.addFavorite(article_id);
+    await kb.goto(article_id);
+
+    await expect(kb.favoritesSection).toBeVisible();
+
+    // Search for something that matches no favorite, the entire section must disappear
+    await kb.doSearchAside(no_match_token);
+    await expect(kb.favoritesSection).toBeHidden();
+
+    // Clearing the search must restore the section and the article inside it
+    await kb.doClearAsideSearch();
+    await expect(kb.favoritesSection).toBeVisible();
+    await expect(kb.getFavoriteArticle(article_name)).toBeVisible();
+});
+
 test('"No articles found" message is shown when nothing matches and hidden when results exist', async ({
     page,
     profile,
