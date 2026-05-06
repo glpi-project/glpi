@@ -109,10 +109,9 @@ for (const { form, block, open } of warning_cases) {
             dialog_message = dialog.message();
             void dialog.dismiss();
         });
-        // The Save button is intentionally hidden while a timeline form is open.
-        // Use dispatchEvent to fire the click without actionability checks,
-        // testing that the JS warning still fires as a safety net.
-        await page.getByRole('button', { name: 'Save', exact: true }).dispatchEvent('click');
+
+        // Navigate away — the beforeunload handler should block navigation and show the warning.
+        await page.goto('/front/ticket.php').catch(() => {});
 
         expect(dialog_message).toContain('unsaved changes');
         await expect(page).toHaveURL(new RegExp(`id=${ticket_id}`));
