@@ -3,8 +3,8 @@
         "skipLibCheck": true,
         "strict": true,
         "target": "ES2022",
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "module": "esnext",
+        "moduleResolution": "bundler",
         "esModuleInterop": true
     },
     "include": ["tests/e2e/**/*.ts"],
