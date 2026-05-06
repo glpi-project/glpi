@@ -846,10 +846,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 _n('Linked project task', 'Linked project tasks', 1),
                 __('URL')
             ),
-            'linkedprojecttask.title'     => sprintf(
+            'linkedprojecttask.name'     => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project task', 'Linked project tasks', 1),
-                __('Title')
+                __('Name')
             ),
             'linkedprojecttask.content'   => sprintf(
                 __('%1$s: %2$s'),
