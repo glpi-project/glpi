@@ -110,8 +110,9 @@ for (const { form, block, open } of warning_cases) {
             void dialog.dismiss();
         });
         // The Save button is intentionally hidden while a timeline form is open.
-        // Bypass the visibility filter to test that the JS warning still fires as a safety net.
-        await page.getByRole('button', { name: 'Save', exact: true }).click({ force: true });
+        // Use dispatchEvent to fire the click without actionability checks,
+        // testing that the JS warning still fires as a safety net.
+        await page.getByRole('button', { name: 'Save', exact: true }).dispatchEvent('click');
 
         expect(dialog_message).toContain('unsaved changes');
         await expect(page).toHaveURL(new RegExp(`id=${ticket_id}`));
