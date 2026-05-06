@@ -201,7 +201,10 @@ class Dashboard extends CommonDBTM
     public function canViewCurrent(): bool
     {
         Profiler::getInstance()->start(__METHOD__);
-        $this->load();
+
+        if (!$this->load()) {
+            return false;
+        };
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             // User is always allowed to view its own dashboards.
