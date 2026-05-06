@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,33 +30,26 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Altcha;
+import { test, expect } from '../../fixtures/glpi_fixture';
 
-use Glpi\Altcha\AltchaManager;
-use Glpi\Controller\AbstractController;
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+const PUBLIC_FORM_TOKEN = 'public-altcha-test-token';
 
-final class ChallengeController extends AbstractController
-{
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    #[Route(
-        "/Altcha/Challenge",
-        name: "glpi_altcha_challenge",
-        methods: "GET",
-    )]
-    public function __invoke(): Response
-    {
-        $challenge = AltchaManager::getInstance()->generateChallenge();
+test('Can submit a public form with altcha verification', async ({
+    formImporter,
+    anonymousPage,
+}) => {
+    // Act: setup and go to a public form with an anonymous session
+    const info = await formImporter.importForm('public-form-with-altcha.json');
+    await anonymousPage.goto(
+        `/Form/Render/${info.getId()}?token=${PUBLIC_FORM_TOKEN}`
+    );
 
-        // The object has its own toJson() implementation, it is better to not
-        // use JsonResponse and instead let it handle its own convertion.
-        return new Response(
-            $challenge->toJson(),
-            Response::HTTP_OK,
-            ['Content-Type' => 'application/json']
-        );
-    }
-}
+    // Fill the form and check the altcha
+    await anonymousPage.getByRole('textbox', { name: 'Name' }).fill('John Doe');
+    await anonymousPage.getByText("I'm not a robot").click();
+    await expect(anonymousPage.getByText('Verified')).toBeVisible();
+
+    // Submit the form, which should now succeed
+    await anonymousPage.getByRole('button', { name: 'Submit' }).click();
+    await expect(anonymousPage.getByText('Form submitted')).toBeVisible();
+});

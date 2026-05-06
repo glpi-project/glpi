@@ -34,9 +34,15 @@
 
 namespace Glpi\Altcha;
 
+use AltchaOrg\Altcha\Algorithm\DeriveKeyInterface;
+use AltchaOrg\Altcha\Algorithm\Pbkdf2;
 use AltchaOrg\Altcha\Altcha;
 use AltchaOrg\Altcha\Challenge;
-use AltchaOrg\Altcha\ChallengeOptions;
+use AltchaOrg\Altcha\ChallengeParameters;
+use AltchaOrg\Altcha\CreateChallengeOptions;
+use AltchaOrg\Altcha\Payload;
+use AltchaOrg\Altcha\Solution;
+use AltchaOrg\Altcha\VerifySolutionOptions;
 use DateInterval;
 use Glpi\Toolbox\SingletonTrait;
 use GLPIKey;
@@ -44,6 +50,7 @@ use JsonException;
 use RuntimeException;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\UrlException;
+use Toolbox;
 
 use function Safe\base64_decode;
 
@@ -54,12 +61,11 @@ use function Safe\base64_decode;
  * Behind the scene, this will render the official altcha widget which will:
  * - Request a challenge by calling the `/Altcha/Challenge` endpoint.
  * - Solve the challenge locally using a lot of hash computations, this is
- *   called a "proof of work".
+ *   called a "proof of work" (for the default INTERACTIVE mode, this is done
+ *  when the user click on the checkbox).
  * - Include the proof of work in an hidden `altcha` input.
- * - Request and solve a new challenge if the current proof of work expires.
+ * - Request a new challenge if the current proof of work expires.
  *
- * This is all done in the background, the altcha is never displayed to the
- * user.
  * The server will keep track of ongoing challenges using the session.
  *
  * Then, when the form is submitted, the controller must validate the hidden
@@ -82,17 +88,13 @@ final class AltchaManager
 {
     use SingletonTrait;
 
-    /** @var AltchaMode */
-    public const DEFAULT_MODE = AltchaMode::INTERACTIVE;
+    public const AltchaMode DEFAULT_MODE = AltchaMode::INTERACTIVE;
 
-    /** @var int */
-    public const DEFAULT_COMPLEXITY = 50000;
+    public const int DEFAULT_COMPLEXITY = 5000;
 
-    /** @var string */
-    public const DEFAULT_EXPIRATION_INTERVAL = 'PT20M';
+    public const string DEFAULT_EXPIRATION_INTERVAL = 'PT20M';
 
-    /** @var string */
-    private const SESSION_STORAGE_KEY = 'altcha_challenges';
+    private const string SESSION_STORAGE_KEY = 'altcha_challenges';
 
     private Altcha $altcha;
 
@@ -120,12 +122,14 @@ final class AltchaManager
     public function generateChallenge(): Challenge
     {
         // Create challenge
-        $options = new ChallengeOptions(
-            maxNumber: $this->getComplexity(),
-            expires: (new DateTimeImmutable())->add($this->getExpiresAtInterval()),
+        $options = new CreateChallengeOptions(
+            algorithm: $this->getAlgorithm(),
+            cost: $this->getCost(),
+            expiresAt: (new DateTimeImmutable())->add($this->getExpiresAtInterval()),
         );
+
         $challenge = $this->altcha->createChallenge($options);
-        $this->storeOngoingChallenge($challenge->challenge);
+        $this->storeOngoingChallenge($challenge);
 
         return $challenge;
     }
@@ -138,16 +142,30 @@ final class AltchaManager
 
         try {
             $payload = $this->decodePayload($raw_payload);
-            $challenge = $this->getChallengeHashFromPayload($payload);
+            $challenge = new Challenge(
+                $this->getChallengeParametersFromPayload($payload),
+                $this->getSignatureFromPayload($payload),
+            );
+
+            // Can't solve a challenge that doesn't exist
+            if (!$this->hasOngoingChallenge($challenge)) {
+                return false;
+            }
+
+            // Compute verification payload with challenge and solution
+            $verification_payload = new Payload(
+                $challenge,
+                $this->getSolutionFromPayload($payload),
+            );
         } catch (InvalidPayloadException) {
             return false;
         }
 
-        if (!$this->hasOngoingChallenge($challenge)) {
-            return false;
-        }
-
-        return $this->altcha->verifySolution($payload, true);
+        // Finally, verify the solution
+        return $this->altcha->verifySolution(new VerifySolutionOptions(
+            payload: $verification_payload,
+            algorithm: $this->getAlgorithm(),
+        ))->verified;
     }
 
     /**
@@ -169,7 +187,10 @@ final class AltchaManager
 
         try {
             $payload = $this->decodePayload($raw_payload);
-            $challenge = $this->getChallengeHashFromPayload($payload);
+            $challenge = new Challenge(
+                $this->getChallengeParametersFromPayload($payload),
+                $this->getSignatureFromPayload($payload),
+            );
         } catch (InvalidPayloadException) {
             throw new RuntimeException("No challenge found");
         }
@@ -201,19 +222,27 @@ final class AltchaManager
         }
     }
 
-    private function storeOngoingChallenge(string $hash): void
+    private function getUniqueKeyForChallenge(Challenge $challenge): string
     {
-        $_SESSION[self::SESSION_STORAGE_KEY][$hash] = true;
+        return $challenge->parameters->nonce;
     }
 
-    private function hasOngoingChallenge(string $hash): bool
+    private function storeOngoingChallenge(Challenge $challenge): void
     {
-        return $_SESSION[self::SESSION_STORAGE_KEY][$hash] ?? false;
+        $key = $this->getUniqueKeyForChallenge($challenge);
+        $_SESSION[self::SESSION_STORAGE_KEY][$key] = true;
     }
 
-    private function removeOngoingChallenge(string $hash): void
+    private function hasOngoingChallenge(Challenge $challenge): bool
     {
-        unset($_SESSION[self::SESSION_STORAGE_KEY][$hash]);
+        $key = $this->getUniqueKeyForChallenge($challenge);
+        return $_SESSION[self::SESSION_STORAGE_KEY][$key] ?? false;
+    }
+
+    private function removeOngoingChallenge(Challenge $challenge): void
+    {
+        $key = $this->getUniqueKeyForChallenge($challenge);
+        unset($_SESSION[self::SESSION_STORAGE_KEY][$key]);
     }
 
     /** @throws InvalidPayloadException */
@@ -221,7 +250,7 @@ final class AltchaManager
     {
         try {
             $decoded = base64_decode($payload, true);
-            $data = json_decode($decoded, true, 2, JSON_THROW_ON_ERROR);
+            $data = json_decode($decoded, true, 4, JSON_THROW_ON_ERROR);
         } catch (UrlException|JsonException) {
             throw new InvalidPayloadException();
         }
@@ -233,14 +262,67 @@ final class AltchaManager
         return $data;
     }
 
-    /** @throws InvalidPayloadException */
-    private function getChallengeHashFromPayload(array $payload): string
-    {
-        if (!isset($payload['challenge'])) {
+    /**
+     * @param mixed[] $decoded_payload
+     * @throws InvalidPayloadException
+     */
+    private function getChallengeParametersFromPayload(
+        array $decoded_payload
+    ): ChallengeParameters {
+        $parameters = $decoded_payload['challenge']['parameters'] ?? null;
+        if ($parameters === null || !is_array($parameters)) {
             throw new InvalidPayloadException();
         }
 
-        return $payload['challenge'];
+        return ChallengeParameters::fromArray($parameters);
+    }
+
+    /**
+     * @param mixed[] $decoded_payload
+     * @throws InvalidPayloadException
+     */
+    private function getSignatureFromPayload(array $decoded_payload): string
+    {
+        $signature = $decoded_payload['challenge']['signature'] ?? null;
+        if ($signature === null || !\is_string($signature)) {
+            throw new InvalidPayloadException();
+        }
+
+        return $signature;
+    }
+
+    /**
+     * @param mixed[] $decoded_payload
+     * @throws InvalidPayloadException
+     */
+    private function getSolutionFromPayload(array $decoded_payload): Solution
+    {
+        // Solution must be an array with 'counter', 'derivedKey' and 'time'.
+        $solution = $decoded_payload['solution'] ?? null;
+        if ($solution === null) {
+            throw new InvalidPayloadException();
+        }
+
+        $counter = $solution['counter'] ?? null;
+        if ($counter === null || !\is_int($counter)) {
+            throw new InvalidPayloadException();
+        }
+
+        $derived_key = $solution['derivedKey'] ?? null;
+        if ($derived_key === null || !\is_string($derived_key)) {
+            throw new InvalidPayloadException();
+        }
+
+        $time = $solution['time'] ?? null;
+        if ($time === null || !\is_numeric($time)) {
+            throw new InvalidPayloadException();
+        }
+
+        return new Solution(
+            counter: $counter,
+            derivedKey: $derived_key,
+            time: (float) $time,
+        );
     }
 
     private function getMode(): AltchaMode
@@ -255,7 +337,7 @@ final class AltchaManager
         $mode = GLPI_ALTCHA_MODE;
         if ($mode instanceof AltchaMode) {
             return $mode;
-        } elseif (is_string($mode) && AltchaMode::tryFrom($mode) !== null) {
+        } elseif (\is_string($mode) && AltchaMode::tryFrom($mode) !== null) {
             return AltchaMode::from($mode);
         }
 
@@ -263,36 +345,46 @@ final class AltchaManager
     }
 
     /**
-     * Define the complexity of the proof-of-work task.
+     * Define the cost of the proof-of-work task.
      *
-     * See: https://altcha.org/docs/v2/complexity/.
+     * See: https://altcha.org/docs/v2/proof-of-work-captcha/.
      *
-     * Higher complexity may significantly increase the computational load on
+     * Higher costs may significantly increase the computational load on
      * client devices, potentially impacting user experience.
      *
-     * Lower complexity might reduce security against automated attacks but can
+     * Lower costs might reduce security against automated attacks but can
      * enhance user accessibility.
      *
      * To increase security, we could implements in the future a "dynamic
-     * complexity" mecanism.
-     * This mecanism would adapts complexity based on server load and/or user
+     * cost" mecanism.
+     * This mecanism would adapts cost based on server load and/or user
      * behavior, ensuring a balance between security and usability.
      */
-    private function getComplexity(): int
+    private function getCost(): int
     {
-        // Should never happens as it is defined by SystemConfigurator.php
-        // but it it still another safety to avoid failure.
-        if (!defined('GLPI_ALTCHA_MAX_NUMBER')) {
-            // @phpstan-ignore theCodingMachineSafe.function (we checked just above if it is defined)
-            define('GLPI_ALTCHA_MAX_NUMBER', self::DEFAULT_COMPLEXITY);
+        // GLPI_ALTCHA_MAX_NUMBER is no longer used
+        if (defined('GLPI_ALTCHA_MAX_NUMBER')) {
+            Toolbox::deprecated(\sprintf(
+                "%s is deprecated, use %s instead (default = %d).",
+                "GLPI_ALTCHA_MAX_NUMBER",
+                "GLPI_ALTCHA_COST",
+                self::DEFAULT_COMPLEXITY,
+            ));
         }
 
-        $complexity = GLPI_ALTCHA_MAX_NUMBER;
-        if (!is_int($complexity)) {
+        // Should never happens as it is defined by SystemConfigurator.php
+        // but it it still another safety to avoid failure.
+        if (!defined('GLPI_ALTCHA_COST')) {
+            // @phpstan-ignore theCodingMachineSafe.function (we checked just above if it is defined)
+            define('GLPI_ALTCHA_COST', self::DEFAULT_COMPLEXITY);
+        }
+
+        $cost = GLPI_ALTCHA_COST;
+        if (!is_int($cost)) {
             throw new RuntimeException();
         }
 
-        return $complexity;
+        return $cost;
     }
 
     /**
@@ -316,10 +408,24 @@ final class AltchaManager
         $interval = GLPI_ALTCHA_EXPIRATION_INTERVAL;
         if ($interval instanceof DateInterval) {
             return $interval;
-        } elseif (is_string($interval)) {
+        } elseif (\is_string($interval)) {
             return new DateInterval($interval);
         }
 
         throw new RuntimeException();
+    }
+
+    /**
+     * PBKDF2 is the default as it runs natively in the browser without extra
+     * binaries.
+     *
+     * We could consider changing to Argon2id if we want better protection
+     * against GPU/ASIC based attacks.
+     *
+     * See: https://altcha.org/docs/v2/proof-of-work-captcha/
+     */
+    private function getAlgorithm(): DeriveKeyInterface
+    {
+        return new Pbkdf2();
     }
 }

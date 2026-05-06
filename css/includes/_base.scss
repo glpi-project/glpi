@@ -147,8 +147,8 @@
 
 // Push the altcha logo away from the checkbox label in order to make the label
 // feel more connected to its left side checkbox rather than its right side logo.
-.altcha-label {
-    margin-right: 1rem !important;
+.altcha-checkbox-wrap {
+    margin-right: 0.4rem !important;
 }
 
 @media(prefers-reduced-motion) {

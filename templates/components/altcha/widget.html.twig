@@ -34,7 +34,7 @@
 
 {% if manager.isEnabled() %}
     <altcha-widget
-        challengeurl="{{ path('/Altcha/Challenge') }}"
+        challenge="{{ path('/Altcha/Challenge') }}"
         {% if manager.shouldStartWidgetOnLoad() %}
             auto="onload"
         {% endif %}
