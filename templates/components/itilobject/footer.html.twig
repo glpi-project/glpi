@@ -54,7 +54,7 @@
                   {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "" : "btn-group" %}
                   <div class="{{ btn_class }} me-2 main-actions">
                {% else %}
-                  {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
+                  {# Don't use d-flex/d-inline-flex classes here: they add display:...!important which breaks jQuery .hide() #}
                   <div class="main-actions" style="display:inline-flex">
                {% endif %}
                   <button
@@ -154,7 +154,8 @@
                   <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
                </button>
             {% else %}
-               <div class="btn-group d-flex flex-row-reverse" role="group" id="right-actions">
+               {# Use style= instead of d-flex: utility classes add !important on display, breaking jQuery .hide() #}
+               <div class="btn-group flex-row-reverse" role="group" id="right-actions" style="display:flex">
                   {% set is_locked = params['locked'] is defined and params['locked'] %}
                   {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
 
@@ -237,10 +238,20 @@
 
    $(document).on("click", "#itil-footer .answer-action", function() {
       scrollToTimelineStart();
-      // hide answer button after clicking on it only for merge btn
+   });
+
+   // Hide primary actions whenever a timeline answer form opens (any open path: button click or programmatic).
+   $(document).on("show.bs.collapse", "#new-itilobject-form .collapse", function() {
       $("#itil-footer .main-actions").hide();
-      // hide also itil object action to prevent confusion
       $("#right-actions").hide();
+   });
+
+   // Restore primary actions once the form is fully hidden, unless another form is still open (accordion).
+   $(document).on("hidden.bs.collapse", "#new-itilobject-form .collapse", function() {
+      if ($("#new-itilobject-form .collapse.show").length === 0) {
+         $("#itil-footer .main-actions").show();
+         $("#right-actions").show();
+      }
    });
 
    $('#itil-footer .form-buttons button[name="update"]').on('click', () => {
@@ -252,12 +263,6 @@
    });
 
    $(function() {
-      // when close button of new answer block is clicked, show again the new answer button (and the itil object actions)
-      $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
-         $("#itil-footer .main-actions").show();
-         $("#right-actions").show();
-      });
-
       {% if openfollowup %}
          // trigger for reopen, show followup form in timeline
          var myCollapse = document.getElementById('new-ITILFollowup-block')
