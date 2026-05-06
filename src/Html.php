@@ -3077,15 +3077,6 @@ JS;
     ) {
         global $CFG_GLPI, $DB;
 
-        $language = $_SESSION['glpilanguage'];
-        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
-            $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
-                $language = "en_GB";
-            }
-        }
-        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
-
         // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
@@ -3140,12 +3131,26 @@ JS;
 
         $pluginsjs = json_encode(array_values($plugins));
 
+        $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
+        $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
+        $expected_languages  = [$language_RFC5646, $language_regionless];
+        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
+            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
+        }
         $language_opts = '';
-        if ($language !== 'en_GB') {
-            $language_opts = json_encode([
-                'language' => $language,
-                'language_url' => $language_url,
-            ]);
+        foreach ($expected_languages as $language) {
+            if (str_starts_with($language, 'en')) {
+                // No need to hit filesystem for english, this is the default language and there is no translation files
+                // for it.
+                continue;
+            }
+            if (file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs8/$language.js")) {
+                $language_opts = json_encode([
+                    'language' => $language,
+                    'language_url' => $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs8/' . $language . '.js',
+                ]);
+                break;
+            }
         }
 
         $mandatory_field_msg = jsescape(__('The %s field is mandatory'));
@@ -3327,7 +3332,9 @@ JS;
 
                         editor.on('input', function (e) {
                             // Propagate event to allow other components to listen to it
-                            const textarea = $('#' + e.target.dataset.id);
+                            const target = e.target;
+                            const textarea_id = target instanceof tinymce.Editor ? target.id : target.dataset.id;
+                            const textarea = $('#' + textarea_id);
                             textarea.trigger('tinyMCEInput', [e]);
                         });
 
