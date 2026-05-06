@@ -41,6 +41,8 @@ $setupdisplay = new DisplayPreference();
 
 if (isset($_POST['users_id']) && (int) $_POST['users_id'] !== (int) Session::getLoginUserID()) {
     Session::checkRight('search_config', DisplayPreference::GENERAL);
+} else {
+    Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
 }
 
 if (isset($_POST["activate"])) {
@@ -52,13 +54,13 @@ if (isset($_POST["activate"])) {
         ]);
     }
 } elseif (isset($_POST['action']) && $_POST['action'] === 'update_order') {
-    if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
+    if (!isset($_POST['itemtype'], $_POST['users_id'])) {
         throw new BadRequestHttpException();
     }
     $setupdisplay->updateOrder(
         $_POST['itemtype'],
-        $_POST['users_id'],
-        $_POST['opts'],
+        (int) $_POST['users_id'],
+        $_POST['opts'] ?? [],
         $_POST['interface'] ?? 'central'
     );
 } else {
