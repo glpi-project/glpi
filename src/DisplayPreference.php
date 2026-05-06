@@ -62,6 +62,9 @@ class DisplayPreference extends CommonDBTM
         );
     }
 
+    /**
+     * @param array<string, mixed> $input
+     */
     public static function checkAjaxAuthorization(array $input): void
     {
         if (isset($input['users_id']) && (int) $input['users_id'] !== (int) Session::getLoginUserID()) {
