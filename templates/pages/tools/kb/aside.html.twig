@@ -52,6 +52,7 @@
 
 {% macro render_article(article, add_margin = false, favorite_state = null) %}
     <li
+        data-glpi-kb-article-id="{{ article.id }}"
         {% if favorite_state is not null %}
             data-glpi-kb-favorite-current="{{ favorite_state }}"
         {% endif %}
@@ -82,8 +83,22 @@
 
 {% set hide_favorites = not has_other_favorites and not current_is_favorite %}
 
-<div class="card-header" data-glpi-kb-aside-header {{ hide_favorites ? 'data-glpi-kb-aside-header-no-border' : '' }}>
-    <h3 class="card-title fw-bold">{{ __("Articles") }}</h3>
+<div class="card-header flex-column align-items-start" data-glpi-kb-aside-header {{ hide_favorites ? 'data-glpi-kb-aside-header-no-border' : '' }}>
+    <h3 class="card-title fw-bold mb-3">{{ __("Articles") }}</h3>
+
+    <div class="input-icon mb-2">
+        <input
+            type="text"
+            value=""
+            class="form-control pe-none"
+            placeholder="{{ __('Search...') }}"
+            aria-label="{{ __('Search articles') }}"
+            data-glpi-kb-aside-search-input
+        >
+        <span class="input-icon-addon" role="button" data-glpi-kb-aside-search-clear aria-label="{{ __('Clear search') }}">
+            <span class="ti ti-search" data-glpi-kb-aside-search-icon></span>
+        </span>
+    </div>
 </div>
 
 <div
@@ -111,7 +126,7 @@
         </ul>
 </div>
 
-<div class="card-body">
+<div class="card-body" data-glpi-kb-aside-tree>
     <ul class="kb-tree ps-0">
         {# Render root articles in a special "uncategorized" category #}
         {% if tree.articles|length %}
@@ -128,6 +143,9 @@
             {{ macros.render_category(category) }}
         {% endfor %}
     </ul>
+    <p class="text-muted" data-glpi-kb-aside-no-results hidden>
+        {{ __("No articles found.") }}
+    </p>
 </div>
 
 <script type="module">

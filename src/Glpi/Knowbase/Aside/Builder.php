@@ -60,6 +60,7 @@ final class Builder
         );
         foreach ($articles as $article_data) {
             $node->addArticle(new Article(
+                id: (int) $article_data['id'],
                 title: $article_data['name'] ?? '',
                 illustration: $article_data['illustration'] ?? 'kb-faq',
                 link: KnowbaseItem::getFormURLWithID($article_data['id']),

@@ -37,6 +37,7 @@ namespace Glpi\Knowbase\Aside;
 final class Article
 {
     public function __construct(
+        public readonly int $id,
         public readonly string $title,
         public readonly string $illustration,
         public readonly string $link,

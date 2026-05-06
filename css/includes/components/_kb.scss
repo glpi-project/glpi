@@ -773,6 +773,11 @@
         border-bottom: 0;
     }
 
+    // Tree items hidden by the search filter.
+    [data-glpi-kb-search-hidden] {
+        display: none;
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;

@@ -294,5 +294,28 @@ export class KnowbaseItemPage extends GlpiPage
     {
         await this.getAsideCategoryToggle(title).click();
     }
+
+    public get asideSearchInput(): Locator
+    {
+        return this.page.getByLabel('Search articles');
+    }
+
+    public get asideNoResultsMessage(): Locator
+    {
+        return this.page.getByText("No articles found.");
+    }
+
+    public async doSearchAside(term: string): Promise<void>
+    {
+        // Click on the input to make sure the js script is ready, before that
+        // it won't be clickable.
+        await this.asideSearchInput.click();
+        await this.asideSearchInput.fill(term);
+    }
+
+    public async doClearAsideSearch(): Promise<void>
+    {
+        await this.asideSearchInput.clear();
+    }
 }
 
