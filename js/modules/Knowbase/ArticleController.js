@@ -1261,7 +1261,22 @@ export class GlpiKnowbaseArticleController
     {
         this.#translation_language = language;
         this.#updateDeleteButtonVisibility();
-        await this.#loadTranslationContent(language);
+
+        let must_reset_contenteditable = false;
+        if (this.#title_element && this.#is_editing) {
+            // Make sure content is not editable while we are loading the new
+            // version
+            this.#title_element.contentEditable = 'false';
+            must_reset_contenteditable = true;
+        }
+        try {
+            await this.#loadTranslationContent(language);
+        } finally {
+            if (must_reset_contenteditable) {
+                this.#title_element.contentEditable = 'true';
+            }
+        }
+
         setHasUnsavedChanges(false);
     }
 
