@@ -86,7 +86,7 @@ final readonly class Answer implements JsonSerializable
         return $this->raw_answer;
     }
 
-    public function getFormattedAnswer($encode = true): ?string
+    public function getFormattedAnswer(bool $encode = true): ?string
     {
         $type = $this->getType();
         if ($type === null) {
