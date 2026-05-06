@@ -1782,7 +1782,6 @@ JAVASCRIPT;
 
         // Get Collection data
         $this->getCollectionDatas(1, 1, $condition);
-        $input = $this->prepareInputDataForProcess($input, $params);
 
         $output["_no_rule_matches"] = true;
 
