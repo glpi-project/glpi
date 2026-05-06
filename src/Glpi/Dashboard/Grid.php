@@ -1629,17 +1629,11 @@ HTML;
         // if default not found, return first dashboard
         if (!$strict) {
             self::loadAllDashboards();
-            $possible_dashboards = self::$all_dashboards;
+            $dashboards = $menu === 'mini_ticket'
+                ? self::$all_dashboards
+                : array_filter(self::$all_dashboards, static fn($d) => $d['key'] !== 'mini_tickets');
 
-            //if the menu is not mini_ticket, remove the mini dashboard from the possible dashboards
-            if ($menu !== "mini_ticket") {
-                $possible_dashboards = array_filter($possible_dashboards, static fn($dashboard) => $dashboard['key'] !== 'mini_tickets');
-            }
-
-            $first_dashboard = array_shift($possible_dashboards);
-            if (isset($first_dashboard['key'])) {
-                return $first_dashboard['key'];
-            }
+            return array_shift($dashboards)['key'] ?? "";
         }
 
         return "";
