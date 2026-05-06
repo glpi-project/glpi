@@ -7,8 +7,6 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 
-- Added variables for linked projects and tasks in ITIL notifications templates.
-
 ### Changed
 
 ### Deprecated
