@@ -175,4 +175,3 @@ class DisplayPreferenceTest extends DbTestCase
         $this->checkAjaxAuthorization($target_users_id);
     }
 }
-
