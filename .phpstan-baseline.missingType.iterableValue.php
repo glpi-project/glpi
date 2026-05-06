@@ -7736,12 +7736,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Altcha/AltchaManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Altcha\\\\AltchaManager\\:\\:getChallengeHashFromPayload\\(\\) has parameter \\$payload with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Altcha/AltchaManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Altcha\\\\AltchaManager\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

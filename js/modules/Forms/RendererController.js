@@ -295,6 +295,17 @@ export class GlpiFormRendererController
                 return;
             }
 
+            // If enabled, hint the user that he need to complete the altcha
+            // challenge before submitting the form
+            const altcha = this.#target.querySelector('altcha-widget');
+            if (altcha) {
+                const checkbox = altcha.querySelector('input[type=checkbox]');
+                if (!checkbox.reportValidity()) {
+                    this.#enableActions();
+                    return;
+                }
+            }
+
             // Submit form using AJAX
             const response = await $.post({
                 url: $(this.#target).prop("action"),
