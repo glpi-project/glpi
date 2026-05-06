@@ -339,6 +339,13 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 $custom_height = intval($hmatches[1]);
                             }
 
+                            if ($custom_width !== null && $custom_width <= 0) {
+                                $custom_width = null;
+                            }
+                            if ($custom_height !== null && $custom_height <= 0) {
+                                $custom_height = null;
+                            }
+
                             if ($custom_height === null && $custom_width === null) {
                                 // no custom size, use original file
                                 $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
@@ -357,17 +364,27 @@ class NotificationEventMailing extends NotificationEventAbstract
                                     $initial_height = $img_infos[1];
 
                                     if ($custom_height === null) {
-                                        $custom_height = $initial_height * $custom_width / $initial_width;
+                                        $custom_height = max(
+                                            1,
+                                            (int) round($initial_height * $custom_width / $initial_width)
+                                        );
                                     } else {
-                                        $custom_width = $initial_width * $custom_height / $initial_height;
+                                        $custom_width = max(
+                                            1,
+                                            (int) round($initial_width * $custom_height / $initial_height)
+                                        );
                                     }
                                 }
 
-                                $image_path = Document::getResizedImagePath(
-                                    GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
-                                    $custom_width,
-                                    $custom_height
-                                );
+                                if ($custom_width <= 0 || $custom_height <= 0) {
+                                    $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+                                } else {
+                                    $image_path = Document::getResizedImagePath(
+                                        GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
+                                        $custom_width,
+                                        $custom_height
+                                    );
+                                }
                             }
 
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
