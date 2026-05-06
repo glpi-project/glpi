@@ -2,7 +2,7 @@ import mocha from "eslint-plugin-mocha";
 import globals from "globals";
 import vue from "eslint-plugin-vue";
 import js from "@eslint/js";
-import cypress from "eslint-plugin-cypress/flat";
+import cypress from "eslint-plugin-cypress";
 import playwright from 'eslint-plugin-playwright';
 import tsParser from "@typescript-eslint/parser";
 import tseslint from "@typescript-eslint/eslint-plugin";
