@@ -244,6 +244,7 @@
    $(document).on("show.bs.collapse", "#new-itilobject-form .collapse", function() {
       $("#itil-footer .main-actions").hide();
       $("#right-actions").hide();
+      setHasUnsavedChanges(true);
    });
 
    // Restore primary actions once the form is fully hidden, unless another form is still open (accordion).
@@ -251,6 +252,7 @@
       if ($("#new-itilobject-form .collapse.show").length === 0) {
          $("#itil-footer .main-actions").show();
          $("#right-actions").show();
+         setHasUnsavedChanges(false);
       }
    });
 

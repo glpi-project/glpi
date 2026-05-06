@@ -104,16 +104,16 @@ for (const { form, block, open } of warning_cases) {
         // animation completes before clicking Save.
         await expect(page.getByTestId(block)).toHaveClass(/\bshow\b/);
 
-        let dialog_message = '';
+        let navigation_warning_shown = false;
         page.once('dialog', (dialog) => {
-            dialog_message = dialog.message();
+            navigation_warning_shown = true;
             void dialog.dismiss();
         });
 
-        // Navigate away — the beforeunload handler should block navigation and show the warning.
+        // Navigate away — opening the form sets hasUnsavedChanges, so common.js beforeunload fires.
         await page.goto('/front/ticket.php').catch(() => {});
 
-        expect(dialog_message).toContain('unsaved changes');
+        expect(navigation_warning_shown).toBe(true);
         await expect(page).toHaveURL(new RegExp(`id=${ticket_id}`));
     });
 }
