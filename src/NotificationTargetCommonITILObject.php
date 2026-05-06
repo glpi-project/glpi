@@ -1570,7 +1570,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     ];
                 }
             }
-            $data['##ticket.numberoflinkedprojects##'] = count($data['linkedprojects']);
+            $data['##'. strtolower($item->getType()) . '.numberoflinkedprojects##'] = count($data['linkedprojects']);
 
             $show_private = $options['additionnaloption']['show_private'] ?? false;
             $followup_restrict = [];
