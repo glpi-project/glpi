@@ -66,13 +66,7 @@ class DisplayPreferenceTest extends DbTestCase
      */
     private function checkAjaxAuthorization(int $target_users_id): void
     {
-        if ($target_users_id !== (int) Session::getLoginUserID()) {
-            // Modifying global prefs (users_id=0) or another user's prefs requires GENERAL.
-            Session::checkRight(DisplayPreference::$rightname, DisplayPreference::GENERAL);
-        } else {
-            // Modifying own personal prefs requires at least PERSONAL or GENERAL.
-            Session::checkRightsOr(DisplayPreference::$rightname, [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
-        }
+        DisplayPreference::checkAjaxAuthorization(['users_id' => $target_users_id]);
     }
 
     /**

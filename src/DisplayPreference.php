@@ -62,6 +62,15 @@ class DisplayPreference extends CommonDBTM
         );
     }
 
+    public static function checkAjaxAuthorization(array $input): void
+    {
+        if (isset($input['users_id']) && (int) $input['users_id'] !== (int) Session::getLoginUserID()) {
+            Session::checkRight(self::$rightname, self::GENERAL);
+        } else {
+            Session::checkRightsOr(self::$rightname, [self::PERSONAL, self::GENERAL]);
+        }
+    }
+
     public function canCrudItem(): bool
     {
         if (Session::haveRight(static::$rightname, DisplayPreference::GENERAL)) {

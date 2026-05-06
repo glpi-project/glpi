@@ -39,11 +39,7 @@ Html::header_nocache();
 
 $setupdisplay = new DisplayPreference();
 
-if (isset($_POST['users_id']) && (int) $_POST['users_id'] !== (int) Session::getLoginUserID()) {
-    Session::checkRight('search_config', DisplayPreference::GENERAL);
-} else {
-    Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
-}
+DisplayPreference::checkAjaxAuthorization($_POST);
 
 if (isset($_POST["activate"])) {
     $setupdisplay->activatePerso($_POST);
