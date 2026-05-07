@@ -753,14 +753,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     {
         global $DB;
 
-        $shared_access = ShareTokenManager::getAccessibleItems();
+        $shared_access = (new ShareTokenManager())->getAccessibleItems();
         if ($shared_access === []) {
             return false;
         }
 
         $conditions = [];
-        foreach ($shared_access as $itemtype => $ids) {
-            $item_ids = array_keys($ids);
+        foreach ($shared_access as $itemtype => $item_ids) {
             if ($item_ids === []) {
                 continue;
             }

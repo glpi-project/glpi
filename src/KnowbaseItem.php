@@ -1339,7 +1339,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return [
             'title'   => $this->fields['name'],
             'content' => $this->fields['answer'],
-            'item'    => $this,
         ];
     }
 

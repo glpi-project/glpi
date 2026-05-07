@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi;
 
+use CommonDBTM;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
@@ -53,15 +54,24 @@ final class ShareableAccessTest extends DbTestCase
         ]);
     }
 
+    private function createToken(ShareableInterface&CommonDBTM $item): ShareToken
+    {
+        return $this->createItem(ShareToken::class, [
+            'itemtype'  => $item::class,
+            'items_id'  => $item->getID(),
+            'name'      => $this->getUniqueString(),
+            'is_active' => 1,
+        ]);
+    }
+
     public function testSharedAccessGrantsReadOnKnowbaseItem(): void
     {
         $this->login();
         $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
+        $token = $this->createToken($kb);
         $this->logOut();
 
-        ShareTokenManager::resetValidationCache();
-        ShareTokenManager::grantSessionAccess(KnowbaseItem::class, $kb->getID(), $token->fields['token']);
+        (new ShareTokenManager())->grantSessionAccess($token->fields['token']);
 
         $item = new KnowbaseItem();
         $this->assertTrue($item->can($kb->getID(), READ));
@@ -71,11 +81,10 @@ final class ShareableAccessTest extends DbTestCase
     {
         $this->login();
         $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
+        $token = $this->createToken($kb);
         $this->logOut();
 
-        ShareTokenManager::resetValidationCache();
-        ShareTokenManager::grantSessionAccess(KnowbaseItem::class, $kb->getID(), $token->fields['token']);
+        (new ShareTokenManager())->grantSessionAccess($token->fields['token']);
 
         $item = new KnowbaseItem();
         $this->assertFalse($item->can($kb->getID(), UPDATE));
@@ -85,11 +94,10 @@ final class ShareableAccessTest extends DbTestCase
     {
         $this->login();
         $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
+        $token = $this->createToken($kb);
         $this->logOut();
 
-        ShareTokenManager::resetValidationCache();
-        ShareTokenManager::grantSessionAccess(KnowbaseItem::class, $kb->getID(), $token->fields['token']);
+        (new ShareTokenManager())->grantSessionAccess($token->fields['token']);
 
         $item = new KnowbaseItem();
         $this->assertFalse($item->can($kb->getID(), DELETE));
@@ -101,7 +109,6 @@ final class ShareableAccessTest extends DbTestCase
         $kb = $this->createKnowbaseItem();
         $this->logOut();
 
-        unset($_SESSION[ShareTokenManager::SESSION_KEY]);
 
         $item = new KnowbaseItem();
         $this->assertFalse($item->can($kb->getID(), READ));
@@ -112,11 +119,10 @@ final class ShareableAccessTest extends DbTestCase
         $this->login();
         $kb1 = $this->createKnowbaseItem();
         $kb2 = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb1->getID());
+        $token = $this->createToken($kb1);
         $this->logOut();
 
-        ShareTokenManager::resetValidationCache();
-        ShareTokenManager::grantSessionAccess(KnowbaseItem::class, $kb1->getID(), $token->fields['token']);
+        (new ShareTokenManager())->grantSessionAccess($token->fields['token']);
 
         $item = new KnowbaseItem();
         $this->assertTrue($item->can($kb1->getID(), READ));
@@ -151,17 +157,11 @@ final class ShareableAccessTest extends DbTestCase
     {
         $this->login();
         $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
         $this->logOut();
 
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
-        $token_string = $token->fields['token'];
-
-        $validated = ShareTokenManager::validateToken($token_string);
+        $validated = (new ShareTokenManager())->grantSessionAccess($token->fields['token']);
         $this->assertNotNull($validated);
-
-        unset($_SESSION[ShareTokenManager::SESSION_KEY]);
-        ShareTokenManager::resetValidationCache();
-        ShareTokenManager::grantSessionAccess($validated['itemtype'], $validated['items_id'], $token_string);
 
         $item = new KnowbaseItem();
         $this->assertTrue($item->can($kb->getID(), READ));

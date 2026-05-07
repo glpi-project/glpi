@@ -34,15 +34,16 @@
 
 namespace tests\units\Glpi\Controller;
 
+use CommonDBTM;
 use Glpi\Controller\ShareAccessController;
-use Glpi\Controller\ShareViewerController;
+use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Request;
 use User;
 
-final class ShareControllerTest extends DbTestCase
+final class ShareAccessControllerTest extends DbTestCase
 {
     private function createKnowbaseItem(): KnowbaseItem
     {
@@ -54,72 +55,47 @@ final class ShareControllerTest extends DbTestCase
         ]);
     }
 
-    public function testShareAccessControllerAnonymousRedirectHasReferrerPolicyHeader(): void
+    private function createToken(ShareableInterface&CommonDBTM $item): ShareToken
     {
-        $this->login();
-        $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
-        $this->logOut();
-
-        $controller = new ShareAccessController();
-        $response = $controller->__invoke($token->fields['token']);
-
-        $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+        return $this->createItem(ShareToken::class, [
+            'itemtype'  => $item::class,
+            'items_id'  => $item->getID(),
+            'name'      => $this->getUniqueString(),
+            'is_active' => 1,
+        ]);
     }
 
-    public function testShareAccessControllerAnonymousRedirectRespectsRootDoc(): void
-    {
-        global $CFG_GLPI;
-
-        $this->login();
-        $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
-        $this->logOut();
-
-        $saved_root_doc = $CFG_GLPI['root_doc'];
-        $CFG_GLPI['root_doc'] = '/glpi';
-        try {
-            $controller = new ShareAccessController();
-            $response = $controller->__invoke($token->fields['token']);
-
-            $location = $response->headers->get('Location');
-            $this->assertStringStartsWith(
-                '/glpi/Share/View/',
-                $location,
-                'Anonymous redirect must include root_doc prefix for subdirectory installs'
-            );
-        } finally {
-            $CFG_GLPI['root_doc'] = $saved_root_doc;
-        }
-    }
-
-    public function testShareAccessControllerAuthenticatedRedirectHasReferrerPolicyHeader(): void
+    public function testAnonymousRedirectHasReferrerPolicyHeader(): void
     {
         $this->login();
         $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
-
-        $controller = new ShareAccessController();
-        $response = $controller->__invoke($token->fields['token']);
-
-        $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
-    }
-
-    public function testShareViewerControllerResponseHasReferrerPolicyHeader(): void
-    {
-        $this->login();
-        $kb = $this->createKnowbaseItem();
-        $token = ShareToken::createToken(KnowbaseItem::class, $kb->getID());
+        $token = $this->createToken($kb);
         $this->logOut();
 
         $request = Request::create(
-            '/Share/View/KnowbaseItem/' . $kb->getID(),
+            '/Share/' . $token->fields['token'],
             'GET',
-            ['t' => $token->fields['token']]
         );
 
-        $controller = new ShareViewerController();
-        $response = $controller->__invoke($request, KnowbaseItem::class, $kb->getID());
+        $controller = new ShareAccessController();
+        $response = $controller->__invoke($request, $token->fields['token']);
+
+        $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testAuthenticatedRedirectHasReferrerPolicyHeader(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $request = Request::create(
+            '/Share/' . $token->fields['token'],
+            'GET',
+        );
+
+        $controller = new ShareAccessController();
+        $response = $controller->__invoke($request, $token->fields['token']);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
     }

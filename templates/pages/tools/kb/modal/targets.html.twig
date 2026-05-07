@@ -72,8 +72,8 @@
 </div>
 
 <script type="module">
-    import { GlpiKnowbaseTargetsModalController } from "{{ js_path('js/modules/Knowbase/TargetsModalController.js') }}";
-    import { GlpiKnowbaseSharingPanelController } from "{{ js_path('js/modules/Knowbase/SharingPanelController.js') }}";
+    import { GlpiKnowbaseTargetsModalController } from "/js/modules/Knowbase/TargetsModalController.js";
+    import { GlpiKnowbaseSharingPanelController } from "/js/modules/Knowbase/SharingPanelController.js";
     new GlpiKnowbaseTargetsModalController();
     const sharingPanel = document.querySelector('[data-glpi-sharing-panel]');
     if (sharingPanel) {
