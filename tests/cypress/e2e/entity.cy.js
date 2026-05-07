@@ -45,8 +45,10 @@ describe('Entity', () => {
 
         // We switch context to the newly created subentity
         cy.openEntitySelector();
-        cy.get('.fancytree-expander[role=button]:visible').as('toggle_tree').click(); // From entities_selector tests.
-        cy.findByRole('gridcell', {'name': subentity_name}).findByRole('button').click();
+        cy.findByRole('dialog', {name: 'Select the desired entity'}).within(() => {
+            cy.findByTitle('Expand').click(); // Expand the tree to be able to see the newly created subentity.
+            cy.findByRole('button', {'name': subentity_name}).click();
+        });
 
         // We can create the sub-subentity (first child so recursive will be automatically set)
         cy.visit(`/front/entity.form.php`);
