@@ -50,7 +50,6 @@ class ShareToken extends CommonDBChild
     public static string $items_id = 'items_id';
     public static int $checkParentRights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
-    public static string $rightname = '';
     public static array $undisclosedFields = ['token'];
 
     public static function getTypeName($nb = 0): string
@@ -60,94 +59,14 @@ class ShareToken extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        if (empty($input['token'])) {
-            $input['token'] = self::generateToken();
-        }
+        // Token cannot be manually defined, it must always be a randomly generaed value.
+        $input['token'] = $this->generateToken();
 
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID() ?: 0;
         }
 
         return parent::prepareInputForAdd($input);
-    }
-
-    /**
-     * Create a new sharing token for an item.
-     *
-     * Caller is responsible for verifying that the current user has
-     * permission to manage sharing on the target item (e.g. UPDATE right).
-     *
-     * @param class-string<\CommonDBTM> $itemtype The item class name
-     * @param int $items_id The item ID
-     * @param string|null $name Optional label for the token
-     *
-     * @return self|false The created ShareToken or false on failure
-     */
-    public static function createToken(string $itemtype, int $items_id, ?string $name = null): self|false
-    {
-        $token = new self();
-        $id = $token->add([
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id,
-            'name'      => $name,
-            'is_active' => 1,
-        ]);
-
-        if ($id === false) {
-            return false;
-        }
-
-        return $token;
-    }
-
-    /**
-     * Toggle the active state of a token.
-     *
-     * Caller is responsible for verifying permissions on the parent item.
-     *
-     * @param int $token_id The ShareToken ID
-     *
-     * @return bool
-     */
-    public static function toggleActive(int $token_id): bool
-    {
-        $token = new self();
-        if (!$token->getFromDB($token_id)) {
-            return false;
-        }
-
-        return $token->update([
-            'id'        => $token_id,
-            'is_active' => $token->fields['is_active'] ? 0 : 1,
-        ]);
-    }
-
-    /**
-     * Regenerate the token string for an existing ShareToken.
-     *
-     * Caller is responsible for verifying permissions on the parent item.
-     *
-     * @param int $token_id The ShareToken ID
-     *
-     * @return self|false The updated ShareToken or false on failure
-     */
-    public static function regenerateToken(int $token_id): self|false
-    {
-        $token = new self();
-        if (!$token->getFromDB($token_id)) {
-            return false;
-        }
-
-        $success = $token->update([
-            'id'    => $token_id,
-            'token' => self::generateToken(),
-        ]);
-
-        if (!$success) {
-            return false;
-        }
-
-        return $token;
     }
 
     /**
@@ -181,10 +100,8 @@ class ShareToken extends CommonDBChild
 
     /**
      * Generate a cryptographically secure random token.
-     *
-     * @return string A 64-character hex string
      */
-    private static function generateToken(): string
+    private function generateToken(): string
     {
         return bin2hex(random_bytes(32));
     }

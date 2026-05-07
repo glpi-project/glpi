@@ -34,8 +34,12 @@
 
 namespace Glpi\Security;
 
+use CommonDBTM;
 use Glpi\DBAL\QueryFunction;
+use Glpi\ShareableInterface;
 use Glpi\ShareToken;
+
+use function Safe\strtotime;
 
 /**
  * Service responsible for share token validation and session-based access grants.
@@ -48,26 +52,12 @@ final class ShareTokenManager
     /**
      * Session key used to store shared access grants.
      */
-    public const SESSION_KEY = 'glpi_shared_access';
+    private const SESSION_KEY = 'glpi_shared_access';
 
     /**
-     * Per-request cache: token string => validation result.
-     *
-     * Avoids repeated SQL queries when hasSessionAccess() is called
-     * multiple times for the same token within a single HTTP request.
-     *
-     * @var array<string, bool>
+     * Grant read access to the item shared by the given token.
      */
-    private static array $validation_cache = [];
-
-    /**
-     * Validate a token string and return the associated item info.
-     *
-     * @param string $token The token string
-     *
-     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}|null
-     */
-    public static function validateToken(string $token): ?array
+    public function grantSessionAccess(string $token): (CommonDBTM&ShareableInterface)|null
     {
         global $DB;
 
@@ -89,85 +79,85 @@ final class ShareTokenManager
             return null;
         }
 
-        return [
-            'itemtype' => $row['itemtype'],
-            'items_id' => (int) $row['items_id'],
-        ];
-    }
+        $item = \getItemForItemtype($row['itemtype']);
 
-    /**
-     * Grant read access to an item in the current session.
-     *
-     * @param class-string<\CommonDBTM> $itemtype The item class name
-     * @param int $items_id The item ID
-     * @param string $token The token string used to gain access
-     */
-    public static function grantSessionAccess(string $itemtype, int $items_id, string $token): void
-    {
-        $_SESSION[self::SESSION_KEY][$itemtype][$items_id] = $token;
+        if (
+            !($item instanceof ShareableInterface)
+            || !($item instanceof CommonDBTM)
+            || !$item->getFromDB((int) $row['items_id'])
+            || (
+                $item->maybeDeleted()
+                && (!$item->useDeletedToLockIfDynamic() || !$item->isDynamic())
+                && $item->isDeleted()
+            )
+        ) {
+            return null;
+        }
+
+        // allow access for the next 5 minutes
+        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
+            'token'      => $token,
+            'expires_at' => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
+        ];
+
+        return $item;
     }
 
     /**
      * Check whether the current session has shared access to an item.
      *
-     * Re-validates the stored token against the database on each request
-     * (cached per-request via static property) to ensure revoked tokens
-     * are denied immediately.
-     *
-     * @param class-string<\CommonDBTM> $itemtype The item class name
+     * @param class-string<CommonDBTM> $itemtype The item class name
      * @param int $items_id The item ID
      *
      * @return bool
      */
-    public static function hasSessionAccess(string $itemtype, int $items_id): bool
+    public function hasSessionAccess(string $itemtype, int $items_id): bool
     {
-        $token = $_SESSION[self::SESSION_KEY][$itemtype][$items_id] ?? null;
-        if (!is_string($token) || $token === '') {
+        $session_data = $_SESSION[self::SESSION_KEY][$itemtype][$items_id] ?? null;
+        if (
+            !\is_array($session_data)
+            || !\array_key_exists('token', $session_data)
+            || !\is_string($session_data['token'])
+            || !\array_key_exists('expires_at', $session_data)
+            || !\is_string($session_data['expires_at'])
+        ) {
             return false;
         }
 
-        if (array_key_exists($token, self::$validation_cache)) {
-            return self::$validation_cache[$token];
+        if (strtotime($session_data['expires_at']) > strtotime($_SESSION['glpi_currenttime'])) {
+            return true;
         }
 
-        $valid = self::validateToken($token) !== null;
-        self::$validation_cache[$token] = $valid;
+        $access_granted_again = $this->grantSessionAccess($session_data['token']) !== null;
 
-        if (!$valid) {
+        if (!$access_granted_again) {
+            // Revoke access
             unset($_SESSION[self::SESSION_KEY][$itemtype][$items_id]);
+            return false;
         }
 
-        return $valid;
-    }
-
-    /**
-     * Reset the per-request validation cache.
-     *
-     * @internal Only for use in test suites where multiple token lifecycle
-     *           events happen within the same PHP process.
-     */
-    public static function resetValidationCache(): void
-    {
-        self::$validation_cache = [];
+        return true;
     }
 
     /**
      * Return all items accessible via the current session's shared access grants.
      *
-     * Only items whose stored token is still valid (active, not expired) are returned.
-     * The returned array is indexed by itemtype, then by items_id.
+     * The returned array is indexed by itemtype.
      *
-     * @return array<string, array<int, string>>
+     * @return array<class-string<CommonDBTM>, list<int>>
      */
-    public static function getAccessibleItems(): array
+    public function getAccessibleItems(): array
     {
         $items = $_SESSION[self::SESSION_KEY] ?? [];
         $validated = [];
 
         foreach ($items as $itemtype => $ids) {
             foreach ($ids as $items_id => $token) {
-                if (self::hasSessionAccess($itemtype, (int) $items_id)) {
-                    $validated[$itemtype][$items_id] = $token;
+                if ($this->hasSessionAccess($itemtype, (int) $items_id)) {
+                    if (!\array_key_exists($itemtype, $validated)) {
+                        $validated[$itemtype] = [];
+                    }
+                    $validated[$itemtype][] = $items_id;
                 }
             }
         }

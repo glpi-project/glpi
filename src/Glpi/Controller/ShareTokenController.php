@@ -44,8 +44,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-use function Safe\json_decode;
-
 final class ShareTokenController extends AbstractController
 {
     #[Route(
@@ -56,7 +54,7 @@ final class ShareTokenController extends AbstractController
     )]
     public function list(string $itemtype, int $items_id): JsonResponse
     {
-        $this->validateShareableItem($itemtype, $items_id);
+        $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
         $tokens = ShareToken::getTokensForItem($itemtype, $items_id);
 
@@ -71,13 +69,20 @@ final class ShareTokenController extends AbstractController
     )]
     public function create(Request $request, string $itemtype, int $items_id): JsonResponse
     {
-        $this->validateShareableItem($itemtype, $items_id);
+        $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
-        $data = json_decode($request->getContent(), true);
-        $name = $data['name'] ?? null;
+        $name = $request->getPayload()->getString('name') ?: null;
 
-        $token = ShareToken::createToken($itemtype, $items_id, $name);
-        if ($token === false) {
+        $input = [
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id,
+            'name'      => $name,
+            'is_active' => 1,
+        ];
+
+        $token = new ShareToken();
+
+        if ($token->add($input) === false) {
             return new JsonResponse(
                 ['success' => false, 'message' => __('Failed to create share link')],
                 Response::HTTP_INTERNAL_SERVER_ERROR,
@@ -98,35 +103,19 @@ final class ShareTokenController extends AbstractController
     )]
     public function toggle(int $token_id): JsonResponse
     {
-        $this->validateTokenOwnership($token_id);
-
-        $success = ShareToken::toggleActive($token_id);
-
-        return new JsonResponse(['success' => $success]);
-    }
-
-    #[Route(
-        "/Share/Token/{token_id}/Regenerate",
-        name: "glpi_share_token_regenerate",
-        methods: ["POST"],
-        requirements: ['token_id' => '\d+'],
-    )]
-    public function regenerate(int $token_id): JsonResponse
-    {
-        $this->validateTokenOwnership($token_id);
-
-        $token = ShareToken::regenerateToken($token_id);
-        if ($token === false) {
-            return new JsonResponse(
-                ['success' => false, 'message' => __('Failed to regenerate token')],
-                Response::HTTP_INTERNAL_SERVER_ERROR,
-            );
+        $token = new ShareToken();
+        if (!$token->getFromDB($token_id)) {
+            throw new NotFoundHttpException();
         }
 
-        return new JsonResponse([
-            'success' => true,
-            'token'   => $token->fields,
+        $this->checkRightToUpdateToken($token);
+
+        $success = $token->update([
+            'id'        => $token_id,
+            'is_active' => $token->fields['is_active'] ? 0 : 1,
         ]);
+
+        return new JsonResponse(['success' => $success]);
     }
 
     #[Route(
@@ -137,7 +126,12 @@ final class ShareTokenController extends AbstractController
     )]
     public function delete(int $token_id): JsonResponse
     {
-        $this->validateTokenOwnership($token_id);
+        $token = new ShareToken();
+        if (!$token->getFromDB($token_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->checkRightToUpdateToken($token);
 
         $share_token = new ShareToken();
         $success = $share_token->delete(['id' => $token_id], true);
@@ -148,7 +142,7 @@ final class ShareTokenController extends AbstractController
     /**
      * Validate that the itemtype implements ShareableInterface and the user can manage sharing.
      */
-    private function validateShareableItem(string $itemtype, int $items_id): void
+    private function checkRightToShareItem(string $itemtype, int $items_id): void
     {
         $item = getItemForItemtype($itemtype);
         if (!($item instanceof \CommonDBTM) || !($item instanceof ShareableInterface)) {
@@ -165,18 +159,13 @@ final class ShareTokenController extends AbstractController
     }
 
     /**
-     * Validate that the token exists and the user can manage sharing on the associated item.
+     * Validate the user can manage sharing on the item associated to the token.
      */
-    private function validateTokenOwnership(int $token_id): void
+    private function checkRightToUpdateToken(ShareToken $token): void
     {
-        $share_token = new ShareToken();
-        if (!$share_token->getFromDB($token_id)) {
-            throw new NotFoundHttpException();
-        }
+        $itemtype = $token->fields['itemtype'];
+        $items_id = (int) $token->fields['items_id'];
 
-        $itemtype = $share_token->fields['itemtype'];
-        $items_id = (int) $share_token->fields['items_id'];
-
-        $this->validateShareableItem($itemtype, $items_id);
+        $this->checkRightToShareItem($itemtype, $items_id);
     }
 }

@@ -138,7 +138,7 @@ export class GlpiKnowbasePermissionsFormController
             this.#resetAdvanced();
 
             // No type selected: hide item dropdown
-            if (e.target.value === '') {
+            if (e.target.value === '' || e.target.value === 0) {
                 this.#visibility.innerHTML = '';
                 this.#visibility.classList.add('d-none');
                 this.#visibilityRecursive.classList.add('d-none');

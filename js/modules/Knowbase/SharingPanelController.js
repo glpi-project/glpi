@@ -97,7 +97,12 @@ export class GlpiKnowbaseSharingPanelController
             const nameInput = this.#tabPane.querySelector('[data-glpi-share-create-name]');
             const name = nameInput.value.trim() || null;
 
-            await post(`Share/Token/${itemtype}/${items_id}`, { name });
+            await post(
+                `Share/Token/${itemtype}/${items_id}`,
+                {
+                    name: name,
+                }
+            );
             await this.#reloadSharing();
         });
 

@@ -3000,15 +3000,8 @@ class CommonDBTM extends CommonGLPI
         if (
             $right === READ
             && $this instanceof ShareableInterface
-            && ShareTokenManager::hasSessionAccess(static::class, $ID)
+            && (new ShareTokenManager())->hasSessionAccess(static::class, $ID)
         ) {
-            if (
-                $this->maybeDeleted()
-                && $this->isDeleted()
-                && !$this->useDeletedToLockIfDynamic()
-            ) {
-                return false;
-            }
             return true;
         }
 
