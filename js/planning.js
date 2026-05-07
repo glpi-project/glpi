@@ -250,16 +250,6 @@ var GLPIPlanning  = {
     },
 
     planningFilters: function() {
-        $('#planning_filter .filter_option').on( 'click', function() {
-            $(this).children('ul').toggle();
-        });
-
-        $(document).click(function(e){
-            if ($(e.target).closest('#planning_filter .filter_option').length === 0) {
-                $('#planning_filter .filter_option ul').hide();
-            }
-        });
-
         var sendDisplayEvent = function(current_checkbox, refresh_planning) {
             var current_li = current_checkbox.parents('li');
             var parent_name = null;

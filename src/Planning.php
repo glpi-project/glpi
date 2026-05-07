@@ -787,7 +787,7 @@ JAVASCRIPT;
 
                 if ($caldav_item_url !== null) {
                     foreach ($filter_data['users'] as $user_key => $user_data) {
-                        $child_filters[] = self::getPlanningFilterInfo($user_key, $user_data, [
+                        $child_filters[$user_key] = self::getPlanningFilterInfo($user_key, $user_data, [
                             'show_delete' => false,
                             'filter_color_index' => $params['filter_color_index'],
                         ]);
@@ -1525,15 +1525,15 @@ TWIG, $twig_params);
     public static function toggleFilter($options = [])
     {
         $key = 'filters';
+        $display = filter_var($options['display'], FILTER_VALIDATE_BOOLEAN);
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
             $key = 'plannings';
         }
         if (empty($options['parent'])) {
-            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = ($options['display'] === 'true');
+            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = $display;
         } else {
             $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
-            [$options['name']]['display']
-            = ($options['display'] === 'true');
+            [$options['name']]['display'] = $display;
         }
         self::savePlanningsInDB();
     }
