@@ -778,6 +778,12 @@
         display: none;
     }
 
+    // Clear button: interactive only when active (has text to clear).
+    [data-glpi-kb-aside-search-clear]:not([disabled]) {
+        pointer-events: auto;
+        cursor: pointer;
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;

@@ -266,3 +266,43 @@ test('"No articles found" message is shown when nothing matches and hidden when 
     await kb.doSearchAside(token);
     await expect(kb.asideNoResultsMessage).toBeHidden();
 });
+
+test('Clear button appears when typing and clicking it restores the tree', async ({
+    page,
+    profile,
+    api,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const token         = randomUUID().slice(0, 8);
+    const no_match_token = randomUUID().slice(0, 8);
+    const category_name = `E2E Category ${token}`;
+    const article_name  = `E2E Article ${token}`;
+
+    const category_id = await api.createItem('KnowbaseItemCategory', {
+        name: category_name,
+        entities_id: getWorkerEntityId(),
+    });
+    const article_id = await api.createItem('KnowbaseItem', {
+        name: article_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _categories: [category_id],
+    });
+
+    await kb.goto(article_id);
+
+    // Clear button must not be interactive before typing
+    await expect(kb.asideSearchClearButton).toBeDisabled();
+
+    // Type a non-matching term, clear button must become interactive and article must be hidden
+    await kb.doSearchAside(no_match_token);
+    await expect(kb.asideSearchClearButton).toBeEnabled();
+    await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeHidden();
+
+    // Click the clear button, article must be restored
+    await kb.doClickAsideSearchClear();
+    await expect(kb.asideSearchClearButton).toBeDisabled();
+    await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeVisible();
+});

@@ -313,9 +313,22 @@ export class KnowbaseItemPage extends GlpiPage
         await this.asideSearchInput.fill(term);
     }
 
+    public get asideSearchClearButton(): Locator
+    {
+        return this.page.getByRole('main')
+            .getByRole('complementary')
+            .getByLabel('Clear search')
+        ;
+    }
+
     public async doClearAsideSearch(): Promise<void>
     {
         await this.asideSearchInput.clear();
+    }
+
+    public async doClickAsideSearchClear(): Promise<void>
+    {
+        await this.asideSearchClearButton.click();
     }
 }
 

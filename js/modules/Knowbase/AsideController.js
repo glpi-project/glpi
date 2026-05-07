@@ -94,9 +94,10 @@ export class GlpiKnowbaseAsideController
     #initSearch()
     {
         // Get target nodes from the DOM
-        const search_input = this.#aside.querySelector('[data-glpi-kb-aside-search-input]');
-        const search_icon  = this.#aside.querySelector('[data-glpi-kb-aside-search-icon]');
-        const favorites    = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
+        const search_input  = this.#aside.querySelector('[data-glpi-kb-aside-search-input]');
+        const search_icon   = this.#aside.querySelector('[data-glpi-kb-aside-search-icon]');
+        const clear_button  = this.#aside.querySelector('[data-glpi-kb-aside-search-clear]');
+        const favorites     = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
 
         // Record the initial server-rendered state so we can restore it on clear.
         this.#favorites_originally_hidden = favorites.hasAttribute('data-glpi-kb-aside-favorites-hidden');
@@ -113,11 +114,28 @@ export class GlpiKnowbaseAsideController
 
         // Run search on input
         search_input.addEventListener('input', () => {
-            const value = search_input.value;
-            search_icon.classList.toggle('ti-search', value.trim() === '');
-            search_icon.classList.toggle('ti-x', value.trim() !== '');
+            const value    = search_input.value;
+            const has_text = value.trim() !== '';
+
+            search_icon.classList.toggle('ti-search', !has_text);
+            search_icon.classList.toggle('ti-x', has_text);
+
+            if (has_text) {
+                clear_button.removeAttribute('disabled');
+            } else {
+                clear_button.setAttribute('disabled', '');
+            }
 
             debouncedSearch(value);
+        });
+
+        // Clear the search when clicking the X icon
+        clear_button.addEventListener('click', () => {
+            if (search_input.value.trim() === '') {
+                return;
+            }
+            search_input.value = '';
+            search_input.dispatchEvent(new Event('input'));
         });
     }
 
