@@ -894,7 +894,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]
                         )
                     ) {
-                        $criteria['OR'][] = TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
+                        $criteria['OR'][] = TicketValidation::getTargetCriteriaForUser((int) Session::getLoginUserID());
                     }
                 }
                 break;
