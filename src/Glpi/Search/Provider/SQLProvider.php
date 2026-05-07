@@ -894,20 +894,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]
                         )
                     ) {
-                        $criteria['OR'][] = [
-                            'AND' => [
-                                "`glpi_ticketvalidations`.`itemtype_target`" => User::class,
-                                "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID(),
-                            ],
-                        ];
-                        if (count($_SESSION['glpigroups'])) {
-                            $criteria['OR'][] = [
-                                'AND' => [
-                                    "`glpi_ticketvalidations`.`itemtype_target`" => Group::class,
-                                    "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups'],
-                                ],
-                            ];
-                        }
+                        $criteria['OR'][] = TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                     }
                 }
                 break;
