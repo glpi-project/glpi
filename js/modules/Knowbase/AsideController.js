@@ -48,6 +48,13 @@ export class GlpiKnowbaseAsideController
     #search_request_id = 0;
 
     /**
+     * Whether the favorites section was hidden on initial server render.
+     * Used to restore the correct state after clearing the search.
+     * @type {boolean}
+     */
+    #favorites_originally_hidden = false;
+
+    /**
      * @param {HTMLElement} aside
      */
     constructor(aside)
@@ -89,6 +96,10 @@ export class GlpiKnowbaseAsideController
         // Get target nodes from the DOM
         const search_input = this.#aside.querySelector('[data-glpi-kb-aside-search-input]');
         const search_icon  = this.#aside.querySelector('[data-glpi-kb-aside-search-icon]');
+        const favorites    = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
+
+        // Record the initial server-rendered state so we can restore it on clear.
+        this.#favorites_originally_hidden = favorites.hasAttribute('data-glpi-kb-aside-favorites-hidden');
 
         // Debounce the search method to avoid hitting the server with too many
         // requests.
@@ -112,11 +123,13 @@ export class GlpiKnowbaseAsideController
 
     async #performSearch(value)
     {
-        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        const tree      = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
 
         // Search criteria was removed, show all items again
         if (value.trim() === '') {
             this.#showAllTreeItems(tree);
+            this.#restoreFavorites(favorites);
             return;
         }
 
@@ -132,6 +145,7 @@ export class GlpiKnowbaseAsideController
 
         // Apply results
         this.#filterTree(tree, matching_ids);
+        this.#filterFavorites(favorites, matching_ids);
     }
 
     /**
@@ -147,6 +161,73 @@ export class GlpiKnowbaseAsideController
 
         const no_results = tree.querySelector('[data-glpi-kb-aside-no-results]');
         no_results.hidden = true;
+    }
+
+    /**
+     * Restore the favorites section to its original server-rendered state.
+     *
+     * @param {HTMLElement} favorites_el
+     */
+    #restoreFavorites(favorites_el)
+    {
+        for (const el of favorites_el.querySelectorAll('[data-glpi-kb-search-hidden]')) {
+            el.removeAttribute('data-glpi-kb-search-hidden');
+        }
+
+        this.#setFavoritesVisible(favorites_el, !this.#favorites_originally_hidden);
+    }
+
+    /**
+     * Filter the favorites section to only show articles whose IDs are in matching_ids.
+     * Hides the entire section (and the header border) when nothing matches.
+     *
+     * @param {HTMLElement} favorites_el
+     * @param {Set<number>} matching_ids
+     */
+    #filterFavorites(favorites_el, matching_ids)
+    {
+        if (this.#favorites_originally_hidden) {
+            return;
+        }
+
+        let any_visible = false;
+
+        for (const article of favorites_el.querySelectorAll('[data-glpi-kb-article-id]')) {
+            // Skip pending entries — they are already hidden by CSS and should not
+            // count as visible regardless of whether they match the search.
+            if (article.dataset.glpiKbFavoriteCurrent === 'pending') {
+                continue;
+            }
+
+            const id = parseInt(article.dataset.glpiKbArticleId);
+            if (matching_ids.has(id)) {
+                article.removeAttribute('data-glpi-kb-search-hidden');
+                any_visible = true;
+            } else {
+                article.setAttribute('data-glpi-kb-search-hidden', '');
+            }
+        }
+
+        this.#setFavoritesVisible(favorites_el, any_visible);
+    }
+
+    /**
+     * Toggle the favorites section visibility and the matching header border.
+     *
+     * @param {HTMLElement} favorites_el
+     * @param {boolean}     visible
+     */
+    #setFavoritesVisible(favorites_el, visible)
+    {
+        const header = this.#aside.querySelector('[data-glpi-kb-aside-header]');
+
+        if (visible) {
+            favorites_el.removeAttribute('data-glpi-kb-aside-favorites-hidden');
+            header.removeAttribute('data-glpi-kb-aside-header-no-border');
+        } else {
+            favorites_el.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
+            header.setAttribute('data-glpi-kb-aside-header-no-border', '');
+        }
     }
 
     /**

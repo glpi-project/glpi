@@ -31,7 +31,7 @@
  */
 
 import { Api } from "./Api";
-import { getWorkerEntityId } from "./WorkerEntities";
+import { getWorkerEntityId, getWorkerUserId } from "./WorkerEntities";
 
 /**
  * Set of helper methods to interract with the KB throught the API
@@ -89,6 +89,14 @@ export class KnowbaseApi
             translation_id,
             { name: params.name, answer: `<p>${params.answer}</p>`},
         );
+    }
+
+    public async addFavorite(article_id: number): Promise<number>
+    {
+        return await this.api.createItem('KnowbaseItem_Favorite', {
+            knowbaseitems_id: article_id,
+            users_id        : getWorkerUserId(),
+        });
     }
 }
 
