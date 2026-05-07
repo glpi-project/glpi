@@ -371,6 +371,78 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         );
     }
 
+    /**
+     * @dataProvider provideIsUsed
+     */
+    public function testIsUsed(string $target_classname): void
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity($this->getTargetCapacity())]
+        );
+        $class = $definition->getAssetClassName();
+
+        $asset = $this->createItem($class, [
+            'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $capacity_class = $this->getTargetCapacity();
+        $capacity = new $capacity_class();
+        $this->assertFalse($capacity->isUsed($class));
+
+        // An OS capacity is used only if a meaningful OS exists
+        $os = $this->createItem('OperatingSystem', [
+            'name' => 'Test OS',
+        ]);
+
+        $input = [
+            'itemtype' => $asset::getType(),
+            'items_id' => $asset->getID(),
+            'operatingsystems_id' => $os->getID(),
+        ];
+        $this->createItem($target_classname, $input);
+
+        $this->assertTrue($capacity->isUsed($class));
+    }
+
+    /**
+     * @dataProvider provideGetCapacityUsageDescription
+     */
+    public function testGetCapacityUsageDescription(string $target_classname, string $expected): void
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [new Capacity($this->getTargetCapacity())]
+        );
+        $class = $definition->getAssetClassName();
+        $capacity = new ($this->getTargetCapacity());
+
+        $this->assertEquals(
+            sprintf($expected, 0, 0),
+            $capacity->getCapacityUsageDescription($class)
+        );
+
+        $asset = $this->createItem($class, [
+            'name' => 'Test asset',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // An OS capacity is used only if a meaningful OS exists
+        $os = $this->createItem('OperatingSystem', [
+            'name' => 'Test OS',
+        ]);
+
+        $this->createItem($target_classname, [
+            'itemtype' => $class,
+            'items_id' => $asset->getID(),
+            'operatingsystems_id' => $os->getID(),
+        ]);
+
+        $this->assertEquals(
+            sprintf($expected, 1, 1),
+            $capacity->getCapacityUsageDescription($class)
+        );
+    }
+
     public static function provideIsUsed(): iterable
     {
         yield [

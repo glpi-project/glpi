@@ -662,9 +662,89 @@ class Item_OperatingSystem extends CommonDBRelation
         $item->getFromDB($input['items_id']);
         $input['entities_id'] = $item->fields['entities_id'];
         $input['is_recursive'] = $item->fields['is_recursive'];
+
+        // Check if all OS fields are empty
+        if ($this->areAllFieldsEmpty($input)) {
+            Session::addMessageAfterRedirect(
+                __s("Cannot add an empty operating system. At least one field must be filled."),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         return $input;
     }
 
+    public function prepareInputForUpdate($input)
+    {
+        // Check if all OS fields are empty
+        if (isset($input['id']) && $this->getFromDB($input['id'])) {
+            $merged = array_merge($this->fields, $input);
+
+            if ($this->areAllFieldsEmpty($merged)) {
+                Session::addMessageAfterRedirect(
+                    __s("Cannot update operating system with empty values. To remove the operating system, use the delete action instead."),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     * Check if all relevant OS fields are empty
+     *
+     * @param array<string, mixed> $input Input data
+     *
+     * @return bool True if all fields are empty
+     */
+    private function areAllFieldsEmpty(array $input): bool
+    {
+        global $DB;
+
+        // Retrieve all table fields dynamically
+        $table_fields = $DB->listFields(static::getTable());
+
+        // Exclude structural/metadata fields that don't represent the OS itself
+        $excluded_fields = [
+            'id',
+            'items_id',
+            'itemtype',
+            'entities_id',
+            'is_recursive',
+            'is_deleted',
+            'date_mod',
+            'date_creation',
+        ];
+
+        foreach ($table_fields as $field => $field_data) {
+            // Skip metadata/structural fields
+            if (in_array($field, $excluded_fields)) {
+                continue;
+            }
+
+            if (!array_key_exists($field, $input)) {
+                continue;
+            }
+
+            $value = $input[$field];
+
+            // If we find at least one field that has a valid, non-empty value,
+            // then the OS record is NOT completely empty.
+            if (
+                (is_numeric($value) && (int) $value > 0)
+                || (is_string($value) && trim($value) !== '' && !is_numeric($value))
+            ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public static function getIcon()
     {
