@@ -22,6 +22,7 @@
     const emits = defineEmits(['filtersUpdated']);
 
     const filters = ref(props.filters);
+    const filters_collapsed = ref(false);
 
     function showAddCalendar() {
         const url = `${CFG_GLPI.root_doc}/ajax/planning.php?action=add_planning_form`;
@@ -32,12 +33,10 @@
     }
 
     function toggleFilters() {
-        const filter_element = document.getElementById('planning_filter');
-        filter_element.classList.toggle('folded');
+        filters_collapsed.value = !filters_collapsed.value;
     }
 
     function deleteFilter(filter_key, event_type) {
-        console.log(`Request to delete filter ${filter_key} of type ${event_type}`);
         fetch(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
             method: 'POST',
             headers: {
@@ -59,21 +58,23 @@
 </script>
 
 <template>
-    <div id="planning_filter">
-        <div>
-            <button class="btn btn-sm btn-icon btn-ghost-secondary toggle" @click="toggleFilters"
-                    :title="__('Toggle filters')"></button>
-        </div>
+    <div id="planning_filter" :style="filters_collapsed ? '' : 'min-width: 300px;'">
         <div id="planning_filter_content">
             <div v-if="Object.keys(planning_config).includes('filters')">
-                <h3>{{ __('Filters') }}</h3>
-                <ul class="filters">
+                <h3 class="d-flex justify-content-between fw-normal" :style="filters_collapsed ? 'background: none' : ''">
+                    <span v-show="!filters_collapsed">{{ __('Filters') }}</span>
+                    <button class="btn btn-sm btn-icon btn-ghost-secondary p-1" @click="toggleFilters"
+                            :title="__('Toggle filters')">
+                        <i :class="filters_collapsed ? 'ti ti-caret-right-filled' : 'ti ti-caret-left-filled'" role="presentation"></i>
+                    </button>
+                </h3>
+                <ul v-show="!filters_collapsed" class="filters">
                     <PlanningFilter v-for="(filter_data, filter_key) in filters.filters" :key="filter_key"
                                     :filter_key="filter_key" :filter_data="filter_data"/>
                 </ul>
             </div>
-            <div v-if="Object.keys(planning_config).includes('plannings')">
-                <h3>
+            <div v-show="!filters_collapsed" v-if="Object.keys(planning_config).includes('plannings')">
+                <h3 class="fw-normal">
                     {{ __('Plannings') }}
                     <button class="btn btn-sm btn-icon btn-ghost-secondary planning_link planning_add_filter"
                             @click="showAddCalendar"
@@ -92,50 +93,16 @@
 
 <style scoped>
     #planning_filter {
-        #planning_filter_content {
-            min-width: 300px;
-        }
-
-        .toggle {
-            float: right;
-            margin: 8px 8px 0 0;
-            height: 18px;
-            width: 18px;
-            display: block;
-
-            &::before {
-                font: var(--fa-font-solid);
-                content: "\f191";
-            }
-        }
-
-        &.folded {
-            .toggle {
-                float: none;
-                &::before {
-                    font: var(--fa-font-solid);
-                    content: "\f152";
-                }
-            }
-
-            #planning_filter_content {
-                display: none;
-            }
-
-            width: 18px;
-        }
-
         h3 {
             background: var(--glpi-form-header-bg);
             color: var(--glpi-form-header-fg);
             margin: 2px 0 0 0;
             padding: .5em .5em .5em .7em;
-            font-weight: normal;
             line-height: 1.3;
             font-size: 13px;
         }
 
-        ul.filters {
+        :deep(ul.filters) {
             border: 0;
             list-style: none;
             margin: 0;

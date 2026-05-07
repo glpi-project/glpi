@@ -768,6 +768,8 @@ JAVASCRIPT;
         $expanded = '';
         $title = '';
         $caldav_item_url = null;
+        $child_filters = [];
+
         if ($filter_data['type'] === 'user') {
             $uID = $actor[1];
             $user = new User();
@@ -782,6 +784,15 @@ JAVASCRIPT;
             $title = $group->getName(); // Will return N/A if it doesn't exist anymore
             if ($group_exists) {
                 $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+
+                if ($caldav_item_url !== null) {
+                    foreach ($filter_data['users'] as $user_key => $user_data) {
+                        $child_filters[] = self::getPlanningFilterInfo($user_key, $user_data, [
+                            'show_delete' => false,
+                            'filter_color_index' => $params['filter_color_index'],
+                        ]);
+                    }
+                }
             }
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
@@ -866,26 +877,8 @@ JAVASCRIPT;
             'login_user'            => $login_user,
             'webcal_base_url'       => $webcal_base_url,
             'caldav_url'            => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
+            'child_filters'         => $child_filters,
         ];
-    }
-
-    /**
-     * Display a single line of planning filter.
-     * See self::showPlanningFilter function
-     *
-     * @param string $filter_key identify curent line of filter
-     * @param array $filter_data array of filter date, must contain:
-     *   * 'show_delete' (boolean): show delete button
-     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
-     * @param array $options
-     *
-     * @return void
-     * @used-by templates/pages/assistance/planning/filters.html.twig
-     * @used-by templates/pages/assistance/planning/single_filter.html.twig
-     */
-    public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
-    {
-        TemplateRenderer::getInstance()->display('pages/assistance/planning/single_filter.html.twig', self::getPlanningFilterInfo($filter_key, $filter_data, $options));
     }
 
     /**

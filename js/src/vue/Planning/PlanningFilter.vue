@@ -99,7 +99,7 @@
             </div>
         </div>
         <ul v-if="filter_data.caldav_url && event_type === 'group_users'" class="group_listofusers filters">
-            <!-- TODO The old Twig template called the Planning::showSingleLinePlanningFilter function here. Maybe the filter info should already have this info (recursive calls?) -->
+            <PlanningFilter v-for="(user_filter_data, user_filter_key) in filter_data.child_filters" :key="user_filter_key" :filter_key="user_filter_key" :filter_data="user_filter_data"/>
         </ul>
     </li>
 </template>
