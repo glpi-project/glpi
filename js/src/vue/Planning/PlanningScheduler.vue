@@ -50,13 +50,17 @@
             }
         },
         resources: {
-            type: Object,
-            default: () => ({}),
+            type: [Array, Object],
+            default: () => ([]),
         },
         fullcalendar_options: {
             type: Object,
             default: () => ({}),
         },
+    });
+
+    defineExpose({
+        refresh: refresh,
     });
 
     const all_days = [0, 1, 2, 3, 4, 5, 6];
@@ -74,7 +78,7 @@
     const current_view = ref('timeGridWeek');
     const current_view_data = ref(null);
     const list_full_year_range = props.full_view ? 5 : 1; // +/- number of years to display in list full view
-    const all_resources = ref(props.resources);
+    const all_resources = ref(!Array.isArray(props.resources) ? Object.values(props.resources) : props.resources);
     const visible_res = computed(() => {
         return Object.keys(all_resources).filter(index => all_resources[index].is_visible);
     });
@@ -101,7 +105,7 @@
         droppable: false, // we cant drop external items by default
         now: props.now,// as we set the calendar as UTC, we need to reprecise the current datetime
         listDaySideFormat: false,
-        headerToolbar: props.header,
+        headerToolbar: props.full_view ? props.header : false,
         hiddenDays: hidden_days,
         initialView: 'timeGridWeek',
         views: {
@@ -134,7 +138,7 @@
         },
         resources: (fetchInfo, successCallback, failureCallback) => {
             // Filter resources by whether their id is in visible_res.
-            successCallback(props.resources.filter((elem, index) =>{
+            successCallback(all_resources.value.filter((elem, index) => {
                 return visible_res.value.indexOf(index.toString()) !== -1;
             }));
         },
@@ -273,19 +277,21 @@
     onMounted(() => {
         calendar_api = calendar.value.getApi();
 
-        date_picker_flatpickr = new flatpickr(date_picker.value, {
-            onChange: function(selected_date) {
-                // convert to UTC to avoid timezone issues
-                const date = new Date(
-                    Date.UTC(
-                        selected_date[0].getFullYear(),
-                        selected_date[0].getMonth(),
-                        selected_date[0].getDate()
-                    )
-                );
-                calendar_api.gotoDate(date);
-            }
-        });
+        if (props.full_view) {
+            date_picker_flatpickr = new flatpickr(date_picker.value, {
+                onChange: function (selected_date) {
+                    // convert to UTC to avoid timezone issues
+                    const date = new Date(
+                        Date.UTC(
+                            selected_date[0].getFullYear(),
+                            selected_date[0].getMonth(),
+                            selected_date[0].getDate()
+                        )
+                    );
+                    calendar_api.gotoDate(date);
+                }
+            });
+        }
 
         window.addEventListener('click', hideContextMenu);
     });
@@ -299,7 +305,9 @@
     });
 
     function hideContextMenu() {
-        event_context_menu.value.classList.add('d-none');
+        if (event_context_menu.value) {
+            event_context_menu.value.classList.add('d-none');
+        }
     }
 
     function getEvents(info, success_callback, failure_callback) {
@@ -497,7 +505,7 @@
         return calendar_api.getEvents().find(event => event._def.defId === defId);
     }
 
-    function onCloneEventClick(e) {
+    function onCloneEventClick() {
         const event_defid = event_context_menu.value.dataset.event_defid;
         const event = getEventByDefId(event_defid);
         if (!event) {
@@ -516,31 +524,79 @@
             };
         }
 
-        $.ajax({
-            url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-            type: 'POST',
-            data: {
+        fetch(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: new URLSearchParams({
                 action: 'clone_event',
-                event: {
-                    old_itemtype: event.extendedProps.itemtype,
-                    old_items_id: event.extendedProps.items_id,
-                    actor:        actor,
-                    start:        event.start.toISOString(),
-                    end:          event.end.toISOString(),
-                }
+                old_itemtype: event.extendedProps.itemtype,
+                old_items_id: event.extendedProps.items_id,
+                actor_itemtype: actor.itemtype,
+                actor_items_id: actor.items_id,
+                start: event.start.toISOString(),
+                end: event.end.toISOString(),
+            }),
+        }).then(response => {
+            if (response.ok) {
+                refresh();
             }
-        }).then(() => {
-            refresh();
-        })
+        });
     }
 
-    function onDeleteEventClick(e) {
+    function onDeleteEventClick() {
         const event_defid = event_context_menu.value.dataset.event_defid;
         const event = getEventByDefId(event_defid);
         if (!event) {
             return;
         }
         //TODO
+
+        const doDelete = (instance = false) => {
+            fetch(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: new URLSearchParams({
+                    action: 'delete_event',
+                    itemtype: event.extendedProps.itemtype,
+                    items_id: event.extendedProps.items_id,
+                    day: event.start.toISOString().substring(0, 10),
+                    instance: instance ? 1 : 0,
+                }),
+            }).then(response => {
+                if (response.ok) {
+                    refresh();
+                }
+            });
+        }
+
+        if (!('is_recurrent' in event.extendedProps) || !event.extendedProps.is_recurrent) {
+            doDelete();
+        } else {
+            glpi_html_dialog({
+                title: __("Make a choice"),
+                body: `${__("Delete the whole series of the recurrent event")}<br>${
+                    __("or just add an exception by deleting this instance?")}`,
+                buttons: [
+                    {
+                        label: __("Series"),
+                        click: () => {
+                            doDelete(false);
+                        }
+                    }, {
+                        label: _n("Instance", "Instances", 1),
+                        click: () => {
+                            doDelete(true);
+                        }
+                    }
+                ]
+            });
+        }
     }
 </script>
 
@@ -553,28 +609,32 @@
             <PlanningEvent :event_info="event_info" :context_menu="event_context_menu"/>
         </template>
     </BaseFullCalendar>
-    <Teleport defer to=".fc-toolbar-title">
+    <Teleport v-if="full_view" defer to=".fc-toolbar-title">
         <button v-show="current_view !== 'listFull'" ref="date_picker" class="btn btn-sm btn-ghost-secondary"
                 :title="_n('Calendar', 'Calendars', 1)"
                 :aria-label="_n('Calendar', 'Calendars', 1)">
             <i class="ti ti-calendar"></i>
         </button>
     </Teleport>
-    <Teleport defer to=".fc-toolbar-title">
+    <Teleport v-if="full_view" defer to=".fc-toolbar-title">
         <button class="btn btn-sm btn-ghost-secondary" :title="__('Refresh')" :aria-label="__('Refresh')" @click="refresh">
             <i class="ti ti-refresh"></i>
         </button>
     </Teleport>
-    <Teleport to="body">
+    <Teleport v-if="full_view && (can_create || can_delete)" to="body">
         <div ref="event_context_menu" class="d-none planning-context-menu position-fixed card">
             <ul class="list-group list-group-flush list-group-hoverable">
-                <li v-if="can_create" class="list-group-item cursor-pointer p-2" role="button" @click="onCloneEventClick">
-                    <i class="ti ti-copy"></i>
-                    {{ __('Clone') }}
+                <li v-if="can_create" class="list-group-item p-0">
+                    <button class="btn btn-ghost-secondary p-2 w-100 border-radius-0" @click="onCloneEventClick">
+                        <i class="ti ti-copy"></i>
+                        {{ __('Clone') }}
+                    </button>
                 </li>
-                <li v-if="can_delete" class="list-group-item cursor-pointer p-2" role="button" @click="onDeleteEventClick">
-                    <i class="ti ti-trash"></i>
-                    {{ __('Delete') }}
+                <li v-if="can_delete" class="list-group-item p-0">
+                    <button class="btn btn-ghost-secondary p-2 w-100 border-radius-0" @click="onDeleteEventClick">
+                        <i class="ti ti-trash"></i>
+                        {{ __('Delete') }}
+                    </button>
                 </li>
             </ul>
         </div>
@@ -582,6 +642,11 @@
 </template>
 
 <style scoped>
+    :global(.planning_on_central .fc-scroller) {
+        height: auto !important;
+        max-height: 400px !important;
+    }
+
     :deep(.fc-header-toolbar .fc-toolbar-chunk:first-child) {
         visibility: v-bind(dateNavVisibility);
     }

@@ -14,7 +14,7 @@
         },
         context_menu: {
             type: Object,
-            required: true,
+            required: false,
         },
     });
 
@@ -38,15 +38,15 @@
     });
 
     function handleContextMenu(e) {
+        if (!props.context_menu) {
+            return;
+        }
         e.preventDefault();
         props.context_menu.style.position = 'fixed';
         props.context_menu.classList.remove('d-none');
         props.context_menu.style.left = `${e.clientX}px`;
         props.context_menu.style.top = `${e.clientY}px`;
         props.context_menu.dataset.event_defid = event._def.defId;
-        props.context_menu.dataset.event_itemtype = event.extendedProps.itemtype;
-        props.context_menu.dataset.event_itemid = event.extendedProps.items_id;
-        props.context_menu.dataset.event_is_recurrent = event.extendedProps.is_recurrent ?? false;
     }
 </script>
 

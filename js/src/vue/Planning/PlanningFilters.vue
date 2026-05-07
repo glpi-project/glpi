@@ -6,7 +6,7 @@
      */
 
     import PlanningFilter from "./PlanningFilter.vue";
-    import {onMounted} from "vue";
+    import {ref} from "vue";
 
     const props = defineProps({
         filters: {
@@ -19,9 +19,9 @@
         }
     });
 
-    onMounted(() => {
+    const emits = defineEmits(['filtersUpdated']);
 
-    });
+    const filters = ref(props.filters);
 
     function showAddCalendar() {
         const url = `${CFG_GLPI.root_doc}/ajax/planning.php?action=add_planning_form`;
@@ -35,6 +35,27 @@
         const filter_element = document.getElementById('planning_filter');
         filter_element.classList.toggle('folded');
     }
+
+    function deleteFilter(filter_key, event_type) {
+        console.log(`Request to delete filter ${filter_key} of type ${event_type}`);
+        fetch(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'delete_filter',
+                filter: filter_key,
+                type: event_type,
+            }),
+        }).then(response => {
+            if (response.ok) {
+                // Remove the deleted filter from the filters object
+                delete(filters.value['plannings'][filter_key]);
+                emits('filtersUpdated');
+            }
+        });
+    }
 </script>
 
 <template>
@@ -47,7 +68,8 @@
             <div v-if="Object.keys(planning_config).includes('filters')">
                 <h3>{{ __('Filters') }}</h3>
                 <ul class="filters">
-                    <PlanningFilter v-for="(filter_data, filter_key) in filters.filters" :key="filter_key" :filter_key="filter_key" :filter_data="filter_data"/>
+                    <PlanningFilter v-for="(filter_data, filter_key) in filters.filters" :key="filter_key"
+                                    :filter_key="filter_key" :filter_data="filter_data"/>
                 </ul>
             </div>
             <div v-if="Object.keys(planning_config).includes('plannings')">
@@ -60,7 +82,8 @@
                     </button>
                 </h3>
                 <ul class="filters">
-                    <PlanningFilter v-for="(filter_data, filter_key) in filters.plannings" :key="filter_key" :filter_key="filter_key" :filter_data="filter_data"/>
+                    <PlanningFilter v-for="(filter_data, filter_key) in filters.plannings" :key="filter_key"
+                                    :filter_key="filter_key" :filter_data="filter_data" @deleteFilter="deleteFilter"/>
                 </ul>
             </div>
         </div>

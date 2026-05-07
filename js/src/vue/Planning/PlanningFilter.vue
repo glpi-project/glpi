@@ -18,6 +18,8 @@
         },
     });
 
+    defineEmits(['deleteFilter']);
+
     const options_list = useTemplateRef('options_list');
 
     const event_type = props.filter_data.filter_data.type;
@@ -40,6 +42,10 @@
         copyTextToClipboard(props.filter_data.caldav_url);
         alert(__('CalDAV URL has been copied to clipboard'));
     }
+
+    function exportFromURL(url) {
+        window.open(url, '_blank');
+    }
 </script>
 
 <template>
@@ -57,31 +63,37 @@
                 <input type="color" :name="`${filter_key}_color`" :aria-label="__('%s color').replace('%s', label_title)" :value="filter_data.color"/>
             </span>
             <span v-if="event_type === 'group_users'" class="toggle cursor-pointer"></span>
-            <div v-if="event_type !== 'event_filter'" class="filter_option dropstart" data-bs-toggle="dropdown">
+            <div v-if="event_type !== 'event_filter'" class="filter_option dropstart d-inline-block position-relative" data-bs-toggle="dropdown">
                 <i class="ti ti-dots cursor-pointer"></i>
-                <ul ref="options_list" class="dropdown-menu">
-                    <li v-if="filter_data.params.show_delete" class="dropdown-item">
-                        <a target="_blank" href="#" onclick="GLPIPlanning.deletePlanning(this)" value="{{ filter_key }}">{{ __('Delete') }}</a>
+                <ul ref="options_list" class="dropdown-menu p-0">
+                    <li v-if="filter_data.params.show_delete" class="dropdown-item p-0">
+                        <button class="btn btn-ghost-secondary btn-sm p-2 w-100 border-radius-0 justify-content-start"
+                                @click="$emit('deleteFilter', props.filter_key, event_type)">
+                            {{ __('Delete') }}
+                        </button>
                     </li>
-                    <li v-if="filter_data.show_export_buttons" class="dropdown-item">
-                        <a target="_blank" :href="ical_export_url">
+                    <li v-if="filter_data.show_export_buttons" class="dropdown-item p-0">
+                        <button class="btn btn-ghost-secondary btn-sm p-2 w-100 border-radius-0 justify-content-start"
+                                @click="exportFromURL(ical_export_url)">
                             {{ _x('button', 'Export') }} - {{ __('Ical') }}
-                        </a>
+                        </button>
                     </li>
-                    <li v-if="filter_data.show_export_buttons" class="dropdown-item">
-                        <a target="_blank" :href="`${filter_data.webcal_base_url}${ical_export_url}`">
+                    <li v-if="filter_data.show_export_buttons" class="dropdown-item p-0">
+                        <button class="btn btn-ghost-secondary btn-sm p-2 w-100 border-radius-0 justify-content-start"
+                                @click="exportFromURL(`${filter_data.webcal_base_url}${ical_export_url}`)">
                             {{ _x('button', 'Export') }} - {{ __('Webcal') }}
-                        </a>
+                        </button>
                     </li>
-                    <li v-if="filter_data.show_export_buttons" class="dropdown-item">
-                        <a target="_blank" :href="csv_export_url">
+                    <li v-if="filter_data.show_export_buttons" class="dropdown-item p-0">
+                        <button class="btn btn-ghost-secondary btn-sm p-2 w-100 border-radius-0 justify-content-start"
+                                @click="exportFromURL(csv_export_url)">
                             {{ _x('button', 'Export') }} - {{ __('CSV') }}
-                        </a>
+                        </button>
                     </li>
-                    <li v-if="filter_data.show_export_buttons && filter_data.caldav_url" class="dropdown-item">
-                        <a target="_blank" href="#" @click.prevent="copyCalDAVUrl">
+                    <li v-if="filter_data.show_export_buttons && filter_data.caldav_url" class="dropdown-item p-0">
+                        <button class="btn btn-ghost-secondary btn-sm p-2 w-100 border-radius-0 justify-content-start" @click.prevent="copyCalDAVUrl">
                             {{ __('Copy CalDAV URL to clipboard') }}
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -93,25 +105,10 @@
 </template>
 
 <style scoped>
-.filter_option {
-    width: 12px;
-    height: 12px;
-    margin: 3px 2px;
-    display: inline-block;
-    position: relative;
-    left: 0;
-
-    > img {
-        z-index: 1;
+    .filter_option {
+        width: 12px;
+        height: 12px;
+        margin: 3px 2px;
+        left: 0;
     }
-
-    ul {
-        //display: none;
-        width: 140px;
-
-        li {
-            white-space: normal;
-        }
-    }
-}
 </style>

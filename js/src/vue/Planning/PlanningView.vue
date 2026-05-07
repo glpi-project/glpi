@@ -7,6 +7,7 @@
 
     import PlanningFilters from "./PlanningFilters.vue";
     import PlanningScheduler from "./PlanningScheduler.vue";
+    import {useTemplateRef} from "vue";
 
     const props = defineProps({
         can_create: {
@@ -57,12 +58,15 @@
             type: Object,
         },
     });
+
+    const scheduler = useTemplateRef('scheduler');
 </script>
 
 <template>
     <div class="d-flex flex-wrap flex-sm-nowrap gap-2">
-        <PlanningFilters v-if="full_view" :planning_config="planning_config" :filters="filters"></PlanningFilters>
+        <PlanningFilters v-if="full_view" :planning_config="planning_config" :filters="filters" @filtersUpdated="scheduler?.refresh"></PlanningFilters>
         <PlanningScheduler
+            ref="scheduler"
             :can_create="can_create"
             :can_delete="can_delete"
             :full_view="full_view"

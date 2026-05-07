@@ -87,38 +87,8 @@ var GLPIPlanning  = {
         var enabled_days = CFG_GLPI.planning_work_days;
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
         var loadedLocales = Object.keys(FullCalendarLocales);
-        const list_full_year_range = options.full_view ? 5 : 1; // +/- number of years to display in list full view
 
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
-            plugins:     options.plugins,
-            height:      options.height,
-            timeZone:    'UTC',
-            theme:       true,
-            weekNumbers: options.full_view ? true : false,
-            timeFormat:  'H:mm',
-            eventLimit:  true, // show 'more' button when too mmany events
-            minTime:     CFG_GLPI.planning_begin,
-            maxTime:     CFG_GLPI.planning_end,
-            schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
-            resourceAreaWidth: '15%',
-            editable: true, // we can drag / resize items
-            droppable: false, // we cant drop external items by default
-            nowIndicator: true,
-            now: options.now,// as we set the calendar as UTC, we need to reprecise the current datetime
-            listDayAltFormat: false,
-            header: options.header,
-            hiddenDays: hidden_days,
-            locale: loadedLocales.length === 1 ? loadedLocales[0] : undefined,
-            //resources: options.resources,
-            resources: function(fetchInfo, successCallback) {
-            // Filter resources by whether their id is in visible_res.
-                var filteredResources = [];
-                filteredResources = options.resources.filter(function(elem, index) {
-                    return GLPIPlanning.visible_res.indexOf(index.toString()) !== -1;
-                });
-
-                successCallback(filteredResources);
-            },
             resourceRender: function(info) {
                 var icon = "";
                 var itemtype = info.resource._resource.extendedProps.itemtype || "";
@@ -237,60 +207,6 @@ var GLPIPlanning  = {
                         }
                     });
                 }
-
-                // context menu
-                element.on('contextmenu', function(e) {
-                    // prevent display of browser context menu
-                    e.preventDefault();
-
-                    // get properties of event for context menu actions
-                    var extprops  = event.extendedProps;
-
-                    // 2- delete event (manage serie/instance specific events)
-                    $('.planning-context-menu .delete-event').on('click', function() {
-                        var ajaxDeleteEvent = function(instance) {
-                            instance = instance || false;
-                            $.ajax({
-                                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-                                type: 'POST',
-                                data: {
-                                    action: 'delete_event',
-                                    event: {
-                                        itemtype: extprops.itemtype,
-                                        items_id: extprops.items_id,
-                                        day: event.start.toISOString().substring(0, 10),
-                                        instance: instance ? 1 : 0,
-                                    }
-                                },
-                                success: function() {
-                                    GLPIPlanning.refresh();
-                                }
-                            });
-                        };
-
-                        if (!("is_recurrent" in extprops) || !extprops.is_recurrent) {
-                            ajaxDeleteEvent();
-                        } else {
-                            glpi_html_dialog({
-                                title: __("Make a choice"),
-                                body: `${__("Delete the whole serie of the recurrent event")}<br>${
-                                    __("or just add an exception by deleting this instance?")}`,
-                                buttons: [{
-                                    label: __("Serie"),
-                                    click:  function() {
-                                        ajaxDeleteEvent(false);
-                                    }
-                                }, {
-                                    label: _n("Instance", "Instances", 1),
-                                    click:  function() {
-                                        ajaxDeleteEvent(true);
-                                    }
-                                }]
-                            });
-                        }
-                    });
-                });
-
             },
         });
 
@@ -342,10 +258,6 @@ var GLPIPlanning  = {
             if ($(e.target).closest('#planning_filter .filter_option').length === 0) {
                 $('#planning_filter .filter_option ul').hide();
             }
-        });
-
-        $('#planning_filter .delete_planning').on( 'click', function() {
-            GLPIPlanning.deletePlanning(this);
         });
 
         var sendDisplayEvent = function(current_checkbox, refresh_planning) {
@@ -444,36 +356,5 @@ var GLPIPlanning  = {
                 $('#planning_container').toggleClass('folded');
             });
         });
-    },
-
-    deletePlanning: (trigger_element) => {
-        const deleted = $(trigger_element);
-        const li = deleted.closest('ul.filters > li');
-        $.ajax({
-            url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-            type: 'POST',
-            data: {
-                action: 'delete_filter',
-                filter: deleted.attr('value'),
-                type: li.attr('event_type')
-            },
-            success: function() {
-                li.remove();
-                GLPIPlanning.refresh();
-            }
-        });
-    },
-
-    // set planning height
-    getHeight: function() {
-        var _newheight = $(window).height() - 272;
-
-        //minimal size
-        var _minheight = 300;
-        if (_newheight < _minheight) {
-            _newheight = _minheight;
-        }
-
-        return _newheight;
     },
 };
