@@ -209,7 +209,11 @@ abstract class ItemTranslation extends CommonDBChild
             static::$itemtype => $item->getType(),
         ]);
 
-        return array_map(fn($id) => static::getById($id), array_keys($translations));
+        return array_map(static function ($translation) {
+            $t = new static();
+            $t->getFromResultSet($translation);
+            return $t;
+        }, $translations);
     }
 
     /**
