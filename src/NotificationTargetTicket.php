@@ -541,6 +541,30 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
                 $data['validations'][] = $tmp;
             }
+
+            // linked project tasks
+            $data['linkedprojecttasks'] = [];
+            $project_task_ticket = new ProjectTask_Ticket();
+            $linked_project_tasks = $project_task_ticket->find(['tickets_id' => $item->getField('id')]);
+            foreach ($linked_project_tasks as $linked_project_task) {
+                $project_task = new ProjectTask();
+                if ($project_task->getFromDB($linked_project_task['projecttasks_id'])) {
+                    $data['linkedprojecttasks'][] = [
+                        '##linkedprojecttask.id##'      => $linked_project_task['projecttasks_id'],
+                        '##linkedprojecttask.url##'     => $this->formatURL(
+                            $options['additionnaloption']['usertype'],
+                            'projecttask_' . $linked_project_task['projecttasks_id']
+                        ),
+                        '##linkedprojecttask.name##'   => $project_task->getField('name'),
+                        '##linkedprojecttask.content##' => $project_task->getField('content'),
+                        '##linkedprojecttask.planstartdate##' => $project_task->getField('plan_start_date'),
+                        '##linkedprojecttask.planenddate##' => $project_task->getField('plan_end_date'),
+                        '##linkedprojecttask.realstartdate##' => $project_task->getField('real_start_date'),
+                        '##linkedprojecttask.realenddate##' => $project_task->getField('real_end_date'),
+                    ];
+                }
+            }
+            $data['##ticket.numberoflinkedprojecttasks##'] = count($data['linkedprojecttasks']);
         }
 
         $data['##ticket.externalid##'] = $item->fields['externalid'];
@@ -652,6 +676,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'ticket.numberofproblems'      => _x('quantity', 'Number of problems'),
             'ticket.numberofchanges'       => _x('quantity', 'Number of changes'),
             'ticket.numberofitems'         => _x('quantity', 'Number of items'),
+            'ticket.numberoflinkedprojecttasks' => _x('quantity', 'Number of linked project tasks'),
             'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
             'ticket.location'              => Location::getTypeName(1),
             'ticket.location.comment'      => __('Location comments'),
@@ -736,6 +761,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'changes'       => Change::getTypeName(Session::getPluralNumber()),
             'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
             'documents'     => Document::getTypeName(Session::getPluralNumber()),
+            'linkedprojecttasks' => _n('Linked project task', 'Linked project tasks', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -759,6 +785,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                          ),
                          '?'
                      ),
+            'ticket.linkedprojecttasks'  => _n('Linked project task', 'Linked project tasks', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -808,6 +835,46 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 __('%1$s: %2$s'),
                 Change::getTypeName(1),
                 __('Description')
+            ),
+            'linkedprojecttask.id'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('ID')
+            ),
+            'linkedprojecttask.url'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('URL')
+            ),
+            'linkedprojecttask.name'     => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('Name')
+            ),
+            'linkedprojecttask.content'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('Description')
+            ),
+            'linkedprojecttask.planstartdate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('Plan start date')
+            ),
+            'linkedprojecttask.planenddate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('Plan end date')
+            ),
+            'linkedprojecttask.realstartdate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('Plan start date')
+            ),
+            'linkedprojecttask.realenddate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project task', 'Linked project tasks', 1),
+                __('Plan start date')
             ),
         ];
 
