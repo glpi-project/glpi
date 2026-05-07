@@ -166,20 +166,12 @@ final class UserMention
                     $current_actors_ids[] = $actor['users_id'];
                 }
             }
-            // Get notification setting
-            $defaults = $main_item::getDefaultValues($main_item->getEntityID());
-            $default_use_notif = $defaults['_users_id_observer_notif']['use_notification'];
-            if (is_array($default_use_notif)) {
-                #Ticket return an array but change and problem return value directly
-                $default_use_notif = $default_use_notif[0];
-            }
-
+            $default_use_notif = \Entity::getUsedConfig('is_notif_enable_default', $main_item->getEntityID(), '', 1);
             // Add newly mentioned actors as observers
             foreach ($mentionned_actors_ids as $user_id) {
                 if (in_array($user_id, $current_actors_ids)) {
                     continue;
                 }
-
                 $input = [
                     'type'                            => CommonITILActor::OBSERVER,
                     'users_id'                        => $user_id,
