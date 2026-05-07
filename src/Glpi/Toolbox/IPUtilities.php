@@ -34,14 +34,27 @@
 
 namespace Glpi\Toolbox;
 
-final class IPUtilities
+/**
+ * @final Only open for extension for use within tests.
+ */
+class IPUtilities
 {
+    protected static function getTrustedReverseProxies(): array
+    {
+        return GLPI_TRUSTED_REVERSE_PROXIES;
+    }
+
+    protected static function getTrustedReverseProxyHeaders(): array
+    {
+        return GLPI_REVERSE_PROXY_HEADERS;
+    }
+
     public static function isTrustedReverseProxy(?string $ip): bool
     {
         if ($ip === null) {
             return false;
         }
-        return in_array($ip, GLPI_TRUSTED_REVERSE_PROXIES, true); // @phpstan-ignore function.impossibleType
+        return in_array($ip, static::getTrustedReverseProxies(), true); // @phpstan-ignore function.impossibleType
     }
 
     public static function getClientIP(): ?string
@@ -50,10 +63,10 @@ final class IPUtilities
         if ($remote_addr === null) {
             return null;
         }
-        if (!self::isTrustedReverseProxy($remote_addr)) {
+        if (!static::isTrustedReverseProxy($remote_addr)) {
             return $remote_addr;
         }
-        $proxy_ip_headers = GLPI_REVERSE_PROXY_HEADERS;
+        $proxy_ip_headers = static::getTrustedReverseProxyHeaders();
         foreach ($proxy_ip_headers as $header) {
             $server_header = 'HTTP_' . str_replace('-', '_', strtoupper($header));
             if (isset($_SERVER[$server_header])) {
