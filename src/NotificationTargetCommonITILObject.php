@@ -954,25 +954,29 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
         } elseif ($event != 'alertnotclosed') {
+            $item_type_name = $this->obj instanceof CommonITILObject
+                ? $this->obj->getTypeName(1)
+                : _n('Item', 'Items', 1);
+
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
             $this->addTarget(Notification::SUPPLIER, Supplier::getTypeName(1));
             $this->addTarget(
                 Notification::SUPERVISOR_ASSIGN_GROUP,
-                __('Manager of the group in charge of the ticket')
+                sprintf(__('Manager of the group in charge of the %s'), $item_type_name)
             );
             $this->addTarget(
                 Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
-                __("Group in charge of the ticket except manager users")
+                sprintf(__("Group in charge of the %s except manager users"), $item_type_name)
             );
             $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
             $this->addTarget(
                 Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
                 __("Requester group except manager users")
             );
-            $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of the ticket'));
+            $this->addTarget(Notification::ASSIGN_TECH, sprintf(__('Technician in charge of the %s'), $item_type_name));
             $this->addTarget(Notification::REQUESTER_GROUP, _n('Requester group', 'Requester groups', 1));
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
-            $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
+            $this->addTarget(Notification::ASSIGN_GROUP, sprintf(__('Group in charge of the %s'), $item_type_name));
             $this->addTarget(Notification::OBSERVER_GROUP, _n('Observer group', 'Observer groups', 1));
             $this->addTarget(Notification::OBSERVER, _n('Observer', 'Observers', 1));
             $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP, __('Observer group manager'));
