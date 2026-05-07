@@ -448,6 +448,27 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     {
         global $DB;
 
+        $canedit = $item->can($item->getID(), UPDATE);
+
+        if ($canedit && $withtemplate != 2) {
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand'            => mt_rand(),
+                'link_itemtype'   => self::class,
+                'generic_source'  => true,
+                'source_itemtype' => $item::class,
+                'source_items_id' => $item->fields['id'],
+                'target_itemtype' => self::class,
+                'dropdown_options' => [
+                    'condition'   => [
+                        'is_deleted' => 0,
+                        'items_id'   => 0,
+                    ],
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                ],
+            ]);
+        }
+
         $instances = $DB->request([
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
@@ -500,8 +521,49 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'showmassiveactions' => false,
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . self::class . mt_rand(),
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'dissociate' => _x('button', 'Delete permanently the relation with selected elements'),
+                ],
+            ],
         ]);
+    }
+
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM    $item
+     * @param int[]         $ids
+     */
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    {
+        switch ($ma->getAction()) {
+            case 'dissociate':
+                $db_instance = new self();
+                foreach ($ids as $id) {
+                    if ($db_instance->getFromDB($id)) {
+                        if ($db_instance->can($id, UPDATE)) {
+                            if ($db_instance->update(['id' => $id, 'items_id' => 0, 'itemtype' => ''])) {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($db_instance->getErrorMessage(ERROR_ON_ACTION));
+                            }
+                        } else {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($db_instance->getErrorMessage(ERROR_RIGHT));
+                        }
+                    } else {
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($db_instance->getErrorMessage(ERROR_NOT_FOUND));
+                    }
+                }
+                return;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
     public static function getIcon()
