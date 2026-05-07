@@ -240,16 +240,16 @@
       scrollToTimelineStart();
    });
 
-   // Hide primary actions whenever a timeline answer form opens (any open path: button click or programmatic).
-   $(document).on("show.bs.collapse", "#new-itilobject-form .collapse", function() {
+   // Hide primary actions whenever a top-level timeline answer form opens (direct children only, to ignore nested collapses inside forms).
+   $(document).on("show.bs.collapse", "#new-itilobject-form > .collapse", function() {
       $("#itil-footer .main-actions").hide();
       $("#right-actions").hide();
       setHasUnsavedChanges(true);
    });
 
-   // Restore primary actions once the form is fully hidden, unless another form is still open (accordion).
-   $(document).on("hidden.bs.collapse", "#new-itilobject-form .collapse", function() {
-      if ($("#new-itilobject-form .collapse.show").length === 0) {
+   // Restore primary actions once all top-level forms are fully hidden (direct children only, to avoid false positives from nested .collapse.show inside forms such as pending-reasons).
+   $(document).on("hidden.bs.collapse", "#new-itilobject-form > .collapse", function() {
+      if ($("#new-itilobject-form > .collapse.show").length === 0) {
          $("#itil-footer .main-actions").show();
          $("#right-actions").show();
          setHasUnsavedChanges(false);

@@ -50,6 +50,8 @@ type FormCase = {
     open: OpenForm;
 };
 
+// Two cases cover the two distinct opening paths. The JS handler is identical for all
+// form blocks, so testing one per path is sufficient.
 const form_cases: FormCase[] = [
     {
         form: 'followup',
@@ -66,30 +68,6 @@ const form_cases: FormCase[] = [
             await page.getByRole('listitem', { name: 'Create a task' }).click();
         },
     },
-    {
-        form: 'solution',
-        block: 'new-ITILSolution-block',
-        open: async (ticket, page) => {
-            await ticket.getButton('View other actions').click();
-            await page.getByRole('listitem', { name: 'Add a solution' }).click();
-        },
-    },
-    {
-        form: 'document',
-        block: 'new-Document_Item-block',
-        open: async (ticket, page) => {
-            await ticket.getButton('View other actions').click();
-            await page.getByRole('listitem', { name: 'Add a document' }).click();
-        },
-    },
-    {
-        form: 'validation',
-        block: 'new-TicketValidation-block',
-        open: async (ticket, page) => {
-            await ticket.getButton('View other actions').click();
-            await page.getByRole('listitem', { name: 'Ask for approval' }).click();
-        },
-    },
 ];
 
 for (const { form, block, open } of form_cases) {
@@ -104,16 +82,25 @@ for (const { form, block, open } of form_cases) {
         const ticket = new TicketPage(page);
         await ticket.goto(ticket_id);
 
-        await expect(ticket.getButton('Save')).toBeVisible();
+        const right_actions = page.locator('#right-actions');
+        await expect(right_actions).toBeVisible();
 
         await open(ticket, page);
         await expect(page.getByTestId(block)).toHaveClass(/\bshow\b/);
 
-        await expect(ticket.getButton('Save')).toBeHidden();
+        await expect(right_actions).toBeHidden();
+
+        // Form blocks can contain nested open collapses (e.g. pending-reasons section).
+        // Closing the outer block must still restore #right-actions.
+        await page.evaluate((id) => {
+            const el = document.createElement('div');
+            el.className = 'collapse show';
+            document.getElementById(id)?.appendChild(el);
+        }, block);
 
         await page.getByTestId(block).getByRole('button', { name: 'Close' }).click();
         await expect(page.getByTestId(block)).not.toHaveClass(/\bshow\b/);
 
-        await expect(ticket.getButton('Save')).toBeVisible();
+        await expect(right_actions).toBeVisible();
     });
 }

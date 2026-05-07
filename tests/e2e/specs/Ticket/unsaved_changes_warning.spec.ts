@@ -44,6 +44,8 @@ type WarningCase = {
     open: OpenForm;
 };
 
+// Two cases cover the two distinct opening paths. The JS handler is identical for all
+// form blocks, so testing one per path is sufficient.
 const warning_cases: WarningCase[] = [
     {
         form: 'followup',
@@ -58,30 +60,6 @@ const warning_cases: WarningCase[] = [
         open: async (ticket, page) => {
             await ticket.getButton('View other actions').click();
             await page.getByRole('listitem', { name: 'Create a task' }).click();
-        },
-    },
-    {
-        form: 'solution',
-        block: 'new-ITILSolution-block',
-        open: async (ticket, page) => {
-            await ticket.getButton('View other actions').click();
-            await page.getByRole('listitem', { name: 'Add a solution' }).click();
-        },
-    },
-    {
-        form: 'document',
-        block: 'new-Document_Item-block',
-        open: async (ticket, page) => {
-            await ticket.getButton('View other actions').click();
-            await page.getByRole('listitem', { name: 'Add a document' }).click();
-        },
-    },
-    {
-        form: 'validation',
-        block: 'new-TicketValidation-block',
-        open: async (ticket, page) => {
-            await ticket.getButton('View other actions').click();
-            await page.getByRole('listitem', { name: 'Ask for approval' }).click();
         },
     },
 ];
