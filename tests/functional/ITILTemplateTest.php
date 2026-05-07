@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Ticket;
 
 /* Test for inc/itiltemplate.class.php */
 class ITILTemplateTest extends DbTestCase
@@ -622,12 +623,11 @@ class ITILTemplateTest extends DbTestCase
         $this->assertEmpty($hidden->getFromDB($hidden_id));
     }
 
-    /**
-     * Check that when category or type of an itilobject is changed, the template is updated accordingly
-     */
-    public function testTemplateUpdatesWhenCategoryAndTypeChanges(): void
+    public function testTemplateUpdatesWhenCategoryTypeEntityAffectedProvider()
     {
         $this->login();
+
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity');
 
         // Create two templates for each ITIL type, and two categories linked to these templates
         [$ticket_template_a, $ticket_template_b, $ticket_template_c] = $this->createItems(\TicketTemplate::class, [
@@ -636,17 +636,19 @@ class ITILTemplateTest extends DbTestCase
             ['name' => 'Template C'],
         ]);
 
-        [$change_template_a, $change_template_b] = $this->createItems(\ChangeTemplate::class, [
+        [$change_template_a, $change_template_b, $change_template_c] = $this->createItems(\ChangeTemplate::class, [
             ['name' => 'Template A'],
             ['name' => 'Template B'],
+            ['name' => 'Template C'],
         ]);
 
-        [$problem_template_a, $problem_template_b] = $this->createItems(\ProblemTemplate::class, [
+        [$problem_template_a, $problem_template_b, $problem_template_c] = $this->createItems(\ProblemTemplate::class, [
             ['name' => 'Template A'],
             ['name' => 'Template B'],
+            ['name' => 'Template C'],
         ]);
 
-        [$cat_a, $cat_b] = $this->createItems(\ITILCategory::class, [
+        [$cat_a, $cat_b, $no_template_category] = $this->createItems(\ITILCategory::class, [
             [
                 'name'                        => 'Category for template A',
                 'tickettemplates_id_demand'   => $ticket_template_a->getID(),
@@ -665,146 +667,436 @@ class ITILTemplateTest extends DbTestCase
                 'is_request'                  => 1,
                 'is_incident'                 => 1,
             ],
+            [
+                'name'                        => 'No template category',
+            ]
         ]);
 
-        // Create an item for each ITIL type with category A, and check that template A is used
-        $ticket = $this->createItem(\Ticket::class, [
-            'name'              => 'Ticket',
-            'itilcategories_id' => $cat_a->getID(),
-            'type'              => \Ticket::DEMAND_TYPE,
-            'entities_id'       => 0,
-            \Ticket::getTemplateClass()::getForeignKeyField()  => $ticket_template_a->getID(),
-        ]);
-
-        $change = $this->createItem(\Change::class, [
-            'name'              => 'Change',
-            'itilcategories_id' => $cat_a->getID(),
-            'entities_id'       => 0,
-            \Change::getTemplateClass()::getForeignKeyField()  => $change_template_a->getID(),
-        ]);
-
-        $problem = $this->createItem(\Problem::class, [
-            'name'              => 'Problem',
-            'itilcategories_id' => $cat_a->getID(),
-            'entities_id'       => 0,
-            \Problem::getTemplateClass()::getForeignKeyField()  => $problem_template_a->getID(),
-        ]);
-
-        $this->assertEquals(
-            $ticket_template_a->getID(),
-            (int) $ticket->fields['tickettemplates_id'],
-            'tickettemplates_id must reflect Template A after creation with category A'
+        $child_entity = $this->createItem(
+            \Entity::class,
+            [
+                'name' => 'testTemplateUpdatesWhenCategoryTypeEntityAffected child entity',
+                'entities_id' => $root_entity->getID(),
+                'tickettemplates_id' => $ticket_template_c->getID(),
+                'changetemplates_id' => $change_template_c->getID(),
+                'problemtemplates_id' => $problem_template_c->getID(),
+            ]
         );
 
-        $this->assertEquals(
-            $change_template_a->getID(),
-            (int) $change->fields['changetemplates_id'],
-            'changetemplates_id must reflect Template A after creation with category A'
+        // Entity with explicit no-template (strategy = 0, id = 0), so it does not
+        // inherit a template from entity 0 which may have a default template configured.
+        $child_entity_no_template = $this->createItem(
+            \Entity::class,
+            [
+                'name'                     => 'testTemplateUpdatesWhenCategoryTypeEntityAffected no-template entity',
+                'entities_id'              => $root_entity->getID(),
+                'tickettemplates_strategy' => 0,
+                'tickettemplates_id'       => 0,
+                'changetemplates_strategy' => 0,
+                'changetemplates_id'       => 0,
+                'problemtemplates_strategy' => 0,
+                'problemtemplates_id'      => 0,
+            ]
         );
 
-        $this->assertEquals(
-            $problem_template_a->getID(),
-            (int) $problem->fields['problemtemplates_id'],
-            'problemtemplates_id must reflect Template A after creation with category A'
-        );
+        // Update the category of each item to category B, and check that template B is used
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Change::getTemplateFormFieldName() => $change_template_a->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Problem::getTemplateFormFieldName() => $problem_template_a->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'itilcategories_id' => $cat_b->getID(),
+                ],
+                \Change::class => [
+                    'itilcategories_id' => $cat_b->getID(),
+                ],
+                \Problem::class => [
+                    'itilcategories_id' => $cat_b->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_b->getID(),
+                \Change::class => $change_template_b->getID(),
+                \Problem::class => $problem_template_b->getID(),
+            ],
+        ];
 
-        // Update the category of each item to category B, and check that template B is now used
-        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
-            'itilcategories_id' => $cat_b->getID(),
-        ]);
+        // Update the category of each item to category B, specifying the old model A, and verify that template B is applied.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Change::getTemplateFormFieldName() => $change_template_a->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Problem::getTemplateFormFieldName() => $problem_template_a->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'itilcategories_id' => $cat_b->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+                \Change::class => [
+                    'itilcategories_id' => $cat_b->getID(),
+                    \Change::getTemplateFormFieldName() => $change_template_a->getID(),
+                ],
+                \Problem::class => [
+                    'itilcategories_id' => $cat_b->getID(),
+                    \Problem::getTemplateFormFieldName() => $problem_template_a->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_b->getID(),
+                \Change::class => $change_template_b->getID(),
+                \Problem::class => $problem_template_b->getID(),
+            ],
+        ];
 
-        $change = $this->updateItem(\Change::class, $change->getID(), [
-            'itilcategories_id' => $cat_b->getID(),
-        ]);
+        // Update the type of the ticket to incident, and check that template C is used 
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'type' => Ticket::INCIDENT_TYPE,
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_c->getID(),
+            ],
+        ];
 
-        $problem = $this->updateItem(\Problem::class, $problem->getID(), [
-            'itilcategories_id' => $cat_b->getID(),
-        ]);
+        // Update the type of the ticket to incident, specifying the old model A, and verify that template C is applied.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'type' => Ticket::INCIDENT_TYPE,
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_c->getID(),
+            ],
+        ];
 
-        $this->assertEquals(
-            $ticket_template_b->getID(),
-            (int) $ticket->fields['tickettemplates_id'],
-            'tickettemplates_id must be updated to Template B after category change'
-        );
+        // Check that the template is not changed when the category, type or entity is not updated.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_a->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Change::getTemplateFormFieldName() => $change_template_a->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Problem::getTemplateFormFieldName() => $problem_template_a->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket Test',
+                ],
+                \Change::class => [
+                    'name' => 'Change Test',
+                ],
+                \Problem::class => [
+                    'name' => 'Problem Test',
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_a->getID(),
+                \Change::class => $change_template_a->getID(),
+                \Problem::class => $problem_template_a->getID(),
+            ],
+        ];
 
-        $this->assertEquals(
-            $change_template_b->getID(),
-            (int) $change->fields['changetemplates_id'],
-            'changetemplates_id must be updated to Template B after category change'
-        );
+        // Ensure the template is not updated when category, type, or entity values are passed in input but remain unchanged.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    Ticket::getTemplateFormFieldName() => $ticket_template_b->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Change::getTemplateFormFieldName() => $change_template_b->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                    \Problem::getTemplateFormFieldName() => $problem_template_b->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket Test',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'type' => Ticket::DEMAND_TYPE,
+                    'entities_id' => $root_entity->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change Test',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem Test',
+                    'itilcategories_id' => $cat_a->getID(),
+                    'entities_id' => $root_entity->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_b->getID(),
+                \Change::class => $change_template_b->getID(),
+                \Problem::class => $problem_template_b->getID(),
+            ],
+        ];
 
-        $this->assertEquals(
-            $problem_template_b->getID(),
-            (int) $problem->fields['problemtemplates_id'],
-            'problemtemplates_id must be updated to Template B after category change'
-        );
+        // Move items to a child entity that has a default template, and check that template C is applied.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'entities_id' => $root_entity->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'entities_id' => $root_entity->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'entities_id' => $root_entity->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'entities_id' => $child_entity->getID(),
+                ],
+                \Change::class => [
+                    'entities_id' => $child_entity->getID(),
+                ],
+                \Problem::class => [
+                    'entities_id' => $child_entity->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_c->getID(),
+                \Change::class => $change_template_c->getID(),
+                \Problem::class => $problem_template_c->getID(),
+            ],
+        ];
 
-        // Update the category of each item to category A, specifying the old model B, and verify that template A is applied.
-        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
-            'itilcategories_id' => $cat_a->getID(),
-            \Ticket::getTemplateFormFieldName() => $ticket_template_b->getID(),
-        ]);
+        // Update all itilobjects with a category that has no template and check if entity's template is applied.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'entities_id' => $child_entity->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'entities_id' => $child_entity->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'entities_id' => $child_entity->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'itilcategories_id' => $no_template_category->getID(),
+                ],
+                \Change::class => [
+                    'itilcategories_id' => $no_template_category->getID(),
+                ],
+                \Problem::class => [
+                    'itilcategories_id' => $no_template_category->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_c->getID(),
+                \Change::class => $change_template_c->getID(),
+                \Problem::class => $problem_template_c->getID(),
+            ],
+        ];
 
-        $change = $this->updateItem(\Change::class, $change->getID(), [
-            'itilcategories_id' => $cat_a->getID(),
-            \Change::getTemplateFormFieldName() => $change_template_b->getID(),
-        ]);
+        // Update all itilobjects without a template using category without a template,
+        // and ensure the no template is applied.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'entities_id' => $child_entity_no_template->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'entities_id' => $child_entity_no_template->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'entities_id' => $child_entity_no_template->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'itilcategories_id' => $no_template_category->getID(),
+                ],
+                \Change::class => [
+                    'itilcategories_id' => $no_template_category->getID(),
+                ],
+                \Problem::class => [
+                    'itilcategories_id' => $no_template_category->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => 0,
+                \Change::class => 0,
+                \Problem::class => 0,
+            ],
+        ];
 
-        $problem = $this->updateItem(\Problem::class, $problem->getID(), [
-            'itilcategories_id' => $cat_a->getID(),
-            \Problem::getTemplateFormFieldName() => $problem_template_b->getID(),
-        ]);
+        // Update all itilobjects without a template using category with a template,
+        // and ensure the template A is applied.
+        yield [
+            'add_input_itilobjects' => [
+                Ticket::class => [
+                    'name' => 'Ticket',
+                    'type' => Ticket::DEMAND_TYPE,
+                    'entities_id' => $child_entity_no_template->getID(),
+                ],
+                \Change::class => [
+                    'name' => 'Change',
+                    'entities_id' => $child_entity_no_template->getID(),
+                ],
+                \Problem::class => [
+                    'name' => 'Problem',
+                    'entities_id' => $child_entity_no_template->getID(),
+                ],
+            ],
+            'update_input_itilobjects' => [
+                Ticket::class => [
+                    'itilcategories_id' => $cat_a->getID(),
+                ],
+                \Change::class => [
+                    'itilcategories_id' => $cat_a->getID(),
+                ],
+                \Problem::class => [
+                    'itilcategories_id' => $cat_a->getID(),
+                ],
+            ],
+            'expected_itiltemplates_id' => [
+                Ticket::class => $ticket_template_a->getID(),
+                \Change::class => $change_template_a->getID(),
+                \Problem::class => $problem_template_a->getID(),
+            ],
+        ];
+    }
 
-        $this->assertEquals(
-            $ticket_template_a->getID(),
-            (int) $ticket->fields['tickettemplates_id'],
-            'tickettemplates_id must be updated to Template A after category change'
-        );
+    /**
+     * Check that when category or type of an itilobject is changed, the template is updated accordingly
+     */
+    public function testTemplateUpdatesWhenCategoryTypeEntityAffected(): void
+    {
+        foreach ($this->testTemplateUpdatesWhenCategoryTypeEntityAffectedProvider() as $data) {
+            $add_input_itilobjects = $data['add_input_itilobjects'];
+            $update_input_itilobjects = $data['update_input_itilobjects'];
+            $expected_itiltemplates_id = $data['expected_itiltemplates_id'];
 
-        $this->assertEquals(
-            $change_template_a->getID(),
-            (int) $change->fields['changetemplates_id'],
-            'changetemplates_id must be updated to Template A after category change'
-        );
+            $ticket = $this->createItem(\Ticket::class, $add_input_itilobjects[Ticket::class] ?? []);
+            $change = $this->createItem(\Change::class, $add_input_itilobjects[\Change::class] ?? []);
+            $problem = $this->createItem(\Problem::class, $add_input_itilobjects[\Problem::class] ?? []);
 
-        $this->assertEquals(
-            $problem_template_a->getID(),
-            (int) $problem->fields['problemtemplates_id'],
-            'problemtemplates_id must be updated to Template A after category change'
-        );
+            $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), $update_input_itilobjects[Ticket::class] ?? []);
+            $change = $this->updateItem(\Change::class, $change->getID(), $update_input_itilobjects[\Change::class] ?? []);
+            $problem = $this->updateItem(\Problem::class, $problem->getID(), $update_input_itilobjects[\Problem::class] ?? []);
 
-        // Update the type of the ticket to incident, and check that template C is now used
-        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
-            'type' => \Ticket::INCIDENT_TYPE,
-        ]);
+            if (isset($expected_itiltemplates_id[Ticket::class])) {
+                $this->assertEquals(
+                    $expected_itiltemplates_id[Ticket::class],
+                    (int) $ticket->fields['tickettemplates_id'],
+                );
+            }
 
-        $this->assertEquals(
-            $ticket_template_c->getID(),
-            (int) $ticket->fields['tickettemplates_id'],
-            'tickettemplates_id must be updated to Template C after type change'
-        );
+            if (isset($expected_itiltemplates_id[\Change::class])) {
+                $this->assertEquals(
+                    $expected_itiltemplates_id[\Change::class],
+                    (int) $change->fields['changetemplates_id'],
+                );
+            }
 
-        // Update the type of the ticket back to demand, specifying the old model C, and verify that template A is applied.
-        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
-            'type' => \Ticket::DEMAND_TYPE,
-            \Ticket::getTemplateFormFieldName() => $ticket_template_c->getID(),
-        ]);
-
-        $this->assertEquals(
-            $ticket_template_a->getID(),
-            (int) $ticket->fields['tickettemplates_id'],
-            'tickettemplates_id must be updated to Template A after type change'
-        );
-
-        // Check that the template is not changed when the category or type is not updated.
-        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
-            'name' => 'Ticket updated',
-        ]);
-
-        $this->assertEquals(
-            $ticket_template_a->getID(),
-            (int) $ticket->fields['tickettemplates_id'],
-            'tickettemplates_id must not be updated if category or type is not updated'
-        );
+            if (isset($expected_itiltemplates_id[\Problem::class])) {
+                $this->assertEquals(
+                    $expected_itiltemplates_id[\Problem::class],
+                    (int) $problem->fields['problemtemplates_id'],
+                );
+            }
+        }
     }
 }
