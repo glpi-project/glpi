@@ -2038,7 +2038,7 @@ HTML;
             $timestamp->sub(new DateInterval("P1D"));
         }
 
-        $date = $timestamp->format(Toolbox::getDateFormat('js'));
+        $date = Html::convDate($timestamp->format('Y-m-d'));
 
         // Ensure we never return null, fallback to empty string if convDate returns null
         if ($date === null) {
