@@ -130,6 +130,7 @@ enum ITILActorFieldStrategy: string
 
         if (
             $delegation->users_id !== null
+            && $delegation->users_id !== (int) $user_id
             && Ticket::canDelegateeCreateTicket($delegation->users_id)
         ) {
             return [
