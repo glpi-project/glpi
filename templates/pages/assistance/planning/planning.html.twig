@@ -30,15 +30,14 @@
  # ---------------------------------------------------------------------
  #}
 
-<div {% if options.full_view %} id="planning_container" {% endif %} class="d-flex flex-wrap flex-sm-nowrap">
-    {% if options.full_view %}
-        {{ include('pages/assistance/planning/filters.html.twig') }}
-    {% endif %}
-    <div id="planning{{ options.rand }}" class="planning-view flex-fill"></div>
-</div>
-<script>
-    $(() => {
-        GLPIPlanning.display({{ options|json_encode|raw }});
-        GLPIPlanning.planningFilters();
-    });
+<div id="planning_container"></div>
+<script type="module">
+    window.Vue.createApp(window.Vue.components['Planning/PlanningView'].component, {{ (options + {planning_config: session('glpi_plannings')})|json_encode|raw }}).mount('#planning_container');
 </script>
+
+{#<script>#}
+{#    $(() => {#}
+{#        GLPIPlanning.display({{ options|json_encode|raw }});#}
+{#        GLPIPlanning.planningFilters();#}
+{#    });#}
+{#</script>#}
