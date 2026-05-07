@@ -2829,6 +2829,12 @@ TWIG, $twig_params);
         $current_is_favorite = KnowbaseItem_Favorite::isFavoriteForCurrentUser($current_id);
         $has_other_favorites = array_filter($favorites, fn(Article $a) => !$a->is_current) !== [];
 
+        // Don't render the aside if we don't have any categories or article
+        $tree = (new Builder($current_id))->buildTree();
+        if ($tree->getArticles() === [] && $tree->getCategories() === []) {
+            return null;
+        }
+
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
