@@ -77,20 +77,22 @@
                     {% endset %}
 
                     <div class="d-flex justify-content-between mb-2">
-                        <div class="row g-0 flex-fill mw-100">
-                            <div class="col-12 col-sm">
-                                {{ fields.dropdownArrayField('num', null, available_to_add, '', {
-                                    field_class: 'd-flex',
-                                    no_label: true,
-                                    templateResult: result_template_js,
-                                    mb: '',
-                                    aria_label: __('Select an option to add'),
-                                }) }}
+                        {% if can_edit %}
+                            <div class="row g-0 flex-fill mw-100">
+                                <div class="col-12 col-sm">
+                                    {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                                        field_class: 'd-flex',
+                                        no_label: true,
+                                        templateResult: result_template_js,
+                                        mb: '',
+                                        aria_label: __('Select an option to add'),
+                                    }) }}
+                                </div>
+                                <div class="col-12 col-sm-auto d-flex align-items-start px-0">
+                                    {{ add_opt_btn }}
+                                </div>
                             </div>
-                            <div class="col-12 col-sm-auto d-flex align-items-start px-0">
-                                {{ add_opt_btn }}
-                            </div>
-                        </div>
+                        {% endif %}
                         {% if not is_global %}
                             <button type="button" class="btn btn-ghost-danger me-1" name="disable" value="1">{{ __('Delete personal view') }}</button>
                         {% endif %}
@@ -106,11 +108,11 @@
                 {% endfor %}
                 {% for opt in entries|filter(v => (v['fixed'] ?? false) != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
-                    <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
-                        <i class="ti ti-grip-vertical"></i>
+                    <li data-opt-id="{{ opt['id'] }}" class="{{ can_edit ? 'cursor-grab' : '' }} list-group-item py-2 d-flex px-2 align-items-center">
+                        <i class="ti ti-grip-vertical{{ can_edit ? '' : ' bs-invisible' }}"></i>
                         <span class="flex-fill ms-1">{{ name_prefix ~ opt['name'] }}</span>
                         <span>
-                            {% if opt['noremove'] is not defined or opt['noremove'] != true %}
+                            {% if can_edit and (opt['noremove'] is not defined or opt['noremove'] != true) %}
                                 <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
                                     <i class="ti ti-x"></i>
                                 </button>
@@ -134,7 +136,7 @@
         } catch (e) {}
         sortable(sortables, {
             acceptFrom: '#tabsbody.display_preference_config ul.list-group',
-            items: 'li:not([data-fixed])',
+            items: '{% if can_edit %}li:not([data-fixed]){% else %}none{% endif %}',
         });
 
         function updateOrder(element) {
