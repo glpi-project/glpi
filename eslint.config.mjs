@@ -43,11 +43,11 @@ export default [
     },
     {
         languageOptions: {
-            ecmaVersion: 13,
+            ecmaVersion: 2025,
             globals: {
                 ...globals.browser,
                 ...globals.jquery,
-                ...globals.es2021,
+                ...globals.es2025,
                 ...{
                     CFG_GLPI: true,
                     tinyMCE: true,
