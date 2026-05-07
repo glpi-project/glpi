@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,39 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-use Glpi\Controller\VisibilityController;
-use Glpi\Http\Firewall;
-use Glpi\Http\RedirectResponse;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Html;
-use SavedSearch;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-class SavedSearchFormController extends VisibilityController
-{
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    public function __invoke(Request $request): Response
-    {
-        $request->attributes->set('class', SavedSearch::class);
-
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
-        }
-
-        return parent::__invoke($request);
-    }
-
-    public function createNotif(): RedirectResponse
-    {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
-
-        return new RedirectResponse(Html::getBackUrl());
-    }
+if (!$DB->tableExists('glpi_groups_savedsearches')) {
+    $query = "CREATE TABLE `glpi_groups_savedsearches` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `savedsearches_id` int {$default_key_sign}  NOT NULL DEFAULT '0',
+        `groups_id` int {$default_key_sign}  NOT NULL DEFAULT '0',
+        `entities_id` int {$default_key_sign} DEFAULT NULL,
+        `is_recursive` tinyint NOT NULL DEFAULT '0',
+        `no_entity_restriction` tinyint NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `savedsearches_id` (`savedsearches_id`),
+        KEY `groups_id` (`groups_id`),
+        KEY `entities_id` (`entities_id`),
+        KEY `is_recursive` (`is_recursive`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
 }

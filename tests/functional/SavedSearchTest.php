@@ -62,7 +62,8 @@ class SavedSearchTest extends DbTestCase
         global $DB;
 
         $root_entity_id  = getItemByTypeName(\Entity::class, '_test_root_entity', true);
-        $child_entity_id = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
+        $test_group_1_id  = getItemByTypeName(\Group::class, '_test_group_1', true);
 
         // needs a user
         // let's use TU_USER
@@ -73,73 +74,87 @@ class SavedSearchTest extends DbTestCase
         // now add a bookmark on Ticket view
         $bk = new SavedSearch();
         $this->assertTrue(
-            (bool) $bk->add([
-                'name'         => 'public root recursive',
-                'type'         => 1,
-                'itemtype'     => 'Ticket',
-                'users_id'     => $tuuser_id,
-                'is_private'   => 0,
-                'entities_id'  => $root_entity_id,
-                'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
-            ])
+            (bool) $bk->add(
+                [
+                    'name'         => 'private root recursive',
+                    'type'         => 1,
+                    'itemtype'     => 'Ticket',
+                    'users_id'     => $tuuser_id,
+                    'entities_id'  => 0,
+                    'is_recursive' => 1,
+                    'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                ]
+            )
         );
+        $bk_private_id = $bk->getID();
         $this->assertTrue(
-            (bool) $bk->add([
-                'name'         => 'public root NOT recursive',
-                'type'         => 1,
-                'itemtype'     => 'Ticket',
-                'users_id'     => $tuuser_id,
-                'is_private'   => 0,
-                'entities_id'  => $root_entity_id,
-                'is_recursive' => 0,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
-            ])
+            (bool) $bk->add(
+                [
+                    'name'         => 'target user root recursive',
+                    'type'         => 1,
+                    'itemtype'     => 'Ticket',
+                    'users_id'     => $tuuser_id,
+                    'entities_id'  => 0,
+                    'is_recursive' => 1,
+                    'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                ]
+            )
         );
+        $bk_target_user_id = $bk->getID();
         $this->assertTrue(
-            (bool) $bk->add([
-                'name'         => 'public child 1 recursive',
-                'type'         => 1,
-                'itemtype'     => 'Ticket',
-                'users_id'     => $tuuser_id,
-                'is_private'   => 0,
-                'entities_id'  => $child_entity_id,
-                'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
-            ])
+            (bool) $bk->add(
+                [
+                    'name'         => 'target group root recursive',
+                    'type'         => 1,
+                    'itemtype'     => 'Ticket',
+                    'users_id'     => $tuuser_id,
+                    'entities_id'  => 0,
+                    'is_recursive' => 1,
+                    'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                ]
+            )
         );
+        $bk_target_group_id = $bk->getID();
+        // has is_private => 0 in inputs, so a target will be automatically created for the bookmark's entity
+        $this->assertTrue(
+            (bool) $bk->add(
+                [
+                    'name'         => 'created public target entity root recursive',
+                    'type'         => 1,
+                    'itemtype'     => 'Ticket',
+                    'users_id'     => $tuuser_id,
+                    'is_private'   => 0,
+                    'entities_id'  => 0,
+                    'is_recursive' => 1,
+                    'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                ]
+            )
+        );
+        $bk_target_entity_id = $bk->getID();
+        $bk2 = new \SavedSearch();
+        $bk2->getFromDB($bk_target_entity_id);
+        $this->assertEquals(1, $bk2->countVisibilities());
 
         $this->assertTrue(
-            (bool) $bk->add([
-                'name'         => 'private TU_USER',
-                'type'         => 1,
-                'itemtype'     => 'Ticket',
-                'users_id'     => $tuuser_id,
-                'is_private'   => 1,
-                'entities_id'  => 0,
-                'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
-            ])
+            (bool) $bk->add(
+                [
+                    'name'         => 'private normal user',
+                    'type'         => 1,
+                    'itemtype'     => 'Ticket',
+                    'users_id'     => $normal_id,
+                    'entities_id'  => 0,
+                    'is_recursive' => 1,
+                    'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
+                ]
+            )
         );
-
-        $this->assertTrue(
-            (bool) $bk->add([
-                'name'         => 'private normal user',
-                'type'         => 1,
-                'itemtype'     => 'Ticket',
-                'users_id'     => $normal_id,
-                'is_private'   => 1,
-                'entities_id'  => 0,
-                'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
-            ])
-        );
-        // With UPDATE 'config' right, we still shouldn't see other user's private searches
+        $bk_private_normal_id = $bk->getID();
+        // With UPDATE 'config' right, we still shouldn't see other user's searches without targets
         $expected = [
-            'public root recursive',
-            'public root NOT recursive',
-            'public child 1 recursive',
-            'private TU_USER',
+            'private root recursive',
+            'target user root recursive',
+            'target group root recursive',
+            'created public target entity root recursive',
         ];
         $mine = $bk->getMine();
         $this->assertCount(count($expected), $mine);
@@ -154,77 +169,85 @@ class SavedSearchTest extends DbTestCase
             array_column($mine, 'name')
         );
 
-        // Normal user cannot see public saved searches by default
+        // test each type of targets so that normal will be able to see them
+        $bks_normal = [
+            'private normal user',
+            'created public target entity root recursive',
+        ];
+        // add normal to a group
+        $group_user = new \Group_User();
+        $group_user->add(
+            [
+                'users_id' => 5,
+                'groups_id' => $test_group_1_id,
+            ]
+        );
         $this->login('normal', 'normal');
 
         $mine = $bk->getMine();
-        $this->assertCount(1, $mine);
+        $this->assertCount(count($bks_normal), $mine);
         $this->assertEqualsCanonicalizing(
-            ['private normal user'],
+            $bks_normal,
             array_column($mine, 'name')
         );
 
-        //add public saved searches read right for normal profile
-        $DB->update(
-            'glpi_profilerights',
-            ['rights' => 1],
+        // add normal as target for another savedsearch
+        $DB->insert(
+            'glpi_savedsearches_usertargets',
             [
-                'profiles_id'  => 2,
-                'name'         => 'bookmark_public',
+                'users_id'  => 5,
+                'savedsearches_id' => $bk_target_user_id,
             ]
         );
-        $this->login('normal', 'normal'); // ACLs have changed: login again.
-        $expected = [
-            'public root recursive',
-            'public root NOT recursive',
-            'public child 1 recursive',
-            'private normal user',
-        ];
+        $bks_normal[] = 'target user root recursive';
         $mine = $bk->getMine('Ticket');
-        $this->assertCount(count($expected), $mine);
+        $this->assertCount(count($bks_normal), $mine);
         $this->assertEqualsCanonicalizing(
-            $expected,
+            $bks_normal,
             array_column($mine, 'name')
         );
 
-        // Check entity restrictions
-        $this->setEntity('_test_root_entity', false);
-        $expected = [
-            'public root recursive',
-            'public root NOT recursive',
-            'private normal user',
-        ];
+        // add the group as target for a bookmark
+        $DB->insert(
+            'glpi_groups_savedsearches',
+            [
+                'savedsearches_id'  => $bk_target_group_id,
+                'groups_id' => $test_group_1_id,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+            ]
+        );
+
+        $bks_normal[] = 'target group root recursive';
         $mine = $bk->getMine('Ticket');
-        $this->assertCount(count($expected), $mine);
+        $this->assertCount(count($bks_normal), $mine);
         $this->assertEqualsCanonicalizing(
-            $expected,
+            $bks_normal,
             array_column($mine, 'name')
         );
 
-        $this->setEntity('_test_child_1', true);
-        $expected = [
-            'public root recursive',
-            'public child 1 recursive',
-            'private normal user',
-        ];
+        // add an entity target for an entity at a level below the current one
+        $DB->insert(
+            'glpi_entities_savedsearches',
+            [
+                'savedsearches_id'  => $bk_private_id,
+                'entities_id' => $root_entity_id,
+                'is_recursive' => 1,
+            ]
+        );
+        $bks_normal[] = 'private root recursive';
         $mine = $bk->getMine('Ticket');
-        $this->assertCount(count($expected), $mine);
+        $this->assertCount(count($bks_normal), $mine);
         $this->assertEqualsCanonicalizing(
-            $expected,
+            $bks_normal,
             array_column($mine, 'name')
         );
 
-        $this->setEntity('_test_child_1', false);
-        $expected = [
-            'public root recursive',
-            'public child 1 recursive',
-            'private normal user',
-        ];
-        $mine = $bk->getMine('Ticket');
-        $this->assertCount(count($expected), $mine);
-        $this->assertEqualsCanonicalizing(
-            $expected,
-            array_column($mine, 'name')
+        $DB->delete(
+            $group_user->getTable(),
+            [
+                'id' => $group_user->getID(),
+            ]
         );
     }
 

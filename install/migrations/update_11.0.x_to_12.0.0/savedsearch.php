@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,39 +33,32 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
 
-use Glpi\Controller\VisibilityController;
-use Glpi\Http\Firewall;
-use Glpi\Http\RedirectResponse;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Html;
-use SavedSearch;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ * @var array $DELFROMDISPLAYPREF
+ */
 
-class SavedSearchFormController extends VisibilityController
-{
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    public function __invoke(Request $request): Response
-    {
-        $request->attributes->set('class', SavedSearch::class);
+$table = SavedSearch::getTable();
+$field = 'is_private';
+if ($DB->fieldExists($table, $field)) {
+    $DB->insert('glpi_entities_savedsearches', new QuerySubQuery([
+        'SELECT' => [
+            new QueryExpression('null AS `id`'),
+            'id as savedsearches_id',
+            'entities_id',
+            'is_recursive',
+        ],
+        'FROM'   => 'glpi_savedsearches',
+        'WHERE'  => [
+        'is_private' => ['<>', 0],
+    ],
+    ]));
 
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
-        }
+    $migration->dropField($table, $field);
 
-        return parent::__invoke($request);
-    }
-
-    public function createNotif(): RedirectResponse
-    {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
-
-        return new RedirectResponse(Html::getBackUrl());
-    }
+    $DELFROMDISPLAYPREF['SavedSearch'] = 4;
 }

@@ -33,31 +33,41 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
+class SavedSearch_UserTarget extends CommonDBRelation
+{
+    public bool $auto_message_on_action = false;
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+    public static ?string $itemtype_1          = SavedSearch::class;
+    public static ?string $items_id_1          = 'savedsearches_id';
+    public static ?string $itemtype_2          = User::class;
+    public static ?string $items_id_2          = 'users_id';
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
-}
+    public static int $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static bool $logs_for_item_2     = false;
 
-$savedsearch = new SavedSearch();
+    /**
+     * Get users for a saved search
+     *
+     * @param SavedSearch $savedSearch SavedSearch instance
+     *
+     * @return array of users linked to a saved search
+     **/
+    public static function getUsers(SavedSearch $savedSearch)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['id']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new AccessDeniedHttpException($info);
+        $results   = [];
+        $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                self::$items_id_1 => $savedSearch->getID(),
+            ],
+        ]);
+
+        foreach ($iterator as $data) {
+            $results[$data[self::$items_id_2]][] = $data;
+        }
+        return $results;
     }
-    return;
 }
-
-Search::show('SavedSearch');
-Html::footer();
