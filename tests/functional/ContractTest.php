@@ -123,7 +123,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => "2024-07-01",
+                'expected' => "2026-06-30",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -143,7 +143,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_NEVER,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-06-30',
+                'expected' => "<span class='red'>2025-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -153,7 +153,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01',
+                'expected' => '2026-06-30',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -163,7 +163,7 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_EXPRESS,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-09-30',
+                'expected' => "<span class='red'>2025-06-30</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -173,17 +173,103 @@ class ContractTest extends DbTestCase
                     'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 12,
                 ],
-                'expected' => '2029-01-01',
+                'expected' => '2026-12-31',
             ],
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => '2025-01-01',
+                    'begin_date' => '2029-01-01',
                     'duration' => 6,
-                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'renewal' => \Contract::RENEWAL_TACIT,
                     'periodicity' => 3,
                 ],
-                'expected' => '2025-09-30',
+                'expected' => "2029-06-30",
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => '2022-01-01',
+                    'duration' => 6,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12,
+                ],
+                'expected' => '2026-06-30',
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => '2026-01-01',
+                    'duration' => 6,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12,
+                ],
+                'expected' => '2026-06-30',
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 2,
+                    'renewal' => \Contract::RENEWAL_NEVER,
+                    'periodicity' => 0,
+                ],
+                'expected' => "<span class='red'>2020-04-30</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 3,
+                    'renewal' => \Contract::RENEWAL_NEVER,
+                    'periodicity' => 12,
+                ],
+                'expected' => "<span class='red'>2020-03-31</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 2,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 0,
+                ],
+                'expected' => "2026-04-30",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
+                    'notice' => 3,
+                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'periodicity' => 0,
+                ],
+                'expected' => "<span class='red'>2020-03-31</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2026-01-01',
+                    'duration' => 6,
+                    'notice' => 4,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 12,
+                ],
+                'expected' => "<span class='red'>2026-02-28</span>",
+            ],
+            [
+                'field' => '_virtual_expire_notice',
+                'values' => [
+                    'begin_date' => '2029-01-01',
+                    'duration' => 6,
+                    'notice' => 3,
+                    'renewal' => \Contract::RENEWAL_TACIT,
+                    'periodicity' => 6,
+                ],
+                'expected' => "2029-03-31",
             ],
         ];
     }
@@ -192,7 +278,7 @@ class ContractTest extends DbTestCase
     public function testGetSpecificValueToDisplay($field, $values, $expected)
     {
         $this->login();
-        $_SESSION['glpi_currenttime'] = '2024-04-22 10:00:00';
+        $_SESSION['glpi_currenttime'] = '2026-03-17 10:00:00';
         $this->setEntity('_test_root_entity', true);
         $contract = new \Contract();
         $this->assertEquals($expected, $contract->getSpecificValueToDisplay($field, $values));
