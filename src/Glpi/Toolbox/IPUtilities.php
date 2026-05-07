@@ -39,11 +39,17 @@ namespace Glpi\Toolbox;
  */
 class IPUtilities
 {
+    /**
+     * @return string[]
+     */
     protected static function getTrustedReverseProxies(): array
     {
         return GLPI_TRUSTED_REVERSE_PROXIES;
     }
 
+    /**
+     * @return string[]
+     */
     protected static function getTrustedReverseProxyHeaders(): array
     {
         return GLPI_REVERSE_PROXY_HEADERS;
