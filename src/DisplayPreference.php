@@ -322,6 +322,19 @@ class DisplayPreference extends CommonDBTM
         $fixed_cols = SearchOption::getDefaultToView($itemtype);
         $official_order = array_diff($order, $fixed_cols);
 
+        if (!$official_order) {
+            // The user removed all display preferences
+            $DB->delete(
+                self::getTable(),
+                [
+                    'itemtype' => $itemtype,
+                    'users_id' => $users_id,
+                    'interface' => $interface,
+                ]
+            );
+            return;
+        }
+
         // Remove duplicates (in case of UI bug not preventing them)
         $official_order = array_unique($official_order);
 
