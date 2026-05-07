@@ -29,7 +29,7 @@ jobs:
       # of every commit in the PR. Extend conservatively as new agents appear.
       - name: "Scan commit authors"
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}  # gh CLI reads this; not injected automatically
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
