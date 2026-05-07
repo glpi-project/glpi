@@ -3,9 +3,14 @@ name: "Commit authorship gate"
 # Block PRs whose commits are authored by AI agents or LLM provider accounts.
 # Per CONTRIBUTING.md, commits must be authored under a human's name and email.
 #
-# Uses pull_request_target so the check fires even when the contributor's fork
-# has Actions disabled or is subject to the first-time contributor approval gate.
-# Safe because we only read commit metadata; PR code is never executed.
+# Uses pull_request_target so the check fires even for first-time contributors
+# whose PRs are otherwise gated behind a manual Actions approval step.
+# Safe because we only call the GitHub REST API for commit metadata; no fork
+# code is ever checked out or executed.
+#
+# Uses the GitHub REST API rather than git-clone to avoid the pathological case
+# where `git log BASE..HEAD` traverses the entire fork history instead of only
+# the PR commits, turning a 1-second check into a 15-minute scan.
 
 on:
   pull_request_target:
@@ -13,37 +18,20 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   check-authorship:
     name: "Verify commit authorship"
     runs-on: "ubuntu-latest"
     steps:
-      # Checkout points at the fork (head.repo) — pull_request_target defaults
-      # to the base repo, where the PR's head SHA does not exist.
-      - name: "Checkout PR (metadata only)"
-        uses: "actions/checkout@v6"
-        with:
-          fetch-depth: 0
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          persist-credentials: false
-
-      # The fork doesn't contain the base SHA; fetch it so the diff range resolves.
-      - name: "Fetch base ref for diff range"
-        env:
-          BASE_REPO: ${{ github.event.pull_request.base.repo.clone_url }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: |
-          git remote add base "$BASE_REPO"
-          git fetch --no-tags --depth=1 base "$BASE_SHA"
-
       # DENY list is matched (regex, case-insensitive) against author name and email
       # of every commit in the PR. Extend conservatively as new agents appear.
       - name: "Scan commit authors"
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ github.token }}  # gh CLI reads this; not injected automatically
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -e
           DENY=(
@@ -67,7 +55,8 @@ jobs:
                 break
               fi
             done
-          done < <(git log --format='%H%x09%an%x09%ae' "${BASE_SHA}..${HEAD_SHA}")
+          done < <(gh api --paginate "/repos/$REPO/pulls/$PR_NUMBER/commits" \
+            --jq '.[] | [.sha, .commit.author.name, .commit.author.email] | @tsv')
           if [ "$FAIL" -ne 0 ]; then
             echo ""
             echo "PRs must be authored by humans. See CONTRIBUTING.md."
