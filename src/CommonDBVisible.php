@@ -34,12 +34,19 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Event;
 
 /**
  * Common DataBase visibility for items
  */
-abstract class CommonDBVisible extends CommonDBTM
+trait CommonDBVisible
 {
+    /**
+     * Types of target available for the itemtype
+     * @var string[]
+     */
+    public static $types = ['Entity', 'Group', 'Profile', 'User'];
+
     /**
      * Entities on which item is visible.
      * Keys are ID, values are DB fields values.
@@ -65,6 +72,58 @@ abstract class CommonDBVisible extends CommonDBTM
     protected array $users = [];
 
     /**
+     * Class defining relation to $users
+     * @var string
+     */
+    protected string $userClass = '';
+
+    /**
+     * Class defining relation to $profiles
+     * @var string
+     */
+    protected string $profileClass = '';
+
+    /**
+     * Class defining relation to $groups
+     * @var string
+     */
+    protected string $groupClass = '';
+
+    /**
+     * Class defining relation to entities
+     * @var string
+     */
+    protected string $entityClass = '';
+
+    /**
+     * Service for visibility target log
+     * @var string
+     */
+    protected string $service = '';
+
+    public function __construct()
+    {
+        // define default values
+        if ($this->userClass == '') {
+            $this->userClass = $this->getType() . '_UserTarget';
+        }
+        if ($this->groupClass == '') {
+            $this->groupClass = 'Group_' . $this->getType();
+        }
+        if ($this->entityClass == '') {
+            $this->entityClass = 'Entity_' . $this->getType();
+        }
+        if ($this->profileClass == '') {
+            $this->profileClass = 'Profile_' . $this->getType();
+        }
+        if ($this->service == '') {
+            $this->service =  'tools';
+        }
+
+        parent::__construct();
+    }
+
+    /**
      * Is the login user have access to item based on visibility configuration
      *
      * @since 0.83
@@ -72,7 +131,7 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @return bool
      **/
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         // Author
         if ($this->fields['users_id'] == Session::getLoginUserID()) {
@@ -84,8 +143,7 @@ abstract class CommonDBVisible extends CommonDBTM
         }
 
         // Groups
-        if (
-            count($this->groups)
+        if (count($this->groups)
             && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
         ) {
             foreach ($this->groups as $data) {
@@ -105,8 +163,7 @@ abstract class CommonDBVisible extends CommonDBTM
         }
 
         // Entities
-        if (
-            count($this->entities)
+        if (count($this->entities)
             && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
         ) {
             foreach ($this->entities as $data) {
@@ -119,8 +176,7 @@ abstract class CommonDBVisible extends CommonDBTM
         }
 
         // Profiles
-        if (
-            count($this->profiles)
+        if (count($this->profiles)
             && isset($_SESSION["glpiactiveprofile"])
             && isset($_SESSION["glpiactiveprofile"]['id'])
         ) {
@@ -158,6 +214,16 @@ abstract class CommonDBVisible extends CommonDBTM
               + count($this->profiles));
     }
 
+
+    /**
+     * Get right which will be used to determine which users can be targeted
+     * @return string
+     */
+    public function getVisibilityRight()
+    {
+        return strtolower($this::getType()) . '_public';
+    }
+
     /**
      * Show visibility configuration
      *
@@ -173,9 +239,10 @@ abstract class CommonDBVisible extends CommonDBTM
 
         if ($canedit) {
             TemplateRenderer::getInstance()->display('components/add_visibility_target.html.twig', [
-                'type' => static::class,
-                'rand' => $rand,
-                'id'   => $ID,
+                'type'  => static::class,
+                'types' => static::$types,
+                'rand'  => $rand,
+                'id'    => $ID,
                 'add_target_msg' => __('Add a target'),
                 'visiblity_dropdown_params' => $this->getShowVisibilityDropdownParams(),
             ]);
@@ -298,7 +365,9 @@ abstract class CommonDBVisible extends CommonDBTM
             'container' => 'mass' . static::class . $rand,
             'specific_actions' => ['delete' => _x('button', 'Delete permanently')],
         ];
-        if ($this->fields['users_id'] !== Session::getLoginUserID()) {
+
+        if (isset($this->fields['users_id'])
+            && $this->fields['users_id'] !== Session::getLoginUserID()) {
             $massiveactionparams['confirm'] = __('Caution! You are not the author of this item. Deleting targets can result in loss of access.');
         }
 
@@ -327,12 +396,12 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @return array{type: string, right: string, entity?: int, is_recursive?: bool}
      */
-    protected function getShowVisibilityDropdownParams()
+    protected function getShowVisibilityDropdownParams(): array
     {
-        $params = [
-            'type'          => '__VALUE__',
-            'right'         => strtolower(static::class) . '_public',
-        ];
+        $params = ['type' => '__VALUE__'];
+        if ($right = $this->getVisibilityRight()) {
+            $params['right'] = $right;
+        }
         if (isset($this->fields['entities_id'])) {
             $params['entity'] = $this->fields['entities_id'];
         }
@@ -340,5 +409,58 @@ abstract class CommonDBVisible extends CommonDBTM
             $params['is_recursive'] = $this->fields['is_recursive'];
         }
         return $params;
+    }
+
+    /**
+     * Add a visibility target to the item
+     * @param array $inputs key '_type' determine the type of target
+     * @return void
+     */
+    public function addVisibility(array $inputs)
+    {
+        $fkField = getForeignKeyFieldForItemType($this->getType());
+        $item = null;
+        switch ($inputs['_type']) {
+            case User::class:
+                $class = $this->getType() . '_UserTarget';
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+            case Group::class:
+                $class = 'Group_' . $this->getType();
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+            case Entity::class:
+                $class = 'Entity_' . $this->getType();
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+            case Profile::class:
+                $class = 'Profile_' . $this->getType();
+                if (is_a($class, CommonDBRelation::class, true)) {
+                    $item = new $class();
+                }
+                break;
+        }
+        if (array_key_exists('entities_id', $inputs) && $inputs['entities_id'] == -1) {
+            // "No restriction" value selected
+            $inputs['entities_id'] = 'NULL';
+            $inputs['no_entity_restriction'] = 1;
+        }
+        if (!is_null($item)) {
+            $item->add($inputs);
+            Event::log(
+                $inputs[$fkField],
+                $this->getType(),
+                4,
+                $this->service,
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a target'), $_SESSION["glpiname"])
+            );
+        }
     }
 }

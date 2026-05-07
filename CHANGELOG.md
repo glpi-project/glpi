@@ -746,6 +746,7 @@ If you have anything pinned to specific v2 versions, please try to pin to the la
 - Handling of encoded/escaped value in `autoName()`.
 - `closeDBConnections`
 - `regenerateTreeCompleteName()`
+- `AbstractITILChildTemplate::addVisibilityJoins()`
 - `Ajax::updateItemOnInputTextEvent()`
 - `Appliance::getMassiveActionsForItemtype()`
 - `AuthLDAP::ldapChooseDirectory()`

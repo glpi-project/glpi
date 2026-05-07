@@ -47,8 +47,11 @@ use function Safe\parse_url;
  *
  * @since 0.84
  **/
-class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
+class RSSFeed extends CommonDBTM implements ExtraVisibilityCriteria
 {
+    use CommonDBVisible {
+        CommonDBVisible::haveVisibilityAccess as traitHaveVisibilityAccess;
+    }
     // From CommonDBTM
     public bool $dohistory                   = true;
 
@@ -144,13 +147,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         );
     }
 
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         if (!self::canView()) {
             return false;
         }
 
-        return parent::haveVisibilityAccess();
+        return $this->traitHaveVisibilityAccess();
     }
 
     /**
