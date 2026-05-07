@@ -294,15 +294,15 @@ test('Clear button appears when typing and clicking it restores the tree', async
     await kb.goto(article_id);
 
     // Clear button must not be interactive before typing
-    await expect(kb.asideSearchClearButton).not.toHaveRole('button');
+    await expect(kb.asideSearchClearButton).toBeDisabled();
 
     // Type a non-matching term, clear button must become interactive and article must be hidden
     await kb.doSearchAside(no_match_token);
-    await expect(kb.asideSearchClearButton).toHaveRole('button');
+    await expect(kb.asideSearchClearButton).toBeEnabled();
     await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeHidden();
 
     // Click the clear button, article must be restored
     await kb.doClickAsideSearchClear();
-    await expect(kb.asideSearchClearButton).not.toHaveRole('button');
+    await expect(kb.asideSearchClearButton).toBeDisabled();
     await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeVisible();
 });

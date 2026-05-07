@@ -121,9 +121,9 @@ export class GlpiKnowbaseAsideController
             search_icon.classList.toggle('ti-x', has_text);
 
             if (has_text) {
-                clear_button.setAttribute('role', 'button');
+                clear_button.removeAttribute('disabled');
             } else {
-                clear_button.removeAttribute('role');
+                clear_button.setAttribute('disabled', '');
             }
 
             debouncedSearch(value);
