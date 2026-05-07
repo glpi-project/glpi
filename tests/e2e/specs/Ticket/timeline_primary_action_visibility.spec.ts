@@ -30,6 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Tests for the UX behavior that hides the global Save button (#right-actions)
+ * whenever a timeline answer form is open, to prevent the user from clicking the wrong
+ * primary action button. The button must be restored once the form is closed.
+ */
+
 import type { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { TicketPage } from '../../pages/TicketPage';
@@ -38,7 +44,7 @@ import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 type OpenForm = (ticket: TicketPage, page: Page) => Promise<void>;
 
-type WarningCase = {
+type FormCase = {
     form: string;
     block: string;
     open: OpenForm;
@@ -46,7 +52,7 @@ type WarningCase = {
 
 // Two cases cover the two distinct opening paths. The JS handler is identical for all
 // form blocks, so testing one per path is sufficient.
-const warning_cases: WarningCase[] = [
+const form_cases: FormCase[] = [
     {
         form: 'followup',
         block: 'new-ITILFollowup-block',
@@ -64,75 +70,37 @@ const warning_cases: WarningCase[] = [
     },
 ];
 
-for (const { form, block, open } of warning_cases) {
-    test(`warning appears and blocks save when ${form} form is open`, async ({ profile, page, api }) => {
+for (const { form, block, open } of form_cases) {
+    test(`Save button is hidden while ${form} form is open and restored on close`, async ({ profile, page, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const ticket_id = await api.createItem('Ticket', {
-            name: `Test warning with open ${form} form`,
+            name: `Test primary action visibility with ${form} form`,
             content: 'test',
             entities_id: getWorkerEntityId(),
         });
 
         const ticket = new TicketPage(page);
         await ticket.goto(ticket_id);
-        await open(ticket, page);
 
-        // Bootstrap Collapse goes: 'collapse' → 'collapsing' (350ms) → 'collapse show'.
-        // The JS condition checks for '.collapse.show', so we must wait until the
-        // animation completes before clicking Save.
+        const right_actions = page.getByRole('button', { name: 'Save', exact: true });
+        await expect(right_actions).toBeVisible();
+
+        await open(ticket, page);
         await expect(page.getByTestId(block)).toHaveClass(/\bshow\b/);
 
-        let navigation_warning_shown = false;
-        page.once('dialog', (dialog) => {
-            navigation_warning_shown = true;
-            void dialog.dismiss();
-        });
+        await expect(right_actions).toBeHidden();
 
-        // Navigate away — opening the form sets hasUnsavedChanges, so common.js beforeunload fires.
-        await page.goto('/front/ticket.php').catch(() => {});
+        // Form blocks can contain nested open collapses (e.g. pending-reasons section).
+        // Closing the outer block must still restore #right-actions.
+        await page.evaluate((id) => {
+            const el = document.createElement('div');
+            el.className = 'collapse show';
+            document.getElementById(id)?.appendChild(el);
+        }, block);
 
-        expect(navigation_warning_shown).toBe(true);
-        await expect(page).toHaveURL(new RegExp(`id=${ticket_id}`));
+        await page.getByTestId(block).getByRole('button', { name: 'Close' }).click();
+        await expect(page.getByTestId(block)).not.toHaveClass(/\bshow\b/);
+
+        await expect(right_actions).toBeVisible();
     });
 }
-
-test('no warning when saving ticket without open timeline form', async ({ profile, page, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const ticket_id = await api.createItem('Ticket', {
-        name: 'Test no warning on save',
-        content: 'test',
-        entities_id: getWorkerEntityId(),
-    });
-
-    const ticket = new TicketPage(page);
-    await ticket.goto(ticket_id);
-
-    const save_response = page.waitForResponse(
-        (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
-    );
-    await ticket.getButton('Save').click();
-    await save_response;
-
-    await expect(page.getByRole('alert')).toContainText('Item successfully updated');
-});
-
-test('no warning when saving ticket in waiting status', async ({ profile, page, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const ticket_id = await api.createItem('Ticket', {
-        name: 'Test no warning on waiting ticket',
-        content: 'test',
-        status: 4,
-        entities_id: getWorkerEntityId(),
-    });
-
-    const ticket = new TicketPage(page);
-    await ticket.goto(ticket_id);
-
-    const save_response = page.waitForResponse(
-        (resp) => resp.url().includes('/front/ticket.form.php') && resp.request().method() === 'POST'
-    );
-    await ticket.getButton('Save').click();
-    await save_response;
-
-    await expect(page.getByRole('alert')).toContainText('Item successfully updated');
-});
