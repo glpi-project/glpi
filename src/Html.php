@@ -121,6 +121,7 @@ class Html
         $mask = match ($format) {
             1 => 'd-m-Y', // DD-MM-YYYY
             2 => 'm-d-Y', // MM-DD-YYYY
+            3 => 'd.m.Y', // DD.MM.YYYY
             default => 'Y-m-d',
         };
 
