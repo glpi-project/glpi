@@ -63,7 +63,7 @@ class GridTest extends DbTestCase
     {
         foreach (array_keys($_SESSION) as $key) {
             if (str_starts_with($key, 'glpidefault_dashboard_')) {
-                unset($_SESSION[$key]);
+                $_SESSION[$key] = '';
             }
         }
         unset($_SESSION['last_dashboards']);
@@ -76,7 +76,7 @@ class GridTest extends DbTestCase
 
         foreach ($CFG_GLPI as $key => $value) {
             if (str_starts_with($key, 'default_dashboard_')) {
-                unset($CFG_GLPI[$key]);
+                $CFG_GLPI[$key] = '';
             }
         }
     }
