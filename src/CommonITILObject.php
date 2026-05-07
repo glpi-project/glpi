@@ -1894,14 +1894,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // If category, entity, or type fields are not updated, the template is not changed.
-        if (empty($input['itilcategories_id']) && empty($input['entities_id']) && empty($input['type'])) {
+        if (
+            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+            && (empty($input['type']) || $this->fields['type'] == $input['type'])
+        ) {
             return $input;
         }
 
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
 
-        if (!$tt) {
+        // If no template or template not found, return input without template fields
+        if (!$tt || !($tt->getID() > 0)) {
             return $input;
         }
 
