@@ -45,6 +45,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\Security\ShareTokenManager;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -565,6 +566,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return true;
         }
 
+        // Check if document belongs to an item with session-based shared access (via share token)
+        if ($this->canViewFileFromSharedItem()) {
+            return true;
+        }
+
         if ($this->canViewFileFromReminder()) {
             return true;
         }
@@ -736,6 +742,45 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         $result = $DB->request($request)->current();
+
+        return $result['cpt'] > 0;
+    }
+
+    /**
+     * Check if this document belongs to an item with session-based shared access (via share token).
+     */
+    private function canViewFileFromSharedItem(): bool
+    {
+        global $DB;
+
+        $shared_access = (new ShareTokenManager())->getAccessibleItems();
+        if ($shared_access === []) {
+            return false;
+        }
+
+        $conditions = [];
+        foreach ($shared_access as $itemtype => $item_ids) {
+            if ($item_ids === []) {
+                continue;
+            }
+            $conditions[] = [
+                'itemtype' => $itemtype,
+                'items_id' => $item_ids,
+            ];
+        }
+
+        if ($conditions === []) {
+            return false;
+        }
+
+        $result = $DB->request([
+            'FROM'  => 'glpi_documents_items',
+            'COUNT' => 'cpt',
+            'WHERE' => [
+                'documents_id' => $this->fields['id'],
+                'OR' => $conditions,
+            ],
+        ])->current();
 
         return $result['cpt'] > 0;
     }

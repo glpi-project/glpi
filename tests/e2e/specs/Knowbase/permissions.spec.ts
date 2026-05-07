@@ -36,6 +36,33 @@ import { Profiles } from "../../utils/Profiles";
 import { getUniqueName } from "../../utils/Random";
 import { getWorkerEntityId, getWorkerEntityName } from "../../utils/WorkerEntities";
 
+test('Can view permissions modal', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const entity_id = getWorkerEntityId();
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB entry for permissions test',
+        entities_id: entity_id,
+        answer: "Test content",
+    });
+    await api.createItem('Entity_KnowbaseItem', {
+        knowbaseitems_id: id,
+        entities_id: entity_id,
+        is_recursive: 0,
+    });
+
+    await kb.goto(id);
+    await expect(page.getByText('Test content')).toBeVisible();
+
+    await kb.doOpenVisibilityModal();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    await expect(modal.getByRole('button', { name: 'Delete' })).toBeVisible();
+});
+
 test('Can delete a permission from the modal', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
