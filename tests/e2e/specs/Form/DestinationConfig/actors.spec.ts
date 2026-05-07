@@ -190,7 +190,6 @@ for (const actor_type of actor_types) {
             }
         });
 
-        // eslint-disable-next-line playwright/expect-expect -- assertion is inside doAssertDropdownValueIsNotAvailable
         test('Cannot select unauthorized actors with "Specific actors"', async () => {
             await form_page.doOpenDestinationAccordionItem('Actors');
 
