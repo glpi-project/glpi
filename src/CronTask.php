@@ -270,7 +270,7 @@ class CronTask extends CommonDBTM
             pcntl_async_signals(true);
             pcntl_signal(SIGTERM, [$this, 'signal']);
         }
-        // Shutdown handler will be used for normal terminations (exit, exception, etc)
+        // Shutdown handler will be used to catch unexpected PHP script execution ending (unrecoverable errors, uncaught errors, unexpected exit, etc).
         register_shutdown_function($this->handleAbnormalTermination(...));
 
         $DB->update(
@@ -743,7 +743,7 @@ class CronTask extends CommonDBTM
         }
         return $this->update([
             'id'      => $this->fields['id'],
-            'lastrun' => 'NULL',
+            'next_run' => 'NULL',
         ]);
     }
 
