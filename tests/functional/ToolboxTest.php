@@ -163,7 +163,7 @@ class ToolboxTest extends DbTestCase
 
         // Test REMOTE_ADDR
         $_SERVER['REMOTE_ADDR'] = '123.123.123.123';
-        $ip = \Toolbox::getRemoteIpAddress();
+        $ip = @\Toolbox::getRemoteIpAddress();
         $this->assertEquals('123.123.123.123', $ip);
 
         // Restore values
