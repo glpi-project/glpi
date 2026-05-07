@@ -35,13 +35,17 @@
 namespace tests\units\Glpi\Inventory;
 
 use Glpi\Inventory\Request;
+use Glpi\Plugin\Hooks;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class RequestTest extends GLPITestCase
 {
-    public function testConstructor()
+    public function testConstructor(): void
     {
         //no mode without content
         $request = new Request();
@@ -74,7 +78,7 @@ class RequestTest extends GLPITestCase
         $this->assertSame('application/json', $request->getContentType());
     }
 
-    public function testProlog()
+    public function testProlog(): void
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
         $request = new Request();
@@ -83,7 +87,10 @@ class RequestTest extends GLPITestCase
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>", $request->getResponse());
     }
 
-    public static function queriesProvider()
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public static function queriesProvider(): array
     {
         return [
             ['query' => 'INVENTORY'], //Request::INVENT_QUERY | Request::INVENT_ACTION
@@ -102,7 +109,7 @@ class RequestTest extends GLPITestCase
      */
     #[AllowMockObjectsWithoutExpectations]
     #[DataProvider('queriesProvider')]
-    public function testSnmpQuery($query)
+    public function testSnmpQuery($query): void
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
 
@@ -121,11 +128,13 @@ class RequestTest extends GLPITestCase
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY/>", $request->getResponse());
     }
 
-    public static function unhandledQueriesProvider()
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public static function unhandledQueriesProvider(): array
     {
         return [
             ['query' => 'register'], //Request::REGISTER_ACTION
-            ['query' => 'configuration'], //Request::CONFIG_ACTION
             ['query' => 'esx'], //Request::ESX_ACTION
             ['query' => 'collect'], //Request::COLLECT_ACTION
             ['query' => 'deploy'], //Request:: DEPLOY_ACTION
@@ -138,7 +147,7 @@ class RequestTest extends GLPITestCase
      * Test unknown queries
      */
     #[DataProvider('unhandledQueriesProvider')]
-    public function testWrongQuery($query)
+    public function testWrongQuery($query): void
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
         $request = new Request();
@@ -148,7 +157,7 @@ class RequestTest extends GLPITestCase
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[Query '$query' is not supported.]]></ERROR></REPLY>", $request->getResponse());
     }
 
-    public function testAddError()
+    public function testAddError(): void
     {
         $request = new Request();
         $request->handleContentType('application/xml');
@@ -156,7 +165,7 @@ class RequestTest extends GLPITestCase
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[Something went wrong.]]></ERROR></REPLY>", $request->getResponse());
     }
 
-    public function testAddResponse()
+    public function testAddResponse(): void
     {
         $request = new Request();
         $request->handleContentType('application/xml');
@@ -219,6 +228,9 @@ class RequestTest extends GLPITestCase
         );
     }
 
+    /**
+     * @return array<int, array{function: string, mime: string}>
+     */
     public static function compressionProvider(): array
     {
         return [
@@ -249,11 +261,9 @@ class RequestTest extends GLPITestCase
      *
      * @param string $function Compression method to use
      * @param string $mime     Mime type to set
-     *
-     * @return void
      */
     #[DataProvider('compressionProvider')]
-    public function testCompression(string $function, string $mime)
+    public function testCompression(string $function, string $mime): void
     {
         $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
         $cdata = $function($data);
@@ -263,5 +273,135 @@ class RequestTest extends GLPITestCase
         $request->handleRequest($cdata);
         $this->assertSame('tested-device', $request->getDeviceID());
         $this->assertSame($function("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>"), $request->getResponse());
+    }
+
+    public function testGetConfigurationFromHook(): void
+    {
+        global $PLUGIN_HOOKS;
+
+        $captured_content = null;
+        $PLUGIN_HOOKS[Hooks::INVENTORY_GET_CONFIGURATION]['tester'] = function (array $params) use (&$captured_content) {
+            $captured_content = $params['content'];
+            $params['response'] = [
+                'configValidityPeriod' => 600,
+                'schedule' => [
+                    [
+                        'task' => 'Deploy',
+                        'remote' => 'https://server/plugins/deploy/',
+                    ],
+                ],
+            ];
+            return $params;
+        };
+
+        try {
+            $data = json_encode([
+                'action' => 'configuration',
+                'deviceid' => 'tested-device',
+                'machineid' => 'machine-1',
+                'task' => 'Deploy[v1.0]',
+            ]);
+
+            $request = new Request();
+            $request->handleContentType('application/json');
+            $request->handleRequest($data);
+
+            $this->assertSame(200, $request->getHttpResponseCode());
+            $this->assertNotNull($captured_content);
+            $this->assertSame('machine-1', $captured_content->machineid);
+
+            $response = json_decode($request->getResponse(), true);
+            $this->assertArrayHasKey('response', $response);
+            $this->assertSame(600, $response['response']['configValidityPeriod']);
+            $this->assertSame('Deploy', $response['response']['schedule'][0]['task']);
+            $this->assertSame('https://server/plugins/deploy/', $response['response']['schedule'][0]['remote']);
+        } finally {
+            unset($PLUGIN_HOOKS[Hooks::INVENTORY_GET_CONFIGURATION]['tester']);
+        }
+    }
+
+    public function testGetConfigurationFromHookErrors(): void
+    {
+        global $PLUGIN_HOOKS;
+
+        $errors = new class implements \Countable, \Stringable {
+            public function count(): int
+            {
+                return 1;
+            }
+
+            public function __toString(): string
+            {
+                return 'Configuration not available';
+            }
+        };
+
+        $PLUGIN_HOOKS[Hooks::INVENTORY_GET_CONFIGURATION]['tester'] = function (array $params) use ($errors) {
+            $params['errors'] = $errors;
+            return $params;
+        };
+
+        try {
+            $data = json_encode([
+                'action' => 'configuration',
+                'deviceid' => 'tested-device',
+            ]);
+
+            $request = new Request();
+            $request->handleContentType('application/json');
+            $request->handleRequest($data);
+
+            $this->assertSame(400, $request->getHttpResponseCode());
+            $response = json_decode($request->getResponse(), true);
+            $this->assertSame('error', $response['status']);
+            $this->assertSame('Configuration not available', $response['message']);
+        } finally {
+            unset($PLUGIN_HOOKS[Hooks::INVENTORY_GET_CONFIGURATION]['tester']);
+        }
+    }
+
+    public function testGetConfigurationFallbackOnEmptyHookResponse(): void
+    {
+        global $PLUGIN_HOOKS;
+
+        $hook_called = false;
+        $PLUGIN_HOOKS[Hooks::INVENTORY_GET_CONFIGURATION]['tester'] = function (array $params) use (&$hook_called) {
+            $hook_called = true;
+            return $params;
+        };
+
+        try {
+            $data = json_encode([
+                'action' => 'configuration',
+                'deviceid' => 'tested-device',
+            ]);
+
+            $request = new Request();
+            $request->handleContentType('application/json');
+            $request->handleRequest($data);
+
+            $this->assertTrue($hook_called);
+            $this->assertSame(501, $request->getHttpResponseCode());
+            $response = json_decode($request->getResponse(), true);
+            $this->assertSame('error', $response['status']);
+            $this->assertSame("Query 'configuration' is not supported.", $response['message']);
+        } finally {
+            unset($PLUGIN_HOOKS[Hooks::INVENTORY_GET_CONFIGURATION]['tester']);
+        }
+    }
+
+    public function testGetConfigurationWithoutHookReturnsUnsupported(): void
+    {
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>configuration</QUERY></REQUEST>";
+
+        $request = new Request();
+        $request->handleContentType('application/xml');
+        $request->handleRequest($data);
+
+        $this->assertSame(501, $request->getHttpResponseCode());
+        $this->assertSame(
+            "<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[Query 'configuration' is not supported.]]></ERROR></REPLY>",
+            $request->getResponse()
+        );
     }
 }

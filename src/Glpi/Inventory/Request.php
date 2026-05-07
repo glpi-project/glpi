@@ -99,8 +99,10 @@ class Request extends AbstractRequest
             case self::NETINV_ACTION:
                 $this->networkInventory($content);
                 break;
-            case self::REGISTER_ACTION:
             case self::CONFIG_ACTION:
+                $this->getConfiguration($content);
+                break;
+            case self::REGISTER_ACTION:
             case self::ESX_ACTION:
             case self::COLLECT_ACTION:
             case self::DEPLOY_ACTION:
@@ -160,8 +162,6 @@ class Request extends AbstractRequest
      */
     public function getParams(mixed $data): void
     {
-        global $CFG_GLPI;
-
         $this->inventory = new Inventory();
         $this->inventory->contact($data);
 
@@ -193,8 +193,6 @@ class Request extends AbstractRequest
      */
     public function prolog(mixed $data): void
     {
-        global $CFG_GLPI;
-
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
@@ -250,6 +248,31 @@ class Request extends AbstractRequest
     {
         $this->network_inventory_mode = Hooks::NETWORK_INVENTORY;
         $this->network($data);
+    }
+
+
+    /**
+     * Handle agent CONFIGURATION request
+     *
+     * @param mixed $content Inventory input following specs
+     *
+     * @return void
+     */
+    public function getConfiguration(mixed $content): void
+    {
+        $hook_response = Plugin::doHookFunction(
+            Hooks::INVENTORY_GET_CONFIGURATION,
+            ['content' => $content]
+        );
+
+        if (isset($hook_response['response']) && count($hook_response['response'])) {
+            $this->addToResponse($hook_response);
+        } elseif (isset($hook_response['errors']) && count($hook_response['errors'])) {
+            $this->addError($hook_response['errors'], 400);
+        } else {
+            //nothing expected happens; this is an error
+            $this->addError("Query '" . $this->query . "' is not supported.", 501);
+        }
     }
 
     /**
