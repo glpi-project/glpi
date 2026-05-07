@@ -63,7 +63,8 @@ final class CommentTitleTagProvider implements TagProviderInterface, TagWithIdVa
     #[Override]
     public function getTagContentForValue(
         string $value,
-        AnswersSet $answers_set
+        AnswersSet $answers_set,
+        bool $encode = true
     ): string {
         $id = (int) $value;
 

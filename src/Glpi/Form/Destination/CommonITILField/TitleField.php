@@ -134,10 +134,11 @@ TWIG;
         }
 
         $tag_manager = new FormTagsManager();
-        $input['name'] = $tag_manager->insertTagsContent(
+        $input['name'] = strip_tags($tag_manager->insertTagsContent(
             $config->getValue(),
-            $answers_set
-        );
+            $answers_set,
+            false
+        ));
 
         return $input;
     }

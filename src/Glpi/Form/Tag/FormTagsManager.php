@@ -94,11 +94,12 @@ final class FormTagsManager
 
     public function insertTagsContent(
         string $content,
-        AnswersSet $answers_set
+        AnswersSet $answers_set,
+        bool $encode = true
     ): string {
         return preg_replace_callback(
             '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
-            function ($match) use ($answers_set) {
+            function ($match) use ($answers_set, $encode) {
                 $tag = $match[0];
 
                 // Extract value.
@@ -123,7 +124,8 @@ final class FormTagsManager
                 $provider = new $provider_match[1]();
                 return $provider->getTagContentForValue(
                     $value_match[1],
-                    $answers_set
+                    $answers_set,
+                    $encode
                 );
             },
             $content
