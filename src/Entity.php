@@ -2992,7 +2992,8 @@ class Entity extends CommonTreeDropdown implements
             if ($strategy_field === null) {
                 $strategy_field = $field;
             }
-            $inherited_strategy = self::getUsedConfig($strategy_field, $this->fields['entities_id']);
+            $get_used_config_default = is_numeric($inherit_parent_value) ? $default_value : '';
+            $inherited_strategy = self::getUsedConfig($strategy_field, $this->fields['entities_id'], '', $get_used_config_default);
             $inherited_value    = $inherited_strategy === 0
                 ? self::getUsedConfig($strategy_field, $this->fields['entities_id'], $field, $default_value)
                 : $inherited_strategy;
