@@ -734,7 +734,8 @@ class Infocom extends CommonDBChild
             $not_deleted_items = array_filter($items, static fn($item) => $item['is_deleted'] === 0);
             $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime']);
             if (
-                NotificationEvent::raiseEvent("alert", new self(), [
+                count($not_deleted_items) > 0
+                && NotificationEvent::raiseEvent("alert", new self(), [
                     'entities_id' => $entity,
                     'items'       => $not_deleted_items,
                 ])
