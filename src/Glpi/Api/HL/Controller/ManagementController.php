@@ -87,9 +87,6 @@ use Supplier;
 use SupplierType;
 use User;
 
-use function Safe\ob_get_clean;
-use function Safe\ob_start;
-
 #[Route(path: '/Management', tags: ['Management'])]
 final class ManagementController extends AbstractController
 {
@@ -1188,12 +1185,7 @@ EOT,
         $document = new Document();
         if ($document->getFromDB($request->getAttribute('id'))) {
             if ($document->canViewFile()) {
-                $symfony_response = $document->getAsResponse();
-                ob_start();
-                $symfony_response->sendContent();
-                $content = ob_get_clean();
-
-                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+                return $this->downloadFile($request, GLPI_DOC_DIR . "/" . $document->fields['filepath'], $document->fields['filename'], $document->fields['mime']);
             }
             return self::getAccessDeniedErrorResponse();
         }

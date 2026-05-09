@@ -60,9 +60,6 @@ use UserEmail;
 use UserTitle;
 use ValidatorSubstitute;
 
-use function Safe\ob_get_clean;
-use function Safe\ob_start;
-
 /**
  * @phpstan-type EmailData = array{id: int, email: string, is_default: int, _links: array{'self': array{href: non-empty-string}}}
  */
@@ -1351,20 +1348,14 @@ EOT,
      * @param string|null $picture_path The path to the picture from the user's "picture" field.
      * @return Response A response with the picture as binary content (or the placeholder user picture if the user has no picture).
      */
-    private function getUserPictureResponse(string $username, ?string $picture_path): Response
+    private function getUserPictureResponse(Request $request, string $username, ?string $picture_path): Response
     {
         if ($picture_path !== null) {
             $picture_path = GLPI_PICTURE_DIR . '/' . $picture_path;
         } else {
-            $picture_path = 'public/pics/picture.png';
+            $picture_path = GLPI_ROOT . '/public/pics/picture.png';
         }
-        $symfony_response = Toolbox::getFileAsResponse($picture_path, $username);
-
-        ob_start();
-        $symfony_response->sendContent();
-        $content = ob_get_clean();
-
-        return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        return $this->downloadFile($request, $picture_path, $username);
     }
 
     #[Route(path: '/User/Me/Picture', methods: ['GET'], scopes: ['user'])]
@@ -1383,7 +1374,7 @@ EOT,
             ],
         ]);
         $data = $it->current();
-        return $this->getUserPictureResponse($data['name'], $data['picture']);
+        return $this->getUserPictureResponse($request, $data['name'], $data['picture']);
     }
 
     #[Route(path: '/User', methods: ['POST'])]
@@ -1426,7 +1417,7 @@ EOT,
             ],
         ]);
         $data = $it->current();
-        return $this->getUserPictureResponse($data['name'], $data['picture']);
+        return $this->getUserPictureResponse($request, $data['name'], $data['picture']);
     }
 
     #[Route(path: '/User/username/{username}/Picture', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
@@ -1445,7 +1436,7 @@ EOT,
             ],
         ]);
         $data = $it->current();
-        return $this->getUserPictureResponse($data['name'], $data['picture']);
+        return $this->getUserPictureResponse($request, $data['name'], $data['picture']);
     }
 
     #[Route(path: '/User/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
