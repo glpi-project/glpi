@@ -384,7 +384,7 @@ abstract class AbstractController
             }
             return new StreamedResponseWrapper($symfony_response);
         } else {
-            $content = $is_head_request ? null : $symfony_response->getContent();
+            $content = $is_head_request ? null : (string) $symfony_response->getContent();
             return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
         }
     }

@@ -5804,12 +5804,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$headers of class Glpi\\\\Http\\\\Response constructor expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$itemtypes of static method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchemaForItemtypes\\(\\) expects non\\-empty\\-array\\<string, class\\-string\\<CommonGLPI\\>\\>, array given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5832,12 +5826,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$headers of class Glpi\\\\Http\\\\Response constructor expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset mixed on array\\|void\\.$#',
@@ -20628,6 +20616,18 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
 	'path' => __DIR__ . '/src/autoload/legacy-autoloader.php',
+];
+$ignoreErrors[] = [
+    'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
+    'identifier' => 'argument.type',
+    'count' => 2,
+    'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
+];
+$ignoreErrors[] = [
+    'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
+    'identifier' => 'argument.type',
+    'count' => 1,
+    'path' => __DIR__ . '/src/Glpi/Api/HL/StreamedResponseWrapper.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

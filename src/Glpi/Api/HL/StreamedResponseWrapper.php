@@ -50,7 +50,7 @@ final class StreamedResponseWrapper extends Response
         parent::__construct(
             $symfony_response->getStatusCode(),
             $symfony_response->headers->all(),
-            $symfony_response->getContent()
+            '', // The content is always returned as 'false' in a StreamedResponse, so we set it to an empty string here.
         );
     }
 
