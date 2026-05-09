@@ -60,6 +60,9 @@ use UserEmail;
 use UserTitle;
 use ValidatorSubstitute;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /**
  * @phpstan-type EmailData = array{id: int, email: string, is_default: int, _links: array{'self': array{href: non-empty-string}}}
  */
@@ -1357,7 +1360,11 @@ EOT,
         }
         $symfony_response = Toolbox::getFileAsResponse($picture_path, $username);
 
-        return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
+        ob_start();
+        $symfony_response->sendContent();
+        $content = ob_get_clean();
+
+        return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
     }
 
     #[Route(path: '/User/Me/Picture', methods: ['GET'], scopes: ['user'])]

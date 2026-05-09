@@ -5810,12 +5810,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$body of class Glpi\\\\Http\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AdministrationController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$itemtypes of static method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchemaForItemtypes\\(\\) expects non\\-empty\\-array\\<string, class\\-string\\<CommonGLPI\\>\\>, array given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -5841,12 +5835,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$headers of class Glpi\\\\Http\\\\Response constructor expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$body of class Glpi\\\\Http\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
