@@ -3727,57 +3727,43 @@ HTML;
 
         $tab[] = [
             'id'                 => '60',
-            'table'              => 'glpi_tickets',
+            'table'              => 'glpi_users',
             'field'              => 'id',
             'name'               => __('Number of tickets as requester'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => 'glpi_tickets_users',
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
-                    ],
-                ],
-            ],
+            'computation'        => '(SELECT COUNT(DISTINCT ' . DBmysql::quoteName('tu.tickets_id') . ') 
+                                      FROM ' . DBmysql::quoteName('glpi_tickets_users') . ' AS ' . DBmysql::quoteName('tu') . ' 
+                                      WHERE ' . DBmysql::quoteName('tu.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . ' 
+                                        AND ' . DBmysql::quoteName('tu.type') . ' = ' . CommonITILActor::REQUESTER . ')',
+            'nosort'             => true,
         ];
 
         $tab[] = [
             'id'                 => '61',
-            'table'              => 'glpi_tickets',
+            'table'              => 'glpi_users',
             'field'              => 'id',
             'name'               => __('Number of written tickets'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'linkfield'          => 'users_id_recipient',
-            ],
+            'computation'        => '(SELECT COUNT(' . DBmysql::quoteName('t.id') . ') 
+                                      FROM ' . DBmysql::quoteName('glpi_tickets') . ' AS ' . DBmysql::quoteName('t') . ' 
+                                      WHERE ' . DBmysql::quoteName('t.users_id_recipient') . ' = ' . DBmysql::quoteName('TABLE.id') . ')',
+            'nosort'             => true,
         ];
 
         $tab[] = [
             'id'                 => '64',
-            'table'              => 'glpi_tickets',
+            'table'              => 'glpi_users',
             'field'              => 'id',
             'name'               => __('Number of assigned tickets'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => 'glpi_tickets_users',
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN],
-                    ],
-                ],
-            ],
+            'computation'        => '(SELECT COUNT(DISTINCT ' . DBmysql::quoteName('tu.tickets_id') . ') 
+                                      FROM ' . DBmysql::quoteName('glpi_tickets_users') . ' AS ' . DBmysql::quoteName('tu') . ' 
+                                      WHERE ' . DBmysql::quoteName('tu.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . ' 
+                                        AND ' . DBmysql::quoteName('tu.type') . ' = ' . CommonITILActor::ASSIGN . ')',
+            'nosort'             => true,
         ];
 
         $tab[] = [
