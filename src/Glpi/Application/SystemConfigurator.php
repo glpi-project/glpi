@@ -149,6 +149,16 @@ final class SystemConfigurator
                         (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?    # a query (optional)
                     $~ixuD',
                 ],
+                // Set to false to skip all private network checks globally (air-gapped / fully-internal deployments).
+                'GLPI_SERVERSIDE_URL_CHECK_PRIVATE_NETWORKS' => true,
+                // FQCNs allowed to fetch URLs on private/reserved IP ranges (e.g. intranet services).
+                // Set to [] in cloud/multi-tenant deployments for strict SSRF isolation.
+                'GLPI_SERVERSIDE_URL_PRIVATE_NETWORK_EXEMPTIONS' => [
+                    \Glpi\System\Status\StatusChecker::class, // CAS server — commonly hosted on internal networks
+                    // \RSSFeed::class,    // uncomment if RSS feeds are served from internal hosts
+                    // \Planning::class,   // uncomment if external calendars are served from internal hosts
+                    // \Webhook::class,    // uncomment if webhook targets are on internal hosts
+                ],
                 'GLPI_DISALLOWED_UPLOADS_PATTERN' => '/\.(php\d*|phar)$/i', // Prevent upload of any PHP file / PHP archive; can be set to an empty value to allow every files
 
                 // Constants related to GLPI Project / GLPI Network external services
