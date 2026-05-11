@@ -33,7 +33,7 @@
 {% macro render_category(category, can_create = false) %}
     {% import _self as macros %}
     <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
-        <div class="d-flex align-items-center mb-2">
+        <div class="d-flex align-items-center mb-2" data-glpi-kb-aside-category-header>
             <button
                 type="button"
                 class="d-flex align-items-center p-0 flex-grow-1 text-start border-0 bg-transparent"
@@ -47,13 +47,15 @@
                 {% endif %}
                 <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
             </button>
-            {% if can_create and category.id > 0 %}
+            {% if can_create %}
+                {% set add_href = category.id > 0 ? path('glpi_knowbaseitem_form_central', {knowbaseitemcategories_id: category.id}) : path('glpi_knowbaseitem_form_central') %}
+                {% set add_title = category.id > 0 ? __('Create an article in this category') : __('Create an uncategorized article') %}
                 <a
-                    href="{{ path('glpi_knowbaseitem_form_central', {knowbaseitemcategories_id: category.id}) }}"
+                    href="{{ add_href }}"
                     class="d-flex align-items-center ms-2 p-1 text-secondary"
                     data-glpi-kb-aside-category-add
                     aria-label="{{ __('Create an article in %s')|format(category.title) }}"
-                    title="{{ __('Create an article in this category') }}"
+                    title="{{ add_title }}"
                 >
                     <i class="ti ti-plus" aria-hidden="true"></i>
                 </a>
@@ -151,14 +153,14 @@
 <div class="card-body" data-glpi-kb-aside-tree>
     <ul class="kb-tree ps-0">
         {# Render root articles in a special "uncategorized" category #}
-        {% if tree.articles|length %}
+        {% if tree.articles|length or can_create %}
             {{ macros.render_category({
                 id: 0,
                 title: __("Uncategorized"),
                 illustration: "",
                 articles: tree.articles,
                 categories: [],
-            }) }}
+            }, can_create) }}
         {% endif %}
 
         {# Render each categories #}

@@ -802,7 +802,7 @@
         transition: opacity 0.15s ease-in-out;
     }
 
-    [data-glpi-kb-aside-category]:hover [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
     [data-glpi-kb-aside-category-add]:focus-visible {
         opacity: 1;
     }
