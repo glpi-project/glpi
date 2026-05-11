@@ -48,6 +48,7 @@ use Psr\Log\LogLevel;
 use RSSFeed;
 use stdClass;
 use Ticket;
+use Toolbox;
 use Webhook;
 
 /* Test for inc/toolbox.class.php */
