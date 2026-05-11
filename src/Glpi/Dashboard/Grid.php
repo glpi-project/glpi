@@ -1629,10 +1629,11 @@ HTML;
         // if default not found, return first dashboard
         if (!$strict) {
             self::loadAllDashboards();
-            $first_dashboard = array_shift(self::$all_dashboards);
-            if (isset($first_dashboard['key'])) {
-                return $first_dashboard['key'];
-            }
+            $dashboards = $menu === 'mini_ticket'
+                ? self::$all_dashboards
+                : array_filter(self::$all_dashboards, static fn($d) => $d['key'] !== 'mini_tickets');
+
+            return array_shift($dashboards)['key'] ?? "";
         }
 
         return "";
