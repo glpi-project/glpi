@@ -49,6 +49,7 @@ use NetworkEquipment;
 use Override;
 use Printer;
 use RuleImportAsset;
+use RuleMatchedLog;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity
@@ -143,6 +144,7 @@ class IsInventoriableCapacity extends AbstractCapacity
 
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
+        CommonGLPI::registerStandardTab($classname, RuleMatchedLog::class, 90);
     }
 
     public function onCapacityEnabled(string $classname, CapacityConfig $config): void
