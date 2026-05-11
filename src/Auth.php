@@ -39,6 +39,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
+use Glpi\Toolbox\IPUtilities;
 use Safe\Exceptions\LdapException;
 
 use function Safe\ini_get;
@@ -1108,7 +1109,7 @@ class Auth extends CommonGLPI
         // Log Event (if possible)
         if (!$DB->isReplica()) {
             // GET THE IP OF THE CLIENT
-            $ip = getenv("HTTP_X_FORWARDED_FOR") ?: getenv("REMOTE_ADDR");
+            $ip = IPUtilities::getClientIP();
 
             if ($this->auth_succeded) {
                 //TRANS: %1$s is the login of the user and %2$s its IP address

@@ -40,6 +40,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\IPUtilities;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
 use Safe\DateTime;
@@ -446,18 +447,7 @@ class Agent extends CommonDBTM
             $input['use_module_collect_data']         = in_array("collect", $metadata['enabled-tasks']) ? 1 : 0;
         }
 
-        $remote_ip = "";
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            //Managing IP through a PROXY
-            $remote_ip = explode(', ', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
-        } elseif (isset($_SERVER['HTTP_X_REAL_IP'])) {
-            //try with X-Real-IP
-            $remote_ip = $_SERVER['HTTP_X_REAL_IP'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            //then get connected IP
-            $remote_ip = $_SERVER['REMOTE_ADDR'];
-        }
-
+        $remote_ip = IPUtilities::getClientIP() ?? '';
         $remote_ip = new IPAddress($remote_ip);
         if ($remote_ip->is_valid()) {
             $input['remote_addr'] = $remote_ip->getTextual();

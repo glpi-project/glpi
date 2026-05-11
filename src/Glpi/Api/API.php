@@ -61,6 +61,7 @@ use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\IPUtilities;
 use Glpi\Toolbox\MarkdownRenderer;
 use GLPIKey;
 use Html;
@@ -189,7 +190,7 @@ abstract class API
         }
 
         // retrieve ip of client
-        $this->iptxt = Toolbox::getRemoteIpAddress();
+        $this->iptxt = IPUtilities::getClientIP() ?? '';
         $this->ipnum = (!str_contains($this->iptxt, ':') ? ip2long($this->iptxt) : '');
 
         // check ip access

@@ -56,6 +56,7 @@ parameters:
         - GLPI_PICTURE_DIR
         - GLPI_PLUGIN_DOC_DIR
         - GLPI_PLUGINS_DIRECTORIES
+        - GLPI_REVERSE_PROXY_HEADERS
         - GLPI_RSS_DIR
         - GLPI_SERVERSIDE_URL_ALLOWLIST
         - GLPI_SESSION_DIR
@@ -66,6 +67,7 @@ parameters:
         - GLPI_TEXT_MAXSIZE
         - GLPI_THEMES_DIR
         - GLPI_TMP_DIR
+        - GLPI_TRUSTED_REVERSE_PROXIES
         - GLPI_UPLOAD_DIR
         - GLPI_USER_AGENT_EXTRA_COMMENTS
         - GLPI_VAR_DIR

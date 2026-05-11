@@ -2722,9 +2722,11 @@ class Toolbox
      * @since 9.2
      *
      * @return string the IP address
+     * @deprecated 12.0.0
      */
     public static function getRemoteIpAddress()
     {
+        self::deprecated('Use Glpi\\Toolbox\\IPUtilities::getClientIP() instead for better handling of reverse proxies.');
         return $_SERVER["REMOTE_ADDR"];
     }
 

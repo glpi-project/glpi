@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Router;
 use Glpi\Http\JSONResponse;
+use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
 use function Safe\inet_pton;
@@ -50,6 +51,8 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             $next($input);
             return;
         }
+
+        $client_ip = IPUtilities::getClientIP();
 
         // Determine client_id from current route or request parameters
         $client = Router::getInstance()->getCurrentClient();
@@ -67,7 +70,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         }
 
         // Check if client is allowed for the remote IP
-        if (!$this->isClientIPAllowed((string) $client_id, $_SERVER['REMOTE_ADDR'])) {
+        if ($client_ip === null || !$this->isClientIPAllowed((string) $client_id, $client_ip)) {
             $input->response = OAuthServerException::accessDenied(
                 'Your IP address is not allowed to use this OAuth client.'
             )->generateHttpResponse(new JSONResponse());

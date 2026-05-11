@@ -150,6 +150,8 @@ final class SystemConfigurator
                     $~ixuD',
                 ],
                 'GLPI_DISALLOWED_UPLOADS_PATTERN' => '/\.(php\d*|phar)$/i', // Prevent upload of any PHP file / PHP archive; can be set to an empty value to allow every files
+                'GLPI_TRUSTED_REVERSE_PROXIES' => [], // List of known/trusted reverse proxies IP addresses (used for correct client IP detection)
+                'GLPI_REVERSE_PROXY_HEADERS' => ['Forwarded', 'X-Forwarded-For'], // Headers to check to get client IP from reverse proxy in order left to right.
 
                 // Constants related to GLPI Project / GLPI Network external services
                 'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
