@@ -45,8 +45,9 @@
      * @param level The current level in the tree
      * @param parent The parent of the current node
      * @param visit_node The function to call on each node
+     * @param post_visit_children The function to call after visiting the children of a node (optional)
      */
-    function walkTree(data, level, parent, visit_node) {
+    function walkTree(data, level, parent, visit_node, post_visit_children) {
         for (let i = 0; i < data.length; i++) {
             const node = data[i];
             if (visit_node(node, level, parent) === false) {
@@ -54,6 +55,9 @@
             }
             if (node.children.length) {
                 walkTree(node.children, level + 1, node, visit_node);
+            }
+            if (post_visit_children) {
+                post_visit_children(node);
             }
         }
     }
@@ -127,6 +131,14 @@
                 for (let i = 0; i < node.parents.length; i++) {
                     node.parents[i].expanded = true;
                 }
+            }
+        }, (node) => {
+            const match = new_value.length === 0 || node.label.toLowerCase().includes(new_value.toLowerCase());
+            if (!match) {
+                const all_children_hidden = node.children.filter((child) => !child.hidden).length === 0;
+                node.hidden = all_children_hidden;
+            } else {
+                node.hidden = false;
             }
         });
         // Reset start index
