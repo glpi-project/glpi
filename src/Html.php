@@ -48,6 +48,7 @@ use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\SecurityConfig;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
@@ -920,7 +921,7 @@ TWIG,
                 'types' => [
                     AssetDefinition::class,
                     CommonDropdown::class, CommonDevice::class, Notification::class, Webhook::class,
-                    SLM::class, Config::class, FieldUnicity::class, CronTask::class, Auth::class,
+                    SLM::class, Config::class, SecurityConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
                     OAuthClient::class, MailCollector::class, Link::class, Plugin::class,
                 ],
                 'icon'  => 'ti ti-settings',
