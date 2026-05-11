@@ -7475,24 +7475,6 @@ $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateIllustrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateIllustrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateIllustrationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateServiceCatalogController.php',
 ];
 $ignoreErrors[] = [
