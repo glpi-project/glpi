@@ -93,3 +93,83 @@ test('clicking the aside add-article link creates a new article linked to the ca
     const category_node = kb.getAsideCategory(category_name);
     await expect(category_node.getByRole('link', { name: article_title })).toBeVisible();
 });
+
+test('clicking the aside add-article link on Uncategorized creates an article without a category', async ({ page, profile }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const article_title = `E2E Uncategorized Article ${unique}`;
+
+    await kb.goto(1);
+
+    const uncategorized = kb.getAsideCategory('Uncategorized');
+    const add_link = uncategorized.getByRole('link', {
+        name: /Create an article in Uncategorized/i,
+    });
+    await expect(add_link).toBeVisible();
+    await add_link.click();
+
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
+    await expect(page).not.toHaveURL(/knowbaseitemcategories_id=/);
+
+    const add_button = page.getByRole('button', { name: 'Add article' });
+    await expect(add_button).not.toHaveAttribute('data-glpi-kb-prefilled-category-id');
+
+    const title = page.getByTestId('subject');
+    await title.click();
+    await title.fill('');
+    await page.keyboard.type(article_title);
+
+    // eslint-disable-next-line playwright/no-raw-locators -- Tiptap editor has no semantic label
+    const editor = page.locator('#kb-tiptap-editor .ProseMirror');
+    await editor.click();
+    await page.keyboard.type('Body created from uncategorized add-link.');
+
+    await add_button.click();
+
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+
+    await kb.goto(1);
+    const uncategorized_after = kb.getAsideCategory('Uncategorized');
+    await expect(uncategorized_after.getByRole('link', { name: article_title })).toBeVisible();
+});
+
+test('hovering a sub-category does not reveal the parent category add-article link', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Hover Parent ${unique}`;
+    const child_name = `E2E Hover Child ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItemCategory', {
+        name: parent_name,
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItemCategory', {
+        name: child_name,
+        knowbaseitemcategories_id: parent_id,
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _categories: [child_id],
+    });
+
+    await kb.goto(1);
+
+    const parent_add = kb.getAsideCategory(parent_name).getByRole('link', {
+        name: new RegExp(`Create an article in ${parent_name}`, 'i'),
+    });
+    const child_add = kb.getAsideCategory(child_name).getByRole('link', {
+        name: new RegExp(`Create an article in ${child_name}`, 'i'),
+    });
+
+    await kb.getAsideCategoryToggle(child_name).hover();
+
+    await expect(child_add).toHaveCSS('opacity', '1');
+    await expect(parent_add).toHaveCSS('opacity', '0');
+});
