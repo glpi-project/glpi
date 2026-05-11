@@ -204,7 +204,7 @@ class Dashboard extends CommonDBTM
 
         if (!$this->load()) {
             return false;
-        };
+        }
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             // User is always allowed to view its own dashboards.
