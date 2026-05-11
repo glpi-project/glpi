@@ -40,12 +40,15 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
+use Glpi\System\Status\StatusChecker;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
+use RSSFeed;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use stdClass;
 use Ticket;
+use Webhook;
 
 /* Test for inc/toolbox.class.php */
 
@@ -1566,19 +1569,19 @@ HTML;
         yield [
             'url'      => 'http://192.168.1.1',
             'expected' => true,
-            'context'  => \Glpi\System\Status\StatusChecker::class, // in default exemption list
+            'context'  => StatusChecker::class, // in default exemption list
         ];
         yield [
             'url'      => 'http://192.168.1.1',
             'expected' => true,
-            'context'  => \Webhook::class, // in default exemption list
+            'context'  => Webhook::class, // in default exemption list
         ];
 
         // Non-exempt context still gets checked.
         yield [
             'url'      => 'http://192.168.1.1',
             'expected' => false,
-            'context'  => \RSSFeed::class, // not in default exemption list
+            'context'  => RSSFeed::class, // not in default exemption list
         ];
 
         // http, https and feed URLs are accepted, unless they contain a user, non-default port, or resolve to a private IP.

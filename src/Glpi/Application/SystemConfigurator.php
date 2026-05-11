@@ -38,6 +38,7 @@ use Glpi\Altcha\AltchaManager;
 use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
+use Glpi\System\Status\StatusChecker;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -154,7 +155,7 @@ final class SystemConfigurator
                 // FQCNs allowed to fetch URLs on private/reserved IP ranges (e.g. intranet services).
                 // Set to [] in cloud/multi-tenant deployments for strict SSRF isolation.
                 'GLPI_SERVERSIDE_URL_PRIVATE_NETWORK_EXEMPTIONS' => [
-                    \Glpi\System\Status\StatusChecker::class, // CAS server — commonly hosted on internal networks
+                    StatusChecker::class, // CAS server — commonly hosted on internal networks
                     \Webhook::class,                          // webhook targets may be hosted on internal networks
                     // \RSSFeed::class,    // uncomment if RSS feeds are served from internal hosts
                     // \Planning::class,   // uncomment if external calendars are served from internal hosts
