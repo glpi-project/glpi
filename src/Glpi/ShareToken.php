@@ -35,6 +35,7 @@
 namespace Glpi;
 
 use CommonDBChild;
+use GLPIKey;
 use Session;
 
 /**
@@ -59,14 +60,26 @@ class ShareToken extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        // Token cannot be manually defined, it must always be a randomly generaed value.
-        $input['token'] = $this->generateToken();
+        // Token cannot be manually defined, it must always be a randomly generated value.
+        $input['token'] = (new GLPIKey())->encrypt($this->generateToken());
 
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID() ?: 0;
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    /**
+     * Decrypt a stored token.
+     *
+     * The DB stores tokens encrypted with the GLPI security key. Callers that need
+     * to expose the clear value (e.g. build a share URL or compare against a token
+     * submitted by a client) must decrypt explicitly through this helper.
+     */
+    public static function decryptToken(string $ciphertext): string
+    {
+        return (string) (new GLPIKey())->decrypt($ciphertext);
     }
 
     /**

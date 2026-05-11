@@ -56,7 +56,13 @@ final class SharingRenderer implements RendererInterface
     public function getParams(KnowbaseItem $item): array
     {
         $id = $item->getID();
-        $tokens = ShareToken::getTokensForItem(KnowbaseItem::class, $id);
+        $tokens = \array_map(
+            static function (array $row): array {
+                $row['token'] = ShareToken::decryptToken((string) $row['token']);
+                return $row;
+            },
+            ShareToken::getTokensForItem(KnowbaseItem::class, $id),
+        );
 
         return [
             'id'       => $id,

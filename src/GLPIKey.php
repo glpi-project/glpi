@@ -71,6 +71,7 @@ class GLPIKey
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
         'glpi_oauthclients.secret',
+        'glpi_sharetokens.token',
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
         'glpi_users.api_token',

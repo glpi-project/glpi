@@ -56,7 +56,13 @@ final class ShareTokenController extends AbstractController
     {
         $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
-        $tokens = ShareToken::getTokensForItem($itemtype, $items_id);
+        $tokens = \array_map(
+            static function (array $row): array {
+                $row['token'] = ShareToken::decryptToken((string) $row['token']);
+                return $row;
+            },
+            ShareToken::getTokensForItem($itemtype, $items_id),
+        );
 
         return new JsonResponse(['tokens' => $tokens]);
     }
@@ -89,9 +95,12 @@ final class ShareTokenController extends AbstractController
             );
         }
 
+        $fields = $token->fields;
+        $fields['token'] = ShareToken::decryptToken((string) $fields['token']);
+
         return new JsonResponse([
             'success' => true,
-            'token'   => $token->fields,
+            'token'   => $fields,
         ]);
     }
 

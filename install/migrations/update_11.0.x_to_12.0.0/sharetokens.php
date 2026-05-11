@@ -46,7 +46,7 @@ if (!$DB->tableExists('glpi_sharetokens')) {
         `itemtype` varchar(255) NOT NULL,
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `name` varchar(255) DEFAULT NULL,
-        `token` varchar(64) NOT NULL,
+        `token` varchar(255) NOT NULL,
         `is_active` tinyint NOT NULL DEFAULT '1',
         `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `date_creation` timestamp NULL DEFAULT NULL,

@@ -72,13 +72,14 @@ final class ShareAccessControllerTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
+        $plain = ShareToken::decryptToken((string) $token->fields['token']);
         $request = Request::create(
-            '/Share/' . $token->fields['token'],
+            '/Share/' . $plain,
             'GET',
         );
 
         $controller = new ShareAccessController();
-        $response = $controller->__invoke($request, $token->fields['token']);
+        $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
     }
@@ -89,13 +90,14 @@ final class ShareAccessControllerTest extends DbTestCase
         $kb = $this->createKnowbaseItem();
         $token = $this->createToken($kb);
 
+        $plain = ShareToken::decryptToken((string) $token->fields['token']);
         $request = Request::create(
-            '/Share/' . $token->fields['token'],
+            '/Share/' . $plain,
             'GET',
         );
 
         $controller = new ShareAccessController();
-        $response = $controller->__invoke($request, $token->fields['token']);
+        $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
     }

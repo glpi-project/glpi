@@ -61,20 +61,30 @@ final class ShareTokenManager
     {
         global $DB;
 
-        $result = $DB->request([
-            'FROM'  => ShareToken::getTable(),
-            'WHERE' => [
-                'token'     => $token,
+        // Tokens are stored encrypted with a non-deterministic cipher (XChaCha20-Poly1305 with
+        // a random nonce), so we cannot match by ciphertext. We pre-filter to active and
+        // non-expired rows, then decrypt and compare in constant time.
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'token', 'itemtype', 'items_id'],
+            'FROM'   => ShareToken::getTable(),
+            'WHERE'  => [
+                ['NOT' => ['token' => null]],
+                ['NOT' => ['token' => '']],
                 'is_active' => 1,
                 'OR' => [
                     ['date_expiration' => null],
                     ['date_expiration' => ['>', QueryFunction::now()]],
                 ],
             ],
-            'LIMIT' => 1,
         ]);
 
-        $row = $result->current();
+        $row = null;
+        foreach ($iterator as $candidate) {
+            if (\hash_equals(ShareToken::decryptToken((string) $candidate['token']), $token)) {
+                $row = $candidate;
+                break;
+            }
+        }
         if ($row === null) {
             return null;
         }
