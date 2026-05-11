@@ -1678,27 +1678,6 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Security policy form
-     *
-     * @since 9.5.0
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
-    public function showFormSecurity()
-    {
-        global $CFG_GLPI;
-
-        if (!Config::canUpdate()) {
-            return false;
-        }
-
-        TemplateRenderer::getInstance()->display('pages/setup/general/security_setup.html.twig', [
-            'canedit' => Session::haveRight(self::$rightname, UPDATE),
-            'config'  => $CFG_GLPI,
-        ]);
-    }
-
-    /**
      * Security form related to management entries.
      *
      * @since 10.0.0

@@ -84,6 +84,7 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
 - `Config::showFormDBSlave()`
+- `Config::showFormSecurity()`
 - `DBConnection::PROPERTY_SLAVE` constant
 - `DBConnection::createDBSlaveConfig()`
 - `DBConnection::createSlaveConnectionFile()`
