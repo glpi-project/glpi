@@ -155,9 +155,9 @@ final class SystemConfigurator
                 // Set to [] in cloud/multi-tenant deployments for strict SSRF isolation.
                 'GLPI_SERVERSIDE_URL_PRIVATE_NETWORK_EXEMPTIONS' => [
                     \Glpi\System\Status\StatusChecker::class, // CAS server — commonly hosted on internal networks
+                    \Webhook::class,                          // webhook targets may be hosted on internal networks
                     // \RSSFeed::class,    // uncomment if RSS feeds are served from internal hosts
                     // \Planning::class,   // uncomment if external calendars are served from internal hosts
-                    // \Webhook::class,    // uncomment if webhook targets are on internal hosts
                 ],
                 'GLPI_DISALLOWED_UPLOADS_PATTERN' => '/\.(php\d*|phar)$/i', // Prevent upload of any PHP file / PHP archive; can be set to an empty value to allow every files
 

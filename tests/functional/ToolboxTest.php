@@ -1562,11 +1562,16 @@ HTML;
             yield ['url' => $private_url, 'expected' => false];
         }
 
-        // Exempt context bypasses the private network check.
+        // Exempt contexts bypass the private network check.
         yield [
             'url'      => 'http://192.168.1.1',
             'expected' => true,
             'context'  => \Glpi\System\Status\StatusChecker::class, // in default exemption list
+        ];
+        yield [
+            'url'      => 'http://192.168.1.1',
+            'expected' => true,
+            'context'  => \Webhook::class, // in default exemption list
         ];
 
         // Non-exempt context still gets checked.
