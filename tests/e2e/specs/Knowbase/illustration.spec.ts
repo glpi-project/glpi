@@ -116,7 +116,7 @@ test('Can pick an illustration when creating an article', async ({ page, profile
     await page.goto('/front/knowbaseitem.form.php', { waitUntil: 'domcontentloaded' });
 
     // Pick a native icon before saving
-    await page.getByTestId('illustration-picker').click();
+    await page.getByRole('button', { name: 'Select an illustration' }).click();
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
     await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
@@ -148,7 +148,7 @@ test('Picking an illustration during creation does not trigger an UpdateIllustra
         }
     });
 
-    await page.getByTestId('illustration-picker').click();
+    await page.getByRole('button', { name: 'Select an illustration' }).click();
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
     await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
