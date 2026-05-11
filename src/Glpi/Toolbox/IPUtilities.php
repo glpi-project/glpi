@@ -60,7 +60,7 @@ class IPUtilities
         if ($ip === null) {
             return false;
         }
-        return in_array($ip, static::getTrustedReverseProxies(), true); // @phpstan-ignore function.impossibleType
+        return in_array($ip, static::getTrustedReverseProxies(), true);
     }
 
     public static function getClientIP(): ?string
