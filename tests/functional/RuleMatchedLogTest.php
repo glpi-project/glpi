@@ -121,15 +121,7 @@ class RuleMatchedLogTest extends DbTestCase
         ));
         $input = $rulematchedlog->fields['input'];
         $this->assertNotEmpty($input);
-        $input_data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
-        $this->assertSame('bar', $input_data['deviceid']);
-        $this->assertSame($date_add, $input_data['last_inventory_update']);
-        $this->assertSame('HP', $input_data['manufacturer']);
-        $this->assertArrayNotHasKey('manufacturers_id', $input_data);
-        $this->assertSame('LaserJet Pro MFP M428fdw', $input_data['model']);
-        $this->assertSame('ABC123456', $input_data['serial']);
-        $this->assertSame('Printer', $input_data['itemtype']);
-        $this->assertSame('0', $input_data['entities_id']);
+$this->assertEquals('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturer":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","osname":"","entities_id":"0"}', $input);
 
         // Update test
         $xmlupdate = '<?xml version="1.0" encoding="UTF-8" ?>
