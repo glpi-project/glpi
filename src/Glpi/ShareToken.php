@@ -37,7 +37,9 @@ namespace Glpi;
 use CommonDBChild;
 use Glpi\Security\ShareTokenManager;
 use GLPIKey;
+use Log;
 use Session;
+use Toolbox;
 
 /**
  * ShareToken - Generic sharing token system.
@@ -53,6 +55,8 @@ class ShareToken extends CommonDBChild
     public static int $checkParentRights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
     public static array $undisclosedFields = ['token'];
+
+    private ?int $was_active_before_purge = null;
 
     public static function getTypeName($nb = 0): string
     {
@@ -72,5 +76,149 @@ class ShareToken extends CommonDBChild
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        if (!empty($this->input['_no_history'])) {
+            return;
+        }
+
+        if ((int) ($this->fields['is_active'] ?? 0) !== 1) {
+            return;
+        }
+
+        if ($this->countOtherActiveTokens() > 0) {
+            return;
+        }
+
+        $this->logSharingTransition(enabled: true);
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        if (!empty($this->input['_no_history'])) {
+            return;
+        }
+
+        if (!in_array('is_active', $this->updates, true)) {
+            return;
+        }
+
+        $new_active = (int) $this->fields['is_active'];
+        $other_active = $this->countOtherActiveTokens();
+
+        if ($new_active === 1 && $other_active === 0) {
+            $this->logSharingTransition(enabled: true);
+        } elseif ($new_active === 0 && $other_active === 0) {
+            $this->logSharingTransition(enabled: false);
+        }
+    }
+
+    public function pre_deleteItem()
+    {
+        $this->was_active_before_purge = (int) ($this->fields['is_active'] ?? 0);
+
+        return parent::pre_deleteItem();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        if (!empty($this->input['_no_history'])) {
+            return;
+        }
+
+        if ($this->was_active_before_purge !== 1) {
+            return;
+        }
+
+        if ($this->countOtherActiveTokens() > 0) {
+            return;
+        }
+
+        $this->logSharingTransition(enabled: false);
+    }
+
+    /**
+     * Get all tokens for a given item.
+     *
+     * @param class-string<\CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function getTokensForItem(string $itemtype, int $items_id): array
+    {
+        global $DB;
+
+        $results = [];
+        $iterator = $DB->request([
+            'FROM'  => self::getTable(),
+            'WHERE' => [
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
+            ],
+            'ORDER' => 'date_creation DESC',
+        ]);
+
+        foreach ($iterator as $row) {
+            $results[] = $row;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Count active tokens for the same parent item, excluding the current one.
+     */
+    private function countOtherActiveTokens(): int
+    {
+        return (int) countElementsInTable(self::getTable(), [
+            'itemtype'  => $this->fields['itemtype'],
+            'items_id'  => $this->fields['items_id'],
+            'is_active' => 1,
+            ['NOT' => ['id' => $this->getID()]],
+        ]);
+    }
+
+    /**
+     * Write a sharing transition entry against the parent item.
+     *
+     * The transition is encoded with HISTORY_ADD_RELATION (enabled) or
+     * HISTORY_DEL_RELATION (disabled), combined with itemtype_link set to
+     * ShareToken::class so HistoryBuilder can pick it up unambiguously.
+     *
+     * Best-effort transition logging: a race window exists when two concurrent
+     * operations both observe countOtherActiveTokens() === 0 before either has
+     * committed. Result: duplicate "Sharing enabled" entries on simultaneous
+     * first-token creations (or symmetric on last-token deletions). Acceptable
+     * for V1; tighten with a transactional SELECT ... FOR UPDATE if needed.
+     */
+    private function logSharingTransition(bool $enabled): void
+    {
+        $parent = $this->getItem(getFromDB: true, getEmpty: false);
+        if (!$parent) {
+            Toolbox::logDebug(sprintf(
+                'ShareToken#%d: parent %s#%d not found, sharing transition log skipped.',
+                $this->getID(),
+                $this->fields['itemtype'] ?? '?',
+                $this->fields['items_id'] ?? 0,
+            ));
+            return;
+        }
+
+        Log::history(
+            $parent->getID(),
+            $parent::class,
+            [0, '', $enabled ? '1' : '0'],
+            self::class,
+            $enabled ? Log::HISTORY_ADD_RELATION : Log::HISTORY_DEL_RELATION,
+        );
     }
 }
