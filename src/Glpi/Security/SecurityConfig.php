@@ -42,8 +42,6 @@ use Session;
 
 final class SecurityConfig extends Config
 {
-    public static string $log_itemtype = Config::class;
-
     public static function getTypeName($nb = 0)
     {
         return _x('setup', 'Security');

@@ -88,7 +88,7 @@ final class SecurityConfigController extends AbstractController
         if ($config_id === null) {
             throw new RuntimeException('Unable to find any configs for context "core"');
         }
-        $config = new Config();
+        $config = new SecurityConfig();
 
         $update_input = $request->request->all();
         $update_input['id'] = $config_id;

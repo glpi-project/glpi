@@ -1497,7 +1497,7 @@ class Config extends CommonDBTM
 
         $glpikey = new GLPIKey();
 
-        $config = new self();
+        $config = new static();
         foreach ($values as $name => $value) {
             // Encrypt config values according to list declared to GLPIKey service
             if (!empty($value) && $glpikey->isConfigSecured($context, $name)) {
