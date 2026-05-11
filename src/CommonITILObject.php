@@ -1906,7 +1906,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $tt = $this->getITILTemplateFromInput($input);
 
         // If no template or template not found, return input without template fields
-        if (!$tt || !($tt->getID() > 0)) {
+        if (!$tt || $tt->getID() <= 0) {
             return $input;
         }
 
