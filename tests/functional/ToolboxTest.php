@@ -48,7 +48,6 @@ use Psr\Log\LogLevel;
 use RSSFeed;
 use stdClass;
 use Ticket;
-use Toolbox;
 use Webhook;
 
 /* Test for inc/toolbox.class.php */
@@ -1639,7 +1638,7 @@ HTML;
     #[DataProvider('safeUrlProvider')]
     public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null, ?string $context = null): void
     {
-        $this->assertSame($expected, Toolbox::isUrlSafe($url, $allowlist ?? GLPI_SERVERSIDE_URL_ALLOWLIST, $context));
+        $this->assertSame($expected, \Toolbox::isUrlSafe($url, $allowlist ?? GLPI_SERVERSIDE_URL_ALLOWLIST, $context));
     }
 
 
