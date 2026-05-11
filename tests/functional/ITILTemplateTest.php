@@ -1064,7 +1064,7 @@ class ITILTemplateTest extends DbTestCase
      */
     public function testTemplateUpdatesWhenCategoryTypeEntityAffected(): void
     {
-        foreach ($this->testTemplateUpdatesWhenCategoryTypeEntityAffectedProvider() as $data) {
+        foreach ($this->templateUpdatesWhenCategoryTypeEntityAffectedProvider() as $data) {
             $add_input_itilobjects = $data['add_input_itilobjects'];
             $update_input_itilobjects = $data['update_input_itilobjects'];
             $expected_itiltemplates_id = $data['expected_itiltemplates_id'];
