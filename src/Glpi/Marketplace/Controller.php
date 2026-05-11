@@ -231,7 +231,29 @@ class Controller extends CommonGLPI
         }
 
         // clean dir in case of update
-        Toolbox::deleteDir(GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}");
+        $plugin_dir = GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}";
+        $opcache_files = [];
+
+        // If OPCache is enabled, we must invalidate the cache for the affected plugin files before deleting them.
+        // Otherwise, a removed file may remain cached between the deletion and extraction steps,
+        // causing the application to execute an outdated version of the code.
+        if (function_exists('opcache_invalidate') && is_dir($plugin_dir)) {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($plugin_dir, \RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+            foreach ($iterator as $file) {
+                if ($file->isFile() && $file->getExtension() === 'php') {
+                    $opcache_files[] = $file->getRealPath();
+                }
+            }
+        }
+
+        Toolbox::deleteDir($plugin_dir);
+
+        // Invalidate the cache for the affected files.
+        foreach ($opcache_files as $cached_file) {
+            opcache_invalidate($cached_file, true);
+        }
 
         $archive = new $driver($dest, $format);
         try {
