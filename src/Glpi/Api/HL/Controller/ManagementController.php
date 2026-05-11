@@ -1185,8 +1185,7 @@ EOT,
         $document = new Document();
         if ($document->getFromDB($request->getAttribute('id'))) {
             if ($document->canViewFile()) {
-                $symfony_response = $document->getAsResponse();
-                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
+                return $this->downloadFile($request, GLPI_DOC_DIR . "/" . $document->fields['filepath'], $document->fields['filename'], $document->fields['mime']);
             }
             return self::getAccessDeniedErrorResponse();
         }
