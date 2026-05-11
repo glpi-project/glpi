@@ -43,6 +43,14 @@
         z-index: var(--glpi-zindex-fixed);
     }
 
+    .main-actions {
+        &.btn-splitted {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+    }
+
     .answer-action {
         &:hover {
             font-weight: bold;

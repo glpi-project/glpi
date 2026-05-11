@@ -51,7 +51,7 @@
             {% set default_action = main_actions_itemtypes|keys|first %}
             {% if item.isNotSolved() and default_action_data != false %}
                {% if main_actions_itemtypes|length > 1 %}
-                  {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "" : "btn-group" %}
+                  {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "btn-splitted" : "btn-group" %}
                   <div class="{{ btn_class }} me-2 main-actions">
                {% else %}
                   {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
@@ -72,7 +72,7 @@
                      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') %}
                         {% for action, timeline_itemtype in main_actions_itemtypes %}
                         {% if loop.index0 > 0 %}
-                              <button class="ms-2 btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              <button class="btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                                  <i class="{{ timeline_itemtype.icon }}"></i>
                                  <span>{{ timeline_itemtype.short_label }}</span>
                               </button>
