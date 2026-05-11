@@ -623,7 +623,7 @@ class ITILTemplateTest extends DbTestCase
         $this->assertEmpty($hidden->getFromDB($hidden_id));
     }
 
-    public function testTemplateUpdatesWhenCategoryTypeEntityAffectedProvider()
+    public function templateUpdatesWhenCategoryTypeEntityAffectedProvider()
     {
         $this->login();
 
