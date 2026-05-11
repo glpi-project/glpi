@@ -63,6 +63,20 @@ test('Can view permissions modal', async ({ page, profile, api }) => {
     await expect(modal.getByRole('button', { name: 'Delete' })).toBeVisible();
 });
 
+test('Empty state is shown when article has no permissions', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.knowbase.createArticle();
+
+    await kb.goto(id);
+    await kb.doOpenVisibilityModal();
+
+    const modal = kb.getVisibilityModal();
+    await expect(modal.getByTestId('empty-permissions')).toBeVisible();
+    await expect(modal.getByTestId('permission-entry')).toHaveCount(0);
+});
+
 test('Can delete a permission from the modal', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
