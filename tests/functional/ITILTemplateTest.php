@@ -74,7 +74,7 @@ class ITILTemplateTest extends DbTestCase
             ])
         );
 
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === Ticket::getType()) {
             $this->assertGreaterThan(
                 0,
                 (int) $mandat->add([
@@ -106,7 +106,7 @@ class ITILTemplateTest extends DbTestCase
 
         $category = new \ITILCategory();
         $cat_field = strtolower($itiltype) . 'templates_id';
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === Ticket::getType()) {
             $cat_field .= '_demand';
         }
         $cat_id = (int) $category->add([
@@ -125,14 +125,14 @@ class ITILTemplateTest extends DbTestCase
             'entities_id'           => 0,
             'locations_id'          => 'NULL',
         ];
-        if ($itiltype === \Ticket::getType()) {
-            $content['type'] = \Ticket::INCIDENT_TYPE;
+        if ($itiltype === Ticket::getType()) {
+            $content['type'] = Ticket::INCIDENT_TYPE;
         }
         $tid = (int) $object->add($content);
         $this->assertSame(0, $tid);
 
         $err_msg = 'Mandatory fields are not filled. Please correct: Title'
-         . ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
+         . ($itiltype === Ticket::getType() ? ', Location' : '') . ', Description';
         $this->hasSessionMessages(ERROR, [$err_msg]);
         $this->assertFalse($object->checkRequiredFieldsFilled());
 
@@ -383,7 +383,7 @@ class ITILTemplateTest extends DbTestCase
 
         $category = new \ITILCategory();
         $cat_field = strtolower($itiltype) . 'templates_id';
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === Ticket::getType()) {
             $cat_field .= '_demand';
         }
         $cat_id = (int) $category->add([
@@ -405,8 +405,8 @@ class ITILTemplateTest extends DbTestCase
                 $tid2,
             ],
         ];
-        if ($itiltype === \Ticket::getType()) {
-            $content['type'] = \Ticket::INCIDENT_TYPE;
+        if ($itiltype === Ticket::getType()) {
+            $content['type'] = Ticket::INCIDENT_TYPE;
         }
 
         $tid = (int) $object->add($content);
@@ -440,7 +440,7 @@ class ITILTemplateTest extends DbTestCase
 
         $field = strtolower($itiltype) . 'templates_id';
         $cat_field = $field;
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === Ticket::getType()) {
             $cat_field .= '_demand';
         }
         $cat_id = (int) $category->add([
@@ -449,7 +449,7 @@ class ITILTemplateTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $cat_id);
 
-        $type = ($itiltype == 'Ticket' ? \Ticket::DEMAND_TYPE : null);
+        $type = ($itiltype == 'Ticket' ? Ticket::DEMAND_TYPE : null);
         $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id);
         $this->assertFalse(
             $tt->isNewItem(),
@@ -669,7 +669,7 @@ class ITILTemplateTest extends DbTestCase
             ],
             [
                 'name'                        => 'No template category',
-            ]
+            ],
         ]);
 
         $child_entity = $this->createItem(
@@ -784,7 +784,7 @@ class ITILTemplateTest extends DbTestCase
             ],
         ];
 
-        // Update the type of the ticket to incident, and check that template C is used 
+        // Update the type of the ticket to incident, and check that template C is used
         yield [
             'add_input_itilobjects' => [
                 Ticket::class => [
@@ -1069,11 +1069,11 @@ class ITILTemplateTest extends DbTestCase
             $update_input_itilobjects = $data['update_input_itilobjects'];
             $expected_itiltemplates_id = $data['expected_itiltemplates_id'];
 
-            $ticket = $this->createItem(\Ticket::class, $add_input_itilobjects[Ticket::class] ?? []);
+            $ticket = $this->createItem(Ticket::class, $add_input_itilobjects[Ticket::class] ?? []);
             $change = $this->createItem(\Change::class, $add_input_itilobjects[\Change::class] ?? []);
             $problem = $this->createItem(\Problem::class, $add_input_itilobjects[\Problem::class] ?? []);
 
-            $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), $update_input_itilobjects[Ticket::class] ?? []);
+            $ticket = $this->updateItem(Ticket::class, $ticket->getID(), $update_input_itilobjects[Ticket::class] ?? []);
             $change = $this->updateItem(\Change::class, $change->getID(), $update_input_itilobjects[\Change::class] ?? []);
             $problem = $this->updateItem(\Problem::class, $problem->getID(), $update_input_itilobjects[\Problem::class] ?? []);
 
