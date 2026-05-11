@@ -237,7 +237,7 @@ export class KnowbaseItemPage extends GlpiPage
     public async doOpenVisibilityModal(): Promise<void>
     {
         await this.page.getByTitle('More actions').click();
-        await this.getButton('Permissions').click();
+        await this.getButton('Permissions and sharing').click();
     }
 
     public getVisibilityModal(): Locator
@@ -329,6 +329,32 @@ export class KnowbaseItemPage extends GlpiPage
     public async doClickAsideSearchClear(): Promise<void>
     {
         await this.asideSearchClearButton.click();
+    }
+
+    public async doOpenSharingTab(): Promise<Locator>
+    {
+        await this.page.getByTitle('More actions').click();
+        await this.getButton('Permissions and sharing').click();
+
+        const modal = this.page.getByRole('dialog');
+        await expect(modal).toBeVisible();
+
+        await modal.getByRole('tab', { name: 'Sharing' }).click();
+        return modal;
+    }
+
+    public async doCreateSharingLink(modal: Locator, name?: string): Promise<void>
+    {
+        await modal.getByRole('button', { name: 'Create a sharing link' }).click();
+
+        const name_input = modal.getByPlaceholder('Link name (optional)');
+        await expect(name_input).toBeVisible();
+
+        if (name) {
+            await name_input.fill(name);
+        }
+
+        await name_input.press('Enter');
     }
 }
 

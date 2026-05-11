@@ -126,7 +126,7 @@
                                         'width': '100%',
                                     }]) %}
                                 </div>
-                                <div class="flex-grow-30 d-none visibility-item-col" id="visibility{{ rand }}" style="min-width: 0; flex-basis: 0;"></div>
+                                <div class="flex-grow-1 d-none visibility-item-col" id="visibility{{ rand }}" style="min-width: 0; flex-basis: 0;"></div>
                             </div>
                         </div>
                         <div class="col-auto d-none" id="visibility-recursive{{ rand }}" data-testid="child-entities-label">
@@ -165,7 +165,7 @@
             <script type="module">
                 (async () => {
                     const { GlpiKnowbasePermissionsFormController } = await import(
-                        "{{ js_path('js/modules/Knowbase/PermissionsFormController.js') }}"
+                        "/js/modules/Knowbase/PermissionsFormController.js"
                     );
                     new GlpiKnowbasePermissionsFormController(
                         document.getElementById('kb-permissions-form-{{ rand|e('js') }}'),

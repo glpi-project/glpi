@@ -52,6 +52,8 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
+use Glpi\Security\ShareTokenManager;
+use Glpi\ShareableInterface;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
@@ -2993,6 +2995,15 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
         $this->right = null;
+
+        // Share token session-based access (read-only)
+        if (
+            $right === READ
+            && $this instanceof ShareableInterface
+            && (new ShareTokenManager())->hasSessionAccess(static::class, $ID)
+        ) {
+            return true;
+        }
 
         switch ($right) {
             case READ:

@@ -52,6 +52,8 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\ShareableInterface;
+use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 
 use function Safe\parse_url;
@@ -63,7 +65,7 @@ use function Safe\preg_replace_callback;
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface
+class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface, ShareableInterface
 {
     /** @use Clonable<static> */
     use Clonable;
@@ -540,6 +542,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 KnowbaseItem_Profile::class,
                 KnowbaseItem_User::class,
                 KnowbaseItemTranslation::class,
+                ShareToken::class,
             ]
         );
 
@@ -1243,17 +1246,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
-            $label =  __('Permissions');
-            $icon = "ti ti-lock";
+            $label = __('Permissions and sharing');
+            $icon  = "ti ti-eye";
             $actions[] = new EditorAction(
                 label: $label,
                 icon: $icon,
                 type: EditorActionType::OPEN_MODAL,
                 params: [
-                    'id' => $this->fields['id'],
-                    'key' => 'SidePanel/permissions',
+                    'id'    => $this->fields['id'],
+                    'key'   => 'SidePanel/targets',
                     'title' => $label,
-                    'icon' => $icon,
+                    'icon'  => $icon,
                 ],
             );
             $actions[] = new EditorAction(
@@ -1314,6 +1317,29 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         return $actions;
+    }
+
+    public function getItemUrl(): string
+    {
+        return self::getFormURLWithID($this->getID());
+    }
+
+    public function canManageSharing(): bool
+    {
+        return $this->can($this->getID(), UPDATE);
+    }
+
+    public function getShareableViewTemplate(): string
+    {
+        return 'pages/tools/kb/shared_article.html.twig';
+    }
+
+    public function getShareableViewParams(): array
+    {
+        return [
+            'title'   => $this->fields['name'],
+            'content' => $this->fields['answer'],
+        ];
     }
 
     public function getLastUpdateInfo(): LastUpdateInfo

@@ -10499,4 +10499,29 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
   KEY `item` (`itemtype`, `items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_sharetokens
+
+DROP TABLE IF EXISTS `glpi_sharetokens`;
+CREATE TABLE `glpi_sharetokens` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(255) NOT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `token` varchar(64) NOT NULL,
+  `is_active` tinyint NOT NULL DEFAULT '1',
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_expiration` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `item` (`itemtype`, `items_id`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `users_id` (`users_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_expiration` (`date_expiration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;
