@@ -78,6 +78,7 @@ use function Safe\copy;
 use function Safe\curl_exec;
 use function Safe\curl_getinfo;
 use function Safe\curl_init;
+use function Safe\dns_get_record;
 use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\file_get_contents;
@@ -1347,13 +1348,14 @@ class Toolbox
         }
 
         // Only meaningful for network schemes; file:// and others skip this check.
-        $scheme = strtolower(parse_url($url, PHP_URL_SCHEME) ?? '');
+        $raw_scheme = parse_url($url, PHP_URL_SCHEME);
+        $scheme = strtolower(\is_string($raw_scheme) ? $raw_scheme : '');
         if (!in_array($scheme, ['http', 'https', 'feed'], true)) {
             return true;
         }
 
         $host = parse_url($url, PHP_URL_HOST);
-        if (empty($host)) {
+        if (!\is_string($host) || $host === '') {
             return false;
         }
 
@@ -1362,9 +1364,14 @@ class Toolbox
         if (filter_var($host, FILTER_VALIDATE_IP)) {
             $ips = [$host];
         } else {
-            $records = dns_get_record($host, DNS_A | DNS_AAAA);
+            try {
+                $records = dns_get_record($host, DNS_A | DNS_AAAA);
+            } catch (\Safe\Exceptions\NetworkException) {
+                // DNS failure: fail-open. The subsequent HTTP request will fail naturally.
+                return true;
+            }
             if (empty($records)) {
-                // Unresolvable or DNS failure: fail-open.
+                // Unresolvable: fail-open.
                 // The subsequent HTTP request will fail naturally.
                 return true;
             }
