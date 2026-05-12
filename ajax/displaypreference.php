@@ -39,7 +39,7 @@ Html::header_nocache();
 
 $setupdisplay = new DisplayPreference();
 
-DisplayPreference::checkAjaxAuthorization($_POST);
+DisplayPreference::checkCrudItem($_POST);
 
 if (isset($_POST["activate"])) {
     $setupdisplay->activatePerso($_POST);

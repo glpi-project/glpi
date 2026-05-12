@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DisplayPreference extends CommonDBTM
 {
@@ -70,7 +71,7 @@ class DisplayPreference extends CommonDBTM
         $item = new self();
         $item->fields['users_id'] = isset($input['users_id']) ? (int) $input['users_id'] : (int) Session::getLoginUserID();
         if (!$item->canCrudItem()) {
-            throw new AccessDeniedHttpException(...);
+            throw new AccessDeniedHttpException();
         }
     }
 

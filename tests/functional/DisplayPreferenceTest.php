@@ -66,7 +66,7 @@ class DisplayPreferenceTest extends DbTestCase
      */
     private function checkAjaxAuthorization(int $target_users_id): void
     {
-        DisplayPreference::checkAjaxAuthorization(['users_id' => $target_users_id]);
+        DisplayPreference::checkCrudItem(['users_id' => $target_users_id]);
     }
 
     /**
