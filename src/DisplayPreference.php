@@ -67,10 +67,10 @@ class DisplayPreference extends CommonDBTM
      */
     public static function checkAjaxAuthorization(array $input): void
     {
-        if (isset($input['users_id']) && (int) $input['users_id'] !== (int) Session::getLoginUserID()) {
+        $item = new self();
+        $item->fields['users_id'] = isset($input['users_id']) ? (int) $input['users_id'] : (int) Session::getLoginUserID();
+        if (!$item->canCrudItem()) {
             Session::checkRight(self::$rightname, self::GENERAL);
-        } else {
-            Session::checkRightsOr(self::$rightname, [self::PERSONAL, self::GENERAL]);
         }
     }
 
