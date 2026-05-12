@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use DisplayPreference;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Tests of displaypreference.php.
