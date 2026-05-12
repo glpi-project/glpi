@@ -29,6 +29,8 @@
     const event = props.event_info.event;
     const type_color = event.extendedProps.typeColor;
     const time_hour = props.event_info.timeText.split(':')[0].padStart(2, '0');
+    const icon_class = event.extendedProps?.icon || '';
+    const icon_alt = event.extendedProps?.icon_alt || '';
     let popover = null;
 
     onMounted(() => {
@@ -44,11 +46,6 @@
                 return event.extendedProps.tooltip;
             }
         });
-
-        if (event.extendedProps.icon) {
-            const icon_alt = event.extendedProps?.icon_alt || '';
-            event_content.value.querySelector('.fc-title .fc-list-item-title').append(`&nbsp;<i class='${_.escape(event.extendedProps.icon)}' title='${_.escape(icon_alt)}'></i>`);
-        }
     });
 
     onUnmounted(() => {
@@ -77,7 +74,10 @@
 <template>
     <div ref="event_content" class="fc-content px-1 overflow-hidden fw-bold">
         <span class="fc-time me-1 text-nowrap">{{ time_hour }}</span>
-        <span class="fc-title">{{ event_info.event.title }}</span>
+        <span class="fc-title">
+            {{ event_info.event.title }}
+            <i v-if="icon_class" :class="icon_class" :title="icon_alt" :aria-label="icon_alt" class="ms-1"></i>
+        </span>
     </div>
     <span class="event_type"></span>
     <div v-if="show_content" class="content" v-html="event.extendedProps.content"></div>
