@@ -7,6 +7,7 @@
     import FullCalendar from "@fullcalendar/vue3";
     import {useTemplateRef, watch, ref} from 'vue';
     import allLocales from "@fullcalendar/core/locales-all";
+    import useScheduler from "./useScheduler.js";
 
     const props = defineProps({
         calendar_options: {
@@ -21,6 +22,7 @@
 
     const emit = defineEmits(['currentViewDataChanged']);
 
+    const { defaultHeaderToolbar } = useScheduler();
     const calendar = useTemplateRef('calendar');
 
     const document_lang = document.documentElement.lang;
@@ -40,6 +42,7 @@
             hour: 'numeric',
             minute: '2-digit',
         },
+        headerToolbar: defaultHeaderToolbar,
         editable: true,
         nowIndicator: true,
         schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",

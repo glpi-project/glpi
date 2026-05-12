@@ -14,6 +14,7 @@
     import BaseFullCalendar from "../FullCalendar/BaseFullCalendar.vue";
     import {onMounted, ref, useTemplateRef, watch} from "vue";
     import ReservationEvent from "./ReservationEvent.vue";
+    import useScheduler from "../FullCalendar/useScheduler.js";
 
     const props = defineProps({
         id: {
@@ -37,6 +38,7 @@
         },
     });
 
+    const { getListFullView, getResourceWeekView } = useScheduler();
     const id = Number(props.id);
     const default_date = new Date(props.default_date);
     const calendar = useTemplateRef('calendar');
@@ -56,42 +58,9 @@
             bootstrapPlugin,
         ],
         initialDate: props.default_date,
-        headerToolbar: {
-            start:   'prev,next today',
-            center: 'title',
-            end:  'dayGridMonth,timeGridWeek,timeGridDay,listFull,resourceWeek'
-        },
         views: {
-            listFull: {
-                type: 'list',
-                titleFormat: () => {
-                    return '';
-                },
-                visibleRange: (currentDate) => {
-                    const current_year = currentDate.getFullYear();
-                    let offset = 1;
-                    if (id > 0) {
-                        offset = 10;
-                    }
-                    return {
-                        start: (new Date(currentDate.getTime())).setFullYear(current_year - offset),
-                        end: (new Date(currentDate.getTime())).setFullYear(current_year + offset)
-                    };
-                }
-            },
-            resourceWeek: {
-                type: 'resourceTimeline',
-                buttonText: __('Timeline Week'),
-                duration: { weeks: 1 },
-                groupByDateAndResource: true,
-                slotLabelFormat: [
-                    { week: 'short' },
-                    { weekday: 'short', day: 'numeric', month: 'numeric', omitCommas: true },
-                    (date) => {
-                        return date.date.hour;
-                    }
-                ]
-            },
+            listFull: getListFullView(id > 0 ? 10 : 1),
+            resourceWeek: getResourceWeekView(),
         },
         events: {
             url:  `${CFG_GLPI.root_doc}/ajax/reservations.php`,
