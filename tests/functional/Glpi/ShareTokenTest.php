@@ -118,6 +118,35 @@ final class ShareTokenTest extends DbTestCase
         $this->assertNotSame($plain2, $token2->fields['token']);
     }
 
+    public function testTokenHintIsStoredAndDeterministic(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+
+        $token = $this->createToken($kb);
+        $plain = ShareToken::decryptToken((string) $token->fields['token']);
+
+        $hint = $token->fields['token_hint'];
+        $this->assertIsString($hint);
+        $this->assertSame(16, strlen($hint));
+        $this->assertTrue(ctype_xdigit($hint));
+        $this->assertSame(ShareToken::computeTokenHint($plain), $hint);
+    }
+
+    public function testTokenHintIsUniquePerPlainValue(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+
+        $token1 = $this->createToken($kb);
+        $token2 = $this->createToken($kb);
+
+        $this->assertNotSame(
+            $token1->fields['token_hint'],
+            $token2->fields['token_hint'],
+        );
+    }
+
     public function testGetTokensForItem(): void
     {
         $kb = $this->createKnowbaseItem();
@@ -164,6 +193,70 @@ final class ShareTokenTest extends DbTestCase
         $token_manager->grantSessionAccess($this->getPlainToken($token));
 
         $this->assertTrue($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
+    }
+
+    public function testGrantSessionAccessStoresIdNotPlaintext(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $token_manager = new ShareTokenManager();
+        $plain = $this->getPlainToken($token);
+        $token_manager->grantSessionAccess($plain);
+
+        $session_entry = $_SESSION[ShareTokenManager::SESSION_KEY][KnowbaseItem::class][$kb->getID()] ?? null;
+        $this->assertIsArray($session_entry);
+        $this->assertArrayHasKey('sharetoken_id', $session_entry);
+        $this->assertSame($token->getID(), $session_entry['sharetoken_id']);
+        $this->assertArrayHasKey('expires_at', $session_entry);
+
+        // The plain token must not leak into the session payload.
+        $this->assertArrayNotHasKey('token', $session_entry);
+        $this->assertNotContains($plain, $session_entry);
+    }
+
+    public function testHasSessionAccessRefreshesByIdWithoutDecryption(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $token_manager = new ShareTokenManager();
+
+        $_SESSION['glpi_currenttime'] = '2026-05-05 12:00:00';
+        $token_manager->grantSessionAccess($this->getPlainToken($token));
+
+        // Past the 5 min TTL: hasSessionAccess must revalidate by id lookup.
+        $_SESSION['glpi_currenttime'] = '2026-05-05 12:05:01';
+        $this->assertTrue($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
+
+        // Session payload still does not contain the plain token after refresh.
+        $session_entry = $_SESSION[ShareTokenManager::SESSION_KEY][KnowbaseItem::class][$kb->getID()];
+        $this->assertArrayHasKey('sharetoken_id', $session_entry);
+        $this->assertArrayNotHasKey('token', $session_entry);
+    }
+
+    public function testHasSessionAccessRevokesWhenTokenIsDeletedBetweenRefreshes(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $token_manager = new ShareTokenManager();
+
+        $_SESSION['glpi_currenttime'] = '2026-05-05 12:00:00';
+        $token_manager->grantSessionAccess($this->getPlainToken($token));
+
+        // Hard-delete the token row, then expire the cached access.
+        $token->delete(['id' => $token->getID()], true);
+
+        $_SESSION['glpi_currenttime'] = '2026-05-05 12:05:01';
+        $this->assertFalse($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
+        $this->assertArrayNotHasKey(
+            $kb->getID(),
+            $_SESSION[ShareTokenManager::SESSION_KEY][KnowbaseItem::class] ?? [],
+        );
     }
 
     public function testGrantSessionAccessRejectsCiphertextAsToken(): void

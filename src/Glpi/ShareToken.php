@@ -61,7 +61,9 @@ class ShareToken extends CommonDBChild
     public function prepareInputForAdd($input)
     {
         // Token cannot be manually defined, it must always be a randomly generated value.
-        $input['token'] = (new GLPIKey())->encrypt($this->generateToken());
+        $plain = $this->generateToken();
+        $input['token']      = (new GLPIKey())->encrypt($plain);
+        $input['token_hint'] = self::computeTokenHint($plain);
 
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID() ?: 0;
@@ -80,6 +82,19 @@ class ShareToken extends CommonDBChild
     public static function decryptToken(string $ciphertext): string
     {
         return (string) (new GLPIKey())->decrypt($ciphertext);
+    }
+
+    /**
+     * Compute the deterministic, non-secret lookup hint for a plain token.
+     *
+     * Truncated SHA-256 (16 hex chars). The plain token has 256 bits of entropy
+     * from `random_bytes(32)`, so truncation does not enable preimage attacks;
+     * the hint exists only to filter the DB before the constant-time
+     * decrypt-and-compare done by `ShareTokenManager`.
+     */
+    public static function computeTokenHint(string $plain_token): string
+    {
+        return substr(hash('sha256', $plain_token), 0, 16);
     }
 
     /**

@@ -52,65 +52,19 @@ final class ShareTokenManager
     /**
      * Session key used to store shared access grants.
      */
-    private const SESSION_KEY = 'glpi_shared_access';
+    public const SESSION_KEY = 'glpi_shared_access';
 
     /**
      * Grant read access to the item shared by the given token.
      */
     public function grantSessionAccess(string $token): (CommonDBTM&ShareableInterface)|null
     {
-        global $DB;
-
-        // Tokens are stored encrypted with a non-deterministic cipher (XChaCha20-Poly1305 with
-        // a random nonce), so we cannot match by ciphertext. We pre-filter to active and
-        // non-expired rows, then decrypt and compare in constant time.
-        $iterator = $DB->request([
-            'SELECT' => ['id', 'token', 'itemtype', 'items_id'],
-            'FROM'   => ShareToken::getTable(),
-            'WHERE'  => [
-                ['NOT' => ['token' => null]],
-                ['NOT' => ['token' => '']],
-                'is_active' => 1,
-                'OR' => [
-                    ['date_expiration' => null],
-                    ['date_expiration' => ['>', QueryFunction::now()]],
-                ],
-            ],
-        ]);
-
-        $row = null;
-        foreach ($iterator as $candidate) {
-            if (\hash_equals(ShareToken::decryptToken((string) $candidate['token']), $token)) {
-                $row = $candidate;
-                break;
-            }
-        }
+        $row = $this->findValidTokenRowByPlaintext($token);
         if ($row === null) {
             return null;
         }
 
-        $item = \getItemForItemtype($row['itemtype']);
-
-        if (
-            !($item instanceof ShareableInterface)
-            || !($item instanceof CommonDBTM)
-            || !$item->getFromDB((int) $row['items_id'])
-            || (
-                $item->maybeDeleted()
-                && (!$item->useDeletedToLockIfDynamic() || !$item->isDynamic())
-                && $item->isDeleted()
-            )
-        ) {
-            return null;
-        }
-
-        // allow access for the next 5 minutes
-        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
-            'token'      => $token,
-            'expires_at' => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
-        ];
-
-        return $item;
+        return $this->openSessionAccessFromRow($row);
     }
 
     /**
@@ -126,8 +80,8 @@ final class ShareTokenManager
         $session_data = $_SESSION[self::SESSION_KEY][$itemtype][$items_id] ?? null;
         if (
             !\is_array($session_data)
-            || !\array_key_exists('token', $session_data)
-            || !\is_string($session_data['token'])
+            || !\array_key_exists('sharetoken_id', $session_data)
+            || !\is_int($session_data['sharetoken_id'])
             || !\array_key_exists('expires_at', $session_data)
             || !\is_string($session_data['expires_at'])
         ) {
@@ -138,10 +92,9 @@ final class ShareTokenManager
             return true;
         }
 
-        $access_granted_again = $this->grantSessionAccess($session_data['token']) !== null;
-
-        if (!$access_granted_again) {
-            // Revoke access
+        // TTL expired: revalidate by indexed id lookup. No decrypt needed.
+        $row = $this->findValidTokenRowById($session_data['sharetoken_id']);
+        if ($row === null || $this->openSessionAccessFromRow($row) === null) {
             unset($_SESSION[self::SESSION_KEY][$itemtype][$items_id]);
             return false;
         }
@@ -162,8 +115,9 @@ final class ShareTokenManager
         $validated = [];
 
         foreach ($items as $itemtype => $ids) {
-            foreach ($ids as $items_id => $token) {
-                if ($this->hasSessionAccess($itemtype, (int) $items_id)) {
+            foreach (\array_keys($ids) as $items_id) {
+                $items_id = (int) $items_id;
+                if ($this->hasSessionAccess($itemtype, $items_id)) {
                     if (!\array_key_exists($itemtype, $validated)) {
                         $validated[$itemtype] = [];
                     }
@@ -173,5 +127,97 @@ final class ShareTokenManager
         }
 
         return $validated;
+    }
+
+    /**
+     * Find an active, non-expired token row matching the given plaintext.
+     *
+     * Lookup is filtered by `token_hint` (deterministic SHA-256 truncation of
+     * the plaintext) so the DB returns at most a handful of candidates — usually
+     * one. Each candidate is decrypted and compared in constant time.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function findValidTokenRowByPlaintext(string $plain): ?array
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'token', 'itemtype', 'items_id'],
+            'FROM'   => ShareToken::getTable(),
+            'WHERE'  => [
+                'token_hint' => ShareToken::computeTokenHint($plain),
+                'is_active'  => 1,
+                'OR' => [
+                    ['date_expiration' => null],
+                    ['date_expiration' => ['>', QueryFunction::now()]],
+                ],
+            ],
+        ]);
+
+        foreach ($iterator as $candidate) {
+            if (\hash_equals(ShareToken::decryptToken((string) $candidate['token']), $plain)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Find an active, non-expired token row by its primary key.
+     *
+     * Used on session refresh to avoid keeping the plaintext token in $_SESSION.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function findValidTokenRowById(int $id): ?array
+    {
+        global $DB;
+
+        return $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
+            'FROM'   => ShareToken::getTable(),
+            'WHERE'  => [
+                'id'        => $id,
+                'is_active' => 1,
+                'OR' => [
+                    ['date_expiration' => null],
+                    ['date_expiration' => ['>', QueryFunction::now()]],
+                ],
+            ],
+            'LIMIT' => 1,
+        ])->current();
+    }
+
+    /**
+     * Validate the underlying item and record the access in $_SESSION.
+     *
+     * @param array<string, mixed> $row Token row containing at least `id`, `itemtype`, `items_id`.
+     */
+    private function openSessionAccessFromRow(array $row): (CommonDBTM&ShareableInterface)|null
+    {
+        $item = \getItemForItemtype($row['itemtype']);
+
+        if (
+            !($item instanceof ShareableInterface)
+            || !($item instanceof CommonDBTM)
+            || !$item->getFromDB((int) $row['items_id'])
+            || (
+                $item->maybeDeleted()
+                && (!$item->useDeletedToLockIfDynamic() || !$item->isDynamic())
+                && $item->isDeleted()
+            )
+        ) {
+            return null;
+        }
+
+        // allow access for the next 5 minutes
+        $_SESSION[self::SESSION_KEY][$item::class][$item->getID()] = [
+            'sharetoken_id' => (int) $row['id'],
+            'expires_at'    => \date('Y-m-d H:i:s', strtotime('+5 minutes', strtotime($_SESSION['glpi_currenttime']))),
+        ];
+
+        return $item;
     }
 }
