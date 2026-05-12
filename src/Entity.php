@@ -2980,6 +2980,8 @@ class Entity extends CommonTreeDropdown implements
      * @param string $field The field name
      * @param string|null $strategy_field The field name of the strategy
      * @param mixed $default_value
+     * @param mixed $inherit_parent_value The sentinel value stored in the field when it inherits from its parent.
+     *                                    Use CONFIG_PARENT (-2) for numeric fields, or null for text/email/URL fields.
      * @return string|null The badge HTML or null if the field is not inherited
      */
     public function getInheritedValueBadge(string $field, ?string $strategy_field = null, mixed $default_value = self::CONFIG_PARENT, mixed $inherit_parent_value = self::CONFIG_PARENT): ?string
@@ -2992,6 +2994,12 @@ class Entity extends CommonTreeDropdown implements
             if ($strategy_field === null) {
                 $strategy_field = $field;
             }
+            // getUsedConfig() uses different logic to detect "inherit" depending on whether $default_value
+            // is numeric (checks $ref == CONFIG_PARENT) or non-numeric (checks !$ref).
+            // For text/null fields ($inherit_parent_value === null), we must pass a non-numeric default ('')
+            // so that null values in ancestor entities are also recognized as "keep walking up the tree".
+            // Without this, a direct parent storing null would stop the traversal prematurely and no
+            // resolved value would ever be found from grandparents or higher ancestors.
             $get_used_config_default = is_numeric($inherit_parent_value) ? $default_value : '';
             $inherited_strategy = self::getUsedConfig($strategy_field, $this->fields['entities_id'], '', $get_used_config_default);
             $inherited_value    = $inherited_strategy === 0
