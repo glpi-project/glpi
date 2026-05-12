@@ -70,7 +70,7 @@ class DisplayPreference extends CommonDBTM
         $item = new self();
         $item->fields['users_id'] = isset($input['users_id']) ? (int) $input['users_id'] : (int) Session::getLoginUserID();
         if (!$item->canCrudItem()) {
-            Session::checkRight(self::$rightname, self::GENERAL);
+            throw new AccessDeniedHttpException(...);
         }
     }
 
