@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use DisplayPreference;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
