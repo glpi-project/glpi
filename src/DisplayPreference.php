@@ -65,7 +65,7 @@ class DisplayPreference extends CommonDBTM
     /**
      * @param array<string, mixed> $input
      */
-    public static function checkAjaxAuthorization(array $input): void
+    public static function checkCrudItem(array $input): void
     {
         $item = new self();
         $item->fields['users_id'] = isset($input['users_id']) ? (int) $input['users_id'] : (int) Session::getLoginUserID();
