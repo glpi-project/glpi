@@ -48,6 +48,7 @@ jobs:
           )
           FAIL=0
           while IFS=$'\t' read -r sha name email; do
+            echo "${sha:0:12} - $name <$email>"
             for pattern in "${DENY[@]}"; do
               if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
                 echo "::error title=AI-authored commit::${sha:0:12} — '$name <$email>' matches '$pattern'"
