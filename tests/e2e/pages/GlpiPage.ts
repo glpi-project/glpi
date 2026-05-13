@@ -85,7 +85,7 @@ export class GlpiPage
         this.sidebar_menu_toggles = page.getByTestId('sidebar-menu-toggle');
         this.user_menu_dropdown   = page.getByTestId('user-menu-dropdown').filter({ visible: true });
         this.entity_menu_toggle   = page.getByRole('link', { name: 'Select the desired entity' });
-        this.entity_menu_dropdown = page.getByTestId('entity-menu-dropdown').filter({ visible: true });
+        this.entity_menu_dropdown = page.getByRole('dialog', { name: 'Select the desired entity' }).filter({ visible: true });
         this.about_link           = page.getByTestId('about-link').filter({ visible: true });
 
         // Notes tab locators
@@ -197,16 +197,14 @@ export class GlpiPage
 
     public async doSearchForEntity(entity_name: string): Promise<void>
     {
-        await this.getTextbox("Search entity").fill(entity_name);
-        await this.getButton("Search").click();
+        await this.getTextbox("Search entities").fill(entity_name);
     }
 
     public async doSwitchToEntityWithRecursion(
         entity_name: string
     ): Promise<void> {
-        await this.getButton(
-            `Select ${entity_name} entity with all its sub entities`
-        ).click();
+        // eslint-disable-next-line playwright/no-raw-locators
+        await this.getButton(entity_name).locator('//ancestor::li').getByRole('button', { name: 'Select this entity and all its children' }).click();
     }
 
     public async doSwitchToEntityWithoutRecursion(
@@ -458,7 +456,7 @@ export class GlpiPage
 
     public getEntityFromTree(name: string): Locator
     {
-        return this.page.getByRole('gridcell', {
+        return this.page.getByRole('button', {
             name: name,
         }).filter({ visible: true });
     }
