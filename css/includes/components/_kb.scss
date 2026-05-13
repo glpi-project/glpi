@@ -770,8 +770,9 @@
     }
 
     // Current article entry when it is not yet a favorite: hidden until the user favorites it.
+    // !important needed to override the Tabler `.d-flex` utility on the article <li>.
     [data-glpi-kb-favorite-current="pending"] {
-        display: none;
+        display: none !important;
     }
 
     // Favorites section hidden when there are no favorites to display (set server-side or by JS).
@@ -785,8 +786,9 @@
     }
 
     // Tree items hidden by the search filter.
+    // !important needed to override the Tabler `.d-flex` utility on the article <li>.
     [data-glpi-kb-search-hidden] {
-        display: none;
+        display: none !important;
     }
 
     // Clear button: interactive only when active (has text to clear).
