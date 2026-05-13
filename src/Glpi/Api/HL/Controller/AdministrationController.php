@@ -855,11 +855,12 @@ EOD,
                 ],
                 'date_format' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => [0, 1, 2],
+                    'enum' => [0, 1, 2, 3],
                     'description' => <<<EOD
                         - 0: YYYY-MM-DD
                         - 1: DD-MM-YYYY
                         - 2: MM-DD-YYYY
+                        - 3: DD.MM.YYYY
 EOD,
                 ],
                 'number_format' => [

@@ -557,6 +557,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         0 => ['php' => 'Y-m-d'],
                         1 => ['php' => 'd-m-Y'],
                         2 => ['php' => 'm-d-Y'],
+                        3 => ['php' => 'd.m.Y'],
                     ];
                     $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
 

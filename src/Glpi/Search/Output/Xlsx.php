@@ -90,6 +90,7 @@ final class Xlsx extends Spreadsheet
                         0 => ['excel' => 'yyyy-mm-dd'],
                         1 => ['excel' => 'dd-mm-yyyy'],
                         2 => ['excel' => 'mm-dd-yyyy'],
+                        3 => ['excel' => 'dd.mm.yyyy'],
                     ];
                     $selected = $formatMap[$glpiFormat] ?? $formatMap[0];
 
