@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,12 +57,13 @@ final class ShareTokenController extends AbstractController
     {
         $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
+        $manager = new ShareTokenManager();
         $tokens = \array_map(
-            static function (array $row): array {
-                $row['token'] = ShareToken::decryptToken((string) $row['token']);
+            function (array $row) use ($manager): array {
+                $row['token'] = $manager->decryptToken((string) $row['token']);
                 return $row;
             },
-            ShareToken::getTokensForItem($itemtype, $items_id),
+            $manager->getTokensForItem($itemtype, $items_id),
         );
 
         return new JsonResponse(['tokens' => $tokens]);
@@ -77,6 +79,7 @@ final class ShareTokenController extends AbstractController
     {
         $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
+        $manager = new ShareTokenManager();
         $name = $request->getPayload()->getString('name') ?: null;
 
         $input = [
@@ -96,7 +99,7 @@ final class ShareTokenController extends AbstractController
         }
 
         $fields = $token->fields;
-        $fields['token'] = ShareToken::decryptToken((string) $fields['token']);
+        $fields['token'] = $manager->decryptToken((string) $fields['token']);
 
         return new JsonResponse([
             'success' => true,

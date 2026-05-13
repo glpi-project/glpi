@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Controller;
 
 use CommonDBTM;
 use Glpi\Controller\ShareAccessController;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
@@ -72,7 +73,7 @@ final class ShareAccessControllerTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
-        $plain = ShareToken::decryptToken((string) $token->fields['token']);
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
         $request = Request::create(
             '/Share/' . $plain,
             'GET',
@@ -90,7 +91,7 @@ final class ShareAccessControllerTest extends DbTestCase
         $kb = $this->createKnowbaseItem();
         $token = $this->createToken($kb);
 
-        $plain = ShareToken::decryptToken((string) $token->fields['token']);
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
         $request = Request::create(
             '/Share/' . $plain,
             'GET',

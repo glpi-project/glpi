@@ -35,6 +35,7 @@
 namespace Glpi;
 
 use CommonDBChild;
+use Glpi\Security\ShareTokenManager;
 use GLPIKey;
 use Session;
 
@@ -61,76 +62,15 @@ class ShareToken extends CommonDBChild
     public function prepareInputForAdd($input)
     {
         // Token cannot be manually defined, it must always be a randomly generated value.
-        $plain = $this->generateToken();
+        $manager = new ShareTokenManager();
+        $plain = $manager->generateToken();
         $input['token']      = (new GLPIKey())->encrypt($plain);
-        $input['token_hint'] = self::computeTokenHint($plain);
+        $input['token_hint'] = $manager->computeTokenHint($plain);
 
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID() ?: 0;
         }
 
         return parent::prepareInputForAdd($input);
-    }
-
-    /**
-     * Decrypt a stored token.
-     *
-     * The DB stores tokens encrypted with the GLPI security key. Callers that need
-     * to expose the clear value (e.g. build a share URL or compare against a token
-     * submitted by a client) must decrypt explicitly through this helper.
-     */
-    public static function decryptToken(string $ciphertext): string
-    {
-        return (string) (new GLPIKey())->decrypt($ciphertext);
-    }
-
-    /**
-     * Compute the deterministic, non-secret lookup hint for a plain token.
-     *
-     * Truncated SHA-256 (16 hex chars). The plain token has 256 bits of entropy
-     * from `random_bytes(32)`, so truncation does not enable preimage attacks;
-     * the hint exists only to filter the DB before the constant-time
-     * decrypt-and-compare done by `ShareTokenManager`.
-     */
-    public static function computeTokenHint(string $plain_token): string
-    {
-        return substr(hash('sha256', $plain_token), 0, 16);
-    }
-
-    /**
-     * Get all tokens for a given item.
-     *
-     * @param class-string<\CommonDBTM> $itemtype The item class name
-     * @param int $items_id The item ID
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public static function getTokensForItem(string $itemtype, int $items_id): array
-    {
-        global $DB;
-
-        $results = [];
-        $iterator = $DB->request([
-            'FROM'  => self::getTable(),
-            'WHERE' => [
-                'itemtype' => $itemtype,
-                'items_id' => $items_id,
-            ],
-            'ORDER' => 'date_creation DESC',
-        ]);
-
-        foreach ($iterator as $row) {
-            $results[] = $row;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Generate a cryptographically secure random token.
-     */
-    private function generateToken(): string
-    {
-        return bin2hex(random_bytes(32));
     }
 }

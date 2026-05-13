@@ -38,6 +38,7 @@ use CommonDBTM;
 use Glpi\DBAL\QueryFunction;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
+use GLPIKey;
 
 use function Safe\strtotime;
 
@@ -52,7 +53,7 @@ final class ShareTokenManager
     /**
      * Session key used to store shared access grants.
      */
-    public const SESSION_KEY = 'glpi_shared_access';
+    private const SESSION_KEY = 'glpi_shared_access';
 
     /**
      * Grant read access to the item shared by the given token.
@@ -114,8 +115,8 @@ final class ShareTokenManager
         $items = $_SESSION[self::SESSION_KEY] ?? [];
         $validated = [];
 
-        foreach ($items as $itemtype => $ids) {
-            foreach (\array_keys($ids) as $items_id) {
+        foreach ($items as $itemtype => $entries) {
+            foreach (\array_keys($entries) as $items_id) {
                 $items_id = (int) $items_id;
                 if ($this->hasSessionAccess($itemtype, $items_id)) {
                     if (!\array_key_exists($itemtype, $validated)) {
@@ -146,7 +147,7 @@ final class ShareTokenManager
             'SELECT' => ['id', 'token', 'itemtype', 'items_id'],
             'FROM'   => ShareToken::getTable(),
             'WHERE'  => [
-                'token_hint' => ShareToken::computeTokenHint($plain),
+                'token_hint' => $this->computeTokenHint($plain),
                 'is_active'  => 1,
                 'OR' => [
                     ['date_expiration' => null],
@@ -156,7 +157,7 @@ final class ShareTokenManager
         ]);
 
         foreach ($iterator as $candidate) {
-            if (\hash_equals(ShareToken::decryptToken((string) $candidate['token']), $plain)) {
+            if (\hash_equals($this->decryptToken((string) $candidate['token']), $plain)) {
                 return $candidate;
             }
         }
@@ -219,5 +220,67 @@ final class ShareTokenManager
         ];
 
         return $item;
+    }
+
+    /**
+     * Generate a cryptographically secure random token.
+     */
+    public function generateToken(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
+
+    /**
+     * Decrypt a stored token.
+     *
+     * The DB stores tokens encrypted with the GLPI security key. Callers that need
+     * to expose the clear value (e.g. build a share URL or compare against a token
+     * submitted by a client) must decrypt explicitly through this helper.
+     */
+    public function decryptToken(string $ciphertext): string
+    {
+        return (string) (new GLPIKey())->decrypt($ciphertext);
+    }
+
+    /**
+     * Compute the deterministic, non-secret lookup hint for a plain token.
+     *
+     * Truncated SHA-256 (16 hex chars). The plain token has 256 bits of entropy
+     * from `random_bytes(32)`, so truncation does not enable preimage attacks;
+     * the hint exists only to filter the DB before the constant-time
+     * decrypt-and-compare done by `ShareTokenManager`.
+     */
+    public function computeTokenHint(string $plain_token): string
+    {
+        return substr(hash('sha256', $plain_token), 0, 16);
+    }
+
+    /**
+     * Get all tokens for a given item.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getTokensForItem(string $itemtype, int $items_id): array
+    {
+        global $DB;
+
+        $results = [];
+        $iterator = $DB->request([
+            'FROM'  => ShareToken::getTable(),
+            'WHERE' => [
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
+            ],
+            'ORDER' => 'date_creation DESC',
+        ]);
+
+        foreach ($iterator as $row) {
+            $results[] = $row;
+        }
+
+        return $results;
     }
 }

@@ -66,7 +66,7 @@ final class ShareTokenTest extends DbTestCase
 
     private function getPlainToken(ShareToken $token): string
     {
-        return ShareToken::decryptToken((string) $token->fields['token']);
+        return (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
     }
 
     public function testCreateToken(): void
@@ -92,7 +92,7 @@ final class ShareTokenTest extends DbTestCase
         $this->assertNotSame(64, strlen($token->fields['token']));
         $this->assertFalse(ctype_xdigit($token->fields['token']));
 
-        $plain = ShareToken::decryptToken((string) $token->fields['token']);
+        $plain = $this->getPlainToken($token);
         $this->assertSame(64, strlen($plain));
         $this->assertTrue(ctype_xdigit($plain));
 
@@ -111,8 +111,8 @@ final class ShareTokenTest extends DbTestCase
         // plain values collided.
         $this->assertNotSame($token1->fields['token'], $token2->fields['token']);
 
-        $plain1 = ShareToken::decryptToken((string) $token1->fields['token']);
-        $plain2 = ShareToken::decryptToken((string) $token2->fields['token']);
+        $plain1 = $this->getPlainToken($token1);
+        $plain2 = $this->getPlainToken($token2);
         $this->assertNotSame($plain1, $plain2);
         $this->assertNotSame($plain1, $token1->fields['token']);
         $this->assertNotSame($plain2, $token2->fields['token']);
@@ -124,13 +124,13 @@ final class ShareTokenTest extends DbTestCase
         $kb = $this->createKnowbaseItem();
 
         $token = $this->createToken($kb);
-        $plain = ShareToken::decryptToken((string) $token->fields['token']);
+        $plain = $this->getPlainToken($token);
 
         $hint = $token->fields['token_hint'];
         $this->assertIsString($hint);
         $this->assertSame(16, strlen($hint));
         $this->assertTrue(ctype_xdigit($hint));
-        $this->assertSame(ShareToken::computeTokenHint($plain), $hint);
+        $this->assertSame((new ShareTokenManager())->computeTokenHint($plain), $hint);
     }
 
     public function testTokenHintIsUniquePerPlainValue(): void
@@ -153,7 +153,7 @@ final class ShareTokenTest extends DbTestCase
         $this->createToken($kb);
         $this->createToken($kb);
 
-        $tokens = ShareToken::getTokensForItem(KnowbaseItem::class, $kb->getID());
+        $tokens = (new ShareTokenManager())->getTokensForItem(KnowbaseItem::class, $kb->getID());
 
         $this->assertCount(2, $tokens);
     }
@@ -162,7 +162,7 @@ final class ShareTokenTest extends DbTestCase
     {
         $kb = $this->createKnowbaseItem();
 
-        $tokens = ShareToken::getTokensForItem(KnowbaseItem::class, $kb->getID());
+        $tokens = (new ShareTokenManager())->getTokensForItem(KnowbaseItem::class, $kb->getID());
 
         $this->assertCount(0, $tokens);
     }
@@ -174,7 +174,7 @@ final class ShareTokenTest extends DbTestCase
         $this->createToken($kb1);
         $this->createToken($kb2);
 
-        $tokens = ShareToken::getTokensForItem(KnowbaseItem::class, $kb1->getID());
+        $tokens = (new ShareTokenManager())->getTokensForItem(KnowbaseItem::class, $kb1->getID());
 
         $this->assertCount(1, $tokens);
         $this->assertSame($kb1->getID(), (int) $tokens[0]['items_id']);
@@ -205,7 +205,7 @@ final class ShareTokenTest extends DbTestCase
         $plain = $this->getPlainToken($token);
         $token_manager->grantSessionAccess($plain);
 
-        $session_entry = $_SESSION[ShareTokenManager::SESSION_KEY][KnowbaseItem::class][$kb->getID()] ?? null;
+        $session_entry = $_SESSION['glpi_shared_access'][KnowbaseItem::class][$kb->getID()] ?? null;
         $this->assertIsArray($session_entry);
         $this->assertArrayHasKey('sharetoken_id', $session_entry);
         $this->assertSame($token->getID(), $session_entry['sharetoken_id']);
@@ -232,7 +232,7 @@ final class ShareTokenTest extends DbTestCase
         $this->assertTrue($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
 
         // Session payload still does not contain the plain token after refresh.
-        $session_entry = $_SESSION[ShareTokenManager::SESSION_KEY][KnowbaseItem::class][$kb->getID()];
+        $session_entry = $_SESSION['glpi_shared_access'][KnowbaseItem::class][$kb->getID()];
         $this->assertArrayHasKey('sharetoken_id', $session_entry);
         $this->assertArrayNotHasKey('token', $session_entry);
     }
@@ -255,7 +255,7 @@ final class ShareTokenTest extends DbTestCase
         $this->assertFalse($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
         $this->assertArrayNotHasKey(
             $kb->getID(),
-            $_SESSION[ShareTokenManager::SESSION_KEY][KnowbaseItem::class] ?? [],
+            $_SESSION['glpi_shared_access'][KnowbaseItem::class] ?? [],
         );
     }
 
@@ -392,7 +392,7 @@ final class ShareTokenTest extends DbTestCase
         $this->assertTrue($token->delete(['id' => $token_id], true));
 
         $this->assertNull($token_manager->grantSessionAccess($plain));
-        $this->assertCount(0, ShareToken::getTokensForItem(KnowbaseItem::class, $kb->getID()));
+        $this->assertCount(0, (new ShareTokenManager())->getTokensForItem(KnowbaseItem::class, $kb->getID()));
     }
 
     public function testMultipleTokensPerItem(): void

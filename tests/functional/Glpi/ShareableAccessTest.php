@@ -71,7 +71,8 @@ final class ShareableAccessTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
-        (new ShareTokenManager())->grantSessionAccess(ShareToken::decryptToken((string) $token->fields['token']));
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
 
         $item = new KnowbaseItem();
         $this->assertTrue($item->can($kb->getID(), READ));
@@ -84,7 +85,8 @@ final class ShareableAccessTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
-        (new ShareTokenManager())->grantSessionAccess(ShareToken::decryptToken((string) $token->fields['token']));
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
 
         $item = new KnowbaseItem();
         $this->assertFalse($item->can($kb->getID(), UPDATE));
@@ -97,7 +99,8 @@ final class ShareableAccessTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
-        (new ShareTokenManager())->grantSessionAccess(ShareToken::decryptToken((string) $token->fields['token']));
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
 
         $item = new KnowbaseItem();
         $this->assertFalse($item->can($kb->getID(), DELETE));
@@ -122,7 +125,8 @@ final class ShareableAccessTest extends DbTestCase
         $token = $this->createToken($kb1);
         $this->logOut();
 
-        (new ShareTokenManager())->grantSessionAccess(ShareToken::decryptToken((string) $token->fields['token']));
+        $manager = new ShareTokenManager();
+        $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
 
         $item = new KnowbaseItem();
         $this->assertTrue($item->can($kb1->getID(), READ));
@@ -159,7 +163,8 @@ final class ShareableAccessTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
-        $validated = (new ShareTokenManager())->grantSessionAccess(ShareToken::decryptToken((string) $token->fields['token']));
+        $manager = new ShareTokenManager();
+        $validated = $manager->grantSessionAccess($manager->decryptToken((string) $token->fields['token']));
         $this->assertNotNull($validated);
 
         $item = new KnowbaseItem();
