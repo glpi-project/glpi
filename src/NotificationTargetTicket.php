@@ -557,10 +557,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         ),
                         '##linkedprojecttask.name##'   => $project_task->getField('name'),
                         '##linkedprojecttask.content##' => $project_task->getField('content'),
-                        '##linkedprojecttask.planstartdate##' => $project_task->getField('plan_start_date'),
-                        '##linkedprojecttask.planenddate##' => $project_task->getField('plan_end_date'),
-                        '##linkedprojecttask.realstartdate##' => $project_task->getField('real_start_date'),
-                        '##linkedprojecttask.realenddate##' => $project_task->getField('real_end_date'),
+                        '##linkedprojecttask.planstartdate##' => Html::convDateTime($project_task->getField('plan_start_date'), with_seconds: true),
+                        '##linkedprojecttask.planenddate##' => Html::convDateTime($project_task->getField('plan_end_date'), with_seconds: true),
+                        '##linkedprojecttask.realstartdate##' => Html::convDateTime($project_task->getField('real_start_date'), with_seconds: true),
+                        '##linkedprojecttask.realenddate##' => Html::convDateTime($project_task->getField('real_end_date'), with_seconds: true),
                     ];
                 }
             }
