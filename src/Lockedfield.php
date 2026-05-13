@@ -34,11 +34,12 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Features\AssignableItem;
 use Glpi\Inventory\Inventory;
 use Glpi\Search\SearchOption;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryUnion;
+
 
 /**
  *  Locked fields for inventory
