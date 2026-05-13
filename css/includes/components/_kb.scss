@@ -847,6 +847,54 @@
         }
     }
 
+    // Keyboard/touch fallback for drag-and-drop: a kebab "Move" button on each
+    // draggable row. Hidden on desktop until the row is hovered or anything
+    // inside it is focused (so keyboard tabbing into the article link reveals
+    // the kebab as the next tab stop). Always visible on touch devices where
+    // hover doesn't exist.
+    .kb-aside-move-btn {
+        visibility: hidden;
+        margin-left: auto;
+        padding: 0 0.25rem;
+        color: var(--tblr-secondary);
+        line-height: 1;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--tblr-primary);
+        }
+    }
+
+    li.article:hover > .kb-aside-move-btn,
+    li.article:focus-within > .kb-aside-move-btn,
+    [data-glpi-kb-aside-category-title]:hover > .kb-aside-move-btn,
+    [data-glpi-kb-aside-category-title]:focus-within > .kb-aside-move-btn {
+        visibility: visible;
+    }
+
+    @media (hover: none) {
+        .kb-aside-move-btn {
+            visibility: visible;
+        }
+    }
+
+    // "Move to" picker modal: a compact nested list of categories.
+    .kb-move-picker {
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .kb-move-picker-list {
+        list-style: none;
+        padding-left: 1rem;
+        margin: 0;
+
+        // First level has no extra indent.
+        .kb-move-picker > & {
+            padding-left: 0;
+        }
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;

@@ -30,6 +30,18 @@
  # ---------------------------------------------------------------------
  #}
 
+{% macro move_button(label) %}
+    <button
+        type="button"
+        class="btn btn-sm btn-ghost-secondary p-0 border-0 bg-transparent kb-aside-move-btn"
+        draggable="false"
+        data-glpi-kb-aside-move
+        aria-label="{{ label }}"
+    >
+        <i class="ti ti-dots-vertical fs-4" aria-hidden="true"></i>
+    </button>
+{% endmacro %}
+
 {% macro render_category(category, draggable_articles = false, draggable_categories = false) %}
     {% import _self as macros %}
     <li
@@ -58,6 +70,9 @@
                 {% endif %}
                 <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
             </button>
+            {% if draggable_categories %}
+                {{ macros.move_button(__('Move %s')|format(category.title)) }}
+            {% endif %}
         </div>
         <ul>
             {{ macros.render_node(category, draggable_articles, draggable_categories) }}
@@ -66,6 +81,7 @@
 {% endmacro %}
 
 {% macro render_article(article, add_margin = false, favorite_state = null, draggable = false) %}
+    {% import _self as macros %}
     <li
         data-glpi-kb-article-id="{{ article.id }}"
         {% if draggable %}draggable="true"{% endif %}
@@ -88,6 +104,9 @@
             {% endif %}
             {{ article.title }}
         </a>
+        {% if draggable %}
+            {{ macros.move_button(__('Move %s')|format(article.title)) }}
+        {% endif %}
     </li>
 {% endmacro %}
 

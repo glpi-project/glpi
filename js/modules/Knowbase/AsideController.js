@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, glpi_toast_error */
+/* global _, glpi_toast_error, glpi_html_dialog */
 
 import { get } from "/js/modules/Ajax.js";
 
@@ -73,6 +73,7 @@ export class GlpiKnowbaseAsideController
         this.#initCategoryToggle();
         this.#initSearch();
         this.#initDragAndDrop();
+        this.#initMoveMenu();
     }
 
     #initCategoryToggle()
@@ -418,7 +419,7 @@ export class GlpiKnowbaseAsideController
         const target_id = parseInt(target_li.dataset.glpiKbAsideCategoryId, 10);
         const { itemtype, items_id } = this.#identifySource(this.#drag.source);
 
-        if (!this.#isDropAllowed(itemtype, items_id, target_li, target_id)) {
+        if (!this.#isDropAllowed(this.#drag.source, itemtype, items_id, target_li, target_id)) {
             return;
         }
 
@@ -472,30 +473,49 @@ export class GlpiKnowbaseAsideController
 
         const target_li = target_title.closest('[data-glpi-kb-aside-category]');
         const target_id = parseInt(target_li.dataset.glpiKbAsideCategoryId, 10);
-        const { itemtype, items_id } = this.#identifySource(this.#drag.source);
-        const from_parent_id = this.#getCurrentParentId(this.#drag.source);
-
-        if (from_parent_id === target_id) {
-            this.#clearTargetHighlight();
-            return;
-        }
-
-        const target_children = target_li.querySelector(':scope > ul');
-        if (!target_children) {
-            this.#revertDrop();
-            return;
-        }
 
         // Capture the revert state BEFORE awaiting the fetch: dragend fires
         // synchronously after drop and nulls this.#drag before the await
-        // resolves, so #revertDrop() would silently no-op in either error
-        // branch below.
+        // resolves, so a deferred revert would silently no-op otherwise.
         const source        = this.#drag.source;
         const origin_parent = this.#drag.origin_parent;
         const origin_next   = this.#drag.origin_next;
 
+        this.#clearTargetHighlight();
+        await this.#commitReparent(source, target_li, target_id, origin_parent, origin_next);
+    }
+
+    /**
+     * Move `source_li` under `target_li` in the DOM and persist the change.
+     * Optimistic: the move is applied first, then reverted if the server rejects.
+     *
+     * Shared between drag-drop (#onDrop) and the keyboard/touch fallback menu
+     * (#openMovePicker).
+     *
+     * @param {HTMLElement}  source_li
+     * @param {HTMLElement}  target_li
+     * @param {number}       target_id
+     * @param {HTMLElement}  origin_parent  Container `source_li` came from (for revert).
+     * @param {?HTMLElement} origin_next    Sibling that was after `source_li` (for revert).
+     * @returns {Promise<boolean>} true if the move was accepted by the server.
+     */
+    async #commitReparent(source_li, target_li, target_id, origin_parent, origin_next)
+    {
+        const { itemtype, items_id } = this.#identifySource(source_li);
+        const from_parent_id = this.#getCurrentParentId(source_li);
+
+        if (from_parent_id === target_id) {
+            return true;
+        }
+
+        const target_children = target_li.querySelector(':scope > ul');
+        if (!target_children) {
+            glpi_toast_error(__("An unexpected error occurred."));
+            return false;
+        }
+
         // Optimistic move.
-        target_children.appendChild(source);
+        target_children.appendChild(source_li);
 
         let response;
         try {
@@ -513,21 +533,22 @@ export class GlpiKnowbaseAsideController
                 }),
             });
         } catch (e) {
-            origin_parent.insertBefore(source, origin_next);
+            origin_parent.insertBefore(source_li, origin_next);
             glpi_toast_error(__("An unexpected error occurred."));
             console.error(e);
-            return;
+            return false;
         }
 
         if (response.ok) {
-            return;
+            return true;
         }
-        origin_parent.insertBefore(source, origin_next);
+        origin_parent.insertBefore(source_li, origin_next);
         if (response.status === 409) {
             glpi_toast_error(__("This item can't be moved here."));
         } else {
             glpi_toast_error(__("An unexpected error occurred."));
         }
+        return false;
     }
 
     #onDragEnd()
@@ -615,13 +636,14 @@ export class GlpiKnowbaseAsideController
     }
 
     /**
+     * @param {HTMLElement} source_li
      * @param {?string}     itemtype
      * @param {?number}     items_id
      * @param {HTMLElement} target_li
      * @param {number}      target_id
      * @returns {boolean}
      */
-    #isDropAllowed(itemtype, items_id, target_li, target_id)
+    #isDropAllowed(source_li, itemtype, items_id, target_li, target_id)
     {
         const is_uncategorized = target_li.hasAttribute('data-glpi-kb-aside-category-uncategorized');
 
@@ -639,7 +661,7 @@ export class GlpiKnowbaseAsideController
                 return false;
             }
             // A category cannot be dropped onto one of its own descendants.
-            if (this.#drag.source.contains(target_li)) {
+            if (source_li.contains(target_li)) {
                 return false;
             }
             return true;
@@ -660,5 +682,214 @@ export class GlpiKnowbaseAsideController
             this.#drag.source,
             this.#drag.origin_next,
         );
+    }
+
+    /**
+     * Initialize the keyboard/touch fallback for drag-and-drop: a kebab button
+     * on each draggable row opens a modal picker listing every category the
+     * item can be moved to. The same backend endpoint (Reparent) is used.
+     */
+    #initMoveMenu()
+    {
+        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        if (!tree) {
+            return;
+        }
+
+        tree.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-glpi-kb-aside-move]');
+            if (!button) {
+                return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+
+            const source_li = button.closest('li[draggable="true"]');
+            if (!source_li) {
+                return;
+            }
+            this.#openMovePicker(source_li);
+        });
+    }
+
+    /**
+     * Open the "Move to" modal picker for `source_li`.
+     *
+     * @param {HTMLElement} source_li
+     */
+    #openMovePicker(source_li)
+    {
+        const { itemtype, items_id } = this.#identifySource(source_li);
+        if (!itemtype) {
+            return;
+        }
+
+        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        const root_ul = tree.querySelector(':scope > ul');
+        if (!root_ul) {
+            return;
+        }
+
+        const current_parent_id = this.#getCurrentParentId(source_li);
+        const source_title      = this.#getSourceTitle(source_li);
+        const picker_id         = `kb-move-picker-${Math.random().toString(36).slice(2, 8)}`;
+        const submit_id         = `${picker_id}-submit`;
+
+        const tree_html = this.#renderPickerLevel(
+            root_ul,
+            source_li,
+            itemtype,
+            items_id,
+            current_parent_id,
+            picker_id,
+        );
+
+        const body = `
+            <p class="text-muted mb-3">${_.escape(__("Pick a category as the new parent."))}</p>
+            <div class="kb-move-picker" data-glpi-kb-move-picker>${tree_html}</div>
+        `;
+
+        glpi_html_dialog({
+            title: _.escape(__("Move %s").replace('%s', source_title)),
+            body,
+            id: picker_id,
+            dialogclass: 'modal-lg',
+            buttons: [
+                {
+                    label: __("Cancel"),
+                    class: 'btn-outline-secondary',
+                },
+                {
+                    label: __("Move"),
+                    class: 'btn-primary',
+                    id: submit_id,
+                    click: () => {
+                        const modal = document.getElementById(picker_id);
+                        if (!modal) {
+                            return;
+                        }
+                        const selected = modal.querySelector('input[name="target"]:checked');
+                        if (!selected) {
+                            return;
+                        }
+                        const target_id = parseInt(selected.value, 10);
+                        const target_li = tree.querySelector(
+                            `[data-glpi-kb-aside-category][data-glpi-kb-aside-category-id="${target_id}"]`,
+                        );
+                        if (!target_li) {
+                            return;
+                        }
+                        this.#commitReparent(
+                            source_li,
+                            target_li,
+                            target_id,
+                            source_li.parentElement,
+                            source_li.nextElementSibling,
+                        );
+                    },
+                },
+            ],
+        });
+    }
+
+    /**
+     * Recursively render the picker's `<ul>` for one nesting level.
+     *
+     * Categories that the source cannot legally move into (self, descendants,
+     * uncategorized for categories) are rendered as disabled radios so the
+     * structure remains readable. The current parent is rendered checked.
+     *
+     * @param {HTMLElement} ul_el
+     * @param {HTMLElement} source_li
+     * @param {string}      itemtype
+     * @param {number}      items_id
+     * @param {number}      current_parent_id
+     * @param {string}      picker_id
+     * @returns {string}
+     */
+    #renderPickerLevel(ul_el, source_li, itemtype, items_id, current_parent_id, picker_id)
+    {
+        let html = '<ul class="kb-move-picker-list">';
+
+        for (const cat of ul_el.children) {
+            if (!cat.matches('[data-glpi-kb-aside-category]')) {
+                continue;
+            }
+
+            const cat_id           = parseInt(cat.dataset.glpiKbAsideCategoryId, 10);
+            const is_uncategorized = cat.hasAttribute('data-glpi-kb-aside-category-uncategorized');
+
+            // Categories cannot be moved into the uncategorized pseudo-bucket.
+            if (is_uncategorized && itemtype !== ITEMTYPE_ARTICLE) {
+                continue;
+            }
+
+            const allowed    = this.#isDropAllowed(source_li, itemtype, items_id, cat, cat_id);
+            const is_current = cat_id === current_parent_id;
+            const disabled   = !allowed || is_current;
+            const radio_id   = `${picker_id}-radio-${cat_id}`;
+            // The aria-label on the category <li> is rendered server-side from
+            // the (already translated) category title — including "Uncategorized"
+            // for the synthetic id=0 bucket.
+            const title      = cat.getAttribute('aria-label') ?? '';
+
+            const checked_attr  = is_current ? 'checked' : '';
+            const disabled_attr = disabled ? 'disabled' : '';
+            // aria-hidden keeps the badge out of the radio's accessible name so
+            // screen readers don't read "Réseau current" — the disabled state
+            // already conveys "this is where it is".
+            const current_badge = is_current
+                ? ` <span class="badge bg-info-lt ms-2" aria-hidden="true">${_.escape(__("current"))}</span>`
+                : '';
+
+            html += `
+                <li>
+                    <label class="form-check d-flex align-items-center mb-1" for="${radio_id}">
+                        <input type="radio"
+                               name="target"
+                               value="${cat_id}"
+                               id="${radio_id}"
+                               class="form-check-input me-2 mt-0"
+                               ${checked_attr}
+                               ${disabled_attr}>
+                        <span class="text-truncate">${_.escape(title)}</span>
+                        ${current_badge}
+                    </label>
+            `;
+
+            const sub_ul = cat.querySelector(':scope > ul');
+            if (sub_ul && sub_ul.children.length > 0) {
+                html += this.#renderPickerLevel(
+                    sub_ul,
+                    source_li,
+                    itemtype,
+                    items_id,
+                    current_parent_id,
+                    picker_id,
+                );
+            }
+
+            html += '</li>';
+        }
+
+        html += '</ul>';
+        return html;
+    }
+
+    /**
+     * Read the displayed title of `source_li` (article or category) for use in
+     * the picker's modal header.
+     *
+     * @param {HTMLElement} source_li
+     * @returns {string}
+     */
+    #getSourceTitle(source_li)
+    {
+        if (source_li.hasAttribute('data-glpi-kb-article-id')) {
+            // <a> contains the illustration (non-text) then the article title.
+            return source_li.querySelector(':scope > a')?.textContent.trim() ?? '';
+        }
+        // Categories have the clean title on aria-label of the <li>.
+        return source_li.getAttribute('aria-label') ?? '';
     }
 }
