@@ -1563,10 +1563,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         '##linkedproject.name##'   => $project->getField('name'),
                         '##linkedproject.content##' => $project->getField('content'),
                         '##linkedproject.code##' => $project->getField('code'),
-                        '##linkedproject.planstartdate##' => Html::convDateTime($project->getField('plan_start_date'), with_seconds: true),
-                        '##linkedproject.planenddate##' => Html::convDateTime($project->getField('plan_end_date'), with_seconds: true),
-                        '##linkedproject.realstartdate##' => Html::convDateTime($project->getField('real_start_date'), with_seconds: true),
-                        '##linkedproject.realenddate##' => Html::convDateTime($project->getField('real_end_date'), with_seconds: true),
+                        '##linkedproject.planstartdate##' => Html::convDateTime($project->getField('plan_start_date')),
+                        '##linkedproject.planenddate##' => Html::convDateTime($project->getField('plan_end_date')),
+                        '##linkedproject.realstartdate##' => Html::convDateTime($project->getField('real_start_date')),
+                        '##linkedproject.realenddate##' => Html::convDateTime($project->getField('real_end_date')),
                     ];
                 }
             }
