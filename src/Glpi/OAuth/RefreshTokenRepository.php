@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
@@ -61,6 +62,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             'identifier' => $refreshTokenEntity->getIdentifier(),
             'access_token' => $refreshTokenEntity->getAccessToken()->getIdentifier(),
             'date_expiration' => $refreshTokenEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
+            'ip_address' => IPUtilities::getClientIP(),
         ]);
     }
 

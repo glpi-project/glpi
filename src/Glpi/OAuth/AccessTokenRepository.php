@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -77,6 +78,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'date_expiration' => $accessTokenEntity->getExpiryDateTime()->format('Y-m-d H:i:s'),
             'user_identifier' => $accessTokenEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($accessTokenEntity->getScopes()),
+            'ip_address' => IPUtilities::getClientIP(),
         ]);
     }
 
