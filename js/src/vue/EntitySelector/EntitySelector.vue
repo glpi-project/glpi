@@ -54,7 +54,7 @@
                 return;
             }
             if (node.children.length) {
-                walkTree(node.children, level + 1, node, visit_node);
+                walkTree(node.children, level + 1, node, visit_node, post_visit_children);
             }
             if (post_visit_children) {
                 post_visit_children(node);
