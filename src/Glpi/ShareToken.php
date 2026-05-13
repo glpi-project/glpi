@@ -35,6 +35,8 @@
 namespace Glpi;
 
 use CommonDBChild;
+use Glpi\Security\ShareTokenManager;
+use GLPIKey;
 use Session;
 
 /**
@@ -59,50 +61,16 @@ class ShareToken extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        // Token cannot be manually defined, it must always be a randomly generaed value.
-        $input['token'] = $this->generateToken();
+        // Token cannot be manually defined, it must always be a randomly generated value.
+        $manager = new ShareTokenManager();
+        $plain = $manager->generateToken();
+        $input['token']      = (new GLPIKey())->encrypt($plain);
+        $input['token_hint'] = $manager->computeTokenHint($plain);
 
         if (!isset($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID() ?: 0;
         }
 
         return parent::prepareInputForAdd($input);
-    }
-
-    /**
-     * Get all tokens for a given item.
-     *
-     * @param class-string<\CommonDBTM> $itemtype The item class name
-     * @param int $items_id The item ID
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public static function getTokensForItem(string $itemtype, int $items_id): array
-    {
-        global $DB;
-
-        $results = [];
-        $iterator = $DB->request([
-            'FROM'  => self::getTable(),
-            'WHERE' => [
-                'itemtype' => $itemtype,
-                'items_id' => $items_id,
-            ],
-            'ORDER' => 'date_creation DESC',
-        ]);
-
-        foreach ($iterator as $row) {
-            $results[] = $row;
-        }
-
-        return $results;
-    }
-
-    /**
-     * Generate a cryptographically secure random token.
-     */
-    private function generateToken(): string
-    {
-        return bin2hex(random_bytes(32));
     }
 }

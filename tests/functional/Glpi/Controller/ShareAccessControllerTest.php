@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Controller;
 
 use CommonDBTM;
 use Glpi\Controller\ShareAccessController;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
@@ -72,13 +73,14 @@ final class ShareAccessControllerTest extends DbTestCase
         $token = $this->createToken($kb);
         $this->logOut();
 
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
         $request = Request::create(
-            '/Share/' . $token->fields['token'],
+            '/Share/' . $plain,
             'GET',
         );
 
         $controller = new ShareAccessController();
-        $response = $controller->__invoke($request, $token->fields['token']);
+        $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
     }
@@ -89,13 +91,14 @@ final class ShareAccessControllerTest extends DbTestCase
         $kb = $this->createKnowbaseItem();
         $token = $this->createToken($kb);
 
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
         $request = Request::create(
-            '/Share/' . $token->fields['token'],
+            '/Share/' . $plain,
             'GET',
         );
 
         $controller = new ShareAccessController();
-        $response = $controller->__invoke($request, $token->fields['token']);
+        $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
     }

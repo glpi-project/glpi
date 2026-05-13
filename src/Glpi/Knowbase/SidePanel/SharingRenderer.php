@@ -34,7 +34,7 @@
 
 namespace Glpi\Knowbase\SidePanel;
 
-use Glpi\ShareToken;
+use Glpi\Security\ShareTokenManager;
 use KnowbaseItem;
 use Override;
 
@@ -56,7 +56,14 @@ final class SharingRenderer implements RendererInterface
     public function getParams(KnowbaseItem $item): array
     {
         $id = $item->getID();
-        $tokens = ShareToken::getTokensForItem(KnowbaseItem::class, $id);
+        $manager = new ShareTokenManager();
+        $tokens = \array_map(
+            function (array $row) use ($manager): array {
+                $row['token'] = $manager->decryptToken((string) $row['token']);
+                return $row;
+            },
+            $manager->getTokensForItem(KnowbaseItem::class, $id),
+        );
 
         return [
             'id'       => $id,
