@@ -40,7 +40,6 @@ use Glpi\Features\AssignableItem;
 use Glpi\Inventory\Inventory;
 use Glpi\Search\SearchOption;
 
-
 /**
  *  Locked fields for inventory
  **/
