@@ -1622,6 +1622,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     public static function getResizedImagePath(string $path, int $width, int $height): string
     {
+        if ($width <= 0 || $height <= 0) {
+            return $path;
+        }
+
         // let's see if original image needs resize
         $img_infos  = getimagesize($path);
         if ($img_infos[0] <= $width && $img_infos[1] <= $height) {
