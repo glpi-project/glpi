@@ -2033,10 +2033,13 @@ class MailCollector extends CommonDBTM
         $mail->to($to);
         // Normalized header, no translation
         $mail->subject('Re: ' . $subject);
+
+        $signature = trim($CFG_GLPI["mailing_signature"]);
         $mail->text(
             __("Your email could not be processed.\nIf the problem persists, contact the administrator")
-             . "\n-- \n" . $CFG_GLPI["mailing_signature"]
+             . (!empty($signature) ? "\n-- \n" . $signature : '')
         );
+
         $mmail->send();
     }
 
