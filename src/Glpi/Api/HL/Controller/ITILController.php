@@ -489,14 +489,16 @@ final class ITILController extends AbstractController
                 ];
                 $schemas[$itil_type]['properties']['ola_ttr'] = $ola_dropdown_properties + [
                     'x-version-introduced' => '2.1.0',
-                    'x-mapper' => static function ($v) use ($get_ola_data): array|string {
+                    'readOnly' => true,
+                    'x-mapper' => static function ($v) use ($get_ola_data): array {
                         $ola = $get_ola_data((int) $v, \SLM::TTR);
                         return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
                     },
                 ];
                 $schemas[$itil_type]['properties']['ola_tto'] = $ola_dropdown_properties + [
                     'x-version-introduced' => '2.1.0',
-                    'x-mapper' => static function ($v) use ($get_ola_data): array|string {
+                    'readOnly' => true,
+                    'x-mapper' => static function ($v) use ($get_ola_data): array {
                         $ola = $get_ola_data((int) $v, \SLM::TTO);
                         return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
                     },
@@ -513,6 +515,7 @@ final class ITILController extends AbstractController
                         'id'   => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                         'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
                     ],
+                    'readOnly' => true,
                     'x-mapper' => static function ($v) use ($get_ola_data): ?array {
                         $ola = $get_ola_data((int) $v, \SLM::TTR);
                         if ($ola === null || empty($ola['level']) || !($ola['level'] instanceof OlaLevel)) {
