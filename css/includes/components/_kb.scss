@@ -795,6 +795,56 @@
         cursor: pointer;
     }
 
+    // Whole-row drag affordance: the row itself is the grab handle.
+    .kb-aside-row {
+        padding: 0.25rem 0.5rem;
+        transition: background-color 0.1s ease;
+        border-radius: 4px;
+    }
+
+    li[draggable="true"] > .kb-aside-row,
+    li[draggable="true"].kb-aside-row {
+        cursor: grab;
+
+        &:hover {
+            background-color: var(--tblr-info-bg-subtle);
+
+            // Override the yellow that .text-hover-link (Bootstrap) and the
+            // current-article rule apply on hover — yellow on pale-blue reads
+            // poorly. Use the matching deep info shade.
+            > a {
+                color: var(--tblr-info-text-emphasis) !important;
+            }
+        }
+    }
+
+    // Source element while it is being dragged: faded in place.
+    .kb-aside-source-dragging,
+    .kb-aside-source-dragging > .kb-aside-row,
+    .kb-aside-source-dragging > a,
+    .kb-aside-source-dragging > button {
+        opacity: 0.4;
+    }
+
+    // Cursor stays grabbing while a drag is in progress anywhere in the tree.
+    &.kb-aside-dragging,
+    &.kb-aside-dragging * {
+        cursor: grabbing !important;
+    }
+
+    // Active drop target: the title row of the destination category.
+    // Categories don't have a child <a>, but keep the override defensive in
+    // case the target structure changes.
+    .kb-aside-target {
+        background-color: var(--tblr-info);
+        box-shadow: inset 4px 0 0 var(--tblr-info-text-emphasis);
+        color: #fff;
+
+        a {
+            color: #fff !important;
+        }
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;
@@ -823,7 +873,7 @@
                     left: -1rem;
                     top: 0;
                     width: calc(1rem - #{$gap}); // leave a small gap before the content
-                    height: 0.625rem; // half of the 20px illustration = 10px
+                    height: 0.875rem; // .kb-aside-row padding-top 4px + half of the 20px illustration = 14px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
@@ -832,7 +882,7 @@
                     content: '';
                     position: absolute;
                     left: -1rem;
-                    top: 0.625rem;
+                    top: 0.875rem;
                     bottom: 0;
                     width: 1px;
                     background-color: var(--tblr-border-color);
