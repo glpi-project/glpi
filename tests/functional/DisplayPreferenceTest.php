@@ -36,9 +36,11 @@ namespace tests\units;
 
 use DisplayPreference;
 use Glpi\Tests\DbTestCase;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Throwable;
 
 /**
  * Tests of displaypreference.php.
@@ -53,26 +55,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class DisplayPreferenceTest extends DbTestCase
 {
     /**
-     * Overrides the search_config right in the active session profile so we can simulate any combination.
-     */
-    private function setSearchConfigRight(int $right): void
-    {
-        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = $right;
-    }
-
-    /**
-     *   if ($target !== own) → checkRight(GENERAL)
-     *   else → checkRightsOr([PERSONAL, GENERAL])
-     */
-    private function checkAjaxAuthorization(int $target_users_id): void
-    {
-        DisplayPreference::checkCrudItem(['users_id' => $target_users_id]);
-    }
-
-    /**
      *   - right : the search_config
      *   - target : oww | global | other
      *   - expected_exception : null if the action is allowed, class name otherwise
+     *
+     * @return iterable<string, array{right: int, target: string, expected_exception: class-string<Throwable>|null}>
      */
     public static function authorizationProvider(): iterable
     {
@@ -146,6 +133,9 @@ class DisplayPreferenceTest extends DbTestCase
         ];
     }
 
+    /**
+     * @param class-string<Throwable>|null $expected_exception
+     */
     #[DataProvider('authorizationProvider')]
     public function testAjaxAuthorization(
         int $right,
@@ -153,19 +143,20 @@ class DisplayPreferenceTest extends DbTestCase
         ?string $expected_exception
     ): void {
         $this->login();
-        $this->setSearchConfigRight($right);
+        $_SESSION['glpiactiveprofile'][DisplayPreference::$rightname] = $right;
         $login_id = (int) Session::getLoginUserID();
 
         $target_users_id = match ($target) {
             'own'    => $login_id, // own personal prefs
             'global' => 0, // global prefs (users_id = 0)
             'other'  => $login_id + 9999, // another user
+            default  => throw new InvalidArgumentException("Unknown target: {$target}"),
         };
 
         if ($expected_exception !== null) {
             $this->expectException($expected_exception);
         }
 
-        $this->checkAjaxAuthorization($target_users_id);
+        DisplayPreference::checkCrudItem(['users_id' => $target_users_id]);
     }
 }
