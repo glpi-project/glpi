@@ -82,7 +82,7 @@
     <ul class="border-0 list-unstyled m-0 p-0">
         <PlanningFilter v-for="(filter_data, filter_key) in filters" :key="filter_key"
                         :filter_key="filter_key" :filter_data="filter_data"
-                        @deleteFilter="deleteFilter" @toggleFilter="toggleFilter"/>
+                        @deleteFilter="deleteFilter" @toggleFilter="toggleFilter" @filterColorChange="emits('filtersUpdated')"/>
     </ul>
 </template>
 

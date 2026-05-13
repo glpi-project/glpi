@@ -80,7 +80,8 @@
                         <i class="ti ti-circle-plus"></i>
                     </button>
                 </h3>
-                <PlanningFiltersList v-show="!filters_collapsed" :filters="filters.plannings" :can_delete="true" @filtersUpdated="emits('filtersUpdated')"/>
+                <PlanningFiltersList v-show="!filters_collapsed" :filters="filters.plannings" :can_delete="true"
+                                     @filtersUpdated="emits('filtersUpdated')"/>
             </div>
         </div>
     </div>

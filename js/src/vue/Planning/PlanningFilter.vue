@@ -22,7 +22,7 @@
         },
     });
 
-    defineEmits(['deleteFilter', 'toggleFilter']);
+    const emits = defineEmits(['deleteFilter', 'toggleFilter', 'filterColorChange']);
 
     const event_type = props.filter_data.filter_data.type;
     const event_name = props.filter_key;
@@ -48,6 +48,27 @@
     function exportFromURL(url) {
         window.open(url, '_blank');
     }
+
+    function changeFilterColor(event) {
+        fetch(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                action: 'color_filter',
+                name: props.filter_key,
+                type: event_type,
+                parent: props.parent_filter_key ?? '',
+                color: event.target.value,
+            }),
+        }).then(response => {
+            if (response.ok) {
+                // Allow the changing of the color in the UI without re-fetching every event
+                emits('filterColorChange');
+            }
+        });
+    }
 </script>
 
 <template>
@@ -63,7 +84,7 @@
         </label>
         <div class="ms-auto d-flex align-items-center">
             <span v-if="event_type !== 'group_users' && filter_key !== 'OnlyBgEvents' && filter_key !== 'StateDone'">
-                <input type="color" class="border-0" :name="`${filter_key}_color`"
+                <input type="color" class="border-0" :name="`${filter_key}_color`" @change="changeFilterColor($event)"
                        :aria-label="__('%s color').replace('%s', label_title)" :value="filter_data.color"/>
             </span>
             <button v-if="event_type === 'group_users'" class="btn btn-sm btn-icon btn-ghost-secondary p-1"
