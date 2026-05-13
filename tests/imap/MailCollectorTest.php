@@ -676,6 +676,73 @@ class MailCollectorTest extends DbTestCase
         $this->assertEquals(!$accepted, $instance->isResponseToMessageSentByAnotherGlpi($message));
     }
 
+    public static function charsetEvidenceMailProvider(): iterable
+    {
+        yield 'latin1 quoted-printable' => [
+            'file'             => '01-latin1-quoted-printable.eml',
+            'expected_subject' => 'Ação não concluída',
+            'expected_content' => 'Ação não concluída: número ç e acentuação',
+        ];
+
+        yield 'windows-1252 quoted-printable' => [
+            'file'             => '02-windows1252-quoted-printable.eml',
+            'expected_subject' => 'Remetente inválido – teste',
+            'expected_content' => 'Remetente inválido: “aspas”, travessão – e euro €',
+        ];
+
+        yield 'utf-8 mojibake' => [
+            'file'             => '03-utf8-mojibake.eml',
+            'expected_subject' => 'Conteúdo com mojibake',
+            'expected_content' => 'Ação não concluída no módulo de chamados.',
+        ];
+
+        yield 'html mojibake' => [
+            'file'             => '04-html-mojibake.eml',
+            'expected_subject' => 'HTML com mojibake',
+            'expected_content' => '<p>Ação &amp; validação <strong>preservada</strong></p>',
+        ];
+
+        yield 'invalid base64 fallback' => [
+            'file'             => '05-invalid-base64-fallback.eml',
+            'expected_subject' => 'Base64 invalido',
+            'expected_content' => 'Solicitação em base64 inválido ainda deve continuar',
+        ];
+    }
+
+    #[DataProvider('charsetEvidenceMailProvider')]
+    public function testBuildTicketNormalizesCharsetEvidenceMails(
+        string $file,
+        string $expected_subject,
+        string $expected_content
+    ): void {
+        $collector = new \MailCollector();
+        $collector->getEmpty();
+        $collector->fields['name'] = 'unittests@glpi-project.org';
+        $collector->fields['create_user_from_email'] = 0;
+        $collector->fields['use_mail_date'] = 0;
+        $collector->fields['filesize_max'] = 0;
+        $collector->fields['add_to_to_observer'] = 0;
+        $collector->fields['add_cc_to_observer'] = 0;
+
+        $message = new Message([
+            'raw' => file_get_contents(GLPI_ROOT . '/tests/emails-tests/charset-evidence/' . $file),
+        ]);
+
+        $ticket = $collector->buildTicket(
+            'charset-evidence-' . $file,
+            $message,
+            [
+                'mailgates_id' => 1,
+                'play_rules'   => false,
+            ]
+        );
+
+        $this->assertSame($expected_subject, $ticket['name']);
+        $this->assertStringContainsString($expected_content, $ticket['content']);
+        $this->assertTrue(mb_check_encoding($ticket['name'], 'UTF-8'));
+        $this->assertTrue(mb_check_encoding($ticket['content'], 'UTF-8'));
+    }
+
     private function doConnect()
     {
         if (null === $this->collector) {
