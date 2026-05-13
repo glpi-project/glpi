@@ -77,7 +77,7 @@ trait VobjectConverterTrait
      */
     protected function getVCalendarForItem(CommonDBTM $item, $component_type): VCalendar
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         if (!array_key_exists($component_type, VCalendar::$componentMap)) {
             throw new InvalidArgumentException(sprintf('Invalid component type "%s"', $component_type));
@@ -113,8 +113,9 @@ trait VobjectConverterTrait
             $vcomp = $vcalendar->add($component_type);
         }
 
-        $fields = $item->fields;
-        $utc_tz = new DateTimeZone('UTC');
+        $fields  = $item->fields;
+        $utc_tz  = new DateTimeZone('UTC');
+        $user_tz = new DateTimeZone($DB->guessTimezone());
 
         if (array_key_exists('uuid', $fields)) {
             $vcomp->UID = $fields['uuid'];
@@ -149,11 +150,14 @@ trait VobjectConverterTrait
         $vcomp->URL = $CFG_GLPI['url_base'] . $this->getFormURLWithID($fields['id'], false);
 
         if (array_key_exists('begin', $fields) && !empty($fields['begin'])) {
-            $vcomp->DTSTART = (new SafeDateTime($fields['begin']))->setTimeZone($utc_tz);
+            // Planning dates are stored as local wall-times in the GLPI/user timezone.
+            // Export them with an explicit TZID instead of converting them to UTC,
+            // otherwise CalDAV clients may shift events by the local UTC offset.
+            $vcomp->DTSTART = new SafeDateTime($fields['begin'], $user_tz);
         }
 
         if (array_key_exists('end', $fields) && !empty($fields['end'])) {
-            $end_date = (new SafeDateTime($fields['end']))->setTimeZone($utc_tz);
+            $end_date = new SafeDateTime($fields['end'], $user_tz);
             if ('VTODO' === $component_type) {
                 $vcomp->DUE = $end_date;
             } else {
@@ -173,7 +177,7 @@ trait VobjectConverterTrait
                 }
                 if (array_key_exists('exceptions', $rrule_specs) && $vcomp instanceof Component) {
                     foreach ($rrule_specs['exceptions'] as $exdate) {
-                        $vcomp->add('EXDATE', (new SafeDateTime($exdate))->setTimeZone($utc_tz));
+                        $vcomp->add('EXDATE', new SafeDateTime($exdate, $user_tz));
                     }
                     unset($rrule_specs['exceptions']);
                 }
