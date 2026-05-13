@@ -80,11 +80,17 @@ final class ReparentNodeController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // The target category, if not the synthetic root, must exist.
+        // The target category, if not the synthetic root, must exist and be
+        // visible to the caller's active entity scope. canViewItem() enforces
+        // the entity restriction that getFromDB() alone would skip — without
+        // it, a user could drop items into a category from a foreign entity.
         if ($to_parent_id > 0) {
             $target_category = new KnowbaseItemCategory();
             if (!$target_category->getFromDB($to_parent_id)) {
                 throw new NotFoundHttpException();
+            }
+            if (!$target_category->canViewItem()) {
+                throw new AccessDeniedHttpException();
             }
         }
 

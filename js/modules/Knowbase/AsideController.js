@@ -376,7 +376,13 @@ export class GlpiKnowbaseAsideController
 
         // Defer the class toggle so the browser captures the un-faded element
         // for the native drag image, then fades the source in place.
+        // Guard against a stale rAF: if dragend already fired before this frame
+        // (very fast drop), skip — otherwise the class would be applied with no
+        // dragend left to clean it up.
         requestAnimationFrame(() => {
+            if (this.#drag?.source !== li) {
+                return;
+            }
             li.classList.add('kb-aside-source-dragging');
             this.#aside.classList.add('kb-aside-dragging');
         });
@@ -479,8 +485,17 @@ export class GlpiKnowbaseAsideController
             this.#revertDrop();
             return;
         }
+
+        // Capture the revert state BEFORE awaiting the fetch: dragend fires
+        // synchronously after drop and nulls this.#drag before the await
+        // resolves, so #revertDrop() would silently no-op in either error
+        // branch below.
+        const source        = this.#drag.source;
+        const origin_parent = this.#drag.origin_parent;
+        const origin_next   = this.#drag.origin_next;
+
         // Optimistic move.
-        target_children.appendChild(this.#drag.source);
+        target_children.appendChild(source);
 
         let response;
         try {
@@ -498,7 +513,7 @@ export class GlpiKnowbaseAsideController
                 }),
             });
         } catch (e) {
-            this.#revertDrop();
+            origin_parent.insertBefore(source, origin_next);
             glpi_toast_error(__("An unexpected error occurred."));
             console.error(e);
             return;
@@ -507,7 +522,7 @@ export class GlpiKnowbaseAsideController
         if (response.ok) {
             return;
         }
-        this.#revertDrop();
+        origin_parent.insertBefore(source, origin_next);
         if (response.status === 409) {
             glpi_toast_error(__("This item can't be moved here."));
         } else {
