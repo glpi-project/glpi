@@ -1129,6 +1129,12 @@ class Auth extends CommonGLPI
             // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?: getenv("REMOTE_ADDR");
 
+            // For external auth (e.g. OAuth SSO), $login_name is empty because
+            // it is resolved inside validateLogin(). Use the resolved user name.
+            if (empty($login_name) && !empty($this->user->fields['name'])) {
+                $login_name = $this->user->fields['name'];
+            }
+
             if ($this->auth_succeded) {
                 //TRANS: %1$s is the login of the user and %2$s its IP address
                 Event::log(0, "system", 3, "login", sprintf(
