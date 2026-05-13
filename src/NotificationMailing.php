@@ -105,7 +105,8 @@ class NotificationMailing implements NotificationInterface
         $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
         $mmail->SetFrom($sender['email'], Sanitizer::decodeHtmlSpecialChars($sender['name'] ?? ''), false);
 
-        $text = __('This is a test email.') . "\n-- \n" . Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]);
+        $signature = trim(Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]));
+        $text = __('This is a test email.') . (!empty($signature) ? "\n-- \n" . $signature : '');
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
             //force recipient to configured email address
