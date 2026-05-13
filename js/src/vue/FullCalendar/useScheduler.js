@@ -12,7 +12,7 @@ export default function useScheduler() {
             titleFormat: function () {
                 return __('List');
             },
-            visibleRange: function (currentDate) {
+            visibleRange: (currentDate) => {
                 const current_year = currentDate.getFullYear();
                 return {
                     start: (new Date(currentDate.getTime())).setFullYear(current_year - year_range),

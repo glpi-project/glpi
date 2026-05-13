@@ -58,13 +58,13 @@
             type: Object,
         },
     });
-
     const scheduler = useTemplateRef('scheduler');
 </script>
 
 <template>
     <div class="d-flex flex-wrap flex-sm-nowrap gap-2">
-        <PlanningFiltersPanel v-if="full_view" :planning_config="planning_config" :filters="filters" @filtersUpdated="scheduler?.refresh"></PlanningFiltersPanel>
+        <PlanningFiltersPanel v-if="full_view" :planning_config="planning_config" :filters="filters"
+                              @filtersUpdated="scheduler?.refresh"></PlanningFiltersPanel>
         <PlanningScheduler
             ref="scheduler"
             :can_create="can_create"
