@@ -708,8 +708,6 @@ class EntityTest extends DbTestCase
 
     public static function getInheritedValueBadgeProvider(): iterable
     {
-        getItemByTypeName('Entity', '_test_child_1', true);
-
         // Numeric sentinel (CONFIG_PARENT = -2): auto_assign_mode
         yield 'numeric: not inheriting returns null' => [
             'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
