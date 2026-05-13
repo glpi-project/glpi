@@ -44,6 +44,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -299,6 +300,13 @@ final class HLAPIHelper
         }
         $request = $request->withHeader('GLPI-API-Version', $this->api_version);
         $response = $this->router->handleRequest($request);
+        if ($response instanceof StreamedResponseWrapper) {
+            $symfony_response = $response->getSymfonyResponse();
+            ob_start();
+            $symfony_response->sendContent();
+            $content = ob_get_clean();
+            $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        }
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
         return $this;
     }

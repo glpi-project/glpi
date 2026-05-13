@@ -84,6 +84,7 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
+- `CommonITILObject::showSatisfactionTabContent()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
 - `Config::showFormDBSlave()`

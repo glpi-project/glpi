@@ -792,14 +792,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         if ($item instanceof self) {
             $ong    = [];
 
-            // enquete si statut clos
-            $satisfaction = new TicketSatisfaction();
-            if (
-                $satisfaction->getFromDB($item->getID())
-                && $item->fields['status'] == self::CLOSED
-            ) {
-                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::class);
-            }
             if ($item->canView()) {
                 $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
             }
@@ -816,10 +808,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         switch (get_class($item)) {
             case self::class:
                 switch ($tabnum) {
-                    case 3:
-                        self::showSatisfactionTabContent($item);
-                        break;
-
                     case 4:
                         $item->showStats();
                         break;
@@ -3779,7 +3767,7 @@ JAVASCRIPT;
                 'show_tickets_properties_on_helpdesk',
                 Session::getActiveEntity(),
             ),
-            'survey'                    => $this->getSatisfactionSurveyForHelpdesk(),
+            'survey'                    => $this->getSatisfactionSurvey(),
         ]);
 
         return true;
@@ -6348,23 +6336,4 @@ JAVASCRIPT;
         return $restrict;
     }
 
-    private function getSatisfactionSurveyForHelpdesk(): ?TicketSatisfaction
-    {
-        // On the "central" interface, the survey will be available in a
-        // dedicated tab
-        if (Session::getCurrentInterface() !== "helpdesk") {
-            return null;
-        }
-
-        // Try to find a satisfaction survey for this ticket
-        $satisfaction = static::getSatisfactionClassInstance();
-        if (!$satisfaction instanceof TicketSatisfaction) {
-            return null; // Can't happen
-        }
-        $survey_exist = $satisfaction->getFromDBByCrit([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
-        return $survey_exist ? $satisfaction : null;
-    }
 }

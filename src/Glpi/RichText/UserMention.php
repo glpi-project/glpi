@@ -166,19 +166,19 @@ final class UserMention
                     $current_actors_ids[] = $actor['users_id'];
                 }
             }
-
+            $default_use_notif = \Entity::getUsedConfig('is_notif_enable_default', $main_item->getEntityID(), '', 1);
             // Add newly mentioned actors as observers
             foreach ($mentionned_actors_ids as $user_id) {
                 if (in_array($user_id, $current_actors_ids)) {
                     continue;
                 }
-
                 $input = [
                     'type'                            => CommonITILActor::OBSERVER,
                     'users_id'                        => $user_id,
                     $main_item->getForeignKeyField()  => $main_item->fields['id'],
                     '_do_not_compute_takeintoaccount' => true,
                     '_from_object'                    => true,
+                    'use_notification'                => $default_use_notif,
                 ];
                 $userlink->add($input);
             }

@@ -689,6 +689,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'canassign'               => $canupdate,
             'can_requester'           => $this->canRequesterUpdateItem(),
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
+            'survey'                  => $this->getSatisfactionSurvey(),
         ]);
 
         return true;
@@ -1892,10 +1893,20 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
+        // If category, entity, or type fields are not updated, the template is not changed.
+        if (
+            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+            && (empty($input['type']) || $this->fields['type'] == $input['type'])
+        ) {
+            return $input;
+        }
+
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
 
-        if (!$tt) {
+        // If no template or template not found, return input without template fields
+        if (!$tt || $tt->getID() <= 0) {
             return $input;
         }
 
@@ -11022,6 +11033,24 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Returns the satisfaction survey instance for the current item if it exists, null otherwise.
+     *
+     * @return CommonITILSatisfaction|null
+     */
+    protected function getSatisfactionSurvey(): ?CommonITILSatisfaction
+    {
+        $satisfaction = static::getSatisfactionClassInstance();
+        if ($satisfaction === null) {
+            return null;
+        }
+        $survey_exist = $satisfaction->getFromDBByCrit([
+            static::getForeignKeyField() => $this->getID(),
+        ]);
+
+        return $survey_exist ? $satisfaction : null;
+    }
+
+    /**
      * Returns the {@link CommonITILSatisfaction} class instance for the current itemtype
      * @return CommonITILSatisfaction|null
      */
@@ -11032,31 +11061,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return new $classname();
         }
         return null;
-    }
-
-    /**
-     * Displays the current satisfaction survey for the given item or a message stating there is no survey.
-     *
-     * @param CommonITILObject $item The ITIL Object
-     * @return void
-     * @since 11.0.0
-     */
-    final protected static function showSatisfactionTabContent(CommonITILObject $item): void
-    {
-        $satisfaction = static::getSatisfactionClassInstance();
-
-        if ($satisfaction === null) {
-            return;
-        }
-
-        if (
-            in_array($item->fields['status'], static::getClosedStatusArray())
-            && $satisfaction->getFromDB($item->getID())
-        ) {
-            $satisfaction->showSatisfactionForm($item);
-        } else {
-            echo "<p class='center b'>" . __s('No generated survey') . "</p>";
-        }
     }
 
     /**

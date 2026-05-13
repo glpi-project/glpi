@@ -54,6 +54,6 @@ final class UrgencyConditionHandler extends NumberConditionHandler
     #[Override]
     public function getTemplateParameters(ConditionData $condition): array
     {
-        return ['values' => Urgency::getUrgencyValuesForDropdown()];
+        return ['values' => Urgency::getEnabledUrgencyValuesForDropdown()];
     }
 }

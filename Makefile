@@ -16,8 +16,9 @@ include tests/e2e/.env
 -include tests/e2e/.env.local
 
 # See: https://playwright.dev/docs/docker
+DOCKER_TTY_FLAGS = $(shell [ -t 0 ] && echo "-it")
 PLAYWRIGHT = docker run \
-	-it \
+	$(DOCKER_TTY_FLAGS) \
 	--rm \
 	--ipc=host \
 	--user=$(shell id -u):$(shell id -g) \

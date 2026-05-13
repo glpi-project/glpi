@@ -39,6 +39,7 @@ use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -63,6 +64,26 @@ final class TitleFieldTest extends DbTestCase
             form: $this->createAndGetFormWithFirstAndLastNameQuestions(),
             config: new SimpleValueConfig("My custom ticket title"),
         );
+    }
+
+    public function testTitleWithApostropheIsNotHtmlEncoded(): void
+    {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion("Subject", QuestionTypeShortText::class);
+        $form = $this->createForm($builder);
+
+        $question = current($form->getQuestions());
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: TitleField::getKey(),
+            config: new SimpleValueConfig((new AnswerTagProvider())->getTagForQuestion($question)->html),
+        );
+
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Subject" => "It's a ticket with an apostrophe",
+        ]);
+
+        $this->assertSame("It's a ticket with an apostrophe", $ticket->fields['name']);
     }
 
     private function sendFormAndAssertTicketTitle(

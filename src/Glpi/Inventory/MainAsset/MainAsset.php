@@ -449,6 +449,9 @@ abstract class MainAsset extends InventoryAsset
                 case 'domains_id':
                     $prop = 'domain';
                     break;
+                case 'manufacturers_id':
+                    $prop = 'manufacturer';
+                    break;
                 case 'ips':
                     $prop = 'ip';
                     break;

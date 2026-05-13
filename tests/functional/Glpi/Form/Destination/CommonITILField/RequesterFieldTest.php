@@ -37,6 +37,8 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use CommonITILActor;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
@@ -50,6 +52,7 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
+use Group_User;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
@@ -138,6 +141,83 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'use_notification' => 1,
                 ],
             ]
+        );
+    }
+
+    public function testGetItilRequesterForFormFiller(): void
+    {
+        //delegated user
+        $delegated_user = $this->createItem(
+            User::class,
+            ['name' => 'testRequesterFormFillerWithDelegation Delegated']
+        );
+
+        //Form filler and delegatee
+        $post_only_id = getItemByTypeName(User::class, 'post-only', true);
+
+        //create the shared group
+        $shared_group = $this->createItem(Group::class, [
+            'name' => 'testRequesterFormFillerWithDelegation Shared Group',
+        ]);
+
+        //add the form filler as delegatee and the delegated user in the shared group
+        $this->createItem(Group_User::class, [
+            'groups_id' => $shared_group->getID(),
+            'users_id'  => $post_only_id,
+            'is_userdelegate' => 1,
+        ]);
+
+        $this->createItem(Group_User::class, [
+            'groups_id' => $shared_group->getID(),
+            'users_id'  => $delegated_user->getID(),
+        ]);
+
+        $field = new RequesterField();
+        $config = new RequesterFieldConfig([ITILActorFieldStrategy::FORM_FILLER]);
+
+        //logging in as the form filler
+        $this->login('post-only', 'postonly');
+
+        $answers_set = new AnswersSet();
+        //without delegation: the form filler should be returned.
+        $answers_set->setDelegation(new DelegationData());
+
+        $actors = ITILActorFieldStrategy::FORM_FILLER->getITILActors($field, $config, $answers_set);
+        $this->assertCount(1, $actors);
+        $this->assertSame(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => $post_only_id,
+            ],
+            $actors[0]
+        );
+
+        //with delegation and notifications enabled
+        $answers_set->setDelegation(new DelegationData($delegated_user->getID(), true, 'delegatee@test.com'));
+        $actors = ITILActorFieldStrategy::FORM_FILLER->getITILActors($field, $config, $answers_set);
+        $this->assertCount(1, $actors);
+        $this->assertSame(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => $delegated_user->getID(),
+                'use_notification'  => true,
+                'alternative_email' => 'delegatee@test.com',
+            ],
+            $actors[0]
+        );
+
+        //with delegation and notifications disabled
+        $answers_set->setDelegation(new DelegationData($delegated_user->getID(), false, 'delegatee@test.com'));
+        $actors = ITILActorFieldStrategy::FORM_FILLER->getITILActors($field, $config, $answers_set);
+        $this->assertCount(1, $actors);
+        $this->assertSame(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => $delegated_user->getID(),
+                'use_notification'  => false,
+                'alternative_email' => 'delegatee@test.com',
+            ],
+            $actors[0]
         );
     }
 

@@ -121,6 +121,12 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      */
     private array $dropdown_definitions = [];
 
+    /**
+     * Plugin fields definitions fetched from plugin constant files.
+     * @var array<string, array<string, array{name: string, input_type: string, min?: int, max?: int, step?: int}>>
+     */
+    private array $generic_object_fields_definitions = [];
+
     #[Override]
     protected function getHasBeenExecutedConfigurationKey(): string
     {
@@ -1277,6 +1283,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 break;
         }
 
+        $is_dropdown_type = false;
         if (\isForeignKeyField($field_name)) {
             // Foreign key field
             if ($this->isAGenericObjectFkeyField($field_name)) {
@@ -1284,18 +1291,23 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 $target_type = $this->getTargetItemtype($source_type);
             } else {
                 $target_type = \getItemtypeForForeignKeyField($field_name);
-                if ($target_type === null) {
-                    throw new MigrationException(
-                        sprintf(__('Unable to import the "%s" field.'), $field_name),
-                        sprintf('Unable to import the `%s` field.', $field_name)
-                    );
-                }
             }
-            $specs['system_name'] = $this->getTargetField($itemtype, $field_name, with_prefix: false);
-            $specs['label']       = $target_type::getTypeName();
-            $specs['type']        = DropdownType::class;
-            $specs['itemtype']    = $target_type;
-        } else {
+            if ($target_type !== null) {
+                $is_dropdown_type = true;
+
+                $specs['system_name'] = $this->getTargetField($itemtype, $field_name, with_prefix: false);
+                $specs['label']       = $target_type::getTypeName();
+                $specs['type']        = DropdownType::class;
+                $specs['itemtype']    = $target_type;
+            } else {
+                $this->progress_indicator?->addMessage(
+                    MessageType::Warning,
+                    sprintf(__('Unable to find the target type for the "%s" field, it will not be imported as a dropdown field.'), $field_name)
+                );
+            }
+        }
+
+        if (!$is_dropdown_type) {
             // Keep only the main column type by removing anything that is preceded by a space (e.g. " unsigned")
             // or a parenthesis (e.g. "(255)").
             $field_type = \strtolower(preg_replace('/^([a-z]+)([ (].+)*$/', '$1', $field_type));
@@ -1431,6 +1443,10 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      */
     private function getGenericObjectFieldsDefinition(string $itemtype): array
     {
+        if (\array_key_exists($itemtype, $this->generic_object_fields_definitions)) {
+            return $this->generic_object_fields_definitions[$itemtype];
+        }
+
         $system_name = preg_replace('/^PluginGenericObject/', '', $itemtype);
 
         $constant_files = [
@@ -1442,6 +1458,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             sprintf('%s/genericobject/fields/%s.constant.php', GLPI_PLUGIN_DOC_DIR, \lcfirst($system_name)),
         ];
 
+        /** @var array<mixed, mixed> $GO_FIELDS */
         $GO_FIELDS = [];
         // @phpstan-ignore closure.unusedUse
         (function () use (&$GO_FIELDS, $constant_files) {
@@ -1466,16 +1483,18 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         ];
 
         // Clean definitions to keep only valid values.
-        $clean_definitions = [];
-        // @phpstan-ignore foreach.emptyArray
+        $this->generic_object_fields_definitions[$itemtype] = [];
         foreach ($GO_FIELDS as $key => $definition) {
-            // @phpstan-ignore nullCoalesce.offset
+            if (!is_string($key)) {
+                // Array key is supposed to be a field name, not an integer.
+                continue;
+            }
+
             $name = $definition['name'] ?? null;
             if (!\is_string($name)) {
                 $name = $key;
             }
 
-            // @phpstan-ignore nullCoalesce.offset
             $input_type = $definition['input_type'] ?? 'none';
             if (!\in_array($input_type, $valid_input_types, true)) {
                 throw new MigrationException(
@@ -1488,22 +1507,24 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 );
             }
 
-            $clean_definitions[$key] = [
+            $this->generic_object_fields_definitions[$itemtype][$key] = [
                 'name' => $name,
                 'input_type' => $input_type,
             ];
 
-            if ($definition['input_type'] === 'integer') {
-                foreach (['min', 'max', 'step'] as $opt) {
-                    // @phpstan-ignore nullCoalesce.offset
-                    $opt_value = $definition[$opt] ?? null;
-                    if (\is_int($opt_value)) {
-                        $clean_definitions[$key][$opt] = $opt_value;
-                    }
+            if ($input_type === 'integer') {
+                if (\array_key_exists('min', $definition) && \is_int($definition['min'])) {
+                    $this->generic_object_fields_definitions[$itemtype][$key]['min'] = $definition['min'];
+                }
+                if (\array_key_exists('max', $definition) && \is_int($definition['max'])) {
+                    $this->generic_object_fields_definitions[$itemtype][$key]['max'] = $definition['max'];
+                }
+                if (\array_key_exists('step', $definition) && \is_int($definition['step'])) {
+                    $this->generic_object_fields_definitions[$itemtype][$key]['step'] = $definition['step'];
                 }
             }
         }
 
-        return $clean_definitions;
+        return $this->generic_object_fields_definitions[$itemtype];
     }
 }
