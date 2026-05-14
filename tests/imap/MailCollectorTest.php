@@ -707,6 +707,30 @@ class MailCollectorTest extends DbTestCase
             'expected_subject' => 'Base64 invalido',
             'expected_content' => 'Solicitação em base64 inválido ainda deve continuar',
         ];
+
+        yield 'utf-8 bom stripped' => [
+            'file'             => '06-utf8-bom.eml',
+            'expected_subject' => 'BOM UTF-8',
+            'expected_content' => 'Texto com BOM antes do conteúdo',
+        ];
+
+        yield 'control bytes stripped' => [
+            'file'             => '07-control-bytes-quoted-printable.eml',
+            'expected_subject' => 'Bytes de controle',
+            'expected_content' => "Linha 1\nLinha 2",
+        ];
+
+        yield 'replacement mojibake token' => [
+            'file'             => '08-replacement-token-mojibake.eml',
+            'expected_subject' => 'Token replacement',
+            'expected_content' => 'Conteúdo � parcial',
+        ];
+
+        yield 'broken utf-8 bytes guarded' => [
+            'file'             => '09-broken-utf8-quoted-printable.eml',
+            'expected_subject' => 'UTF-8 quebrado',
+            'expected_content' => 'Prefixo',
+        ];
     }
 
     #[DataProvider('charsetEvidenceMailProvider')]

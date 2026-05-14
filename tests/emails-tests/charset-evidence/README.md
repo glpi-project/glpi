@@ -9,5 +9,9 @@ These fixtures document reproducible mail import cases that previously depended 
 | `03-utf8-mojibake.eml` | Valid UTF-8 mojibake text | Portuguese accents are repaired. |
 | `04-html-mojibake.eml` | HTML body with mojibake | HTML tags and entities are preserved while text is repaired. |
 | `05-invalid-base64-fallback.eml` | Invalid base64 transfer encoding | Import keeps processing through a non-strict fallback. |
+| `06-utf8-bom.eml` | UTF-8 BOM at body start | BOM is removed before persistence. |
+| `07-control-bytes-quoted-printable.eml` | Invisible control bytes decoded from quoted-printable | Disallowed control bytes are removed while line breaks remain. |
+| `08-replacement-token-mojibake.eml` | Double-encoded replacement token | The mojibake token is normalized. |
+| `09-broken-utf8-quoted-printable.eml` | Broken UTF-8 byte sequence | Invalid bytes do not escape the collector path. |
 
 The fixtures are intentionally independent from any plugin hook so they validate the core mail collector path.
