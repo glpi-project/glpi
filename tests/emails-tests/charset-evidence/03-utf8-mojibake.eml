@@ -1,0 +1,10 @@
+From: normal@glpi-project.org
+To: unittests@glpi-project.org
+Subject: =?UTF-8?B?Q29udGXDg8K6ZG8gY29tIG1vamliYWtl?=
+Message-ID: <charset-evidence-mojibake@example.org>
+Date: Tue, 12 May 2026 10:02:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+AÃ§Ã£o nÃ£o concluÃ­da no módulo de chamados.
