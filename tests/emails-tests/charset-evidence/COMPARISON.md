@@ -1,20 +1,20 @@
 # Mail Collector charset normalization comparison
 
 This evidence was produced with the same `tests/imap/MailCollectorTest.php::testBuildTicketNormalizesCharsetEvidenceMails`
-test and the same `.eml` fixtures.
+test, the same `.eml` fixtures, and a dedicated followup test using an existing test user.
 
 ## Commands
 
 Before the implementation, only the test and fixtures were applied on top of the previous core code:
 
 ```bash
-php vendor/bin/phpunit -c phpunit.xml.dist tests/imap/MailCollectorTest.php --filter testBuildTicketNormalizesCharsetEvidenceMails
+php vendor/bin/phpunit -c phpunit.xml.dist tests/imap/MailCollectorTest.php --filter '/(testBuildTicketNormalizesCharsetEvidenceMails|testBuildTicketNormalizesCharsetEvidenceFollowup)/'
 ```
 
 After the implementation:
 
 ```bash
-php vendor/bin/phpunit -c phpunit.xml.dist tests/functional/Glpi/Mail/ImportedMailContentSanitizerTest.php tests/imap/MailCollectorTest.php --filter '/(testSanitizeImportedMailContent|testInvalidUtf8BytesNeverEscapeSanitizer|testBuildTicketNormalizesCharsetEvidenceMails)/'
+php vendor/bin/phpunit -c phpunit.xml.dist tests/functional/Glpi/Mail/ImportedMailContentSanitizerTest.php tests/imap/MailCollectorTest.php --filter '/(testSanitizeImportedMailContent|testInvalidUtf8BytesNeverEscapeSanitizer|testBuildTicketNormalizesCharsetEvidenceMails|testBuildTicketNormalizesCharsetEvidenceFollowup)/'
 ```
 
 ## Results
@@ -30,32 +30,33 @@ php vendor/bin/phpunit -c phpunit.xml.dist tests/functional/Glpi/Mail/ImportedMa
 | Invisible control bytes | `07-control-bytes-quoted-printable.eml` | Fail: `0x00` and `0x07` remained in content | Pass |
 | Double-encoded replacement token | `08-replacement-token-mojibake.eml` | Fail: `ï¿½` remained | Pass |
 | Broken UTF-8 bytes | `09-broken-utf8-quoted-printable.eml` | Fail: content was not valid UTF-8 | Pass |
+| Followup content | Existing ticket reference with `_test_user@glpi.com` | Fail: `AÃ§Ã£o nÃ£o concluÃ­da` remained in followup content | Pass |
 
 ## Raw summaries
 
 Previous core with new evidence tests:
 
 ```text
-..FF..FFF                                                           9 / 9 (100%)
+..FF..FFFF                                                        10 / 10 (100%)
 
 FAILURES!
-Tests: 9, Assertions: 63, Failures: 5.
+Tests: 10, Assertions: 70, Failures: 6.
 ```
 
 New core, plugin disabled:
 
 ```text
-.................                                                 17 / 17 (100%)
+..................                                                18 / 18 (100%)
 
-OK (17 tests, 121 assertions)
+OK (18 tests, 129 assertions)
 ```
 
 New core, plugin temporarily enabled:
 
 ```text
-.................                                                 17 / 17 (100%)
+..................                                                18 / 18 (100%)
 
-OK (17 tests, 121 assertions)
+OK (18 tests, 129 assertions)
 ```
 
 The plugin was returned to `state=0` after the comparison.
