@@ -767,6 +767,51 @@ class MailCollectorTest extends DbTestCase
         $this->assertTrue(mb_check_encoding($ticket['content'], 'UTF-8'));
     }
 
+    public function testBuildTicketNormalizesCharsetEvidenceFollowup(): void
+    {
+        $existing_ticket = getItemByTypeName('Ticket', '_ticket01');
+        $reference = sprintf(
+            'GLPI-%d.%d.%d@localhost',
+            $existing_ticket->getID(),
+            time(),
+            rand()
+        );
+
+        $message = new Message([
+            'headers' => [
+                'from'       => '_test_user@glpi.com',
+                'to'         => 'unittests@glpi-project.org',
+                'subject'    => sprintf('[GLPI #%d] Acompanhamento com mojibake', $existing_ticket->getID()),
+                'references' => $reference,
+                'date'       => 'Tue, 12 May 2026 10:09:00 +0000',
+            ],
+            'content' => 'AÃ§Ã£o nÃ£o concluÃ­da no followup.',
+        ]);
+
+        $collector = new \MailCollector();
+        $collector->getEmpty();
+        $collector->fields['name'] = 'unittests@glpi-project.org';
+        $collector->fields['create_user_from_email'] = 0;
+        $collector->fields['use_mail_date'] = 0;
+        $collector->fields['filesize_max'] = 0;
+        $collector->fields['add_to_to_observer'] = 0;
+        $collector->fields['add_cc_to_observer'] = 0;
+
+        $ticket = $collector->buildTicket(
+            'charset-evidence-followup',
+            $message,
+            [
+                'mailgates_id' => 1,
+                'play_rules'   => false,
+            ]
+        );
+
+        $this->assertSame((int) $existing_ticket->getID(), $ticket['tickets_id']);
+        $this->assertSame(sprintf('[GLPI #%d] Acompanhamento com mojibake', $existing_ticket->getID()), $ticket['name']);
+        $this->assertSame('Ação não concluída no followup.', $ticket['content']);
+        $this->assertTrue(mb_check_encoding($ticket['content'], 'UTF-8'));
+    }
+
     private function doConnect()
     {
         if (null === $this->collector) {
