@@ -169,4 +169,9 @@ final class FormTile extends CommonDBChild implements TileInterface
     {
         return $this->fields['forms_forms_id'] ?? 0;
     }
+
+    public function getForm(): Form
+    {
+        return $this->form;
+    }
 }

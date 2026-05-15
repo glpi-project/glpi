@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.8] unreleased
 
 ### Added
+- New schemas/endpoints for Service Catalog information in High-Level API v2.4.
 
 ### Changed
 
@@ -16,6 +17,11 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
+- `x-singleton` HLAPI schema property used as a hint for the GraphQL schema generator to create a query that returns a single item, instead of generating a search query.
+- `x-graphql-resolver` HLAPI schema property used as a hint for the GraphQL schema generator to specify a custom resolver for a schema or property.
+  Its use is not necessary unless there are extremely specific, complex requirements for data fetching where it is not possible to use the default resolvers.
+  As a general rule, if you can use the `ResourceAccessor` methods in your REST endpoints, then this property should not be needed.
+- `anyOf` HLAPI schema property used to indicate that a property can be one of multiple types. This is used in combination with the `x-graphql-resolver` property to specify a custom resolver that can return different types of data based on the context of the request.
 
 #### Changes
 

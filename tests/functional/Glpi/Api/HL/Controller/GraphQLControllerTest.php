@@ -408,8 +408,11 @@ GRAPHQL);
             if ($property_info['type'] === 'object' && !empty($property_info['properties'])) {
                 // Nested object, recurse
                 $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['properties']) . ' } ';
-            } elseif ($property_info['type'] === 'array' && !empty($property_info['items']['properties'])) {
+            } elseif ($property_info['type'] === 'array') {
                 // Array of objects, recurse
+                if (isset($property_info['items']['anyOf']) || !isset($property_info['items']['properties'])) {
+                    continue;
+                }
                 $fields_query_part .= $property_name . ' { ' . $this->getCompleteFieldsRequestForSchema($property_info['items']['properties']) . ' } ';
             } else {
                 // Scalar field
@@ -436,22 +439,51 @@ GRAPHQL);
         foreach ($controllers as $controller) {
             $schemas = $controller::getKnownSchemas(null);
             foreach ($schemas as $schema_name => $schema) {
-                if (!isset($schema['x-itemtype']) || str_starts_with($schema_name, '_')) {
+                if ($schema_name !== 'ServiceCatalogInfo') {
                     continue;
                 }
-                $query = "query { $schema_name(limit: 1) { " . $this->getCompleteFieldsRequestForSchema($schema['properties']) . '} }';
+                $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema);
+                $should_have_query = (
+                    !str_starts_with($schema_name, '_')
+                    && (
+                        (isset($schema['x-itemtype']) && !$has_custom_resolver)
+                        || ($has_custom_resolver && $schema['x-graphql-resolver'] !== null)
+                    )
+                );
+                if ($schema['x-singleton'] ?? false) {
+                    $query = "query { $schema_name { " . $this->getCompleteFieldsRequestForSchema($schema['properties']) . '} }';
+                } else {
+                    $query = "query { $schema_name(limit: 1) { " . $this->getCompleteFieldsRequestForSchema($schema['properties']) . '} }';
+                }
                 $request = new Request('POST', '/GraphQL', [
                     'X-Debug-Mode' => '1', // Debug mode allows seeing more information in errors
                 ], $query);
-                $this->api->call($request, function ($call) use ($schema_name, &$schemas_errors) {
+                $this->api->call($request, function ($call) use ($schema_name, &$schemas_errors, $should_have_query) {
                     /** @var \HLAPICallAsserter $call */
-                    $call->response
-                        ->isOK()
+                    $r = $call->response;
+                    if (!$should_have_query) {
+                        $not_ok_response = false;
+                        $r->status(static function ($status_code) use (&$not_ok_response) {
+                            $not_ok_response = $status_code < 200 || $status_code >= 300;
+                        });
+                        if (!$not_ok_response) {
+                            $r->jsonContent(function ($content) use ($schema_name, &$schemas_errors) {
+                                $cannot_query_field_errors = array_filter($content['errors'] ?? [], static function ($error) {
+                                    return str_contains($error['message'] ?? '', 'Cannot query field');
+                                });
+                                if (empty($cannot_query_field_errors)) {
+                                    $schemas_errors[] = "Schema $schema_name should not be directly queryable but got OK response with content: " . json_encode($content);
+                                }
+                            });
+                        }
+                    } else {
+                        $r->isOK()
                         ->jsonContent(function ($content) use ($schema_name, &$schemas_errors) {
                             if (isset($content['errors'])) {
                                 $schemas_errors[] = "Schema $schema_name has errors: " . json_encode($content['errors']);
                             }
                         });
+                    }
                 });
             }
         }

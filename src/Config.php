@@ -605,8 +605,14 @@ class Config extends CommonDBTM
         $api_versions = Router::getAPIVersions();
         $legacy_version = array_filter($api_versions, static fn($version) => $version['api_version'] === '1');
         $legacy_version = reset($legacy_version);
+        if ($legacy_version === false) {
+            throw new LogicException("Legacy API version '1' is not found in API versions list.");
+        }
         $current_version = array_filter($api_versions, static fn($version) => $version['version'] === Router::API_VERSION);
         $current_version = reset($current_version);
+        if ($current_version === false) {
+            throw new LogicException("Current API version '" . Router::API_VERSION . "' is not found in API versions list.");
+        }
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
         $endpoint_doc = $current_version['endpoint'] . '/doc';
 

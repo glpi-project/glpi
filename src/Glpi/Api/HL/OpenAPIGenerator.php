@@ -221,6 +221,8 @@ EOT;
                 };
                 $fn_hoist_required_flags($known_schema);
 
+                self::resolveCompositionAndDiscriminators($known_schema);
+
                 $schemas[$calculated_name] = $known_schema;
                 $schemas[$calculated_name]['x-controller'] = $controller::class;
                 $schemas[$calculated_name]['x-schemaname'] = $schema_name;
@@ -229,6 +231,44 @@ EOT;
         }
 
         return self::$component_schemas_cache[$api_version] = $schemas;
+    }
+
+    /**
+     * Resolve schemas using composition/polymorphism (anyOf, oneOf, allOf).
+     * Also resolves discriminator mappings.
+     * @param array<string, mixed> $schema The schema (or sub-schema when called recursively) to resolve
+     * @return void
+     */
+    private static function resolveCompositionAndDiscriminators(array &$schema): void
+    {
+        if (isset($schema['properties']) && is_array($schema['properties'])) {
+            foreach ($schema['properties'] as &$property) {
+                self::resolveCompositionAndDiscriminators($property);
+            }
+        } elseif (isset($schema['items']) && is_array($schema['items'])) {
+            self::resolveCompositionAndDiscriminators($schema['items']);
+        } else {
+            if (isset($schema['anyOf']) && is_array($schema['anyOf'])) {
+                $resolved_anyof = [];
+                foreach ($schema['anyOf'] as $anyof_schema_name) {
+                    $component_ref = [
+                        '$ref' => '#/components/schemas/' . $anyof_schema_name,
+                    ];
+                    $resolved_anyof[] = $component_ref;
+                }
+                $schema['anyOf'] = $resolved_anyof;
+            }
+            if (isset($schema['discriminator']['mapping']) && is_array($schema['discriminator']['mapping'])) {
+                $resolved_mapping = [];
+                foreach ($schema['discriminator']['mapping'] as $mapping_key => $mapping_schema_name) {
+                    $component_ref = [
+                        '$ref' => '#/components/schemas/' . $mapping_schema_name,
+                    ];
+                    $resolved_mapping[$mapping_key] = $component_ref;
+                }
+                $schema['discriminator']['mapping'] = $resolved_mapping;
+            }
+        }
     }
 
     private function getComponentReference(string $name, string $controller): ?array
