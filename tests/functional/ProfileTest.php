@@ -443,4 +443,35 @@ class ProfileTest extends DbTestCase
             }
         }
     }
+
+    public function testExcludedTicketSearchOptionsPrepareInput(): void
+    {
+        $this->login();
+
+        $profile = $this->createItem(\Profile::class, [
+            'name'      => 'Test excluded searchoptions ' . __FUNCTION__,
+            'interface' => 'central',
+        ]);
+
+        // deduplication and non-integer filtering
+        $profile->update([
+            'id'                             => $profile->getID(),
+            'excluded_ticket_searchoptions'  => [5, 3, 5, 0, 'abc'],
+        ]);
+        $reloaded = new \Profile();
+        $reloaded->getFromDB($profile->getID());
+        $reloaded->cleanProfile();
+        $actual = $reloaded->fields['excluded_ticket_searchoptions'];
+        sort($actual);
+        $this->assertEquals([3, 5], $actual);
+
+        // empty array stores null (no restrictions)
+        $profile->update([
+            'id'                             => $profile->getID(),
+            'excluded_ticket_searchoptions'  => [],
+        ]);
+        $reloaded->getFromDB($profile->getID());
+        $reloaded->cleanProfile();
+        $this->assertEquals([], $reloaded->fields['excluded_ticket_searchoptions']);
+    }
 }
