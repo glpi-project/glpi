@@ -47,6 +47,9 @@ use Glpi\Inventory\Conf;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\ArrayNormalizer;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 /**
  * Profile class
  *
@@ -696,9 +699,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             isset($this->fields['excluded_ticket_searchoptions'])
             && !is_array($this->fields['excluded_ticket_searchoptions'])
         ) {
-            $this->fields['excluded_ticket_searchoptions'] = $this->fields['excluded_ticket_searchoptions'] !== null
-                ? (json_decode($this->fields['excluded_ticket_searchoptions'], true) ?? [])
-                : [];
+            $this->fields['excluded_ticket_searchoptions'] = json_decode($this->fields['excluded_ticket_searchoptions'], true) ?? [];
         }
         if (!isset($this->fields['excluded_ticket_searchoptions'])) {
             $this->fields['excluded_ticket_searchoptions'] = [];

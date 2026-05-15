@@ -64,6 +64,8 @@ use Session;
 use Ticket;
 use User;
 
+use function Safe\json_decode;
+
 /**
  * Object representing a search option.
  *
