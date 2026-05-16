@@ -233,7 +233,8 @@ class Ajax
                 var resizeIframe' . $rand . ' = function() {
                     try {
                         var doc = iframeEl' . $rand . '.contentWindow.document;
-                        var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+                        // Set height to content height, BUT cap it at the screen height
+                        var h = Math.min(doc.documentElement.scrollHeight, doc.body.scrollHeight) || ' . ((int) $param['height']) . ';
                     } catch(e) {
                         var h = ' . ((int) $param['height']) . ';
                     }
