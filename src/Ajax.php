@@ -234,11 +234,12 @@ class Ajax
                     try {
                         var doc = iframeEl' . $rand . '.contentWindow.document;
                         var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
-                        $("#iframe' . $domid . '").height(h);
                     } catch(e) {
                         var h = ' . ((int) $param['height']) . ';
-                        $("#iframe' . $domid . '").height(h);
                     }
+                    $("#iframe' . $domid . '").height(h);
+
+                    // reajust height to content
                     myModal' . $rand . '.handleUpdate();
                 };
 
