@@ -382,15 +382,17 @@ class Session
      */
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
+        if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
+            return;
+        }
+
         if (empty($title)) {
             $title = __('List');
         }
         if ($url === null) {
             $url = '';
 
-            $is_ajax = Request::createFromGlobals()->isXmlHttpRequest();
-
-            if (!isset($_SERVER['REQUEST_URI']) || $is_ajax || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
+            if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'], "tabs") > 0)) {
                 $url = Html::getRefererUrl();
             } else {
                 $url = $_SERVER['REQUEST_URI'];
