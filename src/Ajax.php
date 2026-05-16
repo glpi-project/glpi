@@ -211,6 +211,9 @@ class Ajax
                 // move modal to body
                 $(myModalEl' . $rand . ').appendTo($("body"));
 
+                myModalEl' . $rand . '.addEventListener("show.bs.modal", function () {
+                    $("#iframe' . $domid . '").attr("src", "' . jsescape($url) . '").removeClass("hidden");
+                });
         ';
         if ($param['reloadonclose']) {
             $js .= '
@@ -225,49 +228,21 @@ class Ajax
             ';
         }
         $js .= '
-                var h = ' . ((int) $param['height']) . ';
-                var w = ' . ((int) $param['width']) . ';
-                var iframeObj = $("#iframe' . $domid . '");
-                var iframeLoaded = false;
+                var iframeEl' . $rand . ' = document.getElementById("iframe' . $domid . '");
 
-                var adjustHeight = function() {
+                var resizeIframe' . $rand . ' = function() {
                     try {
-                        var doc = iframeObj[0].contentWindow.document;
-                        if (!doc || doc.URL === "about:blank") return;
-
-                        iframeObj.css("height", "0px");
-                        var contentHeight = doc.documentElement.scrollHeight;
-                        var bodyHeight = doc.body.scrollHeight;
-                        var finalHeight = Math.max(contentHeight, bodyHeight);
-                        if (finalHeight > 0) {
-                            iframeObj.css("height", finalHeight + "px");
-                        } else {
-                            iframeObj.css("height", h + "px");
-                        }
-                    } catch (e) {
-                        iframeObj.css("height", h + "px");
-                    }
-                    myModal' . $rand . '.handleUpdate();
+                        var doc = iframeEl' . $rand . '.contentWindow.document;
+                        var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+                        $("#iframe' . $domid . '").height(h);
+                        myModal' . $rand . '.handleUpdate();
+                    } catch(e) {}
                 };
 
-                myModalEl' . $rand . '.addEventListener("show.bs.modal", function (e) {
-                    var targetSrc = "' . jsescape($url) . '";
-                    if (!iframeLoaded) {
-                        // Prevent modal from showing until the iframe has fully loaded and calculated its height
-                        e.preventDefault();
-                        iframeObj.attr("src", targetSrc).removeClass("hidden");
-                    }
-                });
+                iframeEl' . $rand . '.onload = function() {
+                    var w = ' . ((int) $param['width']) . ';
 
-                myModalEl' . $rand . '.addEventListener("shown.bs.modal", function () {
-                    adjustHeight();
-                });
-
-                document.getElementById("iframe' . $domid . '").onload = function() {
-                    var initialLoad = !iframeLoaded;
-                    iframeLoaded = true;
-
-                    adjustHeight();
+                    resizeIframe' . $rand . '();
 
                     if (w >= 700) {
                         $("#' . $domid . ' .modal-dialog").addClass("modal-xl");
@@ -276,14 +251,9 @@ class Ajax
                     } else if (w <= 300) {
                         $("#' . $domid . ' .modal-dialog").addClass("modal-sm");
                     }
-
-                    // Show modal now that content is loaded and height is perfectly adjusted
-                    if (initialLoad) {
-                        myModal' . $rand . '.show();
-                    }
                 };
 
-                $(window).on("resize.modal' . $rand . '", adjustHeight);
+                $(window).on("resize.iframemodal' . $rand . '", resizeIframe' . $rand . ');
             });
         ';
 
