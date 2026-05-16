@@ -366,7 +366,12 @@ class Session
      */
     public static function addToNavigateListItems($itemtype, $ID)
     {
-        $_SESSION['glpilistitems'][$itemtype][] = $ID;
+        if (!isset($_SESSION['glpilistitems'][$itemtype])) {
+            $_SESSION['glpilistitems'][$itemtype] = [];
+        }
+        if (!in_array($ID, $_SESSION['glpilistitems'][$itemtype])) {
+            $_SESSION['glpilistitems'][$itemtype][] = $ID;
+        }
     }
 
 
