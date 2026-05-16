@@ -235,8 +235,11 @@ class Ajax
                         var doc = iframeEl' . $rand . '.contentWindow.document;
                         var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
                         $("#iframe' . $domid . '").height(h);
-                        myModal' . $rand . '.handleUpdate();
-                    } catch(e) {}
+                    } catch(e) {
+                        var h = ' . ((int) $param['height']) . ';
+                        $("#iframe' . $domid . '").height(h);
+                    }
+                    myModal' . $rand . '.handleUpdate();
                 };
 
                 iframeEl' . $rand . '.onload = function() {
