@@ -204,7 +204,7 @@ class SessionTrackerTest extends DbTestCase
 
         SessionTracker::revokeSessionsByAge(30);
         $this->assertEquals(0, countElementsInTable('glpi_user_sessions', [
-            'session_token_hash' => ['session_token_hash_old', 'session_token_hash_recent']
+            'session_token_hash' => ['session_token_hash_old', 'session_token_hash_recent'],
         ]));
         $this->assertEquals(1, countElementsInTable('glpi_user_sessions', ['session_token_hash' => 'session_token_hash_current']));
     }

@@ -37,8 +37,6 @@
  * @var DBmysql $DB
  */
 
-use Ramsey\Uuid\Uuid;
-
 if (!$DB->tableExists('glpi_user_sessions')) {
     $DB->doQuery(<<<SQL
         CREATE TABLE `glpi_user_sessions` (
