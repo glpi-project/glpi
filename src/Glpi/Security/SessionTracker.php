@@ -38,6 +38,7 @@ use Auth;
 use CommonGLPI;
 use DateInterval;
 use DeviceDetector\DeviceDetector;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -82,9 +83,12 @@ final class SessionTracker extends CommonGLPI
     {
         global $DB;
 
-        if (isCommandLine()) {
+        $ip = IPUtilities::getClientIP();
+        if (isCommandLine() && Environment::get() !== Environment::TESTING) {
             // Do not record sessions for command line requests.
             return true;
+        } elseif (isCommandLine()) {
+            $ip = '::1';
         }
 
         try {
@@ -92,7 +96,7 @@ final class SessionTracker extends CommonGLPI
                 'users_id' => $_SESSION['glpiID'],
                 'session_token_hash' => Session::getSessionTokenHash(),
                 'session_file' => 'sess_' . session_id(),
-                'ip_address' => IPUtilities::getClientIP(),
+                'ip_address' => $ip,
                 'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                 'auth_type' => $auth->getAuthType(),
                 'created_at' => QueryFunction::now(),
@@ -101,7 +105,7 @@ final class SessionTracker extends CommonGLPI
             $DB->insert('glpi_user_session_history', [
                 'users_id' => $_SESSION['glpiID'],
                 'session_token_hash' => Session::getSessionTokenHash(),
-                'ip_address' => IPUtilities::getClientIP(),
+                'ip_address' => $ip,
                 'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                 'auth_type' => $auth->getAuthType(),
                 'logged_in_at' => QueryFunction::now(),
@@ -291,7 +295,7 @@ final class SessionTracker extends CommonGLPI
         }
 
         if (isset($filters['type']) && $filters['type'] === 'api') {
-            $where['glpi_user_session_history.auth_type'] = 'api';
+            $where['glpi_user_session_history.auth_type'] = Auth::API;
         }
 
         if (isset($filters['user']) && $filters['user'] !== '') {
@@ -403,7 +407,7 @@ final class SessionTracker extends CommonGLPI
             $criteria['LEFT JOIN']['glpi_users'] = [
                 'ON' => [
                     'glpi_users' => 'id',
-                    'glpi_user_session_history' => 'users_id',
+                    'glpi_oauth_access_tokens' => 'user_identifier',
                 ],
             ];
             $user_filter = '%' . $filters['user'] . '%';
@@ -485,11 +489,7 @@ final class SessionTracker extends CommonGLPI
                 'last_activity' => $data['last_activity_at'] ?? $data['logged_out_at'],
                 'logout_reason' => $data['logout_reason'],
                 'users_id_revoked_by' => $data['users_id_revoked_by'],
-                'user_agent_info' => [
-                    'raw' => $data['user_agent'],
-                    'client' => $dd->getClient(),
-                    'os' => $dd->getOs(),
-                ],
+                'details' => '',
             ];
             if ($data['auth_type'] === Auth::API) {
                 $session['type'] = '<span class="d-flex gap-1"><i class="ti ti-api" aria-hidden="true"></i>' . __s('API') . '</span>';
@@ -521,14 +521,18 @@ final class SessionTracker extends CommonGLPI
                 'opera' => 'ti ti-brand-opera',
             ];
             $agent_icon = 'ti ti-help';
-            if ($dd->getClient()['type'] === 'browser') {
-                $agent_icon = $agent_browser_icons[strtolower($dd->getClient()['name'])] ?? $agent_icon;
-            }
-            $agent_description = $dd->getClient()['name'] . ' ' . $dd->getClient()['version'] . ' - ' . $dd->getOs()['name'] . ' ' . $dd->getOs()['version'];
 
-            $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
-            if ($is_current_session) {
-                $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
+            $client = $dd->getClient();
+            if ($client) {
+                if ($dd->getClient()['type'] === 'browser') {
+                    $agent_icon = $agent_browser_icons[strtolower($dd->getClient()['name'])] ?? $agent_icon;
+                }
+                $agent_description = $dd->getClient()['name'] . ' ' . $dd->getClient()['version'] . ' - ' . $dd->getOs()['name'] . ' ' . $dd->getOs()['version'];
+
+                $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
+                if ($is_current_session) {
+                    $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
+                }
             }
             $session['details'] = '<span>' . $session['details'] . '</span>';
 

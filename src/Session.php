@@ -235,12 +235,7 @@ class Session
                     $auth->addToError(__("You don't have right to connect"));
                 }
 
-                $session_recorded = false;
-                try {
-                    $session_recorded = SessionTracker::recordNewSession($auth);
-                } catch (Throwable) {
-                    // No-op
-                }
+                $session_recorded = SessionTracker::recordNewSession($auth);
                 if (!$session_recorded) {
                     self::destroy();
                     $auth->auth_succeded = false;
