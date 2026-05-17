@@ -37,13 +37,8 @@ namespace tests\units\Glpi\Security;
 use Auth;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Security\SessionTracker;
-use Glpi\Security\TOTPManager;
 use Glpi\Tests\DbTestCase;
-use Glpi\Toolbox\IPUtilities;
 use Log;
-use RobThree\Auth\Algorithm;
-use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
-use RobThree\Auth\TwoFactorAuth;
 use User;
 
 class SessionTrackerTest extends DbTestCase
@@ -120,7 +115,7 @@ class SessionTrackerTest extends DbTestCase
         $this->assertEquals(0, countElementsInTable('glpi_user_sessions', ['session_token_hash' => $session_token_hash]));
         $this->assertEquals(1, countElementsInTable('glpi_user_session_history', [
             'session_token_hash' => $session_token_hash,
-            'logout_reason' => 'admin'
+            'logout_reason' => 'admin',
         ]));
         $this->assertCount(1, $DB->request([
             'SELECT' => ['id'],
@@ -174,44 +169,44 @@ class SessionTrackerTest extends DbTestCase
 
     public function testRevokeSessionByAge(): void
     {
-            global $DB;
-            $test_users_id = getItemByTypeName('User', TU_USER, true);
-            $DB->insert('glpi_user_sessions', [
-                'users_id' => $test_users_id,
-                'session_token_hash' => 'session_token_hash_old',
-                'session_file' => 'sess_session_token_hash_old',
-                'ip_address' => '::1',
-                'user_agent' => '',
-                'auth_type' => Auth::DB_GLPI,
-                'created_at' => QueryFunction::dateSub(QueryFunction::now(), '31', 'DAY'),
-                'last_activity_at' => QueryFunction::dateSub(QueryFunction::now(), '31', 'DAY'),
-            ]);
-            $DB->insert('glpi_user_sessions', [
-                'users_id' => $test_users_id,
-                'session_token_hash' => 'session_token_hash_recent',
-                'session_file' => 'sess_session_token_hash_recent',
-                'ip_address' => '::1',
-                'user_agent' => '',
-                'auth_type' => Auth::DB_GLPI,
-                'created_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
-                'last_activity_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
-            ]);
-            $DB->insert('glpi_user_sessions', [
-                'users_id' => $test_users_id,
-                'session_token_hash' => 'session_token_hash_current',
-                'session_file' => 'sess_session_token_hash_current',
-                'ip_address' => '::1',
-                'user_agent' => '',
-                'auth_type' => Auth::DB_GLPI,
-                'created_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
-                'last_activity_at' => QueryFunction::now(),
-            ]);
+        global $DB;
+        $test_users_id = getItemByTypeName('User', TU_USER, true);
+        $DB->insert('glpi_user_sessions', [
+            'users_id' => $test_users_id,
+            'session_token_hash' => 'session_token_hash_old',
+            'session_file' => 'sess_session_token_hash_old',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'created_at' => QueryFunction::dateSub(QueryFunction::now(), '31', 'DAY'),
+            'last_activity_at' => QueryFunction::dateSub(QueryFunction::now(), '31', 'DAY'),
+        ]);
+        $DB->insert('glpi_user_sessions', [
+            'users_id' => $test_users_id,
+            'session_token_hash' => 'session_token_hash_recent',
+            'session_file' => 'sess_session_token_hash_recent',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'created_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
+            'last_activity_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
+        ]);
+        $DB->insert('glpi_user_sessions', [
+            'users_id' => $test_users_id,
+            'session_token_hash' => 'session_token_hash_current',
+            'session_file' => 'sess_session_token_hash_current',
+            'ip_address' => '::1',
+            'user_agent' => '',
+            'auth_type' => Auth::DB_GLPI,
+            'created_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
+            'last_activity_at' => QueryFunction::now(),
+        ]);
 
-            SessionTracker::revokeSessionsByAge(30);
-            $this->assertEquals(0, countElementsInTable('glpi_user_sessions', [
-                'session_token_hash' => ['session_token_hash_old', 'session_token_hash_recent']
-            ]));
-            $this->assertEquals(1, countElementsInTable('glpi_user_sessions', ['session_token_hash' => 'session_token_hash_current']));
+        SessionTracker::revokeSessionsByAge(30);
+        $this->assertEquals(0, countElementsInTable('glpi_user_sessions', [
+            'session_token_hash' => ['session_token_hash_old', 'session_token_hash_recent']
+        ]));
+        $this->assertEquals(1, countElementsInTable('glpi_user_sessions', ['session_token_hash' => 'session_token_hash_current']));
     }
 
     public function testGetSessions(): void
@@ -333,19 +328,19 @@ class SessionTrackerTest extends DbTestCase
             'type' => 'api',
         ]));
         $this->assertCount(0, $session_tracker->getSessions(users_id: 2, filters: [
-            'user' => 'post-only'
+            'user' => 'post-only',
         ]));
         $this->assertCount(2, $session_tracker->getSessions(users_id: 0, filters: [
-            'user' => 'post-only'
+            'user' => 'post-only',
         ]));
         $this->assertCount(4, $session_tracker->getSessions(users_id: 0, filters: [
-            'status' => 'active'
+            'status' => 'active',
         ]));
         $this->assertCount(0, $session_tracker->getSessions(users_id: 4, filters: [
-            'status' => 'active'
+            'status' => 'active',
         ]));
         $this->assertCount(5, $session_tracker->getSessions(users_id: 0, filters: [
-            'status' => 'all'
+            'status' => 'all',
         ]));
     }
 }
