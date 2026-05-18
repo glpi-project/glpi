@@ -163,6 +163,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
             $this->fields['users_id'] =  $options['res_items_id'];
         }
 
+        $this->fields['entities_id'] = isset($options['entities_id']) ? (int)$options['entities_id']:-1;
+
         if ($is_ajax && $is_rrule) {
             $options['candel'] = false;
             $options['addbuttons'] = [];
@@ -184,6 +186,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
                 ];
             }
         }
+
+        if (!is_array($this->fields['users_id_guests'])) $this->post_getFromDB();
 
         TemplateRenderer::getInstance()->display('pages/assistance/planning/external_event.html.twig', [
             'item' => $this,

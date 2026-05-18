@@ -94,6 +94,49 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
     }
 }
 
+if ($_REQUEST["action"] == "get_externalevent_entity") {
+    $key = 'entities_id';
+    if (
+        isset($_POST[$key])
+        && $_POST[$key] >= 0
+    ) {
+        if ($item = getItemForItemtype(PlanningExternalEvent::getType())) {
+            Html::header_nocache();
+            header("Content-Type: text/html; charset=UTF-8");
+            $data = [];
+            foreach ($_POST["data"] as $d) {
+                $data[$d['name']] = $d['value'];
+            }
+            if (isset($data['plan[begin]']) && isset($data['plan[_duration]'])) {
+                $data['begin'] = $data['plan[begin]'];
+                $data['duration'] = $data['plan[_duration]'];
+                $data['end'] = date("Y-m-d H:i:s", strtotime($data['begin']) + $data['duration']);
+            }
+            if (isset($data['planningexternaleventtemplates_id']) && $data['planningexternaleventtemplates_id'] > 0 && !(new PlanningExternalEventTemplate())->find(['id' => $data['planningexternaleventtemplates_id'], 'entities_id' => $_POST[$key]])) {
+                $_SESSION['saveInput'][$item->getType()] = ['begin' => $data['begin'], 'duration' => $data['duration'], 'end' => $data['end']];
+            }else {
+                $_SESSION['saveInput'][$item->getType()] = $data;
+            }
+
+            $item->showForm('', [
+                'from_planning_ajax' => true,
+                'begin'              => $params['begin'] ?? "",
+                'end'                => $params['end'] ?? "",
+                'res_itemtype'       => $params['res_itemtype'] ?? "",
+                'res_items_id'       => $params['res_items_id'] ?? "",
+                'entities_id'        => $_POST[$key],
+                'rand_reminder'      => $_POST['rand'],
+                'formoptions'        => "id='ajax_reminder" . $_POST['rand'] . "'"
+            ]);
+            $callback = "glpi_close_all_dialogs();
+                      GLPIPlanning.refresh();
+                      displayAjaxMessageAfterRedirect();";
+            Html::ajaxForm("#ajax_reminder" . $_POST['rand'], $callback);
+        }
+        return;
+    }
+}
+
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 
