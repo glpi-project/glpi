@@ -57,8 +57,6 @@ use RuleCriteria;
 use Session;
 use User;
 
-use function Safe\session_destroy;
-
 class DbTestCase extends GLPITestCase
 {
     /**
