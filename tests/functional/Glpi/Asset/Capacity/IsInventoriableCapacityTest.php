@@ -164,6 +164,55 @@ class IsInventoriableCapacityTest extends DbTestCase
         $this->assertContains($classname_2, $CFG_GLPI['process_types']);
     }
 
+    public function testNetworkPortTypesRegistration(): void
+    {
+        global $CFG_GLPI;
+
+        // GenericAsset (default) should not register in networkport_types
+        $definition_generic = $this->initAssetDefinition(
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => GenericAsset::class])
+                ),
+            ]
+        );
+        $classname_generic = $definition_generic->getAssetClassName();
+        $this->assertNotContains($classname_generic, $CFG_GLPI['networkport_types']);
+
+        // GenericPrinterAsset should not register in networkport_types
+        $definition_printer = $this->initAssetDefinition(
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => GenericPrinterAsset::class])
+                ),
+            ]
+        );
+        $classname_printer = $definition_printer->getAssetClassName();
+        $this->assertNotContains($classname_printer, $CFG_GLPI['networkport_types']);
+
+        // GenericNetworkAsset should register in networkport_types
+        $definition_network = $this->initAssetDefinition(
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig(['inventory_mainasset' => GenericNetworkAsset::class])
+                ),
+            ]
+        );
+        $classname_network = $definition_network->getAssetClassName();
+        $this->assertContains($classname_network, $CFG_GLPI['networkport_types']);
+
+        // Disabling the capacity should unregister from networkport_types
+        $this->assertTrue($definition_network->update(['id' => $definition_network->getID(), 'capacities' => []]));
+        $this->assertNotContains($classname_network, $CFG_GLPI['networkport_types']);
+
+        // Other definitions should be unaffected
+        $this->assertNotContains($classname_generic, $CFG_GLPI['networkport_types']);
+        $this->assertNotContains($classname_printer, $CFG_GLPI['networkport_types']);
+    }
+
     public function testIsUsed(): void
     {
         // Retrieve the test root entity
