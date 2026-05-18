@@ -93,7 +93,11 @@ class Session
         }
         // Unset all of the session variables.
         session_unset();
-        /** Regenerate session ID. Mostly for tests where multiple sessions are created and destroyed in the same process. Keeping the session ID breaks {@link SessionTracker::recordNewSession} logic as the ID is already in a record in the DB. */
+
+        /**
+         * Regenerate session ID for tests where multiple sessions are created and destroyed in the same process.
+         * Keeping the session ID breaks {@link SessionTracker::recordNewSession} logic as the ID is already in a record in the DB.
+         */
         session_regenerate_id();
         // destroy may cause problems (no login / back to login page)
         $_SESSION = [];
