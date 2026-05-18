@@ -53,7 +53,7 @@
 {% macro render_article(article, add_margin = false, favorite_state = null, current_category_id = 0) %}
     {% set is_multi = article.categories_count > 1 %}
     {% if is_multi %}
-        {% set other_categories = article.all_categories | filter((name, id) => id != current_category_id) %}
+        {% set other_categories = article.all_categories|filter((name, id) => id != current_category_id) %}
     {% endif %}
     <li
         data-glpi-kb-article-id="{{ article.id }}"
@@ -66,7 +66,7 @@
         {% endif %}
         {% if is_multi %}
             data-glpi-kb-article-multi
-            data-glpi-kb-article-other-categories="{{ other_categories | join(' · ') }}"
+            data-glpi-kb-article-other-categories="{{ other_categories|join(' · ') }}"
         {% endif %}
         class="article {{ add_margin ? 'mb-2' : '' }}"
     >
