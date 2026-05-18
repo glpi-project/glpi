@@ -4374,12 +4374,14 @@ class SearchTest extends DbTestCase
                     ];
 
                     // datatype=progressbar (with computation)
+                    // progressbar: unquote the value to avoid lexicographic comparison with LPAD() output.
+                    $signed_value_unquoted = trim($signed_value, "'");
                     yield [
                         'itemtype'          => Computer::class,
                         'search_option'     => 152, // harddrive freepercent
                         'value'             => $searched_value,
-                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value})",
-                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value})",
+                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value_unquoted})",
+                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value_unquoted})",
                     ];
 
                     // datatype=timestamp
@@ -6822,6 +6824,100 @@ class SearchTest extends DbTestCase
         $search_params['metacriteria'][0]['value'] = 99999999;
         $data = $this->doSearch(Form::class, $search_params);
         $this->assertSame(0, $data['data']['totalcount']);
+    }
+
+    /**
+     * Regression test: numeric operators (< > <= >=) on progressbar fields (e.g. "Free percentage")
+     * must produce a numeric SQL comparison, not a lexicographic one.
+     *
+     * Without the fix, LPAD() returns a zero-padded string such as '067'.
+     * Comparing '067' < '20' lexicographically is TRUE (because '0' < '2'), so every
+     * computer would wrongly match a "< 20" filter regardless of its actual free space.
+     */
+    public function testProgressbarNumericOperatorSearch(): void
+    {
+        $this->login();
+
+        $unique     = uniqid('freepct-', true);
+
+        $entity_id  = $this->getTestRootEntity(true);
+
+        $computer_low = $this->createItem(\Computer::class, [
+            'name'        => $unique . '-low',
+            'entities_id' => $entity_id,
+        ]);
+        $computer_high = $this->createItem(\Computer::class, [
+            'name'        => $unique . '-high',
+            'entities_id' => $entity_id,
+        ]);
+
+        // 10% free space  (freesize / totalsize = 10/100)
+        $this->createItem(\Item_Disk::class, [
+            'itemtype'   => \Computer::class,
+            'items_id'   => $computer_low->getID(),
+            'name'       => 'disk-low',
+            'mountpoint' => '/',
+            'totalsize'  => 100,
+            'freesize'   => 10,
+        ]);
+
+        // 67% free space  (freesize / totalsize = 67/100)
+        $this->createItem(\Item_Disk::class, [
+            'itemtype'   => \Computer::class,
+            'items_id'   => $computer_high->getID(),
+            'name'       => 'disk-high',
+            'mountpoint' => '/',
+            'totalsize'  => 100,
+            'freesize'   => 67,
+        ]);
+
+        $search_field = 152; // Volumes - Free percentage
+
+        // "contains < 20": only the 10%-free computer must match (name filter isolates our fixtures)
+        $data = $this->doSearch(\Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                [
+                    'field'      => 1, // name
+                    'searchtype' => 'contains',
+                    'value'      => $unique,
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => $search_field,
+                    'searchtype' => 'contains',
+                    'value'      => '< 20',
+                ],
+            ],
+        ]);
+
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($computer_low->getID(), $ids_found, 'Computer with 10% free space should match "< 20"');
+        $this->assertNotContains($computer_high->getID(), $ids_found, 'Computer with 67% free space must NOT match "< 20"');
+
+        // "contains >= 67": only the 67%-free computer must match
+        $data = $this->doSearch(\Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                [
+                    'field'      => 1, // name
+                    'searchtype' => 'contains',
+                    'value'      => $unique,
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => $search_field,
+                    'searchtype' => 'contains',
+                    'value'      => '>= 67',
+                ],
+            ],
+        ]);
+
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($computer_high->getID(), $ids_found, 'Computer with 67% free space should match ">= 67"');
+        $this->assertNotContains($computer_low->getID(), $ids_found, 'Computer with 10% free space must NOT match ">= 67"');
     }
 }
 
