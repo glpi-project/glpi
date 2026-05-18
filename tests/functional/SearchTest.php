@@ -6842,18 +6842,18 @@ class SearchTest extends DbTestCase
 
         $entity_id  = $this->getTestRootEntity(true);
 
-        $computer_low = $this->createItem(\Computer::class, [
+        $computer_low = $this->createItem(Computer::class, [
             'name'        => $unique . '-low',
             'entities_id' => $entity_id,
         ]);
-        $computer_high = $this->createItem(\Computer::class, [
+        $computer_high = $this->createItem(Computer::class, [
             'name'        => $unique . '-high',
             'entities_id' => $entity_id,
         ]);
 
         // 10% free space  (freesize / totalsize = 10/100)
         $this->createItem(\Item_Disk::class, [
-            'itemtype'   => \Computer::class,
+            'itemtype'   => Computer::class,
             'items_id'   => $computer_low->getID(),
             'name'       => 'disk-low',
             'mountpoint' => '/',
@@ -6863,7 +6863,7 @@ class SearchTest extends DbTestCase
 
         // 67% free space  (freesize / totalsize = 67/100)
         $this->createItem(\Item_Disk::class, [
-            'itemtype'   => \Computer::class,
+            'itemtype'   => Computer::class,
             'items_id'   => $computer_high->getID(),
             'name'       => 'disk-high',
             'mountpoint' => '/',
@@ -6874,7 +6874,7 @@ class SearchTest extends DbTestCase
         $search_field = 152; // Volumes - Free percentage
 
         // "contains < 20": only the 10%-free computer must match (name filter isolates our fixtures)
-        $data = $this->doSearch(\Computer::class, [
+        $data = $this->doSearch(Computer::class, [
             'is_deleted' => 0,
             'start'      => 0,
             'criteria'   => [
@@ -6897,7 +6897,7 @@ class SearchTest extends DbTestCase
         $this->assertNotContains($computer_high->getID(), $ids_found, 'Computer with 67% free space must NOT match "< 20"');
 
         // "contains >= 67": only the 67%-free computer must match
-        $data = $this->doSearch(\Computer::class, [
+        $data = $this->doSearch(Computer::class, [
             'is_deleted' => 0,
             'start'      => 0,
             'criteria'   => [
