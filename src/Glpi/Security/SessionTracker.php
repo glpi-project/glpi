@@ -43,6 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Debug\Profiler;
+use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\OAuth\Server;
 use Glpi\Toolbox\IPUtilities;
@@ -118,7 +119,8 @@ final class SessionTracker extends CommonGLPI
                 'auth_type' => $auth->getAuthType(),
                 'logged_in_at' => QueryFunction::now(),
             ]);
-        } catch (RuntimeException) {
+        } catch (RuntimeException $e) {
+            ErrorHandler::logCaughtException($e);
             return false;
         }
         return true;

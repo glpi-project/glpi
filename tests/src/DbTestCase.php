@@ -148,7 +148,6 @@ class DbTestCase extends GLPITestCase
     protected function logOut()
     {
         Session::destroy();
-        session_destroy();
         Session::start();
     }
 
