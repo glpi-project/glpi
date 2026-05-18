@@ -259,6 +259,10 @@ final class QuestionTypeItemTest extends DbTestCase
         unset($_SESSION['glpiis_ids_visible']);
     }
 
+    /**
+     * Data provider for testing the transformation of condition values for comparisons.
+     * Each case provides a question configuration, an input itemtype_id value, and the expected output after transformation.
+     */
     public function transformConditionValueForComparisonsProvider()
     {
         return [
