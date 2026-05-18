@@ -62,6 +62,7 @@ export class GlpiKnowbaseAsideController
         this.#aside = aside;
         this.#initCategoryToggle();
         this.#initSearch();
+        this.#initMultiCategoryHover();
     }
 
     #initCategoryToggle()
@@ -309,5 +310,108 @@ export class GlpiKnowbaseAsideController
         }
 
         return has_visible;
+    }
+
+    #initMultiCategoryHover()
+    {
+        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        if (!tree) {
+            return;
+        }
+
+        const label = tree.getAttribute('data-glpi-kb-also-in-label') ?? 'Also in';
+        let active_li = null;
+        let tooltip_el = null;
+        let tooltip_seq = 0;
+
+        const activate = (article_li) => {
+            const article_id = article_li.getAttribute('data-glpi-kb-article-id');
+            const other_cats = article_li.getAttribute('data-glpi-kb-article-other-categories');
+
+            tree.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(article_id)}"]`)
+                .forEach(el => {
+                    if (el !== article_li) {
+                        el.classList.add('kb-article--sibling');
+                    }
+                });
+
+            if (!other_cats) {
+                return;
+            }
+
+            tooltip_el = document.createElement('div');
+            tooltip_el.id = `kb-aside-multi-tooltip-${++tooltip_seq}`;
+            tooltip_el.setAttribute('role', 'tooltip');
+            tooltip_el.className = 'kb-aside-multi-tooltip';
+            tooltip_el.textContent = `${label}: ${other_cats}`;
+            document.body.appendChild(tooltip_el);
+
+            // Link the tooltip to the article's anchor for screen reader announcement.
+            article_li.querySelector('a')?.setAttribute('aria-describedby', tooltip_el.id);
+
+            const rect     = article_li.getBoundingClientRect();
+            const tip_rect = tooltip_el.getBoundingClientRect();
+            tooltip_el.style.left = `${rect.left + rect.width / 2 - tip_rect.width / 2}px`;
+            tooltip_el.style.top  = `${rect.top - tip_rect.height - 8}px`;
+        };
+
+        const deactivate = (article_li) => {
+            const article_id = article_li.getAttribute('data-glpi-kb-article-id');
+            tree.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(article_id)}"]`)
+                .forEach(el => el.classList.remove('kb-article--sibling'));
+            article_li.querySelector('a')?.removeAttribute('aria-describedby');
+            tooltip_el?.remove();
+            tooltip_el = null;
+        };
+
+        const enter = (article_li) => {
+            if (article_li === active_li) {
+                return;
+            }
+            if (active_li) {
+                deactivate(active_li);
+            }
+            active_li = article_li;
+            activate(article_li);
+        };
+
+        const leave = (related_target) => {
+            if (!active_li) {
+                return;
+            }
+            // Pointer / focus moved to a descendant of the active <li> — stay active.
+            if (related_target && active_li.contains(related_target)) {
+                return;
+            }
+            deactivate(active_li);
+            active_li = null;
+        };
+
+        // Delegation via bubbling events. Resilient to DOM mutations (drag-and-drop
+        // reparenting, search filtering) — data attributes are read fresh on every event.
+        tree.addEventListener('mouseover', (e) => {
+            const article_li = e.target.closest('[data-glpi-kb-article-multi]');
+            if (article_li) {
+                enter(article_li);
+            }
+        });
+        tree.addEventListener('mouseout', (e) => leave(e.relatedTarget));
+
+        // Keyboard parity: tabbing to a multi-category article surfaces the same tooltip.
+        tree.addEventListener('focusin', (e) => {
+            const article_li = e.target.closest('[data-glpi-kb-article-multi]');
+            if (article_li) {
+                enter(article_li);
+            }
+        });
+        tree.addEventListener('focusout', (e) => leave(e.relatedTarget));
+
+        // ARIA Tooltip pattern: Escape dismisses without moving focus.
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && active_li) {
+                deactivate(active_li);
+                active_li = null;
+            }
+        });
     }
 }

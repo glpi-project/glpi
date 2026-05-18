@@ -42,5 +42,8 @@ final class Article
         public readonly string $illustration,
         public readonly string $link,
         public readonly bool $is_current = false,
+        public readonly int $categories_count = 1,
+        /** @var array<int, string> Map of category id => category name */
+        public readonly array $all_categories = [],
     ) {}
 }

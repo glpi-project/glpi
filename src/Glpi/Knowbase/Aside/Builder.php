@@ -35,11 +35,49 @@
 namespace Glpi\Knowbase\Aside;
 
 use KnowbaseItem;
+use KnowbaseItem_KnowbaseItemCategory;
 use KnowbaseItemCategory;
 
 final class Builder
 {
-    public function __construct(private readonly int $current_id = 0) {}
+    /** @var array<int, array<int, string>> Map of article_id => [category_id => category_name] */
+    private readonly array $multi_category_data;
+
+    public function __construct(private readonly int $current_id = 0)
+    {
+        $this->multi_category_data = $this->loadMultiCategoryData();
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    private function loadMultiCategoryData(): array
+    {
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'     => [
+                'kikc.knowbaseitems_id',
+                'kic.id AS category_id',
+                'kic.name AS category_name',
+            ],
+            'FROM'       => KnowbaseItem_KnowbaseItemCategory::getTable() . ' AS kikc',
+            'INNER JOIN' => [
+                KnowbaseItemCategory::getTable() . ' AS kic' => [
+                    'ON' => ['kic' => 'id', 'kikc' => 'knowbaseitemcategories_id'],
+                ],
+            ],
+            'WHERE'      => getEntitiesRestrictCriteria('kic', '', '', true),
+            'ORDERBY'    => 'kic.name',
+        ]);
+
+        $data = [];
+        foreach ($iterator as $row) {
+            $data[(int) $row['knowbaseitems_id']][(int) $row['category_id']] = $row['category_name'];
+        }
+
+        return array_filter($data, static fn(array $names) => count($names) > 1);
+    }
 
     public function buildTree(): Tree
     {
@@ -59,12 +97,15 @@ final class Builder
             )
         );
         foreach ($articles as $article_data) {
+            $multi = $this->multi_category_data[(int) $article_data['id']] ?? null;
             $node->addArticle(new Article(
                 id: (int) $article_data['id'],
                 title: $article_data['name'] ?? '',
                 illustration: $article_data['illustration'] ?? 'kb-faq',
                 link: KnowbaseItem::getFormURLWithID($article_data['id']),
                 is_current: $this->current_id > 0 && (int) $article_data['id'] === $this->current_id,
+                categories_count: $multi !== null ? count($multi) : 1,
+                all_categories: $multi ?? [],
             ));
         }
 
@@ -73,6 +114,7 @@ final class Builder
         ]);
         foreach ($categories as $cat_data) {
             $category = new Category(
+                id: (int) $cat_data['id'],
                 title: $cat_data['name'] ?? '',
                 illustration: $cat_data['illustration'] ?: 'kb-faq',
             );
