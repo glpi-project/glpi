@@ -88,7 +88,9 @@ class Session
     public static function destroy()
     {
         self::start();
-        SessionTracker::revokeSession(self::getSessionTokenHash(), 'expired');
+        if (($current_session_token_hash = self::getSessionTokenHash()) !== null) {
+            SessionTracker::revokeSession($current_session_token_hash, 'expired');
+        }
         // Unset all of the session variables.
         session_unset();
         // destroy may cause problems (no login / back to login page)
@@ -1100,10 +1102,12 @@ class Session
     {
         global $CFG_GLPI, $DB;
 
+        $current_session_token_hash = self::getSessionTokenHash();
         if (
             !isset($_SESSION['valid_id'])
+            || $current_session_token_hash === null
             || ($_SESSION['valid_id'] !== session_id())
-            || !SessionTracker::isSessionValid(self::getSessionTokenHash())
+            || !SessionTracker::isSessionValid($current_session_token_hash)
         ) {
             throw new SessionExpiredException();
         }
@@ -2295,7 +2299,9 @@ class Session
     */
     public static function cleanOnLogout()
     {
-        SessionTracker::revokeSession(self::getSessionTokenHash(), 'user');
+        if (($current_session_token_hash = self::getSessionTokenHash()) !== null) {
+            SessionTracker::revokeSession($current_session_token_hash, 'user');
+        }
         Session::destroy();
         //Remove cookie to allow new login
         Auth::setRememberMeCookie('');

@@ -34,6 +34,7 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\inet_ntop;
 use function Safe\inet_pton;
 
 /**
@@ -144,6 +145,7 @@ class IPUtilities
      * Convert an IPv4 or IPv6 CIDR notation to a range of IPs (start and end)
      * @param string $cidr The CIDR notation to convert
      * @return array
+     * @phpstan-return list{string, string}
      */
     public static function cidrToRange(string $cidr): array
     {

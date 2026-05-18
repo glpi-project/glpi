@@ -79,7 +79,7 @@ class Preference extends CommonGLPI
             $regenerate_backup_codes = $regenerate_backup_codes && $totp->is2FAEnabled($_SESSION['glpiID']) && !$totp->isBackupCodesAvailable($_SESSION['glpiID']);
             $totp->showTOTPConfigForm($_SESSION['glpiID'], isset($_REQUEST['reset_2fa']), $regenerate_backup_codes);
         } elseif ($tabnum == 1) {
-            (new SessionTracker())->showSessionList(Session::getLoginUserID());
+            (new SessionTracker())->showSessionList((int) Session::getLoginUserID());
         }
         return true;
     }

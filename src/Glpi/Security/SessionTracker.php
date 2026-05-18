@@ -51,6 +51,14 @@ use RuntimeException;
 use Session;
 use User;
 
+use function Safe\ini_get;
+use function Safe\json_decode;
+use function Safe\parse_url;
+use function Safe\session_id;
+use function Safe\session_save_path;
+use function Safe\strtotime;
+use function Safe\unlink;
+
 /**
  * @phpstan-type SessionFilterCriteria array{user?: string, status?: 'all'|'active', type?: 'all'|'web'|'api', ip?: string}
  */
@@ -236,7 +244,11 @@ final class SessionTracker extends CommonGLPI
         }
     }
 
-    private function getIPAddressHavingCriteria($filter): array
+    /**
+     * @param string $filter
+     * @return array<string, mixed>
+     */
+    private function getIPAddressHavingCriteria(string $filter): array
     {
         global $DB;
 
@@ -449,7 +461,7 @@ final class SessionTracker extends CommonGLPI
      * @param int $users_id The user ID to filter sessions by. If 0, sessions for all users will be returned.
      * @param SessionFilterCriteria $filters
      * @param int $start The offset for pagination
-     * @return array
+     * @return list<array<string, mixed>>
      */
     public function getSessions(int $users_id = 0, array $filters = [], int $start = 0): array
     {
@@ -523,11 +535,12 @@ final class SessionTracker extends CommonGLPI
             $agent_icon = 'ti ti-help';
 
             $client = $dd->getClient();
-            if ($client) {
-                if ($dd->getClient()['type'] === 'browser') {
-                    $agent_icon = $agent_browser_icons[strtolower($dd->getClient()['name'])] ?? $agent_icon;
+            $os = $dd->getOs();
+            if (is_array($client) && is_array($os)) {
+                if ($client['type'] === 'browser') {
+                    $agent_icon = $agent_browser_icons[strtolower($client['name'])] ?? $agent_icon;
                 }
-                $agent_description = $dd->getClient()['name'] . ' ' . $dd->getClient()['version'] . ' - ' . $dd->getOs()['name'] . ' ' . $dd->getOs()['version'];
+                $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
 
                 $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
                 if ($is_current_session) {
@@ -571,11 +584,11 @@ final class SessionTracker extends CommonGLPI
             $session['details'] .= '<span class="text-muted">' . implode(', ', json_decode($data['scopes'], true)) . '</span>';
             $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
             $session['status'] .= '<br><span class="text-muted fs-5">' . sprintf(__s('Expires at %s'), $data['date_expiration']) . '</span>';
-            if (is_numeric($data['user_identifier']) && $data['user_identifier'] !== $data['client']) {
-                if (!isset($user_cache[$data['user_identifier']])) {
-                    $user_cache[$data['users_id']] = getUserLink($data['user_identifier']);
+            if (is_numeric($data['users_id']) && $data['users_id'] !== $data['client']) {
+                if (!isset($user_cache[(int) $data['users_id']])) {
+                    $user_cache[(int) $data['users_id']] = getUserLink((int) $data['users_id']);
                 }
-                $session['user'] = $user_cache[$data['user_identifier']];
+                $session['user'] = $user_cache[(int) $data['users_id']];
             } else {
                 $session['user'] = '<span class="text-muted">' . __s('Client credentials') . '</span>';
             }
@@ -594,8 +607,8 @@ final class SessionTracker extends CommonGLPI
             } elseif (!str_contains($a['status'], 'text-success') && str_contains($b['status'], 'text-success')) {
                 return 1;
             } else {
-                $a_login = $a['type_raw'] === 'api' ? $a['assumed_login'] : strtotime($a['login']);
-                $b_login = $b['type_raw'] === 'api' ? $b['assumed_login'] : strtotime($b['login']);
+                $a_login = $a['assumed_login'] ?? strtotime($a['login']);
+                $b_login = $b['assumed_login'] ?? strtotime($b['login']);
                 return $b_login <=> $a_login;
             }
         });
@@ -606,6 +619,11 @@ final class SessionTracker extends CommonGLPI
         return $sessions;
     }
 
+    /**
+     * @param int $users_id
+     * @param SessionFilterCriteria $filters
+     * @return int
+     */
     private function getSessionsCount(int $users_id = 0, array $filters = []): int
     {
         global $DB;

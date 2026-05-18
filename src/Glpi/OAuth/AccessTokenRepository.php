@@ -39,6 +39,7 @@ use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use Ramsey\Uuid\Uuid;
 use Safe\DateTime;
 use Session;
 
@@ -80,6 +81,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'user_identifier' => $accessTokenEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($accessTokenEntity->getScopes()),
             'ip_address' => IPUtilities::getClientIP(),
+            'uuid' => Uuid::uuid4()->toString(),
         ]);
     }
 
