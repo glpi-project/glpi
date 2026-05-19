@@ -14183,11 +14183,13 @@
           },
           "internal_resolution_date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "readOnly": true
           },
           "internal_take_into_account_date": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "readOnly": true
           },
           "global_validation": {
             "type": "integer",
