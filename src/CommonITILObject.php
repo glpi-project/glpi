@@ -1913,8 +1913,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ) {
             return $input;
         }
-        // @todo
-        throw new \Exception('vérifier si on doit ajouter des var liées aux ola (ligne suviante) dans le check ligne précédente');
 
         [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 

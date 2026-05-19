@@ -157,12 +157,14 @@ class SetupControllerTest extends HLAPITestCase
                         'number_time' => 30,
                         'definition_time' => 'hour',
                     ]);
-                    $ola = $this->createItem('OLA', [
+                    $ola_group_id = getItemByTypeName(\Group::class, '_test_group_1', true);
+                    $ola = $this->createItem(\OLA::class, [
                         'name' => 'Test OLA for AutoCRUD',
                         'entities_id' => $entity,
                         'slms_id' => $slm->getID(),
                         'number_time' => 30,
                         'definition_time' => 'hour',
+                        'groups_id' => $ola_group_id,
                     ]);
                     foreach ($content as $type) {
                         if ($type['itemtype'] === 'CronTask' || $type['itemtype'] === 'QueuedWebhook') {
@@ -210,6 +212,7 @@ class SetupControllerTest extends HLAPITestCase
 
         $entity = $this->getTestRootEntity(true);
         $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+        $ola_group_id = getItemByTypeName(\Group::class, '_test_group_1', true);
         $sla = $this->createItem('SLA', [
             'name' => 'Test SLA for AutoCRUD',
             'entities_id' => $entity,
@@ -223,6 +226,7 @@ class SetupControllerTest extends HLAPITestCase
             'slms_id' => $slm->getID(),
             'number_time' => 30,
             'definition_time' => 'hour',
+            'groups_id' => $ola_group_id,
         ]);
 
         foreach ([...$types_20, ...$types_23] as $type) {
