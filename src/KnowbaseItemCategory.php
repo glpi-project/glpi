@@ -131,6 +131,10 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         );
     }
 
+    /**
+     * @param array<string, mixed>|null $menus
+     * @param array<string, mixed> $options
+     */
     public static function displayFullPageForItem(
         $id,
         ?array $menus = null,
@@ -143,7 +147,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         // tab, and are copied into $this->fields by $item->can(-1, CREATE, $_GET)
         // so the parent dropdown is visually pre-selected.
         if (
-            static::isNewID($id)
+            static::isNewID((int) $id)
             && !isset($options['knowbaseitemcategories_id'])
             && isset($_GET['knowbaseitemcategories_id'])
         ) {
