@@ -2901,11 +2901,13 @@ TWIG, $twig_params);
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
-                'tree'                => (new Builder($current_id))->buildTree(),
-                'favorites'           => $favorites,
-                'current_is_favorite' => $current_is_favorite,
-                'has_other_favorites' => $has_other_favorites,
-                'can_create'          => self::canCreate(),
+                'tree'                 => (new Builder($current_id))->buildTree(),
+                'favorites'            => $favorites,
+                'current_is_favorite'  => $current_is_favorite,
+                'has_other_favorites'  => $has_other_favorites,
+                'can_create'           => self::canCreate(),
+                'can_create_category'  => KnowbaseItemCategory::canCreate(),
+                'category_form_url'    => KnowbaseItemCategory::getFormURL(),
             ]
         );
     }

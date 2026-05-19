@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro render_category(category, can_create = false) %}
+{% macro render_category(category, can_create = false, can_create_category = false, category_form_url = '') %}
     {% import _self as macros %}
     <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
         <div class="d-flex align-items-center mb-2" data-glpi-kb-aside-category-header>
@@ -60,9 +60,20 @@
                     <i class="ti ti-plus" aria-hidden="true"></i>
                 </a>
             {% endif %}
+            {% if can_create_category and category.id > 0 %}
+                <a
+                    href="{{ category_form_url }}?knowbaseitemcategories_id={{ category.id }}"
+                    class="d-flex align-items-center ms-1 p-1 text-secondary"
+                    data-glpi-kb-aside-category-create
+                    aria-label="{{ __('Create a sub-category in %s')|format(category.title) }}"
+                    title="{{ __('Create a sub-category in this category') }}"
+                >
+                    <i class="ti ti-folder-plus" aria-hidden="true"></i>
+                </a>
+            {% endif %}
         </div>
         <ul>
-            {{ macros.render_node(category, can_create) }}
+            {{ macros.render_node(category, can_create, can_create_category, category_form_url) }}
         </ul>
     </li>
 {% endmacro %}
@@ -88,13 +99,13 @@
     </li>
 {% endmacro %}
 
-{% macro render_node(node, can_create = false) %}
+{% macro render_node(node, can_create = false, can_create_category = false, category_form_url = '') %}
     {% import _self as macros %}
     {% for article in node.articles %}
         {{ macros.render_article(article) }}
     {% endfor %}
     {% for category in node.categories %}
-        {{ macros.render_category(category, can_create) }}
+        {{ macros.render_category(category, can_create, can_create_category, category_form_url) }}
     {% endfor %}
 {% endmacro %}
 
@@ -160,12 +171,12 @@
                 illustration: "",
                 articles: tree.articles,
                 categories: [],
-            }, can_create) }}
+            }, can_create, false, category_form_url) }}
         {% endif %}
 
         {# Render each categories #}
         {% for category in tree.categories %}
-            {{ macros.render_category(category, can_create) }}
+            {{ macros.render_category(category, can_create, can_create_category, category_form_url) }}
         {% endfor %}
     </ul>
     <p class="text-muted" data-glpi-kb-aside-no-results hidden>

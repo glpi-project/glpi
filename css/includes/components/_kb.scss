@@ -795,20 +795,25 @@
         cursor: pointer;
     }
 
-    // "+" button to create an article in a category: hidden by default,
-    // revealed on hover of the parent category row or when keyboard-focused.
-    [data-glpi-kb-aside-category-add] {
+    // Per-category action buttons (create article, create sub-category):
+    // hidden by default, revealed on hover of the parent category row or
+    // when keyboard-focused.
+    [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-create] {
         opacity: 0;
         transition: opacity 0.15s ease-in-out;
     }
 
     [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
-    [data-glpi-kb-aside-category-add]:focus-visible {
+    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-create],
+    [data-glpi-kb-aside-category-add]:focus-visible,
+    [data-glpi-kb-aside-category-create]:focus-visible {
         opacity: 1;
     }
 
     @media (hover: none) {
-        [data-glpi-kb-aside-category-add] {
+        [data-glpi-kb-aside-category-add],
+        [data-glpi-kb-aside-category-create] {
             opacity: 1;
         }
     }

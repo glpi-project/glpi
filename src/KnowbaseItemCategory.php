@@ -130,4 +130,36 @@ class KnowbaseItemCategory extends CommonTreeDropdown
             ]
         );
     }
+
+    public static function displayFullPageForItem(
+        $id,
+        ?array $menus = null,
+        array $options = []
+    ): void {
+        // Pre-fill the parent when the form is reached from the KB aside
+        // "create sub-category" shortcut (?knowbaseitemcategories_id=N).
+        // The forwarded $options propagate through showTabsContent() into the
+        // AJAX tab URL, end up in $_GET when common.tabs.php renders the form
+        // tab, and are copied into $this->fields by $item->can(-1, CREATE, $_GET)
+        // so the parent dropdown is visually pre-selected.
+        if (
+            static::isNewID($id)
+            && !isset($options['knowbaseitemcategories_id'])
+            && isset($_GET['knowbaseitemcategories_id'])
+        ) {
+            $parent_id = (int) $_GET['knowbaseitemcategories_id'];
+            if ($parent_id > 0) {
+                $parent = new self();
+                // can($id, READ) covers profile right + entity scoping in both
+                // directions (recursive parents AND ancestors), unlike
+                // Session::haveAccessToEntity() which fails for a user sitting
+                // in a parent entity looking at a category in a child entity.
+                if ($parent->can($parent_id, READ)) {
+                    $options['knowbaseitemcategories_id'] = $parent_id;
+                }
+            }
+        }
+
+        parent::displayFullPageForItem($id, $menus, $options);
+    }
 }
