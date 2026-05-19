@@ -2774,6 +2774,8 @@ TWIG, $twig_params);
      */
     public function showRulePreviewCriteriasForm($rules_id)
     {
+        global $CFG_GLPI;
+
         $criteria = $this->getAllCriteria();
         if (!$this->getRuleWithCriteriasAndActions($rules_id, true, false)) {
             return;
@@ -2791,9 +2793,9 @@ TWIG, $twig_params);
             }
         }
 
-        $target = '/front/rule.test.php';
+        $target = $CFG_GLPI['root_doc'] . '/front/rule.test.php';
         if ($plugin = isPluginItemType(static::class)) {
-            $target = '/plugins/' . $plugin['plugin'] . $target;
+            $target = $CFG_GLPI['root_doc'] . '/plugins/' . $plugin['plugin'] . '/front/rule.test.php';
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/rules/preview_criteria.html.twig', [
