@@ -48,6 +48,7 @@ use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime;
 
+use Safe\Exceptions\UrlException;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -55,6 +56,26 @@ use function Safe\strtotime;
 
 /**
  * Planning Class
+ * @phpstan-type UserPlanningFilterData array{type: 'user', display?: bool, color?: string}
+ * @phpstan-type GroupUsersPlanningFilterData array{type: 'group_users', users: array<string, UserPlanningFilterData>, display?: bool, color?: string}
+ * @phpstan-type ExternalPlanningFilterData array{type: 'external', name: string, display?: bool, color?: string}
+ * @phpstan-type EventFilterPlanningFilterData array{type: 'event_filter', display?: bool, color?: string}
+ * @phpstan-type PlanningFilterData UserPlanningFilterData|GroupUsersPlanningFilterData|ExternalPlanningFilterData|EventFilterPlanningFilterData
+ * @phpstan-type PlanningFilterInfo array{
+ *      filter_key: string,
+ *      filter_data: PlanningFilterData,
+ *      expanded: ' expanded'|'',
+ *      title: string,
+ *      params: array{show_delete?: boolean, filter_color_index?: integer},
+ *      color: mixed|false,
+ *      show_export_buttons: boolean,
+ *      uID: integer,
+ *      gID: integer,
+ *      login_user: User|null,
+ *      webcal_base_url: string|null,
+ *      caldav_url: string|null,
+ *      child_filters: array<string, mixed>
+ *  }
  **/
 class Planning extends CommonGLPI
 {
@@ -745,6 +766,13 @@ JAVASCRIPT;
         TemplateRenderer::getInstance()->display('pages/assistance/planning/filters.html.twig');
     }
 
+    /**
+     * @param string $filter_key
+     * @param PlanningFilterData $filter_data
+     * @param array{show_delete?: boolean, filter_color_index?: integer} $options
+     * @return ?PlanningFilterInfo
+     * @throws UrlException
+     */
     public static function getPlanningFilterInfo(string $filter_key, array $filter_data, array $options = []): ?array
     {
         global $CFG_GLPI;
@@ -756,22 +784,21 @@ JAVASCRIPT;
 
         $params['show_delete']        = true;
         $params['filter_color_index'] = 0;
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
+        foreach ($options as $key => $val) {
+            $params[$key] = $val;
         }
 
         $actor = explode('_', $filter_key);
         $uID = 0;
         $gID = 0;
+        //TODO this should be a boolean
         $expanded = '';
         $title = '';
         $caldav_item_url = null;
         $child_filters = [];
 
         if ($filter_data['type'] === 'user') {
-            $uID = $actor[1];
+            $uID = (int) $actor[1];
             $user = new User();
             $user_exists = $user->getFromDB($actor[1]);
             $title = $user->getName(); // Will return N/A if it doesn't exist anymore
@@ -796,7 +823,7 @@ JAVASCRIPT;
             }
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
-                if ($user['display']) {
+                if ($user['display'] ?? false) {
                     $enabled++;
                 } else {
                     $disabled++;
@@ -807,7 +834,7 @@ JAVASCRIPT;
                 $expanded = ' expanded';
             }
         } elseif ($filter_data['type'] === 'group') {
-            $gID = $actor[1];
+            $gID = (int) $actor[1];
             $group = new Group();
             $group_exists = $group->getFromDB($actor[1]);
             $title = $group->getName(); // Will return N/A if it doesn't exist anymore
@@ -2038,8 +2065,8 @@ TWIG, $twig_params);
                     'content'          => htmlescape($description),
                     'begin'            => $begin_dt->format('Y-m-d H:i:s'),
                     'end'              => $end_dt->format('Y-m-d H:i:s'),
-                    'event_type_color' => $planning_params['color'],
-                    'color'            => $planning_params['color'],
+                    'event_type_color' => $planning_params['backgroundColor'],
+                    'color'            => $planning_params['backgroundColor'],
                     'rrule'            => $vcomp->RRULE instanceof Recur
                   ? current($vcomp->RRULE->getJsonValue())
                   : null,
