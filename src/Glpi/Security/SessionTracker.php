@@ -632,8 +632,9 @@ final class SessionTracker extends CommonGLPI
     {
         global $DB;
 
+        $type = $filters['type'] ?? 'all';
         $criteria_php = $this->getPHPSessionsCriteria($users_id, $filters);
-        $criteria_oauth = ($filters['type'] === 'api' || $filters['type'] === 'all') ? $this->getOAuthSessionsCriteria($users_id, $filters) : [];
+        $criteria_oauth = ($type === 'api' || $type === 'all') ? $this->getOAuthSessionsCriteria($users_id, $filters) : [];
         // Remove pagination and ordering for count query
         unset($criteria_php['ORDER'], $criteria_php['LIMIT'], $criteria_php['START'],$criteria_oauth['ORDER'], $criteria_oauth['LIMIT'], $criteria_oauth['START']);
         return $DB->request($criteria_php)->count() + ($criteria_oauth ? $DB->request($criteria_oauth)->count() : 0);
