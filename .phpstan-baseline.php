@@ -14774,12 +14774,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method LevelAgreement\\:\\:computeDate\\(\\) should return string\\|null but returns bool\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,

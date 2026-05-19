@@ -966,7 +966,6 @@ TWIG, $twig_params);
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
-                /** @var class-string<CommonDBTM> $levelticketclass */
                 $levelticketclass = static::$levelticketclass;
                 if (
                     !countElementsInTable(
@@ -977,7 +976,6 @@ TWIG, $twig_params);
                         ]
                     )
                 ) {
-                    /** @var OlaLevel_Ticket|SlaLevel_Ticket $levelticket */
                     $levelticket = getItemForItemtype($levelticketclass);
                     $levelticket->add($toadd);
                 }
@@ -999,7 +997,6 @@ TWIG, $twig_params);
         $ticketfield = static::$prefix . "levels_id_ttr";
 
         if ($ticket->fields[$ticketfield] > 0) {
-            /** @var class-string<CommonDBTM> $levelticketclass */
             $levelticketclass = static::$levelticketclass;
             $iterator = $DB->request([
                 'SELECT' => 'id',
@@ -1008,7 +1005,6 @@ TWIG, $twig_params);
             ]);
 
             foreach ($iterator as $data) {
-                /** @var OlaLevel_Ticket|SlaLevel_Ticket $levelticket */
                 $levelticket = getItemForItemtype($levelticketclass);
                 $levelticket->delete(['id' => $data['id']]);
             }
