@@ -47,8 +47,8 @@ use Sabre\VObject\Property\FlatText;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime;
-
 use Safe\Exceptions\UrlException;
+
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -769,7 +769,7 @@ JAVASCRIPT;
     /**
      * @param string $filter_key
      * @param PlanningFilterData $filter_data
-     * @param array{show_delete?: boolean, filter_color_index?: integer} $options
+     * @param array{show_delete?: bool, filter_color_index?: int} $options
      * @return ?PlanningFilterInfo
      * @throws UrlException
      */
