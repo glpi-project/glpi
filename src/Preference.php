@@ -66,7 +66,7 @@ class Preference extends CommonGLPI
     {
         return [
             self::createTabEntry(text: __('Two-factor authentication (2FA)'), icon: 'ti ti-shield-lock'),
-            self::createTabEntry(_n('Session', 'Sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-shield-lock'),
+            self::createTabEntry(_n('Session', 'Sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-user-shield'),
         ];
     }
 

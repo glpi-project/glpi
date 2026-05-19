@@ -30,11 +30,13 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% set rand = random() %}
-{% set user_filter_id = 'user-filter-' ~ rand %}
-{% set status_filter_id = 'status-filter-' ~ rand %}
-{% set type_filter_id = 'type-filter-' ~ rand %}
-{% set ip_filter_id = 'ip-filter-' ~ rand %}
+{% set user_filter_id = 'filter_user' ~ rand %}
+{% set status_filter_id = 'filter_status' ~ rand %}
+{% set type_filter_id = 'filter_type' ~ rand %}
+{% set ip_filter_id = 'filter_ip' ~ rand %}
 {% set filters_popover_id = 'filters-popover-' ~ rand %}
 {% set datatable_id = 'sessions-datatable-' ~ rand %}
 
@@ -49,7 +51,10 @@
           .session-tracker-toolbar {
              display: grid;
              grid-template-columns: repeat(4, minmax(100px, 300px)) auto;
-             grid-template-rows: repeat(2, auto);
+
+             .form-field {
+                width: 100% !important;
+             }
 
              & > label {
                 grid-row: 1;
@@ -98,39 +103,48 @@
         <header class="d-flex justify-content-between">
             <div>
                 <h1>
-                    <i class="ti ti-shield-lock" aria-hidden="true"></i>
+                    <i class="ti ti-user-shield" aria-hidden="true"></i>
                     {{ __('Session list') }}
                 </h1>
             </div>
             <div>
-                <button class="btn btn-outline-danger gap-1 revoke-all-sessions">
+                <button class="btn btn-outline-danger gap-1 revoke-all-sessions"
+                        aria-label="{{ __('Revoke all active sessions') }}" title="{{ __('Revoke all active sessions') }}">
                     <i class="ti ti-logout" aria-hidden="true"></i>
-                    {{ __('Revoke all active sessions') }}
+                    <span class="desktop-only">{{ __('Revoke all active sessions') }}</span>
                 </button>
             </div>
         </header>
         {% if is_admin_view %}
             <div class="session-tracker-toolbar gap-2">
-                <label for="{{ user_filter_id }}" class="form-label">{{ _n('User', 'Users', 1) }}</label>
-                <input ref="user_field" type="search" id="{{ user_filter_id }}" class="form-control" />
-                <label for="{{ status_filter_id }}" class="form-label">{{ __('Status') }}</label>
-                <select ref="status_field" id="{{ status_filter_id }}" class="form-select">
-                    <option value="active">{{ __('Active') }}</option>
-                    <option value="all">{{ __('All') }}</option>
-                </select>
-                <label for="{{ type_filter_id }}" class="form-label">{{ _n('Type', 'Types', 1) }}</label>
-                <select ref="type_field" id="{{ type_filter_id }}" class="form-select">
-                    <option value="all">{{ __('All') }}</option>
-                    <option value="web">{{ __('Browser') }}</option>
-                    <option value="api">{{ __('API') }}</option>
-                </select>
-                <label for="{{ ip_filter_id }}" class="form-label">
-                    {{ _n('IP address', 'IP addresses', 1) }}
-                    <span class="form-help" data-bs-toggle="popover" data-bs-placement="top"
-                          data-bs-html="true" data-bs-content="{{ __('CIDR notation and comma separated values are supported.') }}">?</span>
-                </label>
-                <input ref="ip_field" type="search" id="{{ ip_filter_id }}" class="form-control"
-                       aria-describedby="{{ ip_filter_id }}helper"/>
+                {{ fields.textField('filter_user', filters['user'], _n('User', 'Users', 1), {
+                    is_horizontal: false,
+                    id: user_filter_id,
+                    rand: rand,
+                }) }}
+                {{ fields.dropdownArrayField('filter_status', filters['status'], {
+                    active: __('Active'),
+                    all: __('All'),
+                }, __('Status'), {
+                    is_horizontal: false,
+                    id: status_filter_id,
+                    rand: rand,
+                }) }}
+                {{ fields.dropdownArrayField('filter_type', filters['type'], {
+                    all: __('All'),
+                    web: __('Browser'),
+                    api: __('API'),
+                }, _n('Type', 'Types', 1), {
+                    is_horizontal: false,
+                    id: type_filter_id,
+                    rand: rand,
+                }) }}
+                {{ fields.textField('filter_ip', filters['ip'], _n('IP address', 'IP addresses', 1), {
+                    is_horizontal: false,
+                    id: ip_filter_id,
+                    helper: __('CIDR notation and comma separated values are supported.'),
+                    rand: rand,
+                }) }}
                 <div style="grid-column: 5; grid-row: 2" class="d-flex align-self-center gap-2 session-actions">
                     <button class="desktop-only btn btn-primary align-self-end gap-1 filter-sessions">
                         <i class="ti ti-filter" aria-hidden="true"></i>
@@ -164,48 +178,49 @@
                 </div>
             </div>
         {% endif %}
-        <div class="card">
-            <div class="card-body">
-                <div class="overflow-x-auto">
-                    {{ include('components/datatable.html.twig', {
-                        datatable_id: datatable_id,
-                        is_tab: true,
-                        nofilter: true,
-                        use_pager: true,
-                        nosort: true,
-                        start: start,
-                        href: href,
-                        columns: {
-                            type: _n('Type', 'Types', 1),
-                            user: _n('User', 'Users', 1),
-                            details: __('Details'),
-                            ip_address: _n('IP address', 'IP addresses', 1),
-                            login: __('Login'),
-                            last_activity: __('Last activity'),
-                            status: __('Status'),
-                            actions: __('Actions'),
-                        },
-                        formatters: {
-                            type: 'raw_html',
-                            user: 'raw_html',
-                            details: 'raw_html',
-                            login: 'datetime',
-                            last_activity: 'datetime',
-                            status: 'raw_html',
-                            actions: 'raw_html',
-                        },
-                        entries: sessions,
-                        total_number: sessions_count,
-                    }, with_context: false) }}
-                </div>
-            </div>
+        <div class="overflow-x-auto {{ is_admin_view ? 'mt-4' : '' }}">
+            {{ include('components/datatable.html.twig', {
+                datatable_id: datatable_id,
+                is_tab: true,
+                nofilter: true,
+                use_pager: true,
+                no_limit_display: true,
+                nosort: true,
+                start: start,
+                href: href,
+                columns: {
+                    type: _n('Type', 'Types', 1),
+                    user: _n('User', 'Users', 1),
+                    details: __('Details'),
+                    ip_address: _n('IP address', 'IP addresses', 1),
+                    login: __('Login'),
+                    last_activity: __('Last activity'),
+                    status: __('Status'),
+                    actions: __('Actions'),
+                },
+                formatters: {
+                    type: 'raw_html',
+                    user: 'raw_html',
+                    details: 'raw_html',
+                    login: 'datetime',
+                    last_activity: 'datetime',
+                    status: 'raw_html',
+                    actions: 'raw_html',
+                },
+                entries: sessions,
+                total_number: sessions_count,
+            }, with_context: false) }}
         </div>
     </section>
 
     <script type="module">
         const user_filter = document.getElementById('{{ user_filter_id }}');
-        const status_filter = document.getElementById('{{ status_filter_id }}');
-        const type_filter = document.getElementById('{{ type_filter_id }}');
+        const status_filter = document.getElementById('dropdown_{{ status_filter_id }}');
+        console.log({
+            'status_filter_id': '{{ status_filter_id }}',
+             'dropdown_{{ status_filter_id }}': document.getElementById('dropdown_{{ status_filter_id }}'),
+        })
+        const type_filter = document.getElementById('dropdown_{{ type_filter_id }}');
         const ip_filter = document.getElementById('{{ ip_filter_id }}');
         const filters_popover = document.getElementById('{{ filters_popover_id }}');
         const ipv4_pattern = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
@@ -233,7 +248,37 @@
                     });
                 }
             }
+
+            $(type_filter).on('change', () => {
+                reloadWithFilters();
+            });
+            $(status_filter).on('change', () => {
+                reloadWithFilters();
+            });
+            user_filter.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    reloadWithFilters();
+                }
+            });
+            ip_filter.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    reloadWithFilters();
+                }
+            });
         {% endif %}
+
+        function getFilterData() {
+            return {
+                'user': user_filter.value.trim(),
+                'status': status_filter.value,
+                'type': type_filter.value,
+                'ip': ip_filter.value.trim(),
+            };
+        }
+
+        function reloadWithFilters() {
+            window.reloadTab(new URLSearchParams(getFilterData()).toString());
+        }
 
         document.querySelector('button.revoke-all-sessions').addEventListener('click', async () => {
             const confirmed = await glpi_confirm_danger({
@@ -252,7 +297,7 @@
                         users_id: {{ is_admin_view ? 0 : session('glpiID') }}
                     }),
                 }).then(() => {
-                    window.reloadTab();
+                    reloadWithFilters();
                 });
             }
         });
@@ -276,7 +321,7 @@
                             'X-Requested-With': 'XMLHttpRequest',
                         },
                     }).then(() => {
-                        window.reloadTab();
+                        reloadWithFilters();
                     });
                 }
             });
@@ -324,8 +369,7 @@
                 }
             }
 
-            const query_params = new URLSearchParams(filters);
-            window.location.href = `${window.location.pathname}?${query_params.toString()}`;
+            reloadWithFilters();
         }
     </script>
 </div>

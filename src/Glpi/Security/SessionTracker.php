@@ -541,8 +541,10 @@ final class SessionTracker extends CommonGLPI
             if (is_array($client) && is_array($os)) {
                 if ($client['type'] === 'browser') {
                     $agent_icon = $agent_browser_icons[strtolower($client['name'])] ?? $agent_icon;
+                    $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
+                } else {
+                    $agent_description = $client['name'] . ' ' . $client['version'];
                 }
-                $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
 
                 $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
                 if ($is_current_session) {
@@ -586,11 +588,11 @@ final class SessionTracker extends CommonGLPI
             $session['details'] .= '<span class="text-muted">' . implode(', ', json_decode($data['scopes'], true)) . '</span>';
             $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
             $session['status'] .= '<br><span class="text-muted fs-5">' . sprintf(__s('Expires at %s'), $data['date_expiration']) . '</span>';
-            if (is_numeric($data['users_id']) && $data['users_id'] !== $data['client']) {
-                if (!isset($user_cache[(int) $data['users_id']])) {
-                    $user_cache[(int) $data['users_id']] = getUserLink((int) $data['users_id']);
+            if (is_numeric($session['users_id']) && $session['users_id'] !== $data['client']) {
+                if (!isset($user_cache[(int) $session['users_id']])) {
+                    $user_cache[(int) $session['users_id']] = getUserLink((int) $session['users_id']);
                 }
-                $session['user'] = $user_cache[(int) $data['users_id']];
+                $session['user'] = $user_cache[(int) $session['users_id']];
             } else {
                 $session['user'] = '<span class="text-muted">' . __s('Client credentials') . '</span>';
             }
@@ -630,10 +632,11 @@ final class SessionTracker extends CommonGLPI
     {
         global $DB;
 
-        $criteria = $this->getPHPSessionsCriteria($users_id, $filters);
+        $criteria_php = $this->getPHPSessionsCriteria($users_id, $filters);
+        $criteria_oauth = ($filters['type'] === 'api' || $filters['type'] === 'all') ? $this->getOAuthSessionsCriteria($users_id, $filters) : [];
         // Remove pagination and ordering for count query
-        unset($criteria['ORDER'], $criteria['LIMIT'], $criteria['START']);
-        return $DB->request($criteria)->count();
+        unset($criteria_php['ORDER'], $criteria_php['LIMIT'], $criteria_php['START'],$criteria_oauth['ORDER'], $criteria_oauth['LIMIT'], $criteria_oauth['START']);
+        return $DB->request($criteria_php)->count() + ($criteria_oauth ? $DB->request($criteria_oauth)->count() : 0);
     }
 
     /**
@@ -646,9 +649,9 @@ final class SessionTracker extends CommonGLPI
         $users_id = (int) ($_GET['users_id'] ?? $users_id);
         $filters = [
             'user' => $_GET['user'] ?? '',
-            'status' => $_GET['user'] ?? 'active',
-            'type' => $_GET['user'] ?? 'all',
-            'ip' => $_GET['user'] ?? '',
+            'status' => $_GET['status'] ?? 'active',
+            'type' => $_GET['type'] ?? 'all',
+            'ip' => $_GET['ip'] ?? '',
         ];
         $start = (int) ($_GET['start'] ?? 0);
 
