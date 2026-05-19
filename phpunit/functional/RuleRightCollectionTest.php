@@ -292,6 +292,59 @@ class RuleRightCollectionTest extends DbTestCase
         ];
     }
 
+    public function testTestAllRulesPreservesCustomLdapFieldForPatternEnd(): void
+    {
+        $this->login();
+
+        // --- arrange : create a rule with ---
+        $this->createItem(\RuleRightParameter::class, [
+            'name'  => 'Organizational Unit',
+            'value' => 'ou',
+        ]);
+
+        // Create a RuleRight with PATTERN_END criteria on custom LDAP field 'ou'
+        $rule = $this->createItem(\Rule::class, [
+            'sub_type'     => \RuleRight::class,
+            'name'         => 'Test PATTERN_END on custom LDAP field',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'ou',
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => 'dept',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // 'normal' profile
+        ]);
+
+        // Input simulating a rule preview with LDAP type and a custom field 'ou'
+        // whose value ends with 'dept'
+        $input = [
+            'TYPE'  => \Auth::LDAP,
+            'LOGIN' => 'testuser',
+            'ou'    => 'it_dept',
+        ];
+
+        $collection = new \RuleRightCollection();
+
+        // --- act ---
+        $output = $collection->testAllRules($input, [], $input);
+
+        // --- assert ---
+        $this->assertArrayHasKey('result', $output);
+        // The rule should have matched (result = 1) because 'it_dept' ends with 'dept'
+        $this->assertEquals(1, $output['result'][$rule->getID()]['result'], 'rule not reported as matched but it should.');
+    }
+
     /**
      * @dataProvider testExportXMLProvider
      */
