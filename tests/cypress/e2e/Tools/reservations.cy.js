@@ -56,14 +56,14 @@ describe('Reservations', () => {
                 return false;
             }
         });
-        cy.get('.fc-week .fc-day').first().click();
+        cy.get('.fc-daygrid-day').first().click();
         cy.findByRole('dialog', {name: 'Add reservation'}).within(() => {
             cy.contains('Reservable computer');
             cy.getDropdownByLabelText('By').selectDropdownValue('E2E Tests');
             cy.findByRole('button', { name: 'Add' }).click();
         });
 
-        cy.get('.fc-day-grid-event').first().click();
+        cy.get('.fc-daygrid-day .fc-daygrid-event').first().click();
         cy.findByRole('dialog', {name: 'Edit reservation'}).within(() => {
             cy.contains('Reservable computer');
             cy.findByRole('button', { name: 'Close' }).click();
@@ -97,19 +97,19 @@ describe('Reservations', () => {
 
         function gotoOctober2024() {
             cy.findByRole('button', { name: 'month' }).click();
-            cy.get('.fc-header-toolbar .fc-center').contains('November 2024').should('exist');
+            cy.get('.fc-header-toolbar .fc-toolbar-title').contains('November 2024').should('exist');
             // Change month to ensure the back URL computes correctly
-            cy.get('.fc-header-toolbar').findByLabelText('prev').click();
-            cy.get('.fc-header-toolbar .fc-center').contains('October 2024').should('exist');
+            cy.get('.fc-header-toolbar').findByRole('button', {name: 'Previous month'}).click();
+            cy.get('.fc-header-toolbar .fc-toolbar-title').contains('October 2024').should('exist');
         }
 
         function checkOctober2024() {
-            cy.get('.fc-header-toolbar .fc-center').contains('October 2024').should('exist');
+            cy.get('.fc-header-toolbar .fc-toolbar-title').contains('October 2024').should('exist');
             cy.url().should('match', /(defaultDate=2024-10-\d{2}(&|$))|(tab_params%5BdefaultDate%5D=2024-10-\d{2}(&|$))/);
         }
 
         function addReservation() {
-            cy.get('.fc-day-grid .fc-day:not(.fc-other-month)').first().click();
+            cy.get('.fc-daygrid-day:not(.fc-day-other)').first().click();
             cy.findByRole('dialog', {name: 'Add reservation'}).within(() => {
                 cy.contains('Reservable computer');
                 cy.getDropdownByLabelText('By').selectDropdownValue('E2E Tests');
@@ -118,7 +118,7 @@ describe('Reservations', () => {
         }
 
         function updateReservation() {
-            cy.get('.fc-day-grid-event').first().click();
+            cy.get('.fc-daygrid-event').first().click();
             cy.findByRole('dialog', {name: 'Edit reservation'}).within(() => {
                 cy.contains('Reservable computer');
                 cy.findByRole('button', { name: 'Save' }).click();
@@ -126,7 +126,7 @@ describe('Reservations', () => {
         }
 
         function deleteReservation() {
-            cy.get('.fc-day-grid-event').first().click();
+            cy.get('.fc-daygrid-event').first().click();
             cy.findByRole('dialog', {name: 'Edit reservation'}).within(() => {
                 cy.contains('Reservable computer');
                 cy.findByRole('button', { name: 'Delete permanently' }).click();
