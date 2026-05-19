@@ -49,8 +49,10 @@ use Glpi\Knowbase\History\TranslationRevisionEvent;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
+use KnowbaseItem_KnowbaseItemCategory;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
+use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
 use Session;
 use Ticket;
@@ -860,6 +862,86 @@ final class HistoryBuilderTest extends DbTestCase
 
         $this->assertInstanceOf(LogEvent::class, $events[1]);
         $this->assertEquals("File added", $events[1]->getLabel());
+    }
+
+    public function testCategoryAddedAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $category = $this->createItem(KnowbaseItemCategory::class, [
+            'name' => 'How-to',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+
+        $this->createItem(KnowbaseItem_KnowbaseItemCategory::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'knowbaseitemcategories_id' => $category->getID(),
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Added to category", $events[0]->getLabel());
+        $this->assertStringContainsString("How-to", $events[0]->getDescription());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
+    public function testCategoryRemovedAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $category = $this->createItem(KnowbaseItemCategory::class, [
+            'name' => 'Obsolete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+
+        $relation = $this->createItem(KnowbaseItem_KnowbaseItemCategory::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'knowbaseitemcategories_id' => $category->getID(),
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->deleteItem(KnowbaseItem_KnowbaseItemCategory::class, $relation->getID(), purge: true);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(3, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Removed from category", $events[0]->getLabel());
+        $this->assertStringContainsString("Obsolete", $events[0]->getDescription());
+
+        $this->assertInstanceOf(LogEvent::class, $events[1]);
+        $this->assertEquals("Added to category", $events[1]->getLabel());
     }
 
     public function testDocumentChangesWithContentRevisions(): void
