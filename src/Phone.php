@@ -535,6 +535,8 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
 
         $tab = array_merge($tab, Agent::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
+
         return $tab;
     }
 
