@@ -265,7 +265,7 @@ EOT,
                 'x-version-introduced' => '2.1.0',
                 'x-itemtype' => OLA::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => $base_la_properties,
+                'properties' => ['group' => ['x-version-introduced' => '2.4.0'] + self::getDropdownTypeSchema(class: \Group::class, full_schema: 'Group')] + $base_la_properties,
             ],
             'SLALevel' => [
                 'x-version-introduced' => '2.1.0',
