@@ -247,9 +247,9 @@ class DeviceSimcard extends CommonDevice
             'joinparams'    => [
                 'beforejoin' => [
                     'table'      => 'glpi_items_devicesimcards',
-                    'joinparams' => $main_joinparams
-                ]
-            ]
+                    'joinparams' => $main_joinparams,
+                ],
+            ],
         ];
 
 
