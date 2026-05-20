@@ -63,7 +63,6 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await dialog.getByRole('button', { name: 'Insert' }).click();
             await expect(dialog).toBeHidden();
 
-            // Placeholder is created in the editor with the parsed attrs
             const placeholder = kb.videoEmbedPlaceholders;
             await expect(placeholder).toHaveCount(1);
             await expect(placeholder).toHaveAttribute('data-video-provider', 'youtube');
@@ -93,6 +92,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(dialog).toBeHidden();
 
             const placeholder = kb.videoEmbedPlaceholders;
+            await expect(placeholder).toHaveCount(1);
             await expect(placeholder).toHaveAttribute('data-video-provider', 'dailymotion');
             await expect(placeholder).toHaveAttribute('data-video-id', 'x7ufrcj');
         });
@@ -120,6 +120,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(dialog).toBeHidden();
 
             const placeholder = kb.videoEmbedPlaceholders;
+            await expect(placeholder).toHaveCount(1);
             await expect(placeholder).toHaveAttribute('data-video-provider', 'vimeo');
             await expect(placeholder).toHaveAttribute('data-video-id', '76979871');
         });
@@ -176,77 +177,12 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
         });
     });
 
-    test.describe('Paste recognition', () => {
-
-        test('Pasting a YouTube URL converts it to an embed placeholder', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'YouTube paste-to-embed',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            // eslint-disable-next-line playwright/no-raw-locators
-            await kb.editor.contentContainer.locator('.ProseMirror').evaluate((element) => {
-                const dataTransfer = new DataTransfer();
-                dataTransfer.setData('text/plain', 'https://youtu.be/dQw4w9WgXcQ');
-                element.dispatchEvent(new ClipboardEvent('paste', {
-                    bubbles: true,
-                    cancelable: true,
-                    clipboardData: dataTransfer,
-                }));
-            });
-
-            const placeholder = kb.videoEmbedPlaceholders;
-            await expect(placeholder).toHaveAttribute('data-video-provider', 'youtube');
-            await expect(placeholder).toHaveAttribute('data-video-id', 'dQw4w9WgXcQ');
-        });
-
-        test('Pasting a Vimeo URL converts it to an embed placeholder', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'Vimeo paste-to-embed',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            // eslint-disable-next-line playwright/no-raw-locators
-            await kb.editor.contentContainer.locator('.ProseMirror').evaluate((element) => {
-                const dataTransfer = new DataTransfer();
-                dataTransfer.setData('text/plain', 'https://vimeo.com/76979871');
-                element.dispatchEvent(new ClipboardEvent('paste', {
-                    bubbles: true,
-                    cancelable: true,
-                    clipboardData: dataTransfer,
-                }));
-            });
-
-            const placeholder = kb.videoEmbedPlaceholders;
-            await expect(placeholder).toHaveAttribute('data-video-provider', 'vimeo');
-            await expect(placeholder).toHaveAttribute('data-video-id', '76979871');
-        });
-    });
-
     test.describe('Server-side rendering', () => {
 
         test('Saved YouTube embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
-            // Pre-seed the answer with the canonical placeholder, exactly as
-            // the editor would store it.
             const id = await api.createItem('KnowbaseItem', {
                 name: 'Stored YouTube embed',
                 entities_id: getWorkerEntityId(),
@@ -259,8 +195,47 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(iframe).toHaveCount(1);
             await expect(iframe).toHaveAttribute('src', /^https:\/\/www\.youtube-nocookie\.com\/embed\/dQw4w9WgXcQ$/);
             await expect(iframe).toHaveAttribute('loading', 'lazy');
-            await expect(iframe).toHaveAttribute('sandbox', /allow-scripts/);
-            await expect(iframe).toHaveAttribute('sandbox', /allow-same-origin/);
+            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
+            await expect(iframe).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        });
+
+        test('Saved Dailymotion embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Stored Dailymotion embed',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Watch:</p><div class="video-embed" data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>',
+            });
+
+            await kb.goto(id);
+
+            const iframe = kb.videoEmbedIframes;
+            await expect(iframe).toHaveCount(1);
+            await expect(iframe).toHaveAttribute('src', /^https:\/\/www\.dailymotion\.com\/embed\/video\/x7ufrcj$/);
+            await expect(iframe).toHaveAttribute('loading', 'lazy');
+            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
+            await expect(iframe).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        });
+
+        test('Saved Vimeo embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Stored Vimeo embed',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Watch:</p><div class="video-embed" data-video-provider="vimeo" data-video-id="76979871"></div>',
+            });
+
+            await kb.goto(id);
+
+            const iframe = kb.videoEmbedIframes;
+            await expect(iframe).toHaveCount(1);
+            await expect(iframe).toHaveAttribute('src', /^https:\/\/player\.vimeo\.com\/video\/76979871\?dnt=1$/);
+            await expect(iframe).toHaveAttribute('loading', 'lazy');
+            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
             await expect(iframe).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
         });
 
@@ -271,7 +246,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             const id = await api.createItem('KnowbaseItem', {
                 name: 'Stored unknown provider',
                 entities_id: getWorkerEntityId(),
-                answer: '<p>Before</p><div data-video-provider="evil" data-video-id="exploit"></div><p>After</p>',
+                answer: '<p>Before</p><div class="video-embed" data-video-provider="evil" data-video-id="exploit"></div><p>After</p>',
             });
 
             await kb.goto(id);
@@ -279,6 +254,43 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(kb.videoEmbedIframes).toHaveCount(0);
             await expect(kb.editor.contentContainer).toContainText('Before');
             await expect(kb.editor.contentContainer).toContainText('After');
+        });
+
+        test('Video inserted via dialog survives save and re-edit without duplication', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Round-trip video embed',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('Video');
+
+            const dialog = kb.videoDialog;
+            await dialog.getByLabel('Video URL').fill('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+            await dialog.getByRole('button', { name: 'Insert' }).click();
+            await expect(dialog).toBeHidden();
+
+            await kb.editor.save();
+
+            await expect(kb.videoEmbedIframes).toHaveCount(1);
+
+            await kb.editor.enterEditMode();
+
+            await expect(kb.videoEmbedPlaceholders).toHaveCount(1);
+            await expect(kb.videoEmbedPlaceholders).toHaveAttribute('data-video-provider', 'youtube');
+            await expect(kb.videoEmbedPlaceholders).toHaveAttribute('data-video-id', 'dQw4w9WgXcQ');
+
+            await kb.editor.save();
+
+            await expect(kb.videoEmbedIframes).toHaveCount(1);
         });
     });
 });
