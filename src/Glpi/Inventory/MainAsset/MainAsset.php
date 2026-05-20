@@ -760,7 +760,7 @@ abstract class MainAsset extends InventoryAsset
 
         if ($items_id != 0) {
             $this->item->getFromDB($items_id);
-        }else {
+        } else {
             // reset item with default values to be able to use handleLinks
             // without keep previous item values (from stacked switch for example)
             $this->item->getEmpty();
