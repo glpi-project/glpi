@@ -34,11 +34,15 @@
 
 namespace tests\units;
 
+use Alert;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
+use PlanningRecall;
 use Project;
 use ProjectTask;
 use ProjectTaskTeam;
+use QueuedNotification;
+use Session;
 
 /* Test for inc/projecttask.class.php */
 
@@ -1065,5 +1069,248 @@ class ProjectTaskTest extends DbTestCase
 
         // Toujours une seule entrée en base
         $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+    }
+
+    public function testPlanningRecallCreatedOnAdd(): void
+    {
+        $this->login();
+        $users_id = Session::getLoginUserID();
+
+        $project = $this->createItem(Project::class, ['name' => 'Test project for recall']);
+
+        $task    = new ProjectTask();
+        $task_id = $task->add([
+            'name'            => 'Task with recall',
+            'projects_id'     => $project->getID(),
+            'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
+            'plan_end_date'   => date('Y-m-d H:i:s', strtotime('+2 days')),
+            '_planningrecall' => [
+                'itemtype'    => 'ProjectTask',
+                'items_id'    => 0,
+                'users_id'    => $users_id,
+                'before_time' => HOUR_TIMESTAMP,
+                'field'       => 'plan_end_date',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+
+        $recall = new PlanningRecall();
+        $this->assertTrue(
+            $recall->getFromDBByCrit([
+                'itemtype' => 'ProjectTask',
+                'items_id' => $task_id,
+                'users_id' => $users_id,
+            ])
+        );
+        $this->assertSame(HOUR_TIMESTAMP, (int) $recall->fields['before_time']);
+    }
+
+    public function testPlanningRecallUpdatedOnPlanEndDateChange(): void
+    {
+        $this->login();
+        $users_id = Session::getLoginUserID();
+
+        $project  = $this->createItem(Project::class, ['name' => 'Project for recall update']);
+        $end_date = date('Y-m-d H:i:s', strtotime('+3 days'));
+
+        $task = $this->createItem(ProjectTask::class, [
+            'name'            => 'Task for recall update',
+            'projects_id'     => $project->getID(),
+            'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
+            'plan_end_date'   => $end_date,
+            '_planningrecall' => [
+                'itemtype'    => 'ProjectTask',
+                'items_id'    => 0,
+                'users_id'    => $users_id,
+                'before_time' => HOUR_TIMESTAMP,
+                'field'       => 'plan_end_date',
+            ],
+        ]);
+
+        $recall = new PlanningRecall();
+        $this->assertTrue(
+            $recall->getFromDBByCrit([
+                'itemtype' => 'ProjectTask',
+                'items_id' => $task->getID(),
+                'users_id' => $users_id,
+            ])
+        );
+        $expected_when = date('Y-m-d H:i:s', strtotime($end_date) - HOUR_TIMESTAMP);
+        $this->assertSame($expected_when, $recall->fields['when']);
+
+        $new_end_date    = date('Y-m-d H:i:s', strtotime('+5 days'));
+        $new_expected_when = date('Y-m-d H:i:s', strtotime($new_end_date) - HOUR_TIMESTAMP);
+
+        $task->update([
+            'id'            => $task->getID(),
+            'plan_end_date' => $new_end_date,
+        ]);
+
+        $recall->getFromDB($recall->getID());
+        $this->assertSame($new_expected_when, $recall->fields['when']);
+    }
+
+    public function testDatetimeSearchOptionsHaveMaybeFuture(): void
+    {
+        $task    = new ProjectTask();
+        $options = $task->rawSearchOptions();
+
+        $fields = ['plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date'];
+        foreach ($fields as $field) {
+            $found = array_filter($options, static fn($opt) => ($opt['field'] ?? '') === $field);
+            $this->assertNotEmpty($found, "Search option for '{$field}' not found");
+            $option = reset($found);
+            $this->assertTrue(
+                isset($option['maybefuture']) && $option['maybefuture'] === true,
+                "Option 'maybefuture' missing or not true for field '{$field}'"
+            );
+        }
+    }
+
+    public function testCronProjectTasksReminderSendsNotification(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_notifications']      = 1;
+        $CFG_GLPI['notifications_mailing']  = 1;
+
+        $project = $this->createItem(Project::class, ['name' => 'Project for cron reminder']);
+        $user    = getItemByTypeName('User', TU_USER);
+
+        if (!countElementsInTable(\Notification::getTable(), ['itemtype' => 'ProjectTask', 'event' => 'planningrecall'])) {
+            $notif_id = $this->createItem(\Notification::class, [
+                'name'         => 'Project Task Planning Reminder',
+                'itemtype'     => 'ProjectTask',
+                'event'        => 'planningrecall',
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ])->getID();
+            $template = new \NotificationTemplate();
+            $template->getFromDBByCrit(['itemtype' => 'ProjectTask']);
+            if ($template->fields['id'] ?? 0) {
+                $this->createItem(\Notification_NotificationTemplate::class, [
+                    'notifications_id'         => $notif_id,
+                    'mode'                     => 'mailing',
+                    'notificationtemplates_id' => $template->fields['id'],
+                ]);
+            }
+            foreach ([\Notification::TEAM_USER, \Notification::AUTHOR] as $items_id) {
+                $this->createItem(\NotificationTarget::class, [
+                    'items_id'         => $items_id,
+                    'type'             => \Notification::USER_TYPE,
+                    'notifications_id' => $notif_id,
+                ]);
+            }
+        }
+
+        $task = $this->createItem(ProjectTask::class, [
+            'name'            => 'Task approaching deadline',
+            'projects_id'     => $project->getID(),
+            'plan_start_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+            'plan_end_date'   => date('Y-m-d H:i:s', strtotime('+12 hours')),
+        ]);
+
+        $team = new ProjectTaskTeam();
+        $team->add([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $user->getID(),
+        ]);
+
+        $alert_count_before = countElementsInTable(Alert::getTable(), [
+            'itemtype' => 'ProjectTask',
+            'items_id' => $task->getID(),
+        ]);
+        $this->assertSame(0, (int) $alert_count_before);
+
+        $result = ProjectTask::cronProjectTasksReminder();
+
+        $this->assertSame(1, $result);
+
+        $this->assertSame(
+            1,
+            countElementsInTable(Alert::getTable(), [
+                'itemtype' => 'ProjectTask',
+                'type'     => Alert::ACTION,
+                'items_id' => $task->getID(),
+            ])
+        );
+    }
+
+    public function testCronProjectTasksReminderDoesNotSendTwice(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_notifications']      = 1;
+        $CFG_GLPI['notifications_mailing']  = 1;
+
+        $project = $this->createItem(Project::class, ['name' => 'Project for cron no double send']);
+        $user    = getItemByTypeName('User', TU_USER);
+
+        if (!countElementsInTable(\Notification::getTable(), ['itemtype' => 'ProjectTask', 'event' => 'planningrecall'])) {
+            $notif_id = $this->createItem(\Notification::class, [
+                'name'         => 'Project Task Planning Reminder',
+                'itemtype'     => 'ProjectTask',
+                'event'        => 'planningrecall',
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ])->getID();
+            $template = new \NotificationTemplate();
+            $template->getFromDBByCrit(['itemtype' => 'ProjectTask']);
+            if ($template->fields['id'] ?? 0) {
+                $this->createItem(\Notification_NotificationTemplate::class, [
+                    'notifications_id'         => $notif_id,
+                    'mode'                     => 'mailing',
+                    'notificationtemplates_id' => $template->fields['id'],
+                ]);
+            }
+            foreach ([\Notification::TEAM_USER, \Notification::AUTHOR] as $items_id) {
+                $this->createItem(\NotificationTarget::class, [
+                    'items_id'         => $items_id,
+                    'type'             => \Notification::USER_TYPE,
+                    'notifications_id' => $notif_id,
+                ]);
+            }
+        }
+
+        $task = $this->createItem(ProjectTask::class, [
+            'name'            => 'Task no double notification',
+            'projects_id'     => $project->getID(),
+            'plan_start_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+            'plan_end_date'   => date('Y-m-d H:i:s', strtotime('+6 hours')),
+        ]);
+
+        $team = new ProjectTaskTeam();
+        $team->add([
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'User',
+            'items_id'        => $user->getID(),
+        ]);
+
+        ProjectTask::cronProjectTasksReminder();
+
+        $this->assertSame(
+            1,
+            countElementsInTable(Alert::getTable(), [
+                'itemtype' => 'ProjectTask',
+                'type'     => Alert::ACTION,
+                'items_id' => $task->getID(),
+            ])
+        );
+
+        ProjectTask::cronProjectTasksReminder();
+
+        $this->assertSame(
+            1,
+            countElementsInTable(Alert::getTable(), [
+                'itemtype' => 'ProjectTask',
+                'type'     => Alert::ACTION,
+                'items_id' => $task->getID(),
+            ])
+        );
     }
 }

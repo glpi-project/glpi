@@ -1012,6 +1012,18 @@ $empty_data_builder = new class {
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 24,
+            ], [
+                'id' => 51,
+                'itemtype' => 'ProjectTask',
+                'name' => 'projecttasksreminder',
+                'frequency' => HOUR_TIMESTAMP,
+                'param' => 3,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ],
         ];
 
@@ -3275,6 +3287,13 @@ $empty_data_builder = new class {
                 'event' => 'update',
                 'is_recursive' => 1,
                 'is_active' => 0,
+            ], [
+                'id' => 83,
+                'name' => 'Project Task Planning Reminder',
+                'itemtype' => 'ProjectTask',
+                'event' => 'planningrecall',
+                'is_recursive' => 1,
+                'is_active' => 1,
             ],
         ];
 
@@ -3685,10 +3704,15 @@ $empty_data_builder = new class {
                 'mode' => 'mailing',
                 'notificationtemplates_id' => 32,
             ], [
-                'id' => 82,
-                'notifications_id' => '82',
-                'mode' => 'mailing',
+                'id'                       => 82,
+                'notifications_id'         => '82',
+                'mode'                     => 'mailing',
                 'notificationtemplates_id' => 32,
+            ], [
+                'id'                       => 83,
+                'notifications_id'         => '83',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 22,
             ],
         ];
 
@@ -4638,6 +4662,21 @@ $empty_data_builder = new class {
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '82',
+            ], [
+                'id'               => '193',
+                'items_id'         => '31',
+                'type'             => '1',
+                'notifications_id' => '83',
+            ], [
+                'id'               => '194',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '83',
+            ], [
+                'id'               => '195',
+                'items_id'         => '32',
+                'type'             => '1',
+                'notifications_id' => '83',
             ],
         ];
 
