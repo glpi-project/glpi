@@ -763,7 +763,7 @@ abstract class MainAsset extends InventoryAsset
         } else {
             // reset item with default values to be able to use handleLinks
             // without keep previous item values (from stacked switch for example)
-            $this->item->getEmpty();
+            $this->item = new $itemtype();
         }
 
         // set entities_id in known links
