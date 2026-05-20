@@ -6364,7 +6364,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
 
-                    // OLA TTO / OLA TTR - due time and due time + progress
+                    // OLA TTO / OLA TTR - due time and due time + progress ( so 185, 186, 180, 181 )
                 case "glpi_items_olas.due_time":
                     $out = '';
 
@@ -6417,8 +6417,10 @@ final class SQLProvider implements SearchProviderInterface
                             continue;
                         }
 
-                        // no progress bar if ola completed (end_time is set)
-                        if ($ola_end_time) {
+                        // no progress bar if
+                        // - ola completed (end_time is set)
+                        // - search option without progress bar
+                        if ($ola_end_time || in_array($orig_id, [180, 185])) {
                             $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                             continue;
                         }
