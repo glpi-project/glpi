@@ -1999,7 +1999,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "progressbar":
                     $decimal_contains = $searchopt[$ID]["datatype"] === 'decimal' && $searchtype === 'contains';
 
-                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(.[0-9]+)?)/", $val, $regs)) {
+                    if (preg_match("/([<>])(=?)[[:space:]]*(-?)[[:space:]]*([0-9]+(\.[0-9]+)?)/", $val, $regs)) {
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
                             $nott = !$nott;
                         }
@@ -2014,7 +2014,7 @@ final class SQLProvider implements SearchProviderInterface
                         // progressbar uses LPAD() which returns zero-padded strings ('067' for 67%).
                         // Quoting the value forces a lexicographic comparison ('067' < '20' → TRUE), so we keep it unquoted.
                         $compare_value = $searchopt[$ID]["datatype"] === 'progressbar'
-                            ? ($regs[3] . $regs[4])
+                            ? (float) ($regs[3] . $regs[4])
                             : $DB::quoteValue($regs[3] . $regs[4]);
                         return [
                             new QueryExpression(
