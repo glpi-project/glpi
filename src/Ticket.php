@@ -1001,6 +1001,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
         }
 
+        //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
         $input = $this->handleTemplateFields($input);
         if ($input === false) {
             return false;
@@ -6359,7 +6360,7 @@ JAVASCRIPT;
             $sla['due_time'] = $this->fields['time_to_own'];
             $sla['class'] = $tto::class;
             $sla['item'] = $this; // object, not just fields, functions used in template
-            $sla['nextaction'] = $ttr->getNextActionForTicket($this, $sla['type']);
+            $sla['nextaction'] = $tto->getNextActionForTicket($this, $sla['type']);
             $sla['level'] = $tto->getLevelFromAction($sla['nextaction']);
 
             $slas[] = $sla;
@@ -6446,7 +6447,9 @@ JAVASCRIPT;
         OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
         $olas = $this->getOlasData();
         foreach ($olas as $ola) {
-            Item_Ola::compute($this, (int) $ola['olas_id'], (int) $ola['items_olas_id']);
+            if (isset($ola['items_olas_id'])) {
+                Item_Ola::compute($this, (int) $ola['olas_id'], (int) $ola['items_olas_id']);
+            }
         }
     }
 

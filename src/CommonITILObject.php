@@ -1916,9 +1916,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
 
-
-        [SLM::TTO => $input['_olas_id_tto'], SLM::TTR => $input['_olas_id_ttr']] = OLA::splitIdsByType($input['_olas_id'] ?? []);
-
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
 

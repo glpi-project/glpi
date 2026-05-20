@@ -44,8 +44,6 @@ class OLAParametersTest extends AbstractParametersTest
 
     public function testGetValues(): void
     {
-        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
-
         $this->createOLA([
             'name'            => 'ola_testGetValues',
             'type'            => 1,

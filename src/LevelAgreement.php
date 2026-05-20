@@ -53,7 +53,7 @@ abstract class LevelAgreement extends CommonDBChild
     public static string $items_id = 'slms_id';
 
     protected static string $prefix            = '';
-    protected static string $prefixticket      = '';
+
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
     /** @var string|class-string<CommonDBTM> */
@@ -232,6 +232,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * since 10.0
      *
+     * @param Ticket            $ticket
      * @param SLM::TTO|SLM::TTR $type
      *
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket

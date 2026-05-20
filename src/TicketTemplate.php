@@ -102,7 +102,7 @@ class TicketTemplate extends ITILTemplate
                 'slas_id_ttr',
                 'glpi_slas'
             )      => 'slas_id_ttr',
-            190      => '_olas_id_tto',
+            190      => '_olas_id_tto', // hardcoded, cannot use $itil_object->getSearchOptionIDByField()
             191      => '_olas_id_ttr',
             $itil_object->getSearchOptionIDByField(
                 'field',
