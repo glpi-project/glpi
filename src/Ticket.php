@@ -6497,11 +6497,15 @@ JAVASCRIPT;
             return;
         }
 
+        $deprecated_fields = [];
         foreach ($ola_removed_inputs as $ola_removed_input) {
             if (isset($input[$ola_removed_input])) {
-                // @todo cumuler les champs déprécier pour lever exception avec tous les champs.
-                throw new RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
+                $deprecated_fields[] = $ola_removed_input;
             }
+        }
+
+        if (!empty($deprecated_fields)) {
+            throw new RuntimeException('Input fields "' . implode('", "', $deprecated_fields) . '" are not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
         }
     }
 
