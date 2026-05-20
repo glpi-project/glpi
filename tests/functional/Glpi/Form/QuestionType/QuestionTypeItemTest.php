@@ -40,6 +40,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 use User;
@@ -315,5 +316,123 @@ final class QuestionTypeItemTest extends DbTestCase
             $case['question_config']
         );
         $this->assertEquals($case['expected_name'], $name);
+    }
+
+    public static function formatRawAnswerProvider(): array
+    {
+        return [
+            'item is a user' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => User::class,
+                        'items_id' => $t->createItem(User::class, [
+                            'name'      => 'jdoe',
+                            'firstname' => 'John',
+                            'realname'  => 'Doe',
+                        ])->getID(),
+                    ],
+                    'expected' => 'Doe John',
+                ],
+            ],
+
+            'location without parent' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Location::class,
+                        'items_id' => $t->createItem(Location::class, [
+                            'name'        => 'Headquarters',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                    ],
+                    'expected' => 'Headquarters',
+                ],
+            ],
+
+            'location with deep hierarchy' => [
+                fn(self $t) => (static function () use ($t) {
+                    $root = $t->createItem(Location::class, [
+                        'name'        => 'France',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ]);
+                    $mid = $t->createItem(Location::class, [
+                        'name'        => 'Paris',
+                        'locations_id' => $root->getID(),
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ]);
+                    $leaf = $t->createItem(Location::class, [
+                        'name'        => 'Office',
+                        'locations_id' => $mid->getID(),
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ]);
+                    return [
+                        'answer'   => [
+                            'itemtype' => Location::class,
+                            'items_id' => $leaf->getID(),
+                        ],
+                        'expected' => 'France > Paris > Office',
+                    ];
+                })(),
+            ],
+
+            'Item is a computer' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $t->createItem(Computer::class, [
+                            'name'        => 'My PC',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                    ],
+                    'expected' => 'My PC',
+                ],
+            ],
+
+            'computer with serial' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $t->createItem(Computer::class, [
+                            'name'        => 'My Laptop',
+                            'serial'      => 'SN-1234',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                    ],
+                    'expected' => 'My Laptop - SN-1234',
+                ],
+            ],
+
+            'non-existent item' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Computer::class,
+                        'items_id' => PHP_INT_MAX,
+                    ],
+                    'expected' => '',
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('formatRawAnswerProvider')]
+    public function testFormatRawAnswer(callable $setup): void
+    {
+        $this->login();
+
+        $case = $setup($this);
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Q',
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(
+                (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
+            ),
+        );
+        $form = $this->createForm($builder);
+        $question = current($form->getQuestions());
+
+        $result = (new QuestionTypeItem())->formatRawAnswer($case['answer'], $question);
+
+        $this->assertEquals($case['expected'], $result);
     }
 }
