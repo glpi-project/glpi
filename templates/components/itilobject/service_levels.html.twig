@@ -274,7 +274,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     {% set assign_la_id = 'assign_la_' ~ options.rand %}
 
     <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1 d-inline-flex" id="dropdown_{{ assign_la_id }}">
-        {% if la.due_time is defined %}
+        {% if not options.new_item and la.due_time is defined %}
             {# flag + due time #}
             <span class="text-muted">
                 {% if la.end_time %}
