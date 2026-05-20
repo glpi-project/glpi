@@ -37,6 +37,7 @@ namespace tests\units;
 use CommonITILObject;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\SLMTrait;
+use SLA;
 use SlaLevel;
 use SlaLevel_Ticket;
 use SLM;
@@ -134,7 +135,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ];
 
         // add sla (TTO)
-        $sla    = new \SLA();
+        $sla    = new SLA();
         $sla1_id = $sla->add($sla1_in);
         $this->checkInput($sla, $sla1_id, $sla1_in);
 
@@ -257,7 +258,7 @@ class SlaLevel_TicketTest extends DbTestCase
         ];
 
         // add sla (TTO)
-        $sla    = new \SLA();
+        $sla    = new SLA();
         $sla1_id = $sla->add($sla1_in);
         $this->checkInput($sla, $sla1_id, $sla1_in);
 
@@ -354,4 +355,69 @@ class SlaLevel_TicketTest extends DbTestCase
             )
         );
     }
+
+    /**
+     * addLevelToDo must not insert a duplicate (tickets_id, slalevels_id) row
+     * when called twice for the same ticket and level.
+     */
+    public function testAddLevelToDoNoDuplicate(): void
+    {
+        $this->login();
+
+        ['sla' => $sla] = $this->createSLA(['definition_time' => 'hour', 'number_time' => 4], SLM::TTR);
+
+        $sla_level = $this->createItem(SlaLevel::class, [
+            'slas_id'        => $sla->getID(),
+            'execution_time' => -HOUR_TIMESTAMP,
+        ] + $this->getMinimalCreationInput(SlaLevel::class));
+
+        $ticket = $this->createItem(Ticket::class, [
+            'slas_id_ttr'      => $sla->getID(),
+            'slalevels_id_ttr' => $sla_level->getID(),
+        ] + $this->getMinimalCreationInput(Ticket::class));
+
+        $sla->getFromDB($sla->getID());
+
+        $sla->addLevelToDo($ticket, $sla_level->getID());
+        $sla->addLevelToDo($ticket, $sla_level->getID());
+
+        $this->assertSame(1, countElementsInTable(SlaLevel_Ticket::getTable(), [
+            'tickets_id'   => $ticket->getID(),
+            'slalevels_id' => $sla_level->getID(),
+        ]));
+    }
+
+    /**
+     * deleteLevelsToDo must remove all SlaLevel_Ticket rows for the ticket.
+     */
+    public function testDeleteLevelsToDo(): void
+    {
+        $this->login();
+
+        ['sla' => $sla] = $this->createSLA(['definition_time' => 'hour', 'number_time' => 4], SLM::TTR);
+
+        $sla_level = $this->createItem(SlaLevel::class, [
+            'slas_id'        => $sla->getID(),
+            'execution_time' => -HOUR_TIMESTAMP,
+        ] + $this->getMinimalCreationInput(SlaLevel::class));
+
+        $ticket = $this->createItem(Ticket::class, [
+            'slas_id_ttr'      => $sla->getID(),
+            'slalevels_id_ttr' => $sla_level->getID(),
+        ] + $this->getMinimalCreationInput(Ticket::class));
+
+        $sla->getFromDB($sla->getID());
+        $sla->addLevelToDo($ticket, $sla_level->getID());
+
+        $this->assertSame(1, countElementsInTable(SlaLevel_Ticket::getTable(), [
+            'tickets_id' => $ticket->getID(),
+        ]));
+
+        SLA::deleteLevelsToDo($ticket);
+
+        $this->assertSame(0, countElementsInTable(SlaLevel_Ticket::getTable(), [
+            'tickets_id' => $ticket->getID(),
+        ]));
+    }
+
 }
