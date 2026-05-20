@@ -562,7 +562,7 @@ class OLATest extends DbTestCase
 
         foreach ($removed_fields as $removed_field) {
             $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessageMatches('/Input field .* is not used anymore.*/');
+            $this->expectExceptionMessageMatches('/Input fields ".*" are not used anymore/');
             $value = $removed_field === 'olalevels_id_ttr' ? 1 : date('Y-m-d 00:00:00');
 
             $this->createTicket(
