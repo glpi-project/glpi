@@ -2763,7 +2763,6 @@ JAVASCRIPT;
             'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
         ];
 
-        // Ola levels
         // OLA TTR due time (+ Progress)
         $tab[] = [
             'id' => '181',
@@ -2779,23 +2778,6 @@ JAVASCRIPT;
                 'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
             ],
             'forcegroupby' => true,
-        ];
-
-        // OLA TTR exceeded
-        $tab[] = [
-            'id'                 => '182',
-            'table'              => Item_Ola::getTable(),
-            'field'              => 'is_late',
-            'name'               => __('OLA') . ' ' . __('time to resolve exceeded'),
-            'datatype'           => 'bool',
-            'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
-            'joinparams' => [
-                'jointype'  => 'itemtype_item',
-                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
-            ],
-            'forcegroupby'       => true,
-            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
         ];
 
         // Ola levels

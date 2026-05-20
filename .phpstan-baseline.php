@@ -770,30 +770,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method getFormURLWithID\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'items_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_plug.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -882,24 +858,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/itil_project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method KnowbaseItem\\:\\:showForm\\(\\) expects int, array\\|float\\|int\\|string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'knowbaseitems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
@@ -6998,42 +6956,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTypeName\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of method Glpi\\\\Console\\\\Diagnostic\\\\CheckHtmlEncodingCommand\\:\\:fixOneItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access an offset on float\\|int\\|list\\<mixed\\>\\|string\\|false\\|null\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -13122,12 +13044,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 0\\|1\\|2\\|3\\|4\\|5\\|6 might not exist on array\\{\\}\\|array\\{"\\\\032"\\}\\|array\\{0\\: \'"\', 1\\?\\: "\\\\032"\\}\\|list\\{0\\: "\\\\000", 1\\?\\: "\\\\n"\\|"\\\\r"\\|"\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 2\\?\\: "\\\\r"\\|"\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 3\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 4\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 5\\?\\: "\\\\032"\\|\'"\', 6\\?\\: "\\\\032"\\}\\|list\\{0\\: "\\\\n", 1\\?\\: "\\\\r"\\|"\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 2\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 3\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 4\\?\\: "\\\\032"\\|\'"\', 5\\?\\: "\\\\032"\\}\\|list\\{0\\: "\\\\r", 1\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\'\\|\'\\\\\\\\\', 2\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 3\\?\\: "\\\\032"\\|\'"\', 4\\?\\: "\\\\032"\\}\\|list\\{0\\: \'\\\\\'\', 1\\?\\: "\\\\032"\\|\'"\', 2\\?\\: "\\\\032"\\}\\|list\\{0\\: \'\\\\\\\\\', 1\\?\\: "\\\\032"\\|\'"\'\\|\'\\\\\'\', 2\\?\\: "\\\\032"\\|\'"\', 3\\?\\: "\\\\032"\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Toolbox/Sanitizer.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\|int\\|string\\|null given\\.$#',
