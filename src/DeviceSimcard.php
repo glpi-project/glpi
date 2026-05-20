@@ -131,6 +131,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s %2$s: %3$s'), self::getTypeName(1), __('items'), __('PIN code')),
             'forcegroupby'  => true,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'text',
             'joinparams'    => $main_joinparams,
         ];
@@ -142,6 +143,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s %2$s: %3$s'), self::getTypeName(1), __('items'), __('PUK code')),
             'forcegroupby'  => true,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'text',
             'joinparams'    => $main_joinparams,
         ];
@@ -153,6 +155,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s %2$s: %3$s'), self::getTypeName(1), __('items'), __('MSIN')),
             'forcegroupby'  => true,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'text',
             'joinparams'    => $main_joinparams,
         ];
@@ -164,6 +167,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Designation')),
             'forcegroupby'  => true,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'text',
             'joinparams'    => [
                 'beforejoin' => [
@@ -180,6 +184,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), Manufacturer::getTypeName(1)),
             'forcegroupby'  => true,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'dropdown',
             'joinparams'    => [
                 'beforejoin' => [
@@ -201,6 +206,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Voltage')),
             'forcegroupby'  => false,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'integer',
             'unit'          => 'mV',
             'joinparams'    => [
@@ -218,6 +224,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), DeviceSimcardType::getTypeName(1)),
             'forcegroupby'  => true,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'dropdown',
             'joinparams'    => [
                 'beforejoin' => [
@@ -240,6 +247,7 @@ class DeviceSimcard extends CommonDevice
             'name'          => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Allow VOIP')),
             'forcegroupby'  => false,
             'usehaving'     => true,
+            'massiveaction' => false,
             'datatype'      => 'bool',
             'joinparams'    => [
                 'beforejoin' => [
