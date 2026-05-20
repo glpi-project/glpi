@@ -2948,37 +2948,37 @@ JAVASCRIPT;
                 'forcegroupby'       => true,
             ];
 
-             $tab[] = [
-                 'id'                 => '68',
-                 'table'              => 'glpi_tickets_tickets',
-                 'field'              => 'id',
-                 'name'               => __('Number of sons tickets'),
-                 'massiveaction'      => false,
-                 'datatype'           => 'count',
-                 'usehaving'          => true,
-                 'joinparams'         => [
-                     'linkfield'          => 'tickets_id_2',
-                     'jointype'           => 'child',
-                     'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF],
-                 ],
-                 'forcegroupby'       => true,
-             ];
+            $tab[] = [
+                'id'                 => '68',
+                'table'              => 'glpi_tickets_tickets',
+                'field'              => 'id',
+                'name'               => __('Number of sons tickets'),
+                'massiveaction'      => false,
+                'datatype'           => 'count',
+                'usehaving'          => true,
+                'joinparams'         => [
+                    'linkfield'          => 'tickets_id_2',
+                    'jointype'           => 'child',
+                    'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF],
+                ],
+                'forcegroupby'       => true,
+            ];
 
-             $tab[] = [
-                 'id'                 => '69',
-                 'table'              => 'glpi_tickets_tickets',
-                 'field'              => 'id',
-                 'name'               => __('Number of parent tickets'),
-                 'massiveaction'      => false,
-                 'datatype'           => 'count',
-                 'usehaving'          => true,
-                 'joinparams'         => [
-                     'linkfield'          => 'tickets_id_1',
-                     'jointype'           => 'child',
-                     'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF],
-                 ],
-                 'additionalfields'   => ['tickets_id_2'],
-             ];
+            $tab[] = [
+                'id'                 => '69',
+                'table'              => 'glpi_tickets_tickets',
+                'field'              => 'id',
+                'name'               => __('Number of parent tickets'),
+                'massiveaction'      => false,
+                'datatype'           => 'count',
+                'usehaving'          => true,
+                'joinparams'         => [
+                    'linkfield'          => 'tickets_id_1',
+                    'jointype'           => 'child',
+                    'condition'          => ['NEWTABLE.link' => CommonITILObject_CommonITILObject::SON_OF],
+                ],
+                'additionalfields'   => ['tickets_id_2'],
+            ];
 
             $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
