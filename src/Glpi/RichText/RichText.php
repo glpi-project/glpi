@@ -55,15 +55,18 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param null|string   $content        HTML string to be made safe
-     * @param bool       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param null|string $content              HTML string to be made safe
+     * @param bool        $encode_output        Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool        $allow_video_embeds   When true, preserves Knowbase video embed placeholders
+     *                                          (`<div data-video-provider data-video-id>`). Off by default
+     *                                          so non-KB contexts (tickets, problems, …) cannot smuggle them.
      *
      * @return string
      *
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function getSafeHtml(?string $content, bool $encode_output = false): string
+    public static function getSafeHtml(?string $content, bool $encode_output = false, bool $allow_video_embeds = false): string
     {
 
         if (empty($content)) {
@@ -78,7 +81,7 @@ final class RichText
             $content
         );
 
-        $content = self::getHtmlSanitizer()->sanitize($content);
+        $content = self::getHtmlSanitizer($allow_video_embeds)->sanitize($content);
 
         // Remove extra lines
         $content = trim($content, "\r\n");
@@ -114,6 +117,9 @@ final class RichText
         global $CFG_GLPI;
 
         $content = self::normalizeHtmlContent($content);
+
+        // Substitute video placeholders before strip_tags collapses them.
+        $content = VideoEmbedRenderer::renderAllAsText($content);
 
         if ($keep_presentation) {
             if ($compact) {
@@ -277,17 +283,20 @@ final class RichText
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
         $p = [
-            'images_gallery' => false,
-            'user_mentions'  => true,
-            'images_lazy'    => true,
-            'text_maxsize'   => GLPI_TEXT_MAXSIZE,
+            'images_gallery'      => false,
+            'user_mentions'       => true,
+            'images_lazy'         => true,
+            'text_maxsize'        => GLPI_TEXT_MAXSIZE,
+            // KB-only flag — preserves video embed placeholders through sanitize and
+            // materializes them into sandboxed iframes here. Non-KB callers leave it false.
+            'allow_video_embeds'  => false,
         ];
         $p = array_replace($p, $params);
 
         $content_size = strlen($content ?? '');
 
         // Sanitize content first (security and to decode HTML entities)
-        $content = self::getSafeHtml($content);
+        $content = self::getSafeHtml($content, false, (bool) $p['allow_video_embeds']);
 
         if ($p['user_mentions']) {
             $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
@@ -299,6 +308,10 @@ final class RichText
 
         if ($p['images_gallery']) {
             $content = self::replaceImagesByGallery($content);
+        }
+
+        if ($p['allow_video_embeds']) {
+            $content = VideoEmbedRenderer::renderAll($content);
         }
 
         if ($p['text_maxsize'] > 0 && $content_size > $p['text_maxsize']) {
@@ -550,104 +563,134 @@ JAVASCRIPT;
         return $out;
     }
 
-    private static function getHtmlSanitizer(): HtmlSanitizer
+    /**
+     * Build the shared GLPI HTML sanitizer config (sans Knowbase video embed attrs).
+     * Extracted to allow {@see self::getHtmlSanitizer()} to derive a KB variant.
+     */
+    private static function buildBaseSanitizerConfig(): HtmlSanitizerConfig
+    {
+        $config = (new HtmlSanitizerConfig())
+            ->allowSafeElements()
+            ->allowLinkSchemes([
+                'aim',
+                'app',
+                'feed',
+                'file',
+                'ftp',
+                'gopher',
+                'http',
+                'https',
+                'irc',
+                'mailto',
+                'news',
+                'nntp',
+                'sftp',
+                'ssh',
+                'tel',
+                'telnet',
+                'notes',
+            ])
+            ->allowRelativeLinks()
+            ->allowRelativeMedias()
+            ->withMaxInputLength(-1);
+
+        // Block some elements (tag is removed but contents is preserved)
+        $blocked_elements = [
+            'html',
+            'body',
+
+            // form elements
+            'form',
+            'button',
+            'input',
+            'select',
+            'datalist',
+            'option',
+            'optgroup',
+            'textarea',
+        ];
+        foreach ($blocked_elements as $blocked_element) {
+            $config = $config->blockElement($blocked_element);
+        }
+
+        // Drop some elements (tag and contents are removed)
+        $dropped_elements = [
+            'head',
+            'script',
+
+            // header elements used to link external resources
+            'link',
+            'meta',
+
+            // elements used to embed potential malicious external application
+            'applet',
+            'canvas',
+            'embed',
+            'object',
+        ];
+        foreach ($dropped_elements as $dropped_element) {
+            $config = $config->dropElement($dropped_element);
+        }
+
+        // Allow class and style attribute
+        $config = $config->allowAttribute('class', '*');
+        $config = $config->allowAttribute('style', '*');
+        // Allow layout attribute for table tags
+        $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
+        $config = $config->allowAttribute('border', ['table']);
+
+
+        if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
+            $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
+        }
+
+        // Keep attributes specific to rich text auto completion
+        $rich_text_completion_attributes = [
+            // required for proper display of autocompleted tags
+            'contenteditable',
+
+            // required for user mentions and form tags
+            'data-user-mention',
+            'data-user-id',
+            'data-form-tag',
+            'data-form-tag-value',
+            'data-form-tag-provider',
+        ];
+        foreach ($rich_text_completion_attributes as $attribute) {
+            $config = $config->allowAttribute($attribute, 'span');
+        }
+
+        return $config;
+    }
+
+    private static function getHtmlSanitizer(bool $allow_video_embeds = false): HtmlSanitizer
     {
         static $sanitizer = null;
+        static $kb_sanitizer = null;
 
-        if ($sanitizer === null) {
-            $config = (new HtmlSanitizerConfig())
-                ->allowSafeElements()
-                ->allowLinkSchemes([
-                    'aim',
-                    'app',
-                    'feed',
-                    'file',
-                    'ftp',
-                    'gopher',
-                    'http',
-                    'https',
-                    'irc',
-                    'mailto',
-                    'news',
-                    'nntp',
-                    'sftp',
-                    'ssh',
-                    'tel',
-                    'telnet',
-                    'notes',
-                ])
-                ->allowRelativeLinks()
-                ->allowRelativeMedias()
-                ->withMaxInputLength(-1);
-
-            // Block some elements (tag is removed but contents is preserved)
-            $blocked_elements = [
-                'html',
-                'body',
-
-                // form elements
-                'form',
-                'button',
-                'input',
-                'select',
-                'datalist',
-                'option',
-                'optgroup',
-                'textarea',
-            ];
-            foreach ($blocked_elements as $blocked_element) {
-                $config = $config->blockElement($blocked_element);
-            }
-
-            // Drop some elements (tag and contents are removed)
-            $dropped_elements = [
-                'head',
-                'script',
-
-                // header elements used to link external resources
-                'link',
-                'meta',
-
-                // elements used to embed potential malicious external application
-                'applet',
-                'canvas',
-                'embed',
-                'object',
-            ];
-            foreach ($dropped_elements as $dropped_element) {
-                $config = $config->dropElement($dropped_element);
-            }
-
-            // Allow class and style attribute
-            $config = $config->allowAttribute('class', '*');
-            $config = $config->allowAttribute('style', '*');
-            // Allow layout attribute for table tags
-            $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
-            $config = $config->allowAttribute('border', ['table']);
-
-
-            if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
-                $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
-            }
-
-            // Keep attributes specific to rich text auto completion
-            $rich_text_completion_attributes = [
-                // required for proper display of autocompleted tags
-                'contenteditable',
-
-                // required for user mentions and form tags
-                'data-user-mention',
-                'data-user-id',
-                'data-form-tag',
-                'data-form-tag-value',
-                'data-form-tag-provider',
-            ];
-            foreach ($rich_text_completion_attributes as $attribute) {
-                $config = $config->allowAttribute($attribute, 'span');
-            }
-
-            $sanitizer = new HtmlSanitizer($config);
+        if ($allow_video_embeds && $kb_sanitizer !== null) {
+            return $kb_sanitizer;
         }
+        if (!$allow_video_embeds && $sanitizer !== null) {
+            return $sanitizer;
+        }
+
+        $config = self::buildBaseSanitizerConfig();
+
+        if ($allow_video_embeds) {
+            // KB-only - preserves video embed placeholders so VideoEmbedRenderer can
+            // materialize them downstream. Generic rich text contexts like ITIL stay
+            // unaware of those attributes.
+            $config = $config
+                ->allowAttribute('data-video-provider', ['div'])
+                ->allowAttribute('data-video-id', ['div'])
+                ->allowAttribute('data-video-start', ['div']);
+
+            $kb_sanitizer = new HtmlSanitizer($config);
+            return $kb_sanitizer;
+        }
+
+        $sanitizer = new HtmlSanitizer($config);
 
         return $sanitizer;
     }

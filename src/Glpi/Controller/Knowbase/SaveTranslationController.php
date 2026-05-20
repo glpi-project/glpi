@@ -36,6 +36,7 @@ namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
 use KnowbaseItem;
@@ -69,6 +70,10 @@ final class SaveTranslationController extends AbstractController
             throw new NotFoundHttpException();
         }
 
+        if (!$kbitem->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $data = json_decode($request->getContent(), true);
         $language = $data['language'] ?? null;
         $answer = $data['answer'] ?? null;
@@ -81,14 +86,17 @@ final class SaveTranslationController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Make sure answer content is not empty if specified
-        if (strip_tags(trim($answer)) === '') {
+        // allow_video_embeds=true preserves KB video placeholders through sanitization.
+        $answer = RichText::getSafeHtml($answer, false, true);
+
+        // Empty-check on the rendered plaintext so video-only translations
+        // (whose placeholder div has no inline text) are not rejected.
+        if (trim(RichText::getTextFromHtml($answer, false)) === '') {
             return new JsonResponse([
                 'success' => false,
                 'message' => __('Content cannot be empty'),
             ], Response::HTTP_BAD_REQUEST);
         }
-        $answer = RichText::getSafeHtml($answer);
 
         // Make sure title is not empty if specified
         if ($name !== null) {

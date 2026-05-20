@@ -78,6 +78,24 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.locator('.image-dialog');
     }
 
+    public get videoDialog(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- custom TipTap dialog, no ARIA role available
+        return this.page.locator('.video-dialog');
+    }
+
+    public get videoEmbedPlaceholders(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- semantic data attribute used by the VideoEmbed extension
+        return this.page.locator('[data-video-provider]');
+    }
+
+    public get videoEmbedIframes(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- semantic class produced by VideoEmbedRenderer
+        return this.page.locator('.video-embed-wrapper > iframe');
+    }
+
     public get subject(): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by ArticleController.js, not a test ID

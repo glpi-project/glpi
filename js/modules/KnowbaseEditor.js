@@ -36,6 +36,7 @@
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
+import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 
@@ -135,6 +136,7 @@ class KnowbaseEditor {
                     resizable: true,
                 }
             }),
+            VideoEmbed,
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)

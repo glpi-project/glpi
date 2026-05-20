@@ -32,6 +32,8 @@
 
 /* global TiptapCore, TiptapSuggestion, FloatingUI */
 
+import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
+
 /**
  * Slash commands extension for Tiptap editor
  * Provides a Notion-like command menu triggered by typing "/"
@@ -285,6 +287,14 @@ const SLASH_COMMANDS = [
         command: (editor, range) => {
             editor.chain().focus().deleteRange(range).run();
             showImageDialog(editor);
+        },
+    },
+    {
+        title: __('Video'),
+        icon: 'ti ti-video',
+        command: (editor, range) => {
+            editor.chain().focus().deleteRange(range).run();
+            showVideoDialog(editor);
         },
     },
 ];
