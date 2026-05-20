@@ -41,6 +41,7 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
+use Glpi\RichText\VideoEmbedRenderer;
 use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Profile;
@@ -77,7 +78,12 @@ final class KnowbaseItemController extends AbstractController
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
-        return new Response(RichText::getSafeHtml($kbitem->fields['answer']));
+        // Plaintext fallback for video placeholders — this endpoint feeds the "Use KB as solution"
+        // workflow which pastes the answer into TinyMCE, which can't round-trip the Tiptap node.
+        // We pass allow_video_embeds=true so the placeholder survives sanitize and can be
+        // substituted by renderAllAsText (otherwise the placeholder div would be stripped).
+        $safe = RichText::getSafeHtml($kbitem->fields['answer'], false, true);
+        return new Response(VideoEmbedRenderer::renderAllAsText($safe));
     }
 
     #[Route(
@@ -135,8 +141,9 @@ final class KnowbaseItemController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Sanitize HTML content to prevent XSS
-        $answer = RichText::getSafeHtml($answer);
+        // Sanitize HTML content to prevent XSS. allow_video_embeds=true preserves KB
+        // video placeholders through sanitization.
+        $answer = RichText::getSafeHtml($answer, false, true);
 
         $update_data = [
             'id' => $id,

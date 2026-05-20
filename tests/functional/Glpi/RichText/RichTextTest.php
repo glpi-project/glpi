@@ -453,6 +453,16 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id&#61;5">&#64;normal</a>',
         ];
+
+        // By default (non-KB context), video embed placeholder attributes are stripped
+        // so a placeholder pasted into a ticket / problem / change cannot leak an iframe.
+        // The KB context opts in via the third $allow_video_embeds flag — tested separately
+        // in testGetSafeHtmlPreservesVideoEmbedsWhenAllowed().
+        yield 'data-video-* attributes are stripped from non-KB contexts by default' => [
+            'content'                => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed"></div>',
+        ];
     }
 
     #[DataProvider('getSafeHtmlProvider')]
@@ -466,6 +476,30 @@ HTML,
         $this->assertEquals(
             $expected_result,
             $richtext->getSafeHtml($content, $encode_output_entities)
+        );
+    }
+
+    public static function getSafeHtmlAllowingVideoEmbedsProvider(): iterable
+    {
+        yield 'YouTube placeholder is preserved when video embeds are allowed' => [
+            'content'         => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result' => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+        ];
+
+        yield 'Start offset attribute is preserved when video embeds are allowed' => [
+            'content'         => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
+            'expected_result' => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
+        ];
+    }
+
+    #[DataProvider('getSafeHtmlAllowingVideoEmbedsProvider')]
+    public function testGetSafeHtmlPreservesVideoEmbedsWhenAllowed(string $content, string $expected_result): void
+    {
+        $richtext = new RichText();
+
+        $this->assertEquals(
+            $expected_result,
+            $richtext->getSafeHtml($content, false, true)
         );
     }
 
@@ -653,6 +687,17 @@ Text in a paragraph
  [an image] Should I yell for the important words? 
 PLAINTEXT,
         ];
+
+        // Video embed placeholders are replaced by their watch URL in plaintext
+        yield 'Video embed placeholder substituted in plaintext output' => [
+            'content'                => '<p>Watch:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'keep_presentation'      => false,
+            'compact'                => false,
+            'encode_output_entities' => false,
+            'preserve_case'          => true,
+            'preserve_line_breaks'   => false,
+            'expected_result'        => 'Watch:[YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ]',
+        ];
     }
 
     #[DataProvider('getTextFromHtmlProvider')]
@@ -771,10 +816,27 @@ HTML,
             'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
+
+        yield 'Without allow_video_embeds, placeholder is stripped (cross-context safety)' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '<p>Watch this:</p><div></div>',
+        ];
+
+        yield 'With allow_video_embeds, placeholder is materialized as a sandboxed iframe' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" frameborder="0"></iframe></div>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+
+        yield 'Unknown provider with allow_video_embeds is dropped' => [
+            'content'                => '<p>Before</p><div data-video-provider="malicious" data-video-id="exploit"></div><p>After</p>',
+            'expected_result'        => '<p>Before</p><p>After</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
-    public function testGetEnhancedHtml(string $content, string $expected_result)
+    public function testGetEnhancedHtml(string $content, string $expected_result, array $extra_params = [])
     {
         $richtext = new RichText();
 
@@ -782,7 +844,7 @@ HTML,
         ini_set('pcre.backtrack_limit', 100); // Lower limit to ensure the effectiveness of regex
         $this->assertEquals(100, ini_get('pcre.backtrack_limit'));
 
-        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
+        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0] + $extra_params);
 
         ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
 
