@@ -59,11 +59,15 @@ abstract class SLAField extends SLMField
 
         // Do not edit input if invalid value was found
         $slm = $this->getSLM();
-        if (!$slm::getById($slm_id)) {
-            return $input;
+        if ($slm::getById($slm_id)) {
+            $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
         }
 
-        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
+        // Compute date value according to strategy
+        $date_slm = $strategy->getDateSLM($config, $answers_set);
+        if ($date_slm !== null) {
+            $input[$slm::getFieldNames($this->getType())[0]] = $date_slm;
+        }
 
         return $input;
     }
