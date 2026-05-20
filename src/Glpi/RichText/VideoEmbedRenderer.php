@@ -35,7 +35,6 @@
 namespace Glpi\RichText;
 
 use function Safe\preg_match;
-use function Safe\preg_replace_callback;
 
 /**
  * Reconstructs sandboxed iframes from the inert `<div data-video-provider ...>`
@@ -115,30 +114,21 @@ final class VideoEmbedRenderer
             return $sanitized_html;
         }
 
-        return preg_replace_callback(
-            '#<div\b[^>]*\bdata-video-provider="([^"]+)"[^>]*>([\s\S]*?)</div>#i',
-            static function (array $matches): string {
-                if (trim($matches[2]) !== '') {
+        return self::replacePlaceholders(
+            $sanitized_html,
+            static function (string $provider, string $opening, string $body): string {
+                if (trim($body) !== '') {
                     return '';
                 }
-
-                $tag = $matches[0];
-                $provider = $matches[1];
-
-                $video_id = self::extractAttribute($tag, 'data-video-id');
+                $video_id = self::extractAttribute($opening, 'data-video-id');
                 if ($video_id === null) {
                     return '';
                 }
-
-                $start_raw = self::extractAttribute($tag, 'data-video-start');
-                $start = null;
-                if ($start_raw !== null && ctype_digit($start_raw)) {
-                    $start = (int) $start_raw;
-                }
+                $start_raw = self::extractAttribute($opening, 'data-video-start');
+                $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
 
                 return self::render($provider, $video_id, $start);
-            },
-            $sanitized_html
+            }
         );
     }
 
@@ -152,16 +142,13 @@ final class VideoEmbedRenderer
             return $html;
         }
 
-        return preg_replace_callback(
-            '#<div\b[^>]*\bdata-video-provider="([^"]+)"[^>]*>[\s\S]*?</div>#i',
-            static function (array $matches): string {
-                $tag = $matches[0];
-                $provider = $matches[1];
-                if (!isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
+        return self::replacePlaceholders(
+            $html,
+            static function (string $provider, string $opening, string $body): string {
+                if (trim($body) !== '' || !isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
                     return '';
                 }
-
-                $video_id = self::extractAttribute($tag, 'data-video-id');
+                $video_id = self::extractAttribute($opening, 'data-video-id');
                 if ($video_id === null || preg_match(self::VIDEO_ID_PATTERN, $video_id) !== 1) {
                     return '';
                 }
@@ -171,9 +158,93 @@ final class VideoEmbedRenderer
                     self::getProviderDisplayName($provider),
                     sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id))
                 );
-            },
-            $html
+            }
         );
+    }
+
+    /**
+     * Walk the HTML and replace each `<div data-video-provider=...>...</div>`
+     * block by whatever $render() returns. Nested `<div>` elements inside the
+     * body are balanced so the matching outer `</div>` is consumed too —
+     * preventing stray closing tags when a tampered placeholder contains a
+     * child div.
+     *
+     * @param callable(string $provider, string $opening, string $body): string $render
+     */
+    private static function replacePlaceholders(string $html, callable $render): string
+    {
+        $result = '';
+        $offset = 0;
+        $length = strlen($html);
+
+        while ($offset < $length) {
+            if (
+                preg_match(
+                    '#<div\b[^>]*\bdata-video-provider="([^"]+)"[^>]*>#i',
+                    substr($html, $offset),
+                    $matches
+                ) !== 1
+                || !isset($matches[0], $matches[1])
+            ) {
+                break;
+            }
+            $opening = $matches[0];
+            $provider = $matches[1];
+            $opening_start = (int) strpos($html, $opening, $offset);
+            $opening_end = $opening_start + strlen($opening);
+
+            $close_start = self::findMatchingDivClose($html, $opening_end);
+            if ($close_start === null) {
+                break;
+            }
+
+            $body = substr($html, $opening_end, $close_start - $opening_end);
+
+            $result .= substr($html, $offset, $opening_start - $offset);
+            $result .= $render($provider, $opening, $body);
+
+            $offset = $close_start + 6; // strlen('</div>')
+        }
+
+        return $result . substr($html, $offset);
+    }
+
+    /**
+     * Offset of the `</div>` that closes the `<div>` opened just before
+     * $offset, accounting for nested `<div>` children. Null if unbalanced.
+     */
+    private static function findMatchingDivClose(string $html, int $offset): ?int
+    {
+        $depth = 1;
+        $cursor = $offset;
+        $length = strlen($html);
+
+        while ($cursor < $length) {
+            $next_open = stripos($html, '<div', $cursor);
+            $next_close = stripos($html, '</div>', $cursor);
+
+            if ($next_close === false) {
+                return null;
+            }
+
+            if ($next_open !== false && $next_open < $next_close) {
+                $tag_end = strpos($html, '>', $next_open);
+                if ($tag_end === false) {
+                    return null;
+                }
+                $depth++;
+                $cursor = $tag_end + 1;
+                continue;
+            }
+
+            $depth--;
+            if ($depth === 0) {
+                return $next_close;
+            }
+            $cursor = $next_close + 6;
+        }
+
+        return null;
     }
 
     /**
