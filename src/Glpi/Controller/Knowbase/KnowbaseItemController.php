@@ -69,13 +69,11 @@ final class KnowbaseItemController extends AbstractController
     public function content(Request $request): Response
     {
         $id = $request->attributes->getInt('knowbaseitems_id');
-        if (!KnowbaseItem::canView()) {
-            throw new AccessDeniedHttpException();
-        }
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
-        } elseif (!$kbitem->canViewItem()) {
+        }
+        if (!$kbitem->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
         // Plaintext fallback for video placeholders — this endpoint feeds the "Use KB as solution"

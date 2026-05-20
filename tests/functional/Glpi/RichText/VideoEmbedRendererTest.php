@@ -205,6 +205,20 @@ class VideoEmbedRendererTest extends GLPITestCase
         $this->assertSame('', VideoEmbedRenderer::renderAll($html));
     }
 
+    public function testRenderAllDropsTamperedPlaceholderWithNestedDiv(): void
+    {
+        // Nested <div> in the body breaks the atom-node contract. Drop the
+        // whole block, including the OUTER </div> — the lazy regex used
+        // previously stopped at the first </div> and leaked a stray closing tag.
+        $html = '<p>Before</p>'
+              . '<div data-video-provider="youtube" data-video-id="abc12345678"><div class="inner">x</div></div>'
+              . '<p>After</p>';
+
+        $rendered = VideoEmbedRenderer::renderAll($html);
+
+        $this->assertSame('<p>Before</p><p>After</p>', $rendered);
+    }
+
     public function testRenderAllAsTextSubstitutesWatchUrl(): void
     {
         $html = '<p>See:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>';
