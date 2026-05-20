@@ -32,6 +32,9 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set is_device_model  = is_device_model ?? false %}
+{% set has_device_model = has_device_model ?? false %}
+
 <div class="asset">
     {{ include('components/form/header.html.twig') }}
     {% set rand          = random() %}
