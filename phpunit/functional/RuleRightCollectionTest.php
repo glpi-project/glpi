@@ -315,7 +315,6 @@ class RuleRightCollectionTest extends DbTestCase
         $this->login();
 
         // --- arrange ---
-        // Use an existing profile to avoid creating unnecessary data
         $profile = getItemByTypeName(\Profile::class, 'Self-Service');
 
         $rule = $this->createItem(\RuleRight::class, [
@@ -348,13 +347,12 @@ class RuleRightCollectionTest extends DbTestCase
 
         $collection = new \RuleRightCollection();
 
-        // --- act + assert ---
+        // --- act ---
         $output = $collection->testAllRules($input, [], $input);
 
+        // --- assert ---
         $this->assertArrayHasKey('result', $output);
         $this->assertEquals($expected_result, $output['result'][$rule->getID()]['result']);
-
-        $this->markTestIncomplete('This test is ai generated, it must be reviewed/rewritten by a human.');
     }
 
     public function testTestAllRulesPreservesCustomLdapFieldForPatternEnd(): void
