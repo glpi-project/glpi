@@ -42,13 +42,10 @@
  * package (Copyright (c) Tiptap GmbH).
  */
 
-const { Node, mergeAttributes, nodePasteRule } = TiptapCore;
+const { Node, mergeAttributes } = TiptapCore;
 
 const ALLOWED_PROVIDERS = new Set(['youtube', 'dailymotion', 'vimeo']);
 const VALID_ID_PATTERN = /^[A-Za-z0-9_-]{1,32}$/;
-
-// Loose pattern for paste detection; parseVideoUrl() does the strict matching.
-const VIDEO_URL_PASTE_PATTERN = /https?:\/\/(?:www\.|m\.|music\.)?(?:youtube\.com|youtu\.be|dailymotion\.com|dai\.ly|player\.vimeo\.com|vimeo\.com)\/[^\s<>"']+/gi;
 
 /**
  * Parse a "t=" / "start=" query parameter into seconds. Accepts plain seconds
@@ -171,7 +168,7 @@ function parseVimeoUrl(url) {
  * @param {string} rawUrl
  * @returns {{provider: string, videoId: string, start: number|null}|null}
  */
-export function parseVideoUrl(rawUrl) {
+function parseVideoUrl(rawUrl) {
     if (typeof rawUrl !== 'string' || rawUrl.length === 0) {
         return null;
     }
@@ -491,16 +488,6 @@ export const VideoEmbed = Node.create({
         return ({ node }) => ({
             dom: buildEditorPreview(node),
         });
-    },
-
-    addPasteRules() {
-        return [
-            nodePasteRule({
-                find: VIDEO_URL_PASTE_PATTERN,
-                type: this.type,
-                getAttributes: (match) => parseVideoUrl(match[0]) || false,
-            }),
-        ];
     },
 
     addCommands() {
