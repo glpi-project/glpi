@@ -221,7 +221,13 @@ final class VideoEmbedRenderer
 
             $close_start = self::findMatchingDivClose($html, $opening_end);
             if ($close_start === null) {
-                break;
+                // Unbalanced placeholder: drop the opening tag (it carries
+                // the data-video-* attributes) and keep scanning. Falling
+                // through would leak `<div data-video-provider="...">` into
+                // the output via the trailing substr().
+                $result .= substr($html, $offset, $opening_start - $offset);
+                $offset = $opening_end;
+                continue;
             }
 
             $body = substr($html, $opening_end, $close_start - $opening_end);

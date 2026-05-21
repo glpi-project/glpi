@@ -219,6 +219,24 @@ class VideoEmbedRendererTest extends GLPITestCase
         $this->assertSame('<p>Before</p><p>After</p>', $rendered);
     }
 
+    public function testRenderAllDropsUnclosedPlaceholderAndKeepsTrailingHtml(): void
+    {
+        // Unbalanced placeholder (no matching </div>). Drop the opening tag —
+        // it carries the data-video-* attributes — and keep scanning so any
+        // later content (including valid placeholders) is still processed.
+        $html = '<p>Before</p>'
+              . '<div data-video-provider="youtube" data-video-id="abc12345678">'
+              . '<p>Trailing paragraph</p>'
+              . '<div data-video-provider="vimeo" data-video-id="76979871"></div>';
+
+        $rendered = VideoEmbedRenderer::renderAll($html);
+
+        $this->assertStringNotContainsString('data-video-provider', $rendered);
+        $this->assertStringContainsString('<p>Before</p>', $rendered);
+        $this->assertStringContainsString('<p>Trailing paragraph</p>', $rendered);
+        $this->assertStringContainsString('https://player.vimeo.com/video/76979871?dnt=1', $rendered);
+    }
+
     public function testRenderAllAsTextSubstitutesWatchUrl(): void
     {
         $html = '<p>See:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>';
