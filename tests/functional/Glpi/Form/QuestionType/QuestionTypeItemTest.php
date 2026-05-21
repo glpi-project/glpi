@@ -41,6 +41,7 @@ use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
+use Glpi\Form\Question;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 use User;
@@ -419,19 +420,7 @@ final class QuestionTypeItemTest extends DbTestCase
         $this->login();
 
         $case = $setup($this);
-
-        $builder = new FormBuilder();
-        $builder->addQuestion(
-            name: 'Q',
-            type: QuestionTypeItem::class,
-            extra_data: json_encode(
-                (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
-            ),
-        );
-        $form = $this->createForm($builder);
-        $question = current($form->getQuestions());
-
-        $result = (new QuestionTypeItem())->formatRawAnswer($case['answer'], $question);
+        $result = (new QuestionTypeItem())->formatRawAnswer($case['answer'], new Question());
 
         $this->assertEquals($case['expected'], $result);
     }
