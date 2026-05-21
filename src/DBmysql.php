@@ -1773,7 +1773,7 @@ class DBmysql
         ];
     }
 
-    private function isInTransaction(): bool
+    public function isInTransaction(): bool
     {
         return $this->transaction_level > 0;
     }
@@ -1866,18 +1866,25 @@ class DBmysql
         if (!$this->isInNestedTransaction()) {
             // A simple transaction is underway, roll it back.
             $success = $this->dbh->rollback();
+            if ($success) {
+                $this->transaction_level--;
+            } else {
+                throw new RuntimeException("Failed to rollback transaction.");
+            }
         } else {
-            // A nested transaction is already underway, roolback to current savepoint.
+            // A nested transaction is already underway, rollback to current savepoint.
             $savepoint = $this->formatAndQuoteSavePointName(
                 $this->transaction_level
             );
-            $success = $this->doQuery("ROLLBACK TO $savepoint");
-        }
-
-        if ($success) {
-            $this->transaction_level--;
-        } else {
-            throw new RuntimeException("Failed to rollback transaction.");
+            try {
+                $this->doQuery("ROLLBACK TO $savepoint");
+                $this->transaction_level--;
+            } catch (RuntimeException $e) {
+                // The savepoint no longer exists (e.g. an implicit commit caused by a
+                // DDL statement invalidated all savepoints). Fall back to a full rollback.
+                $this->dbh->rollback();
+                $this->transaction_level = 0;
+            }
         }
     }
 
