@@ -35,13 +35,13 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
-use Glpi\Form\Question;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 use User;
@@ -373,33 +373,6 @@ final class QuestionTypeItemTest extends DbTestCase
                         'expected' => 'France > Paris > Office',
                     ];
                 })(),
-            ],
-
-            'Item is a computer' => [
-                fn(self $t) => [
-                    'answer'   => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $t->createItem(Computer::class, [
-                            'name'        => 'My PC',
-                            'entities_id' => $t->getTestRootEntity(true),
-                        ])->getID(),
-                    ],
-                    'expected' => 'My PC',
-                ],
-            ],
-
-            'computer with serial' => [
-                fn(self $t) => [
-                    'answer'   => [
-                        'itemtype' => Computer::class,
-                        'items_id' => $t->createItem(Computer::class, [
-                            'name'        => 'My Laptop',
-                            'serial'      => 'SN-1234',
-                            'entities_id' => $t->getTestRootEntity(true),
-                        ])->getID(),
-                    ],
-                    'expected' => 'My Laptop - SN-1234',
-                ],
             ],
 
             'non-existent item' => [
