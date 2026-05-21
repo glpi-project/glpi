@@ -298,7 +298,7 @@ final class RichText
             'user_mentions'       => true,
             'images_lazy'         => true,
             'text_maxsize'        => GLPI_TEXT_MAXSIZE,
-            // KB-only flag — preserves video embed placeholders through sanitize and
+            // KB-only flag : preserves video embed placeholders through sanitize and
             // materializes them into sandboxed iframes here. Non-KB callers leave it false.
             'allow_video_embeds'  => false,
         ];

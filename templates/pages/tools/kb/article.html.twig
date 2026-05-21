@@ -320,7 +320,7 @@
             data-glpi-kb-content
             data-testid="content"
         >
-            {{ answer|enhanced_html({allow_video_embeds: true}) }}
+            {{ answer|enhanced_html({allow_video_embeds: true, text_maxsize: 0}) }}
         </div>
 
         {# Documents and Related Items section #}
