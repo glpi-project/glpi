@@ -273,12 +273,23 @@ final class RichText
     /**
      * Get enhanced HTML string based on user input content.
      *
+     * SAFETY CONTRACT: the return value is XSS-safe and may be echoed directly into an HTML
+     * body. Internally the input is first passed through {@see self::getSafeHtml()} and all
+     * downstream transformers (user mentions, image lazy-load, image gallery, video embed
+     * rendering, long-text wrapping) operate on already-sanitized markup and htmlescape any
+     * dynamic value they inject. Any new internal transformer MUST preserve this invariant
+     * (either re-sanitize or htmlescape every dynamic piece) — the {@see @psalm-taint-escape}
+     * annotations below stop Psalm from tracking taint past this point.
+     *
      * @since 10.0.0
      *
      * @param null|string   $content HTML string to enahnce
      * @param array         $params  Enhancement parameters
      *
      * @return string
+     *
+     * @psalm-taint-escape html
+     * @psalm-taint-escape has_quotes
      */
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
@@ -315,6 +326,7 @@ final class RichText
         }
 
         if ($p['text_maxsize'] > 0 && $content_size > $p['text_maxsize']) {
+            // Safe: $content has been through getSafeHtml + htmlescaping transformers above; the wrapping markup is static.
             $content = <<<HTML
 <div class="long_text">$content
     <p class='read_more'>
