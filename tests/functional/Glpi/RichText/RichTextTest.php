@@ -853,4 +853,75 @@ HTML,
             $result,
         );
     }
+
+    public static function getEnhancedHtmlXssProvider(): iterable
+    {
+        yield 'inline script tag' => [
+            'content' => '<p>Hello</p><script>alert("xss")</script>',
+        ];
+
+        yield 'img onerror handler' => [
+            'content' => '<img src="x" onerror="alert(1)">',
+        ];
+
+        yield 'svg onload handler' => [
+            'content' => '<svg onload="alert(1)"></svg>',
+        ];
+
+        yield 'javascript: scheme in href' => [
+            'content' => '<a href="javascript:alert(1)">click</a>',
+        ];
+
+        yield 'data: scheme in iframe src' => [
+            'content' => '<iframe src="data:text/html,<script>alert(1)</script>"></iframe>',
+        ];
+
+        yield 'attribute breakout on video placeholder provider' => [
+            'content' => '<div data-video-provider="youtube&quot; onclick=&quot;alert(1)" data-video-id="dQw4w9WgXcQ"></div>',
+        ];
+
+        yield 'attribute breakout on video placeholder id' => [
+            'content' => '<div data-video-provider="youtube" data-video-id="x&quot;><script>alert(1)</script>"></div>',
+        ];
+
+        yield 'unknown video provider with script payload in body' => [
+            'content' => '<div data-video-provider="evil" data-video-id="x"><script>alert(1)</script></div>',
+        ];
+
+        yield 'tampered video placeholder with script in body' => [
+            'content' => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><script>alert(1)</script></div>',
+        ];
+
+        yield 'nested div used to desync the placeholder walker' => [
+            'content' => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><div></div><script>alert(1)</script></div>',
+        ];
+    }
+
+    #[DataProvider('getEnhancedHtmlXssProvider')]
+    public function testGetEnhancedHtmlNeutralizesXssPayloads(string $content): void
+    {
+        $richtext = new RichText();
+
+        $result = $richtext->getEnhancedHtml($content, [
+            'text_maxsize'       => 0,
+            'allow_video_embeds' => true,
+        ]);
+
+        $this->assertStringNotContainsString('<script', $result);
+        $this->assertStringNotContainsString('</script', $result);
+        $this->assertStringNotContainsStringIgnoringCase('javascript:', $result);
+        $this->assertStringNotContainsStringIgnoringCase('onerror=', $result);
+        $this->assertStringNotContainsStringIgnoringCase('onload=', $result);
+        $this->assertStringNotContainsStringIgnoringCase('onclick=', $result);
+
+        if (preg_match_all('/<iframe[^>]*\bsrc="([^"]*)"/i', $result, $iframe_matches)) {
+            foreach ($iframe_matches[1] as $src) {
+                $this->assertMatchesRegularExpression(
+                    '#^https://(?:www\.youtube-nocookie\.com|player\.vimeo\.com|www\.dailymotion\.com)/#',
+                    $src,
+                    'Iframe src must come from an allow-listed video provider',
+                );
+            }
+        }
+    }
 }
