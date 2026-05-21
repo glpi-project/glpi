@@ -91,6 +91,11 @@ final class VideoEmbedRenderer
 
         $title = sprintf(__('%s video player'), self::getProviderDisplayName($provider));
 
+        // `allow-scripts` + `allow-same-origin` together can defeat the sandbox, but only when the
+        // framed document is same-origin with the parent — here `$src` is always cross-origin
+        // (youtube-nocookie / player.vimeo.com / dailymotion.com), so the combination is safe and
+        // both flags are required for the providers' players to work.
+        // Deployments enforcing a strict CSP must allow these hosts in `frame-src`.
         return sprintf(
             '<div class="video-embed-wrapper">'
             . '<iframe src="%s" title="%s" loading="lazy" allowfullscreen'
@@ -152,14 +157,35 @@ final class VideoEmbedRenderer
                 if ($video_id === null || preg_match(self::VIDEO_ID_PATTERN, $video_id) !== 1) {
                     return '';
                 }
+                $start_raw = self::extractAttribute($opening, 'data-video-start');
+                $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
+
+                $watch_url = sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id));
+                if ($start !== null && $start > 0) {
+                    $watch_url .= self::buildWatchStartSuffix($provider, $start);
+                }
 
                 return sprintf(
                     '[%s: %s]',
                     self::getProviderDisplayName($provider),
-                    sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id))
+                    $watch_url
                 );
             }
         );
+    }
+
+    /**
+     * Seek suffix to append to a provider's canonical watch URL.
+     * Each provider has its own convention for the timestamp parameter.
+     */
+    private static function buildWatchStartSuffix(string $provider, int $start): string
+    {
+        return match ($provider) {
+            'youtube'     => '&t=' . $start . 's',
+            'dailymotion' => '?start=' . $start,
+            'vimeo'       => '#t=' . $start . 's',
+            default       => '',
+        };
     }
 
     /**

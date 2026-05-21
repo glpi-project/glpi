@@ -2514,6 +2514,8 @@ TWIG, $twig_params);
      * by the `|enhanced_html` filter in the article templates.
      *
      * @return string
+     *
+     * @psalm-taint-source html
      */
     public function getAnswer()
     {
