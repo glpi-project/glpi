@@ -193,15 +193,24 @@ function parseVideoUrl(rawUrl) {
  * @param {object} editor - Tiptap editor instance
  */
 export function showVideoDialog(editor) {
+    const uid = Math.random().toString(36).slice(2, 9);
+
+    // Overlay
     const overlay = document.createElement('div');
     overlay.className = 'image-dialog-overlay video-dialog-overlay';
 
+    // Dialog container — modal landmarks for screen readers
     const dialog = document.createElement('div');
     dialog.className = 'image-dialog video-dialog';
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-labelledby', `video-dialog-title-${uid}`);
 
+    // Header
     const header = document.createElement('div');
     header.className = 'image-dialog-header';
     const headerTitle = document.createElement('span');
+    headerTitle.id = `video-dialog-title-${uid}`;
     headerTitle.textContent = __('Insert video');
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
@@ -214,10 +223,9 @@ export function showVideoDialog(editor) {
     header.appendChild(closeBtn);
     dialog.appendChild(header);
 
+    // Body — URL field
     const body = document.createElement('div');
     body.className = 'image-dialog-body';
-
-    const uid = Math.random().toString(36).slice(2, 9);
 
     const urlGroup = document.createElement('div');
     urlGroup.className = 'image-dialog-field';
@@ -234,6 +242,7 @@ export function showVideoDialog(editor) {
     urlGroup.appendChild(urlInput);
     body.appendChild(urlGroup);
 
+    // Body — help + error message
     const help = document.createElement('p');
     help.className = 'text-muted small mt-1 mb-0';
     help.textContent = __('Supported providers: YouTube, Dailymotion, Vimeo.');
@@ -242,11 +251,11 @@ export function showVideoDialog(editor) {
     const errorMsg = document.createElement('p');
     errorMsg.className = 'text-danger small mt-1 mb-0';
     errorMsg.style.display = 'none';
-    errorMsg.setAttribute('role', 'alert');
     body.appendChild(errorMsg);
 
     dialog.appendChild(body);
 
+    // Footer
     const footer = document.createElement('div');
     footer.className = 'image-dialog-footer';
 
@@ -264,39 +273,45 @@ export function showVideoDialog(editor) {
     footer.appendChild(insertBtn);
     dialog.appendChild(footer);
 
+    // Mount + initial focus
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
     urlInput.focus();
 
+    // Live URL validation. showError() guards against re-mutating the live
+    // region on every keystroke — re-assigning textContent on an aria-live
+    // node makes some screen readers announce again.
+    const showError = () => {
+        if (errorMsg.style.display !== 'none') {
+            return;
+        }
+        errorMsg.textContent = __('This video URL is not recognized. Use a YouTube, Dailymotion or Vimeo URL.');
+        errorMsg.setAttribute('role', 'alert');
+        errorMsg.style.display = '';
+    };
+    const hideError = () => {
+        errorMsg.removeAttribute('role');
+        errorMsg.style.display = 'none';
+    };
+    urlInput.addEventListener('input', () => {
+        const value = urlInput.value.trim();
+        if (value === '' || parseVideoUrl(value)) {
+            hideError();
+            return;
+        }
+        showError();
+    });
+
+    // Close + insert handlers
     const close = () => {
         document.removeEventListener('keydown', handleKeydown);
         overlay.remove();
         editor.commands.focus();
     };
-
-    const handleKeydown = (e) => {
-        if (e.key === 'Escape') {
-            close();
-        } else if (e.key === 'Enter' && document.activeElement === urlInput) {
-            e.preventDefault();
-            insert();
-        }
-    };
-    document.addEventListener('keydown', handleKeydown);
-
-    cancelBtn.addEventListener('click', close);
-    closeBtn.addEventListener('click', close);
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            close();
-        }
-    });
-
     const insert = () => {
-        const attrs = parseVideoUrl(urlInput.value);
+        const attrs = parseVideoUrl(urlInput.value.trim());
         if (!attrs) {
-            errorMsg.textContent = __('This video URL is not recognized. Use a YouTube, Dailymotion or Vimeo URL.');
-            errorMsg.style.display = '';
+            showError();
             urlInput.focus();
             return;
         }
@@ -306,7 +321,42 @@ export function showVideoDialog(editor) {
         }).run();
         close();
     };
+
+    // Keyboard — Escape, Enter on input, focus trap on Tab
+    const focusableEls = [closeBtn, urlInput, cancelBtn, insertBtn];
+    const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+            close();
+            return;
+        }
+        if (e.key === 'Enter' && document.activeElement === urlInput) {
+            e.preventDefault();
+            insert();
+            return;
+        }
+        if (e.key === 'Tab') {
+            const first = focusableEls[0];
+            const last = focusableEls[focusableEls.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+    };
+    document.addEventListener('keydown', handleKeydown);
+
+    // Click handlers
+    cancelBtn.addEventListener('click', close);
+    closeBtn.addEventListener('click', close);
     insertBtn.addEventListener('click', insert);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            close();
+        }
+    });
 }
 
 /**

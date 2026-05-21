@@ -151,6 +151,33 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(kb.videoEmbedPlaceholders).toHaveCount(0);
         });
 
+        test('Error alert clears live when a valid URL replaces an invalid one', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Live URL validation clears error',
+                entities_id: getWorkerEntityId(),
+                answer: '<p>Content</p>',
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+            await kb.editor.clearContent();
+
+            await kb.slashMenu.open();
+            await kb.slashMenu.selectByClick('Video');
+
+            const dialog = kb.videoDialog;
+            await expect(dialog.getByRole('alert')).toBeHidden();
+
+            await dialog.getByLabel('Video URL').fill('not-a-url');
+            await expect(dialog.getByRole('alert')).toBeVisible();
+
+            await dialog.getByLabel('Video URL').fill('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+            await expect(dialog.getByRole('alert')).toBeHidden();
+        });
+
         test('Dialog closes on Escape and inserts nothing', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
