@@ -258,4 +258,62 @@ final class QuestionTypeItemTest extends DbTestCase
         // Clean up any session flags set by the case
         unset($_SESSION['glpiis_ids_visible']);
     }
+
+    /**
+     * Data provider for testing the transformation of condition values for comparisons.
+     * Each case provides a question configuration, an input itemtype_id value, and the expected output after transformation.
+     */
+    public static function transformConditionValueForComparisonsProvider()
+    {
+        yield [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: Computer::class),
+                'itemtype_id' => ['items_id' => $t->createItem(Computer::class, [
+                    'name'        => 'ComputerTest',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ])->getID()],
+                'expected_name' => 'ComputerTest',
+            ],
+        ];
+
+        yield [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
+                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                    'name' => 'Parent Category',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ])->getID()],
+                'expected_name' => 'Parent Category',
+            ],
+        ];
+
+        yield [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
+                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                    'name' => 'Child Category',
+                    'entities_id' => $t->getTestRootEntity(true),
+                    'itilcategories_id' => $t->createItem(\ITILCategory::class, [
+                        'name' => 'Parent Category',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                ])->getID()],
+                'expected_name' => 'Parent Category > Child Category',
+            ],
+        ];
+    }
+
+    #[DataProvider('transformConditionValueForComparisonsProvider')]
+    public function testTransformConditionValueForComparisons(callable $setup): void
+    {
+        $this->login();
+
+        $question_type = new QuestionTypeItem();
+        $case = $setup($this);
+        $name = $question_type->transformConditionValueForComparisons(
+            $case['itemtype_id'],
+            $case['question_config']
+        );
+        $this->assertEquals($case['expected_name'], $name);
+    }
 }

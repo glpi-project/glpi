@@ -531,6 +531,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         $item = getItemForItemtype($question_config->getItemtype());
         if ($item && $item->getfromDB($config->getItemsId())) {
+            if ($item instanceof CommonTreeDropdown) {
+                return $item->fields['completename'];
+            }
             return $item->getName();
         }
 
