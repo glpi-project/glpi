@@ -6317,7 +6317,7 @@ JAVASCRIPT;
      *
      * used in template templates/components/itilobject/service_levels.html.twig
      *
-     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel}>
+     * @return array<array{id: int, name: string, entities_id: int, is_recursive: int, type: 0|1, comment: string, number_time: int, use_ticket_calendar: int, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: int, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel}>
      */
     public function getSlasData(): array
     {
@@ -6492,25 +6492,5 @@ JAVASCRIPT;
         if (!empty($deprecated_fields)) {
             throw new RuntimeException('Input fields "' . implode('", "', $deprecated_fields) . '" are not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
         }
-    }
-
-    private function getSatisfactionSurveyForHelpdesk(): ?TicketSatisfaction
-    {
-        // On the "central" interface, the survey will be available in a
-        // dedicated tab
-        if (Session::getCurrentInterface() !== "helpdesk") {
-            return null;
-        }
-
-        // Try to find a satisfaction survey for this ticket
-        $satisfaction = static::getSatisfactionClassInstance();
-        if (!$satisfaction instanceof TicketSatisfaction) {
-            return null; // Can't happen
-        }
-        $survey_exist = $satisfaction->getFromDBByCrit([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
-        return $survey_exist ? $satisfaction : null;
     }
 }
