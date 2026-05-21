@@ -232,51 +232,130 @@ class ContractTest extends DbTestCase
         $this->assertCount(1, $relation_items, 'Original Contract_User not found!');
     }
 
-    public function testContractExpirationWithEdgeDates()
+    public static function warrantyExpirProvider(): array
     {
-        $this->login();
-        $this->setEntity('_test_root_entity', true);
-
-        $test_cases = [
+        return [
             [
-                'name' => 'Contract start 01/31 for 12 months should end on 01/30',
-                'begin_date' => '2025-01-31',
-                'duration' => 12,
-                'expected_date' => '2026-01-30',
+                'current_time' => '2027-01-01',
+                'from'         => '2025-01-31',
+                'addwarranty'  => 12,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2026-01-30',
             ],
             [
-                'name' => 'Contract start 03/01 for 12 months should end on 02/28',
-                'begin_date' => '2025-03-01',
-                'duration' => 12,
-                'expected_date' => '2026-02-28',
+                'current_time' => '2027-01-01',
+                'from'         => '2025-03-01',
+                'addwarranty'  => 12,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2026-02-28',
             ],
             [
-                'name' => 'Contract starting on 03/01/2031 for 12 months should end on 02/29',
-                'begin_date' => '2031-03-01',
-                'duration' => 12,
-                'expected_date' => '2032-02-29',
+                'current_time' => '2027-01-01',
+                'from'         => '2031-03-01',
+                'addwarranty'  => 12,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2032-02-29',
             ],
             [
-                'name' => 'Contract start 05/31 for 6 months should end on 11/30',
-                'begin_date' => '2025-05-31',
-                'duration' => 6,
-                'expected_date' => '2025-11-30',
+                'current_time' => '2027-01-01',
+                'from'         => '2025-05-31',
+                'addwarranty'  => 6,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2025-11-30',
+            ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2024-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => '',
+            ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2024-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 2,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => '',
+            ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => '2028-01-01',
+            ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2025-01-01',
+                'addwarranty'  => 6,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 3,
+                'expected'     => '2025-06-30',
+            ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => __('Never'),
+            ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '',
+                'addwarranty'  => 0,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '',
             ],
         ];
+    }
 
-        foreach ($test_cases as $test_case) {
-            $expiration = \Infocom::getWarrantyExpir(
-                $test_case['begin_date'],
-                $test_case['duration'],
-            );
+    #[DataProvider('warrantyExpirProvider')]
+    public function testContractExpirationWithEdgeDates(
+        string $current_time,
+        string $from,
+        int $addwarranty,
+        int $deletenotice,
+        bool $color,
+        bool $auto_renew,
+        int $periodicity,
+        string $expected
+    ): void {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = $current_time;
 
-            $formatted_expected = \Html::convDate($test_case['expected_date']);
+        $result = \Infocom::getWarrantyExpir($from, $addwarranty, $deletenotice, $color, $auto_renew, $periodicity);
 
-            $this->assertEquals(
-                $formatted_expected,
-                $expiration,
-                $test_case['name'] . " - Expected: {$formatted_expected}, Got: {$expiration}"
-            );
-        }
+        $formatted_expected = in_array($expected, [__('Never'), ''], true) ? $expected : \Html::convDate($expected);
+
+        $this->assertEquals($formatted_expected, $result);
     }
 }

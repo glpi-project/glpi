@@ -2024,6 +2024,9 @@ HTML;
             // For TACIT contracts: renewal is based on addwarranty, not periodicity
             // For EXPRESS contracts: renewal is based on periodicity
             $renewal_period = $auto_renew ? $addwarranty : $periodicity;
+            if ($renewal_period <= 0) {
+                return '';
+            }
 
             // Find which period we are in
             $current_period = floor($months_elapsed / $renewal_period);
@@ -2105,6 +2108,9 @@ HTML;
         if ($auto_renew && $periodicity > 0 && $deletenotice == 0) {
             // Renewal occurs every addwarranty months (initial duration)
             $renewal_period = ($periodicity != $addwarranty) ? $addwarranty : $periodicity;
+            if ($renewal_period <= 0) {
+                return '';
+            }
 
             while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
