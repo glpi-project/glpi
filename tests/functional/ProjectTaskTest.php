@@ -41,7 +41,6 @@ use PlanningRecall;
 use Project;
 use ProjectTask;
 use ProjectTaskTeam;
-use QueuedNotification;
 use Session;
 
 /* Test for inc/projecttask.class.php */
@@ -570,7 +569,7 @@ class ProjectTaskTest extends DbTestCase
                 'real_start_date' => '',
             ],
             'result' => [
-                'real_start_date' => \Session::getCurrentTime(),
+                'real_start_date' => Session::getCurrentTime(),
                 'real_end_date'   => null,
             ],
         ];
@@ -581,7 +580,7 @@ class ProjectTaskTest extends DbTestCase
                 'percent_done' => '5',
             ],
             'result' => [
-                'real_start_date' => \Session::getCurrentTime(),
+                'real_start_date' => Session::getCurrentTime(),
                 'real_end_date'   => null,
             ],
         ];
@@ -592,8 +591,8 @@ class ProjectTaskTest extends DbTestCase
                 'percent_done' => '100',
             ],
             'result' => [
-                'real_start_date' => \Session::getCurrentTime(),
-                'real_end_date'   => \Session::getCurrentTime(),
+                'real_start_date' => Session::getCurrentTime(),
+                'real_end_date'   => Session::getCurrentTime(),
             ],
         ];
         $tasks = [
@@ -715,7 +714,7 @@ class ProjectTaskTest extends DbTestCase
                 ],
                 'result' => [
                     'percent_done'    => $percent_done,
-                    'real_start_date' => \Session::getCurrentTime(),
+                    'real_start_date' => Session::getCurrentTime(),
                 ],
             ];
         }
@@ -762,7 +761,7 @@ class ProjectTaskTest extends DbTestCase
                 'result' => [
                     'percent_done'    => 100,
                     'real_start_date' => '2023-12-12 04:56:35',
-                    'real_end_date'   => \Session::getCurrentTime(),
+                    'real_end_date'   => Session::getCurrentTime(),
                 ],
             ];
         }
