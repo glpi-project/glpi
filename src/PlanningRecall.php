@@ -263,14 +263,14 @@ class PlanningRecall extends CommonDBChild
      *
      * Mandatory options : itemtype, items_id
      *
-     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int} $options array of possible options:
+     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int, display?: bool} $options array of possible options:
      *    - itemtype : string itemtype
      *    - items_id : integer id of the item
      *    - users_id : integer id of the user (if not set used login user)
      *    - value    : integer preselected value for before_time
      *    - field    : string  field used as time mark (default begin)
      *
-     * @return void|false print out an HTML select box or return false if mandatory fields are not ok
+     * @return string|false|null print out an HTML select box, return the HTML string if display is false, or return false if mandatory fields are not ok
      **/
     public static function dropdown($options = [])
     {
@@ -337,7 +337,7 @@ class PlanningRecall extends CommonDBChild
             <input type="hidden" name="_planningrecall[field]" value="{{ field }}">
 TWIG, $p);
 
-        if ($p['display'] ?? true) {
+        if ($p['display']) {
             echo $output;
             return null;
         }

@@ -2406,7 +2406,11 @@ TWIG, $twig_params);
         return $result;
     }
 
-    public static function cronInfo($name): array
+    /**
+     * @return array<string, string>
+     * @used-by CronTask
+     */
+    public static function cronInfo(string $name): array
     {
         return match ($name) {
             'projecttasksreminder' => [
