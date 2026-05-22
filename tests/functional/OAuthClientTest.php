@@ -83,4 +83,52 @@ class OAuthClientTest extends DbTestCase
             $this->assertSame($allowed_ips, $update_result['allowed_ips']);
         }
     }
+
+    public function testPurgeDeletesAssociatedTokens(): void
+    {
+        global $DB;
+
+        $client = $this->createItem(\OAuthClient::class, ['name' => 'Test client']);
+        $identifier = $client->fields['identifier'];
+
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'access_token_purge_test',
+            'client' => $identifier,
+            'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+        ]));
+        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
+            'identifier' => 'refresh_token_purge_test',
+            'access_token' => 'access_token_purge_test',
+            'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+        ]));
+        $this->assertTrue($DB->insert('glpi_oauth_auth_codes', [
+            'identifier' => 'auth_code_purge_test',
+            'client' => $identifier,
+            'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+        ]));
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'access_token_other_client',
+            'client' => 'other_client_identifier',
+            'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+        ]));
+
+        $client->delete(['id' => $client->getID(), 'purge' => 1]);
+
+        $this->assertCount(0, $DB->request([
+            'FROM'  => 'glpi_oauth_access_tokens',
+            'WHERE' => ['client' => $identifier],
+        ]));
+        $this->assertCount(0, $DB->request([
+            'FROM'  => 'glpi_oauth_refresh_tokens',
+            'WHERE' => ['identifier' => 'refresh_token_purge_test'],
+        ]));
+        $this->assertCount(0, $DB->request([
+            'FROM'  => 'glpi_oauth_auth_codes',
+            'WHERE' => ['client' => $identifier],
+        ]));
+        $this->assertCount(1, $DB->request([
+            'FROM'  => 'glpi_oauth_access_tokens',
+            'WHERE' => ['identifier' => 'access_token_other_client'],
+        ]));
+    }
 }

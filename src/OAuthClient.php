@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\OAuth\Server;
 
 use function Safe\json_decode;
@@ -202,6 +203,23 @@ final class OAuthClient extends CommonDBTM
             $this->fields['scopes'] = json_decode($this->fields['scopes'], true);
         }
         $this->fields['redirect_uri'] = json_decode($this->fields['redirect_uri'], true);
+    }
+
+    public function cleanDBonPurge(): void
+    {
+        global $DB;
+
+        $identifier = $this->fields['identifier'] ?? '';
+        $DB->delete('glpi_oauth_refresh_tokens', [
+            'access_token' => new QuerySubQuery([
+                'SELECT' => 'identifier',
+                'FROM'   => 'glpi_oauth_access_tokens',
+                'WHERE'  => ['client' => $identifier],
+            ]),
+        ]);
+
+        $DB->delete('glpi_oauth_access_tokens', ['client' => $identifier]);
+        $DB->delete('glpi_oauth_auth_codes', ['client' => $identifier]);
     }
 
     public function post_getEmpty()
