@@ -125,6 +125,38 @@ test('Can link an item to a knowledge base article', async ({ page, profile, api
     await expect(page.getByTestId('related-item-chip').filter({ hasText: computer_name })).toBeVisible();
 });
 
+test('Empty link submission shows validation error and does not throw', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const kb_id = await api.createItem('KnowbaseItem', {
+        name: `KB article empty link - ${randomUUID()}`,
+        entities_id: getWorkerEntityId(),
+        answer: 'Test content',
+    });
+
+    const page_errors: string[] = [];
+    page.on('pageerror', (e) => page_errors.push(e.message));
+
+    await kb.goto(kb_id);
+
+    await page.getByRole('tab', { name: /Related items/ }).click();
+    await page.getByRole('button', { name: /Link to another item/ }).click();
+
+    const modal = page.getByRole('dialog');
+    await expect(modal).toBeVisible();
+
+    // Submit without selecting anything
+    await modal.getByRole('button', { name: 'Add' }).click();
+
+    // Modal must stay open with an inline validation error
+    await expect(modal).toBeVisible();
+    await expect(modal.getByRole('alert')).toHaveText('Please select an item to link.');
+
+    // No JS error must be raised in the page
+    expect(page_errors).toEqual([]);
+});
+
 test('Can unlink an item', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
 

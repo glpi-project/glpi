@@ -52,6 +52,12 @@ export class LinkItemFormController
     /** @type {number} */
     #kb_id;
 
+    /** @type {HTMLElement|null} */
+    #errorContainer;
+
+    /** @type {HTMLButtonElement|null} */
+    #submitBtn;
+
     /**
      * @param {HTMLElement} modal - The Bootstrap modal element
      */
@@ -64,7 +70,15 @@ export class LinkItemFormController
             return;
         }
 
-        this.#kb_id = parseInt(this.#form.dataset.glpiKbId, 10);
+        this.#kb_id          = parseInt(this.#form.dataset.glpiKbId, 10);
+        this.#errorContainer = this.#form.querySelector('[data-glpi-kb-link-item-error]');
+        this.#submitBtn      = this.#form.querySelector('button[type="submit"]');
+
+        // Ensure the error container has an id so aria-describedby can reference it
+        if (this.#errorContainer && !this.#errorContainer.id) {
+            this.#errorContainer.id = `kb-link-item-error-${this.#kb_id}`;
+        }
+
         this.#bindEvents();
     }
 
@@ -74,34 +88,115 @@ export class LinkItemFormController
             e.preventDefault();
             this.#submit();
         });
+
+        // Clear the error as soon as the user picks something. Use a jQuery
+        // listener because select2 dispatches the change via jQuery, which
+        // does not fire native addEventListener handlers.
+        $(this.#form).on('change', '[name="itemtype"], [name="items_id"]', () => this.#clearError());
     }
 
     async #submit()
     {
-        const itemtype = this.#form.querySelector('[name="itemtype"]').value;
+        const itemtype = this.#form.querySelector('[name="itemtype"]')?.value ?? '';
         const items_id = parseInt(
-            this.#form.querySelector('[name="items_id"]').value,
+            this.#form.querySelector('[name="items_id"]')?.value ?? '',
+            10,
         );
 
-        if (!itemtype || !items_id) {
+        if (!itemtype || itemtype === '0' || !items_id) {
+            this.#showError(__('Please select an item to link.'));
             return;
         }
 
-        const response = await post(`Knowbase/${this.#kb_id}/LinkItem`, { itemtype, items_id });
-        const body     = await response.json();
+        this.#clearError();
+        this.#setLoading(true);
 
-        // Notify the article controller
-        const article = document.querySelector('[data-glpi-knowbase-article]');
-        if (article) {
-            article.dispatchEvent(new CustomEvent('item:linked', {
-                bubbles: true,
-                detail:  { item: body.item ?? null },
-            }));
+        try {
+            const response = await post(`Knowbase/${this.#kb_id}/LinkItem`, { itemtype, items_id });
+            const body     = await response.json();
+
+            // Notify the article controller
+            const article = document.querySelector('[data-glpi-knowbase-article]');
+            if (article) {
+                article.dispatchEvent(new CustomEvent('item:linked', {
+                    bubbles: true,
+                    detail:  { item: body.item ?? null },
+                }));
+            }
+
+            // Close the dialog
+            bootstrap.Modal.getInstance(this.#modal)?.hide();
+
+            glpi_toast_info(__('Item linked successfully'));
+        } finally {
+            this.#setLoading(false);
+        }
+    }
+
+    /**
+     * Disable the submit button during the AJAX call to prevent
+     * double-submission (double-click, repeated Enter).
+     *
+     * @param {boolean} loading
+     */
+    #setLoading(loading)
+    {
+        if (!this.#submitBtn) {
+            return;
         }
 
-        // Close the dialog
-        bootstrap.Modal.getInstance(this.#modal)?.hide();
+        if (loading) {
+            this.#submitBtn.disabled            = true;
+            this.#submitBtn.dataset.originalHtml = this.#submitBtn.innerHTML;
+            this.#submitBtn.innerHTML            = `<span class="spinner-border spinner-border-sm me-1"></span>${__('Linking...')}`;
+        } else {
+            this.#submitBtn.disabled = false;
+            if (this.#submitBtn.dataset.originalHtml) {
+                this.#submitBtn.innerHTML = this.#submitBtn.dataset.originalHtml;
+            }
+        }
+    }
 
-        glpi_toast_info(__('Item linked successfully'));
+    /**
+     * @param {string} message
+     */
+    #showError(message)
+    {
+        if (this.#errorContainer) {
+            this.#errorContainer.textContent = message;
+        }
+
+        const selects = this.#form.querySelectorAll('[name="itemtype"], [name="items_id"]');
+        selects.forEach((select) => {
+            select.classList.add('is-invalid');
+            select.setAttribute('aria-invalid', 'true');
+            if (this.#errorContainer?.id) {
+                select.setAttribute('aria-describedby', this.#errorContainer.id);
+            }
+        });
+
+        // Fallback to keep keyboard focus on the first interactive element
+        const select2Selection = this.#form.querySelector('.select2-selection');
+        if (select2Selection instanceof HTMLElement) {
+            select2Selection.focus();
+        } else {
+            const itemtypeSelect = this.#form.querySelector('[name="itemtype"]');
+            if (itemtypeSelect instanceof HTMLElement) {
+                itemtypeSelect.focus();
+            }
+        }
+    }
+
+    #clearError()
+    {
+        if (this.#errorContainer) {
+            this.#errorContainer.textContent = '';
+        }
+
+        this.#form.querySelectorAll('[name="itemtype"], [name="items_id"]').forEach((select) => {
+            select.classList.remove('is-invalid');
+            select.removeAttribute('aria-invalid');
+            select.removeAttribute('aria-describedby');
+        });
     }
 }
