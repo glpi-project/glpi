@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form;
 
 use CronTask;
+use DBmysql;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -71,6 +72,7 @@ use Item_Ticket;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
+use ReflectionProperty;
 use User;
 
 class FormTest extends DbTestCase
@@ -917,5 +919,61 @@ class FormTest extends DbTestCase
         // Assert: tab count should only indicate two items
         $name = strip_tags($name);
         $this->assertEquals("Forms 2", $name);
+    }
+
+    /**
+     * Regression test for issue #23861.
+     *
+     * Before the fix, Form::post_updateItem() unconditionally opened a nested
+     * transaction (savepoint) even when an outer transaction was already in
+     * progress. When MariaDB implicitly committed that savepoint (e.g. due to a
+     * DDL statement), the subsequent ROLLBACK TO SAVEPOINT failed with:
+     *   "MySQL query error: SAVEPOINT savepoint_0 does not exist"
+     *
+     * The fix makes post_updateItem() skip its own transaction when one is
+     * already active, delegating commit/rollback to the outer caller.
+     */
+    public function testPostUpdateItemDoesNotCreateNestedTransactionWhenInsideOuterTransaction(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        // Create a minimal form to update later.
+        $builder = new FormBuilder("Savepoint regression test");
+        $builder->addQuestion("Question 1", QuestionTypeShortText::class);
+        $form = $this->createForm($builder);
+
+        // Open an outer transaction that wraps the form update,
+        // as AnswersHandler (and other callers) do.
+        $DB->beginTransaction();
+
+        $level_before = $this->getDbTransactionLevel($DB);
+
+        // Updating the form triggers post_updateItem().
+        // The fix ensures it does NOT start a new nested transaction (savepoint)
+        // when one is already in progress.
+        $form->update([
+            'id'   => $form->getID(),
+            'name' => 'Updated name',
+        ]);
+
+        $level_after = $this->getDbTransactionLevel($DB);
+
+        $this->assertSame(
+            $level_before,
+            $level_after,
+            'Form::post_updateItem() must not create a nested transaction when already inside an outer transaction'
+        );
+
+        // Outer transaction must still be open and closeable without errors.
+        $this->assertTrue($DB->isInTransaction());
+        $DB->rollback();
+    }
+
+    private function getDbTransactionLevel(DBmysql $db): int
+    {
+        $prop = new ReflectionProperty(DBmysql::class, 'transaction_level');
+        return $prop->getValue($db);
     }
 }
