@@ -58,11 +58,6 @@ class TicketStatusFilter extends AbstractFilter
     }
 
     /**
-     * @param string $table
-     * @param $value
-     * @return array
-     */
-    /**
      * @return array<string, array<string, int>>
      */
     public static function getCriteria(string $table, $value): array
