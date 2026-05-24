@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 use function Safe\json_encode;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Ajax Class
