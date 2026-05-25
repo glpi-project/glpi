@@ -455,14 +455,16 @@ final class HistoryBuilder
         ]);
 
         foreach ($logs as $row) {
-            $is_custom = str_starts_with(
+            if ($row['new_value'] === '') {
+                $description = __("Illustration removed by");
+            } elseif (str_starts_with(
                 $row['new_value'],
                 IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX
-            );
-            $description = $is_custom
-                ? __("Custom illustration set by")
-                : __("Native illustration set by")
-            ;
+            )) {
+                $description = __("Custom illustration set by");
+            } else {
+                $description = __("Native illustration set by");
+            }
 
             $this->history->addEvent(new LogEvent(
                 label: __("Illustration updated"),

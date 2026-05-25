@@ -109,6 +109,10 @@ final class IllustrationManager
      */
     public function renderIcon(string $icon_id, ?int $size = null): string
     {
+        if ($icon_id === '') {
+            return '';
+        }
+
         $custom_icon_prefix = self::CUSTOM_ILLUSTRATION_PREFIX;
         if (str_starts_with($icon_id, $custom_icon_prefix)) {
             return $this->renderCustomIcon(
