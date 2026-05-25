@@ -126,6 +126,32 @@ test('Cancelling edit after clearing illustration restores the original value', 
     await expect(page.locator('[data-glpi-icon-picker-value-preview-placeholder]')).toBeHidden();
 });
 
+test('History panel shows "Illustration removed by" when illustration is cleared', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'KB optional icon history test',
+        entities_id: getWorkerEntityId(),
+        answer: 'My answer',
+        illustration: 'antivirus',
+    });
+
+    await kb.goto(id);
+    await kb.editor.enterEditMode();
+
+    await page.getByRole('button', { name: 'Select an illustration' }).click();
+    const modal = page.getByTestId('illustration-picker-modal');
+    await expect(modal).toBeVisible();
+    await modal.getByRole('button', { name: 'No illustration' }).click();
+    await expect(modal).toBeHidden();
+
+    await kb.editor.save();
+
+    await kb.doOpenHistoryPanel();
+    await expect(kb.getHistoryEventByText('Illustration removed by')).toBeVisible();
+});
+
 test('Aside renders no svg for an article without illustration', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);

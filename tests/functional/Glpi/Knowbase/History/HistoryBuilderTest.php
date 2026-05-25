@@ -941,6 +941,38 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertInstanceOf(CreationEvent::class, $events[1]);
     }
 
+    public function testIllustrationRemovedAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+            'illustration' => 'kb-faq',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'illustration' => '',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Illustration updated", $events[0]->getLabel());
+        $this->assertEquals("Illustration removed by", $events[0]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
     public function testCurrentTranslationAppearsInHistory(): void
     {
         $this->login();

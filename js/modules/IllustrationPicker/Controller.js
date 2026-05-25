@@ -226,22 +226,13 @@ export class GlpiIllustrationPickerController
             return;
         }
 
-        // Update the preview of the selected item.
-        const illustration_title = illustration
-            .querySelector('svg')
-            .querySelector('title')
-        ;
+        // Clone the clicked illustration's SVG into the native preview slot.
+        // Cloning (vs in-place mutation) handles the transition from an empty
+        // article — where the slot has no SVG to mutate — without requiring
+        // the template to pre-render a skeleton SVG.
         const native_slot = this.#getNativePreviewSlot();
-        const selected_svg = native_slot.querySelector('svg');
-        const title = selected_svg.querySelector('title');
-        const use = selected_svg.querySelector('use');
-        const xlink = use.getAttribute('xlink:href');
-
-        use.setAttribute(
-            'xlink:href',
-            xlink.replace(/#.*/, `#${illustration_id}`)
-        );
-        title.innerHTML = illustration_title.innerHTML;
+        const clicked_svg = illustration.querySelector('svg');
+        native_slot.replaceChildren(clicked_svg.cloneNode(true));
 
         native_slot.classList.remove('d-none');
         this.#getCustomPreviewSlot().classList.add('d-none');

@@ -99,8 +99,11 @@
             <div
                 class="{% if is_custom_file or is_empty %}d-none{% endif %}"
                 data-glpi-icon-picker-value-preview-native
+                style="width: {{ size }}px; height: {{ size }}px;"
             >
-                {{ render_illustration(is_custom_file or is_empty ? '' : value, size) }}
+                {% if not is_custom_file and not is_empty %}
+                    {{ render_illustration(value, size) }}
+                {% endif %}
             </div>
 
             {# Custom illustration preview slot. #}
