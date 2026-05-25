@@ -350,7 +350,7 @@ class Ajax
                 $title = $val['title'];
 
                 // Format the badge with parentheses before stripping tags for option and aria-label
-                $title_clean = preg_replace('/ <span[^>]*class="[^"]*\bbadge\b[^"]*"[^>]*>(.*?)<\/span>/', ' ($1)', $title);
+                $title_clean = preg_replace('/<span[^>]*class="[^"]*\bbadge\b[^"]*"[^>]*>(.*?)<\/span>/', '($1)', $title);
                 $title_clean = strip_tags($title_clean);
 
                 // Compute direct link that user can reach in a new tab using
