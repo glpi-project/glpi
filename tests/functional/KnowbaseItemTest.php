@@ -2107,6 +2107,60 @@ HTML,
         $this->assertContains((int) $kb->getID(), array_map('intval', $ids));
     }
 
+    public function testDraftCannotBeUpdatedByNonAuthorWithVisibilityAccess(): void
+    {
+        $this->login('glpi', 'glpi');
+        $author_id = (int) $_SESSION['glpiID'];
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'private draft',
+            'is_faq'   => 0,
+            'is_draft' => 1,
+            'users_id' => $author_id,
+        ]);
+        // Put 'tech' on the visibility list — would normally grant
+        // haveVisibilityAccess() to that user.
+        $tech_id = (int) getItemByTypeName('User', 'tech', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $tech_id,
+        ]);
+
+        // Switch to the non-author and explicitly grant UPDATE on knowbase
+        // so the test exercises the new draft guard (not an unrelated
+        // missing right).
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertFalse(
+            $reloaded->can($kb->getID(), UPDATE),
+            'A non-author with UPDATE + visibility access must not be able to update a draft.',
+        );
+        $this->assertFalse(
+            $reloaded->canUpdateItem(),
+            'canUpdateItem must deny non-author non-admin viewers of a draft.',
+        );
+
+        // KNOWBASEADMIN must still be able to update any draft.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::KNOWBASEADMIN;
+        $this->assertTrue(
+            $reloaded->canUpdateItem(),
+            'KNOWBASEADMIN must keep full control over drafts.',
+        );
+
+        // The author must still be able to update their own draft.
+        $this->login('glpi', 'glpi');
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertTrue(
+            $reloaded->canUpdateItem(),
+            'The author must be able to update their own draft.',
+        );
+    }
+
     public function testFaqExcludesDraftEvenWhenForcedInDb(): void
     {
         global $DB;
