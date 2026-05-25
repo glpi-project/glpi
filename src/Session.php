@@ -2321,6 +2321,13 @@ class Session
         }
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+
+        $ancestors = getAncestorsOf("glpi_entities", $entities_id);
+        $_SESSION['glpiparententities']        = $ancestors;
+        $_SESSION['glpiparententities_string'] = implode("', '", $ancestors);
+        if (!empty($_SESSION['glpiparententities_string'])) {
+            $_SESSION['glpiparententities_string'] = "'" . $_SESSION['glpiparententities_string'] . "'";
+        }
     }
 
     /**

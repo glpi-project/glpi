@@ -726,6 +726,43 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         $this->assertEquals($expected_date, $recurrent->fields['next_creation_date']);
     }
 
+    public function testCronDoesNotWarnOnMissingTicketPerItemField(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $child_class = $this->getChildClass();
+        $template_class = $child_class::getTemplateClass();
+
+        $template = $this->createItem($template_class, [
+            'name' => $this->getUniqueString(),
+        ]);
+
+        $recurrent = $this->createItem($child_class, [
+            'name'                          => $this->getUniqueString(),
+            $template->getForeignKeyField() => $template->getID(),
+            'begin_date'                    => '2020-01-01 00:00:00',
+            'end_date'                      => null,
+            'periodicity'                   => HOUR_TIMESTAMP,
+            'create_before'                 => 0,
+            'calendars_id'                  => 0,
+            'is_active'                     => 1,
+            'entities_id'                   => $this->getTestRootEntity(true),
+        ]);
+
+        // Bypass prepareInputForUpdate to force next_creation_date in the past
+        $DB->update($child_class::getTable(), ['next_creation_date' => '2020-01-01 00:00:00'], ['id' => $recurrent->getID()]);
+
+        $task = $this->createMock(\CronTask::class);
+
+        // GLPITestCase::tearDown() asserts no unexpected log entries — a PHP warning
+        // "Undefined array key ticket_per_item" would fail here for RecurrentChange
+        $result = \CommonITILRecurrentCron::cronRecurrentItems($task);
+
+        $this->assertSame(1, $result);
+    }
+
     public function testTemplateIsSetOnCreatedItem(): void
     {
         // Arrange: create a template and a reccurent item
