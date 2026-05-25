@@ -145,7 +145,7 @@ class Contract_User extends CommonDBRelation
                                 expired: false,
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus me-1"></i>{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
