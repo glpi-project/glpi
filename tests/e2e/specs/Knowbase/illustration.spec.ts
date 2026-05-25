@@ -184,7 +184,7 @@ test('Illustration is not editable until edit mode is entered (regression #248)'
     await expect(page.getByRole('button', { name: 'Select an illustration' })).toHaveCount(0);
     await expect(picker).toHaveAttribute('aria-disabled', 'true');
 
-    await picker.click();
+    await picker.click({ force: true });
     await expect(modal).toBeHidden();
 
     await kb.editor.enterEditMode();
