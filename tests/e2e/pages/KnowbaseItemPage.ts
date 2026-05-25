@@ -90,6 +90,9 @@ export class KnowbaseItemPage extends GlpiPage
             `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
             { waitUntil: 'domcontentloaded' }
         );
+        // Wait for ArticleController to finish initialization (it removes pe-none after attaching all listeners)
+        // eslint-disable-next-line playwright/no-raw-locators -- No semantic alternative for article container
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
     }
 
     public async doToggleFaqStatus(): Promise<void>

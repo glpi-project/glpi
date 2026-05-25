@@ -174,6 +174,7 @@ test('Illustration is not editable until edit mode is entered (regression #248)'
         name: 'KB illustration read-only test',
         entities_id: getWorkerEntityId(),
         answer: "My answer",
+        illustration: 'antivirus',
     });
 
     await kb.goto(id);
@@ -184,7 +185,7 @@ test('Illustration is not editable until edit mode is entered (regression #248)'
     await expect(page.getByRole('button', { name: 'Select an illustration' })).toHaveCount(0);
     await expect(picker).toHaveAttribute('aria-disabled', 'true');
 
-    await picker.click({ force: true });
+    await picker.click();
     await expect(modal).toBeHidden();
 
     await kb.editor.enterEditMode();
