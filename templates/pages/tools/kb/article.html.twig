@@ -85,7 +85,12 @@
 
         <div class="d-flex align-items-center mb-3">
             {% if mode == 'add' or mode == 'edit' or mode == 'view' %}
-                <div class="me-3 flex-shrink-0" data-glpi-kb-illustration-container>
+                {# Hide container in view mode when no illustration is set;
+                   JS will reveal it when switching to edit mode. #}
+                <div
+                    class="me-3 flex-shrink-0{% if illustration is empty and mode == 'view' %} d-none{% endif %}"
+                    data-glpi-kb-illustration-container
+                >
                     {{ include('components/illustration/icon_picker.html.twig', {
                         'value': illustration,
                         'size': 48,

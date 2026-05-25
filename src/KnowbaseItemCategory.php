@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\UI\IllustrationManager;
+
 /// Class KnowbaseItemCategory
 class KnowbaseItemCategory extends CommonTreeDropdown
 {
@@ -71,12 +73,53 @@ class KnowbaseItemCategory extends CommonTreeDropdown
         $fields = parent::getAdditionalFields();
 
         $fields[] = [
-            'name'  => 'illustration',
-            'type'  => 'illustration',
-            'label' => __('Illustration'),
+            'name'                 => 'illustration',
+            'type'                 => 'illustration',
+            'label'                => __('Illustration'),
+            'default_illustration' => '',
         ];
 
         return $fields;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+        if (!is_array($input)) {
+            return $input;
+        }
+        return $this->prepareIllustrationInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+        if (!is_array($input)) {
+            return $input;
+        }
+        return $this->prepareIllustrationInput($input);
+    }
+
+    /**
+     * Drop the `illustration` field from $input when it is neither a known
+     * native icon nor an existing custom illustration file. The picker UI
+     * always submits valid values; this guards against direct POSTs.
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function prepareIllustrationInput(array $input): array
+    {
+        if (!array_key_exists('illustration', $input)) {
+            return $input;
+        }
+
+        $manager = new IllustrationManager();
+        if (!$manager->isKnownIllustrationValue((string) $input['illustration'])) {
+            unset($input['illustration']);
+        }
+
+        return $input;
     }
 
     public function cleanDBonPurge()

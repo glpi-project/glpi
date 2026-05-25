@@ -84,25 +84,33 @@
     >
         <div class="{{ preview_inner_css_classes }}">
             {% set is_custom_file = value starts with custom_icon_prefix %}
+            {% set is_empty = value is empty %}
+
+            {# Placeholder: visible when no illustration is set. #}
             <div
-                {% if is_custom_file %}
-                    data-glpi-icon-picker-value-preview-custom
-                    data-testid="illustration-custom-preview"
-                {% else %}
-                    data-glpi-icon-picker-value-preview-native
-                {% endif %}
+                class="d-flex align-items-center justify-content-center{% if not is_empty %} d-none{% endif %}"
+                data-glpi-icon-picker-value-preview-placeholder
+                style="width: {{ size }}px; height: {{ size }}px;"
             >
-                {{ render_illustration(value, size) }}
+                <i class="ti ti-photo-plus text-muted" style="font-size: {{ (size * 0.6)|round }}px;" aria-hidden="true"></i>
             </div>
-            {% if is_custom_file %}
-                <div class="d-none" data-glpi-icon-picker-value-preview-native>
-                    {{ render_illustration('', size) }}
-                </div>
-            {% else %}
-                <div class="d-none" data-glpi-icon-picker-value-preview-custom data-testid="illustration-custom-preview">
-                    {{ render_illustration(custom_icon_prefix, size) }}
-                </div>
-            {% endif %}
+
+            {# Native illustration preview slot. #}
+            <div
+                class="{% if is_custom_file or is_empty %}d-none{% endif %}"
+                data-glpi-icon-picker-value-preview-native
+            >
+                {{ render_illustration(is_custom_file or is_empty ? '' : value, size) }}
+            </div>
+
+            {# Custom illustration preview slot. #}
+            <div
+                class="{% if not is_custom_file %}d-none{% endif %}"
+                data-glpi-icon-picker-value-preview-custom
+                data-testid="illustration-custom-preview"
+            >
+                {{ render_illustration(is_custom_file ? value : custom_icon_prefix, size) }}
+            </div>
         </div>
     </div>
 

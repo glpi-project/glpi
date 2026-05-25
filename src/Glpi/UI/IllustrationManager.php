@@ -147,6 +147,24 @@ final class IllustrationManager
         return array_keys($this->getIconsDefinitions());
     }
 
+    /**
+     * Tell whether a string is a valid illustration value: empty (no
+     * illustration), a known native icon id, or an existing custom file.
+     */
+    public function isKnownIllustrationValue(string $value): bool
+    {
+        if ($value === '') {
+            return true;
+        }
+
+        if (str_starts_with($value, self::CUSTOM_ILLUSTRATION_PREFIX)) {
+            $custom_id = substr($value, strlen(self::CUSTOM_ILLUSTRATION_PREFIX));
+            return $this->getCustomIllustrationFile($custom_id) !== null;
+        }
+
+        return in_array($value, $this->getAllIconsIds(), true);
+    }
+
     public function countIcons(string $filter = ""): int
     {
         if ($filter == "") {
