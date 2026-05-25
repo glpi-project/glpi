@@ -178,7 +178,7 @@ final class BuilderTest extends DbTestCase
             'knowbaseitemcategories_id' => 0,
             'entities_id'               => $this->getTestRootEntity(only_id: true),
             'is_recursive'              => 1,
-            'illustration'              => 'kb-graduation',
+            'illustration'              => 'kb-faq',
         ]);
         $this->makeCategory('Default illustrated');
 
@@ -189,7 +189,7 @@ final class BuilderTest extends DbTestCase
             $by_title[$node->title] = $node;
         }
 
-        $this->assertSame('kb-graduation', $by_title['Custom illustrated']->illustration);
+        $this->assertSame('kb-faq', $by_title['Custom illustrated']->illustration);
         $this->assertSame('', $by_title['Default illustrated']->illustration);
     }
 
