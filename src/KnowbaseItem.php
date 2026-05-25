@@ -52,6 +52,7 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
@@ -1038,17 +1039,24 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
 
-        // When an article transitions from published to draft, invalidate any
-        // active share tokens so previously-distributed public URLs cannot
-        // resurface private content.
+        // Demoting to draft disables existing share tokens (instead of deleting
+        // them) so the author can reactivate them from the sharing panel after
+        // publishing again. ShareTokenManager already filters on is_active=1
+        // at resolution, so disabled tokens are unreachable in the meantime.
         if (
             in_array('is_draft', $this->updates, true)
             && !empty($this->fields['is_draft'])
         ) {
-            (new ShareToken())->deleteByCriteria([
-                'itemtype' => self::class,
-                'items_id' => (int) $this->fields['id'],
-            ], true);
+            /** @var \DBmysql $DB */
+            global $DB;
+            $DB->update(
+                ShareToken::getTable(),
+                ['is_active' => 0],
+                [
+                    'itemtype' => self::class,
+                    'items_id' => (int) $this->fields['id'],
+                ]
+            );
         }
 
         // Drafts must not notify visibility targets about updates: the
@@ -1169,6 +1177,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['can_edit']     = $can_update;
             $params['illustration'] = $this->fields['illustration'] ?? '';
             $params['is_draft']     = !empty($this->fields['is_draft']);
+            // Drives the JS confirmation modal before demoting to draft.
+            $params['has_share_tokens'] = !empty(
+                (new ShareTokenManager())->getTokensForItem(self::class, $this->fields['id'])
+            );
 
             // Translations informations
             $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);

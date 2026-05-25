@@ -591,6 +591,21 @@ export class GlpiKnowbaseArticleController
     async #toggleValue(id, field, toggle)
     {
         const value = toggle.checked;
+
+        // Demoting to draft disables active share tokens server-side. Warn
+        // before the POST so the author can keep the article published.
+        if (field === 'is_draft' && value === true && this.#hasShareTokens()) {
+            const confirmed = await glpi_confirm_danger({
+                title: __('Mark as draft'),
+                message: __('Public share links for this article will be disabled. You can reactivate them from the sharing panel after publishing the article again.'),
+                confirm_label: __('Mark as draft'),
+            });
+            if (!confirmed) {
+                toggle.checked = !value;
+                return;
+            }
+        }
+
         try {
             const response = await post(`Knowbase/${id}/ToggleField`, {
                 field: field,
@@ -634,6 +649,18 @@ export class GlpiKnowbaseArticleController
             toggle.checked = !value;
             throw e;
         }
+    }
+
+    /**
+     * @returns {boolean} Page-load snapshot of whether the article had any
+     * active share tokens. Drives the confirmation prompt before demoting
+     * a published article to draft.
+     */
+    #hasShareTokens()
+    {
+        const root = this.#container.querySelector('[data-glpi-knowbase-article]')
+            ?? this.#container.closest('[data-glpi-knowbase-article]');
+        return root?.dataset.glpiKbHasShareTokens === '1';
     }
 
     /**

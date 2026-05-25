@@ -2304,7 +2304,7 @@ HTML,
         $this->assertTrue($check->getFromDB($old_published->getID()), 'old published article should survive');
     }
 
-    public function testFlippingPublishedToDraftDeletesShareTokens(): void
+    public function testFlippingPublishedToDraftDeactivatesShareTokens(): void
     {
         $this->login('glpi', 'glpi');
         $kb = $this->createItem(KnowbaseItem::class, [
@@ -2315,33 +2315,35 @@ HTML,
 
         // Insert a share token directly so we don't rely on the controller.
         $token = new ShareToken();
-        $this->assertGreaterThan(0, $token->add([
+        $token_id = $token->add([
             'itemtype'  => KnowbaseItem::class,
             'items_id'  => $kb->getID(),
             'is_active' => 1,
-        ]));
+        ]);
+        $this->assertGreaterThan(0, $token_id);
 
-        $this->assertSame(
-            1,
-            countElementsInTable($token::getTable(), [
-                'itemtype' => KnowbaseItem::class,
-                'items_id' => $kb->getID(),
-            ])
-        );
-
-        // Flip to draft via update — post_updateItem must wipe the tokens.
+        // Flip to draft via update — post_updateItem must deactivate (not
+        // delete) the tokens so the author can revive them on republish.
         $this->assertTrue($kb->update([
             'id'       => $kb->getID(),
             'is_draft' => 1,
         ]));
 
-        $this->assertSame(
-            0,
-            countElementsInTable($token::getTable(), [
-                'itemtype' => KnowbaseItem::class,
-                'items_id' => $kb->getID(),
-            ])
-        );
+        $reloaded = new ShareToken();
+        $this->assertTrue($reloaded->getFromDB($token_id));
+        $this->assertSame(0, (int) $reloaded->fields['is_active']);
+
+        // Republishing does NOT auto-reactivate: the author keeps explicit
+        // control via the sharing panel (cannot distinguish auto-disabled
+        // from user-disabled tokens).
+        $this->assertTrue($kb->update([
+            'id'       => $kb->getID(),
+            'is_draft' => 0,
+        ]));
+
+        $reloaded = new ShareToken();
+        $this->assertTrue($reloaded->getFromDB($token_id));
+        $this->assertSame(0, (int) $reloaded->fields['is_active']);
     }
 
     public function testDraftReportsNotShareable(): void

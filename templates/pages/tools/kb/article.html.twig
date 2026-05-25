@@ -35,6 +35,7 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
+    data-glpi-kb-has-share-tokens="{{ has_share_tokens|default(false) ? '1' : '0' }}"
     {% if mode == 'edit' %}
         data-glpi-kb-default-language="{{ default_language }}"
         data-glpi-kb-existing-translations="{{ existing_translations|json_encode }}"
