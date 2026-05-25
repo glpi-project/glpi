@@ -40,15 +40,15 @@
     {% block more_fields %}
         {{ inputs.hidden(rule.getRuleIdField, item.fields[rules_id_field]) }}
         {% set criteria_dropdown %}
-            <div class="d-flex">
-                <div>
+            <div class="d-flex w-100">
+                <div class="btn-group btn-group-sm" role="group">
                     {% do call([rule, 'dropdownCriteria'], [{
                         value: item.fields['criteria'],
                         rand: rand
                     }]) %}
                     {% if rule.specific_parameters %}
                         {% set param_itemtype = get_class(rule) ~ 'Parameter' %}
-                        <button type="button" class="btn btn-ghost-secondary btn-sm" title="{{ __('Add a criterion') }}"
+                        <button type="button" class="btn btn-outline-secondary" title="{{ __('Add a criterion') }}"
                                 data-bs-toggle="modal" data-bs-target="#addcriterion{{ rand }}">
                             <i class="ti ti-plus"></i>
                         </button>
@@ -61,7 +61,7 @@
                         ]) %}
                     {% endif %}
                 </div>
-                <span id="criteria_span" class="d-flex"></span>
+                <span id="criteria_span" class="d-flex ms-2"></span>
             </div>
         {% endset %}
         {{ fields.htmlField('', criteria_dropdown, get_class(item)|itemtype_name, {
