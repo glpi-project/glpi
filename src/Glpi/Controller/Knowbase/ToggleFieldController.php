@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -48,7 +49,7 @@ final class ToggleFieldController extends AbstractController
 {
     use CrudControllerTrait;
 
-    private const ALLOWED_FIELDS = ['is_faq', 'is_recursive'];
+    private const ALLOWED_FIELDS = ['is_faq', 'is_recursive', 'is_draft'];
 
     #[Route(
         "/Knowbase/{id}/ToggleField",
@@ -79,6 +80,16 @@ final class ToggleFieldController extends AbstractController
             [$field => $value ? 1 : 0],
         );
 
-        return new Response(); // OK
+        // Re-read the item so the response reflects the actual saved value
+        // (mutual exclusion in KnowbaseItem::coerceDraftInput may have
+        // overridden the requested value, e.g. is_faq vs is_draft).
+        $item = new KnowbaseItem();
+        $applied = $item->getFromDB($id) ? (int) ($item->fields[$field] ?? 0) : 0;
+
+        return new JsonResponse([
+            'field'    => $field,
+            'applied'  => $applied === 1,
+            'rejected' => $applied !== ($value ? 1 : 0),
+        ]);
     }
 }

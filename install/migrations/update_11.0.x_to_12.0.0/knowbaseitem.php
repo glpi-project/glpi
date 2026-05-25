@@ -32,16 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\Aside;
+/**
+ * @var DBmysql $DB
+ * @var Migration $migration
+ */
 
-final class Article
-{
-    public function __construct(
-        public readonly int $id,
-        public readonly string $title,
-        public readonly string $illustration,
-        public readonly string $link,
-        public readonly bool $is_current = false,
-        public readonly bool $is_draft = false,
-    ) {}
-}
+$migration->addField(
+    'glpi_knowbaseitems',
+    'is_draft',
+    'bool',
+    ['after' => 'is_pinned']
+);
+$migration->addKey('glpi_knowbaseitems', 'is_draft');
+
+$migration->addCrontask(
+    KnowbaseItem::class,
+    'purgedraftitems',
+    DAY_TIMESTAMP,
+    param: 7
+);

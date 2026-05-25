@@ -35,6 +35,7 @@
 namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
@@ -1970,5 +1971,283 @@ HTML,
                 'items_id'     => $kb->getID(),
             ])
         );
+    }
+
+    // ---------------------------------------------------------------------
+    // Draft status (roadmap #327)
+    // ---------------------------------------------------------------------
+
+    public function testDraftDefaultsToZero(): void
+    {
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => 'published by default',
+            'is_faq' => 0,
+        ]);
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $this->assertEquals(0, (int) $kb->fields['is_draft']);
+    }
+
+    public function testDraftFlagPersisted(): void
+    {
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'in progress',
+            'is_faq'   => 0,
+            'is_draft' => 1,
+        ]);
+        $this->assertTrue($kb->getFromDB($kb->getID()));
+        $this->assertEquals(1, (int) $kb->fields['is_draft']);
+    }
+
+    /**
+     * is_faq=1 + is_draft=1 must coerce is_draft back to 0 and surface a
+     * warning to the session, instead of silently mutating user input.
+     */
+    public function testFaqAndDraftAreMutuallyExclusive(): void
+    {
+        $this->login();
+
+        $kb = new KnowbaseItem();
+        $id = $kb->add([
+            'name'     => __FUNCTION__,
+            'answer'   => 'faq trumps draft',
+            'is_faq'   => 1,
+            'is_draft' => 1,
+        ]);
+        $this->assertGreaterThan(0, $id);
+
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertEquals(1, (int) $kb->fields['is_faq']);
+        $this->assertEquals(0, (int) $kb->fields['is_draft']);
+
+        // Consume the warning so the tearDown's session hygiene check passes.
+        $this->hasSessionMessageThatContains(
+            'FAQ entry cannot be a draft',
+            (string) WARNING
+        );
+    }
+
+    public function testCanViewItemForAuthorAndAdminAndStranger(): void
+    {
+        $this->login('glpi', 'glpi'); // super-admin (has KNOWBASEADMIN)
+        $author_id = (int) $_SESSION['glpiID'];
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'secret',
+            'is_faq'   => 0,
+            'is_draft' => 1,
+            'users_id' => $author_id,
+        ]);
+
+        // Make it nominally visible to "tech" via KnowbaseItem_User so we can
+        // assert that visibility alone does NOT bypass the draft gate.
+        $tech_id = (int) getItemByTypeName('User', 'tech', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $tech_id,
+        ]);
+
+        // Author can view.
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertTrue($reloaded->canViewItem());
+
+        // Tech (no KNOWBASEADMIN, only on the visibility list) cannot view.
+        $this->login('tech', 'tech');
+        $this->assertFalse($reloaded->canViewItem());
+
+        // Admin (KNOWBASEADMIN) can view even though not the author.
+        $this->login('glpi', 'glpi');
+        $this->assertTrue($reloaded->canViewItem());
+    }
+
+    /**
+     * A user explicitly added to the visibility list of a draft article must
+     * NOT see it in SQL-driven listings.
+     */
+    public function testDraftHiddenFromVisibilityTargetInSqlListing(): void
+    {
+        global $DB;
+
+        $this->login('glpi', 'glpi');
+        $author_id = (int) $_SESSION['glpiID'];
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'still drafting',
+            'is_faq'   => 0,
+            'is_draft' => 1,
+            'users_id' => $author_id,
+        ]);
+        $tech_id = (int) getItemByTypeName('User', 'tech', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $tech_id,
+        ]);
+
+        $this->login('tech', 'tech');
+        $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
+            'SELECT' => KnowbaseItem::getTable() . '.id',
+            'FROM'   => KnowbaseItem::getTable(),
+        ]);
+        $ids = array_column(iterator_to_array($DB->request($criteria)), 'id');
+        $this->assertNotContains((int) $kb->getID(), array_map('intval', $ids));
+
+        // Same article should appear for the author.
+        $this->login('glpi', 'glpi');
+        $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
+            'SELECT' => KnowbaseItem::getTable() . '.id',
+            'FROM'   => KnowbaseItem::getTable(),
+        ]);
+        $ids = array_column(iterator_to_array($DB->request($criteria)), 'id');
+        $this->assertContains((int) $kb->getID(), array_map('intval', $ids));
+    }
+
+    public function testFaqExcludesDraftEvenWhenForcedInDb(): void
+    {
+        global $DB;
+
+        $this->login('glpi', 'glpi');
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => 'faq published',
+            'is_faq' => 1,
+        ]);
+        // Force the inconsistent state directly (bypasses coercion in
+        // prepareInputForUpdate). This mimics a buggy plugin or a raw SQL
+        // patch — the FAQ visibility query must still hide the row.
+        $DB->update(
+            KnowbaseItem::getTable(),
+            ['is_draft' => 1],
+            ['id' => $kb->getID()],
+        );
+
+        // Switch to a helpdesk user (no KNOWBASEADMIN, no READ on knowbase →
+        // hits the FAQ-only branch of getVisibilityCriteria).
+        $this->login('post-only', 'postonly');
+
+        $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
+            'SELECT' => KnowbaseItem::getTable() . '.id',
+            'FROM'   => KnowbaseItem::getTable(),
+        ]);
+        $ids = array_map('intval', array_column(iterator_to_array($DB->request($criteria)), 'id'));
+        $this->assertNotContains((int) $kb->getID(), $ids);
+    }
+
+    public function testRawSearchOptionsExposeDraft(): void
+    {
+        $kb = new KnowbaseItem();
+        $found = false;
+        foreach ($kb->rawSearchOptions() as $opt) {
+            if (is_array($opt) && ($opt['field'] ?? null) === 'is_draft') {
+                $this->assertSame('bool', $opt['datatype'] ?? null);
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue($found, 'is_draft search option missing from rawSearchOptions()');
+    }
+
+    public function testCronPurgedraftitemsRespectsDateModAndDraftFlag(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $old_draft = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'old draft',
+            'answer'   => '...',
+            'is_draft' => 1,
+        ]);
+        $recent_draft = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'recent draft',
+            'answer'   => '...',
+            'is_draft' => 1,
+        ]);
+        $old_published = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'old published',
+            'answer'   => '...',
+            'is_draft' => 0,
+        ]);
+
+        $old_ts = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $recent_ts = date('Y-m-d H:i:s', strtotime('-1 day'));
+        $DB->update(KnowbaseItem::getTable(), ['date_mod' => $old_ts], ['id' => $old_draft->getID()]);
+        $DB->update(KnowbaseItem::getTable(), ['date_mod' => $recent_ts], ['id' => $recent_draft->getID()]);
+        $DB->update(KnowbaseItem::getTable(), ['date_mod' => $old_ts], ['id' => $old_published->getID()]);
+
+        $task = new \CronTask();
+        $task->fields = ['param' => 7];
+
+        $this->assertSame(1, KnowbaseItem::cronPurgedraftitems($task));
+
+        $check = new KnowbaseItem();
+        $this->assertFalse($check->getFromDB($old_draft->getID()), 'old draft should have been purged');
+        $this->assertTrue($check->getFromDB($recent_draft->getID()), 'recent draft should survive');
+        $this->assertTrue($check->getFromDB($old_published->getID()), 'old published article should survive');
+    }
+
+    public function testFlippingPublishedToDraftDeletesShareTokens(): void
+    {
+        $this->login('glpi', 'glpi');
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => '...',
+            'is_draft' => 0,
+        ]);
+
+        // Insert a share token directly so we don't rely on the controller.
+        $token = new ShareToken();
+        $this->assertGreaterThan(0, $token->add([
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]));
+
+        $this->assertSame(
+            1,
+            countElementsInTable($token::getTable(), [
+                'itemtype' => KnowbaseItem::class,
+                'items_id' => $kb->getID(),
+            ])
+        );
+
+        // Flip to draft via update — post_updateItem must wipe the tokens.
+        $this->assertTrue($kb->update([
+            'id'       => $kb->getID(),
+            'is_draft' => 1,
+        ]));
+
+        $this->assertSame(
+            0,
+            countElementsInTable($token::getTable(), [
+                'itemtype' => KnowbaseItem::class,
+                'items_id' => $kb->getID(),
+            ])
+        );
+    }
+
+    public function testDraftReportsNotShareable(): void
+    {
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => '...',
+            'is_draft' => 1,
+        ]);
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertFalse($reloaded->canBeShared());
+
+        $this->assertTrue($reloaded->update([
+            'id'       => $kb->getID(),
+            'is_draft' => 0,
+        ]));
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertTrue($reloaded->canBeShared());
     }
 }

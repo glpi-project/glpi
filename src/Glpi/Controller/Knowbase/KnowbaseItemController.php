@@ -245,6 +245,7 @@ final class KnowbaseItemController extends AbstractController
                 'url' => KnowbaseItem::getFormURLWithID($data['id']),
                 'icon' => $icon_class,
                 'icon_title' => $icon_title,
+                'is_draft' => !empty($data['is_draft']),
             ];
         }
 

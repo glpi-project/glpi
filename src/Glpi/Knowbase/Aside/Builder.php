@@ -65,6 +65,7 @@ final class Builder
                 illustration: $article_data['illustration'] ?? '',
                 link: KnowbaseItem::getFormURLWithID($article_data['id']),
                 is_current: $this->current_id > 0 && (int) $article_data['id'] === $this->current_id,
+                is_draft: !empty($article_data['is_draft']),
             ));
         }
 

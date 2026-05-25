@@ -209,6 +209,7 @@ final class ShareTokenManager
                 && (!$item->useDeletedToLockIfDynamic() || !$item->isDynamic())
                 && $item->isDeleted()
             )
+            || !$item->canBeShared()
         ) {
             return null;
         }

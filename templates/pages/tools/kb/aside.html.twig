@@ -62,13 +62,21 @@
             data-glpi-kb-article-current
             aria-current="page"
         {% endif %}
-        class="article {{ add_margin ? 'mb-2' : '' }}"
+        {% if article.is_draft %}
+            data-glpi-kb-article-draft
+        {% endif %}
+        class="article {{ add_margin ? 'mb-2' : '' }} {{ article.is_draft ? 'kb-aside-article-draft' : '' }}"
     >
         <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
             {% if article.illustration %}
                 {{ render_illustration(article.illustration, 20) }}
             {% endif %}
             {{ article.title }}
+            {% if article.is_draft %}
+                <span class="badge bg-warning text-dark ms-1 fs-5" title="{{ __('Draft — only visible to you and knowledge base admins') }}">
+                    {{ __('Draft') }}
+                </span>
+            {% endif %}
         </a>
     </li>
 {% endmacro %}

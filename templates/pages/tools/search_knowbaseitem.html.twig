@@ -56,7 +56,12 @@
                                 <i class="{{ result.icon }}" title="{{ result.icon_title }}"></i>
                             </div>
                             <div class="col">
-                                <div class="fs-2">{{ result.name }}</div>
+                                <div class="fs-2">
+                                    {{ result.name }}
+                                    {% if result.is_draft|default(false) %}
+                                        <span class="badge bg-warning text-dark ms-1">{{ __('Draft') }}</span>
+                                    {% endif %}
+                                </div>
                                 <div class="fs-4 knowbaseitem-content-preview">{{ result.content_preview }}</div>
                             </div>
                             <div class="col-auto">

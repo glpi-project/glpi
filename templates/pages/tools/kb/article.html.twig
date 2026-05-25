@@ -108,6 +108,15 @@
                 data-placeholder="{{ __('Untitled article') }}"
                 spellcheck="true"
             >{{ subject }}</h1>
+            {% if is_draft|default(false) %}
+                <span
+                    class="badge bg-warning text-dark ms-2 fs-5"
+                    data-glpi-kb-article-draft-badge
+                    title="{{ __('Draft — only visible to you and knowledge base admins') }}"
+                >
+                    {{ __('Draft') }}
+                </span>
+            {% endif %}
             <div class="ms-auto d-flex align-items-center gap-2">
                 {# Edit/Save/Cancel buttons #}
                 {% if mode == 'edit' and can_edit %}
