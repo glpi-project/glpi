@@ -183,34 +183,49 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canUpdateItem(): bool
     {
-        // KNOWBASEADMIN always wins, regardless of draft state.
         if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
             return true;
         }
-
-        // The author can always update their own item from the central
-        // interface, even when it is a draft.
         if (
             Session::getCurrentInterface() === "central"
             && $this->fields['users_id'] === Session::getLoginUserID()
         ) {
             return true;
         }
-
-        // Mirror canViewItem: a draft is only writable by its author and
-        // KNOWBASEADMIN (handled above). A non-author who knows the ID must
-        // not be able to tamper with it via direct update, toggle, delete
-        // or share paths — visibility-list membership is read-only, not a
-        // proxy for ownership.
+        // A draft is only writable by its author and KNOWBASEADMIN
+        // (handled above); visibility-list membership is read-only.
         if (!empty($this->fields['is_draft'])) {
             return false;
         }
-
-        // Visibility + write access (FAQ vs regular KB).
         return ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                 || (!$this->fields["is_faq"]
                     && Session::haveRight(self::$rightname, UPDATE)))
             && $this->haveVisibilityAccess());
+    }
+
+    public function canDeleteItem(): bool
+    {
+        if (!parent::canDeleteItem()) {
+            return false;
+        }
+        return $this->canDisposeDraft();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if (!parent::canPurgeItem()) {
+            return false;
+        }
+        return $this->canDisposeDraft();
+    }
+
+    private function canDisposeDraft(): bool
+    {
+        if (empty($this->fields['is_draft'])) {
+            return true;
+        }
+        return $this->fields['users_id'] === Session::getLoginUserID()
+            || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
     }
 
     /**
@@ -2246,6 +2261,11 @@ TWIG, $twig_params);
         if (Session::getLoginUserID()) {
             $restrict = self::getVisibilityCriteria();
             $criteria['WHERE'] = array_merge($criteria['WHERE'], $restrict['WHERE']);
+            // Explicit even though getVisibilityCriteriaKB already filters
+            // drafts out for non-admins: keeps the contract readable.
+            if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+                $criteria['WHERE'][self::getTableField('is_draft')] = 0;
+            }
         } else {
             // Anonymous access
             if (Session::isMultiEntitiesMode()) {

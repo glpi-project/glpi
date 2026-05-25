@@ -2161,6 +2161,65 @@ HTML,
         );
     }
 
+    public function testDraftCannotBeDeletedOrPurgedByNonAuthor(): void
+    {
+        $this->login('glpi', 'glpi');
+        $author_id = (int) $_SESSION['glpiID'];
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'private draft to destroy',
+            'is_faq'   => 0,
+            'is_draft' => 1,
+            'users_id' => $author_id,
+        ]);
+        $tech_id = (int) getItemByTypeName('User', 'tech', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $tech_id,
+        ]);
+
+        // Non-author with DELETE + PURGE + visibility access must not be
+        // able to dispose of the draft.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | DELETE | PURGE;
+
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertFalse(
+            $reloaded->canDeleteItem(),
+            'A non-author must not be able to delete a draft they did not write.',
+        );
+        $this->assertFalse(
+            $reloaded->canPurgeItem(),
+            'A non-author must not be able to purge a draft they did not write.',
+        );
+
+        // KNOWBASEADMIN must keep full control.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | DELETE | PURGE | KnowbaseItem::KNOWBASEADMIN;
+        $this->assertTrue(
+            $reloaded->canDeleteItem(),
+            'KNOWBASEADMIN must be able to delete any draft.',
+        );
+        $this->assertTrue(
+            $reloaded->canPurgeItem(),
+            'KNOWBASEADMIN must be able to purge any draft.',
+        );
+
+        // The author can always dispose of their own draft.
+        $this->login('glpi', 'glpi');
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertTrue(
+            $reloaded->canDeleteItem(),
+            'The author must be able to delete their own draft.',
+        );
+        $this->assertTrue(
+            $reloaded->canPurgeItem(),
+            'The author must be able to purge their own draft.',
+        );
+    }
+
     public function testFaqExcludesDraftEvenWhenForcedInDb(): void
     {
         global $DB;
