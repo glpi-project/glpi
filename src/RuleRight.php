@@ -247,7 +247,7 @@ class RuleRight extends Rule
 
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        if ($criteria['field'] === 'type') {
+        if (($criteria['field'] ?? '') === 'type') {
             Auth::dropdown([
                 'name'  => $name,
                 'value' => $value,
