@@ -57,6 +57,7 @@ use Glpi\Api\HL\Controller\NotificationController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
+use Glpi\Api\HL\Controller\ServiceCatalogController;
 use Glpi\Api\HL\Controller\SetupController;
 use Glpi\Api\HL\Controller\ToolController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
@@ -95,7 +96,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.3.0';
+    public const API_VERSION = '2.4.0';
 
     /**
      * @var AbstractController[]
@@ -187,6 +188,12 @@ EOT;
                 'api_version' => '2',
                 'version' => '2.3.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
+                'deprecated' => true,
+            ],
+            [
+                'api_version' => '2',
+                'version' => '2.4.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.4',
             ],
         ];
     }
@@ -261,6 +268,7 @@ EOT;
             self::$instance->registerController(new KnowbaseController());
             self::$instance->registerController(new InventoryController());
             self::$instance->registerController(new NotificationController());
+            self::$instance->registerController(new ServiceCatalogController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
