@@ -1077,8 +1077,7 @@ class ProjectTaskTest extends DbTestCase
 
         $project = $this->createItem(Project::class, ['name' => 'Test project for recall']);
 
-        $task    = new ProjectTask();
-        $task_id = $task->add([
+        $task = $this->createItem(ProjectTask::class, [
             'name'            => 'Task with recall',
             'projects_id'     => $project->getID(),
             'plan_start_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
@@ -1091,7 +1090,7 @@ class ProjectTaskTest extends DbTestCase
                 'field'       => 'plan_end_date',
             ],
         ]);
-        $this->assertGreaterThan(0, $task_id);
+        $task_id = $task->getID();
 
         $recall = new PlanningRecall();
         $this->assertTrue(

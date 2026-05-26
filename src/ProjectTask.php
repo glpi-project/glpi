@@ -560,10 +560,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         $input = $this->autoSetDate($input);
 
-        if (isset($input['_planningrecall'])) {
-            PlanningRecall::manageDatas($input['_planningrecall']);
-        }
-
         return Project::checkPlanAndRealDates($input);
     }
 
