@@ -183,17 +183,9 @@ final class ApplyCommand extends AbstractCommand
         /** @var string $raw_input */
         $raw_input = $input->getArgument('input');
 
-        $plugin_name = '';
-        if ($input->hasOption('plugin')) {
-            $plugin_name = $input->getOption('plugin');
-            if ($plugin_name === null || $plugin_name === '') {
-                $io->error('The plugin folder name is missing.');
-                return Command::FAILURE;
-            }
-        }
-
-        $dry_run = (bool) $input->hasOption('dry-run');
-        $revert  = (bool) $input->hasOption('revert');
+        $plugin_name = $input->getOption('plugin')??'';
+        $dry_run     = (bool) $input->getOption('dry-run');
+        $revert      = (bool) $input->getOption('revert');
 
         // ------------------------------------------------------------------
         // Banner
@@ -212,7 +204,7 @@ final class ApplyCommand extends AbstractCommand
         $plugin_dir = '';
         if ($plugin_name !== '') {
             $marketplace_plugin_dir = GLPI_ROOT . '/marketplace/' . $plugin_name;
-            $plugins_plugin_dir = GLPI_ROOT . '/plugin/' . $plugin_name;
+            $plugins_plugin_dir = GLPI_ROOT . '/plugins/' . $plugin_name;
 
             $is_installed_in_marketplace = is_dir($marketplace_plugin_dir);
             $is_installed_in_plugins = is_dir($plugins_plugin_dir);
@@ -324,7 +316,9 @@ final class ApplyCommand extends AbstractCommand
             }
         } else {
             $io->success(
-                'Dry-run complete. Re-run without --dry-run to apply the changes.'
+                $revert
+                    ? 'Dry-run complete. Re-run without --dry-run to revert the changes.'
+                    : 'Dry-run complete. Re-run without --dry-run to apply the changes.'
             );
         }
 
