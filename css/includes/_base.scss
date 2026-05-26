@@ -186,6 +186,10 @@ body.in_modal {
 
 .breadcrumb-alternate {
     a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25em;
+
         &:hover {
             text-decoration: var(--tblr-link-hover-decoration);
         }
