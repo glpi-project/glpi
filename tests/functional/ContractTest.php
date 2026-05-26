@@ -335,6 +335,16 @@ class ContractTest extends DbTestCase
                 'periodicity'  => 0,
                 'expected'     => '',
             ],
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => '2028-01-01',
+            ],
         ];
     }
 
