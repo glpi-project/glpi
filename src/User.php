@@ -408,7 +408,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $nb_managed = self::countItemsForUser($item->getID(), true);
                 }
                 $ong[1] = self::createTabEntry(__('Used items'),    $nb_used,    $item::getType(), 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), $nb_managed, $item::getType(), 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), $nb_managed, $item::getType(), 'ti ti-augmented-reality-2');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
