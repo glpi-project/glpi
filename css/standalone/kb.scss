@@ -123,6 +123,13 @@
     padding-top: 0 !important;
 }
 
+// Cancel the mt-n2 on the avatar anchor inside .new_comment_form.
+// mt-n2 is intentional inside .forcomments (aligns avatar with the speech-bubble
+// arrow), but there is no such arrow offset needed in the standalone form.
+.new_comment_form .d-flex > a {
+    margin-top: 0 !important;
+}
+
 input[type="checkbox"].toggle_comments {
     display: none;
 

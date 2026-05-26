@@ -109,6 +109,15 @@
                 $('.new_comment_form').removeClass('d-none');
                 $(e.currentTarget).addClass('d-none');
             });
+
+            // Cancel inside the standalone new-comment form: hide the form and
+            // restore the "Add a comment" button. The form's own inline handler
+            // safely no-ops here (no .newcomment/.editcomment ancestor to remove).
+            $('.new_comment_form').on('click', 'button[name="cancel"]', (e) => {
+                e.preventDefault();
+                $('.new_comment_form').addClass('d-none');
+                $('button.add_new_comment').removeClass('d-none');
+            });
         </script>
     </div>
 {% endif %}
