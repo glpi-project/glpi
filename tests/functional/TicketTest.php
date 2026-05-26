@@ -10050,7 +10050,7 @@ HTML,
      */
     public static function associatedDocumentsWithoutSessionProvider(): iterable
     {
-        foreach ([Ticket::class, \Change::class, \Problem::class] as $itil_itemtype) {
+        foreach ([Ticket::class, Change::class, \Problem::class] as $itil_itemtype) {
 
             yield [
                 'parent_itil_itemtype' => $itil_itemtype,
