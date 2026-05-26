@@ -157,10 +157,10 @@
                     }).then((data) => {
                         const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
-                        if (add_btn.closest('.comment').find("ul").length > 0) {
-                            add_btn.closest('.comment').find("ul").append(_form);
+                        if (comment.children("ul").length > 0) {
+                            comment.children("ul").first().append(_form);
                         } else {
-                            $("<div class='ms-5 w-100'>").append(_form).insertAfter(add_btn.parents('.h_item'));
+                            comment.after(_form);
                         }
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
                     }, () => {
