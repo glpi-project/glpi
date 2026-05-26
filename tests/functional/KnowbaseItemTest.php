@@ -40,7 +40,6 @@ use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
 use KnowbaseItem_User;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
@@ -335,52 +334,69 @@ HTML,
         $this->assertEquals(2, $count);
     }
 
-    #[AllowMockObjectsWithoutExpectations]
-    public function testGetForCategory()
+    public function testGetForCategoryMatchesBrowseListing(): void
     {
         global $DB;
-        $orig_db = clone $DB;
 
-        // Prepare mocks
-        $m_db = $this->getMockBuilder(\DB::class)
-            ->onlyMethods(['request'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->login('glpi', 'glpi');
+        $author_id = (int) $_SESSION['glpiID'];
 
-        $m_kbi = $this->getMockBuilder(KnowbaseItem::class)
-            ->onlyMethods(['getFromDB', 'canViewItem'])
-            ->getMock();
-
-        // Mocked db request result
-        $it = new \ArrayIterator([
-            ['id' => '1'],
-            ['id' => '2'],
-            ['id' => '3'],
+        $category = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => 0,
         ]);
-        $m_db->method('request')->willReturn($it);
 
-        // Ignore get fromDB
-        $m_kbi->method('getFromDB')->willReturn(true);
+        // Two articles in the category: one draft (author-only), one published
+        // with a visibility entry for tech.
+        $draft = $this->createItem(KnowbaseItem::class, [
+            'name' => 'draft', 'answer' => '...', 'users_id' => $author_id, 'is_draft' => 1,
+        ]);
+        $this->createItem(\KnowbaseItem_KnowbaseItemCategory::class, [
+            'knowbaseitems_id' => $draft->getID(),
+            'knowbaseitemcategories_id' => $category->getID(),
+        ]);
 
-        // True for call 1 & 3, false for call 2 and every following calls
-        $m_kbi->method('canViewItem')->willReturn(true, false, true, false, false, false);
+        $published = $this->createItem(KnowbaseItem::class, [
+            'name' => 'published', 'answer' => '...', 'users_id' => $author_id, 'is_draft' => 0,
+        ]);
+        $this->createItem(\KnowbaseItem_KnowbaseItemCategory::class, [
+            'knowbaseitems_id' => $published->getID(),
+            'knowbaseitemcategories_id' => $category->getID(),
+        ]);
+        $tech_id = (int) getItemByTypeName('User', 'tech', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $published->getID(),
+            'users_id'         => $tech_id,
+        ]);
 
-        // Expected : [1, 3]
-        // Replace global DB with mocked DB
-        $DB = $m_db;
-        $result = KnowbaseItem::getForCategory(1, $m_kbi);
-        $DB = $orig_db;
-        $this->assertCount(2, $result);
-        $this->assertContains('1', $result);
-        $this->assertContains('3', $result);
+        // Stranger (tech) — entitled only to the published one via visibility list.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
 
-        // Expected : [-1]
-        // Replace global DB with mocked DB
-        $DB = $m_db;
-        $result = KnowbaseItem::getForCategory(1, $m_kbi);
-        $DB = $orig_db;
-        $this->assertCount(1, $result);
-        $this->assertContains(-1, $result);
+        $actual = array_map('intval', KnowbaseItem::getForCategory($category->getID()));
+
+        $reference = array_map(
+            'intval',
+            array_column(
+                iterator_to_array($DB->request(
+                    KnowbaseItem::getListRequest(
+                        ['knowbaseitemcategories_id' => $category->getID()],
+                        'browse'
+                    )
+                )),
+                'id'
+            )
+        );
+
+        sort($actual);
+        sort($reference);
+        $this->assertSame(
+            $reference,
+            $actual,
+            'getForCategory must mirror getListRequest(browse) for the same category.'
+        );
+        $this->assertNotContains((int) $draft->getID(), $actual);
+        $this->assertContains((int) $published->getID(), $actual);
     }
 
     public static function fullTextSearchProvider(): iterable

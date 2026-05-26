@@ -2824,51 +2824,28 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get ids of KBI in given category
+     * Get ids of KBI in given category, gated by the canonical browse ACL.
      *
-     * @param int           $category_id   id of the parent category
-     * @param KnowbaseItem  $kbi           used only for unit tests
+     * @param int $category_id id of the parent category
      *
-     * @return array        Array of ids
+     * @return array Array of ids, or [-1] when no row matches (avoids empty IN).
      */
-    public static function getForCategory($category_id, $kbi = null)
+    public static function getForCategory($category_id): array
     {
         global $DB;
 
-        if ($kbi === null) {
-            $kbi = new self();
-        }
+        $criteria = self::getListRequest(
+            ['knowbaseitemcategories_id' => (int) $category_id],
+            'browse'
+        );
 
-        $ids = $DB->request([
-            'SELECT' => self::getTable() . '.id',
+        $ids = array_map(
+            static fn($row) => (int) $row['id'],
+            iterator_to_array($DB->request($criteria), false)
+        );
 
-            'FROM'   => self::getTable(),
-            'LEFT JOIN' => [
-                'glpi_knowbaseitems_knowbaseitemcategories' => [
-                    'ON'  => [
-                        'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                        'glpi_knowbaseitems'             => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
-        ]);
-
-        // Get array of ids
-        $ids = array_map(static fn($row) => $row['id'], iterator_to_array($ids, false));
-
-        // Filter on canViewItem
-        $ids = array_filter($ids, static function ($id) use ($kbi) {
-            $kbi->getFromDB($id);
-            return $kbi->canViewItem();
-        });
-
-        // Avoid empty IN
-        if (count($ids) === 0) {
-            $ids[] = -1;
-        }
-
-        return $ids;
+        // Avoid empty IN clauses in callers (CommonDropdown).
+        return $ids === [] ? [-1] : $ids;
     }
 
     public static function getIcon()
