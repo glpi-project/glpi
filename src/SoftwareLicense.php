@@ -945,7 +945,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
             $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add_item']  = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'add_item']  = "<i class='ti ti-license'></i>" . _sx('button', 'Add an item');
         }
 
         return $actions;
@@ -1245,6 +1245,6 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "ti ti-key";
+        return "ti ti-license";
     }
 }
