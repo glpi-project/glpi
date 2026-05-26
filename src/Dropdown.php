@@ -1246,6 +1246,9 @@ HTML;
                 ],
 
                 __('Assistance') => [
+                    'TicketTemplate'  => null,
+                    'ChangeTemplate'  => null,
+                    'ProblemTemplate' => null,
                     'ITILCategory' => null,
                     'TaskCategory' => null,
                     'TaskTemplate' => null,
