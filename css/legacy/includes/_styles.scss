@@ -474,6 +474,9 @@
    }
 
    .kb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       text-align: left;
       padding-top: 5px;
    }
@@ -498,7 +501,7 @@
    }
 
    a.knowbase {
-      margin-left: 8px;
+      margin-left: 0;
    }
 
    .kb i {

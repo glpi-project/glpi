@@ -360,7 +360,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
         global $CFG_GLPI;
-        $out = "<td $extraparam valign='top'>";
+        $out = "<td $extraparam valign='top' class='align-middle'>";
 
         if (!preg_match('/' . Search::LBHR . '/', $value)) {
             $values = preg_split('/' . Search::LBBR . '/i', $value);
