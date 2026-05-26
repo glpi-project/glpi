@@ -95,6 +95,18 @@
             width: 100%;
             max-width: 820px;
         }
+
+        &.newcomment {
+            .timeline-content {
+                &::before {
+                    top: 7px;
+                }
+
+                &::after {
+                    top: 8px;
+                }
+            }
+        }
     }
 
     .h_content {
