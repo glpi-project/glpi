@@ -358,15 +358,57 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
+    /**
+     * Count items linked to a user (mirrors showItems logic).
+     *
+     * @param int  $users_id  User ID
+     * @param bool $tech      false = Used items (users_id), true = Managed items (users_id_tech)
+     *
+     * @return int
+     */
+    public static function countItemsForUser(int $users_id, bool $tech): int
+    {
+        global $CFG_GLPI, $DB;
 
+        $field = $tech ? 'users_id_tech' : 'users_id';
+        $types = $tech
+            ? $CFG_GLPI['linkuser_tech_types']
+            : $CFG_GLPI['linkuser_types'];
+
+        $count = 0;
+        foreach ($types as $itemtype) {
+            if (!class_exists($itemtype)) {
+                continue;
+            }
+            /** @var CommonDBTM $itemtype */
+            $table = $itemtype::getTable();
+            if (!$DB->fieldExists($table, $field)) {
+                continue;
+            }
+            $criteria = [$field => $users_id];
+            if ($DB->fieldExists($table, 'is_deleted')) {
+                $criteria['is_deleted'] = 0;
+            }
+            $count += countElementsInTable($table, $criteria);
+        }
+        return $count;
+    }
+
+    
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         switch ($item::class) {
             case self::class:
                 $ong    = [];
-                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
+                $nb_used    = 0;
+                $nb_managed = 0;
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb_used    = self::countItemsForUser($item->getID(), false);
+                    $nb_managed = self::countItemsForUser($item->getID(), true);
+                }
+                $ong[1] = self::createTabEntry(__('Used items'),    $nb_used,    $item::getType(), 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), $nb_managed, $item::getType(), 'ti ti-package');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
