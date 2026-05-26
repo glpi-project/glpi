@@ -2067,18 +2067,19 @@ HTML,
             'users_id'         => $tech_id,
         ]);
 
-        // Author can view.
+        // Author can view. Exercise the full gate (profile + item rights),
+        // not just canViewItem() which skips the global rights check.
         $reloaded = new KnowbaseItem();
         $this->assertTrue($reloaded->getFromDB($kb->getID()));
-        $this->assertTrue($reloaded->canViewItem());
+        $this->assertTrue($reloaded->can($reloaded->getID(), READ));
 
         // Tech (no KNOWBASEADMIN, only on the visibility list) cannot view.
         $this->login('tech', 'tech');
-        $this->assertFalse($reloaded->canViewItem());
+        $this->assertFalse($reloaded->can($reloaded->getID(), READ));
 
         // Admin (KNOWBASEADMIN) can view even though not the author.
         $this->login('glpi', 'glpi');
-        $this->assertTrue($reloaded->canViewItem());
+        $this->assertTrue($reloaded->can($reloaded->getID(), READ));
     }
 
     /**
@@ -2279,6 +2280,166 @@ HTML,
             }
         }
         $this->assertTrue($found, 'is_draft search option missing from rawSearchOptions()');
+    }
+
+    /**
+     * A non-author with UPDATE on knowbase + visibility access can edit a
+     * published article, but must NOT be able to flip is_draft on — that
+     * would lock the article away from every editor except the author and
+     * KNOWBASEADMIN.
+     */
+    public function testNonAuthorCannotDemotePublishedToDraft(): void
+    {
+        $this->login('glpi', 'glpi');
+        $author_id = (int) $_SESSION['glpiID'];
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'public knowledge',
+            'is_faq'   => 0,
+            'is_draft' => 0,
+            'users_id' => $author_id,
+        ]);
+        $tech_id = (int) getItemByTypeName('User', 'tech', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => $tech_id,
+        ]);
+
+        // Switch to a non-author with UPDATE + visibility, no KNOWBASEADMIN.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+
+        $reloaded = new KnowbaseItem();
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $reloaded->update([
+            'id'       => $kb->getID(),
+            'is_draft' => 1,
+        ]);
+
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertSame(
+            0,
+            (int) $reloaded->fields['is_draft'],
+            'A non-author must not be able to demote a published article to draft.',
+        );
+        $this->hasSessionMessageThatContains(
+            'Only the author or a knowledge base administrator',
+            (string) WARNING,
+        );
+
+        // The author can demote their own published article.
+        $this->login('glpi', 'glpi');
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertTrue($reloaded->update([
+            'id'       => $kb->getID(),
+            'is_draft' => 1,
+        ]));
+        $this->assertTrue($reloaded->getFromDB($kb->getID()));
+        $this->assertSame(1, (int) $reloaded->fields['is_draft']);
+
+        // KNOWBASEADMIN can also demote any published article.
+        $kb2 = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . ' kb2',
+            'answer'   => 'public',
+            'is_faq'   => 0,
+            'is_draft' => 0,
+            'users_id' => $author_id,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb2->getID(),
+            'users_id'         => $tech_id,
+        ]);
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE | KnowbaseItem::KNOWBASEADMIN;
+
+        $reloaded2 = new KnowbaseItem();
+        $this->assertTrue($reloaded2->getFromDB($kb2->getID()));
+        $this->assertTrue($reloaded2->update([
+            'id'       => $kb2->getID(),
+            'is_draft' => 1,
+        ]));
+        $this->assertTrue($reloaded2->getFromDB($kb2->getID()));
+        $this->assertSame(1, (int) $reloaded2->fields['is_draft']);
+    }
+
+    /**
+     * Drafts never raised a 'new' notification; purging one must not raise
+     * 'delete' either, so the visibility targets are not informed of a
+     * draft they could not see while it existed.
+     */
+    public function testPurgingDraftDoesNotRaiseDeleteNotification(): void
+    {
+        /** @var \DBmysql $DB */
+        /** @var array $CFG_GLPI */
+        global $DB, $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_notifications'] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        // Minimal active 'delete' notification fixture so raiseEvent has
+        // something to enqueue. Without this fixture both branches would
+        // measure 0 and the test would be a tautology.
+        $template = $this->createItem(\NotificationTemplate::class, [
+            'name'     => 'kb-delete-test',
+            'itemtype' => KnowbaseItem::class,
+        ]);
+        $this->createItem(\NotificationTemplateTranslation::class, [
+            'notificationtemplates_id' => $template->getID(),
+            'language'                 => '',
+            'subject'                  => 'kb deleted',
+            'content_text'             => 'deleted',
+            'content_html'             => '<p>deleted</p>',
+        ]);
+        $notif = $this->createItem(\Notification::class, [
+            'name'         => 'kb-delete-test',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'itemtype'     => KnowbaseItem::class,
+            'event'        => 'delete',
+            'is_active'    => 1,
+        ]);
+        $this->createItem(\Notification_NotificationTemplate::class, [
+            'notifications_id'         => $notif->getID(),
+            'mode'                     => 'mailing',
+            'notificationtemplates_id' => $template->getID(),
+        ]);
+        $DB->insert('glpi_notificationtargets', [
+            'items_id'         => \Notification::GLOBAL_ADMINISTRATOR,
+            'type'             => 1,
+            'notifications_id' => $notif->getID(),
+        ]);
+
+        // Drain the queue from incidental notifications generated by setup.
+        $DB->delete(\QueuedNotification::getTable(), [new QueryExpression('true')]);
+
+        // Purging a draft must not enqueue.
+        $draft = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'private',
+            'is_draft' => 1,
+        ]);
+        $this->assertTrue($draft->delete(['id' => $draft->getID()], true));
+        $this->assertSame(
+            0,
+            countElementsInTable(\QueuedNotification::getTable(), ['event' => 'delete']),
+            'Purging a draft must not enqueue a delete notification.',
+        );
+
+        // Sanity: purging a published article must enqueue.
+        $published = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__ . ' published',
+            'answer'   => 'public',
+            'is_draft' => 0,
+        ]);
+        $this->assertTrue($published->delete(['id' => $published->getID()], true));
+        $this->assertGreaterThan(
+            0,
+            countElementsInTable(\QueuedNotification::getTable(), ['event' => 'delete']),
+            'Purging a published article must enqueue a delete notification.',
+        );
     }
 
     private function readCronVolume(\CronTask $task): int

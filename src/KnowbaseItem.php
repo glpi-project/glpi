@@ -998,6 +998,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 false,
                 WARNING
             );
+            return $input;
+        }
+
+        // Demoting a published article to draft is reserved to its author and
+        // to KNOWBASEADMIN: any other UPDATE holder could otherwise hide a
+        // colleague's article and leave only the author/admin able to restore.
+        $is_demote = !empty($input['is_draft'])
+            && !empty($this->fields['id'])
+            && empty($this->fields['is_draft']);
+        if (
+            $is_demote
+            && (int) ($this->fields['users_id'] ?? 0) !== Session::getLoginUserID()
+            && !Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
+        ) {
+            $input['is_draft'] = 0;
+            Session::addMessageAfterRedirect(
+                __('Only the author or a knowledge base administrator can move a published article back to draft.'),
+                false,
+                WARNING
+            );
         }
 
         return $input;
@@ -1068,6 +1088,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function post_purgeItem()
     {
+        // A draft never raised a 'new' notification; skip 'delete' too so the
+        // visibility targets are not informed of a draft they could not see.
+        if (!empty($this->fields['is_draft'])) {
+            return;
+        }
         NotificationEvent::raiseEvent('delete', $this);
     }
 
@@ -1680,6 +1705,8 @@ TWIG, $twig_params);
         switch ($type) {
             case 'myunpublished':
             case 'allmy':
+                // Author-scoped by users_id = currentUser in the second switch
+                // below — the draft gate from $restrict_where would be redundant.
                 break;
 
             case 'allunpublished':
@@ -2716,6 +2743,14 @@ TWIG, $twig_params);
         ]) as $row) {
             if ($item->delete(['id' => $row['id']], true)) {
                 $count++;
+            } else {
+                // Surface the failure in the cron log so operators can diagnose
+                // (FK constraint, hook refusal) instead of running a silent cron
+                // that keeps reporting 0 while drafts pile up in DB.
+                $task->log(sprintf(
+                    'cronPurgedraftitems: failed to purge draft knowbaseitem #%d',
+                    (int) $row['id'],
+                ));
             }
         }
 

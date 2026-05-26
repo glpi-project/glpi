@@ -60,9 +60,11 @@ test('Articles created from the form are saved as drafts and surface a toast', a
         page.getByText('Article saved as draft', { exact: false })
     ).toBeVisible();
 
-    // The article page now shows the Draft chip next to the title.
+    // The article header shows the Draft chip. Match by title attribute so
+    // we hit the unique badge (not the literal word "Draft" that may appear
+    // elsewhere, e.g. in the aside).
     await expect(
-        page.getByRole('article').getByText('Draft', { exact: true })
+        page.getByRole('article').getByTitle(/Draft — only visible/)
     ).toBeVisible();
 });
 
@@ -70,10 +72,8 @@ test('Mark as draft / publish toggle in the action menu flips the status', async
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
-    const id = await api.knowbase.createArticle({
-        name: getUniqueName('toggle-draft'),
-        is_draft: false,
-    });
+    const name = getUniqueName('toggle-draft');
+    const id = await api.knowbase.createArticle({ name, is_draft: false });
 
     await kb.goto(id);
 
@@ -83,9 +83,10 @@ test('Mark as draft / publish toggle in the action menu flips the status', async
     await page.getByRole('button', { name: 'Mark as draft', exact: false }).click();
     await responsePromise;
 
-    // Aside indicator now flags this article as a draft.
+    // The article's entry in the aside tree now exposes the Draft badge.
+    const tree = page.getByRole('navigation', { name: 'Knowledge base articles tree' });
     await expect(
-        page.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"][data-glpi-kb-article-draft]`)
+        tree.getByRole('link', { name }).getByTitle(/Draft — only visible/)
     ).toBeVisible();
 });
 
@@ -93,20 +94,19 @@ test('Draft articles are flagged with a chip in the left aside', async ({ page, 
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
-    const id = await api.knowbase.createArticle({
-        name: getUniqueName('aside-draft'),
-        is_draft: true,
-    });
+    const name = getUniqueName('aside-draft');
+    const id = await api.knowbase.createArticle({ name, is_draft: true });
 
     // Goto any KB page so the aside renders.
     await kb.goto(id);
 
     // The current article is rendered both in favorites (as a "pending" slot)
-    // and in the tree — scope to the tree section to avoid strict mode
-    // violations.
-    const aside_entry = page.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`);
-    await expect(aside_entry).toBeVisible();
-    await expect(aside_entry.getByText('Draft', { exact: true })).toBeVisible();
+    // and in the tree — scope to the tree navigation landmark so the matcher
+    // is unambiguous.
+    const tree = page.getByRole('navigation', { name: 'Knowledge base articles tree' });
+    const link = tree.getByRole('link', { name });
+    await expect(link).toBeVisible();
+    await expect(link.getByTitle(/Draft — only visible/)).toBeVisible();
 });
 
 test('Share link cannot be created on a draft article', async ({ page, profile, api }) => {

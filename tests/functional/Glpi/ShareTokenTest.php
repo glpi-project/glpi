@@ -259,6 +259,35 @@ final class ShareTokenTest extends DbTestCase
         );
     }
 
+    /**
+     * A grant must close the moment the underlying item flips canBeShared()
+     * to false — even within the 5 min TTL window. Without this, a viewer
+     * who opened the article seconds before the author demoted it to draft
+     * would keep reading the now-private content until the TTL elapses.
+     */
+    public function testHasSessionAccessRevokesWithinTtlWhenItemBecomesUnshareable(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $token_manager = new ShareTokenManager();
+
+        $_SESSION['glpi_currenttime'] = '2026-05-05 12:00:00';
+        $token_manager->grantSessionAccess($this->getPlainToken($token));
+        $this->assertTrue($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
+
+        // Demote to draft mid-TTL. canBeShared() now returns false.
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), ['is_draft' => 1]);
+
+        $_SESSION['glpi_currenttime'] = '2026-05-05 12:02:00';
+        $this->assertFalse($token_manager->hasSessionAccess(KnowbaseItem::class, $kb->getID()));
+        $this->assertArrayNotHasKey(
+            $kb->getID(),
+            $_SESSION['glpi_shared_access'][KnowbaseItem::class] ?? [],
+        );
+    }
+
     public function testGrantSessionAccessRejectsCiphertextAsToken(): void
     {
         $this->login();

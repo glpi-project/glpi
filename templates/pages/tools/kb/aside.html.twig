@@ -143,7 +143,11 @@
         </ul>
 </div>
 
-<div class="card-body" data-glpi-kb-aside-tree>
+<nav
+    class="card-body"
+    data-glpi-kb-aside-tree
+    aria-label="{{ __('Knowledge base articles tree') }}"
+>
     <ul class="kb-tree ps-0">
         {# Render root articles in a special "uncategorized" category #}
         {% if tree.articles|length %}
@@ -163,7 +167,7 @@
     <p class="text-muted" data-glpi-kb-aside-no-results hidden>
         {{ __("No articles found.") }}
     </p>
-</div>
+</nav>
 
 <script type="module">
     (async () => {

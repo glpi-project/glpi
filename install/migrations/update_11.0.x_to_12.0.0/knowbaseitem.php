@@ -45,9 +45,15 @@ $migration->addField(
 );
 $migration->addKey('glpi_knowbaseitems', 'is_draft');
 
+// Registered disabled: enabling auto-purge on upgrade would silently delete
+// drafts a week later. Operators enable it explicitly from the cron page.
 $migration->addCrontask(
     KnowbaseItem::class,
     'purgedraftitems',
     DAY_TIMESTAMP,
-    param: 7
+    param: 7,
+    options: ['state' => 0],
+);
+$migration->displayMessage(
+    'Knowledge base draft auto-purge cron is registered as disabled. Enable it from the cron page if desired.'
 );

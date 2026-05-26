@@ -89,6 +89,14 @@ final class ShareTokenManager
             return false;
         }
 
+        // Re-check item state on every access so a transition that flips
+        // canBeShared() (e.g. demote to draft) immediately revokes the grant,
+        // even within the TTL window.
+        if (!$this->isItemStillShareable($itemtype, $items_id)) {
+            unset($_SESSION[self::SESSION_KEY][$itemtype][$items_id]);
+            return false;
+        }
+
         if (strtotime($session_data['expires_at']) > strtotime($_SESSION['glpi_currenttime'])) {
             return true;
         }
@@ -101,6 +109,30 @@ final class ShareTokenManager
         }
 
         return true;
+    }
+
+    /**
+     * Verify the item still passes the share preconditions (existence,
+     * non-deleted, canBeShared). Used to invalidate a cached session grant
+     * the moment the underlying item flips its shareable state.
+     */
+    private function isItemStillShareable(string $itemtype, int $items_id): bool
+    {
+        $item = \getItemForItemtype($itemtype);
+        if (!($item instanceof ShareableInterface) || !($item instanceof CommonDBTM)) {
+            return false;
+        }
+        if (!$item->getFromDB($items_id)) {
+            return false;
+        }
+        if (
+            $item->maybeDeleted()
+            && (!$item->useDeletedToLockIfDynamic() || !$item->isDynamic())
+            && $item->isDeleted()
+        ) {
+            return false;
+        }
+        return $item->canBeShared();
     }
 
     /**
