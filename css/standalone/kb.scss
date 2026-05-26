@@ -117,6 +117,12 @@
     min-height: 70px;
 }
 
+// The .h_item inside the new comment form (outside .forcomments) should not
+// have the pt-3 padding; pt-3 is only meaningful inside the comments timeline.
+.new_comment_form .h_item {
+    padding-top: 0 !important;
+}
+
 input[type="checkbox"].toggle_comments {
     display: none;
 

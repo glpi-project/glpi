@@ -92,7 +92,7 @@
 {% endmacro %}
 
 {% if can_comment %}
-    <div class="new_comment_form d-none">
+    <div class="new_comment_form d-none ms-3">
         {% include 'pages/tools/kb/comment_form.html.twig' with {
             kbitem_id: kbitem_id,
             language: lang,
@@ -100,13 +100,14 @@
     </div>
     <div class="text-center mb-3">
         <button type="button" class="btn btn-primary add_new_comment">
-            {{ __('Add a comment') }}
+            <i class="ti ti-message-circle"></i>
+            <span>{{ __('Add a comment') }}</span>
         </button>
         <script>
             $('button.add_new_comment').on('click', (e) => {
                 e.preventDefault();
                 $('.new_comment_form').removeClass('d-none');
-                $(e.target).addClass('d-none');
+                $(e.currentTarget).addClass('d-none');
             });
         </script>
     </div>
