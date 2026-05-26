@@ -92,6 +92,7 @@ final class IndexController extends AbstractController
         $item_request = new ItemRequest(
             access_parameters: $parameters,
             category_id: 0,
+            sort_strategy: $entity->getServiceCatalogDefaultSortStrategy(),
         );
         $items = $this->service_catalog_manager->getItems($item_request);
 
