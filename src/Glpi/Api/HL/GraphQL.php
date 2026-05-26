@@ -104,6 +104,9 @@ final class GraphQL
     {
         $default_resolvers = new DefaultResolvers($api_version);
         return static function ($source, $args, $context, ResolveInfo $info) use ($default_resolvers) {
+            if ($context->fullyResolved ?? false) {
+                return $source[$info->fieldName] ?? null;
+            }
             $field_type = $info->returnType;
             $is_scalar = !($field_type instanceof ObjectType || $field_type instanceof ListOfType);
 

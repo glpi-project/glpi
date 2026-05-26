@@ -55,18 +55,38 @@ final readonly class SchemaGenerator
         Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval', Profiler::CATEGORY_HLAPI);
         $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
         Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
-        foreach (array_keys($component_schemas) as $schema_name) {
-            $query_type_config['fields'][$schema_name] = [
-                'type' => Type::listOf(fn(): Type => Types::load($schema_name, $this->api_version)),
-                'args' => [
-                    'id' => ['type' => Type::int()],
-                    'filter' => ['type' => Type::string()],
-                    'start' => ['type' => Type::int()],
-                    'limit' => ['type' => Type::int()],
-                    'sort' => ['type' => Type::string()],
-                    'order' => ['type' => Type::string()],
-                ],
-            ];
+        foreach ($component_schemas as $schema_name => $schema_info) {
+            $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema_info);
+            $should_have_query = (
+                !str_starts_with($schema_name, '_')
+                && (
+                    (isset($schema_info['x-itemtype']) && !$has_custom_resolver)
+                    || ($has_custom_resolver && $schema_info['x-graphql-resolver'] !== null)
+                )
+            );
+            if (!$should_have_query) {
+                continue;
+            }
+            if ($schema_info['x-singleton'] ?? false) {
+                $query_type_config['fields'][$schema_name] = [
+                    'type' => fn(): Type => Types::load($schema_name, $this->api_version),
+                ];
+                if ($has_custom_resolver) {
+                    $query_type_config['fields'][$schema_name]['resolve'] = $schema_info['x-graphql-resolver'];
+                }
+            } else {
+                $query_type_config['fields'][$schema_name] = [
+                    'type' => Type::listOf(fn(): Type => Types::load($schema_name, $this->api_version)),
+                    'args' => [
+                        'id' => ['type' => Type::int()],
+                        'filter' => ['type' => Type::string()],
+                        'start' => ['type' => Type::int()],
+                        'limit' => ['type' => Type::int()],
+                        'sort' => ['type' => Type::string()],
+                        'order' => ['type' => Type::string()],
+                    ],
+                ];
+            }
         }
         return new Schema([
             'query' => new ObjectType($query_type_config),
