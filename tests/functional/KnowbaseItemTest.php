@@ -2265,6 +2265,12 @@ HTML,
         $this->assertTrue($found, 'is_draft search option missing from rawSearchOptions()');
     }
 
+    private function readCronVolume(\CronTask $task): int
+    {
+        $ref = new \ReflectionProperty(\CronTask::class, 'volume');
+        return (int) $ref->getValue($task);
+    }
+
     public function testCronPurgedraftitemsRespectsDateModAndDraftFlag(): void
     {
         global $DB;
@@ -2302,6 +2308,53 @@ HTML,
         $this->assertFalse($check->getFromDB($old_draft->getID()), 'old draft should have been purged');
         $this->assertTrue($check->getFromDB($recent_draft->getID()), 'recent draft should survive');
         $this->assertTrue($check->getFromDB($old_published->getID()), 'old published article should survive');
+    }
+
+    public function testCronPurgedraftitemsReturnsZeroWhenNothingToPurge(): void
+    {
+        $this->login();
+
+        // Only a recent draft exists — must NOT be purged.
+        $this->createItem(KnowbaseItem::class, [
+            'name'     => 'recent draft',
+            'answer'   => '...',
+            'is_draft' => 1,
+        ]);
+
+        $task = new \CronTask();
+        $task->fields = ['param' => 7];
+        $task->setVolume(0);
+
+        $this->assertSame(
+            0,
+            KnowbaseItem::cronPurgedraftitems($task),
+            'Cron must return 0 when no draft was purged.'
+        );
+        $this->assertSame(0, $this->readCronVolume($task), 'Volume must stay at 0.');
+    }
+
+    public function testCronPurgedraftitemsReportsVolume(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $draft_a = $this->createItem(KnowbaseItem::class, [
+            'name' => 'old draft A', 'answer' => '...', 'is_draft' => 1,
+        ]);
+        $draft_b = $this->createItem(KnowbaseItem::class, [
+            'name' => 'old draft B', 'answer' => '...', 'is_draft' => 1,
+        ]);
+        $old_ts = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $DB->update(KnowbaseItem::getTable(), ['date_mod' => $old_ts], ['id' => $draft_a->getID()]);
+        $DB->update(KnowbaseItem::getTable(), ['date_mod' => $old_ts], ['id' => $draft_b->getID()]);
+
+        $task = new \CronTask();
+        $task->fields = ['param' => 7];
+        $task->setVolume(0);
+
+        $this->assertSame(1, KnowbaseItem::cronPurgedraftitems($task));
+        $this->assertSame(2, $this->readCronVolume($task), 'Volume must reflect the 2 purged drafts.');
     }
 
     public function testFlippingPublishedToDraftDeactivatesShareTokens(): void

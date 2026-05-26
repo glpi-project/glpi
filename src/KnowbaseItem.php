@@ -2706,16 +2706,26 @@ TWIG, $twig_params);
      */
     public static function cronPurgedraftitems(CronTask $task): int
     {
-        $delay = max(1, (int) $task->fields['param']);
+        global $DB;
+
+        $delay  = max(1, (int) $task->fields['param']);
         $cutoff = date('Y-m-d H:i:s', strtotime(sprintf('-%d day', $delay)));
 
-        $item = new self();
-        $item->deleteByCriteria([
-            'is_draft' => 1,
-            'date_mod' => ['<', $cutoff],
-        ], true);
+        $count = 0;
+        $item  = new self();
+        foreach ($DB->request([
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['is_draft' => 1, 'date_mod' => ['<', $cutoff]],
+        ]) as $row) {
+            if ($item->delete(['id' => $row['id']], true)) {
+                $count++;
+            }
+        }
 
-        return 1;
+        $task->addVolume($count);
+
+        return $count > 0 ? 1 : 0;
     }
 
     public function pre_updateInDB()
