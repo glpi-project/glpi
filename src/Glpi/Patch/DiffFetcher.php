@@ -91,6 +91,10 @@ final class DiffFetcher
 
     private function fetchFromUrl(string $url): string
     {
+        if($this->isDiffUrl($url)) {
+            return $this->download($url);
+        }
+
         // Transform a GitHub PR page URL to the raw diff endpoint
         $parsed = $this->parseGitHubPrUrl($url);
         if ($parsed !== null) {
@@ -99,8 +103,12 @@ final class DiffFetcher
             return $this->download($diff_url);
         }
 
-        // Treat as a direct URL to a .diff file
-        return $this->download($url);
+        throw new RuntimeException("The provided URL does not appear to be a valid GitHub PR URL or a direct diff URL: $url");
+    }
+
+    private function isDiffUrl(string $url): bool
+    {
+        return preg_match('#patch-diff\.githubusercontent\.com/raw/[^/]+/[^/]+/pull/\d+\.diff#', $url) === 1;
     }
 
     private function fetchFromFile(string $path): string
