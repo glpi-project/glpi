@@ -1047,7 +1047,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             in_array('is_draft', $this->updates, true)
             && !empty($this->fields['is_draft'])
         ) {
-            /** @var \DBmysql $DB */
+            /** @var DBmysql $DB */
             global $DB;
             $DB->update(
                 ShareToken::getTable(),
@@ -1680,7 +1680,15 @@ TWIG, $twig_params);
         switch ($type) {
             case 'myunpublished':
             case 'allmy':
+                break;
+
             case 'allunpublished':
+                // Defense-in-depth: this type is not author-scoped, so
+                // apply the draft gate at the query layer too.
+                $criteria['WHERE'] = array_merge(
+                    $criteria['WHERE'],
+                    $restrict_where
+                );
                 break;
 
             default:

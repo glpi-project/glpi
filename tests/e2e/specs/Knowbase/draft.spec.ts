@@ -85,7 +85,6 @@ test('Mark as draft / publish toggle in the action menu flips the status', async
 
     // Aside indicator now flags this article as a draft.
     await expect(
-        // eslint-disable-next-line playwright/no-raw-locators -- aside uses a stable data-* attribute
         page.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"][data-glpi-kb-article-draft]`)
     ).toBeVisible();
 });
@@ -105,7 +104,6 @@ test('Draft articles are flagged with a chip in the left aside', async ({ page, 
     // The current article is rendered both in favorites (as a "pending" slot)
     // and in the tree — scope to the tree section to avoid strict mode
     // violations.
-    // eslint-disable-next-line playwright/no-raw-locators -- aside uses a stable data-* attribute
     const aside_entry = page.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`);
     await expect(aside_entry).toBeVisible();
     await expect(aside_entry.getByText('Draft', { exact: true })).toBeVisible();
@@ -123,20 +121,12 @@ test('Share link cannot be created on a draft article', async ({ page, profile, 
     await kb.goto(id);
     const modal = await kb.doOpenSharingTab();
 
-    const createBtn = modal.getByRole('button', { name: 'Create a sharing link' });
-    if (!(await createBtn.isVisible())) {
-        // UI hides the action entirely when the item is not shareable — that's
-        // also a valid outcome of the canBeShared() check.
-        return;
-    }
+    // SuperAdmin always sees the create button; the draft block is enforced
+    // by the API (HTTP 409 from ShareTokenController::canBeShared()).
+    await modal.getByRole('button', { name: 'Create a sharing link' }).click();
 
     const responsePromise = page.waitForResponse(r => r.url().includes('/Share/Token/'));
-    await createBtn.click();
-    const name_input = modal.getByPlaceholder('Link name (optional)');
-    if (await name_input.isVisible()) {
-        await name_input.fill('should-not-be-created');
-        await name_input.press('Enter');
-    }
+    await modal.getByPlaceholder('Link name (optional)').press('Enter');
     const response = await responsePromise;
     expect(response.status()).toBe(409);
 });

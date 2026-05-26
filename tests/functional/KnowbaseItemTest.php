@@ -2365,4 +2365,75 @@ HTML,
         $this->assertTrue($reloaded->getFromDB($kb->getID()));
         $this->assertTrue($reloaded->canBeShared());
     }
+
+    public function testAllUnpublishedListingHidesOtherAuthorDraftsFromNonAdmin(): void
+    {
+        global $DB;
+
+        // Author A (glpi) creates a draft with no visibility entries.
+        $this->login('glpi', 'glpi');
+        $author_a = (int) $_SESSION['glpiID'];
+
+        $draft = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'draft body',
+            'users_id' => $author_a,
+            'is_draft' => 1,
+        ]);
+
+        // Switch to a non-KNOWBASEADMIN user reaching getListRequest directly
+        // (bypasses the KNOWBASEADMIN gate in searchKnowbaseItem).
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+
+        $criteria = KnowbaseItem::getListRequest(
+            ['knowbaseitemcategories_id' => \KnowbaseItemCategory::SEEALL],
+            'allunpublished'
+        );
+        $ids = array_map(
+            'intval',
+            array_column(iterator_to_array($DB->request($criteria)), 'id')
+        );
+
+        $this->assertNotContains(
+            (int) $draft->getID(),
+            $ids,
+            'A non-admin reaching allunpublished must not see another author draft.'
+        );
+    }
+
+    public function testAllUnpublishedListingShowsDraftsToKnowbaseAdmin(): void
+    {
+        global $DB;
+
+        // Non-admin author (tech) creates a draft.
+        $this->login('tech', 'tech');
+        $author = (int) $_SESSION['glpiID'];
+
+        $draft = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => 'draft body',
+            'users_id' => $author,
+            'is_draft' => 1,
+        ]);
+
+        // Switch to a KNOWBASEADMIN user — must keep full visibility on
+        // unpublished drafts (this is the intentional admin moderation view).
+        $this->login('glpi', 'glpi');
+
+        $criteria = KnowbaseItem::getListRequest(
+            ['knowbaseitemcategories_id' => \KnowbaseItemCategory::SEEALL],
+            'allunpublished'
+        );
+        $ids = array_map(
+            'intval',
+            array_column(iterator_to_array($DB->request($criteria)), 'id')
+        );
+
+        $this->assertContains(
+            (int) $draft->getID(),
+            $ids,
+            'KNOWBASEADMIN must keep seeing other authors drafts in allunpublished.'
+        );
+    }
 }

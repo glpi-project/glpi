@@ -614,7 +614,7 @@ export class GlpiKnowbaseArticleController
             let data = {};
             try {
                 data = await response.json();
-            } catch (_) {
+            } catch {
                 // Older callers may not parse JSON yet — fall through and
                 // assume the requested value was applied.
             }
