@@ -5,7 +5,6 @@
      * SPDX-FileCopyrightText: 2015-2026 Teclib' and contributors.
      */
 
-    import PlanningFilter from "./PlanningFilter.vue";
     import PlanningFiltersList from "./PlanningFiltersList.vue";
     import {ref} from "vue";
 
@@ -17,7 +16,11 @@
         planning_config: {
             type: Object,
             required: true,
-        }
+        },
+        active_entity: {
+            type: Object,
+            required: true,
+        },
     });
 
     const emits = defineEmits(['filtersUpdated']);
@@ -69,7 +72,8 @@
                         <i :class="filters_collapsed ? 'ti ti-caret-right-filled' : 'ti ti-caret-left-filled'" role="presentation"></i>
                     </button>
                 </h3>
-                <PlanningFiltersList v-show="!filters_collapsed" :filters="filters.filters" :can_delete="false" @filtersUpdated="emits('filtersUpdated')"/>
+                <PlanningFiltersList v-show="!filters_collapsed" :active_entity="active_entity" :filters="filters.filters"
+                                     :can_delete="false" @filtersUpdated="emits('filtersUpdated')"/>
             </div>
             <div v-show="!filters_collapsed" v-if="Object.keys(planning_config).includes('plannings')">
                 <h3 class="d-flex justify-content-between fw-normal">
@@ -80,8 +84,8 @@
                         <i class="ti ti-circle-plus"></i>
                     </button>
                 </h3>
-                <PlanningFiltersList v-show="!filters_collapsed" :filters="filters.plannings" :can_delete="true"
-                                     @filtersUpdated="emits('filtersUpdated')"/>
+                <PlanningFiltersList v-show="!filters_collapsed" :active_entity="active_entity" :filters="filters.plannings"
+                                     :can_delete="true" @filtersUpdated="emits('filtersUpdated')"/>
             </div>
         </div>
     </div>

@@ -30,12 +30,51 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, glpi_html_dialog, glpi_ajax_dialog */
+/* global _, glpi_html_dialog, glpi_ajax_dialog, flatpickr */
 
 import useScheduler from "../FullCalendar/useScheduler.js";
-import {watch} from "vue";
+import { watch, ref, onMounted, onUnmounted } from "vue";
 
-export default function usePlanningScheduler(calendar_api, current_view, full_view) {
+export default function usePlanningScheduler(calendar_el, current_view, full_view, date_picker_el, event_context_menu_el) {
+    const calendar_api = ref(null);
+    let date_picker_flatpickr = null;
+
+    onMounted(() => {
+        calendar_api.value = calendar_el.value.getApi();
+        window.focus();
+
+        if (full_view) {
+            date_picker_flatpickr = new flatpickr(date_picker_el.value, {
+                onChange: function (selected_date) {
+                    // convert to UTC to avoid timezone issues
+                    const date = new Date(
+                        Date.UTC(
+                            selected_date[0].getFullYear(),
+                            selected_date[0].getMonth(),
+                            selected_date[0].getDate()
+                        )
+                    );
+                    calendar_api.value.gotoDate(date);
+                }
+            });
+        }
+        refresh();
+
+        window.addEventListener('click', hideContextMenu);
+    });
+
+    onUnmounted(() => {
+        if (date_picker_flatpickr) {
+            date_picker_flatpickr.destroy();
+        }
+        window.removeEventListener('click', hideContextMenu);
+    });
+
+    function hideContextMenu() {
+        if (event_context_menu_el.value) {
+            event_context_menu_el.value.classList.add('d-none');
+        }
+    }
 
     function getCalendarApi() {
         return calendar_api.value;
@@ -223,7 +262,6 @@ export default function usePlanningScheduler(calendar_api, current_view, full_vi
         if (!event) {
             return;
         }
-        //TODO
 
         const doDelete = (instance = false) => {
             fetch(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
@@ -423,5 +461,8 @@ export default function usePlanningScheduler(calendar_api, current_view, full_vi
         setEndOfDays,
         onEventResize,
         onEventDrop,
+        hideContextMenu,
+        current_view,
+        event_context_menu_el,
     };
 };

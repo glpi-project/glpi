@@ -5,26 +5,19 @@
      * SPDX-FileCopyrightText: 2015-2026 Teclib' and contributors.
      */
 
-    import {computed, onMounted, onUnmounted, useTemplateRef} from "vue";
+    import {computed, inject, onMounted, onUnmounted, useTemplateRef} from "vue";
 
     const props = defineProps({
-        view_type: {
-            type: String,
-            required: true,
-        },
         event_info: {
             type: Object,
             required: true,
         },
-        context_menu: {
-            type: Object,
-            required: false,
-        },
     });
 
+    const { current_view, event_context_menu_el: context_menu } = inject('scheduler');
     const event_content = useTemplateRef('event_content');
     const show_content = computed(() => {
-        return props.view_type !== 'dayGridMonth' && !props.view_type.includes('list') && event.rendering !== 'background' && !event.allDay;
+        return current_view.value !== 'dayGridMonth' && !current_view.value.includes('list') && event.rendering !== 'background' && !event.allDay;
     });
     const event = props.event_info.event;
     const type_color = event.extendedProps.typeColor;
@@ -42,9 +35,7 @@
         popover = new bootstrap.Popover(event_content.value.closest('.fc-event'), {
             trigger: 'hover focus',
             html: true,
-            content: () => {
-                return event.extendedProps.tooltip;
-            }
+            content: event.extendedProps.tooltip
         });
     });
 
@@ -59,15 +50,15 @@
     });
 
     function handleContextMenu(e) {
-        if (!props.context_menu) {
+        if (!context_menu.value) {
             return;
         }
         e.preventDefault();
-        props.context_menu.style.position = 'fixed';
-        props.context_menu.classList.remove('d-none');
-        props.context_menu.style.left = `${e.clientX}px`;
-        props.context_menu.style.top = `${e.clientY}px`;
-        props.context_menu.dataset.event_defid = event._def.defId;
+        context_menu.value.style.position = 'fixed';
+        context_menu.value.classList.remove('d-none');
+        context_menu.value.style.left = `${e.clientX}px`;
+        context_menu.value.style.top = `${e.clientY}px`;
+        context_menu.value.dataset.event_defid = event._def.defId;
     }
 </script>
 

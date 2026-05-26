@@ -57,6 +57,10 @@
         planning_config: {
             type: Object,
         },
+        active_entity: {
+            type: Object,
+            required: true,
+        },
     });
     const scheduler = useTemplateRef('scheduler');
 </script>
@@ -64,7 +68,7 @@
 <template>
     <div class="d-flex flex-wrap flex-sm-nowrap gap-2">
         <PlanningFiltersPanel v-if="full_view" :planning_config="planning_config" :filters="filters"
-                              @filtersUpdated="scheduler?.refresh"></PlanningFiltersPanel>
+                              @filtersUpdated="scheduler?.refresh" :active_entity="active_entity"></PlanningFiltersPanel>
         <PlanningScheduler
             ref="scheduler"
             :can_create="can_create"

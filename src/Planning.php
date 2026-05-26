@@ -562,6 +562,10 @@ JAVASCRIPT;
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
                 'can_delete'   => PlanningExternalEvent::canPurge(),
+                'active_entity' => [
+                    'id' => Session::getActiveEntity(),
+                    'is_recursive' => Session::getIsActiveEntityRecursive(),
+                ],
             ];
         } else {
             // short view (on Central page)
@@ -573,6 +577,10 @@ JAVASCRIPT;
                     'height'       => 'auto',
                 ],
                 'now'          => date("Y-m-d H:i:s"),
+                'active_entity' => [
+                    'id' => Session::getActiveEntity(),
+                    'is_recursive' => Session::getIsActiveEntityRecursive(),
+                ],
             ];
         }
 
