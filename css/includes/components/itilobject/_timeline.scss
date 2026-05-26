@@ -210,12 +210,10 @@
             background-repeat: no-repeat;
 
             &::before {
-                background-color: transparent;
                 border-color: var(--glpi-timeline-fup-border-color) var(--glpi-timeline-fup-border-color) transparent transparent;
             }
 
             &::after {
-                background-color: transparent;
                 border-color: var(--glpi-timeline-fup-bg) var(--glpi-timeline-fup-bg) transparent transparent;
             }
 
@@ -225,6 +223,14 @@
 
             &.t-right::after {
                 border-color: var(--glpi-timeline-fup-bg) transparent transparent var(--glpi-timeline-fup-bg);
+            }
+        }
+    }
+
+    &.KnowbaseItemComment {
+        .timeline-content {
+            &::before {
+                border: none;
             }
         }
     }
