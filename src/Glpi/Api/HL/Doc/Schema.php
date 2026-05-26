@@ -319,6 +319,9 @@ class Schema implements ArrayAccess
             if ($collapse_array_types && $prop['type'] === self::TYPE_ARRAY) {
                 $prop = $prop['items'];
             }
+            if (array_key_exists('type', $prop) && $prop['type'] === self::TYPE_OBJECT && !array_key_exists('properties', $prop)) {
+                continue;
+            }
             if (array_key_exists('type', $prop) && $prop['type'] === self::TYPE_OBJECT) {
                 $is_mapped_obj = isset($prop['x-mapped-from']);
                 $new_props = self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);

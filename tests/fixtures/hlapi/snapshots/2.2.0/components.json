@@ -2793,6 +2793,21 @@
                 },
                 "is_deleted": {
                     "type": "boolean"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -3184,6 +3199,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -5175,6 +5205,21 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -9228,6 +9273,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -9664,6 +9724,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -10587,6 +10662,40 @@
                 "is_recursive": {
                     "type": "boolean",
                     "default": false
+                },
+                "asset": {
+                    "type": "object",
+                    "oneOf": [
+                        "Computer",
+                        "Monitor",
+                        "NetworkEquipment",
+                        "Peripheral",
+                        "Phone",
+                        "Printer"
+                    ],
+                    "discriminator": {
+                        "propertyName": "_itemtype",
+                        "mapping": {
+                            "Computer": {
+                                "$ref": "#/components/schemas/Computer"
+                            },
+                            "Monitor": {
+                                "$ref": "#/components/schemas/Monitor"
+                            },
+                            "NetworkEquipment": {
+                                "$ref": "#/components/schemas/NetworkEquipment"
+                            },
+                            "Peripheral": {
+                                "$ref": "#/components/schemas/Peripheral"
+                            },
+                            "Phone": {
+                                "$ref": "#/components/schemas/Phone"
+                            },
+                            "Printer": {
+                                "$ref": "#/components/schemas/Printer"
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -11216,6 +11325,21 @@
                 "date_mod": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -11795,6 +11919,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -12016,6 +12155,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -12446,6 +12600,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -19474,6 +19643,21 @@
                         }
                     },
                     "x-full-schema": "AutoUpdateSystem"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },

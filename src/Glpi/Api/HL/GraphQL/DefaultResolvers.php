@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\GraphQL;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
+use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -126,6 +127,12 @@ class DefaultResolvers
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
+
+        $polymorphic = $this->getPolymorphicPropertyConfig($this->getSchemaForObjectName($info->parentType->name), $field_name);
+        if ($polymorphic !== null) {
+            return $this->resolvePolymorphicObjectField($source, $polymorphic, $fields_requested);
+        }
+
         $id = $source[$field_name . chr(0x1F) . 'id'] ?? null;
         if (!is_numeric($id)) {
             //See State Visibilities for example why this can happen
@@ -176,6 +183,107 @@ class DefaultResolvers
 
             $r = $this->object_cache->get($schema_name, $id)?->data;
             Profiler::getInstance()->stop('GraphQL2::resolveObjectField::deferred::' . $schema_name);
+            return $r;
+        });
+    }
+
+    /**
+     * Get the polymorphic/union resolution config for a field, if any.
+     *
+     * A property is considered polymorphic when it declares a `oneOf`/`anyOf` list of schema names. The actual
+     * type and ID of the related resource are read from sibling fields on the same schema (by default `itemtype`
+     * and `items_id`, overridable via `x-itemtype-field`/`x-items-id-field`), mirroring the classic GLPI polymorphic
+     * relation columns.
+     *
+     * @param array<string, mixed>|null $schema
+     * @param string $field_name
+     * @return array{types: string[], discriminator_property: ?string, itemtype_field: string, items_id_field: string}|null
+     */
+    private function getPolymorphicPropertyConfig(?array $schema, string $field_name): ?array
+    {
+        if ($schema === null) {
+            return null;
+        }
+        $prop = $schema['properties'][$field_name] ?? null;
+        if ($prop === null || ($prop['type'] ?? null) !== 'object' || (!isset($prop['oneOf']) && !isset($prop['anyOf']))) {
+            return null;
+        }
+        return [
+            'types' => $prop['oneOf'] ?? $prop['anyOf'],
+            'discriminator_property' => $prop['discriminator']['propertyName'] ?? null,
+            'itemtype_field' => $prop['x-itemtype-field'] ?? 'itemtype',
+            'items_id_field' => $prop['x-items-id-field'] ?? 'items_id',
+        ];
+    }
+
+    /**
+     * Resolve a polymorphic/union object field using the itemtype/ID pair carried by its parent record.
+     * Reuses the normal object loading pipeline (and therefore the target schema's own visibility/read
+     * restrictions) so that permissions are enforced exactly as they would be for a direct query of that schema.
+     *
+     * @param mixed $source
+     * @param array{types: string[], discriminator_property: ?string, itemtype_field: string, items_id_field: string} $polymorphic
+     * @param string[] $fields_requested
+     * @return array<string, mixed>|Deferred|null
+     */
+    private function resolvePolymorphicObjectField(mixed $source, array $polymorphic, array $fields_requested): array|Deferred|null
+    {
+        $itemtype = is_array($source) ? ($source[$polymorphic['itemtype_field']] ?? null) : null;
+        $items_id = is_array($source) ? ($source[$polymorphic['items_id_field']] ?? null) : null;
+
+        if (!is_string($itemtype) || $itemtype === '' || !is_numeric($items_id) || (int) $items_id <= 0) {
+            return null;
+        }
+        if (!in_array($itemtype, $polymorphic['types'], true)) {
+            // The target type is not part of the declared union; refuse to resolve it
+            return null;
+        }
+        if (!is_subclass_of($itemtype, CommonDBTM::class) || !$itemtype::canView()) {
+            return null;
+        }
+
+        $items_id = (int) $items_id;
+        $schema_name = $itemtype;
+        $schema = $this->getSchemaForObjectName($schema_name);
+        if ($schema === null) {
+            return null;
+        }
+
+        $decorate = static function (?array $data) use ($polymorphic, $schema_name): ?array {
+            if ($data === null) {
+                return null;
+            }
+            if ($polymorphic['discriminator_property'] !== null) {
+                $data[$polymorphic['discriminator_property']] = $schema_name;
+            }
+            return $data;
+        };
+
+        $needed = $this->object_cache->getNeeded($schema_name, [$items_id], $fields_requested);
+        if ($needed === []) {
+            // Object is already cached with all requested fields
+            return $decorate($this->object_cache->get($schema_name, $items_id)?->data);
+        }
+        $fields_requested = $needed[$items_id];
+
+        $this->object_cache->add($schema_name, $items_id, $fields_requested);
+        return new Deferred(function () use ($schema_name, $schema, $items_id, $decorate) {
+            Profiler::getInstance()->start('GraphQL2::resolvePolymorphicObjectField::deferred::' . $schema_name, Profiler::CATEGORY_HLAPI);
+            $to_load = $this->object_cache->getPending($schema_name);
+            if ($to_load === []) {
+                $r = $decorate($this->object_cache->get($schema_name, $items_id)?->data);
+                Profiler::getInstance()->stop('GraphQL2::resolvePolymorphicObjectField::deferred::' . $schema_name);
+                return $r;
+            }
+
+            $args = ['id' => $to_load['id']];
+            $it = $this->db->request($this->getCriteriaForObject($schema, $to_load['fields'], $args));
+            foreach ($it as $data) {
+                $this->object_cache->set($schema_name, $data['id'], $data);
+            }
+
+            $r = $decorate($this->object_cache->get($schema_name, $items_id)?->data);
+            Profiler::getInstance()->stop('GraphQL2::resolvePolymorphicObjectField::deferred::' . $schema_name);
             return $r;
         });
     }
@@ -361,6 +469,18 @@ class DefaultResolvers
                     $field_selection[] = $mapped_from;
                 }
             }
+            // Polymorphic/union fields are resolved dynamically from sibling itemtype/ID fields rather than
+            // from their own column, so make sure those sibling fields are selected even if not explicitly requested.
+            $field_prop = $schema['properties'][$field_name] ?? [];
+            if (isset($field_prop['oneOf']) || isset($field_prop['anyOf'])) {
+                $itemtype_field = $field_prop['x-itemtype-field'] ?? 'itemtype';
+                $items_id_field = $field_prop['x-items-id-field'] ?? 'items_id';
+                foreach ([$itemtype_field, $items_id_field] as $sibling_field) {
+                    if (array_key_exists($sibling_field, $schema['properties']) && !in_array($sibling_field, $field_selection, true)) {
+                        $field_selection[] = $sibling_field;
+                    }
+                }
+            }
         }
 
         $search = new Search($schema, $request_params);
@@ -371,12 +491,23 @@ class DefaultResolvers
                 continue;
             }
 
+            // Polymorphic/union fields have no backing column of their own, so there is nothing to select for them here.
+            if (isset($schema['properties'][$field_name]['oneOf']) || isset($schema['properties'][$field_name]['anyOf'])) {
+                continue;
+            }
+
             if ($schema['properties'][$field_name]['type'] === 'object') {
                 if (array_key_exists('id', $schema['properties'][$field_name]['properties'])) {
-                    $criteria['SELECT'][] = $search->getSelectCriteriaForProperty("{$field_name}.id", true);
+                    $select_field = $search->getSelectCriteriaForProperty("{$field_name}.id", true);
+                    if ($select_field !== null) {
+                        $criteria['SELECT'][] = $select_field;
+                    }
                 } else {
                     foreach (array_keys($schema['properties'][$field_name]['properties']) as $sub_field_name) {
-                        $criteria['SELECT'][] = $search->getSelectCriteriaForProperty("{$field_name}.{$sub_field_name}");
+                        $select_field = $search->getSelectCriteriaForProperty("{$field_name}.{$sub_field_name}");
+                        if ($select_field !== null) {
+                            $criteria['SELECT'][] = $select_field;
+                        }
                     }
                 }
             } elseif ($schema['properties'][$field_name]['type'] === 'array') {
@@ -384,15 +515,24 @@ class DefaultResolvers
                 if (!array_key_exists('properties', $schema['properties'][$field_name]['items'])) {
                     if ($schema['properties'][$field_name]['items']['x-mapper'] ?? false) {
                         $mapped_from = $schema['properties'][$field_name]['items']['x-mapped-from'];
-                        $criteria['SELECT'][] = $search->getSelectCriteriaForProperty($mapped_from);
+                        $select_field = $search->getSelectCriteriaForProperty($mapped_from);
+                        if ($select_field !== null) {
+                            $criteria['SELECT'][] = $select_field;
+                        }
                     }
                     continue;
                 }
                 if (array_key_exists('id', $schema['properties'][$field_name]['items']['properties'])) {
-                    $criteria['SELECT'][] = $search->getSelectCriteriaForProperty("{$field_name}.id", true);
+                    $select_field = $search->getSelectCriteriaForProperty("{$field_name}.id", true);
+                    if ($select_field !== null) {
+                        $criteria['SELECT'][] = $select_field;
+                    }
                 }
             } else {
-                $criteria['SELECT'][] = $search->getSelectCriteriaForProperty($field_name);
+                $select_field = $search->getSelectCriteriaForProperty($field_name);
+                if ($select_field !== null) {
+                    $criteria['SELECT'][] = $select_field;
+                }
             }
         }
 
