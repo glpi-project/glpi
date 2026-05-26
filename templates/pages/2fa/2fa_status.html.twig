@@ -49,15 +49,15 @@
    <div>
       {{ fields.csrfField() }}
       {% if enforcement != constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
-         <button type="submit" class="btn btn-danger" name="disable_2fa">
+         <button type="submit" class="btn btn-danger" name="disable_2fa"><i class="ti ti-shield-cancel me-1"></i>
             {{ __('Disable 2FA') }}
          </button>
       {% else %}
-         <button type="submit" class="btn btn-danger" name="reset_2fa">
+         <button type="submit" class="btn btn-danger" name="reset_2fa"><i class="ti ti-restore me-1"></i>
             {{ __('Reset 2FA') }}
          </button>
       {% endif %}
-      <button type="button" class="btn btn-outline-secondary" name="regenerate_backup_codes">
+      <button type="button" class="btn btn-outline-secondary" name="regenerate_backup_codes"><i class="ti ti-rotate-clockwise me-1"></i>
          {{ __('Regenerate backup codes') }}
       </button>
       <script>
