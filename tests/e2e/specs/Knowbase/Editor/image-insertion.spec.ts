@@ -221,7 +221,7 @@ test.describe('Knowledge Base Editor - Image Insertion', () => {
 
             await kb.goto(kb_id);
 
-            await expect(page.getByTestId('documents-count')).not.toBeAttached();
+            await expect(page.getByTestId('documents-count')).toBeHidden();
         });
 
         test('Regular document still appears in documents tab', async ({ page, profile, api }) => {
