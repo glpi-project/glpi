@@ -2288,7 +2288,6 @@ class SLMTest extends DbTestCase
         }
 
         // -- act : associate both OLA TTO to a ticket
-        $this->setCurrentTime('2025-05-26 10:00:00');
         $ticket = $this->createTicket([
             '_la_update' => true,
             '_olas_id' => [$ola_1->getID(), $ola_2->getID()],
@@ -2305,9 +2304,6 @@ class SLMTest extends DbTestCase
         assert(empty($ticket->getGroups(\CommonITILActor::ASSIGN) + $ticket->getUsers(\CommonITILActor::ASSIGN)), 'Ticket should not be assigned, escalation don\'t work for ola tto in this case.');
         // takeintoaccount_delay_stat = 0
         assert(0 === $ticket->fields['takeintoaccount_delay_stat'], 'Ticket takeintoaccount_delay_stat field should be 0, escalation don\'t work for ola tto in this case.');
-
-        // go 70 minutes forward, so esaclation level is reached
-        $this->setCurrentTime('2025-05-26 11:10:00');
 
         // -- assert : levels should be in olalevels_tickets
         $levels_todo = (new OlaLevel_Ticket())->find(['tickets_id' => $ticket->getID()]);

@@ -1182,11 +1182,14 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Manage OLA level escalation
      *
-     * - add level in todo table XLaLevel_Ticket
-     * - replayForTicket
+     * - add level in todo table OlaLevel_Ticket
+     * - replayForTicket (if $replay is true)
      *
      * Method requires levels to be cleared before - @see OLA::delete(All)LevelsToDo($ticket)
      * @param int $olas_id
+     * @param bool $replay Whether to call replayForTicket after scheduling the level.
+     *                     Set to false when rebuilding multiple OLAs in batch to avoid
+     *                     premature replay that would consume levels before all are scheduled.
      *
      * @return void
      *
@@ -1204,7 +1207,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         if ($olalevels_id && !in_array($this->fields['status'], static::getReopenableStatusArray())) {
-            $ola->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -1214,6 +1216,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $ola->setTicketCalendar($calendars_id);
             $ola->addLevelToDo($this, $olalevels_id, $olas_id);
         }
+
         OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type']);
     }
 
