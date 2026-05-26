@@ -2266,7 +2266,7 @@ class SLMTest extends DbTestCase
         $this->login();
         // create slm + ola tto with 120 minutes
         ['ola' => $ola_1, 'slm' => $slm, 'group' => $group] = $this->createOLA(data: ['number_time' => 120, 'definition_time' => 'minute',], ola_type: SLM::TTO);
-        ['ola' => $ola_2] = $this->createOLA(data: ['number_time' => 120, 'definition_time' => 'minute',], ola_type: SLM::TTO, group: $group, slm: $slm);
+        ['ola' => $ola_2]                                   = $this->createOLA(data: ['number_time' => 120, 'definition_time' => 'minute',], ola_type: SLM::TTO, group: $group, slm: $slm);
 
         $levels = []; // [ola_id => olalevels_id, ...]
         // add 1 escalation level to each ola
@@ -2296,7 +2296,14 @@ class SLMTest extends DbTestCase
             '_skip_auto_assign' => true,
         ]);
 
+        // check ola are associated with ticket
+        $io = new \Item_Ola();
+        assert(2 === countElementsInTable($io::getTable(), ['items_id' => $ticket->getID()]), 'Two ola should be associated with tested ticket.');
+
+        // check ola tto are running (so level can change)
+        // - ticket is not assigned
         assert(empty($ticket->getGroups(\CommonITILActor::ASSIGN) + $ticket->getUsers(\CommonITILActor::ASSIGN)), 'Ticket should not be assigned, escalation don\'t work for ola tto in this case.');
+        // takeintoaccount_delay_stat = 0
         assert(0 === $ticket->fields['takeintoaccount_delay_stat'], 'Ticket takeintoaccount_delay_stat field should be 0, escalation don\'t work for ola tto in this case.');
 
         // go 70 minutes forward, so esaclation level is reached
