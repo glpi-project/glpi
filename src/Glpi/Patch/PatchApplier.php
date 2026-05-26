@@ -106,13 +106,13 @@ final class PatchApplier
         if ($revert) {
             if ($is_new_file) {
                 // Patch created this file → revert by deleting it
-                return $this->applyDeletedFile($display, $target, $dry_run);
+                return $this->applyDeletedFile($target, $dry_run);
             }
             if ($is_deleted_file) {
                 // Patch deleted this file → revert by recreating it with original content
-                return $this->applyRevertDeletedFile($diff, $display, $target, $dry_run);
+                return $this->applyRevertDeletedFile($diff, $target, $dry_run);
             }
-            return $this->applyModifiedFile($diff, $display, $target, $dry_run, true);
+            return $this->applyModifiedFile($diff, $target, $dry_run, $revert);
         }
 
         if ($is_new_file) {
@@ -120,10 +120,10 @@ final class PatchApplier
         }
 
         if ($is_deleted_file) {
-            return $this->applyDeletedFile($display, $target, $dry_run);
+            return $this->applyDeletedFile($target, $dry_run);
         }
 
-        return $this->applyModifiedFile($diff, $display, $target, $dry_run);
+        return $this->applyModifiedFile($diff, $target, $dry_run, $revert);
     }
 
     private function applyNewFile(Diff $diff, string $display, string $target, bool $dry_run): FileApplyResult
@@ -196,34 +196,34 @@ final class PatchApplier
         return new FileApplyResult($display, ApplyStatus::Created, 'New file created successfully');
     }
 
-    private function applyDeletedFile(string $display, string $target, bool $dry_run): FileApplyResult
+    private function applyDeletedFile(string $target, bool $dry_run): FileApplyResult
     {
         if (!file_exists($target)) {
-            return new FileApplyResult($display, ApplyStatus::AlreadyApplied, 'File was already deleted');
+            return new FileApplyResult($target, ApplyStatus::AlreadyApplied, 'File was already deleted');
         }
 
         if ($dry_run) {
-            return new FileApplyResult($display, ApplyStatus::DryRun, 'Would delete this file');
+            return new FileApplyResult($target, ApplyStatus::DryRun, 'Would delete this file');
         }
 
         try {
             unlink($target);
         } catch (Exception $e) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 "Could not delete: $target - check permissions."
             );
         }
 
-        return new FileApplyResult($display, ApplyStatus::Deleted, 'File deleted successfully');
+        return new FileApplyResult($target, ApplyStatus::Deleted, 'File deleted successfully');
     }
 
-    private function applyModifiedFile(Diff $diff, string $display, string $target, bool $dry_run, bool $revert = false): FileApplyResult
+    private function applyModifiedFile(Diff $diff, string $target, bool $dry_run, bool $revert = false): FileApplyResult
     {
         if (!file_exists($target)) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 'File not found on disk.'
             );
@@ -231,7 +231,7 @@ final class PatchApplier
 
         if (!is_readable($target)) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 "File is not readable: $target - check permissions."
             );
@@ -240,7 +240,7 @@ final class PatchApplier
         try {
             $original_content = file_get_contents($target);
         } catch (Exception $e) {
-            return new FileApplyResult($display, ApplyStatus::Conflict, "Cannot read file: $target\n" . $e->getMessage());
+            return new FileApplyResult($target, ApplyStatus::Conflict, "Cannot read file: $target\n" . $e->getMessage());
         }
 
         // Detect line-ending style so we can preserve it after rewriting
@@ -261,9 +261,10 @@ final class PatchApplier
         foreach ($diff->chunks() as $chunk) {
             [$old_lines, $new_lines] = $revert ? $this->buildOldNewRevert($chunk) : $this->buildOldNew($chunk);
 
-            // Expected start position in the current (shifted) $lines array (0-based)
-            // $chunk->start() - 1 because diff hunks are 1-based while the array is 0-based
-            $expected_pos = max(0, $chunk->start() - 1 + $offset);
+            // Expected start position in the current (shifted) $lines array (0-based).
+            // In normal mode, start() is the old-file line number (1-based).
+            // In revert mode, end() is the new-file line number (1-based).
+            $expected_pos = max(0, ($revert ? $chunk->end() : $chunk->start()) - 1 + $offset);
 
             // only new lines are added = pure insertion
             if ($old_lines === []) {
@@ -300,7 +301,7 @@ final class PatchApplier
 
             // Neither found: genuine conflict
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 sprintf(
                     'The patch does not match the file content near line %d. '
@@ -314,7 +315,7 @@ final class PatchApplier
         // All hunks accounted for - decide overall result
         if ($applied_count === 0 && $already_applied_count > 0) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::AlreadyApplied,
                 $revert ? 'All changes were already reverted in this file' : 'All changes were already present in this file'
             );
@@ -324,7 +325,7 @@ final class PatchApplier
         $total_hunks = count($diff->chunks());
         if ($applied_count + $already_applied_count !== $total_hunks) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 "Unexpected error: only $applied_count out of $total_hunks hunks were applied, and $already_applied_count were already applied. Please review the file manually."
             );
@@ -332,7 +333,7 @@ final class PatchApplier
 
         if ($dry_run) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::DryRun,
                 $revert ? 'Would successfully revert changes in this file' : 'Would successfully apply changes to this file'
             );
@@ -348,14 +349,14 @@ final class PatchApplier
             file_put_contents($target, $new_content);
         } catch (Exception $e) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 "Cannot write to file: $target - check permissions."
             );
         }
 
         return new FileApplyResult(
-            $display,
+            $target,
             $revert ? ApplyStatus::Reverted : ApplyStatus::Applied,
             $revert ? 'Changes reverted successfully' : 'Changes applied successfully'
         );
@@ -365,7 +366,7 @@ final class PatchApplier
      * Recreates a file that was deleted by the patch (used when reverting).
      * The original content is reconstructed from the removed lines in the diff.
      */
-    private function applyRevertDeletedFile(Diff $diff, string $display, string $target, bool $dry_run): FileApplyResult
+    private function applyRevertDeletedFile(Diff $diff, string $target, bool $dry_run): FileApplyResult
     {
         $old_lines = [];
         foreach ($diff->chunks() as $chunk) {
@@ -387,7 +388,7 @@ final class PatchApplier
                 $existing = file_get_contents($target);
             } catch (Exception $e) {
                 return new FileApplyResult(
-                    $display,
+                    $target,
                     ApplyStatus::Conflict,
                     "A file already exists at this location but it cannot be read: $target - check permissions.\n"
                     . $e->getMessage()
@@ -398,18 +399,18 @@ final class PatchApplier
                 $existing === $old_content
                 || rtrim((string) $existing, "\r\n") === rtrim($old_content, "\r\n")
             ) {
-                return new FileApplyResult($display, ApplyStatus::AlreadyApplied, 'File was already restored with its original content');
+                return new FileApplyResult($target, ApplyStatus::AlreadyApplied, 'File was already restored with its original content');
             }
 
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 'A file already exists at this location but its content differs from the expected original. Manual intervention is required.'
             );
         }
 
         if ($dry_run) {
-            return new FileApplyResult($display, ApplyStatus::DryRun, 'Would restore this deleted file');
+            return new FileApplyResult($target, ApplyStatus::DryRun, 'Would restore this deleted file');
         }
 
         $dir = dirname($target);
@@ -418,7 +419,7 @@ final class PatchApplier
                 mkdir($dir, 0o755, true);
             } catch (Exception $e) {
                 return new FileApplyResult(
-                    $display,
+                    $target,
                     ApplyStatus::Conflict,
                     "Could not create directory: $dir - check permissions."
                 );
@@ -429,13 +430,13 @@ final class PatchApplier
             file_put_contents($target, $old_content);
         } catch (Exception $e) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 "Could not write to: $target - check permissions."
             );
         }
 
-        return new FileApplyResult($display, ApplyStatus::Created, 'File restored successfully');
+        return new FileApplyResult($target, ApplyStatus::Created, 'File restored successfully');
     }
 
     /**

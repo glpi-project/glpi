@@ -183,7 +183,7 @@ final class ApplyCommand extends AbstractCommand
         /** @var string $raw_input */
         $raw_input = $input->getArgument('input');
 
-        $plugin_name = $input->getOption('plugin')??'';
+        $plugin_name = $input->getOption('plugin') ?? '';
         $dry_run     = (bool) $input->getOption('dry-run');
         $revert      = (bool) $input->getOption('revert');
 
