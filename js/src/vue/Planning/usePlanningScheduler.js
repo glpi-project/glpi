@@ -234,10 +234,10 @@ export default function usePlanningScheduler(calendar_api, current_view, full_vi
                 },
                 body: new URLSearchParams({
                     action: 'delete_event',
-                    itemtype: event.extendedProps.itemtype,
-                    items_id: event.extendedProps.items_id,
-                    day: event.start.toISOString().substring(0, 10),
-                    instance: instance ? 1 : 0,
+                    'event[itemtype]': event.extendedProps.itemtype,
+                    'event[items_id]': event.extendedProps.items_id,
+                    'event[day]': event.start.toISOString().substring(0, 10),
+                    'event[instance]': instance ? 1 : 0,
                 }),
             }).then(response => {
                 if (response.ok) {
