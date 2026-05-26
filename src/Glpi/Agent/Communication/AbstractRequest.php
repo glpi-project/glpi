@@ -429,7 +429,7 @@ abstract class AbstractRequest
 
         $jdata = json_decode($data);
 
-        $this->deviceid = $jdata->deviceid ?? null;
+        $this->deviceid = $jdata->deviceid ?? '';
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;
