@@ -46,7 +46,7 @@
       </div>
       <div class="border-top mt-2 pt-2 mx-n2 d-flex">
          <div class="ms-auto pe-2">
-            <button type="button" id="switch_code_type" class="btn btn-link px-1">{{ __('Use a backup code') }}</button>
+            <button type="button" id="switch_code_type" class="btn btn-link px-1"><i class="ti ti-alphabet-latin me-1"></i>{{ __('Use a backup code') }}</button>
             <script>
                 $('#switch_code_type').on('click', (e) => {
                     const btn = $(e.currentTarget);
@@ -78,8 +78,8 @@
                     }
                 });
             </script>
-            <button type="submit" formnovalidate name="totp_cancel" class="btn btn-outline-secondary">{{ __('Cancel') }}</button>
-            <button type="submit" formnovalidate name="continue" class="btn btn-primary ms-1">{{ __('Verify') }}</button>
+            <button type="submit" formnovalidate name="totp_cancel" class="btn btn-outline-secondary"><i class="ti ti-cancel me-1"></i>{{ __('Cancel') }}</button>
+            <button type="submit" formnovalidate name="continue" class="btn btn-primary ms-1"><i class="ti ti-shield-check me-1"></i>{{ __('Verify') }}</button>
          </div>
       </div>
    </form>
