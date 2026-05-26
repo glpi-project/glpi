@@ -189,7 +189,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
         if (
             Session::getCurrentInterface() === "central"
-            && $this->fields['users_id'] === Session::getLoginUserID()
+            && (int) $this->fields['users_id'] === Session::getLoginUserID()
         ) {
             return true;
         }
@@ -225,7 +225,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (empty($this->fields['is_draft'])) {
             return true;
         }
-        return $this->fields['users_id'] === Session::getLoginUserID()
+        return (int) $this->fields['users_id'] === Session::getLoginUserID()
             || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
     }
 
