@@ -2281,20 +2281,16 @@ TWIG, $twig_params);
         if (Session::getLoginUserID()) {
             $restrict = self::getVisibilityCriteria();
             $criteria['WHERE'] = array_merge($criteria['WHERE'], $restrict['WHERE']);
-            // Explicit even though getVisibilityCriteriaKB already filters
-            // drafts out for non-admins: keeps the contract readable.
-            if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-                $criteria['WHERE'][self::getTableField('is_draft')] = 0;
-            }
         } else {
             // Anonymous access
             if (Session::isMultiEntitiesMode()) {
                 $criteria['WHERE']['glpi_entities_knowbaseitems.entities_id'] = 0;
                 $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
             }
-            // Drafts must never leak to the anonymous landing page.
-            $criteria['WHERE'][self::getTableField('is_draft')] = 0;
         }
+        // Recent/popular widgets are a browsing surface, not a moderation
+        // view: drafts are always filtered out, regardless of role.
+        $criteria['WHERE'][self::getTableField('is_draft')] = 0;
 
         // Only published
         $criteria['WHERE'][] = [

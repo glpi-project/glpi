@@ -2471,6 +2471,51 @@ HTML,
         );
     }
 
+    public function testShowRecentPopularHidesDraftsFromKnowbaseAdmin(): void
+    {
+        // Non-admin author creates a published article and a draft.
+        $this->login('tech', 'tech');
+        $author_id = (int) $_SESSION['glpiID'];
+
+        $published = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'PUBLISHED_VISIBLE_' . __FUNCTION__,
+            'answer'   => 'published body',
+            'users_id' => $author_id,
+            'is_draft' => 0,
+        ]);
+        // Make published visible to glpi via a visibility entry.
+        $glpi_id = (int) getItemByTypeName('User', 'glpi', true);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $published->getID(),
+            'users_id'         => $glpi_id,
+        ]);
+
+        $draft = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'DRAFT_HIDDEN_' . __FUNCTION__,
+            'answer'   => 'draft body',
+            'users_id' => $author_id,
+            'is_draft' => 1,
+        ]);
+        // Same visibility entry as the published one so the only reason for
+        // the draft to be filtered out must be the is_draft gate.
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $draft->getID(),
+            'users_id'         => $glpi_id,
+        ]);
+
+        // Switch to a KNOWBASEADMIN user.
+        $this->login('glpi', 'glpi');
+
+        $html = KnowbaseItem::showRecentPopular('recent', false);
+
+        $this->assertIsString($html);
+        $this->assertStringNotContainsString(
+            'DRAFT_HIDDEN_' . __FUNCTION__,
+            $html,
+            'KNOWBASEADMIN must not see other authors drafts in Recent entries.'
+        );
+    }
+
     public function testAllUnpublishedListingShowsDraftsToKnowbaseAdmin(): void
     {
         global $DB;
