@@ -140,9 +140,9 @@
             {% endif %}
             <div class="ms-auto">
                {% if enforced and in_grace_period %}
-                  <button type="submit" formnovalidate class="btn btn-outline-secondary" name="skip_mfa">{{ __('Skip') }}</button>
+                  <button type="submit" formnovalidate class="btn btn-outline-secondary" name="skip_mfa"><i class="ti ti-cancel me-1"></i>{{ __('Skip') }}</button>
                {% endif %}
-               <button type="submit" name="continue" class="btn btn-primary ms-1">{{ __('Verify') }}</button>
+               <button type="submit" name="continue" class="btn btn-primary ms-1"><i class="ti ti-shield-check me-1"></i>{{ __('Verify') }}</button>
             </div>
          </div>
       </div>
