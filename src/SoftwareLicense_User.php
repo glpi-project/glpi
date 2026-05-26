@@ -109,7 +109,7 @@ class SoftwareLicense_User extends CommonDBRelation
                 SoftwareLicense_User::getTypeName(Session::getPluralNumber()),
                 $nb,
                 $item::class,
-                'ti ti-package'
+                'ti ti-license'
             );
         }
 
