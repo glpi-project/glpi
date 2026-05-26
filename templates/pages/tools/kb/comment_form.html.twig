@@ -42,14 +42,14 @@
 
 <div class="d-flex flex-wrap align-items-start {{ comment_style ? "mt-3" : "" }}">
     {% if comment_style %}
-        <a href="" class="me-3 mt-n2 ms-n2">
+        <a href="" class="me-3 ms-n2">
             {{ include('components/user/picture.html.twig', {
                 'users_id': session('glpiID'),
                 'with_link': false,
             }, with_context = false) }}
         </a>
     {% endif %}
-    <div class="{{ comment_style ? "h_item d-flex timeline-content flex-column pt-3" : "w-100" }}">
+    <div class="{{ comment_style ? "h_item d-flex timeline-content flex-column" : "w-100" }}">
         <form name="kbcomment_form{{ rand }}" id="kbcomment_form{{ rand }}" class="comment_form" method="post"
             action="{{ 'KnowbaseItem_Comment'|itemtype_form_path }}" data-submit-once data-track-changes="true">
             {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
@@ -74,7 +74,9 @@
                         </div>
                     {% endif %}
                     <div class="ms-2">
-                        {{ inputs.submit(comment_id ? 'edit' : 'add', comment_id ? _x('button', 'Edit') : _x('button', 'Add'), 1) }}
+                        {{ inputs.submit(comment_id ? 'edit' : 'add', comment_id ? _x('button', 'Edit') : _x('button', 'Add'), 1, {
+                            icon: comment_id ? 'ti ti-device-floppy' : 'ti ti-plus'
+                        }) }}
                     </div>
                     <script>
                         $(`#kbcomment_form{{ rand }}`).on('click', 'button[name="cancel"]', (e) => {
