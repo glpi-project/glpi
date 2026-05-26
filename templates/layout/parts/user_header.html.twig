@@ -131,13 +131,13 @@
                         <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
                       </div>
                   {% endif %}
-                  <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
+                  <p><a href="https://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
                      GLPI {{ constant('GLPI_VERSION') }}
                      Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
                   </a></p>
                   {% if found_new_version is not null %}
                      <p>
-                        <a href="http://www.glpi-project.org" target="_blank"
+                        <a href="https://glpi-project.org" target="_blank"
                            title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
                            {{ __('A new version is available: %s.')|format(found_new_version) }}
                            <span class="badge bg-info text-dark">
