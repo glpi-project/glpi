@@ -41,6 +41,7 @@
         <input type="text" name="{{ name }}" data-input class="form-control rounded-start ps-2">
         <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
             <i class="ti ti-calendar-time"></i>
+            <span class="sr-only">{{ __('Enter or select a date') }}</span>
         </button>
     </div>
     <label class="d-flex align-items-center gap-2 text-nowrap mb-0">
@@ -51,7 +52,7 @@
 <script>
 $(function() {
     function buildFp(hasTime, defaultDate) {
-        var el = document.getElementById('showdate{{ rand }}');
+        const el = document.getElementById('showdate{{ rand }}');
         if (el._flatpickr) el._flatpickr.destroy();
         return $('#showdate{{ rand }}').flatpickr({
             defaultDate:     defaultDate,
@@ -73,7 +74,7 @@ $(function() {
         });
     }
 
-    var fp = buildFp({{ has_time ? 'true' : 'false' }}, {{ initial_value|json_encode|raw }});
+    let fp = buildFp({{ has_time ? 'true' : 'false' }}, {{ initial_value|json_encode|raw }});
 
     document.getElementById('time_toggle_{{ rand }}').addEventListener('change', function() {
         fp = buildFp(this.checked, fp.selectedDates[0]);
