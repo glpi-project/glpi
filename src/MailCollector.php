@@ -52,12 +52,10 @@ use Laminas\Mail\Storage\Part;
 use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
 use Safe\Exceptions\DatetimeException;
-use Safe\Exceptions\IconvException;
 use Safe\Exceptions\UrlException;
 
 use function Safe\base64_decode;
 use function Safe\file_put_contents;
-use function Safe\iconv;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -2565,15 +2563,14 @@ class MailCollector extends CommonDBTM
 
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
-                // TRANSLIT may result in failure depending on system iconv implementation.
-                try {
-                    $converted = iconv($charset, 'UTF-8//TRANSLIT', $contents);
-                } catch (IconvException) {
-                    try {
-                        $converted = iconv($charset, 'UTF-8//IGNORE', $contents);
-                    } catch (IconvException) {
-                        $converted = null;
-                    }
+                // Some iconv implementations may emit notices on invalid byte sequences.
+                // We handle failures explicitly and keep collected logs clean.
+                $converted = @\iconv($charset, 'UTF-8//TRANSLIT', $contents);
+                if ($converted === false) {
+                    $converted = @\iconv($charset, 'UTF-8//IGNORE', $contents);
+                }
+                if ($converted === false) {
+                    $converted = null;
                 }
                 if ($converted !== null) {
                     $contents = $converted;
