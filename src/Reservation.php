@@ -683,7 +683,7 @@ HTML;
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
                 'comment'     => $can_read || $my_item ? $data['comment'] : '',
-                'title'       => $params['reservationitems_id'] ? "" : $name,
+                'title'       => $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),
                 'itemtype'    => $data['itemtype'],
