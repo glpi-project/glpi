@@ -5,7 +5,7 @@
      * SPDX-FileCopyrightText: 2015-2026 Teclib' and contributors.
      */
 
-    import {computed, onMounted, onUnmounted, ref, useTemplateRef} from 'vue';
+    import {computed, provide, ref, useTemplateRef} from 'vue';
     import BaseFullCalendar from '../FullCalendar/BaseFullCalendar.vue';
     import dayGridPlugin from '@fullcalendar/daygrid';
     import interactionPlugin from '@fullcalendar/interaction';
@@ -56,11 +56,7 @@
     const all_days = [0, 1, 2, 3, 4, 5, 6];
     const hidden_days = all_days.filter(day => !CFG_GLPI.planning_work_days.some(n => n == day));
 
-    const calendar_api = ref(null);
-    const calendar = useTemplateRef('calendar');
-    const date_picker = useTemplateRef('date_picker');
     const event_context_menu = useTemplateRef('event_context_menu');
-    let date_picker_flatpickr = null;
     const current_view = ref(props.fullcalendar_options.initialView || 'timeGridWeek');
     const current_view_data = ref(null);
     const list_full_year_range = props.full_view ? 5 : 1; // +/- number of years to display in list full view
@@ -73,10 +69,18 @@
     const dateNavVisibility = computed(() => {
         return current_view.value === 'listFull' ? 'hidden' : 'visible';
     });
+    const scheduler = usePlanningScheduler(
+        useTemplateRef('calendar'),
+        current_view,
+        props.full_view,
+        useTemplateRef('date_picker'),
+        event_context_menu
+    );
+    provide('scheduler', scheduler);
     const {
-        getListFullView, getResourceWeekView, defaultHeaderToolbar, editEventTimes, refresh, clearSelection,
-        getEventByDefId, cloneEvent, deleteEvent, setEndOfDays, onEventResize, onEventDrop, createEventFromSelect
-    } = usePlanningScheduler(calendar_api, current_view, props.full_view);
+        getListFullView, getResourceWeekView, defaultHeaderToolbar, refresh, clearSelection,
+        cloneEvent, deleteEvent, onEventResize, onEventDrop, createEventFromSelect, hideContextMenu
+    } = scheduler;
 
     defineExpose({
         refresh: refresh,
@@ -114,10 +118,9 @@
             info.jsEvent.preventDefault();
             hideContextMenu();
             const event = info.event;
-            const editable = event.extendedProps._editable;
             const ajax_url = event.extendedProps.ajaxurl;
 
-            if (ajax_url && editable) {
+            if (ajax_url && event.extendedProps._editable) {
                 const start = event.start;
 
                 glpi_ajax_dialog({
@@ -140,44 +143,6 @@
         }
     }, props.fullcalendar_options);
 
-    onMounted(() => {
-        calendar_api.value = calendar.value.getApi();
-        // force focus on the current window
-        window.focus();
-
-        if (props.full_view) {
-            date_picker_flatpickr = new flatpickr(date_picker.value, {
-                onChange: function (selected_date) {
-                    // convert to UTC to avoid timezone issues
-                    const date = new Date(
-                        Date.UTC(
-                            selected_date[0].getFullYear(),
-                            selected_date[0].getMonth(),
-                            selected_date[0].getDate()
-                        )
-                    );
-                    calendar_api.value.gotoDate(date);
-                }
-            });
-        }
-        refresh();
-
-        window.addEventListener('click', hideContextMenu);
-    });
-
-    onUnmounted(() => {
-        if (date_picker_flatpickr) {
-            date_picker_flatpickr.destroy();
-        }
-        window.removeEventListener('click', hideContextMenu);
-    });
-
-    function hideContextMenu() {
-        if (event_context_menu.value) {
-            event_context_menu.value.classList.add('d-none');
-        }
-    }
-
     function getResourceIcon(resource) {
         let icon = '';
         switch (resource.extendedProps.itemtype.toLowerCase()) {
@@ -195,7 +160,7 @@
 <template>
     <BaseFullCalendar ref="calendar" class="flex-grow-1" :calendar_options="calendar_options" v-model:currentView="current_view" @currentViewDataChanged="current_view_data = $event">
         <template #eventContent="event_info">
-            <PlanningEvent :view_type="current_view" :event_info="event_info" :context_menu="event_context_menu"/>
+            <PlanningEvent :event_info="event_info"/>
         </template>
         <template #resourceLabelContent="{ resource }">
             <span>

@@ -5,7 +5,7 @@
      * SPDX-FileCopyrightText: 2015-2026 Teclib' and contributors.
      */
 
-    import {ref, useTemplateRef} from "vue";
+    import { ref } from "vue";
 
     const props = defineProps({
         filter_key: {
@@ -20,6 +20,10 @@
             type: [String, Number],
             required: false,
         },
+        active_entity: {
+            type: Object,
+            required: true,
+        },
     });
 
     const emits = defineEmits(['deleteFilter', 'toggleFilter', 'filterColorChange']);
@@ -32,9 +36,8 @@
         .replace('%s', props.filter_data.filter_data.url ?? '')
         .replace(/&quot;/g, '"');
 
-    //TODO These params are not passed to Vue
-    const entities_id = props.filter_data.entities_id ?? null;
-    const is_recursive = props.filter_data.is_recursive ?? null;
+    const entities_id = props.active_entity.id ?? null;
+    const is_recursive = props.active_entity.id ?? null;
     const token = props.filter_data.token ?? null;
 
     const ical_export_url = `${CFG_GLPI.root_doc}/front/planning.php?genical=1&uID=${props.filter_data.uID}&gID=${props.filter_data.gID}&entities_id=${entities_id}&is_recursive=${is_recursive}&token=${token}`;
@@ -128,7 +131,7 @@
         </div>
         <ul v-if="filter_data.caldav_url && event_type === 'group_users'"
             class="p-0 mt-1 ms-1 w-100" :class="filter_data.expanded ? '' : 'd-none'">
-            <PlanningFilter v-for="(user_filter_data, user_filter_key) in filter_data.child_filters" :key="user_filter_key"
+            <PlanningFilter v-for="(user_filter_data, user_filter_key) in filter_data.child_filters" :key="user_filter_key" :active_entity="active_entity"
                             :filter_key="user_filter_key" :filter_data="user_filter_data" :parent_filter_key="filter_key"
                             @toggleFilter="(...args) => $emit('toggleFilter', ...args)"/>
         </ul>
