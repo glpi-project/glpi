@@ -142,7 +142,7 @@ final class DiffFetcher
             return $content;
         } catch (Exception $e) {
             throw new RuntimeException("Failed to download the diff from: $url\n"
-            . "Please check that the PR number is correct.", $e->getCode(), $e);
+            . "Please check that the PR number is correct and that the repository is public.", $e->getCode(), $e);
         }
     }
 }

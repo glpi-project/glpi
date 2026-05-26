@@ -183,7 +183,13 @@ final class ApplyCommand extends AbstractCommand
         /** @var string $raw_input */
         $raw_input = $input->getArgument('input');
 
-        $plugin_name = $input->getOption('plugin') ?? '';
+        $plugin_name = $input->getOption('plugin');
+        if($plugin_name !== null && $plugin_name === "") { //the option is present but empty
+            $io->error('The --plugin can\'t have an empty value.');
+            return Command::FAILURE;
+        }
+        $plugin_name ??= ''; //the option is not present, set to empty string for easier handling later
+
         $dry_run     = (bool) $input->getOption('dry-run');
         $revert      = (bool) $input->getOption('revert');
 
@@ -434,7 +440,7 @@ final class ApplyCommand extends AbstractCommand
     {
         $table = new Table($output);
         $table->setHeaders(['File', 'Status', 'Details']);
-        $table->setColumnMaxWidth(0, 60);
+        $table->setColumnMaxWidth(0, 70);
         $table->setColumnMaxWidth(2, 55);
 
         // Sort results so conflicts appear first, then changes, then skipped

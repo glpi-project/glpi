@@ -116,7 +116,7 @@ final class PatchApplier
         }
 
         if ($is_new_file) {
-            return $this->applyNewFile($diff, $display, $target, $dry_run);
+            return $this->applyNewFile($diff, $target, $dry_run);
         }
 
         if ($is_deleted_file) {
@@ -126,7 +126,7 @@ final class PatchApplier
         return $this->applyModifiedFile($diff, $target, $dry_run, $revert);
     }
 
-    private function applyNewFile(Diff $diff, string $display, string $target, bool $dry_run): FileApplyResult
+    private function applyNewFile(Diff $diff, string $target, bool $dry_run): FileApplyResult
     {
         $new_lines = [];
         foreach ($diff->chunks() as $chunk) {
@@ -144,7 +144,7 @@ final class PatchApplier
                 $existing = file_get_contents($target);
             } catch (Exception $e) {
                 return new FileApplyResult(
-                    $display,
+                    $target,
                     ApplyStatus::Conflict,
                     "A file already exists at this location but it cannot be read: $target - check permissions.\n"
                     . $e->getMessage()
@@ -155,11 +155,11 @@ final class PatchApplier
                 $existing === $new_content
                 || rtrim((string) $existing, "\r\n") === rtrim($new_content, "\r\n")
             ) {
-                return new FileApplyResult($display, ApplyStatus::AlreadyApplied, 'File was already created with the same content');
+                return new FileApplyResult($target, ApplyStatus::AlreadyApplied, 'File was already created with the same content');
             }
 
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 'A file already exists at this location but its content differs from the patch. '
                 . 'It may have been created by a different change. Please review it manually.'
@@ -167,7 +167,7 @@ final class PatchApplier
         }
 
         if ($dry_run) {
-            return new FileApplyResult($display, ApplyStatus::DryRun, 'Would create this new file');
+            return new FileApplyResult($target, ApplyStatus::DryRun, 'Would create this new file');
         }
 
         $dir = dirname($target);
@@ -176,7 +176,7 @@ final class PatchApplier
                 mkdir($dir, 0o755, true);
             } catch (Exception $e) {
                 return new FileApplyResult(
-                    $display,
+                    $target,
                     ApplyStatus::Conflict,
                     "Could not create directory: $dir - check permissions."
                 );
@@ -187,13 +187,13 @@ final class PatchApplier
             file_put_contents($target, $new_content);
         } catch (Exception $e) {
             return new FileApplyResult(
-                $display,
+                $target,
                 ApplyStatus::Conflict,
                 "Could not write to: $target - check permissions."
             );
         }
 
-        return new FileApplyResult($display, ApplyStatus::Created, 'New file created successfully');
+        return new FileApplyResult($target, ApplyStatus::Created, 'New file created successfully');
     }
 
     private function applyDeletedFile(string $target, bool $dry_run): FileApplyResult
