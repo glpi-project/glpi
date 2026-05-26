@@ -1157,7 +1157,7 @@ JAVASCRIPT;
                             _n('Affected item', 'Affected items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
-                            'ti ti-package',
+                            'ti ti-license',
                             $item->fields['number'] > 0 ? $item->fields['number'] : null,
                         ),
                     ];
