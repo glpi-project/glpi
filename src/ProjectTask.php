@@ -198,6 +198,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $alert = new Alert();
         $alert->cleanDBonItemDelete(self::class, $this->fields['id']);
+        (new PlanningRecall())->cleanDBonItemDelete(self::class, $this->fields['id']);
 
         parent::cleanDBonPurge();
     }
