@@ -1034,18 +1034,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/projectteam.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to method initiate\\(\\) on an unknown class Glpi\\\\Security\\\\ReAuth\\\\ReAuthManager\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reauth_nfo.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instantiated class Glpi\\\\Security\\\\ReAuth\\\\ReAuthManager not found\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reauth_nfo.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
