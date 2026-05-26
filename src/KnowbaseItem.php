@@ -763,8 +763,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         // Specific case for anonymous users + multi entities
         if (!Session::getLoginUserID()) {
-            // Drafts must never appear publicly — defence in depth on top of
-            // the form-level coercion that forbids is_faq=1 + is_draft=1.
+            // Drafts must never appear publicly
             $where = [
                 'is_faq'   => 1,
                 self::getTableField('is_draft') => 0,
