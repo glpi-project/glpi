@@ -63,6 +63,9 @@ test('Can delete an article', async ({ page, profile, api }) => {
     await expect(page.getByText('Item successfully deleted.')).toBeVisible();
 
     // Article should no longer exist
-    await kb.goto(id);
+    await page.goto(
+        `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
+        { waitUntil: 'domcontentloaded' }
+    );
     await expect(page.getByText('The requested item has not been found')).toBeVisible();
 });
