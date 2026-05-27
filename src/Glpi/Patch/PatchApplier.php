@@ -129,15 +129,20 @@ final class PatchApplier
     private function applyNewFile(Diff $diff, string $target, bool $dry_run): FileApplyResult
     {
         $new_lines = [];
+        $has_trailing_newline = true;
         foreach ($diff->chunks() as $chunk) {
             foreach ($chunk->lines() as $line) {
+                if (str_starts_with($line->content(), '\\ ')) {
+                    $has_trailing_newline = false;
+                    continue;
+                }
                 if ($line->isAdded()) {
                     $new_lines[] = $line->content();
                 }
             }
         }
 
-        $new_content = implode("\n", $new_lines) . "\n";
+        $new_content = implode("\n", $new_lines) . ($has_trailing_newline ? "\n" : "");
 
         if (file_exists($target)) {
             try {
@@ -369,11 +374,13 @@ final class PatchApplier
     private function applyRevertDeletedFile(Diff $diff, string $target, bool $dry_run): FileApplyResult
     {
         $old_lines = [];
+        $has_trailing_newline = true;
         foreach ($diff->chunks() as $chunk) {
             foreach ($chunk->lines() as $line) {
                 $content = $line->content();
                 if (str_starts_with($content, '\\ ')) {
-                    continue;
+                    $has_trailing_newline = false;
+                    continue; // Skip the "\ No newline at end of file" indicator
                 }
                 if ($line->isRemoved() || $line->isUnchanged()) {
                     $old_lines[] = $content;
@@ -381,7 +388,7 @@ final class PatchApplier
             }
         }
 
-        $old_content = implode("\n", $old_lines) . "\n";
+        $old_content = implode("\n", $old_lines) . ($has_trailing_newline ? "\n" : "");
 
         if (file_exists($target)) {
             try {
