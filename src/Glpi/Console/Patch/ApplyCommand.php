@@ -36,8 +36,6 @@ namespace Glpi\Console\Patch;
 
 use Exception;
 use Glpi\Console\AbstractCommand;
-use Glpi\Console\Build\CompileScssCommand;
-use Glpi\Console\Cache\ClearCommand;
 use Glpi\Patch\ApplyStatus;
 use Glpi\Patch\DiffFetcher;
 use Glpi\Patch\FileApplyResult;
@@ -47,6 +45,7 @@ use Override;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -312,7 +311,7 @@ final class ApplyCommand extends AbstractCommand
         if (!$dry_run) {
             $post_actions_result = $this->performePostApplyActions($results, $io, $input, $output);
             if ($post_actions_result === true) {
-                $io->text('Please clear your browser cache.');
+                $io->text("\nPlease clear your browser cache.");
                 $io->success($revert ? 'Patch reverted successfully!' : 'Patch applied successfully!');
             } else {
                 $io->warning(
@@ -391,7 +390,8 @@ final class ApplyCommand extends AbstractCommand
 
         if ($clear_cache) {
             try {
-                (new ClearCommand())->execute($input, $output);
+                $io->text("\nClearing cache…");
+                $this->getApplication()->find('cache:clear')->run(new ArrayInput([]), $output);
             } catch (Exception $e) {
                 $io->warning("Patch applied, but failed to clear cache automatically: " . $e->getMessage());
                 $error_count++;
@@ -399,7 +399,8 @@ final class ApplyCommand extends AbstractCommand
         }
         if ($recompile_css) {
             try {
-                (new CompileScssCommand())->execute($input, $output);
+                $io->text("\nCompiling SCSS…");
+                $this->getApplication()->find('build:compile_scss')->run(new ArrayInput([]), $output);
             } catch (Exception $e) {
                 $io->warning("Patch applied, but failed to recompile SCSS automatically: " . $e->getMessage());
                 $error_count++;
