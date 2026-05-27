@@ -54,19 +54,19 @@
 
          <div class="text-muted">
             {% if user.login is defined and user['login'] is not empty %}
-                <div>
+                <div class="d-flex align-items-center gap-1">
                     <i class="ti ti-id-badge"></i>
-                    {{ user['login'] }}
+                    <span>{{ user['login'] }}</span>
                 </div>
             {% endif %}
             {% if user['email']|length > 0 %}
-               <div>
+               <div class="d-flex align-items-center gap-1">
                   <i class="ti ti-mail"></i>
                   <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
                </div>
             {% endif %}
             {% if not user['phone'] is empty or not user['phone2'] is empty %}
-               <div>
+               <div class="d-flex align-items-center flex-wrap gap-1">
                   {% if not user['phone'] is empty %}
                      <i class="ti ti-phone"></i>
                      <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
@@ -81,39 +81,39 @@
                </div>
             {% endif %}
             {% if user['mobile']|length > 0 %}
-               <div>
+               <div class="d-flex align-items-center gap-1">
                   <i class="ti ti-device-mobile"></i>
                   <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
                </div>
             {% endif %}
             {% if user['registration_number']|length > 0 %}
-               <div>
+               <div class="d-flex align-items-center gap-1">
                   <i class="ti ti-id-badge-2"></i>
-                  {{ user['registration_number'] }}
+                  <span>{{ user['registration_number'] }}</span>
                </div>
             {% endif %}
             {% if user['locations_id'] > 0 %}
-               <div title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
+               <div class="d-flex align-items-center gap-1" title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="{{ 'Location'|itemtype_icon }}"></i>
-                  {{ get_item_name('Location', user['locations_id']) }}
+                  <span>{{ get_item_name('Location', user['locations_id']) }}</span>
                </div>
             {% endif %}
             {% if user['usertitles_id'] > 0 %}
-               <div title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+               <div class="d-flex align-items-center gap-1" title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="{{ 'UserTitle'|itemtype_icon }}"></i>
-                  {{ get_item_name('UserTitle', user['usertitles_id']) }}
+                  <span>{{ get_item_name('UserTitle', user['usertitles_id']) }}</span>
                </div>
             {% endif %}
             {% if user['usercategories_id'] > 0 %}
-               <div title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
+               <div class="d-flex align-items-center gap-1" title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="{{ 'UserCategory'|itemtype_icon }}"></i>
-                  {{ get_item_name('UserCategory', user['usercategories_id']) }}
+                  <span>{{ get_item_name('UserCategory', user['usercategories_id']) }}</span>
                </div>
             {% endif %}
             {% if user['groups_id'] > 0 %}
-               <div title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
+               <div class="d-flex align-items-center gap-1" title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="{{ 'Group'|itemtype_icon }}"></i>
-                  {{ get_item_name('Group', user['groups_id']) }}
+                  <span>{{ get_item_name('Group', user['groups_id']) }}</span>
                </div>
             {% endif %}
          </div>
