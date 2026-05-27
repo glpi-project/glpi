@@ -245,7 +245,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         global $DB;
 
-        if (count($this->profileRight) > 0) {
+        if ($this->profileRight !== []) {
             // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
             foreach ($definitions as $definition) {
@@ -294,7 +294,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         global $DB;
 
         ProfileRight::fillProfileRights($this->fields['id']);
-        if (count($this->profileRight) > 0) {
+        if ($this->profileRight !== []) {
             // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
             foreach ($definitions as $definition) {
