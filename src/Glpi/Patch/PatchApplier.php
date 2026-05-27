@@ -283,9 +283,7 @@ final class PatchApplier
 
             // only new lines are added = pure insertion
             if ($old_lines === []) {
-                if (!$dry_run) {
-                    array_splice($lines, $expected_pos, 0, $new_lines);
-                }
+                array_splice($lines, $expected_pos, 0, $new_lines);
                 $offset += count($new_lines);
                 $applied_count++;
                 continue;
@@ -295,9 +293,7 @@ final class PatchApplier
             $found_old = $this->findSequence($lines, $old_lines, $expected_pos);
 
             if ($found_old !== null) {
-                if (!$dry_run) {
-                    array_splice($lines, $found_old, count($old_lines), $new_lines);
-                }
+                array_splice($lines, $found_old, count($old_lines), $new_lines);
                 $offset += count($new_lines) - count($old_lines);
                 $applied_count++;
                 continue;
