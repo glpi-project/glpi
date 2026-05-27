@@ -53,7 +53,7 @@
         </div>
     {% endif %}
     <div class="kb-thread-body">
-        <div class="{{ comment_style ? "kb-comment-content h_item d-flex timeline-content flex-column w-100 pt-3" : "w-100" }}">
+        <div class="{{ comment_style ? "kb-comment-content h_item d-flex timeline-content flex-column w-100 mt-2 pt-3" : "w-100" }}">
         <form name="kbcomment_form{{ rand }}" id="kbcomment_form{{ rand }}" class="comment_form" method="post"
             action="{{ 'KnowbaseItem_Comment'|itemtype_form_path }}" data-submit-once data-track-changes="true">
             {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
