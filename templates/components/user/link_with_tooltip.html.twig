@@ -32,8 +32,8 @@
 
 {% set rand = random() %}
 
-<span id="user_{{ rand }}">
-    <i class="ti ti-user ms-1"></i>
+<span id="user_{{ rand }}" class="d-inline-flex align-items-center">
+    <i class="ti ti-user ms-1 me-1"></i>
     {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization}) }}
 </span>
 
