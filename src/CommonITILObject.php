@@ -2455,6 +2455,20 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $this->manageITILObjectLinkInput($this->input);
 
         parent::post_updateItem();
+
+        UserITILObjectCount::refreshForItilObject(static::class, (int) $this->getID());
+    }
+
+    public function post_deleteItem()
+    {
+        parent::post_deleteItem();
+        UserITILObjectCount::refreshForItilObject(static::class, (int) $this->getID());
+    }
+
+    public function post_restoreItem()
+    {
+        parent::post_restoreItem();
+        UserITILObjectCount::refreshForItilObject(static::class, (int) $this->getID());
     }
 
 
@@ -3265,6 +3279,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $this->manageITILObjectLinkInput($this->input);
 
         parent::post_addItem();
+
+        UserITILObjectCount::refreshForItilObject(static::class, (int) $this->getID());
     }
 
     /**

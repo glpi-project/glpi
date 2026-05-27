@@ -37,6 +37,11 @@
  */
 final class UserITILObjectCount extends CommonDBTM
 {
+    public static function getTable($classname = null): string
+    {
+        return 'glpi_users_itilobject_counts';
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('User ITIL object count', 'User ITIL object counts', $nb);
@@ -106,5 +111,42 @@ final class UserITILObjectCount extends CommonDBTM
                 'actor_type'  => $actor_type,
             ]
         );
+    }
+
+    public static function refreshForItilObject(string $itemtype, int $items_id): void
+    {
+        global $DB;
+
+        if ($items_id <= 0) {
+            return;
+        }
+
+        $actor_class = match ($itemtype) {
+            Ticket::class  => Ticket_User::class,
+            Problem::class => Problem_User::class,
+            Change::class  => Change_User::class,
+            default        => null,
+        };
+
+        if ($actor_class === null) {
+            return;
+        }
+
+        $relation_table = $actor_class::getTable();
+        $relation_fk = $actor_class::getItilObjectForeignKey();
+
+        $iterator = $DB->request([
+            'SELECT' => ['users_id', 'type'],
+            'FROM'   => $relation_table,
+            'WHERE'  => [
+                $relation_fk  => $items_id,
+                'users_id'    => ['>', 0],
+            ],
+            'GROUP'  => ['users_id', 'type'],
+        ]);
+
+        foreach ($iterator as $row) {
+            self::refreshForActor($actor_class, (int) $row['users_id'], (int) $row['type']);
+        }
     }
 }
