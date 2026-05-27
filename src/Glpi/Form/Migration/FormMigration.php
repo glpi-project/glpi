@@ -36,6 +36,7 @@ namespace Glpi\Form\Migration;
 
 use AbstractRightsDropdown;
 use Change_Item;
+use CommonDBTM;
 use DBmysql;
 use DBmysqlIterator;
 use Entity;
@@ -193,9 +194,9 @@ class FormMigration extends AbstractPluginMigration
      * conditioning item (Question or Comment). Returns null if the condition
      * must be skipped.
      *
-     * @param array $raw_condition  Row from glpi_plugin_formcreator_conditions
-     * @param array $conditioning_item  Result of getMappedItemTarget() for plugin_formcreator_questions_id
-     * @param array $target_item  Result of getMappedItemTarget() for the condition target (used for warning context)
+     * @param array{show_condition: int, show_logic: int, show_value?: string} $raw_condition  Row from glpi_plugin_formcreator_conditions
+     * @param array{itemtype: class-string<CommonDBTM>, items_id: int} $conditioning_item  Result of getMappedItemTarget() for plugin_formcreator_questions_id
+     * @param array{itemtype: class-string<CommonDBTM>, items_id: int} $target_item  Result of getMappedItemTarget() for the condition target (used for warning context)
      * @return array{item:string,value:mixed,item_type:string,item_uuid:string,value_operator:ValueOperator,logic_operator:LogicOperator}|null
      */
     private function resolveConditionCriteriaEntry(
@@ -294,6 +295,10 @@ class FormMigration extends AbstractPluginMigration
                     $value = $e->getValue();
                 }
             }
+        }
+
+        if ($value_operator === null) {
+            return null;
         }
 
         return [
