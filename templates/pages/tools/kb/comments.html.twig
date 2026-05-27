@@ -34,7 +34,7 @@
     {% set has_answers = comment['answers'] is defined and comment['answers']|length > 0 %}
     <li id="kbcomment{{ comment['id'] }}" class="kb-comment-node comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
         data-id="{{ comment['id'] }}" data-kbitem_id="{{ comment['knowbaseitems_id'] }}" data-lang="{{ comment['language'] }}">
-        
+
         <div class="kb-comment-layout {{ level == 0 ? "mt-6" : "mt-3" }} {{ not has_answers ? 'no-answers' : '' }}">
             <input type="checkbox" id="toggle_{{ comment['id'] }}" class="kb-toggle-checkbox" checked="checked">
 
