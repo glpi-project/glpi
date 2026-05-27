@@ -87,38 +87,28 @@
     }
 }
 
-/* Branch curve for subcomments linking to parent vertical line */
+/* The curve (now orthogonal horizontal branch) */
 .kb-comment-node.subcomment > .kb-comment-layout > .kb-thread-gutter::before {
     content: "";
     position: absolute;
-    top: -20px;
-    left: calc(-1rem - 21px); /* -gap - half gutter - 1px centering */
+    top: 18px; /* Meeting point with the toggle */
+    left: calc(-1rem - 21px);
     width: calc(1rem + 21px);
-    height: 40px; /* Extends down to vertical center of avatar (20px) */
-    border-bottom: 2px solid #CECECE;
-    border-left: 2px solid #CECECE;
-    border-bottom-left-radius: 0;
+    height: 2px;
+    background-color: #CECECE;
     z-index: 0;
     pointer-events: none;
-    box-sizing: border-box;
 }
 
 /* The vertical thread line */
 .kb-thread-line {
-    flex-grow: 1;
-    width: 20px; /* click area */
-    margin-top: 8px; /* space below avatar */
-    position: relative;
-    display: flex;
-    justify-content: center;
-    
-    &::before {
-        content: "";
-        display: block;
-        width: 2px;
-        height: 100%;
-        background-color: #CECECE;
-    }
+    position: absolute;
+    top: 48px; /* space below avatar */
+    bottom: 0; /* perfectly stretch without flex bugs */
+    left: calc(50% - 1px);
+    width: 2px;
+    background-color: #CECECE;
+    z-index: 0;
 }
 
 /* The Toggle Wrapper */
@@ -200,7 +190,7 @@
 .kb-comment-node.subcomment:last-child > .kb-comment-layout > .kb-thread-gutter::after {
     content: "";
     position: absolute;
-    top: 20px;
+    top: 18px; /* Start at horizontal line */
     bottom: 0;
     left: calc(-1rem - 22px);
     width: 6px;
