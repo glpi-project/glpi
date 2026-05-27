@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .kb-comment-node { list-style: none; margin: 0; padding: 0; }
+  .kb-comment-layout { display: flex; gap: 1rem; align-items: stretch; margin-bottom: 0.5rem; }
+  .kb-thread-gutter { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; position: relative; }
+  .avatar { width: 40px; height: 40px; background: pink; border-radius: 50%; display: inline-block; z-index: 2; position: relative;}
+  .kb-thread-line { flex-grow: 1; width: 20px; cursor: pointer; position: relative; display: flex; justify-content: center; }
+  .kb-thread-line::before { content: ""; display: block; width: 2px; height: 100%; background-color: #CECECE; }
+  .kb-thread-body { flex-grow: 1; }
+  .kb-comment-content { height: 100px; background: #f0f0f0; margin-bottom: 10px; border-radius: 8px;}
+  
+  /* The Curve */
+  .kb-comment-node.subcomment > .kb-comment-layout > .kb-thread-gutter::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      left: calc(-1rem - 21px);
+      width: calc(1rem + 21px);
+      height: 40px;
+      border-bottom: 2px solid #CECECE;
+      border-left: 2px solid #CECECE;
+      border-bottom-left-radius: 12px;
+      z-index: 0;
+      pointer-events: none;
+      box-sizing: border-box;
+  }
+</style>
+</head>
+<body>
+  <li class="kb-comment-node">
+    <div class="kb-comment-layout">
+      <div class="kb-thread-gutter"><div class="avatar"></div><div class="kb-thread-line"></div></div>
+      <div class="kb-thread-body">
+        <div class="kb-comment-content">Parent</div>
+        <ul style="padding: 0; margin: 0;">
+          <li class="kb-comment-node subcomment">
+            <div class="kb-comment-layout">
+              <div class="kb-thread-gutter"><div class="avatar"></div><div class="kb-thread-line"></div></div>
+              <div class="kb-thread-body">
+                <div class="kb-comment-content">Child 1</div>
+              </div>
+            </div>
+          </li>
+          <li class="kb-comment-node subcomment">
+            <div class="kb-comment-layout">
+              <div class="kb-thread-gutter"><div class="avatar"></div></div>
+              <div class="kb-thread-body">
+                <div class="kb-comment-content">Child 2</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+</body>
+</html>

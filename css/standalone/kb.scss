@@ -86,6 +86,22 @@
     }
 }
 
+/* Branch curve for subcomments linking to parent vertical line */
+.kb-comment-node.subcomment > .kb-comment-layout > .kb-thread-gutter::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: calc(-1rem - 21px); /* -gap - half gutter - 1px centering */
+    width: calc(1rem + 21px);
+    height: 40px; /* Extends down to vertical center of avatar (20px) */
+    border-bottom: 2px solid #CECECE;
+    border-left: 2px solid #CECECE;
+    border-bottom-left-radius: 12px;
+    z-index: 0;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
 /* The vertical thread line */
 .kb-thread-line {
     flex-grow: 1;

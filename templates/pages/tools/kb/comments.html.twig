@@ -131,15 +131,19 @@
         <script>
             $(() => {
                 const _bindForm = function(form) {
-                    form.find('input[type=reset]').on('click', (e) => {
-                        e.preventDefault();
-                        const nestedReplies = form.closest('.kb-nested-replies');
-                        const layout = form.closest('.kb-comment-layout');
+                    const nestedReplies = form.closest('.kb-nested-replies');
+                    const layout = form.closest('.kb-comment-layout');
+                    form.find('button[name="cancel"], input[type=reset]').on('click', (e) => {
+                        // form.remove() is also called by comment_form.html.twig's own JS.
+                        // We use setTimeout to ensure we check the length AFTER it's removed.
+                        setTimeout(() => {
+                            if (nestedReplies.length > 0 && nestedReplies.children().length === 0) {
+                                layout.addClass('no-answers');
+                            }
+                        }, 10);
+                        // Fallback removal if the other script didn't catch it
                         form.remove();
                         $('.displayed_content').show();
-                        if (nestedReplies.length > 0 && nestedReplies.children().length === 0) {
-                            layout.addClass('no-answers');
-                        }
                     });
                 };
 
