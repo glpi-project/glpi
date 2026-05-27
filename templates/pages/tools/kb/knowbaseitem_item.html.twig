@@ -45,11 +45,11 @@
         {% if get_class(item) == 'KnowbaseItem' %}
             {# TODO pass used array to restrict visible items in list #}
             <label class="col-auto col-form-label">{{ __('Add a linked item') }}</label>
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-8 col-md-6 mb-2 mb-md-0">
                 {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
             </div>
         {% else %}
-            <div class="col-12 col-sm-6 col-md-4">
+            <div class="col-12 col-sm-8 col-md-6 mb-2 mb-md-0">
                 {{ 'KnowbaseItem'|itemtype_dropdown({
                     'entity': item.getEntityID(),
                     'used': used_knowbase_items,
@@ -57,7 +57,7 @@
                 }) }}
             </div>
         {% endif %}
-        <div class="col-auto">
+        <div class="col-auto mt-2 mt-md-0">
             {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
         </div>
     </div>
