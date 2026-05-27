@@ -224,18 +224,10 @@ abstract class AbstractRequest
     }
 
     /**
-     * Handle agent request
-     *
-     * @param mixed $data Sent data
-     *
-     * @return bool
+     * Auhenticate request if required by configuration
      */
-    public function handleRequest(mixed $data): bool
+    public function authenticateRequest(): bool
     {
-        $base_mode = $this->mode;
-        $guess_mode = ($base_mode === null);
-        $this->setMode(self::JSON_MODE);
-
         $auth_required = false;
         if (!$this->isLocal()) {
             $auth_required = Config::getConfigurationValue('inventory', 'auth_required');
@@ -294,6 +286,23 @@ abstract class AbstractRequest
             }
         }
 
+        return true;
+    }
+
+    /**
+     * Handle agent request
+     *
+     * @param mixed $data Sent data
+     *
+     * @return bool
+     */
+    public function handleRequest(mixed $data): bool
+    {
+        $base_mode = $this->mode;
+        $guess_mode = ($base_mode === null);
+        $this->setMode(self::JSON_MODE);
+
+        $this->authenticateRequest();
         // Some network inventories may request may contain lots of information.
         // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
         // and GLPI will consume about 500MB of memory to handle it,
