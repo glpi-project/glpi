@@ -129,6 +129,11 @@ final class Form extends CommonDBTM implements
         return _n('Form', 'Forms', $nb);
     }
 
+    public static function canView(): bool
+    {
+        return true;
+    }
+
     #[Override]
     public function getUUID(): string
     {
