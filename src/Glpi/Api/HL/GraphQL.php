@@ -77,6 +77,7 @@ final class GraphQL
             $schema = $schema_generator->getSchema();
             Profiler::getInstance()->stop('GraphQL::getSchema');
             $context = new stdClass();
+            $context->api_version = $api_version;
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: $schema,
                 source: $query,

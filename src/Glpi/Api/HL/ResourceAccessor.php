@@ -240,12 +240,20 @@ final class ResourceAccessor
                     'maximum' => $prop['maximum'] ?? null,
                 ];
             }
-            if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {
-                $errors[$key][] = [
-                    'error' => 'pattern',
-                    'message' => "This field must match the pattern {$prop['pattern']}",
-                    'pattern' => $prop['pattern'],
-                ];
+            if (isset($prop['pattern']) && is_string($value)) {
+                $pattern = $prop['pattern'];
+                // Try to determine if the pattern has delimiters (such as '/') already, and add them if they're missing
+                if (!str_starts_with($pattern, '/')) {
+                    $pattern = '/' . str_replace('/', '\/', $pattern) . '/';
+                }
+
+                if (!preg_match($pattern, $value)) {
+                    $errors[$key][] = [
+                        'error' => 'pattern',
+                        'message' => "This field must match the pattern {$prop['pattern']}",
+                        'pattern' => $prop['pattern'],
+                    ];
+                }
             }
         }
         return $errors;
@@ -371,6 +379,9 @@ final class ResourceAccessor
      */
     public static function searchBySchema(array $schema, array $request_params): Response
     {
+        /**
+         * /!\ If you change this method, check The FormController because it has slimmer copies of this method
+         */
         $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
@@ -430,6 +441,9 @@ final class ResourceAccessor
      */
     public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
+        /**
+         * /!\ If you change this method, check The FormController because it has slimmer copies of this method
+         */
         $schema = self::applyFieldReadRestrictions($schema);
         $itemtype = self::getItemtypeFromSchema($schema);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property

@@ -10739,6 +10739,420 @@
                 }
             }
         },
+        "Form": {
+            "type": "object",
+            "x-itemtype": "Glpi\\Form\\Form",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "uuid": {
+                    "type": "string",
+                    "pattern": "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+                    "readOnly": true
+                },
+                "entity": {
+                    "type": "object",
+                    "x-itemtype": "Entity",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Entity"
+                },
+                "is_recursive": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "is_deleted": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "is_draft": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "is_pinned": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "render_layout": {
+                    "type": "string",
+                    "enum": [
+                        "step_by_step",
+                        "single_page"
+                    ],
+                    "default": "step_by_step"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "form_description": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "service_catalog_description": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "illustration": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "object",
+                    "x-itemtype": "Glpi\\Form\\Category",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "FormCategory"
+                },
+                "usage_count": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "submit_button_visibility_strategy": {
+                    "type": "string",
+                    "enum": [
+                        "always_visible",
+                        "visible_if",
+                        "hidden_if"
+                    ],
+                    "default": "always_visible"
+                },
+                "submit_button_conditions": {
+                    "type": "string"
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "access_controls": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-full-schema": "FormAccessControl",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            },
+                            "strategy": {
+                                "type": "string",
+                                "enum": [
+                                    "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                                    "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "sections": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Glpi\\Form\\Section",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "FormSection"
+                    }
+                }
+            }
+        },
+        "FormAccessControl": {
+            "type": "object",
+            "x-itemtype": "Glpi\\Form\\AccessControl\\FormAccessControl",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "form": {
+                    "type": "object",
+                    "x-itemtype": "Glpi\\Form\\Form",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Form"
+                },
+                "strategy": {
+                    "type": "string",
+                    "enum": [
+                        "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                        "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess"
+                    ]
+                },
+                "config": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "FormCategory": {
+            "type": "object",
+            "x-itemtype": "Glpi\\Form\\Category",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "completename": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "description": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "illustration": {
+                    "type": "string"
+                },
+                "parent": {
+                    "type": "object",
+                    "x-itemtype": "Glpi\\Form\\Category",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "FormCategory"
+                },
+                "level": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "comment": {
+                    "type": "string"
+                }
+            }
+        },
+        "FormQuestion": {
+            "type": "object",
+            "x-itemtype": "Glpi\\Form\\Question",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "section": {
+                    "type": "object",
+                    "x-itemtype": "Glpi\\Form\\Section",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "FormSection"
+                },
+                "uuid": {
+                    "type": "string",
+                    "pattern": "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "default": ""
+                },
+                "type": {
+                    "type": "string",
+                    "enum": {
+                        "2": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                        "4": "Glpi\\Form\\QuestionType\\QuestionTypeRequester",
+                        "8": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                        "0": "Glpi\\Form\\QuestionType\\QuestionTypeRequestType",
+                        "1": "Glpi\\Form\\QuestionType\\QuestionTypeFile",
+                        "5": "Glpi\\Form\\QuestionType\\QuestionTypeEmail",
+                        "6": "Glpi\\Form\\QuestionType\\QuestionTypeUserDevice",
+                        "7": "Glpi\\Form\\QuestionType\\QuestionTypeDropdown",
+                        "9": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
+                        "10": "Glpi\\Form\\QuestionType\\QuestionTypeLongText",
+                        "12": "Glpi\\Form\\QuestionType\\QuestionTypeCheckbox",
+                        "13": "Glpi\\Form\\QuestionType\\QuestionTypeDateTime",
+                        "14": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                        "15": "Glpi\\Form\\QuestionType\\QuestionTypeRadio",
+                        "3": "Glpi\\Form\\QuestionType\\QuestionTypeNumber",
+                        "11": "Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown",
+                        "16": "Glpi\\Form\\QuestionType\\QuestionTypeAssignee"
+                    }
+                },
+                "is_mandatory": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "vertical_rank": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "horizontal_rank": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "description": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "default_value": {
+                    "type": "string"
+                },
+                "extra_data": {
+                    "type": "string"
+                },
+                "visibility_strategy": {
+                    "type": "string",
+                    "enum": [
+                        "always_visible",
+                        "visible_if",
+                        "hidden_if"
+                    ],
+                    "default": "always_visible"
+                },
+                "visibility_conditions": {
+                    "type": "string"
+                },
+                "validation_strategy": {
+                    "type": "string",
+                    "enum": [
+                        "no_validation",
+                        "valid_if",
+                        "invalid_if"
+                    ],
+                    "default": "no_validation"
+                },
+                "validation_conditions": {
+                    "type": "string"
+                }
+            }
+        },
+        "FormSection": {
+            "type": "object",
+            "x-itemtype": "Glpi\\Form\\Section",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "form": {
+                    "type": "object",
+                    "x-itemtype": "Glpi\\Form\\Form",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Form"
+                },
+                "uuid": {
+                    "type": "string",
+                    "pattern": "/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "default": ""
+                },
+                "description": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "rank": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "visibility_strategy": {
+                    "type": "string",
+                    "enum": [
+                        "always_visible",
+                        "visible_if",
+                        "hidden_if"
+                    ],
+                    "default": "always_visible"
+                },
+                "conditions": {
+                    "type": "string"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Glpi\\Form\\Question",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "FormQuestion"
+                    }
+                }
+            }
+        },
         "FormTile": {
             "type": "object",
             "x-itemtype": "Glpi\\Helpdesk\\Tile\\FormTile",
