@@ -41,22 +41,24 @@
         {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
-    <div class="d-flex align-items-baseline">
+    <div class="d-flex align-items-center mb-2">
         {% if get_class(item) == 'KnowbaseItem' %}
             {# TODO pass used array to restrict visible items in list #}
-            {% set dropdown %}
+            <label class="me-2 text-nowrap">{{ __('Add a linked item') }}</label>
+            <div class="me-2">
                 {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
-            {% endset %}
-            {{ fields.htmlField('', dropdown, __('Add a linked item')) }}
+            </div>
         {% else %}
-            {{ 'KnowbaseItem'|itemtype_dropdown({
-                'entity': item.getEntityID(),
-                'used': used_knowbase_items,
-                'condition': visibility_condition
-            }) }}
+            <div class="me-2">
+                {{ 'KnowbaseItem'|itemtype_dropdown({
+                    'entity': item.getEntityID(),
+                    'used': used_knowbase_items,
+                    'condition': visibility_condition
+                }) }}
+            </div>
         {% endif %}
         <div>
-            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link'}) }}
+            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
         </div>
     </div>
 </form>
