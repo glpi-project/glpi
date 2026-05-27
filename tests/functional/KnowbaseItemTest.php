@@ -1065,6 +1065,147 @@ HTML,
         }
     }
 
+    public function testShowFullAddModePrefilledCategoryIncludesName(): void
+    {
+        $this->login();
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'MyCat', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $this->getTestRootEntity(only_id: true), 'is_recursive' => 1,
+        ]);
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode' => 'add', 'display' => false,
+            'knowbaseitemcategories_id' => $cat->getID(),
+        ]);
+        $this->assertStringContainsString('data-glpi-kb-prefilled-category-id="' . $cat->getID() . '"', $html);
+        $this->assertStringContainsString('MyCat', $html);
+    }
+
+    public function testShowFullEditModeExposesExistingCategoriesAttribute(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'EditCat', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id, 'is_recursive' => 1,
+        ]);
+        $item = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+            '__categories_defined' => 1, '_categories' => [$cat->getID()],
+        ]);
+        $html = (string) $item->showFull(['mode' => 'edit', 'display' => false]);
+        $this->assertStringContainsString('data-glpi-kb-existing-categories', $html);
+        $this->assertStringContainsString('EditCat', $html);
+    }
+
+    public function testShowFullAddModeRendersCategoryMetaLink(): void
+    {
+        $this->login();
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
+        $this->assertStringContainsString('data-glpi-kb-toggle-category-mode', $html);
+        $this->assertStringContainsString('data-glpi-kb-category-display', $html);
+        // No prefilled category → Uncategorized text
+        $this->assertStringContainsString('Uncategorized', $html);
+    }
+
+    public function testShowFullEditModeRendersCategoryMetaLink(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'MetaTestCat', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id, 'is_recursive' => 1,
+        ]);
+        $item = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+            '__categories_defined' => 1, '_categories' => [$cat->getID()],
+        ]);
+        $html = (string) $item->showFull(['mode' => 'edit', 'display' => false]);
+        $this->assertStringContainsString('data-glpi-kb-toggle-category-mode', $html);
+        $this->assertStringContainsString('MetaTestCat', $html);
+        // pointer-events-none on the category-toggle anchor (JS enables it)
+        $this->assertMatchesRegularExpression(
+            '/data-glpi-kb-toggle-category-mode[^>]*pointer-events-none|pointer-events-none[^>]*data-glpi-kb-toggle-category-mode/',
+            $html
+        );
+    }
+
+    public function testShowFullRendersCategoryModeBar(): void
+    {
+        $this->login();
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html_add = (string) $item->showFull(['mode' => 'add', 'display' => false]);
+        $this->assertStringContainsString('data-glpi-kb-category-alert', $html_add);
+        $this->assertStringContainsString('data-glpi-kb-category-select', $html_add);
+        $this->assertStringContainsString('data-glpi-kb-category-save', $html_add);
+        $this->assertStringContainsString('data-glpi-kb-category-close', $html_add);
+        // Add mode: single-select (no multiple attribute on the select)
+        $this->assertMatchesRegularExpression(
+            '/data-glpi-kb-category-select(?![^>]*multiple)[^>]*>/',
+            $html_add
+        );
+
+        // Edit mode: multi-select
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'BarTestCat', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id, 'is_recursive' => 1,
+        ]);
+        $existing = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+            '__categories_defined' => 1, '_categories' => [$cat->getID()],
+        ]);
+        $html_edit = (string) $existing->showFull(['mode' => 'edit', 'display' => false]);
+        $this->assertStringContainsString('data-glpi-kb-category-alert', $html_edit);
+        $this->assertMatchesRegularExpression(
+            '/data-glpi-kb-category-select[^>]*multiple/',
+            $html_edit
+        );
+
+        // View mode: bar should NOT be rendered
+        $view_item = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+        ]);
+        $html_view = (string) $view_item->showFull(['mode' => 'view', 'display' => false]);
+        $this->assertStringNotContainsString('data-glpi-kb-category-alert', $html_view);
+    }
+
+    public function testGetCategoriesForDisplayReturnsLinkedCategories(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat1 = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'CatA', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id, 'is_recursive' => 1,
+        ]);
+        $cat2 = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'CatB', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id, 'is_recursive' => 1,
+        ]);
+        $item = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+            '__categories_defined' => 1, '_categories' => [$cat1->getID(), $cat2->getID()],
+        ]);
+
+        $result = $item->getCategoriesForDisplay();
+        $this->assertCount(2, $result);
+        $this->assertSame(['CatA', 'CatB'], array_column($result, 'name'));
+        $this->assertSame([$cat1->getID(), $cat2->getID()], array_column($result, 'id'));
+    }
+
+    public function testGetCategoriesForDisplayReturnsEmptyForUncategorized(): void
+    {
+        $this->login();
+        $item = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+        ]);
+        $this->assertSame([], $item->getCategoriesForDisplay());
+    }
+
     protected function testGetVisibilityCriteriaProvider(): iterable
     {
         yield from $this->testGetVisibilityCriteriaProvider_FAQ_public();

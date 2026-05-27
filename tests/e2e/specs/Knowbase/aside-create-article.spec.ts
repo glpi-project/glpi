@@ -68,8 +68,11 @@ test('clicking the aside add-article link creates a new article linked to the ca
     await expect(page).toHaveURL(new RegExp(`knowbaseitemcategories_id=${category_id}`));
     await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
 
+    // The article's category meta-line should reflect the prefilled category
+    await expect(
+        page.getByRole('group', { name: 'Article category' }).getByRole('link')
+    ).toHaveText(category_name);
     const add_button = page.getByRole('button', { name: 'Add article' });
-    await expect(add_button).toHaveAttribute('data-glpi-kb-prefilled-category-id', String(category_id));
 
     // Fill in the title
     const title = page.getByTestId('subject');
@@ -113,8 +116,11 @@ test('clicking the aside add-article link on Uncategorized creates an article wi
     await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
     await expect(page).not.toHaveURL(/knowbaseitemcategories_id=/);
 
+    // The category meta-line should show "Uncategorized" when no category is prefilled
+    await expect(
+        page.getByRole('group', { name: 'Article category' }).getByRole('link')
+    ).toHaveText('Uncategorized');
     const add_button = page.getByRole('button', { name: 'Add article' });
-    await expect(add_button).not.toHaveAttribute('data-glpi-kb-prefilled-category-id');
 
     const title = page.getByTestId('subject');
     await title.click();
@@ -172,4 +178,152 @@ test('hovering a sub-category does not reveal the parent category add-article li
 
     await expect(child_add).toHaveCSS('opacity', '1');
     await expect(parent_add).toHaveCSS('opacity', '0');
+});
+
+test('add mode shows prefilled category in meta line', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const category_name = `E2E Meta Cat ${unique}`;
+    const category_id = await api.createItem('KnowbaseItemCategory', {
+        name: category_name,
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _categories: [category_id],
+    });
+
+    await kb.goto(1);
+
+    const add_link = kb.getAsideCategory(category_name).getByRole('link', {
+        name: new RegExp(`Create an article in ${category_name}`, 'i'),
+    });
+    await add_link.click();
+
+    // The category meta link should show the prefilled category name
+    const category_display = page.getByRole('group', { name: 'Article category' }).getByRole('link');
+    await expect(category_display).toHaveText(category_name);
+});
+
+test('add mode allows changing the staged category via the bar', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const cat_a = `E2E Bar A ${unique}`;
+    const cat_b = `E2E Bar B ${unique}`;
+    const article_title = `E2E Bar Article ${unique}`;
+
+    const cat_a_id = await api.createItem('KnowbaseItemCategory', {
+        name: cat_a,
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItemCategory', {
+        name: cat_b,
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _categories: [cat_a_id],
+    });
+
+    await kb.goto(1);
+
+    // Start from "Add" on category A
+    const add_link = kb.getAsideCategory(cat_a).getByRole('link', {
+        name: new RegExp(`Create an article in ${cat_a}`, 'i'),
+    });
+    await add_link.click();
+
+    const category_group = page.getByRole('group', { name: 'Article category' });
+    await category_group.getByRole('link').click();
+
+    const category_editor = page.getByRole('group', { name: 'Category editor' });
+    const select = category_editor.getByLabel('Category');
+    await expect(select).toBeVisible();
+    await select.selectOption({ label: cat_b });
+
+    await category_editor.getByRole('button', { name: 'Save categories' }).click();
+
+    // Display now reflects cat_b
+    await expect(category_group.getByRole('link')).toHaveText(cat_b);
+
+    // Finish article creation
+    const title = page.getByTestId('subject');
+    await title.click();
+    await title.fill('');
+    await page.keyboard.type(article_title);
+    // eslint-disable-next-line playwright/no-raw-locators -- Tiptap editor has no semantic label
+    const editor = page.locator('#kb-tiptap-editor .ProseMirror');
+    await editor.click();
+    await page.keyboard.type('Body created with category swapped via bar.');
+
+    await page.getByRole('button', { name: 'Add article' }).click();
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+
+    // Article should now live under cat_b (not cat_a)
+    await kb.goto(1);
+    await expect(
+        kb.getAsideCategory(cat_b).getByRole('link', { name: article_title })
+    ).toBeVisible();
+});
+
+test('edit mode updates categories via the bar (AJAX)', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const cat_x = `E2E Edit X ${unique}`;
+    const cat_y = `E2E Edit Y ${unique}`;
+    const article_title = `E2E Edit Article ${unique}`;
+
+    const cat_x_id = await api.createItem('KnowbaseItemCategory', {
+        name: cat_x,
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItemCategory', {
+        name: cat_y,
+        entities_id: getWorkerEntityId(),
+    });
+    const article_id = await api.createItem('KnowbaseItem', {
+        name: article_title,
+        answer: 'Edit body',
+        entities_id: getWorkerEntityId(),
+        _categories: [cat_x_id],
+    });
+
+    await kb.goto(article_id);
+
+    const category_group = page.getByRole('group', { name: 'Article category' });
+    const category_display = category_group.getByRole('link');
+    await expect(category_display).toHaveText(cat_x);
+
+    await category_display.click();
+
+    const category_editor = page.getByRole('group', { name: 'Category editor' });
+    const select = category_editor.getByLabel('Category');
+    await expect(select).toBeVisible();
+    // Select both cat_x and cat_y (multi mode in edit)
+    await select.selectOption([{ label: cat_x }, { label: cat_y }]);
+
+    const save_response = page.waitForResponse(
+        response => response.url().includes('/UpdateCategories') && response.status() === 200
+    );
+    await category_editor.getByRole('button', { name: 'Save categories' }).click();
+    await save_response;
+
+    // Display now reflects both, comma-separated
+    await expect(category_display).toContainText(cat_x);
+    await expect(category_display).toContainText(cat_y);
+
+    // Reload to confirm persistence
+    await page.reload();
+    await expect(category_display).toContainText(cat_x);
+    await expect(category_display).toContainText(cat_y);
 });

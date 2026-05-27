@@ -333,6 +333,36 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * Returns categories linked to this article, ordered by name.
+     *
+     * @return list<array{id: int, name: string}>
+     */
+    public function getCategoriesForDisplay(): array
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+        if ($this->isNewItem()) {
+            return [];
+        }
+        $rows = $DB->request([
+            'SELECT'    => ['cat.id', 'cat.name'],
+            'FROM'      => KnowbaseItem_KnowbaseItemCategory::getTable() . ' AS link',
+            'INNER JOIN' => [
+                KnowbaseItemCategory::getTable() . ' AS cat' => [
+                    'ON' => ['link' => 'knowbaseitemcategories_id', 'cat' => 'id'],
+                ],
+            ],
+            'WHERE'   => ['link.knowbaseitems_id' => $this->getID()],
+            'ORDERBY' => 'cat.name',
+        ]);
+        $out = [];
+        foreach ($rows as $row) {
+            $out[] = ['id' => (int) $row['id'], 'name' => (string) $row['name']];
+        }
+        return $out;
+    }
+
+    /**
      * @param array<string, mixed> $query_params
      * @return array<string, mixed>
      */
@@ -1104,9 +1134,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ?? 0);
             $prefilled_category_id = $this->getReadablePrefilledCategoryId($raw_category_id);
             if ($prefilled_category_id !== null) {
-                $params['prefilled_category_id'] = $prefilled_category_id;
+                $params['prefilled_category'] = [
+                    'id'   => $prefilled_category_id,
+                    'name' => Dropdown::getDropdownName(KnowbaseItemCategory::getTable(), $prefilled_category_id),
+                ];
             }
         }
+
+        $params['existing_categories'] = $this->getCategoriesForDisplay();
+        $params['category_idor_token'] = Session::getNewIDORToken(KnowbaseItemCategory::class);
 
         $out = TemplateRenderer::getInstance()->render(
             'pages/tools/kb/article.html.twig',

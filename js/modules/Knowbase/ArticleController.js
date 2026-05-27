@@ -85,6 +85,12 @@ export class GlpiKnowbaseArticleController
     /** @type {string|null} */
     #translation_language = null;
 
+    /** @type {number|null} Positive category ID when a category is staged, null otherwise. */
+    #staged_category_id = null;
+
+    /** @type {boolean} */
+    #category_mode_loading = false;
+
     /** @type {string} */
     #default_language = '';
 
@@ -147,6 +153,12 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        if (mode === 'add') {
+            const prefilled_id = Number(container.dataset.glpiKbPrefilledCategoryId);
+            if (Number.isInteger(prefilled_id) && prefilled_id > 0) {
+                this.#staged_category_id = prefilled_id;
+            }
+        }
         this.#initEventListeners();
         this.#initEditor();
         this.#initDiffListeners();
@@ -167,6 +179,10 @@ export class GlpiKnowbaseArticleController
             if (add_button) {
                 add_button.addEventListener('click', () => this.#addArticle());
             }
+        }
+
+        if (mode === 'add' || mode === 'edit') {
+            this.#initCategoryMode();
         }
 
         // Enable interactions once all listeners are registered
@@ -1161,9 +1177,7 @@ export class GlpiKnowbaseArticleController
             form.appendChild(input);
         }
 
-        const add_button = document.querySelector('[data-glpi-kb-add-article]');
-        const prefilled_category_id = Number(add_button?.dataset.glpiKbPrefilledCategoryId);
-        if (Number.isInteger(prefilled_category_id) && prefilled_category_id > 0) {
+        if (this.#staged_category_id !== null && this.#staged_category_id > 0) {
             const defined_input = document.createElement('input');
             defined_input.type = 'hidden';
             defined_input.name = '__categories_defined';
@@ -1173,7 +1187,7 @@ export class GlpiKnowbaseArticleController
             const categories_input = document.createElement('input');
             categories_input.type = 'hidden';
             categories_input.name = '_categories[]';
-            categories_input.value = String(prefilled_category_id);
+            categories_input.value = String(this.#staged_category_id);
             form.appendChild(categories_input);
         }
 
@@ -1210,6 +1224,224 @@ export class GlpiKnowbaseArticleController
         language_select.addEventListener('change', async () => {
             await this.#switchTranslationLanguage(language_select.value);
         });
+    }
+
+    #initCategoryMode()
+    {
+        const toggle_link = this.#container.querySelector('[data-glpi-kb-toggle-category-mode]');
+        if (!toggle_link) {
+            return;
+        }
+        toggle_link.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.#enterCategoryMode();
+        });
+
+        // In add mode the link is always interactive; in view/edit it depends on edit rights.
+        const can_edit = this.#container.dataset.glpiKbCanEdit === 'true';
+        const is_add = this.#item_id === null;
+        if (can_edit || is_add) {
+            toggle_link.classList.remove('pointer-events-none');
+        }
+
+        const close_btn = this.#container.querySelector('[data-glpi-kb-category-close]');
+        close_btn?.addEventListener('click', () => this.#exitCategoryMode());
+
+        const save_btn = this.#container.querySelector('[data-glpi-kb-category-save]');
+        save_btn?.addEventListener('click', () => this.#saveCategoryFromBar());
+    }
+
+    async #enterCategoryMode()
+    {
+        if (this.#category_mode_loading) {
+            return;
+        }
+        const alert_el = this.#container.querySelector('[data-glpi-kb-category-alert]');
+        const select = this.#container.querySelector('[data-glpi-kb-category-select]');
+        if (!alert_el || !select) {
+            return;
+        }
+
+        this.#category_mode_loading = true;
+        try {
+            await this.#populateCategoryDropdown(select);
+            alert_el.classList.remove('d-none');
+            alert_el.classList.add('d-flex');
+        } finally {
+            this.#category_mode_loading = false;
+        }
+    }
+
+    async #populateCategoryDropdown(select)
+    {
+        const body = new FormData();
+        body.append('itemtype', 'KnowbaseItemCategory');
+        body.append('page', '1');
+        body.append('page_limit', '500');
+        body.append('display_emptychoice', '0');
+        body.append('emptylabel', '');
+        body.append('searchText', '');
+        const idor_token = this.#container.dataset.glpiKbCategoryIdorToken;
+        if (idor_token) {
+            body.append('_idor_token', idor_token);
+        }
+
+        let results = [];
+        try {
+            const response = await post('ajax/getDropdownValue.php', body);
+            const text = await response.text();
+            // In dev mode GLPI prepends PHP warnings as HTML <div> before the JSON
+            // payload. Strip anything before the first valid JSON character.
+            const start = text.search(/[{[]/);
+            const json = start >= 0 ? text.slice(start) : text;
+            const data = JSON.parse(json);
+            results = Array.isArray(data.results) ? data.results : [];
+        } catch (err) {
+            console.warn('[ArticleController] #populateCategoryDropdown failed', err);
+        }
+
+        select.innerHTML = '';
+
+        if (!select.multiple) {
+            const empty = document.createElement('option');
+            empty.value = '0';
+            empty.textContent = __('Uncategorized');
+            select.appendChild(empty);
+        }
+
+        const flatten = (items) => {
+            const out = [];
+            for (const item of items) {
+                if (Array.isArray(item.children)) {
+                    out.push(...flatten(item.children));
+                } else if (item.id !== undefined && item.id !== null && Number(item.id) > 0) {
+                    out.push(item);
+                }
+            }
+            return out;
+        };
+
+        for (const result of flatten(results)) {
+            const option = document.createElement('option');
+            option.value = String(result.id);
+            option.textContent = result.text ?? '';
+            if (result.disabled === true) {
+                option.disabled = true;
+            }
+            select.appendChild(option);
+        }
+
+        // Preselect according to mode.
+        if (select.multiple) {
+            const existing = JSON.parse(this.#container.dataset.glpiKbExistingCategories || '[]');
+            const ids = new Set(existing.map(c => String(c.id)));
+            for (const opt of select.options) {
+                opt.selected = ids.has(opt.value);
+            }
+        } else {
+            const staged = this.#staged_category_id ?? 0;
+            select.value = String(staged);
+        }
+
+        // Wrap in select2 for visual parity with the rest of GLPI. Init once;
+        // on subsequent reopens just refresh the data via .trigger('change').
+        if (window.$ && typeof window.$.fn?.select2 === 'function') {
+            const $select = window.$(select);
+            if (!$select.hasClass('select2-hidden-accessible')) {
+                $select.select2({
+                    width: 'auto',
+                    minimumResultsForSearch: 5,
+                    placeholder: __('Pick a category'),
+                });
+            } else {
+                $select.trigger('change.select2');
+            }
+        }
+    }
+
+    #exitCategoryMode()
+    {
+        const alert_el = this.#container.querySelector('[data-glpi-kb-category-alert]');
+        if (alert_el) {
+            alert_el.classList.add('d-none');
+            alert_el.classList.remove('d-flex');
+        }
+    }
+
+    async #saveCategoryFromBar()
+    {
+        const select = this.#container.querySelector('[data-glpi-kb-category-select]');
+        if (!select) {
+            return;
+        }
+
+        const is_add = this.#item_id === null;
+
+        if (is_add) {
+            // Add mode: staging — synchronous, no race possible.
+            const value = Number(select.value);
+            this.#staged_category_id = (Number.isInteger(value) && value > 0) ? value : null;
+            const display_name = (this.#staged_category_id !== null && select.selectedIndex >= 0)
+                ? select.options[select.selectedIndex].textContent.trim()
+                : null;
+            this.#updateCategoryDisplay(
+                this.#staged_category_id !== null
+                    ? [{ id: this.#staged_category_id, name: display_name }]
+                    : []
+            );
+            this.#exitCategoryMode();
+            return;
+        }
+
+        // Edit mode: AJAX, guard against double-submit.
+        const save_btn = this.#container.querySelector('[data-glpi-kb-category-save]');
+        if (save_btn?.disabled) {
+            return;
+        }
+        if (save_btn) {
+            save_btn.disabled = true;
+        }
+
+        const ids = Array.from(select.selectedOptions)
+            .map(o => Number(o.value))
+            .filter(n => Number.isInteger(n) && n > 0);
+
+        try {
+            await post(
+                `Knowbase/${this.#item_id}/UpdateCategories`,
+                { categories_ids: ids }
+            );
+            const selected = Array.from(select.selectedOptions)
+                .filter(o => Number(o.value) > 0)
+                .map(o => ({ id: Number(o.value), name: o.textContent.trim() }));
+            this.#container.dataset.glpiKbExistingCategories = JSON.stringify(selected);
+            this.#updateCategoryDisplay(selected);
+            this.#exitCategoryMode();
+            glpi_toast_info(__('Category updated'));
+        } catch {
+            // post() already shows a generic error toast.
+        } finally {
+            if (save_btn) {
+                save_btn.disabled = false;
+            }
+        }
+    }
+
+    #updateCategoryDisplay(categories)
+    {
+        const link = this.#container.querySelector('[data-glpi-kb-category-display]');
+        if (!link) {
+            return;
+        }
+        link.innerHTML = '';
+        if (categories.length === 0) {
+            const span = document.createElement('span');
+            span.className = 'fst-italic';
+            span.textContent = __('Uncategorized');
+            link.appendChild(span);
+        } else {
+            link.textContent = categories.map(c => c.name).join(', ');
+        }
     }
 
     async #enterTranslationMode()
