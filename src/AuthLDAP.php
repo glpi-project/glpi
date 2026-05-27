@@ -4153,21 +4153,28 @@ TWIG, $twig_params);
                 $value = $infos[$field];
             }
         }
-        if ($field !== 'objectguid') {
+        // Binary GUID attributes from AD: stored as 16 little-endian bytes.
+        // Convert them to the canonical string form so they are readable
+        // and usable as sync_field. LDAP attribute names are case-insensitive
+        // (RFC 4512), so normalize before matching.
+        $guid_attributes = ['objectguid', 'ms-ds-consistencyguid'];
+
+        if (!in_array(strtolower($field), $guid_attributes, true)) {
             return $value;
         }
 
-        // handle special objectguid from AD directories
+        // Convert binary GUID to canonical string. Fall back to the raw
+        // value if the bytes do not actually represent a valid GUID.
         try {
-            // prevent double encoding
+            // Skip conversion if the value already looks like a GUID string.
             if (!self::isValidGuid($value)) {
                 $value = self::guidToString($value);
                 if (!self::isValidGuid($value)) {
-                    throw new RuntimeException('Not an objectguid!');
+                    throw new RuntimeException('Not a valid GUID attribute!');
                 }
             }
         } catch (Throwable $e) {
-            // well... this is not an objectguid apparently
+            // Not a valid GUID after all, fall back to the raw value.
             $value = $infos[$field];
         }
 
