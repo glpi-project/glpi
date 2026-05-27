@@ -6489,7 +6489,7 @@ JAVASCRIPT;
             }
         }
 
-        if (!empty($deprecated_fields)) {
+        if ($deprecated_fields !== []) {
             throw new RuntimeException('Input fields "' . implode('", "', $deprecated_fields) . '" are not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
         }
     }
