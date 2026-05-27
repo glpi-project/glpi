@@ -1838,9 +1838,9 @@ class Toolbox
         if ($forceport && empty($tab['port'])) {
             if ($tab['type'] == 'pop') {
                 if ($tab['ssl']) {
-                    $tab['port'] = 110;
-                } else {
                     $tab['port'] = 995;
+                } else {
+                    $tab['port'] = 110;
                 }
             }
             if ($tab['type'] == 'imap') {
