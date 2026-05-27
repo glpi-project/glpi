@@ -93,14 +93,13 @@ final class PatchApplier
         $is_new_file     = $this->rewriter->isDevNull($from);
         $is_deleted_file = $this->rewriter->isDevNull($to);
 
-        // Canonical display path (no a/ / b/ prefix)
-        $display = $this->rewriter->displayPath($is_deleted_file ? $from : $to);
-
         // Resolve filesystem target
-        $target = $this->rewriter->resolve($is_new_file ? $to : $from);
+        $resolved_target = $this->rewriter->resolve($is_new_file ? $to : $from);
+        $target = $resolved_target['path'];
+        $skiped = $resolved_target['skiped'];
 
-        if ($target === null) {
-            return new FileApplyResult($display, ApplyStatus::Skipped, 'Skipped');
+        if ($skiped) {
+            return new FileApplyResult($target, ApplyStatus::Skipped, 'Skipped');
         }
 
         if ($revert) {

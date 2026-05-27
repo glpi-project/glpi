@@ -41,7 +41,7 @@ final class PathRewriter
     /**
      * Files that must be skipped when applying the patch.
      */
-    private const SKIPED_FILES = ['tests/', 'tools/', 'phpunit/', 'CHANGELOG.md'];
+    private const SKIPED_FILES = ['tests/', 'tools/', 'phpunit/', 'CHANGELOG.md', '/dev/null'];
 
     /**
      * Folders that live under public/ in a production GLPI installation.
@@ -61,30 +61,34 @@ final class PathRewriter
      * Adds the absolute workdir path of the current object to the begining of a raw diff path.
      *
      * @param  string $diff_path  Path as it appears in the diff (e.g. "a/src/Foo.php").
-     * @return string|null        Absolute path, or null when the file must be skipped.
+     * @return array<string, mixed>  {skiped: bool, path: string}  skiped=true if the file should be skipped, path is the resolved absolute path to the file.
      */
-    public function resolve(string $diff_path): ?string
+    public function resolve(string $diff_path): array
     {
         $path = $this->stripPrefix($diff_path);
-
-        if ($path === '/dev/null') {
-            return null;
-        }
-
         foreach (self::SKIPED_FILES as $skip) {
             if (str_starts_with($path, $skip)) {
-                return null;
+                return [
+                    'skiped' => true,
+                    'path'   => $this->work_dir . '/' . $path,
+                ];
             }
         }
 
         // GLPI core: remap assets folders to the public/ subfolder
         foreach (self::PUBLIC_REMAPPED_FOLDERS as $folder) {
             if (str_starts_with($path, $folder)) {
-                return $this->work_dir . '/public/' . $path;
+                return [
+                    'skiped'   => false,
+                    'path'     => $this->work_dir . '/public/' . $path
+                ];
             }
         }
 
-        return $this->work_dir . '/' . $path;
+        return [
+            'skiped' => false,
+            'path'   => $this->work_dir . '/' . $path,
+        ];
     }
 
     /**
