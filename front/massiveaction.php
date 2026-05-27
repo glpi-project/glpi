@@ -48,13 +48,14 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 try {
-    $referer = get_item_type_from_post() ?? '/'; // page used to trigger massive action
-    $reauth_manager = new ReAuthManager();
-    $reauth_manager->setCancelURL($referer);
-    $reauth_manager->checkReAuthenticationOrRedirect();
-
     $ma = new MassiveAction($_POST, $_GET, 'process');
-    $ma->setRedirect($referer);
+    [$referer, $item_types] = get_item_type_redirection_path_from_post() ?? ['/', []]; // list page used to trigger massive action
+    $reauth_manager = new ReAuthManager();
+    if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
+        $reauth_manager->setCancelURL($referer);
+        $reauth_manager->checkReAuthenticationOrRedirect();
+        $ma->setRedirect($referer);
+    }
 }
 // process redirect exceptions
 catch (RedirectException $e) {
@@ -116,19 +117,19 @@ if (isset($results['messages']) && is_array($results['messages']) && count($resu
 
 Html::redirect($results['redirect']);
 
-function get_item_type_from_post(): ?string
+/**
+ * Returns the redirection path and item types, based on the POST data.
+ *
+ * @return array{?string, array<string>} [redirection path, item types]
+ */
+function get_item_type_redirection_path_from_post(): array
 {
     global $CFG_GLPI;
 
     $items = isset($_POST['items']) ? array_keys($_POST['items']) : [];
-    if (count($items) === 1) {
-        /** @var class-string<CommonDBTM> $item_type */
-        $item_type = $items[0];
-        return (new $item_type())->getRedirectToListUrl();
-    } elseif (count($items) > 1) {
-        // the sole item list with mixed itemtype
-        return $CFG_GLPI["root_doc"] . '/front/allassets.php';
-    }
-
-    return null;
+    return match (count($items)) {
+        0 => [null, []],
+        1 => [(new $items[0]())->getRedirectToListUrl(), $items],
+        default => [$CFG_GLPI["root_doc"] . '/front/allassets.php', $items]
+    };
 }

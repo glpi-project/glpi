@@ -145,6 +145,21 @@ final class ReAuthManager
         $_SESSION['glpi_reauth_cancel_url'] = $url;
     }
 
+    /**
+     * returns true if at least one of the item_types require reauth
+     *
+     * @param array<int, class-string<\CommonGLPI>> $item_types item type to check
+     */
+    public function atLeastOneitemTypesRequiresReauthentication(mixed $item_types): bool
+    {
+        // @todo ajouter vérif sur la validité des item_types (doivent être des class-string de CommonGLPI) ?
+        return array_reduce(
+            $item_types,
+            fn($carry, string $item_type) => $carry || $item_type::isUserReauthenticationNeeded(),
+            false
+        );
+    }
+
     private function setRedirect(): void
     {
         $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
