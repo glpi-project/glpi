@@ -434,7 +434,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // via the action menu.)
         if (!empty($this->fields['is_draft'])) {
             Session::addMessageAfterRedirect(
-                __('Article saved as draft. It is only visible to you until you publish it.'),
+                htmlescape(__('Article saved as draft. It is only visible to you until you publish it.')),
                 false,
                 INFO
             );
@@ -993,7 +993,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if ($effective_is_faq && $effective_is_draft) {
             $input['is_draft'] = 0;
             Session::addMessageAfterRedirect(
-                __('A FAQ entry cannot be a draft — draft flag was removed.'),
+                htmlescape(__('A FAQ entry cannot be a draft — draft flag was removed.')),
                 false,
                 WARNING
             );
@@ -1013,7 +1013,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         ) {
             $input['is_draft'] = 0;
             Session::addMessageAfterRedirect(
-                __('Only the author or a knowledge base administrator can move a published article back to draft.'),
+                htmlescape(__('Only the author or a knowledge base administrator can move a published article back to draft.')),
                 false,
                 WARNING
             );
