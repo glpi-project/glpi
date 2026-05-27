@@ -82,6 +82,9 @@ $counts_queries = [
 foreach ($counts_queries as $query_data) {
     $itemtype = $DB->escape($query_data['itemtype']);
     $relation = DBmysql::quoteName($query_data['relation']);
+    if ($query_data['relation_fk'] === null) {
+        continue;
+    }
     $relation_fk = DBmysql::quoteName($query_data['relation_fk']);
     $itil_table = DBmysql::quoteName($query_data['itil_table']);
 

@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Materialized counters used to sort users by ITIL actor relationships.
  */
@@ -68,16 +70,22 @@ final class UserITILObjectCount extends CommonDBTM
         }
 
         $itemtype = $actor_class::$itemtype_1;
-        if (!is_a($itemtype, CommonITILObject::class, true)) {
+        if (!is_string($itemtype) || !is_a($itemtype, CommonITILObject::class, true)) {
             return;
         }
 
         $relation_table = $actor_class::getTable();
         $relation_fk = $actor_class::getItilObjectForeignKey();
+        if ($relation_fk === null) {
+            return;
+        }
         $itil_table = $itemtype::getTable();
 
         $iterator = $DB->request([
-            'SELECT' => new QueryExpression('COUNT(DISTINCT ' . DBmysql::quoteName($relation_table . '.' . $relation_fk) . ') AS cnt'),
+            'SELECT' => new QueryExpression(
+                'COUNT(DISTINCT ' . DBmysql::quoteName($relation_table . '.' . $relation_fk) . ')',
+                'cnt'
+            ),
             'FROM'   => $relation_table,
             'INNER JOIN' => [
                 $itil_table => [
@@ -154,6 +162,9 @@ final class UserITILObjectCount extends CommonDBTM
 
         $relation_table = $actor_class::getTable();
         $relation_fk = $actor_class::getItilObjectForeignKey();
+        if ($relation_fk === null) {
+            return;
+        }
 
         $iterator = $DB->request([
             'SELECT' => ['users_id', 'type'],
