@@ -38,28 +38,11 @@
     position: relative;
 
     ul {
-        margin: 0 0 0 2em;
+        margin: 0;
         padding: 0;
         list-style: none;
         position: relative;
         clear: both;
-    }
-
-    &::before,
-    ul::before {
-        content: "";
-        display: block;
-        width: 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 85px;
-        border-left: 1px solid #CECECE;
-    }
-
-    ul.has_sub_answers::before {
-        bottom: inherit;
-        height: 105px;
     }
 
     li {
@@ -71,29 +54,9 @@
         position: relative;
         clear: left;
 
-        &.has_answers {
-            &:last-child::before {
-                // same with body background
-                height: auto;
-                top: 7.5em;
-                bottom: 0;
-            }
-        }
-
-        &:not(.has_answers) {
-            ul::before {
-                display: none;
-            }
-        }
-
         .timeline-content {
             min-width: auto;
             width: 100%;
-        }
-
-        .newcomment {
-            width: 100%;
-            max-width: 820px;
         }
     }
 
@@ -117,57 +80,108 @@
     min-height: 70px;
 }
 
-input[type="checkbox"].toggle_comments {
-    display: none;
+// Thread container: wraps the toggle and the nested replies list.
+// Placed AFTER the parent comment body (.d-flex), so edit forms injected
+// into .h_content never affect the thread's height or toggle alignment.
+.kb-thread {
+    position: relative;
+    margin-left: 2em;
 
-    +.toggle_label {
-        cursor: pointer;
-        position: absolute;
-        left: -6px;
-        top: calc(7.5em - 8px);
-        background: #FFF url("../pics/expand.png") no-repeat;
-        width: 14px;
-        height: 14px;
+    > ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: relative;
+        clear: both;
 
+        // Vertical thread line – same geometry as the old ul::before
         &::before {
             content: "";
             display: block;
-            width: 12px;
-
-            // same with indentation
-            height: 0;
-            border-top: 1px solid #CECECE;
-            margin-top: -1px;
-
-            // border top width
+            width: 0;
             position: absolute;
-            top: 8px;
-            left: 13px;
+            top: 0;
+            left: 0;
+            bottom: 85px;
+            border-left: 1px solid #CECECE;
+        }
+
+        &.has_sub_answers::before {
+            bottom: inherit;
+            height: 105px;
+        }
+
+        > li {
+            margin: 0;
+            padding: 0;
+            line-height: 2em;
+            position: relative;
+            clear: left;
+
+            .timeline-content {
+                min-width: auto;
+                width: 100%;
+            }
+
+            // Nested sub-threads are handled by their own .kb-thread
+            &:not(.has_answers) > .kb-thread > ul::before {
+                display: none;
+            }
         }
     }
 
-    &:checked {
-        +.toggle_label {
-            background: #FFF url("../pics/collapse.png") no-repeat;
-        }
+    > input[type="checkbox"].toggle_comments {
+        display: none;
 
-        ~ul {
-            display: block;
-        }
-    }
+        + .toggle_label {
+            cursor: pointer;
+            position: absolute;
+            left: -6px;
+            top: 4px; // anchored to the top of .kb-thread, not the parent li
+            background: #FFF url("../pics/expand.png") no-repeat;
+            width: 14px;
+            height: 14px;
 
-    &:not(:checked) {
-        +.toggle_label {
             &::before {
-                content: "...";
-                border: none;
-                top: -12px;
-                left: 20px;
+                content: "";
+                display: block;
+                width: 12px;
+
+                // same with indentation
+                height: 0;
+                border-top: 1px solid #CECECE;
+                margin-top: -1px;
+
+                // border top width
+                position: absolute;
+                top: 8px;
+                left: 13px;
             }
         }
 
-        ~ul {
-            display: none;
+        &:checked {
+            + .toggle_label {
+                background: #FFF url("../pics/collapse.png") no-repeat;
+            }
+
+            ~ ul {
+                display: block;
+            }
+        }
+
+        &:not(:checked) {
+            + .toggle_label {
+                &::before {
+                    content: "...";
+                    border: none;
+                    top: -12px;
+                    left: 20px;
+                }
+            }
+
+            ~ ul {
+                display: none;
+            }
         }
     }
 }

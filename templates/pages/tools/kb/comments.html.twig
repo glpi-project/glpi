@@ -74,19 +74,21 @@
                 </div>
             </div>
         </div>
-       {% if has_answers %}
-            <input type="checkbox" id="toggle_{{ comment['id'] }}" class="toggle_comments" checked="checked">
-            <label for="toggle_{{ comment['id'] }}" class="toggle_label"></label>
-            {% set nb_sub_answers = 0 %}
-            {% set answers_html %}
-                {% for answer in comment['answers'] %}
-                    {{ _self.kb_comment(answer, level + 1, can_comment) }}
-                    {% set nb_sub_answers = nb_sub_answers + answer['answers']|length %}
-                {% endfor %}
-            {% endset %}
-            <ul class="{{ nb_sub_answers > 0 ? "has_sub_answers" : "" }}">
-                {{ answers_html }}
-            </ul>
+        {% if has_answers %}
+            <div class="kb-thread">
+                <input type="checkbox" id="toggle_{{ comment['id'] }}" class="toggle_comments" checked="checked">
+                <label for="toggle_{{ comment['id'] }}" class="toggle_label"></label>
+                {% set nb_sub_answers = 0 %}
+                {% set answers_html %}
+                    {% for answer in comment['answers'] %}
+                        {{ _self.kb_comment(answer, level + 1, can_comment) }}
+                        {% set nb_sub_answers = nb_sub_answers + answer['answers']|length %}
+                    {% endfor %}
+                {% endset %}
+                <ul class="{{ nb_sub_answers > 0 ? "has_sub_answers" : "" }}">
+                    {{ answers_html }}
+                </ul>
+            </div>
         {% endif %}
     </li>
 {% endmacro %}
@@ -128,13 +130,18 @@
                 const _bindForm = function(form) {
                     form.find('input[type=reset]').on('click', (e) => {
                         e.preventDefault();
+                        const thread = form.closest('.kb-thread');
                         form.remove();
                         $('.displayed_content').show();
+                        // Remove a dynamically-created kb-thread if it is now empty
+                        if (thread.length > 0 && thread.find('li').length === 0) {
+                            thread.remove();
+                        }
                     });
                 };
 
                 $('.add_answer').on('click', (e) => {
-                    const add_btn = $(e.target);
+                    const add_btn = $(e.currentTarget);
                     const comment = add_btn.closest('.comment');
                     const _data = {
                         'kbitem_id': comment.data('kbitem_id'),
@@ -142,7 +149,10 @@
                         'language' : comment.data('lang')
                     };
 
-                    if (comment.find('#newcomment' + add_btn.data('id')).length > 0) {
+                    // Scroll to existing form if already open
+                    const existingForm = $(`#newcomment${comment.data('id')}`);
+                    if (existingForm.length > 0) {
+                        existingForm.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                         return;
                     }
 
@@ -154,10 +164,15 @@
                     }).then((data) => {
                         const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
-                        if (add_btn.closest('.comment').find("ul").length > 0) {
-                            add_btn.closest('.comment').find("ul").append(_form);
+                        const kbThread = comment.children('.kb-thread');
+                        if (kbThread.length > 0) {
+                            // Existing thread: append inside its <ul>
+                            kbThread.find('> ul').first().append(_form);
                         } else {
-                            $("<div class='ms-5 w-100'>").append(_form).insertAfter(add_btn.parents('.h_item'));
+                            // No existing thread: create one dynamically
+                            const newThread = $('<div class="kb-thread"><ul></ul></div>');
+                            newThread.find('ul').append(_form);
+                            comment.append(newThread);
                         }
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
                     }, () => {
@@ -169,7 +184,7 @@
                 });
 
                 $('.edit_item').on('click', (e) => {
-                    const edit_btn = $(e.target)
+                    const edit_btn = $(e.currentTarget);
                     const comment = edit_btn.closest('.comment');
                     const _data = {
                         'kbitem_id': comment.data('kbitem_id'),
