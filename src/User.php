@@ -3732,11 +3732,11 @@ HTML;
             'name'               => __('Number of tickets as requester'),
             'datatype'           => 'number',
             'massiveaction'      => false,
-            'computation'        => '(SELECT COUNT(DISTINCT ' . DBmysql::quoteName('tu.tickets_id') . ') 
-                                      FROM ' . DBmysql::quoteName('glpi_tickets_users') . ' AS ' . DBmysql::quoteName('tu') . ' 
-                                      WHERE ' . DBmysql::quoteName('tu.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . ' 
-                                        AND ' . DBmysql::quoteName('tu.type') . ' = ' . CommonITILActor::REQUESTER . ')',
-            'nosort'             => true,
+            'computation'        => '(SELECT COALESCE(MAX(' . DBmysql::quoteName('uic.count') . '), 0)
+                                      FROM ' . DBmysql::quoteName(UserITILObjectCount::getTable()) . ' AS ' . DBmysql::quoteName('uic') . '
+                                      WHERE ' . DBmysql::quoteName('uic.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . '
+                                        AND ' . DBmysql::quoteName('uic.itemtype') . ' = ' . DBmysql::quoteValue(Ticket::class) . '
+                                        AND ' . DBmysql::quoteName('uic.actor_type') . ' = ' . CommonITILActor::REQUESTER . ')',
         ];
 
         $tab[] = [
@@ -3759,11 +3759,11 @@ HTML;
             'name'               => __('Number of assigned tickets'),
             'datatype'           => 'number',
             'massiveaction'      => false,
-            'computation'        => '(SELECT COUNT(DISTINCT ' . DBmysql::quoteName('tu.tickets_id') . ') 
-                                      FROM ' . DBmysql::quoteName('glpi_tickets_users') . ' AS ' . DBmysql::quoteName('tu') . ' 
-                                      WHERE ' . DBmysql::quoteName('tu.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . ' 
-                                        AND ' . DBmysql::quoteName('tu.type') . ' = ' . CommonITILActor::ASSIGN . ')',
-            'nosort'             => true,
+            'computation'        => '(SELECT COALESCE(MAX(' . DBmysql::quoteName('uic.count') . '), 0)
+                                      FROM ' . DBmysql::quoteName(UserITILObjectCount::getTable()) . ' AS ' . DBmysql::quoteName('uic') . '
+                                      WHERE ' . DBmysql::quoteName('uic.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . '
+                                        AND ' . DBmysql::quoteName('uic.itemtype') . ' = ' . DBmysql::quoteValue(Ticket::class) . '
+                                        AND ' . DBmysql::quoteName('uic.actor_type') . ' = ' . CommonITILActor::ASSIGN . ')',
         ];
 
         $tab[] = [
