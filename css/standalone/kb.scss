@@ -35,33 +35,11 @@
     margin: 0 0 0 1em;
     padding: 0;
     list-style: none;
-    position: relative;
 
     ul {
         margin: 0;
         padding: 0;
         list-style: none;
-        position: relative;
-        clear: both;
-    }
-
-    li {
-        margin: 0;
-        padding: 0;
-        line-height: 2em;
-
-        // default list item's `line-height`
-        position: relative;
-        clear: left;
-
-        .timeline-content {
-            min-width: auto;
-            width: 100%;
-        }
-    }
-
-    .h_content {
-        position: relative;
     }
 }
 
@@ -80,108 +58,114 @@
     min-height: 70px;
 }
 
-// Thread container: wraps the toggle and the nested replies list.
-// Placed AFTER the parent comment body (.d-flex), so edit forms injected
-// into .h_content never affect the thread's height or toggle alignment.
-.kb-thread {
+/* Base node */
+.kb-comment-node {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    clear: left;
+}
+
+/* Flex layout: Gutter (avatar+line) on left, Body on right */
+.kb-comment-layout {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 0.5rem;
+}
+
+.kb-thread-gutter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px; /* Space for avatar */
+    flex-shrink: 0;
+    
+    .avatar-link {
+        z-index: 2;
+    }
+}
+
+/* The vertical thread line */
+.kb-thread-line {
+    flex-grow: 1;
+    width: 20px; /* click area */
+    margin-top: 8px; /* space below avatar */
+    margin-bottom: 8px; /* space above next item */
+    cursor: pointer;
     position: relative;
-    margin-left: 2em;
-
-    > ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        position: relative;
-        clear: both;
-
-        // Vertical thread line – same geometry as the old ul::before
-        &::before {
-            content: "";
-            display: block;
-            width: 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 85px;
-            border-left: 1px solid #CECECE;
-        }
-
-        &.has_sub_answers::before {
-            bottom: inherit;
-            height: 105px;
-        }
-
-        > li {
-            margin: 0;
-            padding: 0;
-            line-height: 2em;
-            position: relative;
-            clear: left;
-
-            .timeline-content {
-                min-width: auto;
-                width: 100%;
-            }
-
-            // Nested sub-threads are handled by their own .kb-thread
-            &:not(.has_answers) > .kb-thread > ul::before {
-                display: none;
-            }
-        }
+    display: flex;
+    justify-content: center;
+    
+    &::before {
+        content: "";
+        display: block;
+        width: 2px;
+        height: 100%;
+        background-color: #CECECE;
+        transition: background-color 0.2s;
     }
 
-    > input[type="checkbox"].toggle_comments {
-        display: none;
-
-        + .toggle_label {
-            cursor: pointer;
-            position: absolute;
-            left: -6px;
-            top: 4px; // anchored to the top of .kb-thread, not the parent li
-            background: #FFF url("../pics/expand.png") no-repeat;
-            width: 14px;
-            height: 14px;
-
-            &::before {
-                content: "";
-                display: block;
-                width: 12px;
-
-                // same with indentation
-                height: 0;
-                border-top: 1px solid #CECECE;
-                margin-top: -1px;
-
-                // border top width
-                position: absolute;
-                top: 8px;
-                left: 13px;
-            }
-        }
-
-        &:checked {
-            + .toggle_label {
-                background: #FFF url("../pics/collapse.png") no-repeat;
-            }
-
-            ~ ul {
-                display: block;
-            }
-        }
-
-        &:not(:checked) {
-            + .toggle_label {
-                &::before {
-                    content: "...";
-                    border: none;
-                    top: -12px;
-                    left: 20px;
-                }
-            }
-
-            ~ ul {
-                display: none;
-            }
-        }
+    &:hover::before {
+        background-color: #A0A0A0; /* Highlight on hover */
     }
+}
+
+/* The toggle indicator */
+.kb-toggle-icon {
+    position: absolute;
+    top: 0; /* Just below the avatar */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border: 1px solid #CECECE;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+
+    &::after {
+        content: "\2212"; /* Minus by default */
+        font-size: 11px;
+        color: #888;
+        line-height: 1;
+    }
+}
+
+/* Right side content */
+.kb-thread-body {
+    flex-grow: 1;
+    min-width: 0; /* Prevent flex overflow */
+    display: flex;
+    flex-direction: column;
+}
+
+.kb-comment-content {
+    width: 100%;
+}
+
+/* Checkbox toggle logic */
+.kb-toggle-checkbox {
+    display: none;
+}
+
+.kb-toggle-checkbox:not(:checked) ~ .kb-thread-body > .kb-nested-replies {
+    display: none;
+}
+
+.kb-toggle-checkbox:not(:checked) ~ .kb-thread-gutter .kb-toggle-icon::after {
+    content: "\002B"; /* Plus sign */
+}
+
+/* Empty or hidden line state */
+.kb-nested-replies:empty {
+    display: none;
+}
+
+/* When the layout has no answers, we hide the line and icon so it looks clean */
+.kb-comment-layout.no-answers .kb-thread-line {
+    display: none;
 }

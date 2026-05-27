@@ -32,64 +32,67 @@
 
 {% macro kb_comment(comment, level, can_comment) %}
     {% set has_answers = comment['answers'] is defined and comment['answers']|length > 0 %}
-    <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
+    <li id="kbcomment{{ comment['id'] }}" class="kb-comment-node comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
         data-id="{{ comment['id'] }}" data-kbitem_id="{{ comment['knowbaseitems_id'] }}" data-lang="{{ comment['language'] }}">
-        <div class="d-flex flex-wrap align-items-start {{ level == 0 ? "mt-6" : "mt-3" }}">
-            <a href="{{ comment['user_info']['link'] }}" class="me-3 mt-n2 ms-n2">
-                {% if comment['user_info']['avatar'] is not empty %}
-                    {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
-                {% else %}
-                    {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
-                {% endif %}
-                <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
-                    {% if comment['user_info']['avatar'] is empty %}
-                        {{ comment['user_info']['initials'] }}
+        
+        <div class="kb-comment-layout {{ level == 0 ? "mt-6" : "mt-3" }} {{ not has_answers ? 'no-answers' : '' }}">
+            <input type="checkbox" id="toggle_{{ comment['id'] }}" class="kb-toggle-checkbox" checked="checked">
+
+            <div class="kb-thread-gutter">
+                <a href="{{ comment['user_info']['link'] }}" class="avatar-link">
+                    {% if comment['user_info']['avatar'] is not empty %}
+                        {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
+                    {% else %}
+                        {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
                     {% endif %}
-                </span>
-            </a>
-            <div class="h_item d-flex timeline-content flex-column">
-                <div class="d-flex flex-column ps-2">
-                    <div class="h_info d-flex">
-                        <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
-                        <div class="d-inline-flex ms-auto">
-                            {% if can_comment %}
-                                <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
-                                    <i class="ti ti-arrow-back-up"></i>
-                                </button>
-                            {% endif %}
-                            {% if can_comment and comment['users_id'] == session('glpiID') %}
-                                <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
-                                    <i class="ti ti-edit"></i>
-                                </button>
-                            {% endif %}
+                    <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
+                        {% if comment['user_info']['avatar'] is empty %}
+                            {{ comment['user_info']['initials'] }}
+                        {% endif %}
+                    </span>
+                </a>
+                <label for="toggle_{{ comment['id'] }}" class="kb-thread-line">
+                    <span class="kb-toggle-icon"></span>
+                </label>
+            </div>
+
+            <div class="kb-thread-body">
+                <div class="kb-comment-content h_item d-flex timeline-content flex-column w-100">
+                    <div class="d-flex flex-column ps-2">
+                        <div class="h_info d-flex">
+                            <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
+                            <div class="d-inline-flex ms-auto">
+                                {% if can_comment %}
+                                    <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
+                                        <i class="ti ti-arrow-back-up"></i>
+                                    </button>
+                                {% endif %}
+                                {% if can_comment and comment['users_id'] == session('glpiID') %}
+                                    <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
+                                        <i class="ti ti-edit"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="h_content KnowbaseItemComment">
-                        <div class="displayed_content">
-                            <div class="item_content">
-                                <p>{{ comment['comment'] }}</p>
+                        <div class="h_content KnowbaseItemComment">
+                            <div class="displayed_content">
+                                <div class="item_content">
+                                    <p>{{ comment['comment'] }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        {% if has_answers %}
-            <div class="kb-thread">
-                <input type="checkbox" id="toggle_{{ comment['id'] }}" class="toggle_comments" checked="checked">
-                <label for="toggle_{{ comment['id'] }}" class="toggle_label"></label>
-                {% set nb_sub_answers = 0 %}
-                {% set answers_html %}
-                    {% for answer in comment['answers'] %}
-                        {{ _self.kb_comment(answer, level + 1, can_comment) }}
-                        {% set nb_sub_answers = nb_sub_answers + answer['answers']|length %}
-                    {% endfor %}
-                {% endset %}
-                <ul class="{{ nb_sub_answers > 0 ? "has_sub_answers" : "" }}">
-                    {{ answers_html }}
+
+                <ul class="kb-nested-replies comments">
+                    {% if has_answers %}
+                        {% for answer in comment['answers'] %}
+                            {{ _self.kb_comment(answer, level + 1, can_comment) }}
+                        {% endfor %}
+                    {% endif %}
                 </ul>
             </div>
-        {% endif %}
+        </div>
     </li>
 {% endmacro %}
 
@@ -130,12 +133,12 @@
                 const _bindForm = function(form) {
                     form.find('input[type=reset]').on('click', (e) => {
                         e.preventDefault();
-                        const thread = form.closest('.kb-thread');
+                        const nestedReplies = form.closest('.kb-nested-replies');
+                        const layout = form.closest('.kb-comment-layout');
                         form.remove();
                         $('.displayed_content').show();
-                        // Remove a dynamically-created kb-thread if it is now empty
-                        if (thread.length > 0 && thread.find('li').length === 0) {
-                            thread.remove();
+                        if (nestedReplies.length > 0 && nestedReplies.children().length === 0) {
+                            layout.addClass('no-answers');
                         }
                     });
                 };
@@ -164,16 +167,9 @@
                     }).then((data) => {
                         const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
-                        const kbThread = comment.children('.kb-thread');
-                        if (kbThread.length > 0) {
-                            // Existing thread: append inside its <ul>
-                            kbThread.find('> ul').first().append(_form);
-                        } else {
-                            // No existing thread: create one dynamically
-                            const newThread = $('<div class="kb-thread"><ul></ul></div>');
-                            newThread.find('ul').append(_form);
-                            comment.append(newThread);
-                        }
+                        const layout = comment.children('.kb-comment-layout');
+                        layout.removeClass('no-answers');
+                        layout.find('.kb-nested-replies').first().append(_form);
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
                     }, () => {
                         glpi_alert({
