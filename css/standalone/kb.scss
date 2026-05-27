@@ -92,9 +92,9 @@
     content: "";
     position: absolute;
     top: 18px; /* Meeting point with the toggle */
-    left: calc(-1rem - 21px);
-    width: calc(1rem + 21px);
-    height: 2px;
+    left: calc(-1rem - 20px);
+    width: calc(1rem + 20px);
+    height: 1px;
     background-color: #CECECE;
     z-index: 0;
     pointer-events: none;
@@ -105,8 +105,8 @@
     position: absolute;
     top: 48px; /* space below avatar */
     bottom: 0; /* perfectly stretch without flex bugs */
-    left: calc(50% - 1px);
-    width: 2px;
+    left: 50%;
+    width: 1px;
     background-color: #CECECE;
     z-index: 0;
 }
@@ -123,13 +123,13 @@
 /* The toggle indicator */
 .kb-toggle-icon {
     position: absolute;
-    top: calc(1rem + 18px); /* 18px to perfectly align with the 2px border of the orthogonal line */
+    top: calc(1rem + 18.5px); /* Perfectly align with the 1px horizontal line center */
     left: calc(-1rem - 20px);
     transform: translate(-50%, -50%);
     width: 14px;
     height: 14px;
     border: 1px solid #CECECE;
-    border-radius: 0;
+    border-radius: 50%;
     background: #fff;
     display: flex;
     align-items: center;
@@ -155,6 +155,11 @@
 
 .kb-comment-content {
     width: 100%;
+    margin-top: 8px;
+    
+    .h_info {
+        padding-bottom: 5px;
+    }
 }
 
 /* Checkbox toggle logic */
@@ -190,7 +195,7 @@
 .kb-comment-node.subcomment:last-child > .kb-comment-layout > .kb-thread-gutter::after {
     content: "";
     position: absolute;
-    top: 20px; /* Start right below the 2px horizontal line (18px + 2px) */
+    top: 19px; /* Start right below the 1px horizontal line (18px + 1px) */
     bottom: -30px; /* Extend slightly to cover margin-bottom on the layouts */
     left: calc(-1rem - 22px);
     width: 6px;
