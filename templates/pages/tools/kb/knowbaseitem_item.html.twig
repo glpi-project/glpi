@@ -44,7 +44,7 @@
     <div class="row align-items-center mb-2 ms-3">
         {% if get_class(item) == 'KnowbaseItem' %}
             {# TODO pass used array to restrict visible items in list #}
-            <label class="col-auto col-form-label text-nowrap fw-bold">{{ __('Add a linked item') }}</label>
+            <label class="col-auto col-form-label">{{ __('Add a linked item') }}</label>
             <div class="col-12 col-sm-6 col-md-4">
                 {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
             </div>
