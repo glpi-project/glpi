@@ -397,9 +397,14 @@ final class DbUtils
         global $GLPI_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
-        $matches = preg_grep('/^' . preg_quote($itemtype, '/') . '$/i', get_declared_classes());
-        if (count($matches) === 1) {
-            return current($matches);
+        // The "false" second parameters make sure we do not trigger autoload since
+        // case might not be correct.
+        if (
+            class_exists($itemtype, false)
+            || interface_exists($itemtype, false)
+            || trait_exists($itemtype, false)
+        ) {
+            return (new ReflectionClass($itemtype))->getName();
         }
 
         static $mapping = []; // Mappings already retrieved in current request
