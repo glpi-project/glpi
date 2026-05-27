@@ -270,6 +270,17 @@ final class PatchApplier
             // In revert mode, end() is the new-file line number (1-based).
             $expected_pos = max(0, ($revert ? $chunk->end() : $chunk->start()) - 1 + $offset);
 
+            // Check if new lines are already present (patch already applied).
+            if ($new_lines !== []) {
+                $found_new = $this->findSequence($lines, $new_lines, $expected_pos);
+                if ($found_new !== null) {
+                    // Already applied — adjust offset so later hunks stay aligned
+                    $offset += count($new_lines) - count($old_lines);
+                    $already_applied_count++;
+                    continue;
+                }
+            }
+
             // only new lines are added = pure insertion
             if ($old_lines === []) {
                 if (!$dry_run) {
@@ -280,7 +291,7 @@ final class PatchApplier
                 continue;
             }
 
-            // Normal case: look for old lines near expected position
+            // old lines are present and new lines aren't added yet : look for old lines to apply the change
             $found_old = $this->findSequence($lines, $old_lines, $expected_pos);
 
             if ($found_old !== null) {
@@ -290,17 +301,6 @@ final class PatchApplier
                 $offset += count($new_lines) - count($old_lines);
                 $applied_count++;
                 continue;
-            }
-
-            // Old lines not found: check if new lines are already there
-            if ($new_lines !== []) {
-                $found_new = $this->findSequence($lines, $new_lines, $expected_pos);
-                if ($found_new !== null) {
-                    // Already applied — adjust offset so later hunks stay aligned
-                    $offset += count($new_lines) - count($old_lines);
-                    $already_applied_count++;
-                    continue;
-                }
             }
 
             // Neither found: genuine conflict
