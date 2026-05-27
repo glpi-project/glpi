@@ -47,6 +47,7 @@ use Glpi\Api\HL\Controller\CRUDControllerTrait;
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DashboardController;
 use Glpi\Api\HL\Controller\DropdownController;
+use Glpi\Api\HL\Controller\FormController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\HelpdeskController;
 use Glpi\Api\HL\Controller\InventoryController;
@@ -271,6 +272,7 @@ EOT;
             self::$instance->registerController(new NotificationController());
             self::$instance->registerController(new HelpdeskController());
             self::$instance->registerController(new KanbanController());
+            self::$instance->registerController(new FormController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
