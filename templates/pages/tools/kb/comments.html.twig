@@ -51,9 +51,7 @@
                         {% endif %}
                     </span>
                 </a>
-                <label for="toggle_{{ comment['id'] }}" class="kb-thread-line">
-                    <span class="kb-toggle-icon"></span>
-                </label>
+                <label for="toggle_{{ comment['id'] }}" class="kb-thread-line"></label>
             </div>
 
             <div class="kb-thread-body">
@@ -84,6 +82,9 @@
                     </div>
                 </div>
 
+                <div class="kb-toggle-wrapper">
+                    <label for="toggle_{{ comment['id'] }}" class="kb-toggle-icon"></label>
+                </div>
                 <ul class="kb-nested-replies comments">
                     {% if has_answers %}
                         {% for answer in comment['answers'] %}

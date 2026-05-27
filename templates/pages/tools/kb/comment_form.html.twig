@@ -40,16 +40,20 @@
 {% set edit = edit|default(false) %}
 {% set comment_style = (edit == false or parent_comment_id != false) %}
 
-<div class="d-flex flex-wrap align-items-start {{ comment_style ? "mt-3" : "" }}">
+<div class="kb-comment-layout {{ comment_style ? "mt-3" : "" }} no-answers">
     {% if comment_style %}
-        <a href="" class="me-3 mt-n2 ms-n2">
-            {{ include('components/user/picture.html.twig', {
-                'users_id': session('glpiID'),
-                'with_link': false,
-            }, with_context = false) }}
-        </a>
+        <div class="kb-thread-gutter">
+            <a href="" class="avatar-link">
+                {{ include('components/user/picture.html.twig', {
+                    'users_id': session('glpiID'),
+                    'with_link': false,
+                }, with_context = false) }}
+            </a>
+            <label class="kb-thread-line" style="display: none;"></label>
+        </div>
     {% endif %}
-    <div class="{{ comment_style ? "h_item d-flex timeline-content flex-column pt-3" : "w-100" }}">
+    <div class="kb-thread-body">
+        <div class="{{ comment_style ? "kb-comment-content h_item d-flex timeline-content flex-column w-100 pt-3" : "w-100" }}">
         <form name="kbcomment_form{{ rand }}" id="kbcomment_form{{ rand }}" class="comment_form" method="post"
             action="{{ 'KnowbaseItem_Comment'|itemtype_form_path }}" data-submit-once data-track-changes="true">
             {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
@@ -99,5 +103,6 @@
                 }) }}
             </div>
         </form>
+    </div>
     </div>
 </div>

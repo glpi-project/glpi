@@ -80,6 +80,7 @@
     align-items: center;
     width: 40px; /* Space for avatar */
     flex-shrink: 0;
+    position: relative;
     
     .avatar-link {
         z-index: 2;
@@ -127,12 +128,20 @@
     }
 }
 
+/* The Toggle Wrapper */
+.kb-toggle-wrapper {
+    height: 0; 
+    width: 0; 
+    overflow: visible; 
+    align-self: flex-start;
+    margin-top: calc(1rem + 20px); /* Aligns with the curve horizontal line! */
+}
+
 /* The toggle indicator */
 .kb-toggle-icon {
     position: absolute;
-    top: 0; /* Just below the avatar */
-    left: 50%;
-    transform: translateX(-50%);
+    margin-left: calc(-1rem - 20px);
+    transform: translate(-50%, -50%);
     width: 14px;
     height: 14px;
     border: 1px solid #CECECE;
@@ -141,7 +150,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    z-index: 3;
+    cursor: pointer;
 
     &::after {
         content: "\2212"; /* Minus by default */
@@ -172,7 +182,7 @@
     display: none;
 }
 
-.kb-toggle-checkbox:not(:checked) ~ .kb-thread-gutter .kb-toggle-icon::after {
+.kb-toggle-checkbox:not(:checked) ~ .kb-thread-body > .kb-toggle-wrapper > .kb-toggle-icon::after {
     content: "\002B"; /* Plus sign */
 }
 
@@ -182,6 +192,19 @@
 }
 
 /* When the layout has no answers, we hide the line and icon so it looks clean */
-.kb-comment-layout.no-answers .kb-thread-line {
+.kb-comment-layout.no-answers .kb-thread-line,
+.kb-comment-layout.no-answers .kb-toggle-wrapper {
     display: none;
+}
+
+/* Mask the parent's vertical line below the last child's avatar */
+.kb-comment-node.subcomment:last-child > .kb-comment-layout > .kb-thread-gutter::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    bottom: -1000px;
+    left: calc(-1rem - 22px);
+    width: 6px;
+    background: var(--tblr-bg-surface, #ffffff);
+    z-index: 1;
 }
