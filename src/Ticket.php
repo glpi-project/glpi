@@ -1187,9 +1187,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * Method requires levels to be cleared before - @see OLA::delete(All)LevelsToDo($ticket)
      * @param int $olas_id
-     * @param bool $replay Whether to call replayForTicket after scheduling the level.
-     *                     Set to false when rebuilding multiple OLAs in batch to avoid
-     *                     premature replay that would consume levels before all are scheduled.
      *
      * @return void
      *
