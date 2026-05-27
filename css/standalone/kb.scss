@@ -108,8 +108,6 @@
     flex-grow: 1;
     width: 20px; /* click area */
     margin-top: 8px; /* space below avatar */
-    margin-bottom: 8px; /* space above next item */
-    cursor: pointer;
     position: relative;
     display: flex;
     justify-content: center;
@@ -120,11 +118,6 @@
         width: 2px;
         height: 100%;
         background-color: #CECECE;
-        transition: background-color 0.2s;
-    }
-
-    &:hover::before {
-        background-color: #A0A0A0; /* Highlight on hover */
     }
 }
 
@@ -134,13 +127,14 @@
     width: 0; 
     overflow: visible; 
     align-self: flex-start;
-    margin-top: calc(1rem + 20px); /* Aligns with the curve horizontal line! */
+    position: relative;
 }
 
 /* The toggle indicator */
 .kb-toggle-icon {
     position: absolute;
-    margin-left: calc(-1rem - 20px);
+    top: calc(1rem + 18px); /* 18px to perfectly align with the 2px border of the orthogonal line */
+    left: calc(-1rem - 20px);
     transform: translate(-50%, -50%);
     width: 14px;
     height: 14px;
@@ -184,6 +178,11 @@
 
 .kb-toggle-checkbox:not(:checked) ~ .kb-thread-body > .kb-toggle-wrapper > .kb-toggle-icon::after {
     content: "\002B"; /* Plus sign */
+}
+
+/* Stretch the toggle wrapper when retracted so the vertical line reaches it */
+.kb-toggle-checkbox:not(:checked) ~ .kb-thread-body > .kb-toggle-wrapper {
+    height: calc(1rem + 18px);
 }
 
 /* Empty or hidden line state */
