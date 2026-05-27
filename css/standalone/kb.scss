@@ -32,7 +32,7 @@
  */
 
 .comments {
-    margin: 0 0 0 1em;
+    margin: 0 1em;
     padding: 0;
     list-style: none;
 
@@ -87,7 +87,7 @@
     }
 }
 
-/* The curve (now orthogonal horizontal branch) */
+/* The orthogonal horizontal branch */
 .kb-comment-node.subcomment > .kb-comment-layout > .kb-thread-gutter::before {
     content: "";
     position: absolute;
@@ -158,6 +158,11 @@
     margin-top: 8px;
     
     .h_info {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .h_content {
         padding-bottom: 5px;
     }
 }
