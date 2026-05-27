@@ -113,6 +113,11 @@ class DisplayPreferenceTest extends DbTestCase
             'target'             => 'global',
             'expected_exception' => null,
         ];
+        yield 'both_other_user_prefs' => [
+            'right'              => DisplayPreference::PERSONAL | DisplayPreference::GENERAL,
+            'target'             => 'other',
+            'expected_exception' => null,
+        ];
 
         // 4. User with no rights
         // Every target must be refused.
