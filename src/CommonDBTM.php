@@ -1456,6 +1456,7 @@ class CommonDBTM extends CommonGLPI
      *    - class       : string  / CSS class to add to the link
      *    - icon        : boolean / display item icon next to label
      *    - forceid     : boolean  override config and display item's ID (false by default)
+     *    - tooltip     : boolean / display item tooltip (true by default)
      *
      * @return string HTML link
      **/
@@ -1468,6 +1469,7 @@ class CommonDBTM extends CommonGLPI
             'additional' => false,
             'icon'       => false,
             'forceid'    => false,
+            'tooltip'    => true,
         ];
         if (array_key_exists('linkoption', $options)) {
             trigger_error('`linkoption` option is now ignored in `CommonDBTM::getLink()`.', E_USER_WARNING);
@@ -1502,9 +1504,9 @@ class CommonDBTM extends CommonGLPI
         $html = '';
         if ($link_url !== '') {
             $html .= sprintf(
-                '<a href="%s" data-bs-toggle="tooltip" data-bs-placement="bottom" title="%s"%s>',
+                '<a href="%s"%s%s>',
                 htmlescape($link_url),
-                htmlescape($link_title),
+                $p['tooltip'] ? sprintf(' data-bs-toggle="tooltip" data-bs-placement="bottom" title="%s"', htmlescape($link_title)) : '',
                 $p['class'] !== '' ? sprintf(' class="%s"', htmlescape($p['class'])) : '',
             );
         }

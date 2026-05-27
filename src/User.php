@@ -6712,11 +6712,12 @@ HTML;
     /**
      * Get user link.
      *
-     * @param bool $enable_anonymization
+     * @param bool  $enable_anonymization
+     * @param array<string, mixed> $options
      *
      * @return string
      */
-    public function getUserLink(bool $enable_anonymization = false): string
+    public function getUserLink(bool $enable_anonymization = false, $options = []): string
     {
         if (
             $enable_anonymization
@@ -6728,7 +6729,7 @@ HTML;
             return $anon;
         }
 
-        return $this->getLink();
+        return $this->getLink($options);
     }
 
     /**

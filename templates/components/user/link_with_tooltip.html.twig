@@ -34,7 +34,7 @@
 
 <span id="user_{{ rand }}" class="d-inline-flex align-items-center">
     <i class="ti ti-user me-1"></i>
-    {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization}) }}
+    {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization, 'tooltip': false}) }}
 </span>
 
 {% if not enable_anonymization %}
