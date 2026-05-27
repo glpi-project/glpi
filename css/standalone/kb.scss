@@ -190,8 +190,8 @@
 .kb-comment-node.subcomment:last-child > .kb-comment-layout > .kb-thread-gutter::after {
     content: "";
     position: absolute;
-    top: 18px; /* Start at horizontal line */
-    bottom: 0;
+    top: 20px; /* Start right below the 2px horizontal line (18px + 2px) */
+    bottom: -30px; /* Extend slightly to cover margin-bottom on the layouts */
     left: calc(-1rem - 22px);
     width: 6px;
     background: var(--tblr-bg-surface, #ffffff);
