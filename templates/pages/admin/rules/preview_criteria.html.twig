@@ -31,6 +31,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <form method="post" action="{{ target }}">
     <div class="card mb-3">
@@ -63,8 +64,8 @@
                     input_class: 'col-7'
                 }) }}
             {% else %}
-                <div class="col-12 text-center text-muted my-3">
-                    {{ __('No rule criteria to display') }}
+                <div class="d-flex justify-content-center w-100">
+                    {{ alerts.alert_info(__('No rule criteria to display')) }}
                 </div>
             {% endfor %}
             {% do call([item, 'showSpecificCriteriasForPreview'], [_post]) %}

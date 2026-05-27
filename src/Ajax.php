@@ -189,7 +189,7 @@ class Ajax
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            <h3>' . htmlescape($param['title']) . '</h3>
+                            <h3 class="modal-title">' . htmlescape($param['title']) . '</h3>
                         </div>
                         <div class="modal-body">
                             <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden"
