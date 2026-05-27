@@ -455,6 +455,12 @@ final class PatchApplier
         $old = [];
         $new = [];
 
+        // Use the @@ header counts as hard caps — sebastian/diff may absorb
+        // metadata lines (e.g. "deleted file mode") from the next file in a
+        // multi-file diff into the last chunk's line list.
+        $max_old = $chunk->startRange();
+        $max_new = $chunk->endRange();
+
         foreach ($chunk->lines() as $line) {
             $content = $line->content();
 
@@ -463,13 +469,24 @@ final class PatchApplier
                 continue;
             }
 
+            $count_old = count($old);
+            $count_new = count($new);
+
             if ($line->isUnchanged()) {
-                $old[] = $content;
-                $new[] = $content;
+                if ($count_old < $max_old) {
+                    $old[] = $content;
+                }
+                if ($count_new < $max_new) {
+                    $new[] = $content;
+                }
             } elseif ($line->isRemoved()) {
-                $old[] = $content;
+                if ($count_old < $max_old) {
+                    $old[] = $content;
+                }
             } elseif ($line->isAdded()) {
-                $new[] = $content;
+                if ($count_new < $max_new) {
+                    $new[] = $content;
+                }
             }
         }
 
