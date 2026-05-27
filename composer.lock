@@ -6929,16 +6929,16 @@
         },
         {
             "name": "symfony/html-sanitizer",
-            "version": "v6.4.35",
+            "version": "v6.4.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/html-sanitizer.git",
-                "reference": "7b4a2d08a68772dc5f8ad3de1ffeec4aaa9f8c4a"
+                "reference": "2e02fc97c7172ea1f28a790eac58471194a22ba0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/7b4a2d08a68772dc5f8ad3de1ffeec4aaa9f8c4a",
-                "reference": "7b4a2d08a68772dc5f8ad3de1ffeec4aaa9f8c4a",
+                "url": "https://api.github.com/repos/symfony/html-sanitizer/zipball/2e02fc97c7172ea1f28a790eac58471194a22ba0",
+                "reference": "2e02fc97c7172ea1f28a790eac58471194a22ba0",
                 "shasum": ""
             },
             "require": {
@@ -6978,7 +6978,7 @@
                 "sanitizer"
             ],
             "support": {
-                "source": "https://github.com/symfony/html-sanitizer/tree/v6.4.35"
+                "source": "https://github.com/symfony/html-sanitizer/tree/v6.4.40"
             },
             "funding": [
                 {
@@ -6998,7 +6998,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-06T10:29:42+00:00"
+            "time": "2026-05-19T20:33:02+00:00"
         },
         {
             "name": "symfony/http-foundation",
