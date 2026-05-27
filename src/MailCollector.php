@@ -2565,8 +2565,10 @@ class MailCollector extends CommonDBTM
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
                 // Some iconv implementations may emit notices on invalid byte sequences.
                 // We handle failures explicitly and keep collected logs clean.
+                // @phpstan-ignore-next-line Handled explicitly with FALSE checks and fallback.
                 $converted = @\iconv($charset, 'UTF-8//TRANSLIT', $contents);
                 if ($converted === false) {
+                    // @phpstan-ignore-next-line Handled explicitly with FALSE checks and fallback.
                     $converted = @\iconv($charset, 'UTF-8//IGNORE', $contents);
                 }
                 if ($converted === false) {
