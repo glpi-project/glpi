@@ -97,7 +97,7 @@
     height: 40px; /* Extends down to vertical center of avatar (20px) */
     border-bottom: 2px solid #CECECE;
     border-left: 2px solid #CECECE;
-    border-bottom-left-radius: 12px;
+    border-bottom-left-radius: 0;
     z-index: 0;
     pointer-events: none;
     box-sizing: border-box;
@@ -145,7 +145,7 @@
     width: 14px;
     height: 14px;
     border: 1px solid #CECECE;
-    border-radius: 50%;
+    border-radius: 0;
     background: #fff;
     display: flex;
     align-items: center;
@@ -202,7 +202,7 @@
     content: "";
     position: absolute;
     top: 20px;
-    bottom: -1000px;
+    bottom: 0;
     left: calc(-1rem - 22px);
     width: 6px;
     background: var(--tblr-bg-surface, #ffffff);

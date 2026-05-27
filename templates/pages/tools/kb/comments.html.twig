@@ -132,9 +132,9 @@
         <script>
             $(() => {
                 const _bindForm = function(form) {
-                    const nestedReplies = form.closest('.kb-nested-replies');
-                    const layout = form.closest('.kb-comment-layout');
                     form.find('button[name="cancel"], input[type=reset]').on('click', (e) => {
+                        const nestedReplies = form.closest('.kb-nested-replies');
+                        const layout = form.closest('.kb-comment-layout');
                         // form.remove() is also called by comment_form.html.twig's own JS.
                         // We use setTimeout to ensure we check the length AFTER it's removed.
                         setTimeout(() => {
@@ -170,7 +170,7 @@
                         cache: false,
                         data: _data,
                     }).then((data) => {
-                        const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
+                        const _form = $(`<li class="kb-comment-node newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
                         const layout = comment.children('.kb-comment-layout');
                         layout.removeClass('no-answers');
