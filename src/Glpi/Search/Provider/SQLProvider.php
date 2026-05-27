@@ -5802,10 +5802,11 @@ final class SQLProvider implements SearchProviderInterface
                                                 $tooltip = "";
                                                 if (Session::haveRight('user', READ)) {
                                                     $tooltip = Html::showToolTip(
-                                                        $user->getInfoCard(),
+                                                        __s('Loading...'),
                                                         [
                                                             'link'    => $user->getLinkURL(),
                                                             'display' => false,
+                                                            'url'     => '/User/InfoCard/' . $user->getID(),
                                                         ]
                                                     );
                                                 }
@@ -5846,13 +5847,14 @@ final class SQLProvider implements SearchProviderInterface
                         if ($data[$ID][0]['id'] > 0) {
                             $toadd = '';
                             if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                $user = new User();
-                                if (Session::haveRight('user', READ) && $user->getFromDB($data[$ID][0]['id'])) {
-                                    $toadd    = Html::showToolTip(
-                                        $user->getInfoCard(),
+                                if (Session::haveRight('user', READ)) {
+                                    $users_id = (int) $data[$ID][0]['id'];
+                                    $toadd = Html::showToolTip(
+                                        __s('Loading...'),
                                         [
-                                            'link'    => $user->getLinkURL(),
+                                            'link'    => User::getFormURLWithID($users_id),
                                             'display' => false,
+                                            'url'     => '/User/InfoCard/' . $users_id,
                                         ]
                                     );
                                 }
