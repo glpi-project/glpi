@@ -34,22 +34,26 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block content %}
-    {{ fields.smallTitle(__('Tickets')) }}
+    {% for data in itemtypes_data %}
+        {{ fields.smallTitle(data.label) }}
 
-    {% set excluded_field %}
-        {% do call('Dropdown::showFromArray', ['excluded_ticket_searchoptions', ticket_search_options|merge({}), {
-            values: item.fields['excluded_ticket_searchoptions'],
-            multiple: true,
-            width: '100%',
-            rand: random(),
-        }]) %}
-    {% endset %}
-    {{ fields.htmlField(
-        'excluded_ticket_searchoptions',
-        excluded_field,
-        __('Hidden fields in search and column selection'),
-        {full_width: true}
-    ) }}
+        {% set field_name = 'excluded_searchoptions[' ~ data.key ~ ']' %}
+        {% set current_values = item.fields['excluded_searchoptions'][data.key] ?? [] %}
+        {% set excluded_field %}
+            {% do call('Dropdown::showFromArray', [field_name, data.options|merge({}), {
+                values: current_values,
+                multiple: true,
+                width: '100%',
+                rand: random(),
+            }]) %}
+        {% endset %}
+        {{ fields.htmlField(
+            field_name,
+            excluded_field,
+            __('Hidden fields in search and column selection'),
+            {full_width: true}
+        ) }}
+    {% endfor %}
 
     {{ fields.smallTitle(__('Map')) }}
 

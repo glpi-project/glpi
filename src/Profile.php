@@ -94,7 +94,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Common fields used for all profiles type
      * @var string[]
      */
-    public static array $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced', 'excluded_ticket_searchoptions', 'show_map'];
+    public static array $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced', 'excluded_searchoptions', 'show_map'];
+
+    /** @var list<class-string> Itemtypes whose search options can be restricted per profile */
+    public const SEARCHOPTION_RESTRICTED_ITEMTYPES = [Ticket::class];
 
     public bool $dohistory             = true;
 
@@ -292,9 +295,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
             }
 
-            if (in_array('excluded_ticket_searchoptions', $this->updates, true)) {
-                $raw = $this->input['excluded_ticket_searchoptions'];
-                $_SESSION['glpiactiveprofile']['excluded_ticket_searchoptions'] = $raw !== null
+            if (in_array('excluded_searchoptions', $this->updates, true)) {
+                $raw = $this->input['excluded_searchoptions'];
+                $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = $raw !== null
                     ? (json_decode($raw, true) ?? [])
                     : [];
             }
@@ -383,10 +386,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             );
         }
 
-        if (isset($input['excluded_ticket_searchoptions'])) {
-            $values = is_array($input['excluded_ticket_searchoptions']) ? $input['excluded_ticket_searchoptions'] : [];
-            $values = array_values(array_unique(array_filter(array_map('intval', $values))));
-            $input['excluded_ticket_searchoptions'] = $values !== [] ? json_encode($values) : null;
+        if (isset($input['excluded_searchoptions'])) {
+            $input['excluded_searchoptions'] = self::normalizeExcludedSearchoptions(
+                is_array($input['excluded_searchoptions']) ? $input['excluded_searchoptions'] : []
+            );
         }
 
         if (isset($input['helpdesk_hardware']) && is_array($input['helpdesk_hardware'])) {
@@ -608,13 +611,29 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
         }
 
-        if (isset($input['excluded_ticket_searchoptions'])) {
-            $values = is_array($input['excluded_ticket_searchoptions']) ? $input['excluded_ticket_searchoptions'] : [];
-            $values = array_values(array_unique(array_filter(array_map('intval', $values))));
-            $input['excluded_ticket_searchoptions'] = $values !== [] ? json_encode($values) : null;
+        if (isset($input['excluded_searchoptions'])) {
+            $input['excluded_searchoptions'] = self::normalizeExcludedSearchoptions(
+                is_array($input['excluded_searchoptions']) ? $input['excluded_searchoptions'] : []
+            );
         }
 
         return $input;
+    }
+
+    /**
+     * @param array<string, list<int>> $input Keyed by itemtype short name
+     */
+    private static function normalizeExcludedSearchoptions(array $input): ?string
+    {
+        $result = [];
+        foreach (self::SEARCHOPTION_RESTRICTED_ITEMTYPES as $itemtype) {
+            $values = is_array($input[$itemtype] ?? null) ? $input[$itemtype] : [];
+            $values = array_values(array_unique(array_filter(array_map('intval', $values))));
+            if ($values !== []) {
+                $result[$itemtype] = $values;
+            }
+        }
+        return $result !== [] ? json_encode($result) : null;
     }
 
     /**
@@ -696,13 +715,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         if (
-            isset($this->fields['excluded_ticket_searchoptions'])
-            && !is_array($this->fields['excluded_ticket_searchoptions'])
+            isset($this->fields['excluded_searchoptions'])
+            && !is_array($this->fields['excluded_searchoptions'])
         ) {
-            $this->fields['excluded_ticket_searchoptions'] = json_decode($this->fields['excluded_ticket_searchoptions'], true) ?? [];
+            $this->fields['excluded_searchoptions'] = json_decode($this->fields['excluded_searchoptions'], true) ?? [];
         }
-        if (!isset($this->fields['excluded_ticket_searchoptions'])) {
-            $this->fields['excluded_ticket_searchoptions'] = [];
+        if (!isset($this->fields['excluded_searchoptions'])) {
+            $this->fields['excluded_searchoptions'] = [];
         }
     }
 
@@ -1529,26 +1548,34 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return;
         }
 
-        $ticket_search_options = [];
-        $group = '';
-        foreach (SearchOption::getOptionsForItemtype(Ticket::class, true, false) as $key => $val) {
-            if (!is_array($val)) {
-                $group = $val;
-                continue;
+        $itemtypes_data = [];
+        foreach (self::SEARCHOPTION_RESTRICTED_ITEMTYPES as $itemtype) {
+            $options = [];
+            $group = '';
+            foreach (SearchOption::getOptionsForItemtype($itemtype, true, false) as $key => $val) {
+                if (!is_array($val)) {
+                    $group = $val;
+                    continue;
+                }
+                if (count($val) === 1) {
+                    $group = $val['name'];
+                    continue;
+                }
+                if (isset($val['nodisplay']) && $val['nodisplay']) {
+                    continue;
+                }
+                $options[$group][$key] = $val['name'];
             }
-            if (count($val) === 1) {
-                $group = $val['name'];
-                continue;
-            }
-            if (isset($val['nodisplay']) && $val['nodisplay']) {
-                continue;
-            }
-            $ticket_search_options[$group][$key] = $val['name'];
+            $itemtypes_data[] = [
+                'key'     => $itemtype,
+                'label'   => $itemtype::getTypeName(Session::getPluralNumber()),
+                'options' => $options,
+            ];
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/search_list.html.twig', [
-            'item'                    => $this,
-            'ticket_search_options'   => $ticket_search_options,
+            'item'           => $this,
+            'itemtypes_data' => $itemtypes_data,
         ]);
     }
 

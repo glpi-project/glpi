@@ -444,7 +444,7 @@ class ProfileTest extends DbTestCase
         }
     }
 
-    public function testExcludedTicketSearchOptionsPrepareInput(): void
+    public function testExcludedSearchOptionsPrepareInput(): void
     {
         $this->login();
 
@@ -455,23 +455,25 @@ class ProfileTest extends DbTestCase
 
         // deduplication and non-integer filtering
         $profile->update([
-            'id'                             => $profile->getID(),
-            'excluded_ticket_searchoptions'  => [5, 3, 5, 0, 'abc'],
+            'id'                     => $profile->getID(),
+            'excluded_searchoptions' => [
+                'Ticket' => [5, 3, 5, 0, 'abc'],
+            ],
         ]);
         $reloaded = new \Profile();
         $reloaded->getFromDB($profile->getID());
         $reloaded->cleanProfile();
-        $actual = $reloaded->fields['excluded_ticket_searchoptions'];
-        sort($actual);
-        $this->assertEquals([3, 5], $actual);
+        $actual = $reloaded->fields['excluded_searchoptions'];
+        sort($actual['Ticket']);
+        $this->assertEquals([3, 5], $actual['Ticket']);
 
-        // empty array stores null (no restrictions)
+        // empty input stores null (no restrictions)
         $profile->update([
-            'id'                             => $profile->getID(),
-            'excluded_ticket_searchoptions'  => [],
+            'id'                     => $profile->getID(),
+            'excluded_searchoptions' => [],
         ]);
         $reloaded->getFromDB($profile->getID());
         $reloaded->cleanProfile();
-        $this->assertEquals([], $reloaded->fields['excluded_ticket_searchoptions']);
+        $this->assertEquals([], $reloaded->fields['excluded_searchoptions']);
     }
 }

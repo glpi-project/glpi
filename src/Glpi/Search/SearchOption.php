@@ -446,17 +446,22 @@ final class SearchOption implements ArrayAccess
      */
     private static function applyProfileRestrictions(string $itemtype, array &$options): void
     {
-        if ($itemtype !== Ticket::class || Session::isCron()) {
+        if (Session::isCron()) {
             return;
         }
 
-        $excluded = $_SESSION['glpiactiveprofile']['excluded_ticket_searchoptions'] ?? null;
+        $all_excluded = $_SESSION['glpiactiveprofile']['excluded_searchoptions'] ?? null;
+        if (empty($all_excluded)) {
+            return;
+        }
+
+        if (!is_array($all_excluded)) {
+            $all_excluded = json_decode($all_excluded, true) ?? [];
+        }
+
+        $excluded = $all_excluded[$itemtype] ?? [];
         if (empty($excluded)) {
             return;
-        }
-
-        if (!is_array($excluded)) {
-            $excluded = json_decode($excluded, true) ?? [];
         }
 
         foreach ($excluded as $num) {

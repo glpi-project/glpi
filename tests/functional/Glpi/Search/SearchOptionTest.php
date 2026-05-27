@@ -251,7 +251,7 @@ class SearchOptionTest extends DbTestCase
 
         $excluded_num = reset($option_nums);
 
-        $_SESSION['glpiactiveprofile']['excluded_ticket_searchoptions'] = [$excluded_num];
+        $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = ['Ticket' => [$excluded_num]];
 
         $restricted = SearchOption::getOptionsForItemtype(\Ticket::class);
 
@@ -272,7 +272,7 @@ class SearchOptionTest extends DbTestCase
         $option_nums = array_filter(array_keys($all_options), 'is_int');
         $excluded_num = reset($option_nums);
 
-        $_SESSION['glpiactiveprofile']['excluded_ticket_searchoptions'] = [$excluded_num];
+        $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = ['Ticket' => [$excluded_num]];
 
         $unfiltered = SearchOption::getOptionsForItemtype(\Ticket::class, true, false);
 
@@ -286,7 +286,7 @@ class SearchOptionTest extends DbTestCase
 
         $base = SearchOption::getOptionsForItemtype(\Ticket::class, true, false);
 
-        $_SESSION['glpiactiveprofile']['excluded_ticket_searchoptions'] = [];
+        $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = [];
 
         $filtered = SearchOption::getOptionsForItemtype(\Ticket::class);
 
