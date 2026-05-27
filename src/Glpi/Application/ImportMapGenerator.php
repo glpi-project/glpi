@@ -284,7 +284,14 @@ class ImportMapGenerator
                 $clean_path = '/' . $relative_path;
 
                 // Generate version parameter
-                $version_param = $this->generateVersionParam($file_path);
+                if (Environment::get() == Environment::DEVELOPMENT) {
+                    // Faster but less precise. It help with performances in
+                    // dev envs where we don't have production specific contraints
+                    // like multiple servers or re-deploy.
+                    $version_param = $file->getMTime();
+                } else {
+                    $version_param = $this->generateVersionParam($file_path);
+                }
 
                 // Add to import map
                 $import_map['imports'][$clean_path] = $this->root_doc . $clean_path . '?v=' . $version_param;
