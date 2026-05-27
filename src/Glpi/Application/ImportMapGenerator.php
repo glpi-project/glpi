@@ -40,8 +40,8 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Path;
 
-use function Safe\hash_file;
 use function Safe\file_get_contents;
+use function Safe\hash_file;
 use function Safe\preg_replace;
 
 /**
