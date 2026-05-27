@@ -283,10 +283,27 @@ class ImportMapGenerator
                 // Get the path that would be used for a GLPI located at the server root dir (e.g. `/js/modules/Foo.js`)
                 $clean_path = '/' . $relative_path;
 
+                // Generate version parameter
+                $version_param = $this->generateVersionParam($file_path);
+
                 // Add to import map
-                $import_map['imports'][$clean_path] = $this->root_doc . $clean_path . '?v=' . $file->getMTime();
+                $import_map['imports'][$clean_path] = $this->root_doc . $clean_path . '?v=' . $version_param;
             }
         }
     }
 
+    /**
+     * Generate a version parameter based on the file content
+     *
+     * @param string $file_path Path to the file
+     * @return string Version parameter
+     */
+    private function generateVersionParam(string $file_path): string
+    {
+        if (!file_exists($file_path)) {
+            return 'missing';
+        }
+
+        return hash_file('CRC32c', $file_path);
+    }
 }

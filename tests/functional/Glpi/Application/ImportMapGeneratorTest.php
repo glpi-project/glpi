@@ -232,32 +232,34 @@ class ImportMapGeneratorTest extends GLPITestCase
 
         // Create generator and get reflection access to private method
         $generator = $this->createMockGenerator(vfsStream::url('glpi'));
+        $reflection = new \ReflectionClass($generator);
+        $method = $reflection->getMethod('generateVersionParam');
 
         // Test file path
         $file_path = vfsStream::url('glpi/js/modules/TestModule.js');
 
         // First version check
-        $initial_map = $generator->generate();
-        $path = $initial_map['imports']['/js/modules/TestModule.js'];
-        $version = parse_url($path, PHP_URL_QUERY);
-        parse_str($version, $initial_version_params);
-        $initial_version = $initial_version_params['v'];
+        $initial_version = $method->invoke($generator, $file_path);
         $this->assertNotEmpty($initial_version, 'Version parameter should not be empty');
 
         // Modify file and check for version change
-        sleep(1);
         file_put_contents($file_path, '// Modified content');
-        $new_map = $generator->generate();
-        $path = $new_map['imports']['/js/modules/TestModule.js'];
-        $version = parse_url($path, PHP_URL_QUERY);
-        parse_str($version, $new_version_params);
-        $new_version = $new_version_params['v'];
+        $new_version = $method->invoke($generator, $file_path);
 
         // Verify version changed
         $this->assertNotEquals(
             $initial_version,
             $new_version,
             'Version parameter should change when file content changes'
+        );
+
+        // Additional verification - changing back should match original hash
+        file_put_contents($file_path, '// Initial content');
+        $reverted_version = $method->invoke($generator, $file_path);
+        $this->assertEquals(
+            $initial_version,
+            $reverted_version,
+            'Version parameter should be the same when content is identical'
         );
     }
 
