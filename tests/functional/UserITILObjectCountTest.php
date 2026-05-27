@@ -47,6 +47,11 @@ use UserITILObjectCount;
 
 class UserITILObjectCountTest extends DbTestCase
 {
+    /**
+     * Validate requester counters when several users are attached to tickets and tickets change lifecycle.
+     *
+     * @return void
+     */
     public function testTicketCountersWithManyUsersAndLifecycleChanges(): void
     {
         $this->login();
@@ -87,6 +92,11 @@ class UserITILObjectCountTest extends DbTestCase
         $this->assertCounter($users[1]->getID(), Ticket::class, CommonITILActor::REQUESTER, 2);
     }
 
+    /**
+     * Validate counter refresh hooks for every supported ITIL object type and user actor role.
+     *
+     * @return void
+     */
     public function testCountersForAllUserActorRolesAndItilTypes(): void
     {
         $this->login();
@@ -112,6 +122,8 @@ class UserITILObjectCountTest extends DbTestCase
     }
 
     /**
+     * @param int $count Number of users to create.
+     *
      * @return User[]
      */
     private function createUsers(int $count): array
@@ -126,6 +138,13 @@ class UserITILObjectCountTest extends DbTestCase
         return $users;
     }
 
+    /**
+     * Create a minimal ITIL object with auto assignment disabled.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type to create.
+     *
+     * @return Ticket|Problem|Change
+     */
     private function createItilObject(string $itemtype): Ticket|Problem|Change
     {
         return $this->createItem(
@@ -138,7 +157,13 @@ class UserITILObjectCountTest extends DbTestCase
     }
 
     /**
-     * @param User[] $users
+     * Replace one actor list through the public ITIL object input format.
+     *
+     * @param Ticket|Problem|Change $item ITIL object to update.
+     * @param string $input_key Actor input key, for example requester, observer or assign.
+     * @param User[] $users Users to keep in the actor list.
+     *
+     * @return void
      */
     private function setUserActors(Ticket|Problem|Change $item, string $input_key, array $users): void
     {
@@ -164,6 +189,16 @@ class UserITILObjectCountTest extends DbTestCase
         );
     }
 
+    /**
+     * Remove one user actor using the underlying relation object.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $items_id ITIL object identifier.
+     * @param int $users_id User identifier.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
     private function removeUserActorWithRelation(string $itemtype, int $items_id, int $users_id, int $actor_type): void
     {
         $relation_class = match ($itemtype) {
@@ -186,6 +221,16 @@ class UserITILObjectCountTest extends DbTestCase
         $this->assertTrue($relation->delete(['id' => $relation_data['id']]));
     }
 
+    /**
+     * Add one user actor using the underlying relation object.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $items_id ITIL object identifier.
+     * @param int $users_id User identifier.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
     private function addUserActorWithRelation(string $itemtype, int $items_id, int $users_id, int $actor_type): void
     {
         $relation_class = match ($itemtype) {
@@ -210,6 +255,16 @@ class UserITILObjectCountTest extends DbTestCase
         );
     }
 
+    /**
+     * Assert the materialized counter value for a user and actor role.
+     *
+     * @param int $users_id User identifier.
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     * @param int $expected Expected counter value.
+     *
+     * @return void
+     */
     private function assertCounter(int $users_id, string $itemtype, int $actor_type, int $expected): void
     {
         global $DB;

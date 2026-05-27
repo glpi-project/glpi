@@ -2459,12 +2459,22 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         UserITILObjectCount::refreshForItilObject(static::class, (int) $this->getID());
     }
 
+    /**
+     * Refresh materialized ITIL user counters when the object is moved to trash.
+     *
+     * @return void
+     */
     public function post_deleteItem()
     {
         parent::post_deleteItem();
         UserITILObjectCount::refreshForItilObject(static::class, (int) $this->getID());
     }
 
+    /**
+     * Refresh materialized ITIL user counters when the object is restored from trash.
+     *
+     * @return void
+     */
     public function post_restoreItem()
     {
         parent::post_restoreItem();

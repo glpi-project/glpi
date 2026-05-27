@@ -37,6 +37,9 @@
  */
 final class UserITILObjectCount extends CommonDBTM
 {
+    /**
+     * @return string Table used to store materialized ITIL actor counters per user.
+     */
     public static function getTable($classname = null): string
     {
         return 'glpi_users_itilobject_counts';
@@ -47,6 +50,15 @@ final class UserITILObjectCount extends CommonDBTM
         return _n('User ITIL object count', 'User ITIL object counts', $nb);
     }
 
+    /**
+     * Recompute the materialized counter for one user, ITIL object type and actor role.
+     *
+     * @param class-string<CommonITILActor> $actor_class Relation class linking users to an ITIL object.
+     * @param int $users_id User identifier to refresh.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
     public static function refreshForActor(string $actor_class, int $users_id, int $actor_type): void
     {
         global $DB;
@@ -113,6 +125,14 @@ final class UserITILObjectCount extends CommonDBTM
         );
     }
 
+    /**
+     * Refresh all user counters related to a specific ITIL object.
+     *
+     * @param class-string<CommonITILObject> $itemtype ITIL object type to inspect.
+     * @param int $items_id ITIL object identifier.
+     *
+     * @return void
+     */
     public static function refreshForItilObject(string $itemtype, int $items_id): void
     {
         global $DB;
