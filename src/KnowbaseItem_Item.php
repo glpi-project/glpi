@@ -299,7 +299,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
     public static function getIcon()
     {
-        return KnowbaseItem::getIcon();
+        return 'ti ti-link';
     }
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
