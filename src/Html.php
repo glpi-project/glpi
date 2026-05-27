@@ -2059,7 +2059,6 @@ TWIG,
             && ($max > 0)
             && ($max < ($p['num_displayed'] + 10))
         ) {
-            // error : too much checkbox checked, too much items to process
             if (
                 !$p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])

@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Used for massive action processing
+ */
+
 use Glpi\Exception\RedirectException;
 use Glpi\Security\ReAuth\ReAuthManager;
 

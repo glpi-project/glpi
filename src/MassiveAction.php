@@ -821,7 +821,7 @@ class MassiveAction
      **/
     public function showDefaultSubForm()
     {
-        echo Html::submit(_x('button', 'Post 3'), [ // @todo cleanup
+        echo Html::submit(_x('button', 'Post'), [
             'name'  => 'massiveaction',
             'icon'  => 'ti ti-device-floppy',
             'class' => 'btn btn-sm btn-primary',
@@ -853,7 +853,7 @@ class MassiveAction
                     'multiple' => true,
                 ]);
                 echo '<br>';
-                echo Html::submit(_x('button', 'Post 4'), [ // @todo cleanup
+                echo Html::submit(_x('button', 'Post'), [
                     'name'  => 'massiveaction',
                 ]);
                 return true;
@@ -1174,7 +1174,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post 5'); // @todo cleanup
+                    $submitname = _x('button', 'Post');
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
@@ -1206,7 +1206,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post 6'); // @todo cleanup
+                    $submitname = _x('button', 'Post');
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
@@ -1232,7 +1232,7 @@ class MassiveAction
                 if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                     $submitname = $ma->POST['submitname'];
                 } else {
-                    $submitname = _x('button', 'Post 7'); // @todo cleanup
+                    $submitname = _x('button', 'Post');
                     $submit_options['icon'] = 'ti ti-device-floppy';
                 }
                 echo Html::submit($submitname, $submit_options);
