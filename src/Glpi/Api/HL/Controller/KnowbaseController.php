@@ -152,11 +152,6 @@ class KnowbaseController extends AbstractController
                         'description' => 'Whether the article is pinned in the service catalog.',
                         'default' => false,
                     ],
-                    'is_draft' => [
-                        'type' => Doc\Schema::TYPE_BOOLEAN,
-                        'description' => 'Whether the article is a draft (visible only to its author and to knowledge base administrators).',
-                        'default' => false,
-                    ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_begin' => [
