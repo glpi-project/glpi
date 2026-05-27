@@ -689,7 +689,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return [new QueryExpression('true')];
         }
 
-        $criteria = ['glpi_profiles.interface' => Session::getCurrentInterface()];
+        $current_interface = Session::getCurrentInterface();
+        $criteria = ['glpi_profiles.interface' => $current_interface];
 
         // First, get all possible rights
         $right_subqueries = [];
@@ -698,7 +699,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
             if (
                 !is_array($val) // Do not include entities field added by login
-                && (Session::getCurrentInterface() === 'central'
+                && ($current_interface === 'central'
                  || in_array($key, self::$helpdesk_rights, true))
             ) {
                 $right_subqueries[] = [
