@@ -57,11 +57,9 @@ test('Selecting "No illustration" clears the value and shows the placeholder', a
     await modal.getByRole('button', { name: 'No illustration' }).click();
     await expect(modal).toBeHidden();
 
+    const picker = page.getByTestId('illustration-picker');
     await expect(page.getByTestId('illustration-input')).toHaveValue('');
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute, no ARIA role available
-    await expect(page.locator('[data-glpi-icon-picker-value-preview-placeholder]')).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute, no ARIA role available
-    await expect(page.locator('[data-glpi-icon-picker-value-preview-native]')).toBeHidden();
+    await expect(picker.getByRole('img', { name: 'Antivirus', exact: true })).toBeHidden();
 
     await kb.editor.save();
     await page.reload();
@@ -81,19 +79,16 @@ test('Article without illustration hides the container in view mode and reveals 
 
     await kb.goto(id);
 
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute, no ARIA role available
-    const container = page.locator('[data-glpi-kb-illustration-container]');
-    await expect(container).toBeHidden();
+    const picker = page.getByTestId('illustration-picker');
+    await expect(picker).toBeHidden();
 
     await kb.editor.enterEditMode();
 
-    await expect(container).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute, no ARIA role available
-    await expect(page.locator('[data-glpi-icon-picker-value-preview-placeholder]')).toBeVisible();
+    await expect(picker).toBeVisible();
     await expect(page.getByTestId('illustration-input')).toHaveValue('');
 
     await kb.editor.cancel();
-    await expect(container).toBeHidden();
+    await expect(picker).toBeHidden();
 });
 
 test('Cancelling edit after clearing illustration restores the original value', async ({ page, profile, api }) => {
@@ -119,11 +114,9 @@ test('Cancelling edit after clearing illustration restores the original value', 
 
     await kb.editor.cancel();
 
+    const picker = page.getByTestId('illustration-picker');
     await expect(page.getByTestId('illustration-input')).toHaveValue('antivirus');
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute, no ARIA role available
-    await expect(page.locator('[data-glpi-icon-picker-value-preview-native]')).toBeVisible();
-    // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute, no ARIA role available
-    await expect(page.locator('[data-glpi-icon-picker-value-preview-placeholder]')).toBeHidden();
+    await expect(picker.getByRole('img', { name: 'Antivirus', exact: true })).toBeVisible();
 });
 
 test('History panel shows "Illustration removed by" when illustration is cleared', async ({ page, profile, api }) => {
