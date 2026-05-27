@@ -52,7 +52,6 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
-use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\Socket;
@@ -3015,7 +3014,7 @@ class CommonDBTM extends CommonGLPI
         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
-                [, $reauth_needed ] = $allowed_against_reauth(false);
+                [, $reauth_needed] = $allowed_against_reauth(false);
                 return false;
             }
         }
@@ -3063,7 +3062,7 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 // non personnal item
-                $allowed =  (static::canUpdate() && $this->canUpdateItem());
+                $allowed = (static::canUpdate() && $this->canUpdateItem());
                 if ($allowed) {
                     if ($_reauth_needed) {
                         $reauth_needed = true;
@@ -3340,6 +3339,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
+     * @phpstan-impure
      * @return bool
      **/
     public function isActive()

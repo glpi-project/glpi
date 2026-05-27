@@ -134,7 +134,8 @@ enum Environment: string
     }
 
     /**
-     * @see SystemConfigurator::computeConstants() for all available values that can be overridden.
+     * See SystemConfigurator::computeConstants() for all available values that
+     * can be overridden.
      */
     public function getConstantsOverride(string $root_dir): array
     {
