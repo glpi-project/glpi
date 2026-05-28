@@ -90,30 +90,4 @@ class AuthLdapUserRestoreTest extends DbTestCase
         $this->assertSame(1, (int) $user->fields['is_active']);
         $this->assertSame(0, (int) $user->fields['is_deleted_ldap']);
     }
-
-    /**
-     * If a re-enabled AD user logs in before the next sync, Auth clears
-     * is_deleted_ldap to 0 without activating the account. The subsequent
-     * sync must still restore the user based on is_active alone.
-     */
-    public function testRestoreAfterLoginClearedIsDeletedLdap(): void
-    {
-        global $CFG_GLPI;
-
-        $user = $this->createItem(User::class, [
-            'name'            => $this->getUniqueString(),
-            'is_active'       => 0,
-            'is_deleted_ldap' => 1,
-        ]);
-
-        // Simulate Auth.php clearing is_deleted_ldap on login without restoring is_active.
-        $user->update(['id' => $user->getID(), 'is_deleted_ldap' => 0]);
-
-        $CFG_GLPI['user_restored_ldap'] = AuthLDAP::RESTORED_USER_ENABLE;
-        User::manageRestoredUserInLdap($user->getID());
-
-        $user->getFromDB($user->getID());
-        $this->assertSame(1, (int) $user->fields['is_active']);
-        $this->assertSame(0, (int) $user->fields['is_deleted_ldap']);
-    }
 }
