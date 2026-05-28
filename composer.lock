@@ -4,8 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1440d7cc098746f83254ebb3c42fc68c",
+    "content-hash": "f5d0c56ef56d4ecb3029628635b88ced",
     "packages": [
+        {
+            "name": "benmorel/weakmap-polyfill",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BenMorel/weakmap-polyfill.git",
+                "reference": "032b88d36f0398111a3f97699f355d10636d8f98"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BenMorel/weakmap-polyfill/zipball/032b88d36f0398111a3f97699f355d10636d8f98",
+                "reference": "032b88d36f0398111a3f97699f355d10636d8f98",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.4",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A WeakMap polyfill for PHP 7.4",
+            "keywords": [
+                "weakmap",
+                "weakref",
+                "weakreference"
+            ],
+            "support": {
+                "issues": "https://github.com/BenMorel/weakmap-polyfill/issues",
+                "source": "https://github.com/BenMorel/weakmap-polyfill/tree/0.5.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/BenMorel",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-04-02T16:29:05+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.9.3",
@@ -5907,16 +5956,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.7.8",
+            "version": "0.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "bd78ad2ab0d30510729530c077f84d52b8f02866"
+                "reference": "8ea2a7d4702a858f4b0360ba7d4f1841a5e77026"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/bd78ad2ab0d30510729530c077f84d52b8f02866",
-                "reference": "bd78ad2ab0d30510729530c077f84d52b8f02866",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/8ea2a7d4702a858f4b0360ba7d4f1841a5e77026",
+                "reference": "8ea2a7d4702a858f4b0360ba7d4f1841a5e77026",
                 "shasum": ""
             },
             "require": {
@@ -5959,7 +6008,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2025-08-20T09:58:56+00:00"
+            "time": "2025-10-14T10:26:06+00:00"
         },
         {
             "name": "maglnet/composer-require-checker",

@@ -2412,6 +2412,10 @@ HTML;
                 'name'  => 'thenetworg/oauth2-azure',
                 'check' => 'TheNetworg\\OAuth2\\Client\\Provider\\Azure',
             ],
+            [
+                'name'  => 'benmorel/weakmap-polyfill',
+                'check' => 'WeakMap',
+            ],
         ];
         if (Toolbox::canUseCAS()) {
             $deps[] = [
