@@ -79,8 +79,7 @@ class Central extends CommonGLPI
                 4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
             ];
 
-            $grid = new Grid('central');
-            if ($grid::canViewOneDashboard()) {
+            if (Grid::canViewOneDashboard()) {
                 array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
             }
 
