@@ -37,7 +37,7 @@ use Glpi\DBAL\QueryExpression;
 /**
  * Materialized counters used to sort users by ITIL actor relationships.
  */
-final class UserITILObjectCount extends CommonDBTM
+class UserITILObjectCount extends CommonDBTM
 {
     /**
      * @return string Table used to store materialized ITIL actor counters per user.

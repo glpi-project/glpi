@@ -49,7 +49,6 @@ if (!$DB->tableExists('glpi_users_itilobject_counts')) {
         `date_mod` timestamp NULL DEFAULT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`users_id`, `itemtype`, `actor_type`),
-        KEY `users_id` (`users_id`),
         KEY `itemtype_actor_type_count` (`itemtype`, `actor_type`, `count`),
         KEY `date_mod` (`date_mod`)
       ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC";
