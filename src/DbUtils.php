@@ -399,11 +399,7 @@ final class DbUtils
         // If a class exists for this itemtype, just return the declared class name.
         // The "false" second parameters make sure we do not trigger autoload since
         // case might not be correct.
-        if (
-            class_exists($itemtype, false)
-            || interface_exists($itemtype, false)
-            || trait_exists($itemtype, false)
-        ) {
+        if (class_exists($itemtype, false)) {
             return (new ReflectionClass($itemtype))->getName();
         }
 
