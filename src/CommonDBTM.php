@@ -2951,25 +2951,37 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        // reauth - store reauth status in $_reauth_needed, set it to $reauth_needed only if it's the sole missing requirement.
-        $_reauth_needed = static::isUserReauthenticationNeeded();
+        // reauth - store reauth status in $item_type_requires_reauth, set it to $reauth_needed only if it's the sole missing requirement.
+        $item_type_requires_reauth = static::isUserReauthenticationNeeded();
         $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
         /**
-         * Returns the correct value for $allowed depending on $_reaut_needed
+         * Returns the correct value for $allowed depending on $item_type_requires_reauth
          *
-         * If allowed but reauth needed, allowed becomes false and reauth_needed becomes true
+         * Core logic to respond with reauth and authorization is in this method
+         *
+         *
+         * - allowed (legacy right management) :
+         *   - 1. item type requires reauth : [can result: false (because item type requires reauth), reauth_needed : true]
+         *   - 2. reauth not needed [true, false]
+         * - not allowed :
+         *   - 3. single case, because whether or not reauth is needed, no right is given : [false, false]
+         *
+         * @return array{bool, bool} first value is the allowed result, second value is reauth_needed
          */
-        $allowed_against_reauth = static function (bool $allowed) use ($_reauth_needed) {
+        $allowed_against_reauth = static function (bool $allowed) use ($item_type_requires_reauth) {
             if (!$allowed) {
-                return [false, false]; // not allowed by right, (+ so no reauth needed)
+                // case 3 - not allowed
+                return [false, false];
             }
 
-            if ($_reauth_needed) {
-                return [false, true]; // not allowed + reauth needed
+            if ($item_type_requires_reauth) {
+                // case 1 - allowed but $item_type_requires_reauth
+                return [false, true];
             }
 
-            return [true, false]; // allowed (+ no reauth needed)
+            // case 2 - allowed, no reauth_needed
+            return [true, false];
         };
 
         // New item
@@ -3002,7 +3014,7 @@ class CommonDBTM extends CommonGLPI
             return $allowed;
         }
 
-        // Existing item
+        // Existing item without id or $ID param not the same as this
         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
@@ -3043,31 +3055,52 @@ class CommonDBTM extends CommonGLPI
                 return (static::canView() && $this->canViewItem());
 
             case UPDATE:
-                // Personal item
+                // first possibility : Personal item
                 $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 if ($allowed) {
-                    if ($_reauth_needed) {
-                        $reauth_needed = true;
-                        return false;
-                    }
                     return true;
                 }
 
-                // non personnal item
+                // second possibility : non personnal item
                 $allowed = (static::canUpdate() && $this->canUpdateItem());
-                if ($allowed) {
-                    if ($_reauth_needed) {
-                        $reauth_needed = true;
-                        return false;
-                    }
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                return $allowed;
+            case DELETE:
+                // @todo add reauth logic
+                // Personal item
+                if (
+                    $this->isPrivate()
+                    && ($this->fields['users_id'] === Session::getLoginUserID())
+                ) {
                     return true;
                 }
+                return (static::canDelete() && $this->canDeleteItem());
+
+            case PURGE:
+                // @todo add reauth logic
+                // Personal item
+                if (
+                    $this->isPrivate()
+                    && ($this->fields['users_id'] === Session::getLoginUserID())
+                ) {
+                    return true;
+                }
+                return (static::canPurge() && $this->canPurgeItem());
+
+            case CREATE:
+                // @todo add reauth logic
+                // Personal item
+                if (
+                    $this->isPrivate()
+                    && ($this->fields['users_id'] === Session::getLoginUserID())
+                ) {
+                    return true;
+                }
+                return (static::canCreate() && $this->canCreateItem());
+            default:
                 return false;
-
-        // final auth, depending on reauth.
-        [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
-
-        return $allowed;
+        }
     }
 
     /**
