@@ -629,6 +629,15 @@ class AuthLdapTest extends DbTestCase
         $this->assertSame($expected, AuthLDAP::guidToHex($guid));
     }
 
+    public function testGuidToHexForBinaryGuidSearch()
+    {
+        // searchUserDn() feeds binary GUID attributes through guidToHex() to
+        // build the LDAP filter. This is the hex-escaped form AD expects.
+        $guid     = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+        $expected = '\d3\18\57\7c\54\c4\21\41\90\e3\a7\f7\e8\e1\d9\f1';
+        $this->assertSame($expected, AuthLDAP::guidToHex($guid));
+    }
+
     public function testGetFieldValue()
     {
         $infos = ['field' => 'value'];
@@ -636,6 +645,48 @@ class AuthLdapTest extends DbTestCase
 
         $infos = ['objectguid' => 'value'];
         $this->assertSame('value', AuthLDAP::getFieldValue($infos, 'objectguid'));
+    }
+
+    public function testGetFieldValueConvertsObjectGuidBinary()
+    {
+        // Binary objectGUID from AD must be converted to the canonical string form.
+        $bin      = hex2bin('d318577c54c4214190e3a7f7e8e1d9f1');
+        $expected = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+
+        $infos = ['objectguid' => [$bin]];
+        $this->assertSame($expected, AuthLDAP::getFieldValue($infos, 'objectguid'));
+    }
+
+    public function testGetFieldValueConvertsMsDsConsistencyGuid()
+    {
+        // ms-DS-ConsistencyGuid shares the same 16-byte binary layout as objectGUID.
+        $bin      = hex2bin('d318577c54c4214190e3a7f7e8e1d9f1');
+        $expected = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+
+        $infos = ['ms-ds-consistencyguid' => [$bin]];
+        $this->assertSame($expected, AuthLDAP::getFieldValue($infos, 'ms-ds-consistencyguid'));
+    }
+
+    public function testGetFieldValueIsCaseInsensitiveForGuidAttributes()
+    {
+        // LDAP attribute names are case-insensitive per RFC 4512.
+        $bin      = hex2bin('d318577c54c4214190e3a7f7e8e1d9f1');
+        $expected = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+
+        $infos = ['ms-DS-ConsistencyGuid' => [$bin]];
+        $this->assertSame($expected, AuthLDAP::getFieldValue($infos, 'ms-DS-ConsistencyGuid'));
+    }
+
+    public function testGetFieldValueDoesNotDoubleConvertGuidString()
+    {
+        // If the value is already a GUID string, return it unchanged.
+        $guid = '7c5718d3-c454-4121-90e3-a7f7e8e1d9f1';
+
+        $infos = ['objectguid' => [$guid]];
+        $this->assertSame($guid, AuthLDAP::getFieldValue($infos, 'objectguid'));
+
+        $infos = ['ms-ds-consistencyguid' => [$guid]];
+        $this->assertSame($guid, AuthLDAP::getFieldValue($infos, 'ms-ds-consistencyguid'));
     }
 
     public function testPassword()
