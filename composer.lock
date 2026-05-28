@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36262a8ea0c653fec3cd47f7b6f7cf6b",
+    "content-hash": "1440d7cc098746f83254ebb3c42fc68c",
     "packages": [
         {
             "name": "brick/math",
@@ -715,33 +715,6 @@
                 "source": "https://github.com/mtibben/html2text/tree/4.3.1"
             },
             "time": "2020-04-16T23:44:31+00:00"
-        },
-        {
-            "name": "htmlawed/htmlawed",
-            "version": "1.2.14",
-            "dist": {
-                "type": "zip",
-                "url": "https://www.bioinformatics.org/phplabware/downloads/htmLawed1214.zip"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "htmLawed.php"
-                ]
-            },
-            "license": [
-                "LGPL-3.0-only",
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Santosh Patnaik",
-                    "email": "drpatnaikREMOVEALLCAPS@yahoo.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Official htmLawed PHP library for HTML filtering",
-            "homepage": "https://www.bioinformatics.org/phplabware/internal_utilities/htmLawed"
         },
         {
             "name": "iamcal/lib_autolink",
