@@ -3117,7 +3117,7 @@ class CommonDBTM extends CommonGLPI
         if (!$this->can($ID, $right, $input, $require_reauth)) {
             if ($require_reauth) {
                 self::redirectToReauthPrompt();
-                // redirection processed
+                // method exit - redirection processed
             }
 
             /** @var class-string<CommonDBTM> $itemtype */

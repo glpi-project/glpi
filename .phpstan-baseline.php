@@ -872,6 +872,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/manuallink.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to function is_a\\(\\) with arguments class\\-string\\<CommonGLPI\\>, \'CommonGLPI\' and true will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/front/massiveaction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instantiating an object from an unrestricted dynamic string is forbidden \\(see https\\://github\\.com/glpi\\-project/phpstan\\-glpi\\?tab\\=readme\\-ov\\-file\\#forbiddynamicinstantiationrule\\)\\.$#',
+	'identifier' => 'glpi.forbidDynamicInstantiation',
+	'count' => 1,
+	'path' => __DIR__ . '/front/massiveaction.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

@@ -80,7 +80,7 @@ class MassiveAction
 
     /**
      * Class used to process current action.
-     * @var class-string|null
+     * @var class-string
      */
     private string $processor;
 
