@@ -80,20 +80,20 @@ export class KnowbaseItemPage extends GlpiPage
 
     public get videoDialog(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- custom TipTap dialog, no ARIA role available
-        return this.page.locator('.video-dialog');
+        return this.page.getByRole('dialog', { name: 'Insert video' });
     }
 
     public get videoEmbedPlaceholders(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- semantic data attribute used by the VideoEmbed extension
-        return this.page.locator('[data-video-provider]');
+        // VideoEmbedExtension nodeView wraps each placeholder in a role="figure"
+        // labelled "<Provider> video" (or "Invalid video" for tampered nodes).
+        return this.page.getByRole('figure', { name: /\bvideo$/i });
     }
 
     public get videoEmbedIframes(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- semantic class produced by VideoEmbedRenderer
-        return this.page.locator('.video-embed-wrapper > iframe');
+        // VideoEmbedRenderer emits iframes with title="<Provider> video player".
+        return this.page.getByTitle(/video player$/i);
     }
 
     public get subject(): Locator
