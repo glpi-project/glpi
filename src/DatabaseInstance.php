@@ -458,6 +458,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
                 'source_itemtype' => $item::class,
                 'source_items_id' => $item->fields['id'],
                 'target_itemtype' => self::class,
+                'form_label'      => '',
                 'dropdown_options' => [
                     'condition'   => [
                         'is_deleted' => 0,
