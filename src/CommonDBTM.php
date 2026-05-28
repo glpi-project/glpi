@@ -2948,6 +2948,7 @@ class CommonDBTM extends CommonGLPI
     public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
         if (Session::isInventory()) {
+            $reauth_needed = false;
             return true;
         }
 
@@ -3034,73 +3035,49 @@ class CommonDBTM extends CommonGLPI
         $this->right = null;
 
         // Share token session-based access (read-only)
-        // @todo voir si on doit traiter la reauth ici
         if (
             $right === READ
             && $this instanceof ShareableInterface
             && (new ShareTokenManager())->hasSessionAccess(static::class, $ID)
         ) {
+            $reauth_needed = false;
             return true;
         }
 
+        $this_belongs_to_current_user = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
         switch ($right) {
             case READ:
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canView() && $this->canViewItem());
+                // no reauth for READ right
+                $allowed = $this_belongs_to_current_user || (static::canView() && $this->canViewItem());
+                $reauth_needed = false;
+                break;
 
             case UPDATE:
-                // first possibility : Personal item
-                $allowed = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
+                $allowed = $this_belongs_to_current_user || (static::canUpdate() && $this->canUpdateItem());
                 [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
-                if ($allowed) {
-                    return true;
-                }
+                break;
 
-                // second possibility : non personnal item
-                $allowed = (static::canUpdate() && $this->canUpdateItem());
-                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
-                return $allowed;
             case DELETE:
-                // @todo add reauth logic
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canDelete() && $this->canDeleteItem());
+                $allowed = $this_belongs_to_current_user || (static::canDelete() && $this->canDeleteItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case PURGE:
-                // @todo add reauth logic
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canPurge() && $this->canPurgeItem());
+                $allowed = $this_belongs_to_current_user || (static::canPurge() && $this->canPurgeItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
 
             case CREATE:
-                // @todo add reauth logic
-                // Personal item
-                if (
-                    $this->isPrivate()
-                    && ($this->fields['users_id'] === Session::getLoginUserID())
-                ) {
-                    return true;
-                }
-                return (static::canCreate() && $this->canCreateItem());
+                $allowed = $this_belongs_to_current_user || (static::canCreate() && $this->canCreateItem());
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
+                break;
+
             default:
+                $reauth_needed = false;
                 return false;
         }
+
+        return $allowed;
     }
 
     /**
