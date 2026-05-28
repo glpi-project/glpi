@@ -63,6 +63,7 @@
                                     'users_id': comment['users_id'],
                                     'date_creation': comment['date_creation'],
                                     'date_mod': comment['date_mod'] ?? comment['date_creation'],
+                                    'users_id_editor': comment['users_id'],
                                     'anchor': 'kbcomment' ~ comment['id']
                                 }, with_context = false) }}
                             </div>
