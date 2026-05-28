@@ -48,11 +48,11 @@ final class InfoCardController extends AbstractController
     #[Route("/User/InfoCard/{users_id}", name: "glpi_user_info_card", methods: ["GET"])]
     public function __invoke(Request $request, int $users_id): Response
     {
-        if (!Session::haveRight('user', READ)) {
+        $user = new User();
+        if (!$user->can($users_id, READ)) {
             throw new AccessDeniedHttpException();
         }
 
-        $user = new User();
         if (!$user->getFromDB($users_id)) {
             throw new NotFoundHttpException();
         }
