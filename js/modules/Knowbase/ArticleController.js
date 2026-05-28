@@ -629,8 +629,22 @@ export class GlpiKnowbaseArticleController
         const badge = this.#container.querySelector(
             `[data-glpi-document-assoc-id="${assoc_id}"]`
         );
-        if (badge) {
-            badge.remove();
+        const document_id = parseInt(badge.dataset.glpiDocumentId);
+        badge.remove();
+
+        // Make the document available again in the link dropdown
+        if (this.#document_link_controller) {
+            // Controller exist, call dedicated method
+            this.#document_link_controller.removeFromUsed(document_id);
+        } else {
+            // Controller has not yet been initialized, modify its dataset
+            const link_pane = document.getElementById('kb-modal-link-pane');
+            const used = JSON.parse(link_pane.dataset.glpiKbLinkUsedIds);
+            const idx = used.indexOf(document_id);
+            if (idx !== -1) {
+                used.splice(idx, 1);
+                link_pane.dataset.glpiKbLinkUsedIds = JSON.stringify(used);
+            }
         }
 
         this.#updateDocumentCount(-1);
