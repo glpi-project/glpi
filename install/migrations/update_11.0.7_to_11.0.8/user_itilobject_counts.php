@@ -34,6 +34,7 @@
 
 /**
  * @var DBmysql $DB
+ * @var Migration $migration
  */
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
@@ -46,13 +47,34 @@ if (!$DB->tableExists('glpi_users_itilobject_counts')) {
         `itemtype` varchar(100) NOT NULL,
         `actor_type` tinyint NOT NULL DEFAULT '0',
         `count` int NOT NULL DEFAULT '0',
+        `date_creation` timestamp NULL DEFAULT NULL,
         `date_mod` timestamp NULL DEFAULT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`users_id`, `itemtype`, `actor_type`),
         KEY `itemtype_actor_type_count` (`itemtype`, `actor_type`, `count`),
+        KEY `date_creation` (`date_creation`),
         KEY `date_mod` (`date_mod`)
       ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQuery($query);
+}
+
+// Keep migration idempotent for instances where table was created
+// by a previous revision without date_creation.
+$has_schema_updates = false;
+if (!$DB->fieldExists('glpi_users_itilobject_counts', 'date_creation')) {
+    $has_schema_updates = $migration->addField(
+        'glpi_users_itilobject_counts',
+        'date_creation',
+        "timestamp NULL DEFAULT NULL",
+        ['after' => 'count']
+    ) || $has_schema_updates;
+}
+if (!isIndex('glpi_users_itilobject_counts', 'date_creation')) {
+    $migration->addKey('glpi_users_itilobject_counts', 'date_creation');
+    $has_schema_updates = true;
+}
+if ($has_schema_updates) {
+    $migration->migrationOneTable('glpi_users_itilobject_counts');
 }
 
 $DB->delete('glpi_users_itilobject_counts', ['id' => ['>', 0]]);
@@ -88,12 +110,13 @@ foreach ($counts_queries as $query_data) {
     $itil_table = DBmysql::quoteName($query_data['itil_table']);
 
     $query = "INSERT INTO `glpi_users_itilobject_counts`
-        (`users_id`, `itemtype`, `actor_type`, `count`, `date_mod`)
+        (`users_id`, `itemtype`, `actor_type`, `count`, `date_creation`, `date_mod`)
         SELECT
             {$relation}.`users_id`,
             '{$itemtype}',
             {$relation}.`type`,
             COUNT(DISTINCT {$relation}.{$relation_fk}) AS `count`,
+            NOW(),
             NOW()
         FROM {$relation}
         INNER JOIN {$itil_table}
