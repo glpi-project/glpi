@@ -1,34 +1,34 @@
 {#
- # ---------------------------------------------------------------------
- #
- # GLPI - Gestionnaire Libre de Parc Informatique
- #
- # http://glpi-project.org
- #
- # @copyright 2015-2026 Teclib' and contributors.
- # @licence   https://www.gnu.org/licenses/gpl-3.0.html
- #
- # ---------------------------------------------------------------------
- #
- # LICENSE
- #
- # This file is part of GLPI.
- #
- # This program is free software: you can redistribute it and/or modify
- # it under the terms of the GNU General Public License as published by
- # the Free Software Foundation, either version 3 of the License, or
- # (at your option) any later version.
- #
- # This program is distributed in the hope that it will be useful,
- # but WITHOUT ANY WARRANTY; without even the implied warranty of
- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- # GNU General Public License for more details.
- #
- # You should have received a copy of the GNU General Public License
- # along with this program.  If not, see <https://www.gnu.org/licenses/>.
- #
- # ---------------------------------------------------------------------
- #}
+# ---------------------------------------------------------------------
+#
+# GLPI - Gestionnaire Libre de Parc Informatique
+#
+# http://glpi-project.org
+#
+# @copyright 2015-2026 Teclib' and contributors.
+# @licence   https://www.gnu.org/licenses/gpl-3.0.html
+#
+# ---------------------------------------------------------------------
+#
+# LICENSE
+#
+# This file is part of GLPI.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# ---------------------------------------------------------------------
+#}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -68,11 +68,11 @@
                     {% set result_template_js %}
                         {# Select2 js function for templateResult that hides options already added to the table where the value matches the data-opt-id attr on the rows #}
                         (opt) => {
-                            if ($(`li[data-opt-id="${opt.id}"]`).length > 0) {
-                                return null;
-                            }
-                            {# select2 will escape the text #}
-                            return opt.text;
+                        if ($(`li[data-opt-id="${opt.id}"]`).length > 0) {
+                        return null;
+                        }
+                        {# select2 will escape the text #}
+                        return opt.text;
                         }
                     {% endset %}
 
@@ -124,98 +124,99 @@
         {% endif %}
     {% endif %}
 </div>
-<script>
-    $(() => {
-        const config_forms = $(`#tabsbody.display_preference_config`);
-        // Select nothing by default because select2 has no problem defaulting the selection to the first item even if it is filtered out
-        config_forms.find(`select[name="num"]`).val('').trigger('change');
-        // Make sure the table rows are sortable only once
-        const sortables = `#tabsbody.display_preference_config ul.list-group`;
-        try {
-            sortable(sortables, 'destroy');
-        } catch (e) {}
-        sortable(sortables, {
-            acceptFrom: '#tabsbody.display_preference_config ul.list-group',
-            items: '{% if can_edit %}li:not([data-fixed]){% else %}none{% endif %}',
-        });
-
-        function updateOrder(element) {
-            const el = $(element);
-            const ul = el.is('ul') ? el : el.find('ul');
-
-            const opts = [];
-            ul.find('li[data-opt-id]:not([data-fixed])').each((i, el) => {
-                opts.push($(el).data('opt-id'));
+{% if can_edit %}
+    <script>
+        $(() => {
+            const config_forms = $(`#tabsbody.display_preference_config`);
+            // Select nothing by default because select2 has no problem defaulting the selection to the first item even if it is filtered out
+            config_forms.find(`select[name="num"]`).val('').trigger('change');
+            // Make sure the table rows are sortable only once
+            const sortables = `#tabsbody.display_preference_config ul.list-group`;
+            try {
+                sortable(sortables, 'destroy');
+            } catch (e) {}
+            sortable(sortables, {
+                acceptFrom: '#tabsbody.display_preference_config ul.list-group',
+                items: '{% if can_edit %}li:not([data-fixed]){% else %}none{% endif %}',
             });
-            // disable sorting temporarily
-            sortable(sortables, 'disable');
-            $.ajax({
-                url: "{{ path('/ajax/displaypreference.php') }}",
-                type: 'POST',
-                data: {
-                    'action': 'update_order',
-                    'itemtype': config_forms.find(`input[name="itemtype"]`).val(),
-                    'users_id': config_forms.find(`input[name="users_id"]`).val(),
-                    'interface': '{{ interface }}',
-                    'opts': opts,
-                },
-            }).then(() => {
-                sortable(sortables, 'enable');
-            }, () => {
-                // Failure. Move item back to original position
-                const dragged = e.detail.item;
-                const original_index = e.detail.origin.elementIndex;
-                if (original_index === 0) {
-                    $(dragged).insertBefore(dragged.parent().find(`li:eq(${original_index})`));
-                } else {
-                    $(dragged).insertAfter(dragged.parent().find(`li:eq(${original_index})`));
-                }
-                sortable(sortables, 'enable');
-            });
-        }
 
-        $(sortables).off('sortupdate').on('sortupdate', (e) => {
-            updateOrder(e.target);
-        });
-        const submitForm = (specific_form, data) => {
-            data['itemtype'] = specific_form.find(`input[name="itemtype"]`).val();
-            data['users_id'] = specific_form.find(`input[name="users_id"]`).val();
-            // Disable all buttons since there can only be one action done at a time
-            config_forms.find(`button`).prop('disabled', true);
-            $.ajax({
-                url: "{{ path('/ajax/displaypreference.php') }}",
-                type: 'POST',
-                data: data,
-            }).then(() => {
-                // This script is inside an iframe, so this only reloads the iframe
-                window.location.reload();
-            }, () => {
-                // This script is inside an iframe, so this only reloads the iframe
-                window.location.reload();
-            });
-        };
-        config_forms.find(`button[name="activate"]`).on(`click`, (e) => {
-            submitForm($(e.target).closest('.display_preference_config'), {activate: 1});
-        });
+            function updateOrder(element) {
+                const el = $(element);
+                const ul = el.is('ul') ? el : el.find('ul');
 
-        config_forms.find(`button[name="disable"]`).on(`click`, (e) => {
-            submitForm($(e.target).closest('.display_preference_config'), {disable: 1});
-        });
-
-        config_forms.find(`button[name="add_opt"]`).on(`click`, (e) => {
-            const specific_form = $(e.target).closest('.display_preference_config');
-            const num_select = specific_form.find(`select[name="num"]`);
-            const num = num_select.val();
-            if (num === null) {
-                return;
+                const opts = [];
+                ul.find('li[data-opt-id]:not([data-fixed])').each((i, el) => {
+                    opts.push($(el).data('opt-id'));
+                });
+                // disable sorting temporarily
+                sortable(sortables, 'disable');
+                $.ajax({
+                    url: "{{ path('/ajax/displaypreference.php') }}",
+                    type: 'POST',
+                    data: {
+                        'action': 'update_order',
+                        'itemtype': config_forms.find(`input[name="itemtype"]`).val(),
+                        'users_id': config_forms.find(`input[name="users_id"]`).val(),
+                        'interface': '{{ interface }}',
+                        'opts': opts,
+                    },
+                }).then(() => {
+                    sortable(sortables, 'enable');
+                }, () => {
+                    // Failure. Move item back to original position
+                    const dragged = e.detail.item;
+                    const original_index = e.detail.origin.elementIndex;
+                    if (original_index === 0) {
+                        $(dragged).insertBefore(dragged.parent().find(`li:eq(${original_index})`));
+                    } else {
+                        $(dragged).insertAfter(dragged.parent().find(`li:eq(${original_index})`));
+                    }
+                    sortable(sortables, 'enable');
+                });
             }
-            // Label is the text of the selected option's optgroup + ' - ' + the text of the selected option
-            // unless it is in the first optgroup, then it is just the text of the selected option
-            const opt = num_select.find(`option[value="${num}"]`);
-            const label = opt.closest('optgroup').index() === 0 ? opt.text() : `${opt.closest('optgroup').attr('label')} - ${opt.text()}`;
 
-            const tbody = specific_form.find(`ul.list-group`);
-            tbody.append(`
+            $(sortables).off('sortupdate').on('sortupdate', (e) => {
+                updateOrder(e.target);
+            });
+            const submitForm = (specific_form, data) => {
+                data['itemtype'] = specific_form.find(`input[name="itemtype"]`).val();
+                data['users_id'] = specific_form.find(`input[name="users_id"]`).val();
+                // Disable all buttons since there can only be one action done at a time
+                config_forms.find(`button`).prop('disabled', true);
+                $.ajax({
+                    url: "{{ path('/ajax/displaypreference.php') }}",
+                    type: 'POST',
+                    data: data,
+                }).then(() => {
+                    // This script is inside an iframe, so this only reloads the iframe
+                    window.location.reload();
+                }, () => {
+                    // This script is inside an iframe, so this only reloads the iframe
+                    window.location.reload();
+                });
+            };
+            config_forms.find(`button[name="activate"]`).on(`click`, (e) => {
+                submitForm($(e.target).closest('.display_preference_config'), {activate: 1});
+            });
+
+            config_forms.find(`button[name="disable"]`).on(`click`, (e) => {
+                submitForm($(e.target).closest('.display_preference_config'), {disable: 1});
+            });
+
+            config_forms.find(`button[name="add_opt"]`).on(`click`, (e) => {
+                const specific_form = $(e.target).closest('.display_preference_config');
+                const num_select = specific_form.find(`select[name="num"]`);
+                const num = num_select.val();
+                if (num === null) {
+                    return;
+                }
+                // Label is the text of the selected option's optgroup + ' - ' + the text of the selected option
+                // unless it is in the first optgroup, then it is just the text of the selected option
+                const opt = num_select.find(`option[value="${num}"]`);
+                const label = opt.closest('optgroup').index() === 0 ? opt.text() : `${opt.closest('optgroup').attr('label')} - ${opt.text()}`;
+
+                const tbody = specific_form.find(`ul.list-group`);
+                tbody.append(`
                <li data-opt-id="${num}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
                   <i class="ti ti-grip-vertical"></i>
                   <span class="flex-fill ms-1">${label}</span>
@@ -226,20 +227,21 @@
                   </span>
                </li>
            `);
-            // Reset selection to first item. templateResult will automatically hide the item, but it doesn't remove it as the active selection.
-            // New selection will be blank. Doesn't seem to be a good way to reset the selection to the first item that isn't hidden by the result template.
-            num_select.val('').trigger('change');
-            updateOrder(specific_form);
-        });
+                // Reset selection to first item. templateResult will automatically hide the item, but it doesn't remove it as the active selection.
+                // New selection will be blank. Doesn't seem to be a good way to reset the selection to the first item that isn't hidden by the result template.
+                num_select.val('').trigger('change');
+                updateOrder(specific_form);
+            });
 
-        config_forms.on(`click`, 'button[name="remove_opt"]', (e) => {
-            const specific_form = $(e.target).closest('.display_preference_config');
-            const num_select = specific_form.find(`select[name="num"]`);
-            const list = $(e.target).closest('ul');
-            $(e.target).closest('li').remove();
-            // Trigger an update for the select to re-run the templateResult function
-            num_select.find(`select[name="num"]`).trigger('change');
-            updateOrder(list);
+            config_forms.on(`click`, 'button[name="remove_opt"]', (e) => {
+                const specific_form = $(e.target).closest('.display_preference_config');
+                const num_select = specific_form.find(`select[name="num"]`);
+                const list = $(e.target).closest('ul');
+                $(e.target).closest('li').remove();
+                // Trigger an update for the select to re-run the templateResult function
+                num_select.find(`select[name="num"]`).trigger('change');
+                updateOrder(list);
+            });
         });
-    });
-</script>
+    </script>
+{% endif %}
