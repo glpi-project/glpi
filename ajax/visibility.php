@@ -87,10 +87,8 @@ if (
 
         case 'Entity':
             Entity::dropdown([
-                'value'       => $_SESSION['glpiactive_entity'],
-                'name'        => $prefix . 'entities_id' . $suffix,
-                'entity'      => $_POST['entity'] ?? -1,
-                'entity_sons' => $_POST['is_recursive'] ?? false,
+                'value' => $_SESSION['glpiactive_entity'],
+                'name'  => $prefix . 'entities_id' . $suffix,
             ]);
             echo '<div class="ms-3">' . __s('Child entities') . '</div>';
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
