@@ -58,7 +58,14 @@
                 <div class="kb-comment-content h_item d-flex timeline-content flex-column w-100 mt-2">
                     <div class="d-flex flex-column ps-2">
                         <div class="h_info d-flex pt-1">
-                            <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
+                            <div class="h_date timeline-header mt-0 mb-1 d-flex creator">
+                                {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+                                    'users_id': comment['users_id'],
+                                    'date_creation': comment['date_creation'],
+                                    'date_mod': comment['date_mod'] ?? comment['date_creation'],
+                                    'anchor': 'kbcomment' ~ comment['id']
+                                }, with_context = false) }}
+                            </div>
                             <div class="d-inline-flex ms-auto">
                                 {% if can_comment %}
                                     <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
