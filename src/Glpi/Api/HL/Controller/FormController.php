@@ -40,6 +40,9 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\DirectAccess;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Category;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Form;
@@ -117,6 +120,80 @@ EOT,
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'access_controls' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'FormAccessControl',
+                            'x-join' => [
+                                'table' => FormAccessControl::getTable(),
+                                'fkey' => 'id',
+                                'field' => Form::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                                'strategy' => [
+                                    'type' => Doc\Schema::TYPE_STRING,
+                                    'enum' => [
+                                        AllowList::class,
+                                        DirectAccess::class,
+                                    ],
+                                ],
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+            'FormCategory' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-version-introduced' => '2.4.0',
+                'x-itemtype' => Category::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'description' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
+                    'illustration' => ['type' => Doc\Schema::TYPE_STRING],
+                    'parent' => self::getDropdownTypeSchema(class: Category::class, full_schema: 'FormCategory'),
+                    'level' => ['type' => Doc\Schema::TYPE_INTEGER, 'readOnly' => true],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+            'FormAccessControl' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-version-introduced' => '2.4.0',
+                'x-itemtype' => FormAccessControl::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'form' => self::getDropdownTypeSchema(class: Form::class, full_schema: 'Form'),
+                    'strategy' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => [
+                            AllowList::class,
+                            DirectAccess::class,
+                        ],
+                    ],
+                    'config' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => <<<EOT
+                            JSON encoded configuration for the access control strategy. The content of this field will depend on the strategy used.
+                            DirectAccess strategy contains a `token` string and `allow_unauthenticated` boolean in its config.
+                            AllowList strategy contains `users_ids`, `groups_ids` and `entities_ids` array fields in its config where the values are IDs of the items or 'all' for allowing all items of the type.
+EOT,
+                    ],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 ],
             ],
         ];
