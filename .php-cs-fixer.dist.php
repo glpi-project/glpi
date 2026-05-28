@@ -37,6 +37,7 @@ $finder = (new PhpCsFixer\Finder())
     ->exclude([
         'config/',
         'files/',
+        'lib/',
         'marketplace/',
         'node_modules/',
         'plugins/',
