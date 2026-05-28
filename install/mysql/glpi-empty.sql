@@ -10222,8 +10222,8 @@ CREATE TABLE `glpi_users_itilobject_counts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`users_id`,`itemtype`,`actor_type`),
   KEY `itemtype_actor_type_count` (`itemtype`,`actor_type`,`count`),
-  KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

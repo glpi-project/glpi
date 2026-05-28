@@ -52,8 +52,8 @@ if (!$DB->tableExists('glpi_users_itilobject_counts')) {
         PRIMARY KEY (`id`),
         UNIQUE KEY `unicity` (`users_id`, `itemtype`, `actor_type`),
         KEY `itemtype_actor_type_count` (`itemtype`, `actor_type`, `count`),
-        KEY `date_creation` (`date_creation`),
-        KEY `date_mod` (`date_mod`)
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
       ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQuery($query);
 }
@@ -62,12 +62,13 @@ if (!$DB->tableExists('glpi_users_itilobject_counts')) {
 // by a previous revision without date_creation.
 $has_schema_updates = false;
 if (!$DB->fieldExists('glpi_users_itilobject_counts', 'date_creation')) {
-    $has_schema_updates = $migration->addField(
+    $migration->addField(
         'glpi_users_itilobject_counts',
         'date_creation',
         "timestamp NULL DEFAULT NULL",
         ['after' => 'count']
-    ) || $has_schema_updates;
+    );
+    $has_schema_updates = true;
 }
 if (!isIndex('glpi_users_itilobject_counts', 'date_creation')) {
     $migration->addKey('glpi_users_itilobject_counts', 'date_creation');
