@@ -5480,12 +5480,12 @@ HTML;
         $myuser = new self();
         if (
             !$myuser->getFromDB($users_id) // invalid user
-            || $myuser->fields['is_deleted_ldap'] == 0 // user already considered as restored from LDAP
+            || ($myuser->fields['is_deleted_ldap'] == 0 && $myuser->fields['is_active'] == 1) // already active, nothing to restore
         ) {
             return;
         }
 
-        //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
+        //User is present in DB and in the directory but was inactive or flagged as LDAP-deleted: restore it
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 0,
