@@ -76,12 +76,9 @@ final class KnowbaseItemController extends AbstractController
         if (!$kbitem->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
-        // Plaintext fallback for video placeholders — this endpoint feeds the "Use KB as solution"
-        // workflow which pastes the answer into TinyMCE, which can't round-trip the Tiptap node.
-        // We pass allow_video_embeds=true so the placeholder survives sanitize and can be
-        // substituted by renderAllAsText (otherwise the placeholder div would be stripped).
+
         $safe = RichText::getSafeHtml($kbitem->fields['answer'], false, true);
-        return new Response(VideoEmbedRenderer::renderAllAsText($safe));
+        return new Response(VideoEmbedRenderer::renderAllAsLink($safe));
     }
 
     #[Route(

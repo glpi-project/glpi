@@ -150,19 +150,9 @@ final class VideoEmbedRenderer
         return self::replacePlaceholders(
             $html,
             static function (string $provider, string $opening, string $body): string {
-                if (trim($body) !== '' || !isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
+                $watch_url = self::buildWatchUrlFromPlaceholder($provider, $opening, $body);
+                if ($watch_url === null) {
                     return '';
-                }
-                $video_id = self::extractAttribute($opening, 'data-video-id');
-                if ($video_id === null || preg_match(self::VIDEO_ID_PATTERN, $video_id) !== 1) {
-                    return '';
-                }
-                $start_raw = self::extractAttribute($opening, 'data-video-start');
-                $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
-
-                $watch_url = sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id));
-                if ($start !== null && $start > 0) {
-                    $watch_url .= self::buildWatchStartSuffix($provider, $start);
                 }
 
                 return sprintf(
@@ -172,6 +162,58 @@ final class VideoEmbedRenderer
                 );
             }
         );
+    }
+
+    /**
+     * HTML fallback for callers that paste KB content into a rich-text editor
+     * (e.g. the "Use as solution" workflow): a sanitizer-safe `<a>` to the
+     * provider's canonical watch URL. Same allowlist as {@see self::renderAllAsText()};
+     * href and text are built from the validated id + hardcoded templates and
+     * are htmlescape'd on output.
+     */
+    public static function renderAllAsLink(string $html): string
+    {
+        if (!str_contains($html, 'data-video-provider')) {
+            return $html;
+        }
+
+        return self::replacePlaceholders(
+            $html,
+            static function (string $provider, string $opening, string $body): string {
+                $watch_url = self::buildWatchUrlFromPlaceholder($provider, $opening, $body);
+                if ($watch_url === null) {
+                    return '';
+                }
+
+                $escaped = htmlescape($watch_url);
+                return sprintf('<a href="%s" rel="noopener noreferrer">%s</a>', $escaped, $escaped);
+            }
+        );
+    }
+
+    /**
+     * Validate a placeholder and build its canonical watch URL, or null if the
+     * placeholder is tampered (non-empty body, unknown provider, malformed id).
+     * Shared by {@see self::renderAllAsText()} and {@see self::renderAllAsLink()}.
+     */
+    private static function buildWatchUrlFromPlaceholder(string $provider, string $opening, string $body): ?string
+    {
+        if (trim($body) !== '' || !isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
+            return null;
+        }
+        $video_id = self::extractAttribute($opening, 'data-video-id');
+        if ($video_id === null || preg_match(self::VIDEO_ID_PATTERN, $video_id) !== 1) {
+            return null;
+        }
+        $start_raw = self::extractAttribute($opening, 'data-video-start');
+        $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
+
+        $watch_url = sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id));
+        if ($start !== null && $start > 0) {
+            $watch_url .= self::buildWatchStartSuffix($provider, $start);
+        }
+
+        return $watch_url;
     }
 
     /**
