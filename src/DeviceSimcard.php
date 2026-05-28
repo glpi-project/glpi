@@ -132,7 +132,11 @@ class DeviceSimcard extends CommonDevice
             'forcegroupby'  => true,
             'usehaving'     => true,
             'massiveaction' => false,
-            'datatype'      => 'text',
+            'datatype'      => 'string',
+            'right'         => 'devicesimcard_pinpuk',
+            'nosearch'      => true,
+            'nodisplay'     => true,
+            'protected'     => true,
             'joinparams'    => $main_joinparams,
         ];
 
@@ -144,7 +148,11 @@ class DeviceSimcard extends CommonDevice
             'forcegroupby'  => true,
             'usehaving'     => true,
             'massiveaction' => false,
-            'datatype'      => 'text',
+            'datatype'      => 'string',
+            'right'         => 'devicesimcard_pinpuk',
+            'nosearch'      => true,
+            'nodisplay'     => true,
+            'protected'     => true,
             'joinparams'    => $main_joinparams,
         ];
 
