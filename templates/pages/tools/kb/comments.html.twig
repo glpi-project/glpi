@@ -151,6 +151,13 @@
                 $('.add_answer').on('click', (e) => {
                     const add_btn = $(e.currentTarget);
                     const comment = add_btn.closest('.comment');
+
+                    // Expand the replies section if it is retracted
+                    const checkbox = $(`#toggle_${comment.data('id')}`);
+                    if (checkbox.length > 0 && !checkbox.prop('checked')) {
+                        checkbox.prop('checked', true);
+                    }
+
                     const _data = {
                         'kbitem_id': comment.data('kbitem_id'),
                         'answer'   : comment.data('id'),
