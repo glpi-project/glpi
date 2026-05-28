@@ -122,6 +122,32 @@ class UserITILObjectCountTest extends DbTestCase
     }
 
     /**
+     * Validate counters when a relation keeps the same user but changes actor role.
+     *
+     * @return void
+     */
+    public function testCounterRefreshWhenActorTypeChangesOnSameRelation(): void
+    {
+        $this->login();
+
+        $user = $this->createUsers(1)[0];
+        $ticket = $this->createItilObject(Ticket::class);
+
+        $relation_id = $this->addUserActorWithRelation(
+            Ticket::class,
+            $ticket->getID(),
+            $user->getID(),
+            CommonITILActor::REQUESTER
+        );
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 1);
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::ASSIGN, 0);
+
+        $this->updateUserActorTypeWithRelation(Ticket::class, $relation_id, CommonITILActor::ASSIGN);
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 0);
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::ASSIGN, 1);
+    }
+
+    /**
      * @param int $count Number of users to create.
      *
      * @return User[]
@@ -231,7 +257,7 @@ class UserITILObjectCountTest extends DbTestCase
      *
      * @return void
      */
-    private function addUserActorWithRelation(string $itemtype, int $items_id, int $users_id, int $actor_type): void
+    private function addUserActorWithRelation(string $itemtype, int $items_id, int $users_id, int $actor_type): int
     {
         $relation_class = match ($itemtype) {
             Ticket::class  => Ticket_User::class,
@@ -243,16 +269,41 @@ class UserITILObjectCountTest extends DbTestCase
         $relation = new $relation_class();
         $relation_fk = $relation_class::getItilObjectForeignKey();
 
-        $this->assertGreaterThan(
-            0,
-            (int) $relation->add([
-                $relation_fk         => $items_id,
-                'users_id'           => $users_id,
-                'type'               => $actor_type,
-                'use_notification'   => 0,
-                'alternative_email'  => '',
-            ])
-        );
+        $relation_id = (int) $relation->add([
+            $relation_fk         => $items_id,
+            'users_id'           => $users_id,
+            'type'               => $actor_type,
+            'use_notification'   => 0,
+            'alternative_email'  => '',
+        ]);
+        $this->assertGreaterThan(0, $relation_id);
+
+        return $relation_id;
+    }
+
+    /**
+     * Update actor role on an existing relation.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $relation_id Relation identifier.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
+    private function updateUserActorTypeWithRelation(string $itemtype, int $relation_id, int $actor_type): void
+    {
+        $relation_class = match ($itemtype) {
+            Ticket::class  => Ticket_User::class,
+            Problem::class => Problem_User::class,
+            Change::class  => Change_User::class,
+            default        => throw new \RuntimeException("Unsupported ITIL object type: $itemtype"),
+        };
+
+        $relation = new $relation_class();
+        $this->assertTrue($relation->update([
+            'id'   => $relation_id,
+            'type' => $actor_type,
+        ]));
     }
 
     /**

@@ -369,6 +369,16 @@ abstract class CommonITILActor extends CommonDBRelation
         parent::post_updateItem($history);
 
         $users_to_refresh = [];
+        if (
+            isset($this->oldvalues['type'])
+            && isset($this->fields['users_id'])
+            && (int) $this->fields['users_id'] > 0
+        ) {
+            $users_to_refresh[] = [
+                'users_id' => (int) $this->fields['users_id'],
+                'type'     => (int) $this->oldvalues['type'],
+            ];
+        }
         if (isset($this->oldvalues['users_id']) && (int) $this->oldvalues['users_id'] > 0) {
             $users_to_refresh[] = [
                 'users_id' => (int) $this->oldvalues['users_id'],
