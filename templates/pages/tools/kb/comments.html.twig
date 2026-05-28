@@ -148,6 +148,16 @@
                     });
                 };
 
+                const focusToEnd = (element) => {
+                    if (element.length === 0) return;
+                    const el = element.get(0);
+                    el.focus({ preventScroll: true });
+                    if (typeof el.setSelectionRange === 'function') {
+                        const len = el.value.length;
+                        el.setSelectionRange(len, len);
+                    }
+                };
+
                 $('.add_answer').on('click', (e) => {
                     const add_btn = $(e.currentTarget);
                     const comment = add_btn.closest('.comment');
@@ -168,6 +178,7 @@
                     const existingForm = $(`#newcomment${comment.data('id')}`);
                     if (existingForm.length > 0) {
                         existingForm.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        focusToEnd(existingForm.find('textarea'));
                         return;
                     }
 
@@ -183,6 +194,7 @@
                         layout.removeClass('no-answers');
                         layout.find('.kb-nested-replies').first().append(_form);
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
+                        focusToEnd(_form.find('textarea'));
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
@@ -200,7 +212,9 @@
                         'language' : comment.data('lang')
                     };
 
-                    if (comment.find('#editcomment' + edit_btn.data('id')).length > 0) {
+                    const existingForm = comment.find(`#editcomment${comment.data('id')}`);
+                    if (existingForm.length > 0) {
+                        focusToEnd(existingForm.find('textarea'));
                         return;
                     }
 
@@ -220,6 +234,7 @@
                             .closest('.comment')
                             .find('.h_content').first()
                             .append(_form);
+                        focusToEnd(_form.find('textarea'));
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
