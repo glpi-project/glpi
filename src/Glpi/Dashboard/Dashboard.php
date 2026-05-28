@@ -507,6 +507,26 @@ class Dashboard extends CommonDBTM
         ];
     }
 
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param array<string, mixed> $items
+     */
+    public function setItems(array $items): void
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $rights
+     */
+    public function setRights(array $rights): void
+    {
+        $this->rights = $rights;
+    }
 
     /**
      * Retrieve all dashboards and store them into a static var
@@ -533,7 +553,18 @@ class Dashboard extends CommonDBTM
                 $id  = $dashboard['id'];
 
                 $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
+                $d_items = array_filter($items, static fn($i) => $i['dashboards_dashboards_id'] == $id);
+                $d_items = array_map(static function ($item) {
+                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    return $item;
+                }, $d_items);
+
+                // Load known data directly into the item properties to avoid
+                // an useless trip to the database
                 $dashboardItem = new self($key);
+                $dashboardItem->fields = $dashboard;
+                $dashboardItem->items  = $d_items;
+                $dashboardItem->rights = $d_rights;
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }

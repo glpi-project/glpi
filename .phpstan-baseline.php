@@ -7724,25 +7724,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/AbstractGroupFilter.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method canViewCurrent\\(\\) on Glpi\\\\Dashboard\\\\Dashboard\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getTitle\\(\\) on Glpi\\\\Dashboard\\\\Dashboard\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Dashboard\\\\Grid\\:\\:dropdownDashboard\\(\\) should return string but returns int\\|string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Dashboard\\\\Grid\\:\\:getDashboard\\(\\) should return Glpi\\\\Dashboard\\\\Dashboard but returns Glpi\\\\Dashboard\\\\Dashboard\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
