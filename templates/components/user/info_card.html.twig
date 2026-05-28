@@ -52,69 +52,52 @@
             {% endif %}
          </h4>
 
-         <div class="text-muted">
+         <div class="text-muted d-grid gap-y-1" style="grid-template-columns: auto 1fr; column-gap: 0.5rem; align-items: center;">
             {% if user.login is defined and user['login'] is not empty %}
-                <div class="d-flex align-items-center gap-1">
-                    <i class="ti ti-id-badge"></i>
-                    <span>{{ user['login'] }}</span>
-                </div>
+                <i class="ti ti-id-badge"></i>
+                <span>{{ user['login'] }}</span>
             {% endif %}
             {% if user['email']|length > 0 %}
-               <div class="d-flex align-items-center gap-1">
-                  <i class="ti ti-mail"></i>
-                  <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
-               </div>
+               <i class="ti ti-mail"></i>
+               <a href="mailto:{{ user['email'] }}">{{ user['email'] }}</a>
             {% endif %}
             {% if not user['phone'] is empty or not user['phone2'] is empty %}
-               <div class="d-flex align-items-center flex-wrap gap-1">
+               <i class="ti ti-phone"></i>
+               <span class="d-flex align-items-center flex-wrap gap-1">
                   {% if not user['phone'] is empty %}
-                     <i class="ti ti-phone"></i>
                      <a href="tel:{{ user['phone'] }}">{{ user['phone'] }}</a>
                   {% endif %}
                   {% if not user['phone'] is empty and not user['phone2'] is empty %}
                      <span> - </span>
                   {% endif %}
                   {% if not user['phone2'] is empty %}
-                     <i class="ti ti-phone"></i>
                      <a href="tel:{{ user['phone2'] }}">{{ user['phone2'] }}</a>
                   {% endif %}
-               </div>
+               </span>
             {% endif %}
             {% if user['mobile']|length > 0 %}
-               <div class="d-flex align-items-center gap-1">
-                  <i class="ti ti-device-mobile"></i>
-                  <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
-               </div>
+               <i class="ti ti-device-mobile"></i>
+               <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
             {% endif %}
             {% if user['registration_number']|length > 0 %}
-               <div class="d-flex align-items-center gap-1">
-                  <i class="ti ti-id-badge-2"></i>
-                  <span>{{ user['registration_number'] }}</span>
-               </div>
+               <i class="ti ti-id-badge-2"></i>
+               <span>{{ user['registration_number'] }}</span>
             {% endif %}
             {% if user['locations_id'] > 0 %}
-               <div class="d-flex align-items-center gap-1" title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="{{ 'Location'|itemtype_icon }}"></i>
-                  <span>{{ get_item_name('Location', user['locations_id']) }}</span>
-               </div>
+               <i class="{{ 'Location'|itemtype_icon }}"></i>
+               <span title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">{{ get_item_name('Location', user['locations_id']) }}</span>
             {% endif %}
             {% if user['usertitles_id'] > 0 %}
-               <div class="d-flex align-items-center gap-1" title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="{{ 'UserTitle'|itemtype_icon }}"></i>
-                  <span>{{ get_item_name('UserTitle', user['usertitles_id']) }}</span>
-               </div>
+               <i class="{{ 'UserTitle'|itemtype_icon }}"></i>
+               <span title="{{ _x('person', 'Title') }}" data-bs-toggle="tooltip" data-bs-placement="top">{{ get_item_name('UserTitle', user['usertitles_id']) }}</span>
             {% endif %}
             {% if user['usercategories_id'] > 0 %}
-               <div class="d-flex align-items-center gap-1" title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="{{ 'UserCategory'|itemtype_icon }}"></i>
-                  <span>{{ get_item_name('UserCategory', user['usercategories_id']) }}</span>
-               </div>
+               <i class="{{ 'UserCategory'|itemtype_icon }}"></i>
+               <span title="{{ _n('Category', 'Categories', 1) }}" data-bs-toggle="tooltip" data-bs-placement="top">{{ get_item_name('UserCategory', user['usercategories_id']) }}</span>
             {% endif %}
             {% if user['groups_id'] > 0 %}
-               <div class="d-flex align-items-center gap-1" title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="{{ 'Group'|itemtype_icon }}"></i>
-                  <span>{{ get_item_name('Group', user['groups_id']) }}</span>
-               </div>
+               <i class="{{ 'Group'|itemtype_icon }}"></i>
+               <span title="{{ __('Default group') }}" data-bs-toggle="tooltip" data-bs-placement="top">{{ get_item_name('Group', user['groups_id']) }}</span>
             {% endif %}
          </div>
       </div>
