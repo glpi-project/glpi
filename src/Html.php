@@ -1993,7 +1993,6 @@ TWIG,
      *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
      *    - action_button_classes : string of classes to add to the action button
      *    - display          : display or return the generated html (default true)
-     *    - reauth_needed    : a user reauth is required @todo revert
      *
      * @return bool|string     the html if display parameter is false, or true
      **/
@@ -2003,7 +2002,6 @@ TWIG,
 
         /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
 
-        // default values, if not set in $options
         $p['ontop']                 = true;
         $p['num_displayed']         = -1;
         $p['forcecreate']           = false;
@@ -2024,14 +2022,12 @@ TWIG,
         $p['tag_to_send']           = 'common';
         $p['action_button_classes'] = 'btn btn-sm btn-primary me-2';
         $p['display']               = true;
-        $p['reauth_needed']         = false;
 
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
                 $p[$key] = $val;
             }
         }
-        unset($options);
 
         $url = $CFG_GLPI['root_doc'] . "/ajax/massiveaction.php";
         if ($p['container']) {
@@ -2206,7 +2202,6 @@ TWIG,
             'on_change'    => '',
         ];
 
-        // replace $p values with value from $option
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
                 $p[$key] = $val;
