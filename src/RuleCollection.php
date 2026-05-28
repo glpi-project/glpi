@@ -685,7 +685,7 @@ HTML;
                         'content': reset_warning
                     }) }}
                 {% endif %}
-                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest"><i class="ti ti-stethoscope"></i> {{ test_label }}</button>
+                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest"><i class="ti ti-stethoscope"></i> <span>{{ test_label }}</span></button>
                 {% do call('Ajax::createIframeModalWindow', ['allruletest', test_url, {title: test_label}]) %}
                 {% if can_replay %}
                     <a class="btn btn-primary mx-1" role="button" href="{{ rule_class|itemtype_search_path }}?replay_rule=replay_rule">{{ replay_label }}</a>
