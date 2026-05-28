@@ -3274,7 +3274,7 @@ HTML;
             case 'clean_ldap_fields':
                 foreach ($ids as $id) {
 
-                    $reauth_needed = null;
+                    $reauth_needed = null; // @todo vraiment utile ? filtrage avant, non ?
                     if ($item->can($id, UPDATE, reauth_needed: $reauth_needed)) {
                         if (
                             $item instanceof User

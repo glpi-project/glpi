@@ -38,6 +38,7 @@
             <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
                 data-search-itemtype="DisplayPreference" data-submit-once>
                 <div class="d-flex ms-4">
+                    {# @todo check si altération de showMassiveActions() #}
                     {% do call('Html::showMassiveActions', [massiveactionparams]) %}
         {% endif %}
 
@@ -73,6 +74,7 @@
                 </div>
         {% if massiveactionparams['specific_actions']|length > 0 %}
                 <div class="ms-4 mt-2">
+                    {# @todo check si altération de showMassiveActions() #}
                     {% do call('Html::showMassiveActions', [massiveactionparams|merge({
                         'ontop': false
                     })]) %}

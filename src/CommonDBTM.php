@@ -3019,10 +3019,10 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
 
-
         $this->right = null;
 
         // Share token session-based access (read-only)
+        // @todo voir si on doit traiter la reauth ici
         if (
             $right === READ
             && $this instanceof ShareableInterface

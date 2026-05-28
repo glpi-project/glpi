@@ -506,6 +506,7 @@ class Html
      */
     public static function getRefererUrl(): ?string
     {
+        // @todo check si c'est encore utile - sinon reprendre main
         $raw = $_POST['_glpi_http_referer'] ?? $_SERVER['HTTP_REFERER'] ?? '';
 
         $referer = URL::sanitizeURL($raw);

@@ -566,6 +566,18 @@ class MassiveAction
         return false;
     }
 
+    /**
+     * Extract itemtypes from the input
+     *
+     * @return array<int, string> itemtypes to process
+     * // @todo a supprimer si pas besoin
+     * // @todo ajouter un test
+     **/
+    public function getItemtypes(): array
+    {
+        return array_keys($this->items);
+    }
+
 
     /**
      * Get 'add to transfer list' action when needed
@@ -1071,6 +1083,7 @@ class MassiveAction
                         ]);
                     } else {
                         // redirect to reauth if needed // @todo cleanup
+                        // @todo normalement, on ne prend pas cette option
                         // pas possible de faire redirection ici, c'est géré en ajax : pas d'effet
                         // mais on peut afficher un bouton vers la reauth et on redirige vers la page actuelle
                         $reauth_needed = null;
