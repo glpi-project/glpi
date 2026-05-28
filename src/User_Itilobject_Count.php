@@ -36,6 +36,4 @@
  * Compatibility alias used by table->itemtype resolution for
  * "glpi_users_itilobject_counts" in DbUtils::getItemTypeForTable().
  */
-class User_Itilobject_Count extends UserITILObjectCount
-{
-}
+class User_Itilobject_Count extends UserITILObjectCount {}
