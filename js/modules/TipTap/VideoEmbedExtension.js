@@ -47,6 +47,14 @@ const { Node, mergeAttributes } = TiptapCore;
 const ALLOWED_PROVIDERS = new Set(['youtube', 'dailymotion', 'vimeo']);
 const VALID_ID_PATTERN = /^[A-Za-z0-9_-]{1,32}$/;
 
+// Mirror of VideoEmbedRenderer::getProviderDisplayName — provider brand names
+// aren't translated, so the values are safe to use as accessible-name fragments.
+const PROVIDER_DISPLAY_NAMES = {
+    youtube:     'YouTube',
+    dailymotion: 'Dailymotion',
+    vimeo:       'Vimeo',
+};
+
 /**
  * Parse a "t=" / "start=" query parameter into seconds. Accepts plain seconds
  * ("90") and the YouTube-style "1h2m3s" format.
@@ -423,10 +431,16 @@ function parseEmbedSrc(src) {
  */
 function buildEditorPreview(node) {
     const src = buildEmbedSrc(node.attrs.provider, node.attrs.videoId, node.attrs.start);
+    const providerName = PROVIDER_DISPLAY_NAMES[node.attrs.provider] || null;
 
     const wrapper = document.createElement('div');
     wrapper.className = 'video-embed-wrapper';
     wrapper.contentEditable = 'false';
+    wrapper.setAttribute('role', 'figure');
+    wrapper.setAttribute(
+        'aria-label',
+        providerName ? `${providerName} ${__('video')}` : __('Invalid video')
+    );
     wrapper.setAttribute('data-video-provider', node.attrs.provider);
     wrapper.setAttribute('data-video-id', node.attrs.videoId);
     if (node.attrs.start) {
@@ -453,6 +467,7 @@ function buildEditorPreview(node) {
     const iframe = document.createElement('iframe');
     iframe.src = src;
     iframe.loading = 'lazy';
+    iframe.title = providerName ? `${providerName} ${__('video player')}` : __('video player');
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('allowfullscreen', '');
     iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
