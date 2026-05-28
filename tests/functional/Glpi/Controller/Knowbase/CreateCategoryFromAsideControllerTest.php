@@ -1,0 +1,226 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\unit\Glpi\Controller\Knowbase;
+
+use Entity;
+use Glpi\Controller\Knowbase\CreateCategoryFromAsideController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Tests\DbTestCase;
+use KnowbaseItemCategory;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
+use function Safe\json_decode;
+
+final class CreateCategoryFromAsideControllerTest extends DbTestCase
+{
+    public function testGetFormRendersModalBodyWithParent(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItemCategory::class, [
+            'name'                      => 'Hardware',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+        ]);
+
+        $response = (new CreateCategoryFromAsideController())->form(
+            new Request(['parent' => $parent->getID()]),
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $html = (string) $response->getContent();
+        $this->assertStringContainsString('name="name"', $html);
+        $this->assertStringContainsString('name="knowbaseitemcategories_id"', $html);
+        $this->assertStringContainsString((string) $parent->getID(), $html);
+        $this->assertStringContainsString('Hardware', $html);
+    }
+
+    public function testGetFormWithRootParentHasNoParentChip(): void
+    {
+        $this->login();
+
+        $response = (new CreateCategoryFromAsideController())->form(new Request());
+
+        $this->assertSame(200, $response->getStatusCode());
+        $html = (string) $response->getContent();
+        $this->assertStringContainsString('name="name"', $html);
+        $this->assertStringNotContainsString('data-glpi-kb-modal-parent-chip', $html);
+    }
+
+    public function testGetFormUnknownParentRaisesBadRequest(): void
+    {
+        $this->login();
+
+        $this->expectException(BadRequestHttpException::class);
+        (new CreateCategoryFromAsideController())->form(
+            new Request(['parent' => 999999]),
+        );
+    }
+
+    public function testGetFormWithoutCreateRightRaisesAccessDenied(): void
+    {
+        $this->removeRightFromProfile('super-admin', 'knowbasecategory', CREATE);
+        $this->login();
+
+        $this->expectException(AccessDeniedHttpException::class);
+        (new CreateCategoryFromAsideController())->form(new Request());
+    }
+
+    public function testPostCreatesCategoryUnderParent(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItemCategory::class, [
+            'name'                      => 'Hardware',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+        ]);
+
+        $response = $this->postCreate([
+            'name'                      => 'Laptops',
+            'knowbaseitemcategories_id' => (string) $parent->getID(),
+        ]);
+
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(200, $response->getStatusCode());
+        $body = json_decode((string) $response->getContent(), true);
+        $this->assertSame('Laptops', $body['name']);
+        $this->assertSame($parent->getID(), $body['parent_id']);
+        $this->assertGreaterThan(0, $body['id']);
+
+        $created = new KnowbaseItemCategory();
+        $this->assertTrue($created->getFromDB($body['id']));
+        $this->assertSame('Laptops', $created->fields['name']);
+        $this->assertSame($parent->getID(), (int) $created->fields['knowbaseitemcategories_id']);
+    }
+
+    public function testPostInheritsEntityFromParent(): void
+    {
+        $this->login();
+        /** @var int $root_id */
+        $root_id = $this->getTestRootEntity(only_id: true);
+        $child_entity_id = $this->createItem(Entity::class, [
+            'name'        => 'Child for category test',
+            'entities_id' => $root_id,
+        ])->getID();
+        $parent = $this->createItem(KnowbaseItemCategory::class, [
+            'name'                      => 'Scoped',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $child_entity_id,
+            'is_recursive'              => 0,
+        ]);
+
+        $this->setEntity($root_id, true);
+
+        $response = $this->postCreate([
+            'name'                      => 'Scoped child',
+            'knowbaseitemcategories_id' => (string) $parent->getID(),
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $body = json_decode((string) $response->getContent(), true);
+        $created = new KnowbaseItemCategory();
+        $this->assertTrue($created->getFromDB($body['id']));
+        $this->assertSame($child_entity_id, (int) $created->fields['entities_id']);
+    }
+
+    public function testPostWithRootParentUsesActiveEntity(): void
+    {
+        $this->login();
+        /** @var int $root_id */
+        $root_id = $this->getTestRootEntity(only_id: true);
+        $this->setEntity($root_id, false);
+
+        $response = $this->postCreate([
+            'name'                      => 'Top level',
+            'knowbaseitemcategories_id' => '0',
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $body = json_decode((string) $response->getContent(), true);
+        $created = new KnowbaseItemCategory();
+        $this->assertTrue($created->getFromDB($body['id']));
+        $this->assertSame($root_id, (int) $created->fields['entities_id']);
+    }
+
+    public function testPostEmptyNameReturns422(): void
+    {
+        $this->login();
+
+        $response = $this->postCreate([
+            'name'                      => '   ',
+            'knowbaseitemcategories_id' => '0',
+        ]);
+
+        $this->assertSame(422, $response->getStatusCode());
+        $body = json_decode((string) $response->getContent(), true);
+        $this->assertArrayHasKey('name', $body['errors']);
+    }
+
+    public function testPostUnknownParentRaisesBadRequest(): void
+    {
+        $this->login();
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->postCreate([
+            'name'                      => 'Orphan',
+            'knowbaseitemcategories_id' => '999999',
+        ]);
+    }
+
+    public function testPostWithoutCreateRightRaisesAccessDenied(): void
+    {
+        $this->removeRightFromProfile('super-admin', 'knowbasecategory', CREATE);
+        $this->login();
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->postCreate([
+            'name'                      => 'Denied',
+            'knowbaseitemcategories_id' => '0',
+        ]);
+    }
+
+    /**
+     * @param array<string, string> $form_fields
+     */
+    private function postCreate(array $form_fields): JsonResponse
+    {
+        $request = new Request(request: $form_fields);
+        $request->setMethod('POST');
+        return (new CreateCategoryFromAsideController())->create($request);
+    }
+}

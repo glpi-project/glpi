@@ -49,7 +49,6 @@ test('clicking the aside create-sub-category link creates a category under the p
         entities_id: getWorkerEntityId(),
     });
 
-    // Seed an article in the parent so the aside renders the category in the tree
     await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
@@ -65,21 +64,89 @@ test('clicking the aside create-sub-category link creates a category under the p
     await expect(create_link).toBeVisible();
     await create_link.click();
 
-    await expect(page).toHaveURL(new RegExp(`knowbaseitemcategories_id=${parent_id}`));
-    await expect(page).toHaveURL(/knowbaseitemcategory\.form\.php/);
+    const dialog = page.getByRole('dialog', { name: 'Create a category' });
+    await expect(dialog).toBeVisible();
 
-    await expect(kb.getDropdownByLabel('As child of')).toContainText(parent_name);
+    await expect(dialog.getByText(parent_name)).toBeVisible();
 
-    // Fill in the name and submit
-    const name_field = page.getByLabel('Name', { exact: true });
-    await name_field.fill(child_name);
+    await dialog.getByLabel('Name', { exact: true }).fill(child_name);
+    await dialog.getByRole('button', { name: 'Create' }).click();
 
-    await page.getByRole('button', { name: 'Add', exact: true }).click();
+    await expect(dialog).toBeHidden();
+    await expect(kb.getAlert('Category created')).toBeVisible();
 
-    // Verify the sub-category is now displayed under the parent in the aside
     await kb.goto(1);
     const parent_node = kb.getAsideCategory(parent_name);
     await expect(parent_node.getByRole('group', { name: child_name })).toBeVisible();
+});
+
+test('submitting the modal with an empty name shows an inline validation error', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Aside Val Cat ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItemCategory', {
+        name: parent_name,
+        entities_id: getWorkerEntityId(),
+    });
+
+    await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _categories: [parent_id],
+    });
+
+    await kb.goto(1);
+
+    await kb.getAsideCategory(parent_name).getByRole('link', {
+        name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
+    }).click();
+
+    const dialog = page.getByRole('dialog', { name: 'Create a category' });
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole('button', { name: 'Create' }).click();
+
+    await expect(dialog.getByRole('alert').filter({ hasText: 'Title is mandatory' })).toBeVisible();
+    await expect(dialog).toBeVisible();
+    await expect(kb.getAlert('Category created')).toHaveCount(0);
+});
+
+test('clicking Cancel closes the modal without creating a category', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Aside Cancel Cat ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItemCategory', {
+        name: parent_name,
+        entities_id: getWorkerEntityId(),
+    });
+
+    await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _categories: [parent_id],
+    });
+
+    await kb.goto(1);
+
+    await kb.getAsideCategory(parent_name).getByRole('link', {
+        name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
+    }).click();
+
+    const dialog = page.getByRole('dialog', { name: 'Create a category' });
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole('button', { name: 'Cancel' }).click();
+
+    await expect(dialog).toBeHidden();
+    await expect(kb.getAlert('Category created')).toHaveCount(0);
 });
 
 test('the Uncategorized row has no create-sub-category link', async ({ page, profile }) => {

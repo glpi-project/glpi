@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+/* global _, glpi_ajax_dialog, glpi_toast_info, bootstrap */
 
 import { get } from "/js/modules/Ajax.js";
 
@@ -62,6 +62,144 @@ export class GlpiKnowbaseAsideController
         this.#aside = aside;
         this.#initCategoryToggle();
         this.#initSearch();
+        this.#initCreateCategory();
+    }
+
+    #initCreateCategory()
+    {
+        this.#aside.addEventListener('click', (e) => {
+            const trigger = e.target.closest('[data-glpi-kb-aside-category-create]');
+            if (!trigger) {
+                return;
+            }
+            e.preventDefault();
+            this.#openCreateCategoryModal(trigger);
+        });
+    }
+
+    /**
+     * @param {HTMLElement} trigger
+     */
+    #openCreateCategoryModal(trigger)
+    {
+        const parent_id = trigger.dataset.glpiKbParentId ?? '0';
+        glpi_ajax_dialog({
+            url: `${CFG_GLPI.root_doc}/Knowbase/Aside/Category/CreateForm?parent=${encodeURIComponent(parent_id)}`,
+            method: 'get',
+            title: __('Create a category'),
+            dialogclass: 'modal-md',
+            show: (e) => {
+                const modal = e.target.closest('.modal');
+                if (modal) {
+                    this.#bindCreateCategoryForm(modal);
+                }
+            },
+        });
+    }
+
+    /**
+     * @param {HTMLElement} modal
+     */
+    #bindCreateCategoryForm(modal)
+    {
+        const form = modal.querySelector('[data-glpi-kb-aside-category-form]');
+        if (!form) {
+            return;
+        }
+
+        const name_input    = form.querySelector('input[name="name"]');
+        const name_error_el = form.querySelector('[data-glpi-kb-modal-name-error]');
+        const global_error  = form.querySelector('[data-glpi-kb-modal-global-error]');
+        const submit_btn    = form.querySelector('[data-glpi-kb-modal-submit]');
+
+        modal.addEventListener('shown.bs.modal', () => name_input?.focus(), { once: true });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            this.#clearFormErrors(name_input, name_error_el, global_error);
+
+            if (name_input.value.trim() === '') {
+                this.#showFieldError(name_input, name_error_el, __('Title is mandatory'));
+                return;
+            }
+
+            const original_label = submit_btn.innerHTML;
+            submit_btn.disabled = true;
+            submit_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__('Saving...')}`;
+
+            try {
+                const response = await fetch(`${CFG_GLPI.root_doc}/Knowbase/Aside/Category`, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: new FormData(form),
+                });
+
+                if (response.ok) {
+                    bootstrap.Modal.getOrCreateInstance(modal).hide();
+                    glpi_toast_info(__('Category created'));
+                    return;
+                }
+
+                if (response.status === 422) {
+                    const body = await response.json();
+                    this.#applyServerErrors(body.errors ?? {}, name_input, name_error_el, global_error);
+                    return;
+                }
+
+                this.#showGlobalError(global_error, __('An unexpected error occurred.'));
+            } catch {
+                this.#showGlobalError(global_error, __('An unexpected error occurred.'));
+            } finally {
+                submit_btn.disabled = false;
+                submit_btn.innerHTML = original_label;
+            }
+        });
+    }
+
+    #clearFormErrors(name_input, name_error_el, global_error)
+    {
+        if (name_input) {
+            name_input.classList.remove('is-invalid');
+            name_input.removeAttribute('aria-invalid');
+        }
+        if (name_error_el) {
+            name_error_el.textContent = '';
+        }
+        if (global_error) {
+            global_error.classList.add('d-none');
+            global_error.textContent = '';
+        }
+    }
+
+    #showFieldError(input, error_el, message)
+    {
+        if (input) {
+            input.classList.add('is-invalid');
+            input.setAttribute('aria-invalid', 'true');
+            input.focus();
+        }
+        if (error_el) {
+            error_el.textContent = message;
+        }
+    }
+
+    #showGlobalError(global_error, message)
+    {
+        if (!global_error) {
+            return;
+        }
+        global_error.textContent = message;
+        global_error.classList.remove('d-none');
+    }
+
+    #applyServerErrors(errors, name_input, name_error_el, global_error)
+    {
+        if (errors.name) {
+            this.#showFieldError(name_input, name_error_el, errors.name);
+        }
+        if (errors._global) {
+            this.#showGlobalError(global_error, errors._global);
+        }
     }
 
     #initCategoryToggle()

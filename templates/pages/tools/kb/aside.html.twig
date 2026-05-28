@@ -65,6 +65,8 @@
                     href="{{ category_form_url }}?knowbaseitemcategories_id={{ category.id }}"
                     class="d-flex align-items-center ms-1 p-1 text-secondary"
                     data-glpi-kb-aside-category-create
+                    data-glpi-kb-parent-id="{{ category.id }}"
+                    data-glpi-kb-parent-name="{{ category.title }}"
                     aria-label="{{ __('Create a sub-category in %s')|format(category.title) }}"
                     title="{{ __('Create a sub-category in this category') }}"
                 >
