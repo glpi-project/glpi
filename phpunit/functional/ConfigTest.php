@@ -239,8 +239,8 @@ class ConfigTest extends DbTestCase
         $actual = $expected = [];
         $deps = \Config::getLibraries(true);
         foreach ($deps as $dep) {
-            // composer names only (skip htmlLawed)
-            if (strpos($dep['name'], '/')) {
+            // skip htmlLawed, not in composer file
+            if ($dep['name'] !== 'htmlawed/htmlawed') {
                 $actual[] = $dep['name'];
             }
         }
