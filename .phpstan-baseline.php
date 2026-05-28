@@ -9122,12 +9122,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access an offset on Glpi\\\\Form\\\\Comment\\|Glpi\\\\Form\\\\Question\\|list\\<Glpi\\\\Form\\\\Comment\\|Glpi\\\\Form\\\\Question\\>\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Section\\:\\:getQuestions\\(\\) should return array\\<Glpi\\\\Form\\\\Question\\> but returns array\\<Glpi\\\\Form\\\\Question\\>\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -20612,16 +20606,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/autoload/legacy-autoloader.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
-    'identifier' => 'argument.type',
-    'count' => 2,
-    'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
+	'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
 ];
 $ignoreErrors[] = [
-    'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
-    'identifier' => 'argument.type',
-    'count' => 1,
-    'path' => __DIR__ . '/src/Glpi/Api/HL/StreamedResponseWrapper.php',
+	'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/StreamedResponseWrapper.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];
