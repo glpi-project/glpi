@@ -49,7 +49,7 @@ Html::header_nocache();
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
-    [$referer, $item_types] = get_item_type_redirection_path_from_post() ?? ['/', []]; // list page used to trigger massive action
+    [$referer, $item_types] = get_item_type_redirection_path_from_post();
     $reauth_manager = new ReAuthManager();
     if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
         $reauth_manager->setCancelURL($referer);
@@ -120,16 +120,22 @@ Html::redirect($results['redirect']);
 /**
  * Returns the redirection path and item types, based on the POST data.
  *
- * @return array{?string, array<string>} [redirection path, item types]
+ * @return array{string, array<class-string<CommonGLPI>>} [redirection path, item types]
  */
 function get_item_type_redirection_path_from_post(): array
 {
     global $CFG_GLPI;
 
+    /** @var array<class-string<CommonGLPI>> $items */
     $items = isset($_POST['items']) ? array_keys($_POST['items']) : [];
+    // ensure item types are glpi class names - phpstan complains "will always evaluate to true"
+    // but this filtering a required for security -> forbiddynamicinstantiationrule
+    // can be added to phpstan baseline
+    $items = array_filter($items, fn($item) => is_a($item, CommonGLPI::class, true));
+
     return match (count($items)) {
-        0 => [null, []],
-        1 => [(new $items[0]())->getRedirectToListUrl(), $items],
+        0 => [$CFG_GLPI["root_doc"], []],
+        1 => [(new $items[0]())->getRedirectToListUrl(), $items], // phpstan complains (forbiddynamicinstantiationrule), but filtering is done just above.
         default => [$CFG_GLPI["root_doc"] . '/front/allassets.php', $items]
     };
 }
