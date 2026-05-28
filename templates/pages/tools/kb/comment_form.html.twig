@@ -95,7 +95,6 @@
             {% endif %}
             <div class="px-2" style="min-width: 400px;">
                 {{ fields.textareaField('comment', comment ?? '', null, {
-                    id: comment_id ? 'comment_' ~ comment_id : 'comment_' ~ rand,
                     no_label: true,
                     full_width: true,
                     add_field_html: btn,
