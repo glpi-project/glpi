@@ -602,8 +602,10 @@ final class SessionTracker extends CommonGLPI
         }
 
         usort($sessions, static function ($a, $b) {
+            $a_login = $a['assumed_login'] ?? strtotime($a['login']);
+            $b_login = $b['assumed_login'] ?? strtotime($b['login']);
             if ($a['status'] === $b['status']) {
-                return strtotime($b['login']) <=> strtotime($a['login']);
+                return $b_login <=> $a_login;
             }
             // sort by active first, then login (or assumed login for API sessions)
             if (str_contains($a['status'], 'text-success') && !str_contains($b['status'], 'text-success')) {
@@ -611,8 +613,7 @@ final class SessionTracker extends CommonGLPI
             } elseif (!str_contains($a['status'], 'text-success') && str_contains($b['status'], 'text-success')) {
                 return 1;
             } else {
-                $a_login = $a['assumed_login'] ?? strtotime($a['login']);
-                $b_login = $b['assumed_login'] ?? strtotime($b['login']);
+
                 return $b_login <=> $a_login;
             }
         });
