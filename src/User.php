@@ -358,11 +358,67 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
+/**
+     * Get DB criteria for items linked to a user (direct or via group).
+     * Shared by showItems() and countItemsForUser().
+     *
+     * @param int  $users_id
+     * @param bool $tech  false = users_id, true = users_id_tech
+     *
+     * @return array{field_user: string, groups_ids: int[], criteria: array}
+     */
+    private static function getItemsForUserCriteria(int $users_id, bool $tech): array
+    {
+        global $DB;
+
+        $field_user = $tech ? 'users_id_tech' : 'users_id';
+
+        $iterator = $DB->request([
+            'SELECT'    => ['glpi_groups.id'],
+            'FROM'      => 'glpi_groups',
+            'LEFT JOIN' => [
+                'glpi_groups_users' => [
+                    'FKEY' => [
+                        'glpi_groups_users' => 'groups_id',
+                        'glpi_groups'       => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => ['glpi_groups_users.users_id' => $users_id],
+        ]);
+
+        $groups_ids    = array_column(iterator_to_array($iterator), 'id');
+        $base_criteria = [$field_user => $users_id];
+
+        if (count($groups_ids) > 0) {
+            $criteria = [
+                'OR' => [
+                    $base_criteria,
+                    [
+                        Group_Item::getTable() . '.groups_id' => $groups_ids,
+                        Group_Item::getTable() . '.type'      => $tech
+                            ? Group_Item::GROUP_TYPE_TECH
+                            : Group_Item::GROUP_TYPE_NORMAL,
+                    ],
+                ],
+            ];
+        } else {
+            $criteria = $base_criteria;
+        }
+
+        return [
+            'field_user' => $field_user,
+            'groups_ids' => $groups_ids,
+            'criteria'   => $criteria,
+        ];
+    }
+
+
     /**
      * Count items linked to a user (mirrors showItems logic).
      *
-     * @param int  $users_id  User ID
-     * @param bool $tech      false = Used items (users_id), true = Managed items (users_id_tech)
+     * @param int  $users_id
+     * @param bool $tech  false = Used items, true = Managed items
      *
      * @return int
      */
@@ -370,30 +426,53 @@ class User extends CommonDBTM implements TreeBrowseInterface
     {
         global $CFG_GLPI, $DB;
 
-        $field = $tech ? 'users_id_tech' : 'users_id';
-        $types = $tech
-            ? $CFG_GLPI['linkuser_tech_types']
-            : $CFG_GLPI['linkuser_types'];
+        $user_criteria = self::getItemsForUserCriteria($users_id, $tech);
+        $count         = 0;
 
-        $count = 0;
-        foreach ($types as $itemtype) {
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
             if (!class_exists($itemtype)) {
                 continue;
             }
-            /** @var CommonDBTM $itemtype */
-            $table = $itemtype::getTable();
-            if (!$DB->fieldExists($table, $field)) {
+            $item = getItemForItemtype($itemtype);
+            if (!$item || !$item::canView()) {
                 continue;
             }
-            $criteria = [$field => $users_id];
-            if ($DB->fieldExists($table, 'is_deleted')) {
-                $criteria['is_deleted'] = 0;
+            $table = $itemtype::getTable();
+            if (!$DB->fieldExists($table, $user_criteria['field_user'])) {
+                continue;
             }
-            $count += countElementsInTable($table, $criteria);
+
+            $query = [
+                'COUNT'     => 'cpt',
+                'FROM'      => $table,
+                'LEFT JOIN' => [
+                    Group_Item::getTable() => [
+                        'FKEY' => [
+                            $table                 => 'id',
+                            Group_Item::getTable() => 'items_id',
+                            [
+                                'AND' => [
+                                    Group_Item::getTable() . '.itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'WHERE' => $user_criteria['criteria'],
+            ];
+
+            if ($item->maybeTemplate()) {
+                $query['WHERE']['is_template'] = 0;
+            }
+            if ($item->maybeDeleted()) {
+                $query['WHERE']['is_deleted'] = 0;
+            }
+
+            $count += $DB->request($query)->current()['cpt'];
         }
+
         return $count;
     }
-
     
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -4944,50 +5023,21 @@ HTML;
             'users'       => [],
         ];
 
-        if ($tech) {
-            $field_user  = 'users_id_tech';
-        } else {
-            $field_user  = 'users_id';
-        }
+        $user_criteria = self::getItemsForUserCriteria($ID, $tech);
+        $field_user    = $user_criteria['field_user'];
+        $criteria      = $user_criteria['criteria'];
+        $groups        = [];
+        $number        = 0;
 
-        $groups      = [];
-
-        $iterator = $DB->request([
-            'SELECT'    => [
-                'glpi_groups.id',
-                'glpi_groups.name',
-            ],
-            'FROM'      => 'glpi_groups',
-            'LEFT JOIN' => [
-                'glpi_groups_users' => [
-                    'FKEY' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'     => ['glpi_groups_users.users_id' => $ID],
-        ]);
-        $number = 0;
-
-        $criteria = [
-            $field_user => $ID,
-        ];
-        if ($iterator->count() > 0) {
-            $groups_ids = [];
-            foreach ($iterator as $data) {
-                $groups_ids[] = $data['id'];
-                $groups[$data["id"]] = $data["name"];
+        if (count($user_criteria['groups_ids']) > 0) {
+            $groups_iterator = $DB->request([
+                'SELECT' => ['id', 'name'],
+                'FROM'   => 'glpi_groups',
+                'WHERE'  => ['id' => $user_criteria['groups_ids']],
+            ]);
+            foreach ($groups_iterator as $data) {
+                $groups[$data['id']] = $data['name'];
             }
-            $criteria = [
-                'OR' => [
-                    $criteria,
-                    [
-                        Group_Item::getTable() . '.groups_id' => $groups_ids,
-                        Group_Item::getTable() . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
-                    ],
-                ],
-            ];
         }
 
         $group_choices = [];
