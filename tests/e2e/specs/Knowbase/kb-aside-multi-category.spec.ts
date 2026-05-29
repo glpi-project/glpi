@@ -145,6 +145,9 @@ test('A copy folded inside a collapsed category lights up that category header',
     // Fold category B so its copy of the article is hidden behind the header.
     await kb.doToggleAsideCategory(category_b);
 
+    // Park the pointer so the collapse reflow can't fire a stray hover.
+    await page.mouse.move(0, 0);
+
     const category_b_node = kb.getAsideCategory(category_b);
     await expect(category_b_node).not.toHaveClass(/kb-category--sibling/);
 

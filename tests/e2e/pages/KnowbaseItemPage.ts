@@ -90,6 +90,10 @@ export class KnowbaseItemPage extends GlpiPage
             `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
             { waitUntil: 'domcontentloaded' }
         );
+
+        // The aside controller attaches its listeners after `domcontentloaded`,
+        // then drops `pe-none` — wait for that or early interactions are dropped.
+        await expect(this.asideSearchInput).not.toHaveClass(/pe-none/);
     }
 
     public async doToggleFaqStatus(): Promise<void>
