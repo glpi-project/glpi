@@ -350,7 +350,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
 
     const conditions = form.getVisibleConditions();
     await expect(form.getConditionTarget(conditions.nth(0)))
-        .toHaveText("Questions - My second question");
+        .toHaveText("First section - My second question");
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Do not contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
@@ -359,7 +359,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     await expect(form.getConditionLogicOperator(conditions.nth(1)))
         .toHaveText("Or");
     await expect(form.getConditionTarget(conditions.nth(1)))
-        .toHaveText("Questions - My first question");
+        .toHaveText("First section - My first question");
     await expect(form.getConditionValueOperator(conditions.nth(1)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(1)))
@@ -368,7 +368,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
     // Delete the first condition
     await form.doDeleteCondition(0);
     await expect(form.getConditionTarget(conditions.nth(0)))
-        .toHaveText("Questions - My first question");
+        .toHaveText("First section - My first question");
     await expect(form.getConditionValueOperator(conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(conditions.nth(0)))
@@ -381,7 +381,7 @@ test(`Can use the editor to add or delete conditions on a section`, async ({
 
     const final_conditions = form.getVisibleConditions();
     await expect(form.getConditionTarget(final_conditions.nth(0)))
-        .toHaveText("Questions - My first question");
+        .toHaveText("First section - My first question");
     await expect(form.getConditionValueOperator(final_conditions.nth(0)))
         .toHaveText("Contains");
     await expect(form.getTextConditionValue(final_conditions.nth(0)))

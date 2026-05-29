@@ -91,54 +91,111 @@ final class EditorManager
         foreach ($sections_data as $section_data) {
             // Ignore the section that is currently selected as a condition can't
             // be used as a criteria for its own visiblity.
-            if (
-                $this->form_data->getSelectedItemType() == Type::SECTION->value
-                && $section_data->getUuid() == $this->form_data->getSelectedItemUuid()
-            ) {
+            if ($this->isSelectedItem(Type::SECTION, $section_data->getUuid())) {
                 continue;
             }
 
             // Format itemtype + uuid into a single key to allow selected both
             // with a simple dropdown.
             $key = Type::SECTION->value . '-' . $section_data->getUuid();
-            $dropdown_values[Section::getTypeName(Session::getPluralNumber())][$key] = $section_data->getName();
+            $dropdown_values[Section::getTypeName(Session::getPluralNumber())][$key] = $this->getSectionLabel($section_data);
         }
 
         $questions_data = $this->form_data->getQuestionsData();
+        $comments_data = $this->form_data->getCommentsData();
+
+        // Questions and comments are grouped under their parent section so that
+        // items sharing the same name (a common case across sections) can be
+        // told apart, just like in GLPI 10.
+        //
+        // This is only useful when the form has more than one section: with a
+        // single section, its header is hidden in the editor, so grouping by
+        // section would only add visual noise. In that case (or when no section
+        // information is available), fall back to a flat grouping by type.
+        $group_by_section = count($sections_data) > 1;
+
+        // Index of known section uuids, used both to label the groups and to
+        // detect items whose parent section can't be resolved.
+        $section_names = [];
+        foreach ($sections_data as $section_data) {
+            $section_names[$section_data->getUuid()] = $section_data->getName();
+        }
+
+        // Build the per-section groups in section order so that questions and
+        // comments appear under their section, in the form's order.
+        if ($group_by_section) {
+            foreach ($sections_data as $section_data) {
+                $group = $this->getSectionLabel($section_data);
+
+                foreach ($questions_data as $question_data) {
+                    if (
+                        $question_data->getSectionUuid() === $section_data->getUuid()
+                        && !$this->isSelectedItem(Type::QUESTION, $question_data->getUuid())
+                    ) {
+                        $key = Type::QUESTION->value . '-' . $question_data->getUuid();
+                        $dropdown_values[$group][$key] = $question_data->getName();
+                    }
+                }
+
+                foreach ($comments_data as $comment_data) {
+                    if (
+                        $comment_data->getSectionUuid() === $section_data->getUuid()
+                        && !$this->isSelectedItem(Type::COMMENT, $comment_data->getUuid())
+                    ) {
+                        $key = Type::COMMENT->value . '-' . $comment_data->getUuid();
+                        $dropdown_values[$group][$key] = $comment_data->getName();
+                    }
+                }
+            }
+        }
+
+        // Items that are not grouped by section (single-section form, or items
+        // whose parent section is unknown) keep their former generic grouping
+        // by type.
         foreach ($questions_data as $question_data) {
-            // Ignore the question that is currently selected as a condition can't
-            // be used as a criteria for its own visiblity.
-            if (
-                $this->form_data->getSelectedItemType() == Type::QUESTION->value
-                && $question_data->getUuid() == $this->form_data->getSelectedItemUuid()
-            ) {
+            if ($group_by_section && !empty($question_data->getSectionUuid()) && isset($section_names[$question_data->getSectionUuid()])) {
+                continue;
+            }
+            if ($this->isSelectedItem(Type::QUESTION, $question_data->getUuid())) {
                 continue;
             }
 
-            // Format itemtype + uuid into a single key to allow selected both
-            // with a simple dropdown.
             $key = Type::QUESTION->value . '-' . $question_data->getUuid();
             $dropdown_values[Question::getTypeName(Session::getPluralNumber())][$key] = $question_data->getName();
         }
 
-        $comments_data = $this->form_data->getCommentsData();
         foreach ($comments_data as $comment_data) {
-            // Ignore the comment that is currently selected as a condition can't
-            // be used as a criteria for its own visiblity.
-            if (
-                $this->form_data->getSelectedItemType() == Type::COMMENT->value
-                && $comment_data->getUuid() == $this->form_data->getSelectedItemUuid()
-            ) {
+            if ($group_by_section && !empty($comment_data->getSectionUuid()) && isset($section_names[$comment_data->getSectionUuid()])) {
+                continue;
+            }
+            if ($this->isSelectedItem(Type::COMMENT, $comment_data->getUuid())) {
                 continue;
             }
 
-            // Format itemtype + uuid into a single key to allow selected both
-            // with a simple dropdown.
             $key = Type::COMMENT->value . '-' . $comment_data->getUuid();
             $dropdown_values[Comment::getTypeName(Session::getPluralNumber())][$key] = $comment_data->getName();
         }
 
         return $dropdown_values;
+    }
+
+    /**
+     * Check whether the given item is the one currently selected, as a condition
+     * can't be used as a criteria for its own visibility.
+     */
+    private function isSelectedItem(Type $type, string $uuid): bool
+    {
+        return $this->form_data->getSelectedItemType() == $type->value
+            && $uuid == $this->form_data->getSelectedItemUuid();
+    }
+
+    /**
+     * Get the label to display for a section, falling back to the same
+     * placeholder as the editor when the section has no name.
+     */
+    private function getSectionLabel(SectionData $section): string
+    {
+        return $section->getName() !== '' ? $section->getName() : __('New section');
     }
 
     /**

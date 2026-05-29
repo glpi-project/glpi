@@ -43,6 +43,7 @@ final class QuestionData
         private string $name,
         private QuestionTypeInterface $type,
         private ?array $extra_data,
+        private ?string $section_uuid = null,
     ) {}
 
     public function getName(): string
@@ -63,5 +64,10 @@ final class QuestionData
     public function getExtraData(): ?array
     {
         return $this->extra_data;
+    }
+
+    public function getSectionUuid(): ?string
+    {
+        return $this->section_uuid;
     }
 }
