@@ -85,6 +85,10 @@
 </template>
 
 <style scoped>
+    .fc.fc-theme-standard {
+        --fc-border-color: var(--tblr-border-color);
+    }
+
    :deep(.fc-button-primary) {
       background-color: var(--tblr-secondary) !important;
       border-color: var(--tblr-secondary) !important;
