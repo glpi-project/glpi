@@ -2009,27 +2009,35 @@ HTML;
 
         $current = new DateTime($_SESSION['glpi_currenttime']);
         $start = new DateTime($from);
-        // differenciate between tacit renewal contract (auto_renew = true) that already started and all others contracts
-        if ($auto_renew && $current > $start) {
+        // differenciate between tacit renewal contract (auto_renew = true) and all others contracts
+        if ($auto_renew) {
 
             // Calculate the number of months elapsed since the beginning
             $interval = $start->diff($current);
             $months_elapsed = ($interval->y * 12) + $interval->m;
 
-            // if the periodicity of the contract isn't specified, use the initial duration as the renewal period
-            $periodicity = ($periodicity > 0) ? $periodicity : $addwarranty;
+            // if the contract hasn't reach the end of the initial period, the contract is treated the same as a non tacit contract
+            if ($months_elapsed < $addwarranty) {
+                $timestamp = $start;
+                $timestamp->add(new DateInterval("P{$addwarranty}M"));
+                $timestamp->sub(new DateInterval("P{$deletenotice}M"));
+                $timestamp->sub(new DateInterval("P1D"));
+            } else {
+                // if the periodicity of the contract isn't specified, use the initial duration as the renewal period
+                $periodicity = ($periodicity > 0) ? $periodicity : $addwarranty;
 
-            // Find which period we are in
-            $current_period = floor(($months_elapsed - $addwarranty) / $periodicity);
+                // Find which period we are in
+                $current_period = floor(($months_elapsed - $addwarranty) / $periodicity);
 
-            // Calculate the end of the current period
-            $period_end_months = ($current_period + 1) * $periodicity + $addwarranty;
+                // Calculate the end of the current period
+                $period_end_months = ($current_period + 1) * $periodicity + $addwarranty;
 
-            // The notice is X months before the end of the period (without subtracting 1 day)
-            $notice_months = $period_end_months - $deletenotice;
-            $timestamp = $start;
-            $timestamp->add(new DateInterval("P{$notice_months}M"));
-            $timestamp->sub(new DateInterval("P1D"));
+                // The notice is X months before the end of the period (without subtracting 1 day)
+                $notice_months = $period_end_months - $deletenotice;
+                $timestamp = $start;
+                $timestamp->add(new DateInterval("P{$notice_months}M"));
+                $timestamp->sub(new DateInterval("P1D"));
+            }
         } else {
             // For all other contracts, take the start date, add the duration of the contract, remove the eventual notice period, and remove 1 day
             $timestamp = $start;
