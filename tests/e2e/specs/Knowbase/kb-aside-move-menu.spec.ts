@@ -76,8 +76,8 @@ test('Moving an article via the kebab menu reparents it and persists after reloa
     await expect(kb.getAsideArticleInCategoryById(from_id, article_name)).toBeVisible();
     await expect(kb.getAsideArticleInCategoryById(to_id, article_name)).toBeHidden();
 
-    // Hover the row so the kebab button becomes visible, then click it.
-    await kb.getAsideArticleInCategoryById(from_id, article_name).hover();
+    // Focus the article link so the row's :focus-within reveals the kebab, then click it.
+    await kb.getAsideArticleInCategoryById(from_id, article_name).focus();
     await page.getByRole('button', { name: `Move ${article_name}` }).click();
 
     // Pick the target category in the modal and submit.
@@ -125,7 +125,7 @@ test('Moving an article to (Uncategorized) makes it a root article', async ({
 
     await expect(kb.getAsideArticleInCategoryById(from_id, article_name)).toBeVisible();
 
-    await kb.getAsideArticleInCategoryById(from_id, article_name).hover();
+    await kb.getAsideArticleInCategoryById(from_id, article_name).focus();
     await page.getByRole('button', { name: `Move ${article_name}` }).click();
 
     const dialog = page.getByRole('dialog');
@@ -171,14 +171,12 @@ test('In the move picker, a category cannot be moved into one of its descendants
 
     await expect(kb.getAsideNestedCategoryById(parent_id, child_id)).toBeVisible();
 
-    // Hover the toggle button (which lives inside the category title row) so
-    // :hover propagates up to the row and reveals the kebab. Hovering the
-    // whole <li> would land on the children <ul> instead, leaving the title
-    // row untouched.
+    // Focus the toggle button (inside the category title row) so the row's
+    // :focus-within reveals the kebab.
     await kb
         .getAsideCategoryById(parent_id)
         .getByRole('button', { name: parent_name, exact: true })
-        .hover();
+        .focus();
     await page.getByRole('button', { name: `Move ${parent_name}` }).click();
 
     const dialog = page.getByRole('dialog');
