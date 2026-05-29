@@ -236,7 +236,10 @@ class KnowbaseItem_Revision extends CommonDBTM
             'filtered_number' => $number,
             'showmassiveactions' => false,
         ]);
-        echo "<button class='btn btn-sm btn-secondary compare' data-kbitem_id='{$kb_item_id}'>" . _sx('button', 'Compare selected revisions') . "</button>";
+        echo "<button class='btn btn-sm btn-secondary compare' data-kbitem_id='{$kb_item_id}'>
+            <i class='ti ti-git-compare'></i>
+            <span>" . _sx('button', 'Compare selected revisions') . "</span>
+        </button>";
     }
 
     /**
