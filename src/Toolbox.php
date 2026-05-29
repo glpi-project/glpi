@@ -2771,11 +2771,8 @@ class Toolbox
         }
 
         // "true" and "false" are valid JSON strings.
-        if ('true' === $json) {
+        if (in_array($json, ['true', 'false'], true)) {
             return true;
-        }
-        if ('false' === $json) {
-            return false;
         }
 
         // Any other JSON string has to be wrapped in {}, [] or "".
