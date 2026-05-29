@@ -49,15 +49,18 @@ test('clicking the aside add-article link creates a new article linked to the ca
         entities_id: getWorkerEntityId(),
     });
 
-    // Seed an article so the aside renders the category in the tree
-    await api.createItem('KnowbaseItem', {
+    // Seed an article so the aside renders the category in the tree.
+    // We navigate to this article (in the worker entity) because the aside is
+    // only rendered on a viewable article page; a hardcoded id is not reliable
+    // across a fresh CI database.
+    const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
         _categories: [category_id],
     });
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
 
     const add_link = kb.getAsideCategory(category_name).getByRole('link', {
         name: new RegExp(`Create an article in ${category_name}`, 'i'),
@@ -89,19 +92,26 @@ test('clicking the aside add-article link creates a new article linked to the ca
     await expect(page.getByTestId('subject')).toHaveText(article_title);
 
     // Verify the article is now displayed under the chosen category in the aside
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
     const category_node = kb.getAsideCategory(category_name);
     await expect(category_node.getByRole('link', { name: article_title })).toBeVisible();
 });
 
-test('clicking the aside add-article link on Uncategorized creates an article without a category', async ({ page, profile }) => {
+test('clicking the aside add-article link on Uncategorized creates an article without a category', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
     const article_title = `E2E Uncategorized Article ${unique}`;
 
-    await kb.goto(1);
+    // Seed an uncategorized article so the aside renders on a viewable page.
+    const seed_article_id = await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(seed_article_id);
 
     const uncategorized = kb.getAsideCategory('Uncategorized');
     const add_link = uncategorized.getByRole('link', {
@@ -130,7 +140,7 @@ test('clicking the aside add-article link on Uncategorized creates an article wi
 
     await expect(page.getByTestId('subject')).toHaveText(article_title);
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
     const uncategorized_after = kb.getAsideCategory('Uncategorized');
     await expect(uncategorized_after.getByRole('link', { name: article_title })).toBeVisible();
 });
@@ -152,14 +162,14 @@ test('hovering a sub-category does not reveal the parent category add-article li
         knowbaseitemcategories_id: parent_id,
         entities_id: getWorkerEntityId(),
     });
-    await api.createItem('KnowbaseItem', {
+    const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
         _categories: [child_id],
     });
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
 
     const parent_add = kb.getAsideCategory(parent_name).getByRole('link', {
         name: new RegExp(`Create an article in ${parent_name}`, 'i'),

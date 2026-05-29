@@ -49,14 +49,16 @@ test('clicking the aside create-sub-category link creates a category under the p
         entities_id: getWorkerEntityId(),
     });
 
-    await api.createItem('KnowbaseItem', {
+    // Seed an article so the aside renders on a viewable page (in the worker
+    // entity); a hardcoded article id is not reliable on a fresh CI database.
+    const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
         _categories: [parent_id],
     });
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
 
     const create_link = kb.getAsideCategory(parent_name).getByRole('link', {
         name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
@@ -77,7 +79,7 @@ test('clicking the aside create-sub-category link creates a category under the p
     await expect(dialog).toBeHidden();
     await expect(kb.getAlert('Category created')).toBeVisible();
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
     const parent_node = kb.getAsideCategory(parent_name);
     await expect(parent_node.getByRole('group', { name: child_name })).toBeVisible();
 });
@@ -94,14 +96,14 @@ test('submitting the modal with an empty name shows an inline validation error',
         entities_id: getWorkerEntityId(),
     });
 
-    await api.createItem('KnowbaseItem', {
+    const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
         _categories: [parent_id],
     });
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
 
     // Reveal the action button (hidden until the category row is hovered).
     await kb.getAsideCategoryToggle(parent_name).hover();
@@ -131,14 +133,14 @@ test('clicking Cancel closes the modal without creating a category', async ({ pa
         entities_id: getWorkerEntityId(),
     });
 
-    await api.createItem('KnowbaseItem', {
+    const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
         _categories: [parent_id],
     });
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
 
     // Reveal the action button (hidden until the category row is hovered).
     await kb.getAsideCategoryToggle(parent_name).hover();
@@ -155,11 +157,20 @@ test('clicking Cancel closes the modal without creating a category', async ({ pa
     await expect(kb.getAlert('Category created')).toHaveCount(0);
 });
 
-test('the Uncategorized row has no create-sub-category link', async ({ page, profile }) => {
+test('the Uncategorized row has no create-sub-category link', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
-    await kb.goto(1);
+    const unique = randomUUID().slice(0, 8);
+
+    // Seed an uncategorized article so the aside renders on a viewable page.
+    const seed_article_id = await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(seed_article_id);
 
     const uncategorized = kb.getAsideCategory('Uncategorized');
     await expect(uncategorized).toBeVisible();
@@ -185,14 +196,14 @@ test('hovering a sub-category does not reveal the parent category create-sub-cat
         knowbaseitemcategories_id: parent_id,
         entities_id: getWorkerEntityId(),
     });
-    await api.createItem('KnowbaseItem', {
+    const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
         _categories: [child_id],
     });
 
-    await kb.goto(1);
+    await kb.goto(seed_article_id);
 
     const parent_create = kb.getAsideCategory(parent_name).getByRole('link', {
         name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
