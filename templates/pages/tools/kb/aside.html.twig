@@ -66,14 +66,26 @@
         {% endif %}
         {% if is_multi %}
             data-glpi-kb-article-multi
-            data-glpi-kb-article-other-categories="{{ other_categories|join(' · ') }}"
         {% endif %}
         class="article {{ add_margin ? 'mb-2' : '' }}"
     >
-        <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
-            {{ render_illustration(article.illustration, 20) }}
-            {{ article.title }}
-        </a>
+        {% if is_multi %}
+            <a class="text-dark text-hover-link d-flex align-items-start" href="{{ article.link }}">
+                {{ render_illustration(article.illustration, 20) }}
+                <span class="kb-article-stack ms-1">
+                    <span class="kb-article-titleline">
+                        <span class="kb-article-title text-truncate">{{ article.title }}</span>
+                        <i class="ti ti-stack-2 kb-article-multi-icon" aria-hidden="true"></i>
+                    </span>
+                    <span class="kb-article-also-in d-block text-truncate fst-italic">{{ __('Also live in') }}: {{ other_categories|join(' · ') }}</span>
+                </span>
+            </a>
+        {% else %}
+            <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
+                {{ render_illustration(article.illustration, 20) }}
+                {{ article.title }}
+            </a>
+        {% endif %}
     </li>
 {% endmacro %}
 
@@ -139,7 +151,7 @@
         </ul>
 </div>
 
-<div class="card-body" data-glpi-kb-aside-tree data-glpi-kb-also-in-label="{{ __('Also in') }}">
+<div class="card-body" data-glpi-kb-aside-tree>
     <ul class="kb-tree ps-0">
         {# Render root articles in a special "uncategorized" category #}
         {% if tree.articles|length %}

@@ -795,26 +795,45 @@
         cursor: pointer;
     }
 
-    // Multi-category article: left border accent + sibling highlight on hover
-    [data-glpi-kb-aside-tree] {
-        .article[data-glpi-kb-article-multi] {
+    // Multi-category article: a subtle italic "also live in …" subtitle listing
+    // the other categories (a M2M with no canonical one, so every occurrence is
+    // flagged identically) + sibling highlight lighting up the same article
+    // wherever else it is listed.
+    .article[data-glpi-kb-article-multi] {
+        // min-width:0 lets the title and subtitle truncate inside the flex row.
+        .kb-article-stack {
+            min-width: 0;
+        }
+
+        // Title line: truncating title + a trailing "stack" marker kept visible.
+        .kb-article-titleline {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .kb-article-title {
+            min-width: 0;
+        }
+
+        .kb-article-multi-icon {
+            flex: 0 0 auto;
+            margin-left: 0.25rem;
+            color: var(--tblr-secondary);
+            font-size: 0.875rem;
+        }
+
+        .kb-article-also-in {
+            font-size: 0.75rem;
+            color: var(--tblr-secondary);
+        }
+
+        &.kb-article--sibling,
+        &:hover {
+            background-color: color-mix(in srgb, var(--tblr-primary) 12%, transparent);
+            border-radius: var(--tblr-border-radius);
+
             > a {
-                border-left: 2px solid color-mix(in srgb, var(--tblr-primary) 35%, transparent);
-                padding-left: 4px;
-            }
-
-            &.kb-article--sibling > a,
-            &:hover > a {
-                border-left-color: var(--tblr-primary);
-            }
-
-            &.kb-article--sibling > a {
-                background-color: color-mix(in srgb, var(--tblr-primary) 8%, transparent);
-                color: var(--tblr-primary);
-            }
-
-            &:hover > a {
-                background-color: color-mix(in srgb, var(--tblr-primary) 14%, transparent);
                 color: var(--tblr-primary);
             }
         }
@@ -864,31 +883,5 @@
                 }
             }
         }
-    }
-}
-
-// Tooltip for KB aside multi-category articles.
-// Lives at body level (appended by AsideController.js), so it must NOT be scoped
-// to [data-main-page-aside="knowbaseitem"] — otherwise no styles apply.
-.kb-aside-multi-tooltip {
-    position: fixed;
-    background: var(--tblr-dark);
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1080;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
-
-    &::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 100%;
-        transform: translateX(-50%);
-        border: 5px solid transparent;
-        border-top-color: var(--tblr-dark);
     }
 }
