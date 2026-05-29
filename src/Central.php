@@ -507,7 +507,6 @@ class Central extends CommonGLPI
                 ],
             ];
         }
-        
         if (Session::haveRight("projecttask", ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
             $twig_params['cards'][] = [
