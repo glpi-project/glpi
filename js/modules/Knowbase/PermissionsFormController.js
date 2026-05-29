@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global glpi_toast_info, glpi_toast_error */
+
 import { post } from '/js/modules/Ajax.js';
 
 const show_label = __('Show advanced options');
@@ -83,6 +85,11 @@ export class GlpiKnowbasePermissionsFormController
     #advancedVisible = false;
 
     /**
+     * @type {HTMLFormElement}
+     */
+    #form;
+
+    /**
      * @param {HTMLElement} container
      * @param {string} rand
      * @param {object} visibilityDropdownParams
@@ -91,6 +98,7 @@ export class GlpiKnowbasePermissionsFormController
     {
         this.#visibilityDropdownParams = visibilityDropdownParams;
 
+        this.#form                = container.closest('form');
         this.#dropdown            = document.getElementById(`dropdown__type${rand}`);
         this.#visibility          = document.getElementById(`visibility${rand}`);
         this.#visibilityRecursive = document.getElementById(`visibility-recursive${rand}`);
@@ -130,8 +138,59 @@ export class GlpiKnowbasePermissionsFormController
         $(this.#advancedContent).html(html); // jQuery is needed here to run scripts
     }
 
+    /**
+     * Submit the add-access form through AJAX and update the list in place
+     * instead of reloading the whole page.
+     *
+     * @param {SubmitEvent} e
+     */
+    async #onSubmit(e)
+    {
+        e.preventDefault();
+
+        const list = document.querySelector('[data-glpi-permissions-list]');
+        if (!list) {
+            return;
+        }
+
+        this.#submitBtn.disabled = true;
+
+        try {
+            const formData = new FormData(this.#form);
+            // The submit button is not part of FormData when submitted
+            // programmatically, so flag the action explicitly.
+            formData.set('addvisibility', '1');
+
+            const response = await post('Knowbase/AddPermission', formData);
+
+            const data = await response.json();
+
+            // Drop the "not visible to anyone" placeholder if it is present
+            list.querySelector('[data-testid="empty-permissions"]')?.remove();
+
+            // Append the freshly rendered entry and enable its tooltips
+            list.insertAdjacentHTML('beforeend', data.html);
+            window.initTooltips(list.lastElementChild);
+
+            this.#resetForm();
+
+            glpi_toast_info(__('Access added successfully'));
+        } finally {
+            this.#submitBtn.disabled = false;
+        }
+    }
+
+    #resetForm()
+    {
+        // Resetting the type dropdown triggers the change handler, which hides
+        // the item/recursive/submit controls and clears the advanced options.
+        $(this.#dropdown).val('').trigger('change');
+    }
+
     #bindEvents()
     {
+        this.#form.addEventListener('submit', (e) => this.#onSubmit(e));
+
         // Handle itemtype changes
         // Note: select2 events only work with jQuery handlers
         $(this.#dropdown).on('change', async (e) => {
