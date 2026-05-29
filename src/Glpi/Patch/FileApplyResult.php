@@ -37,7 +37,7 @@ namespace Glpi\Patch;
 /**
  * The outcome of trying to apply one file's changes from a patch.
  */
-final readonly class FileApplyResult
+final class FileApplyResult
 {
     /**
      * @param string      $display_path  Clean path shown to the user (no a/ or b/ prefix).

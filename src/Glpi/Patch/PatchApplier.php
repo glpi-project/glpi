@@ -93,6 +93,14 @@ final class PatchApplier
         $is_new_file     = $this->rewriter->isDevNull($from);
         $is_deleted_file = $this->rewriter->isDevNull($to);
 
+        if (!$is_new_file && !$is_deleted_file) {
+            $resolved_from = $this->rewriter->resolve($from);
+            $resolved_to   = $this->rewriter->resolve($to);
+            if($resolved_from['path'] !== $resolved_to['path']) {
+                return $this->applyRenamedFile($diff, $resolved_from, $resolved_to, $dry_run, $revert);
+            }
+        }
+
         // Resolve filesystem target
         $resolved_target = $this->rewriter->resolve($is_new_file ? $to : $from);
         $target = $resolved_target['path'];
@@ -439,6 +447,129 @@ final class PatchApplier
         }
 
         return new FileApplyResult($target, ApplyStatus::Created, 'File restored successfully');
+    }
+
+    /**
+     * Handles a rename or move diff entry.
+     *
+     * Four cases based on skip status:
+     *   - both skipped          → skip entirely
+     *   - destination skipped   → only delete the source
+     *   - source skipped        → only create the destination (source kept intact)
+     *   - neither skipped       → apply modifications, write destination, delete source
+     */
+    private function applyRenamedFile(Diff $diff, array $resolved_from, array $resolved_to, bool $dry_run, bool $revert): FileApplyResult
+    {
+        $source_path    = $revert ? $resolved_to['path']     : $resolved_from['path'];
+        $dest_path      = $revert ? $resolved_from['path']   : $resolved_to['path'];
+        $source_skipped = $revert ? $resolved_to['skiped']   : $resolved_from['skiped'];
+        $dest_skipped   = $revert ? $resolved_from['skiped'] : $resolved_to['skiped'];
+
+        if ($source_skipped && $dest_skipped) {
+            return new FileApplyResult("from " . $source_path . "\nto " . $dest_path, ApplyStatus::Skipped, 'Skipped');
+        }
+
+        if ($dest_skipped) {
+            // $to is skipped: only delete the source, don't create the destination
+            return $this->applyDeletedFile($source_path, $dry_run);
+        }
+
+        // Destination is not skipped: we must create/write it.
+        // Source may be skipped; if not, we also delete it after writing.
+
+        if (!file_exists($source_path)) {
+            return new FileApplyResult($source_path, ApplyStatus::Conflict, 'Source file not found on disk.');
+        }
+
+        if (!is_readable($source_path)) {
+            return new FileApplyResult(
+                $source_path,
+                ApplyStatus::Conflict,
+                "Source file is not readable: $source_path - check permissions."
+            );
+        }
+
+        try {
+            $original_content = file_get_contents($source_path);
+        } catch (Exception $e) {
+            return new FileApplyResult(
+                $source_path,
+                ApplyStatus::Conflict,
+                "Cannot read source file: $source_path\n" . $e->getMessage()
+            );
+        }
+
+        $target_file_already_exists = file_exists($dest_path);
+
+        if ($dry_run) {
+            //if the target file soesn't already exist,
+            //simulate the dry run on the source file (same base)
+            if (!$target_file_already_exists) {
+                $result = $this->applyModifiedFile($diff, $source_path, $dry_run, $revert);
+            }
+            else{
+                $result = $this->applyModifiedFile($diff, $dest_path, $dry_run, $revert);
+            }
+        } else {
+            if (!$target_file_already_exists) {
+                try{
+                    $dir = dirname($dest_path);
+                    if(!is_dir($dir)) {
+                        mkdir(dirname($dest_path), 0o755, true);
+                    }
+                    file_put_contents($dest_path, $original_content);
+                } catch (Exception $e) {
+                    return new FileApplyResult(
+                        $dest_path,
+                        ApplyStatus::Conflict,
+                        "Could not create destination file: $dest_path - check permissions."
+                    );
+                }
+            }
+            $result = $this->applyModifiedFile($diff, $dest_path, $dry_run, $revert);
+        }
+
+        if(
+            !in_array(
+                $result->status,
+                [
+                    ApplyStatus::Applied,
+                    ApplyStatus::AlreadyApplied,
+                    ApplyStatus::Reverted,
+                    ApplyStatus::DryRun
+                ],
+                true
+            )
+        ) {
+            $result->display_path = "From " . $source_path . "\nTo " . $dest_path;
+            return $result; // If we failed to apply modifications to the destination, don't delete the source
+        }
+
+        if (!$source_skipped && !$dry_run && file_exists($source_path)) {
+            try {
+                unlink($source_path);
+            } catch (Exception $e) {
+                return new FileApplyResult(
+                    "From " . $source_path . "\nTo " . $dest_path,
+                    ApplyStatus::Conflict,
+                    "Destination file was created successfully, but the source file could not be deleted - check permissions.\n"
+                );
+            }
+        }
+
+        if ($dry_run) {
+            return new FileApplyResult(
+                "From " . $source_path . "\nTo " . $dest_path,
+                ApplyStatus::DryRun,
+                $revert ? 'Would successfully revert this rename' : 'Would successfully apply this rename'
+            );
+        }
+
+        return new FileApplyResult(
+            "From " . $source_path . "\nTo " . $dest_path,
+            $revert ? ApplyStatus::Reverted : ApplyStatus::Applied,
+            $revert ? 'Rename reverted successfully' : 'File renamed successfully'
+        );
     }
 
     /**
