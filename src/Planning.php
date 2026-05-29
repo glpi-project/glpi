@@ -1146,7 +1146,6 @@ TWIG, $twig_params);
             echo "<hr>";
             $item->showForm((int) $params['id'], $options);
             $callback = "glpi_close_all_dialogs();
-                      GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
             Html::ajaxForm("#edit_event_form$rand", $callback);
         }
@@ -1356,7 +1355,6 @@ TWIG, $twig_params);
                 'form_id'            => "ajax_reminder$rand",
             ]);
             $callback = "glpi_close_all_dialogs();
-                      GLPIPlanning.refresh();
                       displayAjaxMessageAfterRedirect();";
             Html::ajaxForm("#ajax_reminder$rand", $callback);
         }
