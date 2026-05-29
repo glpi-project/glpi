@@ -177,11 +177,12 @@ abstract class AbstractFilter
         string $value,
         string $fieldname,
         string $itemtype,
-        array $add_params = []
+        array $add_params = [],
+        string $function = 'dropdown',
     ): string {
         $value     = !empty($value) ? $value : null;
         $rand      = mt_rand();
-        $field     = $itemtype::dropdown([
+        $field     = $itemtype::$function([
             'name'                => $fieldname,
             'value'               => $value,
             'rand'                => $rand,
