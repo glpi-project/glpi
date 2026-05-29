@@ -62,6 +62,53 @@ final class PermissionsRendererTest extends DbTestCase
         $this->assertCount(1, $this->getEmptyPermissionNode($permissions));
     }
 
+    public function testBuildEntryRendersSingleNode(): void
+    {
+        // Arrange: create a KB article visible for a group on a target entity.
+        // This mirrors what happens when a permission is added through AJAX:
+        // a single entry is built and rendered server-side to be inserted in
+        // the DOM without a full page reload.
+        $this->login();
+        $kb = $this->createArticle();
+        $relation = $this->createItem(Group_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kb->getID(),
+            'groups_id'        => getItemByTypeName(Group::class, "_test_group_1")->getID(),
+            'entities_id'      => getItemByTypeName(Entity::class, "_test_root_entity")->getID(),
+            'is_recursive'     => 1,
+        ]);
+
+        // Act: build and render the single entry
+        $renderer = new PermissionsRenderer();
+        $entry = $renderer->buildEntry(Group_KnowbaseItem::class, $relation->getID());
+        $this->assertNotNull($entry);
+
+        $html = TemplateRenderer::getInstance()->render(
+            'pages/tools/kb/permission_entry.html.twig',
+            [
+                'entry'    => $entry,
+                'can_edit' => true,
+            ]
+        );
+        $node = new Crawler($html);
+
+        // Assert: the rendered node matches the entry rendered in the full list
+        $entries = $this->getEntriesNodes($node);
+        $this->assertCount(1, $entries);
+
+        $rendered_entry = $entries->eq(0);
+        $this->assertEquals("_test_group_1", $this->getEntryLabel($rendered_entry)->text());
+        $this->assertEquals(
+            "Root entity > _test_root_entity (recursive)",
+            $this->getEntryContext($rendered_entry)->text()
+        );
+    }
+
+    public function testBuildEntryReturnsNullForUnknownClass(): void
+    {
+        $renderer = new PermissionsRenderer();
+        $this->assertNull($renderer->buildEntry(KnowbaseItem::class, 1));
+    }
+
     public function testWithUser(): void
     {
         // Arrange: create a KB article visible for a user
